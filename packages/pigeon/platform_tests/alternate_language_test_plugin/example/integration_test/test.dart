@@ -13,7 +13,7 @@ TargetGenerator _getTarget() {
     return TargetGenerator.java;
   }
   if (Platform.isIOS || Platform.isMacOS) {
-    return TargetGenerator.objc;
+    return TargetGenerator.swift;
   }
   throw UnimplementedError('Unsupported target.');
 }

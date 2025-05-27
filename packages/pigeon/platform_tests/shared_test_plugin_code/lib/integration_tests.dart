@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
+import 'event_test_types.dart';
 import 'generated.dart';
 import 'test_types.dart';
 
@@ -2934,6 +2935,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
           expect(event.value.aNullableInt, 0);
           expect(count, 6);
           count++;
+        case EmptyEvent():
+          expect(count, 7);
+          count++;
           completer.complete();
       }
     });
@@ -2957,6 +2961,158 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     await completer1.future;
     await completer2.future;
   }, skip: !eventChannelSupported.contains(targetGenerator));
+
+  testWidgets(
+    'sealed subclass IntEvent with Int and deserialize correctly',
+    (WidgetTester _) async {
+      final SealedClassApi api = SealedClassApi();
+
+      const int sentInt = regularInt;
+      final PlatformEvent receivedEvent =
+          await api.echo(IntEvent(value: sentInt));
+      switch (receivedEvent) {
+        case IntEvent():
+          expect(receivedEvent.value, sentInt);
+        default:
+          fail('Received unexpected event: $receivedEvent');
+      }
+    },
+  );
+
+  testWidgets(
+    'sealed subclass IntEvent with Int64 serialize and deserialize correctly',
+    (WidgetTester _) async {
+      final SealedClassApi api = SealedClassApi();
+
+      const int sentInt = biggerThanBigInt;
+      final PlatformEvent receivedEvent =
+          await api.echo(IntEvent(value: sentInt));
+      switch (receivedEvent) {
+        case IntEvent():
+          expect(receivedEvent.value, sentInt);
+        default:
+          fail('Received unexpected event: $receivedEvent');
+      }
+    },
+  );
+
+  testWidgets(
+    'sealed subclass DoubleEvent serialize and deserialize correctly',
+    (WidgetTester _) async {
+      final SealedClassApi api = SealedClassApi();
+
+      const double sentDouble = 2.0694;
+      final PlatformEvent receivedEvent =
+          await api.echo(DoubleEvent(value: sentDouble));
+      switch (receivedEvent) {
+        case DoubleEvent():
+          expect(receivedEvent.value, sentDouble);
+        default:
+          fail('Received unexpected event: $receivedEvent');
+      }
+    },
+  );
+
+  testWidgets(
+    'sealed subclass BooleanEvent serialize and deserialize correctly',
+    (WidgetTester _) async {
+      final SealedClassApi api = SealedClassApi();
+
+      for (final bool sentBool in <bool>[true, false]) {
+        final PlatformEvent receivedEvent =
+            await api.echo(BoolEvent(value: sentBool));
+        switch (receivedEvent) {
+          case BoolEvent():
+            expect(receivedEvent.value, sentBool);
+          default:
+            fail('Received unexpected event: $receivedEvent');
+        }
+      }
+    },
+  );
+
+  testWidgets(
+    'sealed subclass StringEvent serialize and deserialize correctly',
+    (WidgetTester _) async {
+      final SealedClassApi api = SealedClassApi();
+
+      const String sentString = 'default';
+      final PlatformEvent receivedEvent =
+          await api.echo(StringEvent(value: sentString));
+      switch (receivedEvent) {
+        case StringEvent():
+          expect(receivedEvent.value, sentString);
+        default:
+          fail('Received unexpected event: $receivedEvent');
+      }
+    },
+  );
+
+  testWidgets(
+    'sealed subclass ObjectsEvent serialize and deserialize correctly',
+    (WidgetTester _) async {
+      final SealedClassApi api = SealedClassApi();
+
+      const Object sentObject = true;
+      final PlatformEvent receivedEvent =
+          await api.echo(ObjectsEvent(value: sentObject));
+      switch (receivedEvent) {
+        case ObjectsEvent():
+          expect(receivedEvent.value, sentObject);
+        default:
+          fail('Received unexpected event: $receivedEvent');
+      }
+    },
+  );
+
+  testWidgets(
+    'sealed subclass EnumEvent serialize and deserialize correctly',
+    (WidgetTester _) async {
+      final SealedClassApi api = SealedClassApi();
+
+      const EventEnum sentEnum = EventEnum.fortyTwo;
+      final PlatformEvent receivedEvent =
+          await api.echo(EnumEvent(value: sentEnum));
+      switch (receivedEvent) {
+        case EnumEvent():
+          expect(receivedEvent.value, sentEnum);
+        default:
+          fail('Received unexpected event: $receivedEvent');
+      }
+    },
+  );
+
+  testWidgets(
+    'sealed subclass ClassEvent serialize and deserialize correctly',
+    (WidgetTester _) async {
+      final SealedClassApi api = SealedClassApi();
+      final EventAllNullableTypes sentEventAllNullableTypes =
+          genericEventAllNullableTypesWithoutRecursion;
+      final PlatformEvent receivedEvent = await api.echo(
+        ClassEvent(value: sentEventAllNullableTypes),
+      );
+
+      switch (receivedEvent) {
+        case ClassEvent():
+          expect(
+            receivedEvent.value,
+            sentEventAllNullableTypes,
+          );
+        default:
+          fail('Received unexpected event: $receivedEvent');
+      }
+    },
+  );
+
+  testWidgets(
+    'sealed Empty subclass serialize and deserialize correctly',
+    (WidgetTester _) async {
+      final SealedClassApi api = SealedClassApi();
+
+      final PlatformEvent receivedEvent = await api.echo(EmptyEvent());
+      expect(receivedEvent, isA<EmptyEvent>());
+    },
+  );
 }
 
 class _FlutterApiTestImplementation implements FlutterIntegrationCoreApi {

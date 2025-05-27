@@ -10,7 +10,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
 
 /** This plugin handles the native side of the integration tests in example/integration_test/. */
-class TestPlugin : FlutterPlugin, HostIntegrationCoreApi {
+class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, SealedClassApi {
   private var flutterApi: FlutterIntegrationCoreApi? = null
   private var flutterSmallApiOne: FlutterSmallApi? = null
   private var flutterSmallApiTwo: FlutterSmallApi? = null
@@ -35,6 +35,7 @@ class TestPlugin : FlutterPlugin, HostIntegrationCoreApi {
         binding.binaryMessenger, SendConsistentNumbers(1), "1")
     StreamConsistentNumbersStreamHandler.register(
         binding.binaryMessenger, SendConsistentNumbers(2), "2")
+    SealedClassApi.setUp(binding.binaryMessenger, this)
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -868,6 +869,8 @@ class TestPlugin : FlutterPlugin, HostIntegrationCoreApi {
   fun testUnusedClassesGenerate(): UnusedClass {
     return UnusedClass()
   }
+
+  override fun echo(event: PlatformEvent): PlatformEvent = event
 }
 
 class TestPluginWithSuffix : HostSmallApi {
@@ -918,7 +921,8 @@ object SendClass : StreamEventsStreamHandler() {
           DoubleEvent(3.14),
           ObjectsEvent(true),
           EnumEvent(EventEnum.FORTY_TWO),
-          ClassEvent(EventAllNullableTypes(aNullableInt = 0)))
+          ClassEvent(EventAllNullableTypes(aNullableInt = 0)),
+          EmptyEvent())
 
   override fun onListen(p0: Any?, sink: PigeonEventSink<PlatformEvent>) {
     var count: Int = 0
