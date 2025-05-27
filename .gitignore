@@ -4,7 +4,6 @@
 .packages
 .pub/
 .dart_tool/
-.vscode/
 *.iml
 
 # Gradle?
