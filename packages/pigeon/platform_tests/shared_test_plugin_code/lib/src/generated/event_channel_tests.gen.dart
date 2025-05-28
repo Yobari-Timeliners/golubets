@@ -543,8 +543,7 @@ class EmptyEvent extends PlatformEvent {
     return _toList();
   }
 
-  static EmptyEvent decode(Object result) {
-    result as List<Object?>;
+  static EmptyEvent decode(Object _) {
     return EmptyEvent();
   }
 

@@ -1587,4 +1587,71 @@ void main() {
         contains(
             'return PigeonError(code: "channel-error", message: "Unable to establish connection on channel: \'\\(channelName)\'.", details: "")'));
   });
+
+  test('sealed class', () {
+    final Class superClass = Class(
+      name: 'PlatformEvent',
+      isSealed: true,
+      fields: const <NamedType>[],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[
+        superClass,
+        Class(
+          name: 'IntEvent',
+          superClass: superClass,
+          superClassName: superClass.name,
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(
+                baseName: 'int',
+                isNullable: false,
+              ),
+              name: 'value',
+            )
+          ],
+        ),
+        Class(
+          name: 'ClassEvent',
+          superClass: superClass,
+          superClassName: superClass.name,
+          fields: <NamedType>[
+            NamedType(
+              type: TypeDeclaration(
+                baseName: 'Input',
+                isNullable: true,
+                associatedClass: emptyClass,
+              ),
+              name: 'value',
+            )
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const SwiftGenerator generator = SwiftGenerator();
+    const InternalSwiftOptions kotlinOptions =
+        InternalSwiftOptions(swiftOut: '');
+    generator.generate(
+      kotlinOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(
+      code,
+      contains('protocol PlatformEvent'),
+    );
+    expect(
+      code,
+      contains('struct IntEvent: PlatformEvent'),
+    );
+    expect(
+      code,
+      contains('struct ClassEvent: PlatformEvent'),
+    );
+  });
 }
