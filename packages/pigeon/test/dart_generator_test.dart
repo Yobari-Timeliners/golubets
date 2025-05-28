@@ -1820,4 +1820,102 @@ name: foobar
     expect(code, contains('buffer.putUint8(4);'));
     expect(code, contains('buffer.putInt64(value);'));
   });
+
+  test('sealed class', () {
+    final Class superClass = Class(
+      name: 'PlatformEvent',
+      isSealed: true,
+      fields: const <NamedType>[],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[
+        superClass,
+        Class(
+          name: 'IntEvent',
+          superClass: superClass,
+          superClassName: superClass.name,
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(
+                baseName: 'int',
+                isNullable: false,
+              ),
+              name: 'value',
+            )
+          ],
+        ),
+        Class(
+          name: 'ClassEvent',
+          superClass: superClass,
+          superClassName: superClass.name,
+          fields: <NamedType>[
+            NamedType(
+              type: TypeDeclaration(
+                baseName: 'Input',
+                isNullable: true,
+                associatedClass: emptyClass,
+              ),
+              name: 'value',
+            )
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const DartGenerator generator = DartGenerator();
+    generator.generate(
+      const InternalDartOptions(),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(
+      code,
+      contains('sealed class PlatformEvent'),
+    );
+    expect(
+      code,
+      contains('class IntEvent extends PlatformEvent'),
+    );
+    expect(
+      code,
+      contains('class ClassEvent extends PlatformEvent'),
+    );
+    expect(
+      code,
+      contains('result[0]! as int'),
+    );
+    expect(
+      code,
+      contains('result[0] as Input?'),
+    );
+  });
+
+  test('empty class', () {
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[
+        Class(
+          name: 'EmptyClass',
+          fields: <NamedType>[],
+        ),
+      ],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const DartGenerator generator = DartGenerator();
+    generator.generate(
+      const InternalDartOptions(),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+
+    expect(code, contains('static EmptyClass decode(Object _)'));
+    expect(code, isNot(contains('result as List<Object?>')));
+  });
 }

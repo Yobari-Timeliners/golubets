@@ -1,6 +1,8 @@
 // Copyright 2013 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+//
+//! Exists because of the sealed classes and event channels are not supported for C++ and GObjects.
 
 import 'package:pigeon/pigeon.dart';
 
@@ -137,9 +139,16 @@ class ClassEvent extends PlatformEvent {
   final EventAllNullableTypes value;
 }
 
+class EmptyEvent extends PlatformEvent {}
+
 @EventChannelApi()
 abstract class EventChannelMethods {
   int streamInts();
   PlatformEvent streamEvents();
   int streamConsistentNumbers();
+}
+
+@HostApi()
+abstract class SealedClassApi {
+  PlatformEvent echo(PlatformEvent event);
 }

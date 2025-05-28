@@ -200,19 +200,22 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
 
     indent.write('${sealed}class ${classDefinition.name} $implements');
     indent.addScoped('{', '}', () {
-      if (classDefinition.fields.isEmpty) {
+      if (classDefinition.isSealed) {
         return;
       }
-      _writeConstructor(indent, classDefinition);
-      indent.newln();
-      for (final NamedType field
-          in getFieldsInSerializationOrder(classDefinition)) {
-        addDocumentationComments(
-            indent, field.documentationComments, _docCommentSpec);
 
-        final String datatype = _addGenericTypesNullable(field.type);
-        indent.writeln('$datatype ${field.name};');
+      if (classDefinition.fields.isNotEmpty) {
+        _writeConstructor(indent, classDefinition);
         indent.newln();
+        for (final NamedType field
+            in getFieldsInSerializationOrder(classDefinition)) {
+          addDocumentationComments(
+              indent, field.documentationComments, _docCommentSpec);
+
+          final String datatype = _addGenericTypesNullable(field.type);
+          indent.writeln('$datatype ${field.name};');
+          indent.newln();
+        }
       }
       _writeToList(indent, classDefinition);
       indent.newln();
@@ -315,11 +318,16 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       }
     }
 
+    final bool isResultUsed = classDefinition.fields.isNotEmpty;
+    final String result = isResultUsed ? 'result' : '_';
+
     indent.write(
-      'static ${classDefinition.name} decode(Object result) ',
+      'static ${classDefinition.name} decode(Object $result) ',
     );
     indent.addScoped('{', '}', () {
-      indent.writeln('result as List<Object?>;');
+      if (isResultUsed) {
+        indent.writeln('result as List<Object?>;');
+      }
       indent.write('return ${classDefinition.name}');
       indent.addScoped('(', ');', () {
         enumerate(getFieldsInSerializationOrder(classDefinition),
