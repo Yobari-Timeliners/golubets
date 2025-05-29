@@ -337,7 +337,7 @@ Future<int> formatAllFiles({
         'run',
         'script/tool/bin/flutter_plugin_tools.dart',
         'format',
-        '--packages=pigeon',
+        '--packages=golub',
         if (languages.contains(GeneratorLanguage.cpp) ||
             languages.contains(GeneratorLanguage.gobject) ||
             languages.contains(GeneratorLanguage.objc))
