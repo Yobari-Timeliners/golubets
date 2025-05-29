@@ -33,6 +33,32 @@ final class EventChannelTestsError: Error {
   }
 }
 
+private func wrapResult(_ result: Any?) -> [Any?] {
+  return [result]
+}
+
+private func wrapError(_ error: Any) -> [Any?] {
+  if let pigeonError = error as? EventChannelTestsError {
+    return [
+      pigeonError.code,
+      pigeonError.message,
+      pigeonError.details,
+    ]
+  }
+  if let flutterError = error as? FlutterError {
+    return [
+      flutterError.code,
+      flutterError.message,
+      flutterError.details,
+    ]
+  }
+  return [
+    "\(error)",
+    "\(type(of: error))",
+    "Stacktrace: \(Thread.callStackSymbols)",
+  ]
+}
+
 private func isNullish(_ value: Any?) -> Bool {
   return value is NSNull || value == nil
 }
@@ -512,6 +538,25 @@ struct ClassEvent: PlatformEvent {
   }
 }
 
+/// Generated class from Pigeon that represents data sent in messages.
+struct EmptyEvent: PlatformEvent {
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> EmptyEvent? {
+
+    return EmptyEvent()
+  }
+  func toList() -> [Any?] {
+    return []
+  }
+  static func == (lhs: EmptyEvent, rhs: EmptyEvent) -> Bool {
+    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
+  }
+  func hash(into hasher: inout Hasher) {
+    deepHashEventChannelTests(value: toList(), hasher: &hasher)
+  }
+}
+
 private class EventChannelTestsPigeonCodecReader: FlutterStandardReader {
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
@@ -543,6 +588,8 @@ private class EventChannelTestsPigeonCodecReader: FlutterStandardReader {
       return EnumEvent.fromList(self.readValue() as! [Any?])
     case 138:
       return ClassEvent.fromList(self.readValue() as! [Any?])
+    case 139:
+      return EmptyEvent.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
     }
@@ -580,6 +627,9 @@ private class EventChannelTestsPigeonCodecWriter: FlutterStandardWriter {
       super.writeValue(value.toList())
     } else if let value = value as? ClassEvent {
       super.writeByte(138)
+      super.writeValue(value.toList())
+    } else if let value = value as? EmptyEvent {
+      super.writeByte(139)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -703,5 +753,38 @@ class StreamConsistentNumbersStreamHandler: PigeonEventChannelWrapper<Int64> {
     let channel = FlutterEventChannel(
       name: channelName, binaryMessenger: messenger, codec: eventChannelTestsPigeonMethodCodec)
     channel.setStreamHandler(internalStreamHandler)
+  }
+}
+
+/// Generated protocol from Pigeon that represents a handler of messages from Flutter.
+protocol SealedClassApi {
+  func echo(event: PlatformEvent) throws -> PlatformEvent
+}
+
+/// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
+class SealedClassApiSetup {
+  static var codec: FlutterStandardMessageCodec { EventChannelTestsPigeonCodec.shared }
+  /// Sets up an instance of `SealedClassApi` to handle messages through the `binaryMessenger`.
+  static func setUp(
+    binaryMessenger: FlutterBinaryMessenger, api: SealedClassApi?, messageChannelSuffix: String = ""
+  ) {
+    let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
+    let echoChannel = FlutterBasicMessageChannel(
+      name: "dev.flutter.pigeon.pigeon_integration_tests.SealedClassApi.echo\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      echoChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let eventArg = args[0] as! PlatformEvent
+        do {
+          let result = try api.echo(event: eventArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      echoChannel.setMessageHandler(nil)
+    }
   }
 }

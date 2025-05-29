@@ -110,6 +110,36 @@ class StringEvent extends PlatformEvent {
   int get hashCode => Object.hashAll(_toList());
 }
 
+class EmptyEvent extends PlatformEvent {
+  List<Object?> _toList() {
+    return <Object?>[];
+  }
+
+  Object encode() {
+    return _toList();
+  }
+
+  static EmptyEvent decode(Object _) {
+    return EmptyEvent();
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! EmptyEvent || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(encode(), other.encode());
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => Object.hashAll(_toList());
+}
+
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
   @override
@@ -123,6 +153,9 @@ class _PigeonCodec extends StandardMessageCodec {
     } else if (value is StringEvent) {
       buffer.putUint8(130);
       writeValue(buffer, value.encode());
+    } else if (value is EmptyEvent) {
+      buffer.putUint8(131);
+      writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
     }
@@ -135,6 +168,8 @@ class _PigeonCodec extends StandardMessageCodec {
         return IntEvent.decode(readValue(buffer)!);
       case 130:
         return StringEvent.decode(readValue(buffer)!);
+      case 131:
+        return EmptyEvent.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }

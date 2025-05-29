@@ -2,6 +2,10 @@
 
 * Updates minimum supported SDK version to Flutter 3.27/Dart 3.6.
 
+## 25.3.3
+
+* Adds support for empty data classes.
+
 ## 25.3.2
 
 * [dart] Fixes null pointer crashes/exceptions caused by premature finalization of Dart instances

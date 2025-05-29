@@ -1892,4 +1892,99 @@ void main() {
     // There should be only one occurrence of 'is Foo' in the block
     expect(count, 1);
   });
+
+  test('sealed class', () {
+    final Class superClass = Class(
+      name: 'PlatformEvent',
+      isSealed: true,
+      fields: const <NamedType>[],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[
+        superClass,
+        Class(
+          name: 'IntEvent',
+          superClass: superClass,
+          superClassName: superClass.name,
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(
+                baseName: 'int',
+                isNullable: false,
+              ),
+              name: 'value',
+            )
+          ],
+        ),
+        Class(
+          name: 'ClassEvent',
+          superClass: superClass,
+          superClassName: superClass.name,
+          fields: <NamedType>[
+            NamedType(
+              type: TypeDeclaration(
+                baseName: 'Input',
+                isNullable: true,
+                associatedClass: emptyClass,
+              ),
+              name: 'value',
+            )
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const KotlinGenerator generator = KotlinGenerator();
+    const InternalKotlinOptions kotlinOptions =
+        InternalKotlinOptions(kotlinOut: '');
+    generator.generate(
+      kotlinOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(
+      code,
+      contains('sealed class PlatformEvent'),
+    );
+    expect(
+      code,
+      contains('data class IntEvent'),
+    );
+    expect(code, contains(': PlatformEvent'));
+    expect(
+      code,
+      contains('data class ClassEvent'),
+    );
+  });
+
+  test('empty class', () {
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[
+        Class(
+          name: 'EmptyClass',
+          fields: <NamedType>[],
+        ),
+      ],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const KotlinGenerator generator = KotlinGenerator();
+    const InternalKotlinOptions kotlinOptions =
+        InternalKotlinOptions(kotlinOut: '');
+    generator.generate(
+      kotlinOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+
+    expect(code, contains('class EmptyClass'));
+    expect(code, isNot(contains('data class EmptyClass')));
+  });
 }
