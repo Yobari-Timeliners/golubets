@@ -53,7 +53,7 @@ jobs:
       - name: format
         run: .ci/scripts/tool_runner.sh format --fail-on-change --no-swift
       - name: pubspec validation
-        run: .ci/scripts/tool_runner.sh pubspec-check --min-min-flutter-version=3.27.0" --allow-dependencies=script/configs/allowed_unpinned_deps.yaml --allow-pinned-dependencies=script/configs/allowed_pinned_deps.yaml
+        run: .ci/scripts/tool_runner.sh pubspec-check --min-min-flutter-version=3.27.0 --allow-dependencies=script/configs/allowed_unpinned_deps.yaml --allow-pinned-dependencies=script/configs/allowed_pinned_deps.yaml
 
 
       # - name: Install dependencies
