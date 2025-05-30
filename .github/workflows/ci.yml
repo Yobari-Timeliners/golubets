@@ -39,7 +39,11 @@ jobs:
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
-
+      - name: Install MacOS dependencies
+        if: matrix.platform == 'macos'
+        run: |
+          brew install clang-format
+          brew install swift-format
       - name: prepare tool
         run: .ci/scripts/prepare_tool.sh
       - name: download Dart deps
@@ -106,9 +110,7 @@ jobs:
         run: .ci/scripts/update_pods.sh
       - name: MacOS swift format
         if: matrix.platform == 'macos'
-        run: |
-          brew install swift-format
-          .ci/scripts/tool_runner.sh format --fail-on-change --no-dart --no-clang-format --no-kotlin --no-java
+        run: .ci/scripts/tool_runner.sh format --fail-on-change --no-dart --no-clang-format --no-kotlin --no-java
       - name: MacOS validate iOS and macOS podspecs
         if: matrix.platform == 'macos'
         run: .ci/scripts/tool_runner.sh podspec-check
