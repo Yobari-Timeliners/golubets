@@ -1,0 +1,111 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.27.0
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - name: Install dependencies
+        run: |
+          for dir in $(find . -name pubspec.yaml -exec dirname {} \;); do
+            echo "Running flutter pub get in $dir"
+            (cd "$dir" && flutter pub get)
+          done
+      - name: Analyze code
+        run: dart analyze --fatal-infos
+        working-directory: packages/golub
+
+  test:
+    name: Run Tests on ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+          - os: macos-latest
+            platform: macos
+          - os: windows-latest
+            platform: windows
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.27.0
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - name: Install dependencies
+        run: |
+          for dir in $(find . -name pubspec.yaml -exec dirname {} \;); do
+            echo "Running flutter pub get in $dir"
+            (cd "$dir" && flutter pub get)
+          done
+      - name: Install Linux dependencies
+        if: matrix.platform == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build curl
+        shell: bash
+      - name: Set up Java
+        if: matrix.platform == 'linux'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Install Windows dependencies
+        if: matrix.platform == 'windows'
+        run: |
+          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+          choco install llvm -y
+      - name: Setup Android emulator
+        if: matrix.platform == 'linux'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          arch: x86_64
+          profile: pixel_4
+          script: |
+            adb wait-for-device
+            dart run tool/run_tests.dart
+          working-directory: packages/golub
+      - name: Setup iOS simulator
+        if: matrix.platform == 'macos'
+        run: |
+          brew install swift-format
+          xcrun simctl create Test-Device com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro
+          xcrun simctl boot Test-Device
+      - name: Run tests
+        if: matrix.platform != 'linux'
+        run: dart run tool/run_tests.dart
+        working-directory: packages/golub
+      - name: Shutdown iOS simulator
+        if: matrix.platform == 'macos'
+        run: xcrun simctl shutdown Test-Device || true
+        continue-on-error: true
