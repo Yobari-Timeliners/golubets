@@ -11,28 +11,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch full history
+          fetch-depth: 0 # Fetch full history of the fork
       - name: Install git-filter-repo
         run: pip install git-filter-repo
       - name: Configure Git
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
-      - name: Add upstream remote
+      - name: Clone upstream repository
         run: |
-          git remote add upstream https://github.com/flutter/packages.git || true
-          git fetch upstream main
-      - name: Debug upstream commits
+          git clone https://github.com/flutter/packages.git upstream-temp
+      - name: Apply git filter-repo to upstream
         run: |
-          git log upstream/main --oneline -n 10 -- packages/pigeon LICENSE README.md script .gitignore .github .ci .gitattributes analysis_options.yaml customer_testing.bat customer_testing.sh .clang-format .ci.yaml CONTRIBUTING.md
-      - name: Merge upstream changes
+          cd upstream-temp
+          git filter-repo --path packages/pigeon --path LICENSE --path README.md --path script --path .gitignore --path .github --path .ci --path .gitattributes --path analysis_options.yaml --path customer_testing.bat --path customer_testing.sh --path .clang-format --path .ci.yaml --path CONTRIBUTING.md --force
+      - name: Debug filtered upstream commits
+        run: |
+          cd upstream-temp
+          git log --oneline -n 10
+      - name: Add filtered upstream as remote
+        run: |
+          git remote add filtered-upstream ./upstream-temp
+          git fetch filtered-upstream main
+      - name: Merge filtered upstream changes
         run: |
           git checkout main
-          git merge upstream/main --allow-unrelated-histories || echo "Merge conflicts detected"
-      - name: Apply git filter-repo
-        run: |
-          git filter-repo --path packages/golub --path LICENSE --path README.md --path script --path .gitignore --path .github --path .ci --path .gitattributes --path analysis_options.yaml --path customer_testing.bat --path customer_testing.sh --path .clang-format --path .ci.yaml --path CONTRIBUTING.md --force
-      - name: Debug git status
+          git merge filtered-upstream/main --allow-unrelated-histories || echo "Merge conflicts detected"
+      - name: Debug post-merge status
         run: |
           git status
           git log --oneline -n 5
@@ -42,9 +47,9 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             EXISTING_PR=$(gh pr list --label "sync upstream" --state open --json number,headRefName --jq '.[0] | select(.number) | .number + ":" + .headRefName' || true)
             BRANCH_NAME=""
-            COMMIT_MESSAGE="Sync with upstream"
+            COMMIT_MESSAGE="Sync with filtered upstream"
             PR_TITLE="Sync Upstream"
-            PR_BODY="Sync with upstream flutter/packages."
+            PR_BODY="Sync with filtered upstream flutter/packages."
             if git status --porcelain | grep '^UU'; then
               echo "Merge conflicts detected:" >> pr_body.txt
               git status >> pr_body.txt
@@ -59,8 +64,7 @@ jobs:
               BRANCH_NAME=$(echo "$EXISTING_PR" | cut -d':' -f2)
               echo "Updating existing PR #$PR_NUMBER on branch $BRANCH_NAME"
               git checkout "$BRANCH_NAME" || git fetch origin "$BRANCH_NAME:$BRANCH_NAME" && git checkout "$BRANCH_NAME"
-              git merge upstream/main --allow-unrelated-histories || true
-              git filter-repo --path packages/golub --path LICENSE --path README.md --path script --path .gitignore --path .github --path .ci --path .gitattributes --path analysis_options.yaml --path customer_testing.bat --path customer_testing.sh --path .clang-format --path .ci.yaml --path CONTRIBUTING.md --force
+              git merge filtered-upstream/main --allow-unrelated-histories || true
               git commit -m "$COMMIT_MESSAGE" || true
               git push origin "$BRANCH_NAME"
               gh pr edit "$PR_NUMBER" --title "$PR_TITLE" --body "$PR_BODY"
@@ -77,3 +81,6 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Clean up temporary upstream
+        run: |
+          rm -rf upstream-temp
