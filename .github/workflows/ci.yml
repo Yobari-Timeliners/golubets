@@ -82,6 +82,8 @@ jobs:
       - name: Setup Windows build environment
         if: matrix.platform == 'windows'
         run: |
+          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+          choco install visualstudio2019community --package-parameters "--add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended" -y
           cd platform_tests/test_plugin/example/windows
           cmake -S . -B build -G "Visual Studio 16 2019" -A x64
         env:
@@ -102,13 +104,13 @@ jobs:
         if: matrix.platform == 'macos'
         run: |
           brew install swift-format
-          xcrun simctl create Test-Device com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro
-          xcrun simctl boot Test-Device
+          .ci/scripts/create_simulator.sh
+          .ci/scripts/boot_simulator.sh
       - name: Run tests
         if: matrix.platform != 'linux'
         run: dart run tool/run_tests.dart
         working-directory: packages/golub
       - name: Shutdown iOS simulator
         if: matrix.platform == 'macos'
-        run: xcrun simctl shutdown Test-Device || true
+        run: .ci/scripts/remove_simulator.sh
         continue-on-error: true
