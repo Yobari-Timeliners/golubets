@@ -14,8 +14,7 @@ import 'package:pigeon/pigeon.dart';
   gobjectHeaderOut: 'linux/messages.g.h',
   gobjectSourceOut: 'linux/messages.g.cc',
   gobjectOptions: GObjectOptions(),
-  kotlinOut:
-      'android/app/src/main/kotlin/dev/flutter/pigeon_example_app/Messages.g.kt',
+  kotlinOut: 'android/app/src/main/kotlin/dev/flutter/pigeon_example_app/Messages.g.kt',
   kotlinOptions: KotlinOptions(),
   javaOut: 'android/app/src/main/java/io/flutter/plugins/Messages.java',
   javaOptions: JavaOptions(),
@@ -52,6 +51,15 @@ abstract class ExampleHostApi {
 
   @async
   bool sendMessage(MessageData message);
+  // This annotation generates an await-style asynchronous method,
+  // unlike the callback-based approach used in sendMessage.
+  // In Swift, this method does not throw exceptions (`isSwiftThrows: false`).
+  @Async(type: AsyncType.await(isSwiftThrows: false))
+  bool sendMessageModernAsync(MessageData message);
+
+  // The same as sendMessageModernAsync, but throws an exception.
+  @Async(type: AsyncType.await(isSwiftThrows: true))
+  bool sendMessageModernAsyncThrows(MessageData message);
 }
 // #enddocregion host-definitions
 

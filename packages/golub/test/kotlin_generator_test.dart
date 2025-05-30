@@ -40,8 +40,7 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -70,8 +69,7 @@ void main() {
       enums: <Enum>[anEnum],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -121,8 +119,7 @@ void main() {
       ],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -166,8 +163,7 @@ void main() {
       ])
     ]);
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -224,8 +220,7 @@ void main() {
       ])
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -379,8 +374,7 @@ void main() {
 
     final StringBuffer sink = StringBuffer();
 
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -451,8 +445,7 @@ void main() {
       ])
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -499,8 +492,7 @@ void main() {
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -544,8 +536,7 @@ void main() {
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -586,8 +577,7 @@ void main() {
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -628,8 +618,7 @@ void main() {
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -638,8 +627,7 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(
-        code, contains('fun doSomething(callback: (Result<Output>) -> Unit)'));
+    expect(code, contains('fun doSomething(callback: (Result<Output>) -> Unit)'));
     expect(code, contains('channel.send(null)'));
   });
 
@@ -656,8 +644,7 @@ void main() {
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -683,8 +670,7 @@ void main() {
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -729,8 +715,7 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -768,7 +753,7 @@ void main() {
             associatedClass: emptyClass,
             isNullable: false,
           ),
-          isAsynchronous: true,
+          asynchronousType: AsynchronousType.callback,
         )
       ])
     ], classes: <Class>[
@@ -792,8 +777,7 @@ void main() {
       ])
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -805,6 +789,71 @@ void main() {
     expect(code, contains('interface Api'));
     expect(code, contains('api.doSomething(argArg) {'));
     expect(code, contains('reply.reply(PigeonUtils.wrapResult(data))'));
+  });
+
+  test('gen one modern async Host Api', () {
+    final Root root = Root(apis: <Api>[
+      AstHostApi(name: 'Api', methods: <Method>[
+        Method(
+          name: 'doSomething',
+          location: ApiLocation.host,
+          parameters: <Parameter>[
+            Parameter(
+                type: TypeDeclaration(
+                  baseName: 'Input',
+                  associatedClass: emptyClass,
+                  isNullable: false,
+                ),
+                name: 'arg')
+          ],
+          returnType: TypeDeclaration(
+            baseName: 'Output',
+            associatedClass: emptyClass,
+            isNullable: false,
+          ),
+          asynchronousType: const AwaitAsynchronous(
+            swiftOptions: SwiftAwaitAsynchronousOptions(throws: true),
+          ),
+        )
+      ])
+    ], classes: <Class>[
+      Class(name: 'Input', fields: <NamedType>[
+        NamedType(
+            type: const TypeDeclaration(
+              baseName: 'String',
+              isNullable: true,
+            ),
+            name: 'input')
+      ]),
+      Class(name: 'Output', fields: <NamedType>[
+        NamedType(
+            type: const TypeDeclaration(
+              baseName: 'String',
+              isNullable: true,
+            ),
+            name: 'output')
+      ])
+    ], enums: <Enum>[]);
+    final StringBuffer sink = StringBuffer();
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
+    const KotlinGenerator generator = KotlinGenerator();
+    generator.generate(
+      kotlinOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('interface Api'));
+    expect(
+      code,
+      contains('suspend fun doSomething(arg: Input): Output'),
+    );
+    expect(code, contains('coroutineScope.launch {'));
+    expect(code, contains('coroutineScope: CoroutineScope'));
+    expect(code, contains('api.doSomething(argArg)'));
+    expect(code, contains('withContext(Dispatchers.Main) {'));
+    expect(code, contains('reply.reply(wrapped)'));
   });
 
   test('gen one async Flutter Api', () {
@@ -828,7 +877,7 @@ void main() {
             associatedClass: emptyClass,
             isNullable: false,
           ),
-          isAsynchronous: true,
+          asynchronousType: AsynchronousType.callback,
         )
       ])
     ], classes: <Class>[
@@ -852,8 +901,7 @@ void main() {
       ])
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -893,8 +941,7 @@ void main() {
       enums: <Enum>[anEnum],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -938,9 +985,7 @@ void main() {
           type: const TypeDeclaration(
               baseName: 'List',
               isNullable: true,
-              typeArguments: <TypeDeclaration>[
-                TypeDeclaration(baseName: 'int', isNullable: true)
-              ]),
+              typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: true)]),
           name: 'field1',
         ),
       ],
@@ -951,8 +996,7 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -970,13 +1014,10 @@ void main() {
       name: 'Foobar',
       fields: <NamedType>[
         NamedType(
-          type: const TypeDeclaration(
-              baseName: 'Map',
-              isNullable: true,
-              typeArguments: <TypeDeclaration>[
-                TypeDeclaration(baseName: 'String', isNullable: true),
-                TypeDeclaration(baseName: 'String', isNullable: true),
-              ]),
+          type: const TypeDeclaration(baseName: 'Map', isNullable: true, typeArguments: <TypeDeclaration>[
+            TypeDeclaration(baseName: 'String', isNullable: true),
+            TypeDeclaration(baseName: 'String', isNullable: true),
+          ]),
           name: 'field1',
         ),
       ],
@@ -987,8 +1028,7 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1014,9 +1054,7 @@ void main() {
                   type: const TypeDeclaration(
                       baseName: 'List',
                       isNullable: false,
-                      typeArguments: <TypeDeclaration>[
-                        TypeDeclaration(baseName: 'int', isNullable: true)
-                      ]),
+                      typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: true)]),
                   name: 'arg',
                 )
               ])
@@ -1026,8 +1064,7 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1052,9 +1089,7 @@ void main() {
                   type: const TypeDeclaration(
                       baseName: 'List',
                       isNullable: false,
-                      typeArguments: <TypeDeclaration>[
-                        TypeDeclaration(baseName: 'int', isNullable: true)
-                      ]),
+                      typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: true)]),
                   name: 'arg',
                 )
               ])
@@ -1064,8 +1099,7 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1087,9 +1121,7 @@ void main() {
               returnType: const TypeDeclaration(
                   baseName: 'List',
                   isNullable: false,
-                  typeArguments: <TypeDeclaration>[
-                    TypeDeclaration(baseName: 'int', isNullable: true)
-                  ]),
+                  typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: true)]),
               parameters: <Parameter>[])
         ])
       ],
@@ -1097,8 +1129,7 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1122,9 +1153,7 @@ void main() {
               returnType: const TypeDeclaration(
                   baseName: 'List',
                   isNullable: false,
-                  typeArguments: <TypeDeclaration>[
-                    TypeDeclaration(baseName: 'int', isNullable: true)
-                  ]),
+                  typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: true)]),
               parameters: <Parameter>[])
         ])
       ],
@@ -1132,8 +1161,7 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1154,22 +1182,15 @@ void main() {
           name: 'add',
           location: ApiLocation.host,
           parameters: <Parameter>[
-            Parameter(
-                name: 'x',
-                type:
-                    const TypeDeclaration(isNullable: false, baseName: 'int')),
-            Parameter(
-                name: 'y',
-                type:
-                    const TypeDeclaration(isNullable: false, baseName: 'int')),
+            Parameter(name: 'x', type: const TypeDeclaration(isNullable: false, baseName: 'int')),
+            Parameter(name: 'y', type: const TypeDeclaration(isNullable: false, baseName: 'int')),
           ],
           returnType: const TypeDeclaration(baseName: 'int', isNullable: false),
         )
       ])
     ], classes: <Class>[], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1191,22 +1212,15 @@ void main() {
           name: 'add',
           location: ApiLocation.flutter,
           parameters: <Parameter>[
-            Parameter(
-                name: 'x',
-                type:
-                    const TypeDeclaration(baseName: 'int', isNullable: false)),
-            Parameter(
-                name: 'y',
-                type:
-                    const TypeDeclaration(baseName: 'int', isNullable: false)),
+            Parameter(name: 'x', type: const TypeDeclaration(baseName: 'int', isNullable: false)),
+            Parameter(name: 'y', type: const TypeDeclaration(baseName: 'int', isNullable: false)),
           ],
           returnType: const TypeDeclaration(baseName: 'int', isNullable: false),
         )
       ])
     ], classes: <Class>[], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1217,10 +1231,7 @@ void main() {
     final String code = sink.toString();
     expect(code, contains('val channel = BasicMessageChannel'));
     expect(code, contains('callback(Result.success(output))'));
-    expect(
-        code,
-        contains(
-            'fun add(xArg: Long, yArg: Long, callback: (Result<Long>) -> Unit)'));
+    expect(code, contains('fun add(xArg: Long, yArg: Long, callback: (Result<Long>) -> Unit)'));
     expect(code, contains('channel.send(listOf(xArg, yArg)) {'));
   });
 
@@ -1242,8 +1253,7 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1266,7 +1276,7 @@ void main() {
                 baseName: 'int',
                 isNullable: true,
               ),
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
               parameters: <Parameter>[])
         ])
       ],
@@ -1274,8 +1284,7 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1309,8 +1318,7 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1344,8 +1352,7 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1391,8 +1398,7 @@ void main() {
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1449,13 +1455,10 @@ void main() {
           fields: <NamedType>[
             NamedType(
               documentationComments: <String>[comments[count++]],
-              type: const TypeDeclaration(
-                  baseName: 'Map',
-                  isNullable: true,
-                  typeArguments: <TypeDeclaration>[
-                    TypeDeclaration(baseName: 'String', isNullable: true),
-                    TypeDeclaration(baseName: 'int', isNullable: true),
-                  ]),
+              type: const TypeDeclaration(baseName: 'Map', isNullable: true, typeArguments: <TypeDeclaration>[
+                TypeDeclaration(baseName: 'String', isNullable: true),
+                TypeDeclaration(baseName: 'int', isNullable: true),
+              ]),
               name: 'field1',
             ),
           ],
@@ -1464,10 +1467,7 @@ void main() {
       enums: <Enum>[
         Enum(
           name: 'enum',
-          documentationComments: <String>[
-            comments[count++],
-            unspacedComments[unspacedCount++]
-          ],
+          documentationComments: <String>[comments[count++], unspacedComments[unspacedCount++]],
           members: <EnumMember>[
             EnumMember(
               name: 'one',
@@ -1479,8 +1479,7 @@ void main() {
       ],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1491,10 +1490,7 @@ void main() {
     final String code = sink.toString();
     for (final String comment in comments) {
       // This regex finds the comment only between the open and close comment block
-      expect(
-          RegExp(r'(?<=\/\*\*.*?)' + comment + r'(?=.*?\*\/)', dotAll: true)
-              .hasMatch(code),
-          true);
+      expect(RegExp(r'(?<=\/\*\*.*?)' + comment + r'(?=.*?\*\/)', dotAll: true).hasMatch(code), true);
     }
     expect(code, isNot(contains('*//')));
   });
@@ -1519,7 +1515,7 @@ void main() {
             associatedClass: emptyClass,
             isNullable: false,
           ),
-          isAsynchronous: true,
+          asynchronousType: AsynchronousType.callback,
         )
       ])
     ], classes: <Class>[
@@ -1541,8 +1537,7 @@ void main() {
       ])
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1560,8 +1555,7 @@ void main() {
         location: ApiLocation.host,
         returnType: const TypeDeclaration.voidDeclaration(),
         parameters: <Parameter>[]);
-    final AstHostApi api =
-        AstHostApi(name: 'SomeApi', methods: <Method>[method]);
+    final AstHostApi api = AstHostApi(name: 'SomeApi', methods: <Method>[method]);
     final Root root = Root(
       apis: <Api>[api],
       classes: <Class>[],
@@ -1569,8 +1563,7 @@ void main() {
       containsHostApi: true,
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(errorClassName: 'SomeError', kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(errorClassName: 'SomeError', kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1614,8 +1607,7 @@ void main() {
       containsFlutterApi: true,
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1628,10 +1620,7 @@ void main() {
         code,
         contains(
             'return FlutterError("channel-error",  "Unable to establish connection on channel: \'\$channelName\'.", "")'));
-    expect(
-        code,
-        contains(
-            'callback(Result.failure(PigeonUtils.createConnectionError(channelName)))'));
+    expect(code, contains('callback(Result.failure(PigeonUtils.createConnectionError(channelName)))'));
   });
 
   test('gen host uses default error class', () {
@@ -1661,8 +1650,7 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1701,8 +1689,7 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1742,8 +1729,7 @@ void main() {
     );
     final StringBuffer sink = StringBuffer();
     const String errorClassName = 'FooError';
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(errorClassName: errorClassName, kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(errorClassName: errorClassName, kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1784,8 +1770,7 @@ void main() {
     );
     final StringBuffer sink = StringBuffer();
     const String errorClassName = 'FooError';
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(errorClassName: errorClassName, kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(errorClassName: errorClassName, kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1859,8 +1844,7 @@ void main() {
 
     final StringBuffer sink = StringBuffer();
     const String errorClassName = 'FooError';
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(errorClassName: errorClassName, kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(errorClassName: errorClassName, kotlinOut: '');
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1937,8 +1921,7 @@ void main() {
     );
     final StringBuffer sink = StringBuffer();
     const KotlinGenerator generator = KotlinGenerator();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     generator.generate(
       kotlinOptions,
       root,
@@ -1974,8 +1957,7 @@ void main() {
     );
     final StringBuffer sink = StringBuffer();
     const KotlinGenerator generator = KotlinGenerator();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     generator.generate(
       kotlinOptions,
       root,

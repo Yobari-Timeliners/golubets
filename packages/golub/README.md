@@ -42,7 +42,9 @@ pigeon methods can be written on the native side as synchronous methods,
 to make it simpler to always reply exactly once.
 
 If asynchronous methods are needed, the `@async` annotation can be used. This will require
-results or errors to be returned via a provided callback. [Example](./example/README.md#HostApi_Example).
+results or errors to be returned via a provided callback. [Example](./example/README.md#HostApi_Example). 
+
+If preferred, Swift concurrency and Kotlin coroutines may be generated instead of callbacks by using `@Async`. Additionally, whether the Swift method can throw an exception can be specified using the `isSwiftThrows` parameter. [Example](./example/README.md#HostApi_Example).
 
 ### Error Handling
 
