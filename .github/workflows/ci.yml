@@ -35,7 +35,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: be698c48a6750c8cb8e61c740ca9991bb947aba2
+          flutter-version: 3.27.4
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
