@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: '0 12 * * *' # Run daily at 12:00 UTC
   workflow_dispatch:
+permissions:
+  contents: write
 
 jobs:
   sync:
@@ -20,22 +22,21 @@ jobs:
           git config user.email "actions@github.com"
       - name: Clone upstream repository
         run: |
-          git clone https://github.com/flutter/packages.git upstream-temp
+          git clone https://github.com/flutter/packages.git /tmp/upstream-temp
       - name: Apply git filter-repo to upstream
         run: |
-          cd upstream-temp
-          git filter-repo --path packages/pigeon --path LICENSE --path README.md --path script --path .gitignore --path .github --path .ci --path .gitattributes --path analysis_options.yaml --path customer_testing.bat --path customer_testing.sh --path .clang-format --path .ci.yaml --path CONTRIBUTING.md --force
+          cd /tmp/upstream-temp
+          git filter-repo --path packages/pigeon --path LICENSE --path README.md --path script --path .gitignore --path .github --path .ci --path .gitattributes --path analysis_options.yaml --path customer_testing.bat --path customer_testing.sh --path .clang-format --path .ci.yaml --path CONTRIBUTING.md --path .ci/legacy_project --path script/tool --force
       - name: Debug filtered upstream commits
         run: |
-          cd upstream-temp
+          cd /tmp/upstream-temp
           git log --oneline -n 10
       - name: Add filtered upstream as remote
         run: |
-          git remote add filtered-upstream ./upstream-temp
+          git remote add filtered-upstream /tmp/upstream-temp
           git fetch filtered-upstream main
       - name: Merge filtered upstream changes
         run: |
-          git checkout main
           git merge filtered-upstream/main --allow-unrelated-histories || echo "Merge conflicts detected"
       - name: Debug post-merge status
         run: |
@@ -65,6 +66,8 @@ jobs:
               echo "Updating existing PR #$PR_NUMBER on branch $BRANCH_NAME"
               git checkout "$BRANCH_NAME" || git fetch origin "$BRANCH_NAME:$BRANCH_NAME" && git checkout "$BRANCH_NAME"
               git merge filtered-upstream/main --allow-unrelated-histories || true
+              git checkout --theirs . # Prefer filtered upstream's version for conflicts
+              git add .
               git commit -m "$COMMIT_MESSAGE" || true
               git push origin "$BRANCH_NAME"
               gh pr edit "$PR_NUMBER" --title "$PR_TITLE" --body "$PR_BODY"
@@ -82,5 +85,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Clean up temporary upstream
+        if: always()
         run: |
-          rm -rf upstream-temp
+          rm -rf /tmp/upstream-temp
