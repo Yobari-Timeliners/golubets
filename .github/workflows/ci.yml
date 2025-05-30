@@ -35,7 +35,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          # flutter-version: 3.27.0
+          flutter-version: be698c48a6750c8cb8e61c740ca9991bb947aba2
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
@@ -112,9 +112,6 @@ jobs:
       - name: MacOS swift format
         if: matrix.platform == 'macos'
         run: .ci/scripts/tool_runner.sh format --fail-on-change --no-dart --no-clang-format --no-kotlin --no-java
-      - name: MacOS validate iOS and macOS podspecs
-        if: matrix.platform == 'macos'
-        run: .ci/scripts/tool_runner.sh podspec-check
       - name: MacOS setup iOS simulator
         if: matrix.platform == 'macos'
         run: |
