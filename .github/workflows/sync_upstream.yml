@@ -21,15 +21,25 @@ jobs:
       - name: Add upstream remote
         run: |
           git remote add upstream https://github.com/flutter/packages.git || true
-          git fetch upstream
+          git fetch upstream main
+      - name: Debug upstream commits
+        run: |
+          git log upstream/main --oneline -n 10 -- packages/pigeon LICENSE README.md script .gitignore .github .ci .gitattributes analysis_options.yaml customer_testing.bat customer_testing.sh .clang-format .ci.yaml CONTRIBUTING.md
+      - name: Merge upstream changes
+        run: |
+          git checkout main
+          git merge upstream/main --allow-unrelated-histories || echo "Merge conflicts detected"
       - name: Apply git filter-repo
         run: |
           git filter-repo --path packages/golub --path LICENSE --path README.md --path script --path .gitignore --path .github --path .ci --path .gitattributes --path analysis_options.yaml --path customer_testing.bat --path customer_testing.sh --path .clang-format --path .ci.yaml --path CONTRIBUTING.md --force
+      - name: Debug git status
+        run: |
+          git status
+          git log --oneline -n 5
       - name: Create or update PR for sync
         run: |
           git add .
           if [ -n "$(git status --porcelain)" ]; then
-            # Check for existing open PR with 'sync upstream' label
             EXISTING_PR=$(gh pr list --label "sync upstream" --state open --json number,headRefName --jq '.[0] | select(.number) | .number + ":" + .headRefName' || true)
             BRANCH_NAME=""
             COMMIT_MESSAGE="Sync with upstream"
@@ -45,16 +55,16 @@ jobs:
               PR_BODY="$PR_BODY\n\nNo conflicts detected."
             fi
             if [ -n "$EXISTING_PR" ]; then
-              # Update existing PR
               PR_NUMBER=$(echo "$EXISTING_PR" | cut -d':' -f1)
               BRANCH_NAME=$(echo "$EXISTING_PR" | cut -d':' -f2)
               echo "Updating existing PR #$PR_NUMBER on branch $BRANCH_NAME"
               git checkout "$BRANCH_NAME" || git fetch origin "$BRANCH_NAME:$BRANCH_NAME" && git checkout "$BRANCH_NAME"
+              git merge upstream/main --allow-unrelated-histories || true
+              git filter-repo --path packages/golub --path LICENSE --path README.md --path script --path .gitignore --path .github --path .ci --path .gitattributes --path analysis_options.yaml --path customer_testing.bat --path customer_testing.sh --path .clang-format --path .ci.yaml --path CONTRIBUTING.md --force
               git commit -m "$COMMIT_MESSAGE" || true
               git push origin "$BRANCH_NAME"
               gh pr edit "$PR_NUMBER" --title "$PR_TITLE" --body "$PR_BODY"
             else
-              # Create new PR
               BRANCH_NAME="sync-upstream-$(date +%Y%m%d-%H%M%S)"
               echo "Creating new PR on branch $BRANCH_NAME"
               git checkout -b "$BRANCH_NAME"
