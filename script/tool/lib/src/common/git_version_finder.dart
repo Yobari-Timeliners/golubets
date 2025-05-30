@@ -99,10 +99,8 @@ class GitVersionFinder {
     }
 
     io.ProcessResult baseShaFromMergeBase = await baseGitDir.runCommand(
-      <String>['merge-base', '--fork-point', _baseBranch, 'HEAD'],
-      throwOnError: false,
-      echoOutput: true,
-    );
+        <String>['merge-base', '--fork-point', _baseBranch, 'HEAD'],
+        throwOnError: false);
     final String stdout = (baseShaFromMergeBase.stdout as String? ?? '').trim();
     final String stderr = (baseShaFromMergeBase.stderr as String? ?? '').trim();
     if (stderr.isNotEmpty || stdout.isEmpty) {
