@@ -79,11 +79,13 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-      - name: Install Windows dependencies
+      - name: Setup Windows build environment
         if: matrix.platform == 'windows'
         run: |
-          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
-          choco install llvm -y
+          cd ../platform_tests/test_plugin/example/windows
+          cmake -S . -B build -G "Visual Studio 16 2019" -A x64
+        env:
+          MSVC_PATH: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.29.30133\\bin\\Hostx64\\x64"
       - name: Setup Android emulator
         if: matrix.platform == 'linux'
         uses: reactivecircus/android-emulator-runner@v2
