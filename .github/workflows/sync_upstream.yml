@@ -16,7 +16,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch all history for proper merging
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install git-filter-repo
         run: pip install git-filter-repo
@@ -40,11 +41,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR_DATA=$(gh pr list --label "sync upstream" --state open --json number,headRefName --jq '.[0] | select(.number) | .number + ":" + .headRefName' || true)
+          echo "Checking for existing PR with label 'sync upstream' in ${{ github.repository }}"
+          PR_DATA=$(gh pr list --repo ${{ github.repository }} --label "sync upstream" --state open --json number,headRefName --jq '.[0] | select(.number) | .number + ":" + .headRefName' || true)
+          echo "PR_DATA: $PR_DATA"
           if [ -n "$PR_DATA" ]; then
+            echo "Found existing PR: $PR_DATA"
             echo "existing_pr_number=$(echo "$PR_DATA" | cut -d':' -f1)" >> $GITHUB_OUTPUT
             echo "existing_pr_branch=$(echo "$PR_DATA" | cut -d':' -f2)" >> $GITHUB_OUTPUT
           else
+            echo "No existing PR found."
             echo "existing_pr_number=" >> $GITHUB_OUTPUT
             echo "existing_pr_branch=" >> $GITHUB_OUTPUT
           fi
@@ -52,10 +57,11 @@ jobs:
       - name: Create or checkout sync branch
         run: |
           if [ -n "${{ steps.check-pr.outputs.existing_pr_branch }}" ]; then
-            echo "Using existing branch: ${{ steps.check-pr.outputs.existing_pr_branch }}"
+            echo "Checking out existing PR branch: ${{ steps.check-pr.outputs.existing_pr_branch }}"
             git checkout ${{ steps.check-pr.outputs.existing_pr_branch }}
+            git reset --hard origin/main # Reset to main before applying new changes
           else
-            echo "Creating new branch"
+            echo "Creating new branch: sync-upstream-$(date +%Y%m%d-%H%M%S)"
             git checkout -b sync-upstream-$(date +%Y%m%d-%H%M%S)
           fi
 
@@ -88,7 +94,7 @@ jobs:
             else
               git commit -m "Sync with filtered upstream flutter/packages" || true
             fi
-            git push origin HEAD
+            git push --force origin HEAD # Force push to update branch
           else
             echo "No changes to commit. Exiting."
             exit 0
@@ -109,11 +115,11 @@ jobs:
           fi
           if [ -n "${{ steps.check-pr.outputs.existing_pr_number }}" ]; then
             echo "Updating existing PR #${{ steps.check-pr.outputs.existing_pr_number }}"
-            echo -e "$PR_BODY" | gh pr edit ${{ steps.check-pr.outputs.existing_pr_number }} --title "$PR_TITLE" --body-file -
-            gh pr edit ${{ steps.check-pr.outputs.existing_pr_number }} --add-label "$PR_LABEL"
+            echo -e "$PR_BODY" | gh pr edit ${{ steps.check-pr.outputs.existing_pr_number }} --repo ${{ github.repository }} --title "$PR_TITLE" --body-file -
+            gh pr edit ${{ steps.check-pr.outputs.existing_pr_number }} --repo ${{ github.repository }} --add-label "$PR_LABEL"
           else
             echo "Creating new PR"
-            echo -e "$PR_BODY" | gh pr create --title "$PR_TITLE" --base main --head $(git rev-parse --abbrev-ref HEAD) --assignee feduke-nukem --label "$PR_LABEL" --body-file -
+            echo -e "$PR_BODY" | gh pr create --repo ${{ github.repository }} --title "$PR_TITLE" --base main --head $(git rev-parse --abbrev-ref HEAD) --assignee feduke-nukem --label "$PR_LABEL" --body-file -
           fi
 
       - name: Clean up temporary upstream
