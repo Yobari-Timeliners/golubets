@@ -63,7 +63,7 @@ jobs:
           if [ -n "${{ steps.check-pr.outputs.headRefName }}" ]; then
             echo "Checking out existing PR branch: ${{ steps.check-pr.outputs.headRefName }}"
             git checkout "${{ steps.check-pr.outputs.headRefName }}"
-            git reset --hard origin/main # Reset to main before applying new changes
+            git reset --hard origin/${{github.ref_name}} # Reset to main before applying new changes
           else
             echo "Creating new branch: sync-upstream-$(date +%Y%m%d-%H%M%S)"
             git checkout -b "sync-upstream-$(date +%Y%m%d-%H%M%S)"
