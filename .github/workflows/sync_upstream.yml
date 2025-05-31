@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: '0 12 * * *' # Run daily at 12:00 UTC
   workflow_dispatch:
+    
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
