@@ -48,10 +48,14 @@ jobs:
         run: .ci/scripts/prepare_tool.sh
       - name: download Dart deps
         run: .ci/scripts/tool_runner.sh fetch-deps
+      - name: Analyze
+        run: dart ./script/tool/bin/flutter_plugin_tools.dart analyze
       - name: tool format
         run: .ci/scripts/plugin_tools_format.sh
       - name: format
         run: .ci/scripts/tool_runner.sh format --fail-on-change --no-swift
+      - name: Dart unit tests
+        run: dart ./script/tool/bin/flutter_plugin_tools.dart dart-test 
       # TODO(feduke-nukem): re-enable when we are ready for it  
       # - name: pubspec validation
       #   run: .ci/scripts/tool_runner.sh pubspec-check --min-min-flutter-version=3.27.0 --allow-dependencies=script/configs/allowed_unpinned_deps.yaml --allow-pinned-dependencies=script/configs/allowed_pinned_deps.yaml
@@ -85,7 +89,7 @@ jobs:
           sudo apt-get install -y clang cmake ninja-build curl libgtk-3-dev libglib2.0-dev libgdk-pixbuf2.0-dev
         shell: bash
       - name: Set up Java
-        if: matrix.platform == 'linux'
+        if: matrix.platform == 'linux' || matrix.platform == 'windows'
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
@@ -93,15 +97,20 @@ jobs:
       - name: Build Linux examples
         if: matrix.platform == 'linux'
         run: .ci/scripts/tool_runner.sh build-examples --linux
-      - name: Setup Android emulator
+      - name: Run Linux integration tests
         if: matrix.platform == 'linux'
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 29
+          api-level: 34
+          target: google_apis
           arch: x86_64
           profile: pixel_4
+          ram-size: 4096M
+          disk-size: 4096M
           script: |
             adb wait-for-device
+            sleep 30
+            flutter devices
             dart run tool/run_tests.dart
           working-directory: packages/golub
 
@@ -119,7 +128,7 @@ jobs:
           .ci/scripts/boot_simulator.sh
 
 
-      - name: Run tests
+      - name: Run integration tests
         if: matrix.platform != 'linux'
         run: dart run tool/run_tests.dart
         working-directory: packages/golub
