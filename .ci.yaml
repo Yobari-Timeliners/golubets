@@ -90,11 +90,7 @@ platform_properties:
         [
           {"dependency": "ruby", "version": "ruby_3.1-pod_1.13"}
         ]
-<<<<<<< HEAD
-      os: Conflict-here
-=======
       os: Mac-14|Mac-15.5
->>>>>>> filtered-upstream/main
       device_type: none
       cpu: arm64
       $flutter/osx_sdk : >-
