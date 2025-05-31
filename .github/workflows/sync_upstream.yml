@@ -42,27 +42,32 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Checking for existing PR with label 'sync upstream' in ${{ github.repository }}"
-          PR_DATA=$(gh pr list --repo ${{ github.repository }} --label "sync upstream" --state open --json number,headRefName --jq '.[0] | select(.number) | .number + ":" + .headRefName' || true)
-          echo "PR_DATA: $PR_DATA"
+          PR_JSON=$(gh pr list --repo "${{ github.repository }}" --label "sync upstream" --state open --json number,headRefName 2>/dev/null || echo "")
+          echo "PR_JSON=$PR_JSON"
+          PR_DATA=$(echo "$PR_JSON" | jq -r '.[0] | select(.number) | "\(.number):\(.headRefName)"' 2>/dev/null || echo "")
+          echo "PR_DATA=$PR_DATA"
           if [ -n "$PR_DATA" ]; then
             echo "Found existing PR: $PR_DATA"
-            echo "existing_pr_number=$(echo "$PR_DATA" | cut -d':' -f1)" >> $GITHUB_OUTPUT
-            echo "existing_pr_branch=$(echo "$PR_DATA" | cut -d':' -f2)" >> $GITHUB_OUTPUT
+            echo "number=$(echo "$PR_DATA" | cut -d':' -f1)" >> $GITHUB_OUTPUT
+            echo "headRefName=$(echo "$PR_DATA" | cut -d':' -f2)" >> $GITHUB_OUTPUT
           else
-            echo "No existing PR found."
-            echo "existing_pr_number=" >> $GITHUB_OUTPUT
-            echo "existing_pr_branch=" >> $GITHUB_OUTPUT
+            echo "No existing PR found with label 'sync upstream'."
+            echo "Checking all PRs for debugging:"
+            gh pr list --repo "${{ github.repository }}" --state open --json number,title,labels,headRefName || echo "Failed to list PRs"
+            echo "number=" >> $GITHUB_OUTPUT
+            echo "headRefName=" >> $GITHUB_OUTPUT
           fi
 
       - name: Create or checkout sync branch
         run: |
-          if [ -n "${{ steps.check-pr.outputs.existing_pr_branch }}" ]; then
-            echo "Checking out existing PR branch: ${{ steps.check-pr.outputs.existing_pr_branch }}"
-            git checkout ${{ steps.check-pr.outputs.existing_pr_branch }}
+          if [ -n "${{ steps.check-pr.outputs.headRefName }}" ]; then
+            echo "Checking out existing PR branch: ${{ steps.check-pr.outputs.headRefName }}"
+            git checkout "${{ steps.check-pr.outputs.headRefName }}"
             git reset --hard origin/main # Reset to main before applying new changes
           else
             echo "Creating new branch: sync-upstream-$(date +%Y%m%d-%H%M%S)"
-            git checkout -b sync-upstream-$(date +%Y%m%d-%H%M%S)
+            git checkout main
+            git checkout -b "sync-upstream-$(date +%Y%m%d-%H%M%S)"
           fi
 
       - name: Add filtered upstream as remote
@@ -90,36 +95,39 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             git add .
             if [ "${{ steps.merge.outputs.conflicts_detected }}" = "true" ]; then
-              git commit -m "Sync with filtered upstream flutter/packages (conflicts detected)" || true
+              git commit -m "Sync with upstream flutter/packages (conflicts detected)" || true
             else
-              git commit -m "Sync with filtered upstream flutter/packages" || true
+              git commit -m "Sync with upstream flutter/packages" || true
             fi
-            git push --force origin HEAD # Force push to update branch
+            git push --force origin HEAD
           else
-            echo "No changes to commit. Exiting."
+            echo "No changes to commit."
             exit 0
           fi
 
-      - name: Create or update pull request
+      - name: Create or update PR
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PR_TITLE="Sync with upstream flutter/packages"
-          PR_LABEL="sync upstream"
           if [ "${{ steps.merge.outputs.conflicts_detected }}" = "true" ]; then
             PR_TITLE="$PR_TITLE (Conflicts)"
             CONFLICTED_FILES=$(echo "${{ steps.merge.outputs.conflicted_files }}" | sed 's/^/- /')
-            PR_BODY=$(echo -e "Sync with upstream flutter/packages\n\n**Conflicts detected**: Please resolve the following conflicts manually:\n$CONFLICTED_FILES\n")
+            PR_BODY=$(echo -e "Sync with upstream flutter/packages\n\n**Conflicts detected**: Please resolve conflicts manually:\n$CONFLICTED_FILES\n")
           else
-            PR_BODY=$(echo -e "Sync with upstream flutter/packages\n\nNo conflicts detected.\n")
+            PR_BODY=$(echo -e "Sync with upstream flutter/packages\n\nNo conflicts detected.")
           fi
-          if [ -n "${{ steps.check-pr.outputs.existing_pr_number }}" ]; then
-            echo "Updating existing PR #${{ steps.check-pr.outputs.existing_pr_number }}"
-            echo -e "$PR_BODY" | gh pr edit ${{ steps.check-pr.outputs.existing_pr_number }} --repo ${{ github.repository }} --title "$PR_TITLE" --body-file -
-            gh pr edit ${{ steps.check-pr.outputs.existing_pr_number }} --repo ${{ github.repository }} --add-label "$PR_LABEL"
+          if [ -n "${{ steps.check-pr.outputs.number }}" ]; then
+            echo "Updating PR #${{ steps.check-pr.outputs.number }}"
+            echo -e "$PR_BODY" | gh pr edit "${{ steps.check-pr.outputs.number }}" \
+              --repo "${{ github.repository }}" --title "$PR_TITLE" --body-file - \
+              --add-label "sync upstream"
           else
             echo "Creating new PR"
-            echo -e "$PR_BODY" | gh pr create --repo ${{ github.repository }} --title "$PR_TITLE" --base main --head $(git rev-parse --abbrev-ref HEAD) --assignee feduke-nukem --label "$PR_LABEL" --body-file -
+            echo -e "$PR_BODY" | gh pr create \
+              --repo "${{ github.repository }}" --title "$PR_TITLE" \
+              --base main --head "$(git rev-parse --abbrev-ref HEAD)" \
+              --assignee feduke-nukem --label "sync upstream" --body-file -
           fi
 
       - name: Clean up temporary upstream
