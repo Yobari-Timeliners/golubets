@@ -3,6 +3,7 @@ name: Check for Conflict Markers
 on:
   pull_request:
     branches: [main]
+    types: [opened, reopened, synchronize]
 
 permissions:
   contents: read
