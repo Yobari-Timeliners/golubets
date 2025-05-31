@@ -85,15 +85,19 @@ jobs:
         run: |
           echo "conflicted_code<<EOF" >> $GITHUB_OUTPUT
           while IFS= read -r file; do
-            if [ -f "$file" ]; then
+            if [ -f "$file" ] && grep -E '<<<<<<<|=======|>>>>>>>' "$file"; then
               EXT="${file##*.}"
               [ -z "$EXT" ] && EXT="text" # Default to text if no extension
-              echo "<details><summary>$file</summary>\n\n\`\`\`$EXT\n$(cat "$file")\n\`\`\`\n</details>" >> conflicted_code.txt
+              CONTENT=$(cat "$file" | sed 's/\\/\\\\/g; s/"/\\"/g; s/`/\\`/g')
+              echo "<details><summary>$file</summary>\n\n\`\`\`$EXT\n$CONTENT\n\`\`\`\n</details>" >> conflicted_code.txt
             fi
           done <<< "${{ steps.merge.outputs.conflicted_files }}"
-          cat conflicted_code.txt >> $GITHUB_OUTPUT
+          if [ -f conflicted_code.txt ]; then
+            cat conflicted_code.txt >> $GITHUB_OUTPUT
+          fi
           echo "EOF" >> $GITHUB_OUTPUT
           rm -f conflicted_code.txt
+        continue-on-error: true
 
       - name: Commit changes or conflicts
         run: |
@@ -126,6 +130,7 @@ jobs:
           if [ -n "${{ steps.check-pr.outputs.existing_pr_number }}" ]; then
             echo "Updating existing PR #${{ steps.check-pr.outputs.existing_pr_number }}"
             echo -e "$PR_BODY" | gh pr edit ${{ steps.check-pr.outputs.existing_pr_number }} --title "$PR_TITLE" --body-file -
+            gh pr edit ${{ steps.check-pr.outputs.existing_pr_number }} --add-label "$PR_LABEL"
           else
             echo "Creating new PR"
             echo -e "$PR_BODY" | gh pr create --title "$PR_TITLE" --base main --head $(git rev-parse --abbrev-ref HEAD) --assignee feduke-nukem --label "$PR_LABEL" --body-file -
