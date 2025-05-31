@@ -68,7 +68,7 @@ jobs:
       - name: Merge filtered upstream changes
         id: merge
         run: |
-          git merge filtered-upstream/main --no-commit || true
+          git merge filtered-upstream/main --no-commit --no-ff || true
           if git status --porcelain | grep '^UU'; then
             echo "conflicts_detected=true" >> $GITHUB_OUTPUT
           else
