@@ -1,0 +1,91 @@
+name: Sync Upstream
+
+on:
+  schedule:
+    - cron: '0 12 * * *' # Run daily at 12:00 UTC
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch full history of the fork
+      - name: Install git-filter-repo
+        run: pip install git-filter-repo
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+      - name: Clone upstream repository
+        run: |
+          git clone https://github.com/flutter/packages.git /tmp/upstream-temp
+      - name: Apply git filter-repo to upstream
+        run: |
+          cd /tmp/upstream-temp
+          git filter-repo --path packages/pigeon --path LICENSE --path README.md --path script --path .gitignore --path .github --path .ci --path .gitattributes --path analysis_options.yaml --path customer_testing.bat --path customer_testing.sh --path .clang-format --path .ci.yaml --path CONTRIBUTING.md --path .ci/legacy_project --path script/tool --force
+      - name: Debug filtered upstream commits
+        run: |
+          cd /tmp/upstream-temp
+          git log --oneline -n 10
+      - name: Add filtered upstream as remote
+        run: |
+          git remote add filtered-upstream /tmp/upstream-temp
+          git fetch filtered-upstream main
+      - name: Merge filtered upstream changes
+        run: |
+          git merge filtered-upstream/main --allow-unrelated-histories || echo "Merge conflicts detected"
+      - name: Debug post-merge status
+        run: |
+          git status
+          git log --oneline -n 5
+      - name: Create or update PR for sync
+        run: |
+          git add .
+          if [ -n "$(git status --porcelain)" ]; then
+            EXISTING_PR=$(gh pr list --label "sync upstream" --state open --json number,headRefName --jq '.[0] | select(.number) | .number + ":" + .headRefName' || true)
+            BRANCH_NAME=""
+            COMMIT_MESSAGE="Sync with filtered upstream"
+            PR_TITLE="Sync Upstream"
+            PR_BODY="Sync with filtered upstream flutter/packages."
+            if git status --porcelain | grep '^UU'; then
+              echo "Merge conflicts detected:" >> pr_body.txt
+              git status >> pr_body.txt
+              PR_BODY="$PR_BODY\n\nMerge conflicts detected. Please resolve conflicts before merging.\n\n$(cat pr_body.txt)"
+              COMMIT_MESSAGE="$COMMIT_MESSAGE (conflicts detected)"
+              PR_TITLE="$PR_TITLE (Conflicts)"
+            else
+              PR_BODY="$PR_BODY\n\nNo conflicts detected."
+            fi
+            if [ -n "$EXISTING_PR" ]; then
+              PR_NUMBER=$(echo "$EXISTING_PR" | cut -d':' -f1)
+              BRANCH_NAME=$(echo "$EXISTING_PR" | cut -d':' -f2)
+              echo "Updating existing PR #$PR_NUMBER on branch $BRANCH_NAME"
+              git checkout "$BRANCH_NAME" || git fetch origin "$BRANCH_NAME:$BRANCH_NAME" && git checkout "$BRANCH_NAME"
+              git merge filtered-upstream/main --allow-unrelated-histories || true
+              git checkout --theirs . # Prefer filtered upstream's version for conflicts
+              git add .
+              git commit -m "$COMMIT_MESSAGE" || true
+              git push origin "$BRANCH_NAME"
+              gh pr edit "$PR_NUMBER" --title "$PR_TITLE" --body "$PR_BODY"
+            else
+              BRANCH_NAME="sync-upstream-$(date +%Y%m%d-%H%M%S)"
+              echo "Creating new PR on branch $BRANCH_NAME"
+              git checkout -b "$BRANCH_NAME"
+              git commit -m "$COMMIT_MESSAGE" || true
+              git push origin "$BRANCH_NAME"
+              gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base main --head "$BRANCH_NAME" --assignee feduke-nukem --label "sync upstream"
+            fi
+          else
+            echo "No changes to commit. Skipping PR creation."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Clean up temporary upstream
+        if: always()
+        run: |
+          rm -rf /tmp/upstream-temp
