@@ -56,7 +56,6 @@ jobs:
             git checkout ${{ steps.check-pr.outputs.existing_pr_branch }}
           else
             echo "Creating new branch"
-            git checkout main
             git checkout -b sync-upstream-$(date +%Y%m%d-%H%M%S)
           fi
 
@@ -99,10 +98,10 @@ jobs:
           PR_BODY="# Sync with upstream flutter/packages\n\n"
           if [ "${{ steps.merge.outputs.conflicts_detected }}" = "true" ]; then
             PR_TITLE="$PR_TITLE (Conflicts)"
-            PR_BODY="$PR_BODY**Conflicts detected**: Please resolve conflicts manually.\n\n"
-            PR_BODY="$PR_BODY\`\`\`\n$(git status --porcelain | grep '^UU' | awk '{print $2}')\n\`\`\`"
+            PR_BODY="$PR_BODY **Conflicts detected**: Please resolve conflicts manually.\n\n"
+            PR_BODY="$PR_BODY \`\`\`\n$(git status --porcelain | grep '^UU' | awk '{print $2}')\n\`\`\`"
           else
-            PR_BODY="$PR_BODYNo conflicts detected."
+            PR_BODY="$PR_BODY No conflicts detected."
           fi
           if [ -n "${{ steps.check-pr.outputs.existing_pr_number }}" ]; then
             echo "Updating existing PR #${{ steps.check-pr.outputs.existing_pr_number }}"
