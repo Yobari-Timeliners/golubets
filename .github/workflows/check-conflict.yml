@@ -17,14 +17,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Fetch latest main and PR head
+        run: |
+          git fetch origin main:main
+          git fetch origin ${{ github.head_ref }}:pr-head
+          git checkout pr-head
+
       - name: Get changed files in PR
         id: changed-files
         run: |
-          git fetch origin main
-          CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
+          CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRTUXB origin/main..pr-head)
           echo "changed_files<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+          echo "Changed files: $CHANGED_FILES"
 
       - name: Check for conflict markers
         run: |
@@ -35,8 +41,9 @@ jobs:
           fi
           CONFLICT_FOUND=false
           while IFS= read -r file; do
-            if [ -f "$file" ] && grep -E '<<<<<<<|=======|>>>>>>>' "$file"; then
-              echo "Conflict markers found in $file"
+            if [ -f "$file" ] && grep -E '^(<<<<<<<|=======|>>>>>>> )' "$file"; then
+              echo "Conflict markers found in $file:"
+              grep -E -n '^(<<<<<<<|=======|>>>>>>> )' "$file" || true
               CONFLICT_FOUND=true
             fi
           done <<< "$CHANGED_FILES"
@@ -45,4 +52,5 @@ jobs:
             exit 1
           else
             echo "No conflict markers found."
+            exit 0
           fi
