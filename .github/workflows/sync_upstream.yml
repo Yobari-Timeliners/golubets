@@ -1,98 +1,117 @@
-name: Sync Upstream
+name: Sync with Upstream
 
 on:
   schedule:
     - cron: '0 12 * * *' # Run daily at 12:00 UTC
   workflow_dispatch:
+
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  sync:
+  sync-upstream:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Fetch all history for proper merging
+
       - name: Install git-filter-repo
         run: pip install git-filter-repo
+
       - name: Configure Git
         run: |
           git config user.name "GitHub Actions Bot"
-          git config user.email "actions@github.com"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Clone upstream repository
         run: |
           git clone https://github.com/flutter/packages.git /tmp/upstream-temp
+
       - name: Apply git filter-repo to upstream
         run: |
           cd /tmp/upstream-temp
           git filter-repo --path packages/pigeon --path LICENSE --path README.md --path script --path .gitignore --path .github --path .ci --path .gitattributes --path analysis_options.yaml --path customer_testing.bat --path customer_testing.sh --path .clang-format --path .ci.yaml --path CONTRIBUTING.md --path .ci/legacy_project --path script/tool --force
-      - name: Debug filtered upstream commits
+
+      - name: Check for existing PR
+        id: check-pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cd /tmp/upstream-temp
-          git log --oneline -n 10
+          PR_DATA=$(gh pr list --label "sync upstream" --state open --json number,headRefName --jq '.[0] | select(.number) | .number + ":" + .headRefName' || true)
+          if [ -n "$PR_DATA" ]; then
+            echo "existing_pr_number=$(echo "$PR_DATA" | cut -d':' -f1)" >> $GITHUB_OUTPUT
+            echo "existing_pr_branch=$(echo "$PR_DATA" | cut -d':' -f2)" >> $GITHUB_OUTPUT
+          else
+            echo "existing_pr_number=" >> $GITHUB_OUTPUT
+            echo "existing_pr_branch=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create or checkout sync branch
+        run: |
+          if [ -n "${{ steps.check-pr.outputs.existing_pr_branch }}" ]; then
+            echo "Using existing branch: ${{ steps.check-pr.outputs.existing_pr_branch }}"
+            git checkout ${{ steps.check-pr.outputs.existing_pr_branch }}
+          else
+            echo "Creating new branch"
+            git checkout main
+            git checkout -b sync-upstream-$(date +%Y%m%d-%H%M%S)
+          fi
+
       - name: Add filtered upstream as remote
         run: |
           git remote add filtered-upstream /tmp/upstream-temp
           git fetch filtered-upstream main
+
       - name: Merge filtered upstream changes
+        id: merge
         run: |
-          git merge filtered-upstream/main --no-ff --no-commit || echo "Merge conflicts detected"
-      - name: Stage conflicted files
-        run: |
+          git merge filtered-upstream/main --no-commit || true
           if git status --porcelain | grep '^UU'; then
-            echo "Staging conflicted files to preserve merge conflicts"
-            git status --porcelain | grep '^UU' | awk '{print $2}' | xargs git add
-            git commit -m "Merge filtered upstream with conflicts" || true
-          fi
-      - name: Debug post-merge status
-        run: |
-          git status
-          git log --oneline -n 5
-      - name: Create or update PR for sync
-        run: |
-          git add .
-          if [ -n "$(git status --porcelain)" ] || git log --merges -n 1 | grep "Merge filtered upstream with conflicts"; then
-            EXISTING_PR=$(gh pr list --label "sync upstream" --state open --json number,headRefName --jq '.[0] | select(.number) | .number + ":" + .headRefName' || true)
-            BRANCH_NAME=""
-            COMMIT_MESSAGE="Sync with filtered upstream"
-            PR_TITLE="Sync Upstream"
-            PR_BODY="Sync with filtered upstream flutter/packages."
-            if git status --porcelain | grep '^UU' || [ -f pr_body.txt ]; then
-              echo "Merge conflicts detected:" >> pr_body.txt
-              git status >> pr_body.txt
-              PR_BODY="$PR_BODY\n\nMerge conflicts detected. Please resolve conflicts before merging.\n\n$(cat pr_body.txt)"
-              COMMIT_MESSAGE="$COMMIT_MESSAGE (conflicts detected)"
-              PR_TITLE="$PR_TITLE (Conflicts)"
-            else
-              PR_BODY="$PR_BODY\n\nNo conflicts detected."
-            fi
-            if [ -n "$EXISTING_PR" ]; then
-              PR_NUMBER=$(echo "$EXISTING_PR" | cut -d':' -f1)
-              BRANCH_NAME=$(echo "$EXISTING_PR" | cut -d':' -f2)
-              echo "Updating existing PR #$PR_NUMBER on branch $BRANCH_NAME"
-              git checkout "$BRANCH_NAME" || git fetch origin "$BRANCH_NAME:$BRANCH_NAME" && git checkout "$BRANCH_NAME"
-              git merge filtered-upstream/main --no-ff --no-commit || true
-              if git status --porcelain | grep '^UU'; then
-                git status --porcelain | grep '^UU' | awk '{print $2}' | xargs git add
-                git commit -m "$COMMIT_MESSAGE" || true
-              fi
-              git push origin "$BRANCH_NAME"
-              gh pr edit "$PR_NUMBER" --title "$PR_TITLE" --body "$PR_BODY"
-            else
-              BRANCH_NAME="sync-upstream-$(date +%Y%m%d-%H%M%S)"
-              echo "Creating new PR on branch $BRANCH_NAME"
-              git checkout -b "$BRANCH_NAME"
-              git commit -m "$COMMIT_MESSAGE" || true
-              git push origin "$BRANCH_NAME"
-              gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base main --head "$BRANCH_NAME" --assignee feduke-nukem --label "sync upstream"
-            fi
+            echo "conflicts_detected=true" >> $GITHUB_OUTPUT
           else
-            echo "No changes to commit. Skipping PR creation."
+            echo "conflicts_detected=false" >> $GITHUB_OUTPUT
           fi
+        continue-on-error: true
+
+      - name: Commit changes or conflicts
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git add .
+            if [ "${{ steps.merge.outputs.conflicts_detected }}" = "true" ]; then
+              git commit -m "Sync with filtered upstream flutter/packages (conflicts detected)" || true
+            else
+              git commit -m "Sync with filtered upstream flutter/packages" || true
+            fi
+            git push origin HEAD
+          else
+            echo "No changes to commit. Exiting."
+            exit 0
+          fi
+
+      - name: Create or update pull request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_TITLE="Sync with upstream flutter/packages"
+          PR_BODY="# Sync with upstream flutter/packages\n\n"
+          if [ "${{ steps.merge.outputs.conflicts_detected }}" = "true" ]; then
+            PR_TITLE="$PR_TITLE (Conflicts)"
+            PR_BODY="$PR_BODY**Conflicts detected**: Please resolve conflicts manually.\n\n"
+            PR_BODY="$PR_BODY\`\`\`\n$(git status --porcelain | grep '^UU' | awk '{print $2}')\n\`\`\`"
+          else
+            PR_BODY="$PR_BODYNo conflicts detected."
+          fi
+          if [ -n "${{ steps.check-pr.outputs.existing_pr_number }}" ]; then
+            echo "Updating existing PR #${{ steps.check-pr.outputs.existing_pr_number }}"
+            gh pr edit ${{ steps.check-pr.outputs.existing_pr_number }} --title "$PR_TITLE" --body "$PR_BODY"
+          else
+            echo "Creating new PR"
+            gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base main --head $(git rev-parse --abbrev-ref HEAD) --assignee feduke-nukem --label "sync upstream"
+          fi
+
       - name: Clean up temporary upstream
         run: |
           rm -rf /tmp/upstream-temp
