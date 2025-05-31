@@ -1,0 +1,47 @@
+name: Check for Conflict Markers
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check-conflict-markers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files in PR
+        id: changed-files
+        run: |
+          git fetch origin main
+          CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Check for conflict markers
+        run: |
+          CHANGED_FILES="${{ steps.changed-files.outputs.changed_files }}"
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No changed files in PR."
+            exit 0
+          fi
+          CONFLICT_FOUND=false
+          while IFS= read -r file; do
+            if [ -f "$file" ] && grep -E '<<<<<<<|=======|>>>>>>>' "$file"; then
+              echo "Conflict markers found in $file"
+              CONFLICT_FOUND=true
+            fi
+          done <<< "$CHANGED_FILES"
+          if [ "$CONFLICT_FOUND" = "true" ]; then
+            echo "Error: Conflict markers detected in PR. Please resolve conflicts manually."
+            exit 1
+          else
+            echo "No conflict markers found."
+          fi

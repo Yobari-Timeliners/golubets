@@ -70,8 +70,12 @@ jobs:
           git merge filtered-upstream/main --no-commit --no-ff || true
           if git status --porcelain | grep '^UU'; then
             echo "conflicts_detected=true" >> $GITHUB_OUTPUT
+            echo "conflicted_files<<EOF" >> $GITHUB_OUTPUT
+            git status --porcelain | grep '^UU' | awk '{print $2}' >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
           else
             echo "conflicts_detected=false" >> $GITHUB_OUTPUT
+            echo "conflicted_files=" >> $GITHUB_OUTPUT
           fi
         continue-on-error: true
 
@@ -95,20 +99,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PR_TITLE="Sync with upstream flutter/packages"
-          PR_BODY="# Sync with upstream flutter/packages\n\n"
           if [ "${{ steps.merge.outputs.conflicts_detected }}" = "true" ]; then
             PR_TITLE="$PR_TITLE (Conflicts)"
-            PR_BODY="$PR_BODY **Conflicts detected**: Please resolve conflicts manually.\n\n"
-            PR_BODY="$PR_BODY \`\`\`\n$(git status --porcelain | grep '^UU' | awk '{print $2}')\n\`\`\`"
+            CONFLICTED_FILES=$(echo "${{ steps.merge.outputs.conflicted_files }}" | sed 's/^/- /')
+            PR_BODY=$(echo -e "Sync with upstream flutter/packages\n\n**Conflicts detected**: Please resolve the following conflicts manually:\n$CONFLICTED_FILES\n")
           else
-            PR_BODY="$PR_BODY No conflicts detected."
+            PR_BODY=$(echo -e "Sync with upstream flutter/packages\n\nNo conflicts detected.\n")
           fi
           if [ -n "${{ steps.check-pr.outputs.existing_pr_number }}" ]; then
             echo "Updating existing PR #${{ steps.check-pr.outputs.existing_pr_number }}"
-            gh pr edit ${{ steps.check-pr.outputs.existing_pr_number }} --title "$PR_TITLE" --body "$PR_BODY"
+            echo -e "$PR_BODY" | gh pr edit ${{ steps.check-pr.outputs.existing_pr_number }} --title "$PR_TITLE" --body-file -
           else
             echo "Creating new PR"
-            gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base main --head $(git rev-parse --abbrev-ref HEAD) --assignee feduke-nukem --label "sync upstream"
+            echo -e "$PR_BODY" | gh pr create --title "$PR_TITLE" --base main --head $(git rev-parse --abbrev-ref HEAD) --assignee feduke-nukem --label "sync upstream" --body-file -
           fi
 
       - name: Clean up temporary upstream
