@@ -60,20 +60,15 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-      - name: Verify Java version
-        if: matrix.platform == 'windows'
-        run: |
-          echo "JAVA_HOME is set to $JAVA_HOME"
-          java -version
-      - name: Setup Windows build environment
-        if: matrix.platform == 'windows'
-        run: |
-          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
-          choco install visualstudio2019community --package-parameters "--add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended" -y
-          echo "$JAVA_HOME/bin" >> $GITHUB_PATH
-          # .ci/scripts/build_examples_win32.sh
-        env:
-          MSVC_PATH: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.29.30133\\bin\\Hostx64\\x64"
+      # - name: Setup Windows build environment
+      #   if: matrix.platform == 'windows'
+      #   run: |
+      #     choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+      #     choco install visualstudio2019community --package-parameters "--add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended" -y
+      #     echo "$JAVA_HOME/bin" >> $GITHUB_PATH
+      #     # .ci/scripts/build_examples_win32.sh
+      #   env:
+      #     MSVC_PATH: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.29.30133\\bin\\Hostx64\\x64"
 
 
       - name: prepare tool
