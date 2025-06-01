@@ -60,11 +60,11 @@ jobs:
       - name: Install Windows dependencies
         if: matrix.platform == 'windows'
         run: |
-          choco install llvm --version=15.0.7 --force -y
-          echo "C:\Program Files\LLVM\bin" >> $GITHUB_PATH
-          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+          # choco install llvm --version=15.0.7 --force -y
+          # echo "C:\Program Files\LLVM\bin" >> $GITHUB_PATH
+          # choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
           choco install visualstudio2019community --package-parameters "--add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended" -y
-          pip install cmake-format
+          # pip install cmake-format
         env:
           MSVC_PATH: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.29.30133\\bin\\Hostx64\\x64"
 
@@ -78,8 +78,8 @@ jobs:
       - name: Verify clang-format version
         run: clang-format --version
         if: matrix.platform == 'linux' || matrix.platform == 'windows'
-      - name: Verify cmake-format version
-        run: cmake-format --version
+      - name: Verify cmake-make version
+        run: cmake-make --version
         if: matrix.platform == 'linux' || matrix.platform == 'windows'
 
       - name: prepare tool
@@ -139,6 +139,8 @@ jobs:
         if: matrix.platform != 'linux'
         run: dart run tool/run_tests.dart
         working-directory: packages/golub
+        env:
+          MSVC_PATH: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.29.30133\\bin\\Hostx64\\x64"
 
 
       - name: Shutdown iOS simulator
