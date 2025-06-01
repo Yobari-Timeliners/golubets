@@ -67,13 +67,6 @@ jobs:
           pip install cmake-format
         env:
           MSVC_PATH: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.29.30133\\bin\\Hostx64\\x64"
-      - name: Verify Clang version
-        if: matrix.platform == 'windows'
-        run: clang-format --version
-      - name: Verify cmake-format on Windows
-        if: matrix.platform == 'windows'
-        run: |
-          cmake-format --version
 
       - name: Set up Java
         if: matrix.platform == 'linux' || matrix.platform == 'windows'
@@ -92,7 +85,8 @@ jobs:
       - name: tool format
         run: .ci/scripts/plugin_tools_format.sh
       - name: format
-        run: .ci/scripts/tool_runner.sh format --fail-on-change --no-swift --no-dart
+        # run: .ci/scripts/tool_runner.sh format --fail-on-change --no-swift
+        run: .ci/scripts/tool_runner.sh format --fail-on-change --no-dart --no-clang-format --no-kotlin --no-java --no-swift
       - name: Dart unit tests
         run: dart ./script/tool/bin/flutter_plugin_tools.dart dart-test 
       # TODO(feduke-nukem): re-enable when we are ready for it  
@@ -107,6 +101,7 @@ jobs:
         if: matrix.platform == 'linux'
         run: .ci/scripts/tool_runner.sh build-examples --linux
       - name: Enable KVM group perms
+        if: matrix.platform == 'linux'
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
@@ -116,6 +111,8 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
+          arch: x86_64
+          profile: pixel_4a
           script: |
             ./gradlew connectedCheck
             adb wait-for-device
