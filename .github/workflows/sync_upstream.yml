@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '0 12 * * *' # Run daily at 12:00 UTC
   workflow_dispatch:
-    
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -46,6 +46,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Checking for existing PR with label 'sync upstream' in ${{ github.repository }}"
+          echo "Triggering branch: ${{ github.ref_name }}"
           PR_JSON=$(gh pr list --repo "${{ github.repository }}" --label "sync upstream" --state open --json number,headRefName 2>/dev/null || echo "")
           echo "PR_JSON=$PR_JSON"
           PR_DATA=$(echo "$PR_JSON" | jq -r '.[0] | select(.number) | "\(.number):\(.headRefName)"' 2>/dev/null || echo "")
@@ -94,6 +95,7 @@ jobs:
         continue-on-error: true
 
       - name: Commit changes or conflicts
+        id: commit
         run: |
           if [ -n "$(git status --porcelain)" ]; then
             git add .
@@ -103,12 +105,14 @@ jobs:
               git commit -m "Sync with upstream flutter/packages" || true
             fi
             git push --force origin HEAD
+            echo "committed=true" >> $GITHUB_OUTPUT
           else
             echo "No changes to commit."
-            exit 0
+            echo "committed=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Create or update PR
+        if: steps.commit.outputs.committed == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -134,5 +138,6 @@ jobs:
           fi
 
       - name: Clean up temporary upstream
+        if: always()
         run: |
           rm -rf /tmp/upstream-temp
