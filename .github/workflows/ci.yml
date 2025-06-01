@@ -92,7 +92,7 @@ jobs:
       - name: tool format
         run: .ci/scripts/plugin_tools_format.sh
       - name: format
-        run: .ci/scripts/tool_runner.sh format --fail-on-change --no-swift
+        run: .ci/scripts/tool_runner.sh format --fail-on-change --no-swift --no-dart
       - name: Dart unit tests
         run: dart ./script/tool/bin/flutter_plugin_tools.dart dart-test 
       # TODO(feduke-nukem): re-enable when we are ready for it  
@@ -106,19 +106,19 @@ jobs:
       - name: Build Linux examples
         if: matrix.platform == 'linux'
         run: .ci/scripts/tool_runner.sh build-examples --linux
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
       - name: Run Linux integration tests
         if: matrix.platform == 'linux'
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
-          target: google_apis
-          arch: x86_64
-          profile: pixel_4
-          ram-size: 4096M
-          disk-size: 4096M
           script: |
+            ./gradlew connectedCheck
             adb wait-for-device
-            sleep 30
             flutter devices
             dart run tool/run_tests.dart
           working-directory: packages/golub
