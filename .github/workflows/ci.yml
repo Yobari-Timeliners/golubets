@@ -78,8 +78,8 @@ jobs:
       - name: Verify clang-format version
         run: clang-format --version
         if: matrix.platform == 'linux' || matrix.platform == 'windows'
-      - name: Verify cmake-make version
-        run: cmake-make --version
+      - name: Verify cmake version
+        run: cmake --version
         if: matrix.platform == 'linux' || matrix.platform == 'windows'
 
       - name: prepare tool
