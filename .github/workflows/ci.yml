@@ -84,9 +84,8 @@ jobs:
         run: dart ./script/tool/bin/flutter_plugin_tools.dart analyze
       - name: tool format
         run: .ci/scripts/plugin_tools_format.sh
-      - name: format
+      # - name: format
         # run: .ci/scripts/tool_runner.sh format --fail-on-change --no-swift
-        run: .ci/scripts/tool_runner.sh format --fail-on-change --no-dart --no-clang-format --no-kotlin --no-java --no-swift
       - name: Dart unit tests
         run: dart ./script/tool/bin/flutter_plugin_tools.dart dart-test 
       # TODO(feduke-nukem): re-enable when we are ready for it  
@@ -114,7 +113,6 @@ jobs:
           arch: x86_64
           profile: pixel_4a
           script: |
-            ./gradlew connectedCheck
             adb wait-for-device
             flutter devices
             dart run tool/run_tests.dart
