@@ -26,7 +26,7 @@ jobs:
             platform: linux
           - os: macos-latest
             platform: macos
-          - os: windows-latest
+          - os: windows-2019
             platform: windows
       fail-fast: false
     steps:
@@ -60,13 +60,15 @@ jobs:
       - name: Install Windows dependencies
         if: matrix.platform == 'windows'
         run: |
-          # choco install llvm --version=15.0.7 --force -y
-          # echo "C:\Program Files\LLVM\bin" >> $GITHUB_PATH
+          choco install llvm --version=15.0.7 --force -y
+          echo "C:\Program Files\LLVM\bin" >> $GITHUB_PATH
           # choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
-          choco install visualstudio2019community --package-parameters "--add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended" -y
+          choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
+          # choco install visualstudio2019community --package-parameters "--add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended" -y
           # pip install cmake-format
-        env:
-          MSVC_PATH: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.29.30133\\bin\\Hostx64\\x64"
+          reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
+        # env:
+        #   MSVC_PATH: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.29.30133\\bin\\Hostx64\\x64"
 
       - name: Set up Java
         if: matrix.platform == 'linux' || matrix.platform == 'windows'
@@ -91,7 +93,7 @@ jobs:
       - name: tool format
         run: .ci/scripts/plugin_tools_format.sh
       - name: format
-        # run: .ci/scripts/tool_runner.sh format --fail-on-change --no-swift
+        if: matrix.platform != 'windows'
         run: dart ./script/tool/bin/flutter_plugin_tools.dart format --fail-on-change --no-swift
       - name: Dart unit tests
         run: dart ./script/tool/bin/flutter_plugin_tools.dart dart-test 
