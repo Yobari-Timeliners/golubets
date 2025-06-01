@@ -74,7 +74,13 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-
+      
+      - name: Verify clang-format version
+        run: clang-format --version
+        if: matrix.platform == 'linux' || matrix.platform == 'windows'
+      - name: Verify cmake-format version
+        run: cmake-format --version
+        if: matrix.platform == 'linux' || matrix.platform == 'windows'
 
       - name: prepare tool
         run: .ci/scripts/prepare_tool.sh
@@ -105,17 +111,14 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: Run Linux integration tests
+      - name: Run Linux tests
         if: matrix.platform == 'linux'
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
           arch: x86_64
           profile: pixel_4a
-          script: |
-            adb wait-for-device
-            flutter devices
-            dart run tool/run_tests.dart
+          script: dart run tool/run_tests.dart
           working-directory: packages/golub
 
 
@@ -132,7 +135,7 @@ jobs:
           .ci/scripts/boot_simulator.sh
 
 
-      - name: Run integration tests
+      - name: Run tests
         if: matrix.platform != 'linux'
         run: dart run tool/run_tests.dart
         working-directory: packages/golub
