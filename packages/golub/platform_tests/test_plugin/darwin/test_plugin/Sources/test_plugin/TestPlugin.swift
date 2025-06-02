@@ -29,7 +29,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     HostIntegrationCoreApiSetup.setUp(binaryMessenger: messenger, api: plugin)
     TestPluginWithSuffix.register(with: registrar, suffix: "suffixOne")
     TestPluginWithSuffix.register(with: registrar, suffix: "suffixTwo")
-    SealedClassApiSetup.setUp(binaryMessenger: registrar.messenger(), api: plugin)
+    SealedClassApiSetup.setUp(binaryMessenger: messenger, api: plugin)
     registrar.publish(plugin)
   }
 
