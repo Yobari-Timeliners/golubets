@@ -1,0 +1,123 @@
+name: Platform Checks
+
+on:
+  push:
+    branches:
+      - '**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  platform-tests:
+    name: Run Tests on ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+          - os: macos-latest
+            platform: macos
+          - os: windows-2019
+            platform: windows
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Make all scripts executable
+        run: find .ci/scripts -type f -name "*.sh" -exec chmod +x {} \;
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.27.4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - name: Install MacOS dependencies
+        if: matrix.platform == 'macos'
+        run: |
+          brew install clang-format
+          brew install swift-format
+          
+
+      - name: Install Linux dependencies
+        if: matrix.platform == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build curl libgtk-3-dev libglib2.0-dev libgdk-pixbuf2.0-dev
+
+      - name: Install Windows dependencies
+        if: matrix.platform == 'windows'
+        run: |
+          choco install llvm --version=15.0.7 --force -y
+
+      - name: Set up Java
+        if: matrix.platform == 'linux' || matrix.platform == 'windows'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      
+
+      - name: prepare tool
+        run: .ci/scripts/prepare_tool.sh
+      - name: download Dart deps
+        run: .ci/scripts/tool_runner.sh fetch-deps
+
+      
+      - name: build examples (Win32)
+        if: matrix.platform == 'windows'
+        run: .ci/scripts/build_examples_win32.sh
+
+
+      - name: Build Linux examples
+        if: matrix.platform == 'linux'
+        run: .ci/scripts/tool_runner.sh build-examples --linux
+      - name: Enable KVM group perms
+        if: matrix.platform == 'linux'
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Run Linux tests
+        if: matrix.platform == 'linux'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          profile: pixel_4a
+          script: dart run tool/run_tests.dart
+          working-directory: packages/golub
+
+
+      - name: MacOS updates pods repo
+        if: matrix.platform == 'macos'
+        run: .ci/scripts/update_pods.sh
+      - name: MacOS swift format
+        if: matrix.platform == 'macos'
+        run: .ci/scripts/tool_runner.sh format --fail-on-change --no-dart --no-clang-format --no-kotlin --no-java
+      - name: MacOS setup iOS simulator
+        if: matrix.platform == 'macos'
+        run: |
+          .ci/scripts/create_simulator.sh
+          .ci/scripts/boot_simulator.sh
+
+
+      - name: Run tests
+        if: matrix.platform != 'linux'
+        run: dart run tool/run_tests.dart
+        working-directory: packages/golub
+
+
+
+      - name: Shutdown iOS simulator
+        if: matrix.platform == 'macos'
+        run: .ci/scripts/remove_simulator.sh
+        continue-on-error: true

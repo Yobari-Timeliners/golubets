@@ -2977,6 +2977,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
           fail('Received unexpected event: $receivedEvent');
       }
     },
+    skip: !eventChannelSupported.contains(targetGenerator),
   );
 
   testWidgets(
@@ -2994,6 +2995,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
           fail('Received unexpected event: $receivedEvent');
       }
     },
+    skip: !eventChannelSupported.contains(targetGenerator),
   );
 
   testWidgets(
@@ -3011,6 +3013,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
           fail('Received unexpected event: $receivedEvent');
       }
     },
+    skip: !eventChannelSupported.contains(targetGenerator),
   );
 
   testWidgets(
@@ -3029,6 +3032,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
         }
       }
     },
+    skip: !eventChannelSupported.contains(targetGenerator),
   );
 
   testWidgets(
@@ -3046,6 +3050,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
           fail('Received unexpected event: $receivedEvent');
       }
     },
+    skip: !eventChannelSupported.contains(targetGenerator),
   );
 
   testWidgets(
@@ -3063,6 +3068,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
           fail('Received unexpected event: $receivedEvent');
       }
     },
+    skip: !eventChannelSupported.contains(targetGenerator),
   );
 
   testWidgets(
@@ -3080,6 +3086,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
           fail('Received unexpected event: $receivedEvent');
       }
     },
+    skip: !eventChannelSupported.contains(targetGenerator),
   );
 
   testWidgets(
@@ -3102,6 +3109,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
           fail('Received unexpected event: $receivedEvent');
       }
     },
+    skip: !eventChannelSupported.contains(targetGenerator),
   );
 
   testWidgets(
@@ -3112,6 +3120,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       final PlatformEvent receivedEvent = await api.echo(EmptyEvent());
       expect(receivedEvent, isA<EmptyEvent>());
     },
+    skip: !eventChannelSupported.contains(targetGenerator),
   );
 }
 
