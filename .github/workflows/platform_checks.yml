@@ -1,19 +1,19 @@
-name: CI
+name: Platform Checks
 
 on:
   push:
     branches:
-      - main
+      - '**'
   pull_request:
     branches:
-      - main
+      - '**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  ci:
+  platform-tests:
     name: Run Tests on ${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
     defaults:
@@ -55,7 +55,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y clang cmake ninja-build curl libgtk-3-dev libglib2.0-dev libgdk-pixbuf2.0-dev
-        shell: bash
 
       - name: Install Windows dependencies
         if: matrix.platform == 'windows'
@@ -75,18 +74,7 @@ jobs:
         run: .ci/scripts/prepare_tool.sh
       - name: download Dart deps
         run: .ci/scripts/tool_runner.sh fetch-deps
-      - name: Analyze
-        run: dart ./script/tool/bin/flutter_plugin_tools.dart analyze
-      - name: tool format
-        run: .ci/scripts/plugin_tools_format.sh
-      - name: format
-        run: dart ./script/tool/bin/flutter_plugin_tools.dart format --fail-on-change --no-swift
-      - name: Dart unit tests
-        run: dart ./script/tool/bin/flutter_plugin_tools.dart dart-test 
-      # TODO(feduke-nukem): re-enable when we are ready for it  
-      # - name: pubspec validation
-      #   run: .ci/scripts/tool_runner.sh pubspec-check --min-min-flutter-version=3.27.0 --allow-dependencies=script/configs/allowed_unpinned_deps.yaml --allow-pinned-dependencies=script/configs/allowed_pinned_deps.yaml
-      
+
       
       - name: build examples (Win32)
         if: matrix.platform == 'windows'
