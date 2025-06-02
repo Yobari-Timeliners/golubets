@@ -26,12 +26,15 @@ void main() {
   test('gen one class header', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[
       Class(name: 'Foobar', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'field1')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'field1')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         objcHeaderOut: '',
@@ -53,12 +56,15 @@ void main() {
   test('gen one class source', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[
       Class(name: 'Foobar', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'field1')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'field1')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -89,7 +95,8 @@ void main() {
     ]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         objcHeaderOut: '',
@@ -121,7 +128,8 @@ void main() {
     ]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         prefix: 'PREFIX',
@@ -149,7 +157,10 @@ void main() {
         Class(
           name: 'Foobar',
           fields: <NamedType>[
-            NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'field1'),
+            NamedType(
+                type:
+                    const TypeDeclaration(baseName: 'String', isNullable: true),
+                name: 'field1'),
             NamedType(
                 type: TypeDeclaration(
                   baseName: 'Enum1',
@@ -172,7 +183,8 @@ void main() {
     );
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -189,8 +201,10 @@ void main() {
     final String code = sink.toString();
     expect(code, contains('#import "foo.h"'));
     expect(code, contains('@implementation Foobar'));
-    expect(code,
-        contains('return enumAsNumber == nil ? nil : [[Enum1Box alloc] initWithValue:[enumAsNumber integerValue]];'));
+    expect(
+        code,
+        contains(
+            'return enumAsNumber == nil ? nil : [[Enum1Box alloc] initWithValue:[enumAsNumber integerValue]];'));
   });
 
   test('primitive enum host', () {
@@ -225,7 +239,8 @@ void main() {
     );
     {
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.header,
         languageOptions: options,
       );
@@ -241,7 +256,8 @@ void main() {
     }
     {
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.source,
         languageOptions: options,
       );
@@ -252,8 +268,10 @@ void main() {
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
       final String code = sink.toString();
-      expect(code,
-          contains('return enumAsNumber == nil ? nil : [[ACFooBox alloc] initWithValue:[enumAsNumber integerValue]];'));
+      expect(
+          code,
+          contains(
+              'return enumAsNumber == nil ? nil : [[ACFooBox alloc] initWithValue:[enumAsNumber integerValue]];'));
 
       expect(code, contains('ACFooBox *box = (ACFooBox *)value;'));
     }
@@ -299,7 +317,10 @@ void main() {
         Class(
           name: 'Foobar',
           fields: <NamedType>[
-            NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'field1'),
+            NamedType(
+                type:
+                    const TypeDeclaration(baseName: 'String', isNullable: true),
+                name: 'field1'),
             NamedType(
                 type: TypeDeclaration(
                   baseName: 'Enum1',
@@ -322,7 +343,8 @@ void main() {
     );
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -337,7 +359,8 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('@property(nonatomic, strong, nullable) Enum1Box * enum1;'));
+    expect(code,
+        contains('@property(nonatomic, strong, nullable) Enum1Box * enum1;'));
   });
 
   test('gen one api header', () {
@@ -363,15 +386,20 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'input')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'input')
       ]),
       Class(name: 'Output', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'output')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'output')
       ])
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         objcHeaderOut: '',
@@ -417,15 +445,20 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'input')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'input')
       ]),
       Class(name: 'Output', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'output')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'output')
       ])
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -444,26 +477,50 @@ void main() {
     expect(code, contains('@implementation Input'));
     expect(code, contains('@implementation Output'));
     expect(code, contains('SetUpApi('));
-    expect(code, contains('NSCAssert([api respondsToSelector:@selector(doSomething:error:)'));
+    expect(
+        code,
+        contains(
+            'NSCAssert([api respondsToSelector:@selector(doSomething:error:)'));
   });
 
   test('all the simple datatypes header', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[
       Class(name: 'Foobar', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'bool', isNullable: true), name: 'aBool'),
-        NamedType(type: const TypeDeclaration(baseName: 'int', isNullable: true), name: 'aInt'),
-        NamedType(type: const TypeDeclaration(baseName: 'double', isNullable: true), name: 'aDouble'),
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'aString'),
-        NamedType(type: const TypeDeclaration(baseName: 'Uint8List', isNullable: true), name: 'aUint8List'),
-        NamedType(type: const TypeDeclaration(baseName: 'Int32List', isNullable: true), name: 'aInt32List'),
-        NamedType(type: const TypeDeclaration(baseName: 'Int64List', isNullable: true), name: 'aInt64List'),
-        NamedType(type: const TypeDeclaration(baseName: 'Float64List', isNullable: true), name: 'aFloat64List'),
+        NamedType(
+            type: const TypeDeclaration(baseName: 'bool', isNullable: true),
+            name: 'aBool'),
+        NamedType(
+            type: const TypeDeclaration(baseName: 'int', isNullable: true),
+            name: 'aInt'),
+        NamedType(
+            type: const TypeDeclaration(baseName: 'double', isNullable: true),
+            name: 'aDouble'),
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'aString'),
+        NamedType(
+            type:
+                const TypeDeclaration(baseName: 'Uint8List', isNullable: true),
+            name: 'aUint8List'),
+        NamedType(
+            type:
+                const TypeDeclaration(baseName: 'Int32List', isNullable: true),
+            name: 'aInt32List'),
+        NamedType(
+            type:
+                const TypeDeclaration(baseName: 'Int64List', isNullable: true),
+            name: 'aInt64List'),
+        NamedType(
+            type: const TypeDeclaration(
+                baseName: 'Float64List', isNullable: true),
+            name: 'aFloat64List'),
       ]),
     ], enums: <Enum>[]);
 
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -484,22 +541,29 @@ void main() {
     expect(code, matches('@property.*strong.*NSNumber.*aInt'));
     expect(code, matches('@property.*strong.*NSNumber.*aDouble'));
     expect(code, matches('@property.*copy.*NSString.*aString'));
-    expect(code, matches('@property.*strong.*FlutterStandardTypedData.*aUint8List'));
-    expect(code, matches('@property.*strong.*FlutterStandardTypedData.*aInt32List'));
-    expect(code, matches('@property.*strong.*FlutterStandardTypedData.*Int64List'));
-    expect(code, matches('@property.*strong.*FlutterStandardTypedData.*Float64List'));
+    expect(code,
+        matches('@property.*strong.*FlutterStandardTypedData.*aUint8List'));
+    expect(code,
+        matches('@property.*strong.*FlutterStandardTypedData.*aInt32List'));
+    expect(code,
+        matches('@property.*strong.*FlutterStandardTypedData.*Int64List'));
+    expect(code,
+        matches('@property.*strong.*FlutterStandardTypedData.*Float64List'));
   });
 
   test('bool source', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[
       Class(name: 'Foobar', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'bool', isNullable: true), name: 'aBool'),
+        NamedType(
+            type: const TypeDeclaration(baseName: 'bool', isNullable: true),
+            name: 'aBool'),
       ]),
     ], enums: <Enum>[]);
 
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -515,13 +579,16 @@ void main() {
     );
     final String code = sink.toString();
     expect(code, contains('@implementation Foobar'));
-    expect(code, contains('pigeonResult.aBool = GetNullableObjectAtIndex(list, 0);'));
+    expect(code,
+        contains('pigeonResult.aBool = GetNullableObjectAtIndex(list, 0);'));
   });
 
   test('nested class header', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'input')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'input')
       ]),
       Class(name: 'Nested', fields: <NamedType>[
         NamedType(
@@ -535,7 +602,8 @@ void main() {
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -550,13 +618,16 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('@property(nonatomic, strong, nullable) Input * nested;'));
+    expect(code,
+        contains('@property(nonatomic, strong, nullable) Input * nested;'));
   });
 
   test('nested class source', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'input')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'input')
       ]),
       Class(name: 'Nested', fields: <NamedType>[
         NamedType(
@@ -570,7 +641,8 @@ void main() {
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -585,18 +657,22 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('pigeonResult.nested = GetNullableObjectAtIndex(list, 0);'));
+    expect(code,
+        contains('pigeonResult.nested = GetNullableObjectAtIndex(list, 0);'));
   });
 
   test('prefix class header', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[
       Class(name: 'Foobar', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'field1')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'field1')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         prefix: 'ABC',
@@ -618,12 +694,15 @@ void main() {
   test('prefix class source', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[
       Class(name: 'Foobar', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'field1')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'field1')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         prefix: 'ABC',
@@ -665,7 +744,9 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'input')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'input')
       ]),
       Class(name: 'Nested', fields: <NamedType>[
         NamedType(
@@ -679,7 +760,8 @@ void main() {
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         prefix: 'ABC',
@@ -723,7 +805,9 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'input')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'input')
       ]),
       Class(name: 'Nested', fields: <NamedType>[
         NamedType(
@@ -737,7 +821,8 @@ void main() {
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         prefix: 'ABC',
@@ -781,15 +866,20 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'input')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'input')
       ]),
       Class(name: 'Output', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'output')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'output')
       ])
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -805,7 +895,10 @@ void main() {
     );
     final String code = sink.toString();
     expect(code, contains('@interface Api : NSObject'));
-    expect(code, contains('initWithBinaryMessenger:(id<FlutterBinaryMessenger>)binaryMessenger;'));
+    expect(
+        code,
+        contains(
+            'initWithBinaryMessenger:(id<FlutterBinaryMessenger>)binaryMessenger;'));
     expect(code, matches('void.*doSomething.*Input.*Output'));
   });
 
@@ -832,15 +925,20 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'input')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'input')
       ]),
       Class(name: 'Output', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'output')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'output')
       ])
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -878,12 +976,15 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'input')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'input')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -921,12 +1022,15 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'input')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'input')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -966,12 +1070,15 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'input')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'input')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1009,12 +1116,15 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'input')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'input')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1049,12 +1159,15 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Output', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'output')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'output')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1088,12 +1201,15 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Output', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'output')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'output')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1127,12 +1243,15 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Output', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'output')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'output')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1169,12 +1288,15 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Output', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'output')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'output')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1200,12 +1322,15 @@ void main() {
   test('gen list', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[
       Class(name: 'Foobar', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'List', isNullable: true), name: 'field1')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'List', isNullable: true),
+            name: 'field1')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         objcHeaderOut: '',
@@ -1227,12 +1352,15 @@ void main() {
   test('gen map', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[
       Class(name: 'Foobar', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'Map', isNullable: true), name: 'field1')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'Map', isNullable: true),
+            name: 'field1')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         objcHeaderOut: '',
@@ -1255,16 +1383,20 @@ void main() {
     final Root root = Root(apis: <Api>[], classes: <Class>[
       Class(name: 'Foobar', fields: <NamedType>[
         NamedType(
-            type: const TypeDeclaration(baseName: 'Map', isNullable: true, typeArguments: <TypeDeclaration>[
-              TypeDeclaration(baseName: 'String', isNullable: true),
-              TypeDeclaration(baseName: 'Object', isNullable: true),
-            ]),
+            type: const TypeDeclaration(
+                baseName: 'Map',
+                isNullable: true,
+                typeArguments: <TypeDeclaration>[
+                  TypeDeclaration(baseName: 'String', isNullable: true),
+                  TypeDeclaration(baseName: 'Object', isNullable: true),
+                ]),
             name: 'field1')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         objcHeaderOut: '',
@@ -1280,7 +1412,10 @@ void main() {
     );
     final String code = sink.toString();
     expect(code, contains('@interface Foobar'));
-    expect(code, contains('@property(nonatomic, copy, nullable) NSDictionary<NSString *, id> *'));
+    expect(
+        code,
+        contains(
+            '@property(nonatomic, copy, nullable) NSDictionary<NSString *, id> *'));
   });
 
   test('gen map argument with object', () {
@@ -1293,16 +1428,20 @@ void main() {
             parameters: <Parameter>[
               Parameter(
                   name: 'foo',
-                  type: const TypeDeclaration(baseName: 'Map', isNullable: false, typeArguments: <TypeDeclaration>[
-                    TypeDeclaration(baseName: 'String', isNullable: true),
-                    TypeDeclaration(baseName: 'Object', isNullable: true),
-                  ]))
+                  type: const TypeDeclaration(
+                      baseName: 'Map',
+                      isNullable: false,
+                      typeArguments: <TypeDeclaration>[
+                        TypeDeclaration(baseName: 'String', isNullable: true),
+                        TypeDeclaration(baseName: 'Object', isNullable: true),
+                      ]))
             ]),
       ])
     ], classes: <Class>[], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         objcHeaderOut: '',
@@ -1341,15 +1480,20 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'input')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'input')
       ]),
       Class(name: 'Output', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'output')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'output')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1365,8 +1509,10 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code,
-        contains('(void)doSomethingInput:(ABCInput *)input completion:(void (^)(FlutterError *_Nullable))completion'));
+    expect(
+        code,
+        contains(
+            '(void)doSomethingInput:(ABCInput *)input completion:(void (^)(FlutterError *_Nullable))completion'));
   });
 
   test('async output(input) HostApi header', () {
@@ -1394,15 +1540,20 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'input')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'input')
       ]),
       Class(name: 'Output', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'output')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'output')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1441,12 +1592,15 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Output', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'output')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'output')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1482,7 +1636,8 @@ void main() {
     ], classes: <Class>[], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1498,7 +1653,10 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('(void)doSomethingWithCompletion:(void (^)(FlutterError *_Nullable))completion'));
+    expect(
+        code,
+        contains(
+            '(void)doSomethingWithCompletion:(void (^)(FlutterError *_Nullable))completion'));
   });
 
   test('async output(input) HostApi source', () {
@@ -1526,15 +1684,20 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'input')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'input')
       ]),
       Class(name: 'Output', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'output')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'output')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1550,8 +1713,10 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code,
-        contains('[api doSomething:arg0 completion:^(ABCOutput *_Nullable output, FlutterError *_Nullable error) {'));
+    expect(
+        code,
+        contains(
+            '[api doSomething:arg0 completion:^(ABCOutput *_Nullable output, FlutterError *_Nullable error) {'));
   });
 
   test('async void (input) HostApi source', () {
@@ -1575,15 +1740,20 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'input')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'input')
       ]),
       Class(name: 'Output', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'output')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'output')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1599,7 +1769,10 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('[api doSomethingFoo:arg_foo completion:^(FlutterError *_Nullable error) {'));
+    expect(
+        code,
+        contains(
+            '[api doSomethingFoo:arg_foo completion:^(FlutterError *_Nullable error) {'));
   });
 
   test('async void (void) HostApi source', () {
@@ -1616,7 +1789,8 @@ void main() {
     ], classes: <Class>[], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1632,7 +1806,10 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('[api doSomethingWithCompletion:^(FlutterError *_Nullable error) {'));
+    expect(
+        code,
+        contains(
+            '[api doSomethingWithCompletion:^(FlutterError *_Nullable error) {'));
   });
 
   test('async output(void) HostApi source', () {
@@ -1652,12 +1829,15 @@ void main() {
       ])
     ], classes: <Class>[
       Class(name: 'Output', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: true), name: 'output')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            name: 'output')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1673,8 +1853,10 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code,
-        contains('[api doSomethingWithCompletion:^(ABCOutput *_Nullable output, FlutterError *_Nullable error) {'));
+    expect(
+        code,
+        contains(
+            '[api doSomethingWithCompletion:^(ABCOutput *_Nullable output, FlutterError *_Nullable error) {'));
   });
 
   Iterable<String> makeIterable(String string) sync* {
@@ -1685,7 +1867,8 @@ void main() {
     final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1709,7 +1892,8 @@ void main() {
     final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1737,7 +1921,9 @@ void main() {
             type: const TypeDeclaration(
                 baseName: 'List',
                 isNullable: true,
-                typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: true)]),
+                typeArguments: <TypeDeclaration>[
+                  TypeDeclaration(baseName: 'int', isNullable: true)
+                ]),
             name: 'field1'),
       ],
     );
@@ -1748,7 +1934,8 @@ void main() {
     );
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         headerIncludePath: 'foo.h',
@@ -1780,7 +1967,9 @@ void main() {
                     type: const TypeDeclaration(
                         baseName: 'List',
                         isNullable: false,
-                        typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: true)]),
+                        typeArguments: <TypeDeclaration>[
+                          TypeDeclaration(baseName: 'int', isNullable: true)
+                        ]),
                     name: 'arg')
               ])
         ])
@@ -1791,7 +1980,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.header,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -1812,7 +2002,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.source,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -1828,7 +2019,10 @@ void main() {
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
       final String code = sink.toString();
-      expect(code, contains('NSArray<NSNumber *> *arg_arg = GetNullableObjectAtIndex(args, 0)'));
+      expect(
+          code,
+          contains(
+              'NSArray<NSNumber *> *arg_arg = GetNullableObjectAtIndex(args, 0)'));
     }
   });
 
@@ -1845,7 +2039,9 @@ void main() {
                     type: const TypeDeclaration(
                         baseName: 'List',
                         isNullable: false,
-                        typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: true)]),
+                        typeArguments: <TypeDeclaration>[
+                          TypeDeclaration(baseName: 'int', isNullable: true)
+                        ]),
                     name: 'arg')
               ])
         ])
@@ -1856,7 +2052,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.header,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -1877,7 +2074,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.source,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -1907,12 +2105,18 @@ void main() {
               returnType: const TypeDeclaration.voidDeclaration(),
               parameters: <Parameter>[
                 Parameter(
-                    type: const TypeDeclaration(baseName: 'List', isNullable: false, typeArguments: <TypeDeclaration>[
-                      TypeDeclaration(
-                          baseName: 'List',
-                          isNullable: true,
-                          typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'bool', isNullable: true)]),
-                    ]),
+                    type: const TypeDeclaration(
+                        baseName: 'List',
+                        isNullable: false,
+                        typeArguments: <TypeDeclaration>[
+                          TypeDeclaration(
+                              baseName: 'List',
+                              isNullable: true,
+                              typeArguments: <TypeDeclaration>[
+                                TypeDeclaration(
+                                    baseName: 'bool', isNullable: true)
+                              ]),
+                        ]),
                     name: 'arg')
               ])
         ])
@@ -1923,7 +2127,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.header,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -1953,7 +2158,9 @@ void main() {
               returnType: const TypeDeclaration(
                   baseName: 'List',
                   isNullable: false,
-                  typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: true)]),
+                  typeArguments: <TypeDeclaration>[
+                    TypeDeclaration(baseName: 'int', isNullable: true)
+                  ]),
               parameters: <Parameter>[])
         ])
       ],
@@ -1963,7 +2170,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.header,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -1979,12 +2187,14 @@ void main() {
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
       final String code = sink.toString();
-      expect(code, contains('- (nullable NSArray<NSNumber *> *)doitWithError:'));
+      expect(
+          code, contains('- (nullable NSArray<NSNumber *> *)doitWithError:'));
     }
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.source,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -2014,7 +2224,9 @@ void main() {
               returnType: const TypeDeclaration(
                   baseName: 'List',
                   isNullable: false,
-                  typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: true)]),
+                  typeArguments: <TypeDeclaration>[
+                    TypeDeclaration(baseName: 'int', isNullable: true)
+                  ]),
               parameters: <Parameter>[])
         ])
       ],
@@ -2024,7 +2236,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.header,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -2040,12 +2253,14 @@ void main() {
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
       final String code = sink.toString();
-      expect(code, contains('doitWithCompletion:(void (^)(NSArray<NSNumber *> *'));
+      expect(
+          code, contains('doitWithCompletion:(void (^)(NSArray<NSNumber *> *'));
     }
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.source,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -2061,7 +2276,8 @@ void main() {
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
       final String code = sink.toString();
-      expect(code, contains('doitWithCompletion:(void (^)(NSArray<NSNumber *> *'));
+      expect(
+          code, contains('doitWithCompletion:(void (^)(NSArray<NSNumber *> *'));
     }
   });
 
@@ -2072,8 +2288,14 @@ void main() {
           name: 'add',
           location: ApiLocation.host,
           parameters: <Parameter>[
-            Parameter(name: 'x', type: const TypeDeclaration(isNullable: false, baseName: 'int')),
-            Parameter(name: 'y', type: const TypeDeclaration(isNullable: false, baseName: 'int')),
+            Parameter(
+                name: 'x',
+                type:
+                    const TypeDeclaration(isNullable: false, baseName: 'int')),
+            Parameter(
+                name: 'y',
+                type:
+                    const TypeDeclaration(isNullable: false, baseName: 'int')),
           ],
           returnType: const TypeDeclaration(baseName: 'int', isNullable: false),
         )
@@ -2082,7 +2304,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.header,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -2106,7 +2329,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.source,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -2123,9 +2347,16 @@ void main() {
       );
       final String code = sink.toString();
       expect(code, contains('NSArray<id> *args = message;'));
-      expect(code, contains('NSInteger arg_x = [GetNullableObjectAtIndex(args, 0) integerValue];'));
-      expect(code, contains('NSInteger arg_y = [GetNullableObjectAtIndex(args, 1) integerValue];'));
-      expect(code, contains('NSNumber *output = [api addX:arg_x y:arg_y error:&error]'));
+      expect(
+          code,
+          contains(
+              'NSInteger arg_x = [GetNullableObjectAtIndex(args, 0) integerValue];'));
+      expect(
+          code,
+          contains(
+              'NSInteger arg_y = [GetNullableObjectAtIndex(args, 1) integerValue];'));
+      expect(code,
+          contains('NSNumber *output = [api addX:arg_x y:arg_y error:&error]'));
     }
   });
 
@@ -2136,8 +2367,14 @@ void main() {
           name: 'add',
           location: ApiLocation.host,
           parameters: <Parameter>[
-            Parameter(name: 'x', type: const TypeDeclaration(isNullable: false, baseName: 'int')),
-            Parameter(name: 'y', type: const TypeDeclaration(isNullable: false, baseName: 'int')),
+            Parameter(
+                name: 'x',
+                type:
+                    const TypeDeclaration(isNullable: false, baseName: 'int')),
+            Parameter(
+                name: 'y',
+                type:
+                    const TypeDeclaration(isNullable: false, baseName: 'int')),
           ],
           returnType: const TypeDeclaration(baseName: 'int', isNullable: false),
           asynchronousType: AsynchronousType.callback,
@@ -2147,7 +2384,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.header,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -2171,7 +2409,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.source,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -2188,8 +2427,14 @@ void main() {
       );
       final String code = sink.toString();
       expect(code, contains('NSArray<id> *args = message;'));
-      expect(code, contains('NSInteger arg_x = [GetNullableObjectAtIndex(args, 0) integerValue];'));
-      expect(code, contains('NSInteger arg_y = [GetNullableObjectAtIndex(args, 1) integerValue];'));
+      expect(
+          code,
+          contains(
+              'NSInteger arg_x = [GetNullableObjectAtIndex(args, 0) integerValue];'));
+      expect(
+          code,
+          contains(
+              'NSInteger arg_y = [GetNullableObjectAtIndex(args, 1) integerValue];'));
       expect(code, contains('[api addX:arg_x y:arg_y completion:'));
     }
   });
@@ -2201,8 +2446,14 @@ void main() {
           name: 'add',
           location: ApiLocation.flutter,
           parameters: <Parameter>[
-            Parameter(name: 'x', type: const TypeDeclaration(isNullable: false, baseName: 'int')),
-            Parameter(name: 'y', type: const TypeDeclaration(isNullable: false, baseName: 'int')),
+            Parameter(
+                name: 'x',
+                type:
+                    const TypeDeclaration(isNullable: false, baseName: 'int')),
+            Parameter(
+                name: 'y',
+                type:
+                    const TypeDeclaration(isNullable: false, baseName: 'int')),
           ],
           returnType: const TypeDeclaration(baseName: 'int', isNullable: false),
         )
@@ -2211,7 +2462,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.header,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -2235,7 +2487,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.source,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -2255,7 +2508,8 @@ void main() {
           code,
           contains(
               '- (void)addX:(NSInteger)arg_x y:(NSInteger)arg_y completion:(void (^)(NSNumber *_Nullable, FlutterError *_Nullable))completion {'));
-      expect(code, contains('[channel sendMessage:@[@(arg_x), @(arg_y)] reply:'));
+      expect(
+          code, contains('[channel sendMessage:@[@(arg_x), @(arg_y)] reply:'));
     }
   });
 
@@ -2269,15 +2523,18 @@ void main() {
                     objcSelector: 'divideValue:by:',
                     parameters: <Parameter>[
                       Parameter(
-                        type: const TypeDeclaration(baseName: 'int', isNullable: false),
+                        type: const TypeDeclaration(
+                            baseName: 'int', isNullable: false),
                         name: 'x',
                       ),
                       Parameter(
-                        type: const TypeDeclaration(baseName: 'int', isNullable: false),
+                        type: const TypeDeclaration(
+                            baseName: 'int', isNullable: false),
                         name: 'y',
                       ),
                     ],
-                    returnType: const TypeDeclaration(baseName: 'double', isNullable: false))
+                    returnType: const TypeDeclaration(
+                        baseName: 'double', isNullable: false))
               ]),
             ApiLocation.flutter => AstFlutterApi(name: 'Api', methods: <Method>[
                 Method(
@@ -2286,15 +2543,18 @@ void main() {
                     objcSelector: 'divideValue:by:',
                     parameters: <Parameter>[
                       Parameter(
-                        type: const TypeDeclaration(baseName: 'int', isNullable: false),
+                        type: const TypeDeclaration(
+                            baseName: 'int', isNullable: false),
                         name: 'x',
                       ),
                       Parameter(
-                        type: const TypeDeclaration(baseName: 'int', isNullable: false),
+                        type: const TypeDeclaration(
+                            baseName: 'int', isNullable: false),
                         name: 'y',
                       ),
                     ],
-                    returnType: const TypeDeclaration(baseName: 'double', isNullable: false))
+                    returnType: const TypeDeclaration(
+                        baseName: 'double', isNullable: false))
               ]),
           }
         ],
@@ -2307,7 +2567,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.header,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -2328,7 +2589,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.source,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -2353,7 +2615,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.header,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -2374,7 +2637,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.source,
         languageOptions: const InternalObjcOptions(
           headerIncludePath: 'foo.h',
@@ -2397,12 +2661,15 @@ void main() {
   test('test non null field', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[
       Class(name: 'Foobar', fields: <NamedType>[
-        NamedType(type: const TypeDeclaration(baseName: 'String', isNullable: false), name: 'field1')
+        NamedType(
+            type: const TypeDeclaration(baseName: 'String', isNullable: false),
+            name: 'field1')
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         objcHeaderOut: '',
@@ -2440,7 +2707,8 @@ void main() {
     );
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         objcHeaderOut: '',
@@ -2455,7 +2723,10 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, matches(r'doitWithCompletion.*void.*NSNumber \*_Nullable.*FlutterError.*completion;'));
+    expect(
+        code,
+        matches(
+            r'doitWithCompletion.*void.*NSNumber \*_Nullable.*FlutterError.*completion;'));
   });
 
   test('return nullable flutter source', () {
@@ -2477,7 +2748,8 @@ void main() {
     );
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         objcHeaderOut: '',
@@ -2514,7 +2786,8 @@ void main() {
     );
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         objcHeaderOut: '',
@@ -2556,7 +2829,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.header,
         languageOptions: const InternalObjcOptions(
           objcHeaderOut: '',
@@ -2576,7 +2850,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.source,
         languageOptions: const InternalObjcOptions(
           objcHeaderOut: '',
@@ -2591,7 +2866,8 @@ void main() {
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
       final String code = sink.toString();
-      expect(code, contains('NSNumber *arg_foo = GetNullableObjectAtIndex(args, 0);'));
+      expect(code,
+          contains('NSNumber *arg_foo = GetNullableObjectAtIndex(args, 0);'));
     }
   });
 
@@ -2619,7 +2895,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.header,
         languageOptions: const InternalObjcOptions(
           objcHeaderOut: '',
@@ -2639,7 +2916,8 @@ void main() {
     {
       final StringBuffer sink = StringBuffer();
       const ObjcGenerator generator = ObjcGenerator();
-      final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+      final OutputFileOptions<InternalObjcOptions> generatorOptions =
+          OutputFileOptions<InternalObjcOptions>(
         fileType: FileType.source,
         languageOptions: const InternalObjcOptions(
           objcHeaderOut: '',
@@ -2678,7 +2956,8 @@ void main() {
     );
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         objcHeaderOut: '',
@@ -2693,7 +2972,10 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('NSObject<FlutterTaskQueue> *taskQueue = [binaryMessenger makeBackgroundTaskQueue];'));
+    expect(
+        code,
+        contains(
+            'NSObject<FlutterTaskQueue> *taskQueue = [binaryMessenger makeBackgroundTaskQueue];'));
     expect(code, contains('taskQueue:taskQueue'));
   });
 
@@ -2742,10 +3024,13 @@ void main() {
           fields: <NamedType>[
             NamedType(
               documentationComments: <String>[comments[count++]],
-              type: const TypeDeclaration(baseName: 'Map', isNullable: true, typeArguments: <TypeDeclaration>[
-                TypeDeclaration(baseName: 'String', isNullable: true),
-                TypeDeclaration(baseName: 'int', isNullable: true),
-              ]),
+              type: const TypeDeclaration(
+                  baseName: 'Map',
+                  isNullable: true,
+                  typeArguments: <TypeDeclaration>[
+                    TypeDeclaration(baseName: 'String', isNullable: true),
+                    TypeDeclaration(baseName: 'int', isNullable: true),
+                  ]),
               name: 'field1',
             ),
           ],
@@ -2754,7 +3039,10 @@ void main() {
       enums: <Enum>[
         Enum(
           name: 'enum',
-          documentationComments: <String>[comments[count++], unspacedComments[unspacedCount++]],
+          documentationComments: <String>[
+            comments[count++],
+            unspacedComments[unspacedCount++]
+          ],
           members: <EnumMember>[
             EnumMember(
               name: 'one',
@@ -2767,7 +3055,8 @@ void main() {
     );
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         objcHeaderOut: '',
@@ -2831,7 +3120,8 @@ void main() {
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         objcHeaderOut: '',
@@ -2878,7 +3168,8 @@ void main() {
     );
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         objcHeaderOut: '',
@@ -2927,7 +3218,8 @@ void main() {
     ]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         prefix: 'FLT',
@@ -2974,7 +3266,8 @@ void main() {
     ]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         prefix: 'FLT',
@@ -3022,7 +3315,8 @@ void main() {
     ]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.header,
       languageOptions: const InternalObjcOptions(
         prefix: 'FLT',
@@ -3070,7 +3364,8 @@ void main() {
     ]);
     final StringBuffer sink = StringBuffer();
     const ObjcGenerator generator = ObjcGenerator();
-    final OutputFileOptions<InternalObjcOptions> generatorOptions = OutputFileOptions<InternalObjcOptions>(
+    final OutputFileOptions<InternalObjcOptions> generatorOptions =
+        OutputFileOptions<InternalObjcOptions>(
       fileType: FileType.source,
       languageOptions: const InternalObjcOptions(
         prefix: 'FLT',

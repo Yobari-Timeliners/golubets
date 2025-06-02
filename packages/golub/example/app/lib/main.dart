@@ -158,7 +158,8 @@ class _MyHomePageState extends State<MyHomePage> {
             if (Platform.isAndroid || Platform.isIOS)
               StreamBuilder<String>(
                 stream: getEventStream(),
-                builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
                   if (snapshot.hasData) {
                     return Text(snapshot.data ?? '');
                   } else {
@@ -171,7 +172,8 @@ class _MyHomePageState extends State<MyHomePage> {
             if (Platform.isAndroid || Platform.isIOS)
               ElevatedButton(
                 onPressed: () async {
-                  final ScaffoldMessengerState scaffoldMessenger = ScaffoldMessenger.of(context);
+                  final ScaffoldMessengerState scaffoldMessenger =
+                      ScaffoldMessenger.of(context);
                   scaffoldMessenger.hideCurrentSnackBar();
 
                   try {
@@ -199,7 +201,8 @@ class _MyHomePageState extends State<MyHomePage> {
             if (Platform.isAndroid || Platform.isIOS)
               ElevatedButton(
                 onPressed: () async {
-                  final ScaffoldMessengerState scaffoldMessenger = ScaffoldMessenger.of(context);
+                  final ScaffoldMessengerState scaffoldMessenger =
+                      ScaffoldMessenger.of(context);
                   scaffoldMessenger.hideCurrentSnackBar();
 
                   try {

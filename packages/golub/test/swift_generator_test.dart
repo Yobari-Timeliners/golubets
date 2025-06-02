@@ -39,7 +39,8 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -50,7 +51,8 @@ void main() {
     final String code = sink.toString();
     expect(code, contains('struct Foobar'));
     expect(code, contains('var field1: Int64? = nil'));
-    expect(code, contains('static func fromList(_ pigeonVar_list: [Any?]) -> Foobar?'));
+    expect(code,
+        contains('static func fromList(_ pigeonVar_list: [Any?]) -> Foobar?'));
     expect(code, contains('func toList() -> [Any?]'));
     expect(code, isNot(contains('if (')));
   });
@@ -69,7 +71,8 @@ void main() {
       enums: <Enum>[anEnum],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -108,7 +111,8 @@ void main() {
       ])
     ]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -118,7 +122,10 @@ void main() {
     );
     final String code = sink.toString();
     expect(code, contains('enum Foo: Int'));
-    expect(code, contains('let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)'));
+    expect(
+        code,
+        contains(
+            'let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)'));
     expect(code, contains('return Foo(rawValue: enumResultAsInt)'));
     expect(code, contains('let fooArg = args[0] as! Foo'));
     expect(code, isNot(contains('if (')));
@@ -165,7 +172,8 @@ void main() {
       ])
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -235,7 +243,8 @@ void main() {
     ], enums: <Enum>[]);
 
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -257,7 +266,8 @@ void main() {
   test('gen pigeon error type', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
 
     generator.generate(
@@ -271,7 +281,8 @@ void main() {
     expect(code, contains('let code: String'));
     expect(code, contains('let message: String?'));
     expect(code, contains('let details: Sendable?'));
-    expect(code, contains('init(code: String, message: String?, details: Sendable?)'));
+    expect(code,
+        contains('init(code: String, message: String?, details: Sendable?)'));
   });
 
   test('gen one flutter api', () {
@@ -315,7 +326,8 @@ void main() {
       ])
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -325,7 +337,10 @@ void main() {
     );
     final String code = sink.toString();
     expect(code, contains('class Api'));
-    expect(code, contains('init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "")'));
+    expect(
+        code,
+        contains(
+            'init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "")'));
     expect(code, matches('func doSomething.*Input.*Output'));
     expect(code, isNot(contains('if (')));
     expect(code, isNot(matches(RegExp(r';$', multiLine: true))));
@@ -360,7 +375,8 @@ void main() {
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -403,7 +419,8 @@ void main() {
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -412,7 +429,8 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('completion: @escaping (Result<Void, PigeonError>) -> Void'));
+    expect(code,
+        contains('completion: @escaping (Result<Void, PigeonError>) -> Void'));
     expect(code, contains('completion(.success(()))'));
     expect(code, isNot(contains('if (')));
   });
@@ -442,7 +460,8 @@ void main() {
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -482,7 +501,8 @@ void main() {
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -491,7 +511,10 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('func doSomething(completion: @escaping (Result<Output, PigeonError>) -> Void)'));
+    expect(
+        code,
+        contains(
+            'func doSomething(completion: @escaping (Result<Output, PigeonError>) -> Void)'));
     expect(code, contains('channel.sendMessage(nil'));
     expect(code, isNot(contains('if (')));
   });
@@ -508,7 +531,8 @@ void main() {
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -534,7 +558,8 @@ void main() {
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -578,7 +603,8 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -590,8 +616,10 @@ void main() {
     expect(code, contains('struct Outer'));
     expect(code, contains('struct Nested'));
     expect(code, contains('var nested: Nested? = nil'));
-    expect(code, contains('static func fromList(_ pigeonVar_list: [Any?]) -> Outer?'));
-    expect(code, contains('let nested: Nested? = nilOrValue(pigeonVar_list[0])'));
+    expect(code,
+        contains('static func fromList(_ pigeonVar_list: [Any?]) -> Outer?'));
+    expect(
+        code, contains('let nested: Nested? = nilOrValue(pigeonVar_list[0])'));
     expect(code, contains('func toList() -> [Any?]'));
     expect(code, isNot(contains('if (')));
     // Single-element list serializations should not have a trailing comma.
@@ -640,7 +668,8 @@ void main() {
       ])
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -699,7 +728,8 @@ void main() {
       ])
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -762,7 +792,8 @@ void main() {
       ])
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -825,7 +856,8 @@ void main() {
       ])
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -865,7 +897,8 @@ void main() {
       enums: <Enum>[anEnum],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -908,7 +941,9 @@ void main() {
             type: const TypeDeclaration(
                 baseName: 'List',
                 isNullable: true,
-                typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: true)]),
+                typeArguments: <TypeDeclaration>[
+                  TypeDeclaration(baseName: 'int', isNullable: true)
+                ]),
             name: 'field1'),
       ],
     );
@@ -918,7 +953,8 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -936,10 +972,13 @@ void main() {
       name: 'Foobar',
       fields: <NamedType>[
         NamedType(
-            type: const TypeDeclaration(baseName: 'Map', isNullable: true, typeArguments: <TypeDeclaration>[
-              TypeDeclaration(baseName: 'String', isNullable: true),
-              TypeDeclaration(baseName: 'String', isNullable: true),
-            ]),
+            type: const TypeDeclaration(
+                baseName: 'Map',
+                isNullable: true,
+                typeArguments: <TypeDeclaration>[
+                  TypeDeclaration(baseName: 'String', isNullable: true),
+                  TypeDeclaration(baseName: 'String', isNullable: true),
+                ]),
             name: 'field1'),
       ],
     );
@@ -949,7 +988,8 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -975,7 +1015,9 @@ void main() {
                     type: const TypeDeclaration(
                         baseName: 'List',
                         isNullable: false,
-                        typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: true)]),
+                        typeArguments: <TypeDeclaration>[
+                          TypeDeclaration(baseName: 'int', isNullable: true)
+                        ]),
                     name: 'arg')
               ])
         ])
@@ -984,7 +1026,8 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -1009,7 +1052,9 @@ void main() {
                     type: const TypeDeclaration(
                         baseName: 'List',
                         isNullable: false,
-                        typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: true)]),
+                        typeArguments: <TypeDeclaration>[
+                          TypeDeclaration(baseName: 'int', isNullable: true)
+                        ]),
                     name: 'arg')
               ])
         ])
@@ -1018,7 +1063,8 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -1040,7 +1086,9 @@ void main() {
               returnType: const TypeDeclaration(
                   baseName: 'List',
                   isNullable: false,
-                  typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: true)]),
+                  typeArguments: <TypeDeclaration>[
+                    TypeDeclaration(baseName: 'int', isNullable: true)
+                  ]),
               parameters: <Parameter>[])
         ])
       ],
@@ -1048,7 +1096,8 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -1072,7 +1121,9 @@ void main() {
               returnType: const TypeDeclaration(
                   baseName: 'List',
                   isNullable: false,
-                  typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: true)]),
+                  typeArguments: <TypeDeclaration>[
+                    TypeDeclaration(baseName: 'int', isNullable: true)
+                  ]),
               parameters: <Parameter>[])
         ])
       ],
@@ -1080,7 +1131,8 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -1089,7 +1141,10 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('func doit(completion: @escaping (Result<[Int64?], PigeonError>) -> Void)'));
+    expect(
+        code,
+        contains(
+            'func doit(completion: @escaping (Result<[Int64?], PigeonError>) -> Void)'));
     expect(code, contains('let result = listResponse[0] as! [Int64?]'));
     expect(code, contains('completion(.success(result))'));
   });
@@ -1101,15 +1156,22 @@ void main() {
           name: 'add',
           location: ApiLocation.host,
           parameters: <Parameter>[
-            Parameter(name: 'x', type: const TypeDeclaration(isNullable: false, baseName: 'int')),
-            Parameter(name: 'y', type: const TypeDeclaration(isNullable: false, baseName: 'int')),
+            Parameter(
+                name: 'x',
+                type:
+                    const TypeDeclaration(isNullable: false, baseName: 'int')),
+            Parameter(
+                name: 'y',
+                type:
+                    const TypeDeclaration(isNullable: false, baseName: 'int')),
           ],
           returnType: const TypeDeclaration(baseName: 'int', isNullable: false),
         )
       ])
     ], classes: <Class>[], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -1133,15 +1195,22 @@ void main() {
           name: 'add',
           location: ApiLocation.flutter,
           parameters: <Parameter>[
-            Parameter(name: 'x', type: const TypeDeclaration(baseName: 'int', isNullable: false)),
-            Parameter(name: 'y', type: const TypeDeclaration(baseName: 'int', isNullable: false)),
+            Parameter(
+                name: 'x',
+                type:
+                    const TypeDeclaration(baseName: 'int', isNullable: false)),
+            Parameter(
+                name: 'y',
+                type:
+                    const TypeDeclaration(baseName: 'int', isNullable: false)),
           ],
           returnType: const TypeDeclaration(baseName: 'int', isNullable: false),
         )
       ])
     ], classes: <Class>[], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -1153,9 +1222,12 @@ void main() {
     expect(code, contains('let channel = FlutterBasicMessageChannel'));
     expect(code, contains('let result = listResponse[0] as! Int64'));
     expect(code, contains('completion(.success(result))'));
+    expect(
+        code,
+        contains(
+            'func add(x xArg: Int64, y yArg: Int64, completion: @escaping (Result<Int64, PigeonError>) -> Void)'));
     expect(code,
-        contains('func add(x xArg: Int64, y yArg: Int64, completion: @escaping (Result<Int64, PigeonError>) -> Void)'));
-    expect(code, contains('channel.sendMessage([xArg, yArg] as [Any?]) { response in'));
+        contains('channel.sendMessage([xArg, yArg] as [Any?]) { response in'));
   });
 
   test('return nullable host', () {
@@ -1176,7 +1248,8 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -1208,7 +1281,8 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -1217,7 +1291,10 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('func doit(completion: @escaping (Result<Int64?, Error>) -> Void'));
+    expect(
+        code,
+        contains(
+            'func doit(completion: @escaping (Result<Int64?, Error>) -> Void'));
   });
 
   test('nullable argument host', () {
@@ -1242,7 +1319,8 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -1276,7 +1354,8 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -1285,7 +1364,10 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('func doit(foo fooArg: Int64?, completion: @escaping (Result<Void, PigeonError>) -> Void)'));
+    expect(
+        code,
+        contains(
+            'func doit(foo fooArg: Int64?, completion: @escaping (Result<Void, PigeonError>) -> Void)'));
   });
 
   test('nonnull fields', () {
@@ -1317,7 +1399,8 @@ void main() {
       ]),
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -1374,10 +1457,13 @@ void main() {
           fields: <NamedType>[
             NamedType(
               documentationComments: <String>[comments[count++]],
-              type: const TypeDeclaration(baseName: 'Map', isNullable: true, typeArguments: <TypeDeclaration>[
-                TypeDeclaration(baseName: 'String', isNullable: true),
-                TypeDeclaration(baseName: 'int', isNullable: true),
-              ]),
+              type: const TypeDeclaration(
+                  baseName: 'Map',
+                  isNullable: true,
+                  typeArguments: <TypeDeclaration>[
+                    TypeDeclaration(baseName: 'String', isNullable: true),
+                    TypeDeclaration(baseName: 'int', isNullable: true),
+                  ]),
               name: 'field1',
             ),
           ],
@@ -1386,7 +1472,10 @@ void main() {
       enums: <Enum>[
         Enum(
           name: 'enum',
-          documentationComments: <String>[comments[count++], unspacedComments[unspacedCount++]],
+          documentationComments: <String>[
+            comments[count++],
+            unspacedComments[unspacedCount++]
+          ],
           members: <EnumMember>[
             EnumMember(
               name: 'one',
@@ -1398,7 +1487,8 @@ void main() {
       ],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -1455,7 +1545,8 @@ void main() {
       ])
     ], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -1499,7 +1590,8 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -1536,7 +1628,8 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -1565,7 +1658,8 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -1605,7 +1699,8 @@ void main() {
       containsFlutterApi: true,
     );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions kotlinOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions kotlinOptions =
+        InternalSwiftOptions(swiftOut: '');
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       kotlinOptions,
@@ -1614,7 +1709,10 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('completion(.failure(createConnectionError(withChannelName: channelName)))'));
+    expect(
+        code,
+        contains(
+            'completion(.failure(createConnectionError(withChannelName: channelName)))'));
     expect(
         code,
         contains(
@@ -1665,7 +1763,8 @@ void main() {
     );
     final StringBuffer sink = StringBuffer();
     const SwiftGenerator generator = SwiftGenerator();
-    const InternalSwiftOptions kotlinOptions = InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions kotlinOptions =
+        InternalSwiftOptions(swiftOut: '');
     generator.generate(
       kotlinOptions,
       root,

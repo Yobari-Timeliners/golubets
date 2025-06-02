@@ -21,7 +21,8 @@ const String _docCommentContinuation = ' *';
 const String _docCommentSuffix = ' */';
 
 /// Documentation comment spec.
-const DocumentCommentSpecification _docCommentSpec = DocumentCommentSpecification(
+const DocumentCommentSpecification _docCommentSpec =
+    DocumentCommentSpecification(
   _docCommentPrefix,
   closeCommentToken: _docCommentSuffix,
   blockContinuationToken: _docCommentContinuation,
@@ -71,7 +72,8 @@ class KotlinOptions {
       copyrightHeader: map['copyrightHeader'] as Iterable<String>?,
       errorClassName: map['errorClassName'] as String?,
       includeErrorClass: map['includeErrorClass'] as bool? ?? true,
-      fileSpecificClassNameComponent: map['fileSpecificClassNameComponent'] as String?,
+      fileSpecificClassNameComponent:
+          map['fileSpecificClassNameComponent'] as String?,
     );
   }
 
@@ -83,7 +85,8 @@ class KotlinOptions {
       if (copyrightHeader != null) 'copyrightHeader': copyrightHeader!,
       if (errorClassName != null) 'errorClassName': errorClassName!,
       'includeErrorClass': includeErrorClass,
-      if (fileSpecificClassNameComponent != null) 'fileSpecificClassNameComponent': fileSpecificClassNameComponent!,
+      if (fileSpecificClassNameComponent != null)
+        'fileSpecificClassNameComponent': fileSpecificClassNameComponent!,
     };
     return result;
   }
@@ -117,7 +120,8 @@ class InternalKotlinOptions extends InternalOptions {
         errorClassName = options.errorClassName,
         includeErrorClass = options.includeErrorClass,
         fileSpecificClassNameComponent =
-            options.fileSpecificClassNameComponent ?? kotlinOut.split('/').lastOrNull?.split('.').first;
+            options.fileSpecificClassNameComponent ??
+                kotlinOut.split('/').lastOrNull?.split('.').first;
 
   /// The package where the generated class will live.
   final String? package;
@@ -211,8 +215,8 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     indent.writeln('import io.flutter.plugin.common.StandardMessageCodec');
     indent.writeln('import java.io.ByteArrayOutputStream');
     indent.writeln('import java.nio.ByteBuffer');
-    if (root.apis.any(
-        (Api api) => api.methods.any((Method it) => it.asynchronousType.isAwait && it.location == ApiLocation.host))) {
+    if (root.apis.any((Api api) => api.methods.any((Method it) =>
+        it.asynchronousType.isAwait && it.location == ApiLocation.host))) {
       indent.writeln('import kotlinx.coroutines.launch');
       indent.writeln('import kotlinx.coroutines.CoroutineScope');
       indent.writeln('import kotlinx.coroutines.Dispatchers');
@@ -229,11 +233,13 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     required String dartPackageName,
   }) {
     indent.newln();
-    addDocumentationComments(indent, anEnum.documentationComments, _docCommentSpec);
+    addDocumentationComments(
+        indent, anEnum.documentationComments, _docCommentSpec);
     indent.write('enum class ${anEnum.name}(val raw: Int) ');
     indent.addScoped('{', '}', () {
       enumerate(anEnum.members, (int index, final EnumMember member) {
-        addDocumentationComments(indent, member.documentationComments, _docCommentSpec);
+        addDocumentationComments(
+            indent, member.documentationComments, _docCommentSpec);
         final String nameScreamingSnakeCase = toScreamingSnakeCase(member.name);
         indent.write('$nameScreamingSnakeCase($index)');
         if (index != anEnum.members.length - 1) {
@@ -266,10 +272,12 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       ' Generated class from Pigeon that represents data sent in messages.'
     ];
     if (classDefinition.isSealed) {
-      generatedMessages.add(' This class should not be extended by any user class outside of the generated file.');
+      generatedMessages.add(
+          ' This class should not be extended by any user class outside of the generated file.');
     }
     indent.newln();
-    addDocumentationComments(indent, classDefinition.documentationComments, _docCommentSpec,
+    addDocumentationComments(
+        indent, classDefinition.documentationComments, _docCommentSpec,
         generatorComments: generatedMessages);
     _writeDataClassSignature(indent, classDefinition);
     if (classDefinition.isSealed) {
@@ -315,7 +323,8 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       indent.writeScoped('if (this === other) {', '}', () {
         indent.writeln('return true');
       });
-      indent.write('return ${_getUtilsClassName(generatorOptions)}.deepEquals(toList(), other.toList())');
+      indent.write(
+          'return ${_getUtilsClassName(generatorOptions)}.deepEquals(toList(), other.toList())');
     });
 
     indent.newln();
@@ -333,13 +342,16 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         : classDefinition.fields.isNotEmpty
             ? 'data'
             : '';
-    final String inheritance = classDefinition.superClass != null ? ' : ${classDefinition.superClassName}()' : '';
+    final String inheritance = classDefinition.superClass != null
+        ? ' : ${classDefinition.superClassName}()'
+        : '';
     indent.write('$privateString$classType class ${classDefinition.name} ');
     if (classDefinition.isSealed) {
       return;
     }
     indent.addScoped('(', ')$inheritance', () {
-      for (final NamedType element in getFieldsInSerializationOrder(classDefinition)) {
+      for (final NamedType element
+          in getFieldsInSerializationOrder(classDefinition)) {
         _writeClassField(indent, element);
         if (getFieldsInSerializationOrder(classDefinition).last != element) {
           indent.addln(',');
@@ -362,7 +374,8 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     indent.addScoped('{', '}', () {
       indent.write('return listOf');
       indent.addScoped('(', ')', () {
-        for (final NamedType field in getFieldsInSerializationOrder(classDefinition)) {
+        for (final NamedType field
+            in getFieldsInSerializationOrder(classDefinition)) {
           final String fieldName = field.name;
           indent.writeln('$fieldName,');
         }
@@ -386,17 +399,24 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         indent.writeln('@Suppress("UNUSED_PARAMETER")');
       }
 
-      indent.write('fun fromList(${varNamePrefix}list: List<Any?>): $className ');
+      indent
+          .write('fun fromList(${varNamePrefix}list: List<Any?>): $className ');
 
       indent.addScoped('{', '}', () {
-        enumerate(getFieldsInSerializationOrder(classDefinition), (int index, final NamedType field) {
+        enumerate(getFieldsInSerializationOrder(classDefinition),
+            (int index, final NamedType field) {
           final String listValue = '${varNamePrefix}list[$index]';
-          indent.writeln('val ${field.name} = ${_cast(indent, listValue, type: field.type)}');
+          indent.writeln(
+              'val ${field.name} = ${_cast(indent, listValue, type: field.type)}');
         });
 
         indent.write('return $className(');
-        for (final NamedType field in getFieldsInSerializationOrder(classDefinition)) {
-          final String comma = getFieldsInSerializationOrder(classDefinition).last == field ? '' : ', ';
+        for (final NamedType field
+            in getFieldsInSerializationOrder(classDefinition)) {
+          final String comma =
+              getFieldsInSerializationOrder(classDefinition).last == field
+                  ? ''
+                  : ', ';
           indent.add('${field.name}$comma');
         }
         indent.addln(')');
@@ -405,8 +425,10 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
   }
 
   void _writeClassField(Indent indent, NamedType field) {
-    addDocumentationComments(indent, field.documentationComments, _docCommentSpec);
-    indent.write('val ${field.name}: ${_nullSafeKotlinTypeForDartType(field.type)}');
+    addDocumentationComments(
+        indent, field.documentationComments, _docCommentSpec);
+    indent.write(
+        'val ${field.name}: ${_nullSafeKotlinTypeForDartType(field.type)}');
     final String defaultNil = field.type.isNullable ? ' = null' : '';
     indent.add(defaultNil);
   }
@@ -418,10 +440,13 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     Indent indent, {
     required String dartPackageName,
   }) {
-    if (root.apis.any((Api api) => api is AstHostApi && api.methods.any((Method it) => it.isAsynchronous))) {
+    if (root.apis.any((Api api) =>
+        api is AstHostApi &&
+        api.methods.any((Method it) => it.isAsynchronous))) {
       indent.newln();
     }
-    super.writeApis(generatorOptions, root, indent, dartPackageName: dartPackageName);
+    super.writeApis(generatorOptions, root, indent,
+        dartPackageName: dartPackageName);
   }
 
   @override
@@ -431,14 +456,18 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     Indent indent, {
     required String dartPackageName,
   }) {
-    final List<EnumeratedType> enumeratedTypes = getEnumeratedTypes(root, excludeSealedClasses: true).toList();
+    final List<EnumeratedType> enumeratedTypes =
+        getEnumeratedTypes(root, excludeSealedClasses: true).toList();
 
     void writeEncodeLogic(EnumeratedType customType) {
-      final String encodeString = customType.type == CustomTypes.customClass ? 'toList()' : 'raw';
-      final String valueString =
-          customType.enumeration < maximumCodecFieldKey ? 'value.$encodeString' : 'wrap.toList()';
-      final int enumeration =
-          customType.enumeration < maximumCodecFieldKey ? customType.enumeration : maximumCodecFieldKey;
+      final String encodeString =
+          customType.type == CustomTypes.customClass ? 'toList()' : 'raw';
+      final String valueString = customType.enumeration < maximumCodecFieldKey
+          ? 'value.$encodeString'
+          : 'wrap.toList()';
+      final int enumeration = customType.enumeration < maximumCodecFieldKey
+          ? customType.enumeration
+          : maximumCodecFieldKey;
       indent.writeScoped('is ${customType.name} -> {', '}', () {
         if (customType.enumeration >= maximumCodecFieldKey) {
           indent.writeln(
@@ -484,7 +513,8 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     indent.write(
         'private open class ${generatorOptions.fileSpecificClassNameComponent}$_codecName : StandardMessageCodec() ');
     indent.addScoped('{', '}', () {
-      indent.write('override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? ');
+      indent.write(
+          'override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? ');
       indent.addScoped('{', '}', () {
         indent.write('return ');
         if (root.classes.isNotEmpty || root.enums.isNotEmpty) {
@@ -505,7 +535,8 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         }
       });
 
-      indent.write('override fun writeValue(stream: ByteArrayOutputStream, value: Any?) ');
+      indent.write(
+          'override fun writeValue(stream: ByteArrayOutputStream, value: Any?) ');
       indent.writeScoped('{', '}', () {
         if (root.classes.isNotEmpty || root.enums.isNotEmpty) {
           indent.write('when (value) ');
@@ -533,16 +564,20 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     List<EnumeratedType> types, {
     required String dartPackageName,
   }) {
-    final NamedType overflowInt =
-        NamedType(name: 'type', type: const TypeDeclaration(baseName: 'int', isNullable: false));
-    final NamedType overflowObject =
-        NamedType(name: 'wrapped', type: const TypeDeclaration(baseName: 'Object', isNullable: true));
+    final NamedType overflowInt = NamedType(
+        name: 'type',
+        type: const TypeDeclaration(baseName: 'int', isNullable: false));
+    final NamedType overflowObject = NamedType(
+        name: 'wrapped',
+        type: const TypeDeclaration(baseName: 'Object', isNullable: true));
     final List<NamedType> overflowFields = <NamedType>[
       overflowInt,
       overflowObject,
     ];
-    final Class overflowClass =
-        Class(name: '${generatorOptions.fileSpecificClassNameComponent}$_overflowClassName', fields: overflowFields);
+    final Class overflowClass = Class(
+        name:
+            '${generatorOptions.fileSpecificClassNameComponent}$_overflowClassName',
+        fields: overflowFields);
 
     _writeDataClassSignature(indent, overflowClass, private: true);
     indent.addScoped(' {', '}', () {
@@ -576,9 +611,11 @@ if (wrapped == null) {
           for (int i = totalCustomCodecKeysAllowed; i < types.length; i++) {
             indent.writeScoped('${i - totalCustomCodecKeysAllowed} ->', '', () {
               if (types[i].type == CustomTypes.customClass) {
-                indent.writeln('return ${types[i].name}.fromList(wrapped as List<Any?>)');
+                indent.writeln(
+                    'return ${types[i].name}.fromList(wrapped as List<Any?>)');
               } else if (types[i].type == CustomTypes.customEnum) {
-                indent.writeln('return ${types[i].name}.ofRaw((wrapped as Long).toInt())');
+                indent.writeln(
+                    'return ${types[i].name}.ofRaw((wrapped as Long).toInt())');
               }
             });
           }
@@ -604,7 +641,8 @@ if (wrapped == null) {
     const List<String> generatedMessages = <String>[
       ' Generated class from Pigeon that represents Flutter messages that can be called from Kotlin.'
     ];
-    addDocumentationComments(indent, api.documentationComments, _docCommentSpec, generatorComments: generatedMessages);
+    addDocumentationComments(indent, api.documentationComments, _docCommentSpec,
+        generatorComments: generatedMessages);
 
     final String apiName = api.name;
     indent.write(
@@ -615,7 +653,8 @@ if (wrapped == null) {
         indent.writeln('/** The codec used by $apiName. */');
         indent.write('val codec: MessageCodec<Any?> by lazy ');
         indent.addScoped('{', '}', () {
-          indent.writeln('${generatorOptions.fileSpecificClassNameComponent}$_codecName()');
+          indent.writeln(
+              '${generatorOptions.fileSpecificClassNameComponent}$_codecName()');
         });
       });
 
@@ -676,7 +715,8 @@ if (wrapped == null) {
     const List<String> generatedMessages = <String>[
       ' Generated interface from Pigeon that represents a handler of messages from Flutter.'
     ];
-    addDocumentationComments(indent, api.documentationComments, _docCommentSpec, generatorComments: generatedMessages);
+    addDocumentationComments(indent, api.documentationComments, _docCommentSpec,
+        generatorComments: generatedMessages);
 
     indent.write('interface $apiName ');
     indent.addScoped('{', '}', () {
@@ -697,35 +737,43 @@ if (wrapped == null) {
         indent.writeln('/** The codec used by $apiName. */');
         indent.write('val codec: MessageCodec<Any?> by lazy ');
         indent.addScoped('{', '}', () {
-          indent.writeln('${generatorOptions.fileSpecificClassNameComponent}$_codecName()');
+          indent.writeln(
+              '${generatorOptions.fileSpecificClassNameComponent}$_codecName()');
         });
-        indent.writeln('/** Sets up an instance of `$apiName` to handle messages through the `binaryMessenger`. */');
+        indent.writeln(
+            '/** Sets up an instance of `$apiName` to handle messages through the `binaryMessenger`. */');
         indent.writeln('@JvmOverloads');
-        final String coroutineScope = api.methods.any((Method method) => method.asynchronousType.isAwait)
-            ? ', coroutineScope: CoroutineScope'
-            : '';
+        final String coroutineScope =
+            api.methods.any((Method method) => method.asynchronousType.isAwait)
+                ? ', coroutineScope: CoroutineScope'
+                : '';
         indent.write(
             'fun setUp(binaryMessenger: BinaryMessenger, api: $apiName?, messageChannelSuffix: String = ""$coroutineScope) ');
         indent.addScoped('{', '}', () {
           indent.writeln(
               r'val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""');
           String? serialBackgroundQueue;
-          if (api.methods.any((Method m) => m.taskQueueType == TaskQueueType.serialBackgroundThread)) {
+          if (api.methods.any((Method m) =>
+              m.taskQueueType == TaskQueueType.serialBackgroundThread)) {
             serialBackgroundQueue = 'taskQueue';
-            indent.writeln('val $serialBackgroundQueue = binaryMessenger.makeBackgroundTaskQueue()');
+            indent.writeln(
+                'val $serialBackgroundQueue = binaryMessenger.makeBackgroundTaskQueue()');
           }
           for (final Method method in api.methods) {
             _writeHostMethodMessageHandler(
               indent,
               generatorOptions: generatorOptions,
               name: method.name,
-              channelName: '${makeChannelName(api, method, dartPackageName)}\$separatedMessageChannelSuffix',
+              channelName:
+                  '${makeChannelName(api, method, dartPackageName)}\$separatedMessageChannelSuffix',
               taskQueueType: method.taskQueueType,
               parameters: method.parameters,
               returnType: method.returnType,
               asynchronousType: method.asynchronousType,
               serialBackgroundQueue:
-                  method.taskQueueType == TaskQueueType.serialBackgroundThread ? serialBackgroundQueue : null,
+                  method.taskQueueType == TaskQueueType.serialBackgroundThread
+                      ? serialBackgroundQueue
+                      : null,
             );
           }
         });
@@ -751,7 +799,8 @@ if (wrapped == null) {
     Indent indent, {
     required String dartPackageName,
   }) {
-    final String instanceManagerApiName = '${kotlinInstanceManagerClassName(generatorOptions)}Api';
+    final String instanceManagerApiName =
+        '${kotlinInstanceManagerClassName(generatorOptions)}Api';
 
     addDocumentationComments(
       indent,
@@ -798,7 +847,8 @@ if (wrapped == null) {
                 indent,
                 generatorOptions: generatorOptions,
                 name: 'removeStrongReference',
-                channelName: makeRemoveStrongReferenceChannelName(dartPackageName),
+                channelName:
+                    makeRemoveStrongReferenceChannelName(dartPackageName),
                 taskQueueType: TaskQueueType.serial,
                 parameters: <Parameter>[
                   Parameter(
@@ -863,7 +913,8 @@ if (wrapped == null) {
     Root root,
     Indent indent,
   ) {
-    final Iterable<AstProxyApi> allProxyApis = root.apis.whereType<AstProxyApi>();
+    final Iterable<AstProxyApi> allProxyApis =
+        root.apis.whereType<AstProxyApi>();
 
     _writeProxyApiRegistrar(
       indent,
@@ -889,7 +940,8 @@ if (wrapped == null) {
       allProxyApis,
       (AstProxyApi api) {
         return <AstProxyApi>[
-          if (api.superClass?.associatedProxyApi != null) api.superClass!.associatedProxyApi!,
+          if (api.superClass?.associatedProxyApi != null)
+            api.superClass!.associatedProxyApi!,
           ...api.interfaces.map(
             (TypeDeclaration interface) => interface.associatedProxyApi!,
           ),
@@ -957,10 +1009,13 @@ if (wrapped == null) {
             enumerate(
               sortedApis,
               (int index, AstProxyApi api) {
-                final String className = api.kotlinOptions?.fullClassName ?? api.name;
+                final String className =
+                    api.kotlinOptions?.fullClassName ?? api.name;
 
                 final int? minApi = api.kotlinOptions?.minAndroidApi;
-                final String versionCheck = minApi != null ? 'android.os.Build.VERSION.SDK_INT >= $minApi && ' : '';
+                final String versionCheck = minApi != null
+                    ? 'android.os.Build.VERSION.SDK_INT >= $minApi && '
+                    : '';
 
                 indent.format(
                   '''
@@ -1005,12 +1060,14 @@ if (wrapped == null) {
     );
     indent.writeln('@Suppress("UNCHECKED_CAST")');
     // The API only needs to be abstract if there are methods to override.
-    final String classModifier = api.hasMethodsRequiringImplementation() ? 'abstract' : 'open';
+    final String classModifier =
+        api.hasMethodsRequiringImplementation() ? 'abstract' : 'open';
     indent.writeScoped(
       '$classModifier class $kotlinApiName(open val pigeonRegistrar: ${proxyApiRegistrarName(generatorOptions)}) {',
       '}',
       () {
-        final String fullKotlinClassName = api.kotlinOptions?.fullClassName ?? api.name;
+        final String fullKotlinClassName =
+            api.kotlinOptions?.fullClassName ?? api.name;
 
         final TypeDeclaration apiAsTypeDeclaration = TypeDeclaration(
           baseName: api.name,
@@ -1044,7 +1101,9 @@ if (wrapped == null) {
           apiAsTypeDeclaration: apiAsTypeDeclaration,
         );
 
-        if (api.constructors.isNotEmpty || api.attachedFields.isNotEmpty || api.hostMethods.isNotEmpty) {
+        if (api.constructors.isNotEmpty ||
+            api.attachedFields.isNotEmpty ||
+            api.hostMethods.isNotEmpty) {
           indent.writeScoped('companion object {', '}', () {
             _writeProxyApiMessageHandlerMethod(
               indent,
@@ -1131,7 +1190,8 @@ if (wrapped == null) {
         }
       ''');
     }
-    addDocumentationComments(indent, api.documentationComments, _docCommentSpec);
+    addDocumentationComments(
+        indent, api.documentationComments, _docCommentSpec);
     for (final Method func in api.methods) {
       indent.format('''
         abstract class ${toUpperCamelCase(func.name)}StreamHandler : ${generatorOptions.fileSpecificClassNameComponent}PigeonEventChannelWrapper<${_kotlinTypeForDartType(func.returnType)}> {
@@ -1162,7 +1222,8 @@ if (wrapped == null) {
     indent.newln();
     indent.write('fun wrapError(exception: Throwable): List<Any?> ');
     indent.addScoped('{', '}', () {
-      indent.write('return if (exception is ${_getErrorClassName(generatorOptions)}) ');
+      indent.write(
+          'return if (exception is ${_getErrorClassName(generatorOptions)}) ');
       indent.addScoped('{', '}', () {
         indent.writeScoped('listOf(', ')', () {
           indent.writeln('exception.code,');
@@ -1174,7 +1235,8 @@ if (wrapped == null) {
         indent.writeScoped('listOf(', ')', () {
           indent.writeln('exception.javaClass.simpleName,');
           indent.writeln('exception.toString(),');
-          indent.writeln('"Cause: " + exception.cause + ", Stacktrace: " + Log.getStackTraceString(exception)');
+          indent.writeln(
+              '"Cause: " + exception.cause + ", Stacktrace: " + Log.getStackTraceString(exception)');
         });
       });
     });
@@ -1183,10 +1245,12 @@ if (wrapped == null) {
   void _writeErrorClass(InternalKotlinOptions generatorOptions, Indent indent) {
     indent.newln();
     indent.writeln('/**');
-    indent.writeln(' * Error class for passing custom error details to Flutter via a thrown PlatformException.');
+    indent.writeln(
+        ' * Error class for passing custom error details to Flutter via a thrown PlatformException.');
     indent.writeln(' * @property code The error code.');
     indent.writeln(' * @property message The error message.');
-    indent.writeln(' * @property details The error details. Must be a datatype supported by the api codec.');
+    indent.writeln(
+        ' * @property details The error details. Must be a datatype supported by the api codec.');
     indent.writeln(' */');
     indent.write('class ${_getErrorClassName(generatorOptions)} ');
     indent.addScoped('(', ')', () {
@@ -1197,10 +1261,12 @@ if (wrapped == null) {
     indent.addln(' : Throwable()');
   }
 
-  void _writeCreateConnectionError(InternalKotlinOptions generatorOptions, Indent indent) {
+  void _writeCreateConnectionError(
+      InternalKotlinOptions generatorOptions, Indent indent) {
     final String errorClassName = _getErrorClassName(generatorOptions);
     indent.newln();
-    indent.write('fun createConnectionError(channelName: String): $errorClassName ');
+    indent.write(
+        'fun createConnectionError(channelName: String): $errorClassName ');
     indent.addScoped('{', '}', () {
       indent.write(
           'return $errorClassName("channel-error",  "Unable to establish connection on channel: \'\$channelName\'.", "")');
@@ -1279,12 +1345,14 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
     int? minApiRequirement,
     bool isOpen = false,
     bool isAbstract = false,
-    String Function(int index, NamedType type) getArgumentName = _getArgumentName,
+    String Function(int index, NamedType type) getArgumentName =
+        _getArgumentName,
     AsynchronousType asynchronousType = AsynchronousType.none,
   }) {
     final List<String> argSignature = <String>[];
     if (parameters.isNotEmpty) {
-      final Iterable<String> argTypes = parameters.map((NamedType e) => _nullSafeKotlinTypeForDartType(e.type));
+      final Iterable<String> argTypes = parameters
+          .map((NamedType e) => _nullSafeKotlinTypeForDartType(e.type));
       final Iterable<String> argNames = indexMap(parameters, getArgumentName);
       argSignature.addAll(
         map2(
@@ -1297,7 +1365,8 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
       );
     }
 
-    final String returnTypeString = returnType.isVoid ? '' : _nullSafeKotlinTypeForDartType(returnType);
+    final String returnTypeString =
+        returnType.isVoid ? '' : _nullSafeKotlinTypeForDartType(returnType);
 
     final String resultType = returnType.isVoid ? 'Unit' : returnTypeString;
     addDocumentationComments(indent, documentationComments, _docCommentSpec);
@@ -1338,7 +1407,8 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
     required TypeDeclaration returnType,
     String setHandlerCondition = 'api != null',
     String? serialBackgroundQueue,
-    String Function(List<String> safeArgNames, {required String apiVarName})? onCreateCall,
+    String Function(List<String> safeArgNames, {required String apiVarName})?
+        onCreateCall,
     AsynchronousType asynchronousType = AsynchronousType.none,
   }) {
     indent.write('run ');
@@ -1365,7 +1435,8 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
             enumerate(parameters, (int index, NamedType arg) {
               final String argName = _getSafeArgumentName(index, arg);
               final String argIndex = 'args[$index]';
-              indent.writeln('val $argName = ${_castForceUnwrap(argIndex, arg.type, indent)}');
+              indent.writeln(
+                  'val $argName = ${_castForceUnwrap(argIndex, arg.type, indent)}');
               methodArguments.add(argName);
             });
           }
@@ -1374,19 +1445,24 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
               : 'api.$name(${methodArguments.join(', ')})';
 
           if (asynchronousType.isCallback) {
-            final String resultType = returnType.isVoid ? 'Unit' : _nullSafeKotlinTypeForDartType(returnType);
+            final String resultType = returnType.isVoid
+                ? 'Unit'
+                : _nullSafeKotlinTypeForDartType(returnType);
             indent.write(methodArguments.isNotEmpty ? '$call ' : 'api.$name');
             indent.addScoped('{ result: Result<$resultType> ->', '}', () {
               indent.writeln('val error = result.exceptionOrNull()');
               indent.writeScoped('if (error != null) {', '}', () {
-                indent.writeln('reply.reply(${_getUtilsClassName(generatorOptions)}.wrapError(error))');
+                indent.writeln(
+                    'reply.reply(${_getUtilsClassName(generatorOptions)}.wrapError(error))');
               }, addTrailingNewline: false);
               indent.addScoped(' else {', '}', () {
                 if (returnType.isVoid) {
-                  indent.writeln('reply.reply(${_getUtilsClassName(generatorOptions)}.wrapResult(null))');
+                  indent.writeln(
+                      'reply.reply(${_getUtilsClassName(generatorOptions)}.wrapResult(null))');
                 } else {
                   indent.writeln('val data = result.getOrNull()');
-                  indent.writeln('reply.reply(${_getUtilsClassName(generatorOptions)}.wrapResult(data))');
+                  indent.writeln(
+                      'reply.reply(${_getUtilsClassName(generatorOptions)}.wrapResult(data))');
                 }
               });
             });
@@ -1405,7 +1481,8 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
             }, addTrailingNewline: false);
             indent.add(' catch (exception: Throwable) ');
             indent.addScoped('{', '}', () {
-              indent.writeln('${_getUtilsClassName(generatorOptions)}.wrapError(exception)');
+              indent.writeln(
+                  '${_getUtilsClassName(generatorOptions)}.wrapError(exception)');
             });
             indent.writeln('reply.reply(wrapped)');
           }
@@ -1477,19 +1554,22 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
     if (parameters.isEmpty) {
       sendArgument = 'null';
     } else {
-      final Iterable<String> enumSafeArgNames =
-          indexMap(parameters, (int count, NamedType type) => _getEnumSafeArgumentExpression(count, type));
+      final Iterable<String> enumSafeArgNames = indexMap(
+          parameters,
+          (int count, NamedType type) =>
+              _getEnumSafeArgumentExpression(count, type));
       sendArgument = 'listOf(${enumSafeArgNames.join(', ')})';
     }
 
     const String channel = 'channel';
     indent.writeln('val channelName = "$channelName"');
-    indent.writeln('val $channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)');
+    indent.writeln(
+        'val $channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)');
     indent.writeScoped('$channel.send($sendArgument) {', '}', () {
       indent.writeScoped('if (it is List<*>) {', '} ', () {
         indent.writeScoped('if (it.size > 1) {', '} ', () {
-          indent
-              .writeln('callback(Result.failure($errorClassName(it[0] as String, it[1] as String, it[2] as String?)))');
+          indent.writeln(
+              'callback(Result.failure($errorClassName(it[0] as String, it[1] as String, it[2] as String?)))');
         }, addTrailingNewline: false);
         if (!returnType.isNullable && !returnType.isVoid) {
           indent.addScoped('else if (it[0] == null) {', '} ', () {
@@ -1501,7 +1581,8 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
           if (returnType.isVoid) {
             indent.writeln('callback(Result.success(Unit))');
           } else {
-            indent.writeln('val output = ${_cast(indent, 'it[0]', type: returnType)}');
+            indent.writeln(
+                'val output = ${_cast(indent, 'it[0]', type: returnType)}');
 
             indent.writeln('callback(Result.success(output))');
           }
@@ -1577,8 +1658,10 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
           _writeMethodDeclaration(
             indent,
             name: 'get$hostProxyApiPrefix${api.name}',
-            isAbstract: api.hasAnyHostMessageCalls() || api.unattachedFields.isNotEmpty,
-            isOpen: !api.hasAnyHostMessageCalls() && api.unattachedFields.isEmpty,
+            isAbstract:
+                api.hasAnyHostMessageCalls() || api.unattachedFields.isNotEmpty,
+            isOpen:
+                !api.hasAnyHostMessageCalls() && api.unattachedFields.isEmpty,
             documentationComments: <String>[
               ' An implementation of [$hostProxyApiPrefix${api.name}] used to add a new Dart instance of',
               ' `${api.name}` to the Dart `InstanceManager`.'
@@ -1605,8 +1688,9 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
             '$instanceManagerApiName.setUpMessageHandlers(binaryMessenger, instanceManager)',
           );
           for (final AstProxyApi api in allProxyApis) {
-            final bool hasHostMessageCalls =
-                api.constructors.isNotEmpty || api.attachedFields.isNotEmpty || api.hostMethods.isNotEmpty;
+            final bool hasHostMessageCalls = api.constructors.isNotEmpty ||
+                api.attachedFields.isNotEmpty ||
+                api.hostMethods.isNotEmpty;
             if (hasHostMessageCalls) {
               indent.writeln(
                 '$hostProxyApiPrefix${api.name}.setUpMessageHandlers(binaryMessenger, get$hostProxyApiPrefix${api.name}())',
@@ -1641,7 +1725,9 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
     for (final Constructor constructor in api.constructors) {
       _writeMethodDeclaration(
         indent,
-        name: constructor.name.isNotEmpty ? constructor.name : '${classMemberNamePrefix}defaultConstructor',
+        name: constructor.name.isNotEmpty
+            ? constructor.name
+            : '${classMemberNamePrefix}defaultConstructor',
         returnType: apiAsTypeDeclaration,
         documentationComments: constructor.documentationComments,
         minApiRequirement: _findAndroidHighestApiRequirement(<TypeDeclaration>[
@@ -1778,7 +1864,8 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
           required String channelName,
           required void Function() onWrite,
         }) {
-          final ({TypeDeclaration type, int version})? typeWithRequirement = _findAndroidHighestApiRequirement(types);
+          final ({TypeDeclaration type, int version})? typeWithRequirement =
+              _findAndroidHighestApiRequirement(types);
           if (typeWithRequirement != null) {
             final int apiRequirement = typeWithRequirement.version;
             indent.writeScoped(
@@ -1788,7 +1875,8 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
               addTrailingNewline: false,
             );
             indent.writeScoped(' else {', '}', () {
-              final String className = typeWithRequirement.type.associatedProxyApi!.kotlinOptions?.fullClassName ??
+              final String className = typeWithRequirement
+                      .type.associatedProxyApi!.kotlinOptions?.fullClassName ??
                   typeWithRequirement.type.baseName;
               indent.format(
                 '''
@@ -1814,8 +1902,9 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
         }
 
         for (final Constructor constructor in api.constructors) {
-          final String name =
-              constructor.name.isNotEmpty ? constructor.name : '${classMemberNamePrefix}defaultConstructor';
+          final String name = constructor.name.isNotEmpty
+              ? constructor.name
+              : '${classMemberNamePrefix}defaultConstructor';
           final String channelName = makeChannelNameWithStrings(
             apiName: api.name,
             methodName: name,
@@ -1885,7 +1974,8 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
                   List<String> methodParameters, {
                   required String apiVarName,
                 }) {
-                  final String param = methodParameters.length > 1 ? methodParameters.first : '';
+                  final String param =
+                      methodParameters.length > 1 ? methodParameters.first : '';
                   return '$apiVarName.pigeonRegistrar.instanceManager.addDartCreatedInstance('
                       '$apiVarName.${field.name}($param), ${methodParameters.last})';
                 },
@@ -1909,7 +1999,8 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
         }
 
         for (final Method method in api.hostMethods) {
-          final String channelName = makeChannelName(api, method, dartPackageName);
+          final String channelName =
+              makeChannelName(api, method, dartPackageName);
           writeWithApiCheckIfNecessary(
             <TypeDeclaration>[
               if (!method.isStatic) apiAsTypeDeclaration,
@@ -2025,7 +2116,8 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
               );
             });
 
-            indent.writeln('val binaryMessenger = pigeonRegistrar.binaryMessenger');
+            indent.writeln(
+                'val binaryMessenger = pigeonRegistrar.binaryMessenger');
             indent.writeln('val codec = pigeonRegistrar.codec');
             _writeFlutterMethodMessageCall(
               indent,
@@ -2116,7 +2208,8 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
               );
             },
           );
-          indent.writeln('val binaryMessenger = pigeonRegistrar.binaryMessenger');
+          indent
+              .writeln('val binaryMessenger = pigeonRegistrar.binaryMessenger');
           indent.writeln('val codec = pigeonRegistrar.codec');
           _writeFlutterMethodMessageCall(
             indent,
@@ -2173,7 +2266,8 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
   );
 }
 
-String _getErrorClassName(InternalKotlinOptions generatorOptions) => generatorOptions.errorClassName ?? 'FlutterError';
+String _getErrorClassName(InternalKotlinOptions generatorOptions) =>
+    generatorOptions.errorClassName ?? 'FlutterError';
 
 /// Calculates the name of the private utils class that will be generated for
 /// the file.
@@ -2183,7 +2277,8 @@ String _getUtilsClassName(InternalKotlinOptions options) {
   );
 }
 
-String _getArgumentName(int count, NamedType argument) => argument.name.isEmpty ? 'arg$count' : argument.name;
+String _getArgumentName(int count, NamedType argument) =>
+    argument.name.isEmpty ? 'arg$count' : argument.name;
 
 /// Returns an argument name that can be used in a context where it is possible to collide
 /// and append `.index` to enums.
@@ -2192,7 +2287,8 @@ String _getEnumSafeArgumentExpression(int count, NamedType argument) {
 }
 
 /// Returns an argument name that can be used in a context where it is possible to collide.
-String _getSafeArgumentName(int count, NamedType argument) => '${_getArgumentName(count, argument)}Arg';
+String _getSafeArgumentName(int count, NamedType argument) =>
+    '${_getArgumentName(count, argument)}Arg';
 
 String _castForceUnwrap(String value, TypeDeclaration type, Indent indent) {
   return _cast(indent, value, type: type);
@@ -2251,14 +2347,17 @@ String? _kotlinTypeForBuiltinDartType(TypeDeclaration type) {
 
 String? _kotlinTypeForProxyApiType(TypeDeclaration type) {
   if (type.isProxyApi) {
-    return type.associatedProxyApi!.kotlinOptions?.fullClassName ?? type.associatedProxyApi!.name;
+    return type.associatedProxyApi!.kotlinOptions?.fullClassName ??
+        type.associatedProxyApi!.name;
   }
 
   return null;
 }
 
 String _kotlinTypeForDartType(TypeDeclaration type) {
-  return _kotlinTypeForBuiltinDartType(type) ?? _kotlinTypeForProxyApiType(type) ?? type.baseName;
+  return _kotlinTypeForBuiltinDartType(type) ??
+      _kotlinTypeForProxyApiType(type) ??
+      type.baseName;
 }
 
 String _nullSafeKotlinTypeForDartType(TypeDeclaration type) {

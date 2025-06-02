@@ -111,12 +111,12 @@ func deepEqualsEventChannelTests(_ lhs: Any?, _ rhs: Any?) -> Bool {
 
 func deepHashEventChannelTests(value: Any?, hasher: inout Hasher) {
   if let valueList = value as? [AnyHashable] {
-     for item in valueList { deepHashEventChannelTests(value: item, hasher: &hasher) }
-     return
+    for item in valueList { deepHashEventChannelTests(value: item, hasher: &hasher) }
+    return
   }
 
   if let valueDict = value as? [AnyHashable: AnyHashable] {
-    for key in valueDict.keys { 
+    for key in valueDict.keys {
       hasher.combine(key)
       deepHashEventChannelTests(value: valueDict[key]!, hasher: &hasher)
     }
@@ -129,8 +129,6 @@ func deepHashEventChannelTests(value: Any?, hasher: inout Hasher) {
 
   return hasher.combine(String(describing: value))
 }
-
-    
 
 enum EventEnum: Int {
   case one = 0
@@ -245,7 +243,6 @@ class EventAllNullableTypes: Hashable {
   var mapMap: [Int64?: [AnyHashable?: Any?]?]?
   var recursiveClassMap: [Int64?: EventAllNullableTypes?]?
 
-
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ pigeonVar_list: [Any?]) -> EventAllNullableTypes? {
     let aNullableBool: Bool? = nilOrValue(pigeonVar_list[0])
@@ -350,10 +347,11 @@ class EventAllNullableTypes: Hashable {
     ]
   }
   static func == (lhs: EventAllNullableTypes, rhs: EventAllNullableTypes) -> Bool {
-    if (lhs === rhs) {
+    if lhs === rhs {
       return true
     }
-    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())  }
+    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
+  }
   func hash(into hasher: inout Hasher) {
     deepHashEventChannelTests(value: toList(), hasher: &hasher)
   }
@@ -369,7 +367,6 @@ protocol PlatformEvent {
 struct IntEvent: PlatformEvent {
   var value: Int64
 
-
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ pigeonVar_list: [Any?]) -> IntEvent? {
     let value = pigeonVar_list[0] as! Int64
@@ -384,7 +381,8 @@ struct IntEvent: PlatformEvent {
     ]
   }
   static func == (lhs: IntEvent, rhs: IntEvent) -> Bool {
-    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())  }
+    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
+  }
   func hash(into hasher: inout Hasher) {
     deepHashEventChannelTests(value: toList(), hasher: &hasher)
   }
@@ -393,7 +391,6 @@ struct IntEvent: PlatformEvent {
 /// Generated class from Pigeon that represents data sent in messages.
 struct StringEvent: PlatformEvent {
   var value: String
-
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ pigeonVar_list: [Any?]) -> StringEvent? {
@@ -409,7 +406,8 @@ struct StringEvent: PlatformEvent {
     ]
   }
   static func == (lhs: StringEvent, rhs: StringEvent) -> Bool {
-    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())  }
+    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
+  }
   func hash(into hasher: inout Hasher) {
     deepHashEventChannelTests(value: toList(), hasher: &hasher)
   }
@@ -418,7 +416,6 @@ struct StringEvent: PlatformEvent {
 /// Generated class from Pigeon that represents data sent in messages.
 struct BoolEvent: PlatformEvent {
   var value: Bool
-
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ pigeonVar_list: [Any?]) -> BoolEvent? {
@@ -434,7 +431,8 @@ struct BoolEvent: PlatformEvent {
     ]
   }
   static func == (lhs: BoolEvent, rhs: BoolEvent) -> Bool {
-    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())  }
+    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
+  }
   func hash(into hasher: inout Hasher) {
     deepHashEventChannelTests(value: toList(), hasher: &hasher)
   }
@@ -443,7 +441,6 @@ struct BoolEvent: PlatformEvent {
 /// Generated class from Pigeon that represents data sent in messages.
 struct DoubleEvent: PlatformEvent {
   var value: Double
-
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ pigeonVar_list: [Any?]) -> DoubleEvent? {
@@ -459,7 +456,8 @@ struct DoubleEvent: PlatformEvent {
     ]
   }
   static func == (lhs: DoubleEvent, rhs: DoubleEvent) -> Bool {
-    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())  }
+    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
+  }
   func hash(into hasher: inout Hasher) {
     deepHashEventChannelTests(value: toList(), hasher: &hasher)
   }
@@ -468,7 +466,6 @@ struct DoubleEvent: PlatformEvent {
 /// Generated class from Pigeon that represents data sent in messages.
 struct ObjectsEvent: PlatformEvent {
   var value: Any
-
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ pigeonVar_list: [Any?]) -> ObjectsEvent? {
@@ -484,7 +481,8 @@ struct ObjectsEvent: PlatformEvent {
     ]
   }
   static func == (lhs: ObjectsEvent, rhs: ObjectsEvent) -> Bool {
-    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())  }
+    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
+  }
   func hash(into hasher: inout Hasher) {
     deepHashEventChannelTests(value: toList(), hasher: &hasher)
   }
@@ -493,7 +491,6 @@ struct ObjectsEvent: PlatformEvent {
 /// Generated class from Pigeon that represents data sent in messages.
 struct EnumEvent: PlatformEvent {
   var value: EventEnum
-
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ pigeonVar_list: [Any?]) -> EnumEvent? {
@@ -509,7 +506,8 @@ struct EnumEvent: PlatformEvent {
     ]
   }
   static func == (lhs: EnumEvent, rhs: EnumEvent) -> Bool {
-    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())  }
+    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
+  }
   func hash(into hasher: inout Hasher) {
     deepHashEventChannelTests(value: toList(), hasher: &hasher)
   }
@@ -518,7 +516,6 @@ struct EnumEvent: PlatformEvent {
 /// Generated class from Pigeon that represents data sent in messages.
 struct ClassEvent: PlatformEvent {
   var value: EventAllNullableTypes
-
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ pigeonVar_list: [Any?]) -> ClassEvent? {
@@ -534,7 +531,8 @@ struct ClassEvent: PlatformEvent {
     ]
   }
   static func == (lhs: ClassEvent, rhs: ClassEvent) -> Bool {
-    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())  }
+    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
+  }
   func hash(into hasher: inout Hasher) {
     deepHashEventChannelTests(value: toList(), hasher: &hasher)
   }
@@ -543,19 +541,17 @@ struct ClassEvent: PlatformEvent {
 /// Generated class from Pigeon that represents data sent in messages.
 struct EmptyEvent: PlatformEvent {
 
-
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ pigeonVar_list: [Any?]) -> EmptyEvent? {
 
-    return EmptyEvent(
-    )
+    return EmptyEvent()
   }
   func toList() -> [Any?] {
-    return [
-    ]
+    return []
   }
   static func == (lhs: EmptyEvent, rhs: EmptyEvent) -> Bool {
-    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())  }
+    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
+  }
   func hash(into hasher: inout Hasher) {
     deepHashEventChannelTests(value: toList(), hasher: &hasher)
   }
@@ -652,11 +648,12 @@ private class EventChannelTestsPigeonCodecReaderWriter: FlutterStandardReaderWri
 }
 
 class EventChannelTestsPigeonCodec: FlutterStandardMessageCodec, @unchecked Sendable {
-  static let shared = EventChannelTestsPigeonCodec(readerWriter: EventChannelTestsPigeonCodecReaderWriter())
+  static let shared = EventChannelTestsPigeonCodec(
+    readerWriter: EventChannelTestsPigeonCodecReaderWriter())
 }
 
-var eventChannelTestsPigeonMethodCodec = FlutterStandardMethodCodec(readerWriter: EventChannelTestsPigeonCodecReaderWriter());
-
+var eventChannelTestsPigeonMethodCodec = FlutterStandardMethodCodec(
+  readerWriter: EventChannelTestsPigeonCodecReaderWriter())
 
 private class PigeonStreamHandler<ReturnType>: NSObject, FlutterStreamHandler {
   private let wrapper: PigeonEventChannelWrapper<ReturnType>
@@ -708,47 +705,57 @@ class PigeonEventSink<ReturnType> {
 }
 
 class StreamIntsStreamHandler: PigeonEventChannelWrapper<Int64> {
-  static func register(with messenger: FlutterBinaryMessenger,
-                      instanceName: String = "",
-                      streamHandler: StreamIntsStreamHandler) {
+  static func register(
+    with messenger: FlutterBinaryMessenger,
+    instanceName: String = "",
+    streamHandler: StreamIntsStreamHandler
+  ) {
     var channelName = "dev.flutter.pigeon.pigeon_integration_tests.EventChannelMethods.streamInts"
     if !instanceName.isEmpty {
       channelName += ".\(instanceName)"
     }
     let internalStreamHandler = PigeonStreamHandler<Int64>(wrapper: streamHandler)
-    let channel = FlutterEventChannel(name: channelName, binaryMessenger: messenger, codec: eventChannelTestsPigeonMethodCodec)
+    let channel = FlutterEventChannel(
+      name: channelName, binaryMessenger: messenger, codec: eventChannelTestsPigeonMethodCodec)
     channel.setStreamHandler(internalStreamHandler)
   }
 }
-      
+
 class StreamEventsStreamHandler: PigeonEventChannelWrapper<PlatformEvent> {
-  static func register(with messenger: FlutterBinaryMessenger,
-                      instanceName: String = "",
-                      streamHandler: StreamEventsStreamHandler) {
+  static func register(
+    with messenger: FlutterBinaryMessenger,
+    instanceName: String = "",
+    streamHandler: StreamEventsStreamHandler
+  ) {
     var channelName = "dev.flutter.pigeon.pigeon_integration_tests.EventChannelMethods.streamEvents"
     if !instanceName.isEmpty {
       channelName += ".\(instanceName)"
     }
     let internalStreamHandler = PigeonStreamHandler<PlatformEvent>(wrapper: streamHandler)
-    let channel = FlutterEventChannel(name: channelName, binaryMessenger: messenger, codec: eventChannelTestsPigeonMethodCodec)
+    let channel = FlutterEventChannel(
+      name: channelName, binaryMessenger: messenger, codec: eventChannelTestsPigeonMethodCodec)
     channel.setStreamHandler(internalStreamHandler)
   }
 }
-      
+
 class StreamConsistentNumbersStreamHandler: PigeonEventChannelWrapper<Int64> {
-  static func register(with messenger: FlutterBinaryMessenger,
-                      instanceName: String = "",
-                      streamHandler: StreamConsistentNumbersStreamHandler) {
-    var channelName = "dev.flutter.pigeon.pigeon_integration_tests.EventChannelMethods.streamConsistentNumbers"
+  static func register(
+    with messenger: FlutterBinaryMessenger,
+    instanceName: String = "",
+    streamHandler: StreamConsistentNumbersStreamHandler
+  ) {
+    var channelName =
+      "dev.flutter.pigeon.pigeon_integration_tests.EventChannelMethods.streamConsistentNumbers"
     if !instanceName.isEmpty {
       channelName += ".\(instanceName)"
     }
     let internalStreamHandler = PigeonStreamHandler<Int64>(wrapper: streamHandler)
-    let channel = FlutterEventChannel(name: channelName, binaryMessenger: messenger, codec: eventChannelTestsPigeonMethodCodec)
+    let channel = FlutterEventChannel(
+      name: channelName, binaryMessenger: messenger, codec: eventChannelTestsPigeonMethodCodec)
     channel.setStreamHandler(internalStreamHandler)
   }
 }
-      
+
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol SealedClassApi {
   func echo(event: PlatformEvent) throws -> PlatformEvent
@@ -758,14 +765,18 @@ protocol SealedClassApi {
 class SealedClassApiSetup {
   static var codec: FlutterStandardMessageCodec { EventChannelTestsPigeonCodec.shared }
   /// Sets up an instance of `SealedClassApi` to handle messages through the `binaryMessenger`.
-  static func setUp(binaryMessenger: FlutterBinaryMessenger, api: SealedClassApi?, messageChannelSuffix: String = "") {
+  static func setUp(
+    binaryMessenger: FlutterBinaryMessenger, api: SealedClassApi?, messageChannelSuffix: String = ""
+  ) {
     let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
-    let echoChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.pigeon_integration_tests.SealedClassApi.echo\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    let echoChannel = FlutterBasicMessageChannel(
+      name: "dev.flutter.pigeon.pigeon_integration_tests.SealedClassApi.echo\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let eventArg = args[0] as! PlatformEvent
-        do         {
+        do {
           let result = try api.echo(event: eventArg)
           reply(wrapResult(result))
         } catch {

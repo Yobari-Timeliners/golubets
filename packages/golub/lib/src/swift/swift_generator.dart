@@ -16,7 +16,8 @@ import 'templates.dart';
 const String _docCommentPrefix = '///';
 
 /// Documentation comment spec.
-const DocumentCommentSpecification _docCommentSpec = DocumentCommentSpecification(_docCommentPrefix);
+const DocumentCommentSpecification _docCommentSpec =
+    DocumentCommentSpecification(_docCommentPrefix);
 
 const String _overflowClassName = '${classNamePrefix}CodecOverflow';
 
@@ -50,7 +51,8 @@ class SwiftOptions {
   static SwiftOptions fromList(Map<String, Object> map) {
     return SwiftOptions(
       copyrightHeader: map['copyrightHeader'] as Iterable<String>?,
-      fileSpecificClassNameComponent: map['fileSpecificClassNameComponent'] as String?,
+      fileSpecificClassNameComponent:
+          map['fileSpecificClassNameComponent'] as String?,
       errorClassName: map['errorClassName'] as String?,
       includeErrorClass: map['includeErrorClass'] as bool? ?? true,
     );
@@ -61,7 +63,8 @@ class SwiftOptions {
   Map<String, Object> toMap() {
     final Map<String, Object> result = <String, Object>{
       if (copyrightHeader != null) 'copyrightHeader': copyrightHeader!,
-      if (fileSpecificClassNameComponent != null) 'fileSpecificClassNameComponent': fileSpecificClassNameComponent!,
+      if (fileSpecificClassNameComponent != null)
+        'fileSpecificClassNameComponent': fileSpecificClassNameComponent!,
       if (errorClassName != null) 'errorClassName': errorClassName!,
       'includeErrorClass': includeErrorClass,
     };
@@ -93,7 +96,9 @@ class InternalSwiftOptions extends InternalOptions {
     Iterable<String>? copyrightHeader,
   })  : copyrightHeader = options.copyrightHeader ?? copyrightHeader,
         fileSpecificClassNameComponent =
-            options.fileSpecificClassNameComponent ?? swiftOut.split('/').lastOrNull?.split('.').firstOrNull ?? '',
+            options.fileSpecificClassNameComponent ??
+                swiftOut.split('/').lastOrNull?.split('.').firstOrNull ??
+                '',
         errorClassName = options.errorClassName,
         includeErrorClass = options.includeErrorClass;
 
@@ -227,12 +232,14 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     required String dartPackageName,
   }) {
     indent.newln();
-    addDocumentationComments(indent, anEnum.documentationComments, _docCommentSpec);
+    addDocumentationComments(
+        indent, anEnum.documentationComments, _docCommentSpec);
 
     indent.write('enum ${anEnum.name}: Int ');
     indent.addScoped('{', '}', () {
       enumerate(anEnum.members, (int index, final EnumMember member) {
-        addDocumentationComments(indent, member.documentationComments, _docCommentSpec);
+        addDocumentationComments(
+            indent, member.documentationComments, _docCommentSpec);
         indent.writeln('case ${_camelCase(member.name)} = $index');
       });
     });
@@ -250,29 +257,36 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     final String readerName = '${codecName}Reader';
     final String writerName = '${codecName}Writer';
 
-    final List<EnumeratedType> enumeratedTypes = getEnumeratedTypes(root, excludeSealedClasses: true).toList();
+    final List<EnumeratedType> enumeratedTypes =
+        getEnumeratedTypes(root, excludeSealedClasses: true).toList();
 
     void writeDecodeLogic(EnumeratedType customType) {
       indent.writeln('case ${customType.enumeration}:');
       indent.nest(1, () {
         if (customType.type == CustomTypes.customEnum) {
-          indent.writeln('let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)');
-          indent.writeScoped('if let enumResultAsInt = enumResultAsInt {', '}', () {
-            indent.writeln('return ${customType.name}(rawValue: enumResultAsInt)');
+          indent.writeln(
+              'let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)');
+          indent.writeScoped('if let enumResultAsInt = enumResultAsInt {', '}',
+              () {
+            indent.writeln(
+                'return ${customType.name}(rawValue: enumResultAsInt)');
           });
           indent.writeln('return nil');
         } else {
-          indent.writeln('return ${customType.name}.fromList(self.readValue() as! [Any?])');
+          indent.writeln(
+              'return ${customType.name}.fromList(self.readValue() as! [Any?])');
         }
       });
     }
 
-    final EnumeratedType overflowClass =
-        EnumeratedType(_overflowClassName, maximumCodecFieldKey, CustomTypes.customClass);
+    final EnumeratedType overflowClass = EnumeratedType(
+        _overflowClassName, maximumCodecFieldKey, CustomTypes.customClass);
 
     if (root.requiresOverflowClass) {
       indent.newln();
-      _writeCodecOverflowUtilities(generatorOptions, root, indent, enumeratedTypes, dartPackageName: dartPackageName);
+      _writeCodecOverflowUtilities(
+          generatorOptions, root, indent, enumeratedTypes,
+          dartPackageName: dartPackageName);
     }
 
     indent.newln();
@@ -312,11 +326,18 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
           for (final EnumeratedType customType in enumeratedTypes) {
             indent.add('if let value = value as? ${customType.name} ');
             indent.addScoped('{', '} else ', () {
-              final String encodeString = customType.type == CustomTypes.customClass ? 'toList()' : 'rawValue';
+              final String encodeString =
+                  customType.type == CustomTypes.customClass
+                      ? 'toList()'
+                      : 'rawValue';
               final String valueString =
-                  customType.enumeration < maximumCodecFieldKey ? 'value.$encodeString' : 'wrap.toList()';
+                  customType.enumeration < maximumCodecFieldKey
+                      ? 'value.$encodeString'
+                      : 'wrap.toList()';
               final int enumeration =
-                  customType.enumeration < maximumCodecFieldKey ? customType.enumeration : maximumCodecFieldKey;
+                  customType.enumeration < maximumCodecFieldKey
+                      ? customType.enumeration
+                      : maximumCodecFieldKey;
               if (customType.enumeration >= maximumCodecFieldKey) {
                 indent.writeln(
                     'let wrap = $_overflowClassName(type: ${customType.enumeration - maximumCodecFieldKey}, wrapped: value.$encodeString)');
@@ -334,14 +355,17 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     indent.newln();
 
     // Generate ReaderWriter
-    indent.write('private class $readerWriterName: FlutterStandardReaderWriter ');
+    indent
+        .write('private class $readerWriterName: FlutterStandardReaderWriter ');
     indent.addScoped('{', '}', () {
-      indent.write('override func reader(with data: Data) -> FlutterStandardReader ');
+      indent.write(
+          'override func reader(with data: Data) -> FlutterStandardReader ');
       indent.addScoped('{', '}', () {
         indent.writeln('return $readerName(data: data)');
       });
       indent.newln();
-      indent.write('override func writer(with data: NSMutableData) -> FlutterStandardWriter ');
+      indent.write(
+          'override func writer(with data: NSMutableData) -> FlutterStandardWriter ');
       indent.addScoped('{', '}', () {
         indent.writeln('return $writerName(data: data)');
       });
@@ -349,9 +373,11 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     indent.newln();
 
     // Generate Codec
-    indent.write('class $codecName: FlutterStandardMessageCodec, @unchecked Sendable ');
+    indent.write(
+        'class $codecName: FlutterStandardMessageCodec, @unchecked Sendable ');
     indent.addScoped('{', '}', () {
-      indent.writeln('static let shared = $codecName(readerWriter: $readerWriterName())');
+      indent.writeln(
+          'static let shared = $codecName(readerWriter: $readerWriterName())');
     });
     indent.newln();
     if (root.containsEventChannel) {
@@ -374,22 +400,26 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
             ? ': Hashable'
             : '';
     if (classDefinition.isSwiftClass) {
-      indent.write('${privateString}class ${classDefinition.name}$extendsString ');
+      indent.write(
+          '${privateString}class ${classDefinition.name}$extendsString ');
     } else if (classDefinition.isSealed) {
       indent.write('protocol ${classDefinition.name} ');
     } else {
-      indent.write('${privateString}struct ${classDefinition.name}$extendsString ');
+      indent.write(
+          '${privateString}struct ${classDefinition.name}$extendsString ');
     }
 
     indent.addScoped('{', '', () {
-      final Iterable<NamedType> fields = getFieldsInSerializationOrder(classDefinition);
+      final Iterable<NamedType> fields =
+          getFieldsInSerializationOrder(classDefinition);
 
       if (classDefinition.isSwiftClass) {
         _writeClassInit(indent, fields.toList());
       }
 
       for (final NamedType field in fields) {
-        addDocumentationComments(indent, field.documentationComments, _docCommentSpec);
+        addDocumentationComments(
+            indent, field.documentationComments, _docCommentSpec);
         indent.write('var ');
         _writeClassField(indent, field, addNil: !classDefinition.isSwiftClass);
         indent.newln();
@@ -404,15 +434,18 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     List<EnumeratedType> types, {
     required String dartPackageName,
   }) {
-    final NamedType overflowInt =
-        NamedType(name: 'type', type: const TypeDeclaration(baseName: 'Int', isNullable: false));
-    final NamedType overflowObject =
-        NamedType(name: 'wrapped', type: const TypeDeclaration(baseName: 'Object', isNullable: true));
+    final NamedType overflowInt = NamedType(
+        name: 'type',
+        type: const TypeDeclaration(baseName: 'Int', isNullable: false));
+    final NamedType overflowObject = NamedType(
+        name: 'wrapped',
+        type: const TypeDeclaration(baseName: 'Object', isNullable: true));
     final List<NamedType> overflowFields = <NamedType>[
       overflowInt,
       overflowObject,
     ];
-    final Class overflowClass = Class(name: _overflowClassName, fields: overflowFields);
+    final Class overflowClass =
+        Class(name: _overflowClassName, fields: overflowFields);
     indent.newln();
     _writeDataClassSignature(
       indent,
@@ -452,11 +485,14 @@ if (wrapped == nil) {
     ''');
         indent.writeScoped('switch type {', '}', () {
           for (int i = totalCustomCodecKeysAllowed; i < types.length; i++) {
-            indent.writeScoped('case ${i - totalCustomCodecKeysAllowed}:', '', () {
+            indent.writeScoped('case ${i - totalCustomCodecKeysAllowed}:', '',
+                () {
               if (types[i].type == CustomTypes.customClass) {
-                indent.writeln('return ${types[i].name}.fromList(wrapped as! [Any?]);');
+                indent.writeln(
+                    'return ${types[i].name}.fromList(wrapped as! [Any?]);');
               } else if (types[i].type == CustomTypes.customEnum) {
-                indent.writeln('return ${types[i].name}(rawValue: wrapped as! Int);');
+                indent.writeln(
+                    'return ${types[i].name}(rawValue: wrapped as! Int);');
               }
             }, addTrailingNewline: false);
           }
@@ -480,10 +516,12 @@ if (wrapped == nil) {
       ' Generated class from Pigeon that represents data sent in messages.'
     ];
     if (classDefinition.isSealed) {
-      generatedComments.add(' This protocol should not be extended by any user class outside of the generated file.');
+      generatedComments.add(
+          ' This protocol should not be extended by any user class outside of the generated file.');
     }
     indent.newln();
-    addDocumentationComments(indent, classDefinition.documentationComments, _docCommentSpec,
+    addDocumentationComments(
+        indent, classDefinition.documentationComments, _docCommentSpec,
         generatorComments: generatedComments);
     _writeDataClassSignature(indent, classDefinition);
     indent.writeScoped('', '}', () {
@@ -559,7 +597,8 @@ if (wrapped == nil) {
         // Follow swift-format style, which is to use a trailing comma unless
         // there is only one element.
         final String separator = classDefinition.fields.length > 1 ? ',' : '';
-        for (final NamedType field in getFieldsInSerializationOrder(classDefinition)) {
+        for (final NamedType field
+            in getFieldsInSerializationOrder(classDefinition)) {
           indent.writeln('${field.name}$separator');
         }
       });
@@ -574,18 +613,21 @@ if (wrapped == nil) {
     Class classDefinition, {
     required String dartPackageName,
   }) {
-    indent.writeScoped('static func == (lhs: ${classDefinition.name}, rhs: ${classDefinition.name}) -> Bool {', '}',
-        () {
+    indent.writeScoped(
+        'static func == (lhs: ${classDefinition.name}, rhs: ${classDefinition.name}) -> Bool {',
+        '}', () {
       if (classDefinition.isSwiftClass) {
         indent.writeScoped('if (lhs === rhs) {', '}', () {
           indent.writeln('return true');
         });
       }
-      indent.write('return deepEquals${generatorOptions.fileSpecificClassNameComponent}(lhs.toList(), rhs.toList())');
+      indent.write(
+          'return deepEquals${generatorOptions.fileSpecificClassNameComponent}(lhs.toList(), rhs.toList())');
     });
 
     indent.writeScoped('func hash(into hasher: inout Hasher) {', '}', () {
-      indent.writeln('deepHash${generatorOptions.fileSpecificClassNameComponent}(value: toList(), hasher: &hasher)');
+      indent.writeln(
+          'deepHash${generatorOptions.fileSpecificClassNameComponent}(value: toList(), hasher: &hasher)');
     });
   }
 
@@ -599,10 +641,12 @@ if (wrapped == nil) {
   }) {
     final String className = classDefinition.name;
     indent.writeln('// swift-format-ignore: AlwaysUseLowerCamelCase');
-    indent.write('static func fromList(_ ${varNamePrefix}list: [Any?]) -> $className? ');
+    indent.write(
+        'static func fromList(_ ${varNamePrefix}list: [Any?]) -> $className? ');
 
     indent.addScoped('{', '}', () {
-      enumerate(getFieldsInSerializationOrder(classDefinition), (int index, final NamedType field) {
+      enumerate(getFieldsInSerializationOrder(classDefinition),
+          (int index, final NamedType field) {
         final String listValue = '${varNamePrefix}list[$index]';
 
         _writeGenericCasting(
@@ -617,16 +661,23 @@ if (wrapped == nil) {
       indent.newln();
       indent.write('return ');
       indent.addScoped('$className(', ')', () {
-        for (final NamedType field in getFieldsInSerializationOrder(classDefinition)) {
-          final String comma = getFieldsInSerializationOrder(classDefinition).last == field ? '' : ',';
+        for (final NamedType field
+            in getFieldsInSerializationOrder(classDefinition)) {
+          final String comma =
+              getFieldsInSerializationOrder(classDefinition).last == field
+                  ? ''
+                  : ',';
           // Force-casting nullable enums in maps doesn't work the same as other types.
           // It needs soft-casting followed by force unwrapping.
-          final String forceUnwrapMapWithNullableEnums = (field.type.baseName == 'Map' &&
-                  !field.type.isNullable &&
-                  field.type.typeArguments.any((TypeDeclaration type) => type.isEnum))
-              ? '!'
-              : '';
-          indent.writeln('${field.name}: ${field.name}$forceUnwrapMapWithNullableEnums$comma');
+          final String forceUnwrapMapWithNullableEnums =
+              (field.type.baseName == 'Map' &&
+                      !field.type.isNullable &&
+                      field.type.typeArguments
+                          .any((TypeDeclaration type) => type.isEnum))
+                  ? '!'
+                  : '';
+          indent.writeln(
+              '${field.name}: ${field.name}$forceUnwrapMapWithNullableEnums$comma');
         }
       });
     });
@@ -639,10 +690,13 @@ if (wrapped == nil) {
     Indent indent, {
     required String dartPackageName,
   }) {
-    if (root.apis.any((Api api) => api is AstHostApi && api.methods.any((Method it) => it.isAsynchronous))) {
+    if (root.apis.any((Api api) =>
+        api is AstHostApi &&
+        api.methods.any((Method it) => it.isAsynchronous))) {
       indent.newln();
     }
-    super.writeApis(generatorOptions, root, indent, dartPackageName: dartPackageName);
+    super.writeApis(generatorOptions, root, indent,
+        dartPackageName: dartPackageName);
   }
 
   /// Writes the code for a flutter [Api], [api].
@@ -663,11 +717,13 @@ if (wrapped == nil) {
     const List<String> generatedComments = <String>[
       ' Generated protocol from Pigeon that represents Flutter messages that can be called from Swift.'
     ];
-    addDocumentationComments(indent, api.documentationComments, _docCommentSpec, generatorComments: generatedComments);
+    addDocumentationComments(indent, api.documentationComments, _docCommentSpec,
+        generatorComments: generatedComments);
 
     indent.addScoped('protocol ${api.name}Protocol {', '}', () {
       for (final Method func in api.methods) {
-        addDocumentationComments(indent, func.documentationComments, _docCommentSpec);
+        addDocumentationComments(
+            indent, func.documentationComments, _docCommentSpec);
         indent.writeln(_getMethodSignature(
           name: func.name,
           parameters: func.parameters,
@@ -684,10 +740,12 @@ if (wrapped == nil) {
     indent.addScoped('{', '}', () {
       indent.writeln('private let binaryMessenger: FlutterBinaryMessenger');
       indent.writeln('private let messageChannelSuffix: String');
-      indent.write('init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "") ');
+      indent.write(
+          'init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "") ');
       indent.addScoped('{', '}', () {
         indent.writeln('self.binaryMessenger = binaryMessenger');
-        indent.writeln(r'self.messageChannelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""');
+        indent.writeln(
+            r'self.messageChannelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""');
       });
       final String codecName = _getMessageCodecName(generatorOptions);
       indent.write('var codec: $codecName ');
@@ -696,12 +754,14 @@ if (wrapped == nil) {
       });
 
       for (final Method func in api.methods) {
-        addDocumentationComments(indent, func.documentationComments, _docCommentSpec);
+        addDocumentationComments(
+            indent, func.documentationComments, _docCommentSpec);
         _writeFlutterMethod(
           indent,
           generatorOptions: generatorOptions,
           name: func.name,
-          channelName: '${makeChannelName(api, func, dartPackageName)}\\(messageChannelSuffix)',
+          channelName:
+              '${makeChannelName(api, func, dartPackageName)}\\(messageChannelSuffix)',
           parameters: func.parameters,
           returnType: func.returnType,
           swiftFunction: func.swiftFunction,
@@ -728,12 +788,14 @@ if (wrapped == nil) {
     const List<String> generatedComments = <String>[
       ' Generated protocol from Pigeon that represents a handler of messages from Flutter.'
     ];
-    addDocumentationComments(indent, api.documentationComments, _docCommentSpec, generatorComments: generatedComments);
+    addDocumentationComments(indent, api.documentationComments, _docCommentSpec,
+        generatorComments: generatedComments);
 
     indent.write('protocol $apiName ');
     indent.addScoped('{', '}', () {
       for (final Method method in api.methods) {
-        addDocumentationComments(indent, method.documentationComments, _docCommentSpec);
+        addDocumentationComments(
+            indent, method.documentationComments, _docCommentSpec);
         indent.writeln(_getMethodSignature(
           name: method.name,
           parameters: method.parameters,
@@ -757,9 +819,11 @@ if (wrapped == nil) {
       indent.write(
           'static func setUp(binaryMessenger: FlutterBinaryMessenger, api: $apiName?, messageChannelSuffix: String = "") ');
       indent.addScoped('{', '}', () {
-        indent.writeln(r'let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""');
+        indent.writeln(
+            r'let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""');
         String? serialBackgroundQueue;
-        if (api.methods.any((Method m) => m.taskQueueType == TaskQueueType.serialBackgroundThread)) {
+        if (api.methods.any((Method m) =>
+            m.taskQueueType == TaskQueueType.serialBackgroundThread)) {
           serialBackgroundQueue = 'taskQueue';
           // TODO(stuartmorgan): Remove the ? once macOS supports task queues
           // and this is no longer an optional protocol method.
@@ -776,14 +840,17 @@ if (wrapped == nil) {
           _writeHostMethodMessageHandler(
             indent,
             name: method.name,
-            channelName: '${makeChannelName(api, method, dartPackageName)}\\(channelSuffix)',
+            channelName:
+                '${makeChannelName(api, method, dartPackageName)}\\(channelSuffix)',
             parameters: method.parameters,
             returnType: method.returnType,
             asynchronousType: method.asynchronousType,
             swiftFunction: method.swiftFunction,
             documentationComments: method.documentationComments,
             serialBackgroundQueue:
-                method.taskQueueType == TaskQueueType.serialBackgroundThread ? serialBackgroundQueue : null,
+                method.taskQueueType == TaskQueueType.serialBackgroundThread
+                    ? serialBackgroundQueue
+                    : null,
           );
         }
       });
@@ -809,9 +876,11 @@ if (wrapped == nil) {
     Indent indent, {
     required String dartPackageName,
   }) {
-    final String instanceManagerApiName = '${swiftInstanceManagerClassName(generatorOptions)}Api';
+    final String instanceManagerApiName =
+        '${swiftInstanceManagerClassName(generatorOptions)}Api';
 
-    final String removeStrongReferenceName = makeRemoveStrongReferenceChannelName(
+    final String removeStrongReferenceName =
+        makeRemoveStrongReferenceChannelName(
       dartPackageName,
     );
 
@@ -857,7 +926,8 @@ if (wrapped == nil) {
           indent.writeln(
             'let codec = ${_getMessageCodecName(generatorOptions)}.shared',
           );
-          const String setHandlerCondition = 'let instanceManager = instanceManager';
+          const String setHandlerCondition =
+              'let instanceManager = instanceManager';
           _writeHostMethodMessageHandler(
             indent,
             name: 'removeStrongReference',
@@ -930,7 +1000,8 @@ if (wrapped == nil) {
     Root root,
     Indent indent,
   ) {
-    final Iterable<AstProxyApi> allProxyApis = root.apis.whereType<AstProxyApi>();
+    final Iterable<AstProxyApi> allProxyApis =
+        root.apis.whereType<AstProxyApi>();
 
     _writeProxyApiRegistrar(
       indent,
@@ -938,7 +1009,8 @@ if (wrapped == nil) {
       allProxyApis: allProxyApis,
     );
 
-    final String filePrefix = generatorOptions.fileSpecificClassNameComponent ?? '';
+    final String filePrefix =
+        generatorOptions.fileSpecificClassNameComponent ?? '';
 
     final String registrarName = proxyApiRegistrarName(generatorOptions);
 
@@ -1027,8 +1099,9 @@ if (wrapped == nil) {
                   'String',
                   ...root.enums.map((Enum anEnum) => anEnum.name),
                 ];
-                final String isBuiltinExpression =
-                    nonProxyApiTypes.map((String swiftType) => 'value is $swiftType').join(' || ');
+                final String isBuiltinExpression = nonProxyApiTypes
+                    .map((String swiftType) => 'value is $swiftType')
+                    .join(' || ');
                 // Non ProxyApi types are checked first to prevent the scenario
                 // where a client wraps the `NSObject` class which all the
                 // classes above extend.
@@ -1056,9 +1129,11 @@ if (wrapped == nil) {
                   allProxyApis,
                   (AstProxyApi api) {
                     return <AstProxyApi>[
-                      if (api.superClass?.associatedProxyApi != null) api.superClass!.associatedProxyApi!,
+                      if (api.superClass?.associatedProxyApi != null)
+                        api.superClass!.associatedProxyApi!,
                       ...api.interfaces.map(
-                        (TypeDeclaration interface) => interface.associatedProxyApi!,
+                        (TypeDeclaration interface) =>
+                            interface.associatedProxyApi!,
                       ),
                     ];
                   },
@@ -1075,7 +1150,8 @@ if (wrapped == nil) {
                     final String? availability = _tryGetAvailabilityAnnotation(
                       <TypeDeclaration>[apiAsTypeDecl],
                     );
-                    final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(
+                    final String? unsupportedPlatforms =
+                        _tryGetUnsupportedPlatformsCondition(
                       <TypeDeclaration>[apiAsTypeDecl],
                     );
                     final String className = api.swiftOptions?.name ?? api.name;
@@ -1156,8 +1232,10 @@ if (wrapped == nil) {
       associatedProxyApi: api,
     );
 
-    final String swiftApiDelegateName = '${hostProxyApiPrefix}Delegate${api.name}';
-    final String type = api.hasMethodsRequiringImplementation() ? 'protocol' : 'open class';
+    final String swiftApiDelegateName =
+        '${hostProxyApiPrefix}Delegate${api.name}';
+    final String type =
+        api.hasMethodsRequiringImplementation() ? 'protocol' : 'open class';
     indent.writeScoped('$type $swiftApiDelegateName {', '}', () {
       _writeProxyApiConstructorDelegateMethods(
         indent,
@@ -1184,7 +1262,8 @@ if (wrapped == nil) {
     });
     indent.newln();
 
-    final String swiftApiProtocolName = '${hostProxyApiPrefix}Protocol${api.name}';
+    final String swiftApiProtocolName =
+        '${hostProxyApiPrefix}Protocol${api.name}';
     indent.writeScoped('protocol $swiftApiProtocolName {', '}', () {
       _writeProxyApiFlutterMethods(
         indent,
@@ -1198,7 +1277,8 @@ if (wrapped == nil) {
     indent.newln();
 
     final String swiftApiName = '$hostProxyApiPrefix${api.name}';
-    indent.writeScoped('final class $swiftApiName: $swiftApiProtocolName  {', '}', () {
+    indent.writeScoped(
+        'final class $swiftApiName: $swiftApiProtocolName  {', '}', () {
       indent.writeln(
         'unowned let pigeonRegistrar: ${proxyApiRegistrarName(generatorOptions)}',
       );
@@ -1252,7 +1332,8 @@ if (wrapped == nil) {
       return value + (type.isNullable ? '' : '!');
       // Force-casting nullable enums in maps doesn't work the same as other types.
       // It needs soft-casting followed by force unwrapping.
-    } else if (type.baseName == 'Map' && type.typeArguments.any((TypeDeclaration type) => type.isEnum)) {
+    } else if (type.baseName == 'Map' &&
+        type.typeArguments.any((TypeDeclaration type) => type.isEnum)) {
       return '$value as? ${_swiftTypeForDartType(type)}';
     } else if (type.isNullable) {
       return 'nilOrValue($value)';
@@ -1269,7 +1350,8 @@ if (wrapped == nil) {
     required TypeDeclaration type,
   }) {
     if (type.isNullable) {
-      indent.writeln('let $variableName: $fieldType? = ${_castForceUnwrap(value, type)}');
+      indent.writeln(
+          'let $variableName: $fieldType? = ${_castForceUnwrap(value, type)}');
     } else {
       indent.writeln('let $variableName = ${_castForceUnwrap(value, type)}');
     }
@@ -1295,7 +1377,8 @@ if (wrapped == nil) {
     indent.newln();
     indent.write('private func wrapError(_ error: Any) -> [Any?] ');
     indent.addScoped('{', '}', () {
-      indent.write('if let pigeonError = error as? ${_getErrorClassName(generatorOptions)} ');
+      indent.write(
+          'if let pigeonError = error as? ${_getErrorClassName(generatorOptions)} ');
       indent.addScoped('{', '}', () {
         indent.write('return ');
         indent.addScoped('[', ']', () {
@@ -1332,7 +1415,8 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
 ''');
   }
 
-  void _writeCreateConnectionError(InternalSwiftOptions generatorOptions, Indent indent) {
+  void _writeCreateConnectionError(
+      InternalSwiftOptions generatorOptions, Indent indent) {
     indent.newln();
     indent.writeScoped(
         'private func createConnectionError(withChannelName channelName: String) -> ${_getErrorClassName(generatorOptions)} {',
@@ -1497,7 +1581,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       }
       ''');
     }
-    addDocumentationComments(indent, api.documentationComments, _docCommentSpec);
+    addDocumentationComments(
+        indent, api.documentationComments, _docCommentSpec);
     for (final Method func in api.methods) {
       indent.format('''
         class ${toUpperCamelCase(func.name)}StreamHandler: PigeonEventChannelWrapper<${_swiftTypeForDartType(func.returnType)}> {
@@ -1559,9 +1644,12 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       return '${_getArgumentName(count, argument)}Arg';
     }
 
-    final Iterable<String> enumSafeArgNames =
-        parameters.asMap().entries.map((MapEntry<int, NamedType> e) => getEnumSafeArgumentExpression(e.key, e.value));
-    final String sendArgument = parameters.isEmpty ? 'nil' : '[${enumSafeArgNames.join(', ')}] as [Any?]';
+    final Iterable<String> enumSafeArgNames = parameters.asMap().entries.map(
+        (MapEntry<int, NamedType> e) =>
+            getEnumSafeArgumentExpression(e.key, e.value));
+    final String sendArgument = parameters.isEmpty
+        ? 'nil'
+        : '[${enumSafeArgNames.join(', ')}] as [Any?]';
     const String channel = 'channel';
     indent.writeln('let channelName: String = "$channelName"');
     indent.writeln(
@@ -1569,8 +1657,10 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     indent.write('$channel.sendMessage($sendArgument) ');
 
     indent.addScoped('{ response in', '}', () {
-      indent.writeScoped('guard let listResponse = response as? [Any?] else {', '}', () {
-        indent.writeln('completion(.failure(createConnectionError(withChannelName: channelName)))');
+      indent.writeScoped(
+          'guard let listResponse = response as? [Any?] else {', '}', () {
+        indent.writeln(
+            'completion(.failure(createConnectionError(withChannelName: channelName)))');
         indent.writeln('return');
       });
       indent.writeScoped('if listResponse.count > 1 {', '} ', () {
@@ -1599,10 +1689,11 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
             type: returnType,
           );
           // There is a swift bug with unwrapping maps of nullable Enums;
-          final String enumMapForceUnwrap =
-              returnType.baseName == 'Map' && returnType.typeArguments.any((TypeDeclaration type) => type.isEnum)
-                  ? '!'
-                  : '';
+          final String enumMapForceUnwrap = returnType.baseName == 'Map' &&
+                  returnType.typeArguments
+                      .any((TypeDeclaration type) => type.isEnum)
+              ? '!'
+              : '';
           indent.writeln('completion(.success(result$enumMapForceUnwrap))');
         }
       });
@@ -1619,7 +1710,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     String? serialBackgroundQueue,
     String setHandlerCondition = 'let api = api',
     List<String> documentationComments = const <String>[],
-    String Function(List<String> safeArgNames, {required String apiVarName})? onCreateCall,
+    String Function(List<String> safeArgNames, {required String apiVarName})?
+        onCreateCall,
     AsynchronousType asynchronousType = AsynchronousType.none,
   }) {
     final _SwiftFunctionComponents components = _SwiftFunctionComponents(
@@ -1640,7 +1732,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     // queue variable not being nil because the earlier code to set it will
     // return nil on macOS where the optional parts of the protocol are not
     // implemented.
-    final String channelCreationWithoutTaskQueue = 'FlutterBasicMessageChannel($baseArgs)';
+    final String channelCreationWithoutTaskQueue =
+        'FlutterBasicMessageChannel($baseArgs)';
     if (serialBackgroundQueue == null) {
       indent.writeln('let $varChannelName = $channelCreationWithoutTaskQueue');
     } else {
@@ -1662,29 +1755,39 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         final List<String> methodArgument = <String>[];
         if (components.arguments.isNotEmpty) {
           indent.writeln('let args = message as! [Any?]');
-          enumerate(components.arguments, (int index, _SwiftFunctionArgument arg) {
+          enumerate(components.arguments,
+              (int index, _SwiftFunctionArgument arg) {
             final String argName = _getSafeArgumentName(index, arg.namedType);
             final String argIndex = 'args[$index]';
             final String fieldType = _swiftTypeForDartType(arg.type);
             // There is a swift bug with unwrapping maps of nullable Enums;
-            final String enumMapForceUnwrap =
-                arg.type.baseName == 'Map' && arg.type.typeArguments.any((TypeDeclaration type) => type.isEnum)
-                    ? '!'
-                    : '';
+            final String enumMapForceUnwrap = arg.type.baseName == 'Map' &&
+                    arg.type.typeArguments
+                        .any((TypeDeclaration type) => type.isEnum)
+                ? '!'
+                : '';
 
             _writeGenericCasting(
-                indent: indent, value: argIndex, variableName: argName, fieldType: fieldType, type: arg.type);
+                indent: indent,
+                value: argIndex,
+                variableName: argName,
+                fieldType: fieldType,
+                type: arg.type);
 
             if (arg.label == '_') {
               methodArgument.add('$argName$enumMapForceUnwrap');
             } else {
-              methodArgument.add('${arg.label ?? arg.name}: $argName$enumMapForceUnwrap');
+              methodArgument
+                  .add('${arg.label ?? arg.name}: $argName$enumMapForceUnwrap');
             }
           });
         }
         final bool throws = switch (asynchronousType) {
           CallbackAsynchronous() => false,
-          AwaitAsynchronous(:final SwiftAwaitAsynchronousOptions swiftOptions) => swiftOptions.throws,
+          AwaitAsynchronous(
+            :final SwiftAwaitAsynchronousOptions swiftOptions
+          ) =>
+            swiftOptions.throws,
           NoAsynchronous() => true,
         };
         final String tryStatement = throws ? 'try ' : '';
@@ -1694,14 +1797,18 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           // Empty parens are not required when calling a method whose only
           // argument is a trailing closure.
           final String argumentString =
-              methodArgument.isEmpty && asynchronousType.isCallback ? '' : '(${methodArgument.join(', ')})';
-          call = '$tryStatement${awaitKeyword}api.${components.name}$argumentString';
+              methodArgument.isEmpty && asynchronousType.isCallback
+                  ? ''
+                  : '(${methodArgument.join(', ')})';
+          call =
+              '$tryStatement${awaitKeyword}api.${components.name}$argumentString';
         } else {
           call = onCreateCall(methodArgument, apiVarName: 'api');
         }
         if (asynchronousType.isCallback) {
           final String resultName = returnType.isVoid ? 'nil' : 'res';
-          final String successVariableInit = returnType.isVoid ? '' : '(let res)';
+          final String successVariableInit =
+              returnType.isVoid ? '' : '(let res)';
           indent.write('$call ');
 
           indent.addScoped('{ result in', '}', () {
@@ -1780,13 +1887,14 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     // Some APIs don't have any methods to implement,
     // so this creates an extension of the PigeonProxyApiDelegate that adds
     // default implementations for these APIs.
-    final Iterable<AstProxyApi> apisThatCanHaveADefaultImpl =
-        allProxyApis.where((AstProxyApi api) => !api.hasMethodsRequiringImplementation());
+    final Iterable<AstProxyApi> apisThatCanHaveADefaultImpl = allProxyApis
+        .where((AstProxyApi api) => !api.hasMethodsRequiringImplementation());
     if (apisThatCanHaveADefaultImpl.isNotEmpty) {
       indent.writeScoped('extension $delegateName {', '}', () {
         for (final AstProxyApi api in apisThatCanHaveADefaultImpl) {
           final String hostApiName = '$hostProxyApiPrefix${api.name}';
-          final String swiftApiDelegateName = '${hostProxyApiPrefix}Delegate${api.name}';
+          final String swiftApiDelegateName =
+              '${hostProxyApiPrefix}Delegate${api.name}';
           indent.format(
             '''
             func pigeonApi${api.name}(_ registrar: ${proxyApiRegistrarName(generatorOptions)}) -> $hostApiName {
@@ -1798,12 +1906,15 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       indent.newln();
     }
 
-    final String instanceManagerApiName = '${swiftInstanceManagerClassName(generatorOptions)}Api';
+    final String instanceManagerApiName =
+        '${swiftInstanceManagerClassName(generatorOptions)}Api';
 
-    indent.writeScoped('open class ${proxyApiRegistrarName(generatorOptions)} {', '}', () {
+    indent.writeScoped(
+        'open class ${proxyApiRegistrarName(generatorOptions)} {', '}', () {
       indent.writeln('let binaryMessenger: FlutterBinaryMessenger');
       indent.writeln('let apiDelegate: $delegateName');
-      indent.writeln('let instanceManager: ${swiftInstanceManagerClassName(generatorOptions)}');
+      indent.writeln(
+          'let instanceManager: ${swiftInstanceManagerClassName(generatorOptions)}');
 
       addDocumentationComments(
         indent,
@@ -1897,7 +2008,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         ...constructor.parameters.map((Parameter parameter) => parameter.type),
       ];
 
-      final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
+      final String? unsupportedPlatforms =
+          _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
       if (unsupportedPlatforms != null) {
         indent.writeln('#if $unsupportedPlatforms');
       }
@@ -1908,13 +2020,16 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         _docCommentSpec,
       );
 
-      final String? availableAnnotation = _tryGetAvailabilityAnnotation(allReferencedTypes);
+      final String? availableAnnotation =
+          _tryGetAvailabilityAnnotation(allReferencedTypes);
       if (availableAnnotation != null) {
         indent.writeln('@$availableAnnotation');
       }
 
       final String methodSignature = _getMethodSignature(
-        name: constructor.name.isNotEmpty ? constructor.name : 'pigeonDefaultConstructor',
+        name: constructor.name.isNotEmpty
+            ? constructor.name
+            : 'pigeonDefaultConstructor',
         parameters: <Parameter>[
           Parameter(
             name: 'pigeonApi',
@@ -1951,7 +2066,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         field.type,
       ];
 
-      final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
+      final String? unsupportedPlatforms =
+          _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
       if (unsupportedPlatforms != null) {
         indent.writeln('#if $unsupportedPlatforms');
       }
@@ -1962,7 +2078,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         _docCommentSpec,
       );
 
-      final String? availableAnnotation = _tryGetAvailabilityAnnotation(allReferencedTypes);
+      final String? availableAnnotation =
+          _tryGetAvailabilityAnnotation(allReferencedTypes);
       if (availableAnnotation != null) {
         indent.writeln('@$availableAnnotation');
       }
@@ -2006,7 +2123,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         field.type,
       ];
 
-      final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
+      final String? unsupportedPlatforms =
+          _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
       if (unsupportedPlatforms != null) {
         indent.writeln('#if $unsupportedPlatforms');
       }
@@ -2017,7 +2135,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         _docCommentSpec,
       );
 
-      final String? availableAnnotation = _tryGetAvailabilityAnnotation(allReferencedTypes);
+      final String? availableAnnotation =
+          _tryGetAvailabilityAnnotation(allReferencedTypes);
       if (availableAnnotation != null) {
         indent.writeln('@$availableAnnotation');
       }
@@ -2062,7 +2181,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         ...method.parameters.map((Parameter p) => p.type),
       ];
 
-      final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
+      final String? unsupportedPlatforms =
+          _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
       if (unsupportedPlatforms != null) {
         indent.writeln('#if $unsupportedPlatforms');
       }
@@ -2073,7 +2193,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         _docCommentSpec,
       );
 
-      final String? availableAnnotation = _tryGetAvailabilityAnnotation(allReferencedTypes);
+      final String? availableAnnotation =
+          _tryGetAvailabilityAnnotation(allReferencedTypes);
       if (availableAnnotation != null) {
         indent.writeln('@$availableAnnotation');
       }
@@ -2164,12 +2285,14 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           required String channelName,
           required void Function() onWrite,
         }) {
-          final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(types);
+          final String? unsupportedPlatforms =
+              _tryGetUnsupportedPlatformsCondition(types);
           if (unsupportedPlatforms != null) {
             indent.writeln('#if $unsupportedPlatforms');
           }
 
-          final String? availableAnnotation = _tryGetAvailabilityAnnotation(types);
+          final String? availableAnnotation =
+              _tryGetAvailabilityAnnotation(types);
           if (availableAnnotation != null) {
             indent.writeScoped(
               'if #$availableAnnotation {',
@@ -2206,10 +2329,14 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         }
 
         for (final Constructor constructor in api.constructors) {
-          final String name = constructor.name.isNotEmpty ? constructor.name : 'pigeonDefaultConstructor';
+          final String name = constructor.name.isNotEmpty
+              ? constructor.name
+              : 'pigeonDefaultConstructor';
           final String channelName = makeChannelNameWithStrings(
             apiName: api.name,
-            methodName: constructor.name.isNotEmpty ? constructor.name : '${classMemberNamePrefix}defaultConstructor',
+            methodName: constructor.name.isNotEmpty
+                ? constructor.name
+                : '${classMemberNamePrefix}defaultConstructor',
             dartPackageName: dartPackageName,
           );
           writeWithApiCheckIfNecessary(
@@ -2282,7 +2409,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                   List<String> methodParameters, {
                   required String apiVarName,
                 }) {
-                  final String instanceArg = field.isStatic ? '' : ', pigeonInstance: pigeonInstanceArg';
+                  final String instanceArg = field.isStatic
+                      ? ''
+                      : ', pigeonInstance: pigeonInstanceArg';
                   return '$apiVarName.pigeonRegistrar.instanceManager.addDartCreatedInstance('
                       'try $apiVarName.pigeonDelegate.${field.name}(pigeonApi: api$instanceArg), '
                       'withIdentifier: pigeonIdentifierArg)';
@@ -2307,7 +2436,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         }
 
         for (final Method method in api.hostMethods) {
-          final String channelName = makeChannelName(api, method, dartPackageName);
+          final String channelName =
+              makeChannelName(api, method, dartPackageName);
           writeWithApiCheckIfNecessary(
             <TypeDeclaration>[
               apiAsTypeDeclaration,
@@ -2328,7 +2458,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                   List<String> methodParameters, {
                   required String apiVarName,
                 }) {
-                  final String tryStatement = method.asynchronousType.isCallback ? '' : 'try ';
+                  final String tryStatement =
+                      method.asynchronousType.isCallback ? '' : 'try ';
                   final List<String> parameters = <String>[
                     'pigeonApi: $apiVarName',
                     // Skip the identifier used by the InstanceManager.
@@ -2367,14 +2498,17 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       ...api.unattachedFields.map((ApiField field) => field.type),
     ];
 
-    final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
+    final String? unsupportedPlatforms =
+        _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
     if (unsupportedPlatforms != null) {
       indent.writeln('#if $unsupportedPlatforms');
     }
 
     addDocumentationComments(
       indent,
-      <String>['Creates a Dart instance of ${api.name} and attaches it to [pigeonInstance].'],
+      <String>[
+        'Creates a Dart instance of ${api.name} and attaches it to [pigeonInstance].'
+      ],
       _docCommentSpec,
     );
 
@@ -2492,7 +2626,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         method.returnType,
       ];
 
-      final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
+      final String? unsupportedPlatforms =
+          _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
       if (unsupportedPlatforms != null) {
         indent.writeln('#if $unsupportedPlatforms');
       }
@@ -2503,7 +2638,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         _docCommentSpec,
       );
 
-      final String? availableAnnotation = _tryGetAvailabilityAnnotation(allReferencedTypes);
+      final String? availableAnnotation =
+          _tryGetAvailabilityAnnotation(allReferencedTypes);
       if (availableAnnotation != null) {
         indent.writeln('@$availableAnnotation');
       }
@@ -2538,7 +2674,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
               );
             },
           );
-          indent.writeln('let binaryMessenger = pigeonRegistrar.binaryMessenger');
+          indent
+              .writeln('let binaryMessenger = pigeonRegistrar.binaryMessenger');
           indent.writeln('let codec = pigeonRegistrar.codec');
 
           _writeFlutterMethodMessageCall(
@@ -2562,13 +2699,18 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
 
   void _writePigeonError(InternalSwiftOptions generatorOptions, Indent indent) {
     indent.newln();
-    indent.writeln('/// Error class for passing custom error details to Dart side.');
-    indent.writeScoped('final class ${_getErrorClassName(generatorOptions)}: Error {', '}', () {
+    indent.writeln(
+        '/// Error class for passing custom error details to Dart side.');
+    indent.writeScoped(
+        'final class ${_getErrorClassName(generatorOptions)}: Error {', '}',
+        () {
       indent.writeln('let code: String');
       indent.writeln('let message: String?');
       indent.writeln('let details: Sendable?');
       indent.newln();
-      indent.writeScoped('init(code: String, message: String?, details: Sendable?) {', '}', () {
+      indent.writeScoped(
+          'init(code: String, message: String?, details: Sendable?) {', '}',
+          () {
         indent.writeln('self.code = code');
         indent.writeln('self.message = message');
         indent.writeln('self.details = details');
@@ -2584,7 +2726,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
   }
 
   void _writeProxyApiImports(Indent indent, Iterable<AstProxyApi> apis) {
-    final Map<String, List<AstProxyApi>> apisOfImports = <String, List<AstProxyApi>>{};
+    final Map<String, List<AstProxyApi>> apisOfImports =
+        <String, List<AstProxyApi>>{};
     for (final AstProxyApi proxyApi in apis) {
       final String? import = proxyApi.swiftOptions?.import;
       if (import != null) {
@@ -2600,8 +2743,12 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       // If every ProxyApi that shares an import excludes a platform for
       // support, surround the import with `#if !os(...) #endif`.
       final List<String> unsupportedPlatforms = <String>[
-        if (!apisOfImports[import]!.any((AstProxyApi api) => api.swiftOptions?.supportsIos ?? true)) '!os(iOS)',
-        if (!apisOfImports[import]!.any((AstProxyApi api) => api.swiftOptions?.supportsMacos ?? true)) '!os(macOS)',
+        if (!apisOfImports[import]!
+            .any((AstProxyApi api) => api.swiftOptions?.supportsIos ?? true))
+          '!os(iOS)',
+        if (!apisOfImports[import]!
+            .any((AstProxyApi api) => api.swiftOptions?.supportsMacos ?? true))
+          '!os(macOS)',
       ];
 
       if (unsupportedPlatforms.isNotEmpty) {
@@ -2616,13 +2763,16 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
 }
 
 typedef _VersionRequirement = ({TypeDeclaration type, Version version});
-({_VersionRequirement? ios, _VersionRequirement? macos}) _findHighestVersionRequirement(
+({_VersionRequirement? ios, _VersionRequirement? macos})
+    _findHighestVersionRequirement(
   Iterable<TypeDeclaration> types,
 ) {
-  final _VersionRequirement? iosApiRequirement = findHighestApiRequirement<Version>(
+  final _VersionRequirement? iosApiRequirement =
+      findHighestApiRequirement<Version>(
     types,
     onGetApiRequirement: (TypeDeclaration type) {
-      final String? apiRequirement = type.associatedProxyApi?.swiftOptions?.minIosApi;
+      final String? apiRequirement =
+          type.associatedProxyApi?.swiftOptions?.minIosApi;
       if (apiRequirement != null) {
         return Version.parse(apiRequirement);
       }
@@ -2632,10 +2782,12 @@ typedef _VersionRequirement = ({TypeDeclaration type, Version version});
     onCompare: (Version one, Version two) => one.compareTo(two),
   );
 
-  final _VersionRequirement? macosApiRequirement = findHighestApiRequirement<Version>(
+  final _VersionRequirement? macosApiRequirement =
+      findHighestApiRequirement<Version>(
     types,
     onGetApiRequirement: (TypeDeclaration type) {
-      final String? apiRequirement = type.associatedProxyApi?.swiftOptions?.minMacosApi;
+      final String? apiRequirement =
+          type.associatedProxyApi?.swiftOptions?.minMacosApi;
       if (apiRequirement != null) {
         return Version.parse(apiRequirement);
       }
@@ -2653,12 +2805,16 @@ typedef _VersionRequirement = ({TypeDeclaration type, Version version});
 ///
 /// Returns `null` if there is not api requirement in [types].
 String? _tryGetAvailabilityAnnotation(Iterable<TypeDeclaration> types) {
-  final ({_VersionRequirement? ios, _VersionRequirement? macos}) versionRequirement =
-      _findHighestVersionRequirement(types);
+  final ({
+    _VersionRequirement? ios,
+    _VersionRequirement? macos
+  }) versionRequirement = _findHighestVersionRequirement(types);
 
   final List<String> apis = <String>[
-    if (versionRequirement.ios != null) 'iOS ${versionRequirement.ios!.version}',
-    if (versionRequirement.macos != null) 'macOS ${versionRequirement.macos!.version}',
+    if (versionRequirement.ios != null)
+      'iOS ${versionRequirement.ios!.version}',
+    if (versionRequirement.macos != null)
+      'macOS ${versionRequirement.macos!.version}',
   ];
 
   return apis.isNotEmpty ? 'available(${apis.join(', ')}, *)' : null;
@@ -2680,7 +2836,8 @@ String? _tryGetUnsupportedPlatformsCondition(Iterable<TypeDeclaration> types) {
     }
   }
 
-  final Iterable<TypeDeclaration> allReferencedTypes = types.expand(addAllRecursive);
+  final Iterable<TypeDeclaration> allReferencedTypes =
+      types.expand(addAllRecursive);
 
   final List<String> unsupportedPlatforms = <String>[
     if (!allReferencedTypes.every((TypeDeclaration type) {
@@ -2693,12 +2850,15 @@ String? _tryGetUnsupportedPlatformsCondition(Iterable<TypeDeclaration> types) {
       '!os(macOS)',
   ];
 
-  return unsupportedPlatforms.isNotEmpty ? unsupportedPlatforms.join(' || ') : null;
+  return unsupportedPlatforms.isNotEmpty
+      ? unsupportedPlatforms.join(' || ')
+      : null;
 }
 
 /// Calculates the name of the codec that will be generated for [api].
 String _getMessageCodecName(InternalSwiftOptions options) {
-  return toUpperCamelCase('${options.fileSpecificClassNameComponent}PigeonCodec');
+  return toUpperCamelCase(
+      '${options.fileSpecificClassNameComponent}PigeonCodec');
 }
 
 /// Calculates the name of the codec that will be generated for [api].
@@ -2782,14 +2942,17 @@ String? _swiftTypeForBuiltinDartType(
 
 String? _swiftTypeForProxyApiType(TypeDeclaration type) {
   if (type.isProxyApi) {
-    return type.associatedProxyApi!.swiftOptions?.name ?? type.associatedProxyApi!.name;
+    return type.associatedProxyApi!.swiftOptions?.name ??
+        type.associatedProxyApi!.name;
   }
 
   return null;
 }
 
 String _swiftTypeForDartType(TypeDeclaration type, {bool mapKey = false}) {
-  return _swiftTypeForBuiltinDartType(type, mapKey: mapKey) ?? _swiftTypeForProxyApiType(type) ?? type.baseName;
+  return _swiftTypeForBuiltinDartType(type, mapKey: mapKey) ??
+      _swiftTypeForProxyApiType(type) ??
+      type.baseName;
 }
 
 String _nullSafeSwiftTypeForDartType(
@@ -2806,7 +2969,8 @@ String _getMethodSignature({
   required TypeDeclaration returnType,
   required String errorTypeName,
   String? swiftFunction,
-  String Function(int index, NamedType argument) getParameterName = _getArgumentName,
+  String Function(int index, NamedType argument) getParameterName =
+      _getArgumentName,
   AsynchronousType asynchronousType = AsynchronousType.none,
 }) {
   final _SwiftFunctionComponents components = _SwiftFunctionComponents(
@@ -2815,14 +2979,18 @@ String _getMethodSignature({
     returnType: returnType,
     swiftFunction: swiftFunction,
   );
-  final String returnTypeString = returnType.isVoid ? 'Void' : _nullSafeSwiftTypeForDartType(returnType);
+  final String returnTypeString =
+      returnType.isVoid ? 'Void' : _nullSafeSwiftTypeForDartType(returnType);
 
-  final Iterable<String> types = parameters.map((NamedType e) => _nullSafeSwiftTypeForDartType(e.type));
-  final Iterable<String> labels = indexMap(components.arguments, (int index, _SwiftFunctionArgument argument) {
+  final Iterable<String> types =
+      parameters.map((NamedType e) => _nullSafeSwiftTypeForDartType(e.type));
+  final Iterable<String> labels = indexMap(components.arguments,
+      (int index, _SwiftFunctionArgument argument) {
     return argument.label ?? _getArgumentName(index, argument.namedType);
   });
   final Iterable<String> names = indexMap(parameters, getParameterName);
-  final String parameterSignature = map3(types, labels, names, (String type, String label, String name) {
+  final String parameterSignature =
+      map3(types, labels, names, (String type, String label, String name) {
     return '${label != name ? '$label ' : ''}$name: $type';
   }).join(', ');
 
@@ -2836,7 +3004,8 @@ String _getMethodSignature({
     final String asyncKeyword = (asynchronousType.isAwait) ? ' async' : '';
     final String throwsKeyword = switch (asynchronousType) {
       CallbackAsynchronous() => '',
-      AwaitAsynchronous(:final SwiftAwaitAsynchronousOptions swiftOptions) => swiftOptions.throws ? ' throws' : '',
+      AwaitAsynchronous(:final SwiftAwaitAsynchronousOptions swiftOptions) =>
+        swiftOptions.throws ? ' throws' : '',
       NoAsynchronous() => ' throws',
     };
     if (returnType.isVoid) {
@@ -2899,8 +3068,9 @@ class _SwiftFunctionComponents {
     final RegExp signatureRegex = RegExp(r'(\w+) *\(' + argsExtractor + r'\)');
     final RegExpMatch match = signatureRegex.firstMatch(swiftFunction)!;
 
-    final Iterable<String> labels =
-        match.groups(List<int>.generate(parameters.length, (int index) => index + 2)).whereType();
+    final Iterable<String> labels = match
+        .groups(List<int>.generate(parameters.length, (int index) => index + 2))
+        .whereType();
 
     return _SwiftFunctionComponents._(
       name: match.group(1)!,
