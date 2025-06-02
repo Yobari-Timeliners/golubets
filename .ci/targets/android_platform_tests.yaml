@@ -14,7 +14,7 @@ tasks:
     args: ["lint-android"]
   # Native unit and native integration are split into two steps to allow for
   # different exclusions.
-  # TODO(stuartmorgan): Eliminate the native unit test exclusion, and combin
+  # TODO(stuartmorgan): Eliminate the native unit test exclusion, and combine
   # these steps.
   - name: native unit tests
     script: .ci/scripts/tool_runner.sh
