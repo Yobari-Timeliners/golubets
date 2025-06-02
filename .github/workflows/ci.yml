@@ -61,13 +61,7 @@ jobs:
         if: matrix.platform == 'windows'
         run: |
           choco install llvm --version=15.0.7 --force -y
-          echo "C:\Program Files\LLVM\bin" >> $GITHUB_PATH
-          # choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
-          choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
-          # choco install visualstudio2019community --package-parameters "--add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended" -y
-          # pip install cmake-format
-        # env:
-        #   MSVC_PATH: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.29.30133\\bin\\Hostx64\\x64"
+          # choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
 
       - name: Set up Java
         if: matrix.platform == 'linux' || matrix.platform == 'windows'
@@ -76,12 +70,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       
-      - name: Verify clang-format version
-        run: clang-format --version
-        if: matrix.platform == 'linux' || matrix.platform == 'windows'
-      - name: Verify cmake version
-        run: cmake --version
-        if: matrix.platform == 'linux' || matrix.platform == 'windows'
 
       - name: prepare tool
         run: .ci/scripts/prepare_tool.sh
@@ -92,16 +80,17 @@ jobs:
       - name: tool format
         run: .ci/scripts/plugin_tools_format.sh
       - name: format
-        if: matrix.platform != 'windows'
         run: dart ./script/tool/bin/flutter_plugin_tools.dart format --fail-on-change --no-swift
       - name: Dart unit tests
         run: dart ./script/tool/bin/flutter_plugin_tools.dart dart-test 
       # TODO(feduke-nukem): re-enable when we are ready for it  
       # - name: pubspec validation
       #   run: .ci/scripts/tool_runner.sh pubspec-check --min-min-flutter-version=3.27.0 --allow-dependencies=script/configs/allowed_unpinned_deps.yaml --allow-pinned-dependencies=script/configs/allowed_pinned_deps.yaml
-      # - name: build examples (Win32)
-      #   if: matrix.platform == 'windows'
-      #   run: .ci/scripts/build_examples_win32.sh
+      
+      
+      - name: build examples (Win32)
+        if: matrix.platform == 'windows'
+        run: .ci/scripts/build_examples_win32.sh
 
 
       - name: Build Linux examples
@@ -148,7 +137,3 @@ jobs:
         if: matrix.platform == 'macos'
         run: .ci/scripts/remove_simulator.sh
         continue-on-error: true
-
-
-          # cd platform_tests/test_plugin/example/windows
-          # cmake -S . -B build -G "Visual Studio 16 2019" -A x64
