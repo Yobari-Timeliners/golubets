@@ -993,49 +993,62 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       expect(echoObject, recursiveAllNullableTypes);
     });
 
-    testWidgets(
-        'all nullable async datatypes serialize and deserialize correctly using `await`-style',
-        (WidgetTester _) async {
-      final HostIntegrationCoreApi api = HostIntegrationCoreApi();
-
-      final AllNullableTypes? echoObject = await api
-          .echoModernAsyncNullableAllNullableTypes(recursiveAllNullableTypes);
-
-      expect(echoObject, recursiveAllNullableTypes);
-    });
+    const List<TargetGenerator> modernAsyncSupportedTargets = <TargetGenerator>[
+      TargetGenerator.kotlin,
+      TargetGenerator.swift
+    ];
 
     testWidgets(
-        'all datatypes async serialize and deserialize correctly using `await`-style',
-        (WidgetTester _) async {
-      final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+      'all nullable async datatypes serialize and deserialize correctly using `await`-style',
+      (WidgetTester _) async {
+        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
 
-      final AllTypes echoObject =
-          await api.echoModernAsyncAllTypes(genericAllTypes);
+        final AllNullableTypes? echoObject = await api
+            .echoModernAsyncNullableAllNullableTypes(recursiveAllNullableTypes);
 
-      expect(echoObject, genericAllTypes);
-    });
-
-    testWidgets(
-        'all datatypes async serialize and deserialize correctly using `await`-style and does not throw',
-        (WidgetTester _) async {
-      final HostIntegrationCoreApi api = HostIntegrationCoreApi();
-
-      final AllTypes echoObject =
-          await api.echoModernAsyncAllTypesAndNotThrow(genericAllTypes);
-
-      expect(echoObject, genericAllTypes);
-    });
+        expect(echoObject, recursiveAllNullableTypes);
+      },
+      skip: !modernAsyncSupportedTargets.contains(targetGenerator),
+    );
 
     testWidgets(
-        'all datatypes async serialize correctly using `await`-style and throws',
-        (WidgetTester _) async {
-      final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+      'all datatypes async serialize and deserialize correctly using `await`-style',
+      (WidgetTester _) async {
+        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
 
-      await expectLater(
-        () => api.echoModernAsyncAllTypesAndThrow(genericAllTypes),
-        throwsA(isA<PlatformException>()),
-      );
-    });
+        final AllTypes echoObject =
+            await api.echoModernAsyncAllTypes(genericAllTypes);
+
+        expect(echoObject, genericAllTypes);
+      },
+      skip: !modernAsyncSupportedTargets.contains(targetGenerator),
+    );
+
+    testWidgets(
+      'all datatypes async serialize and deserialize correctly using `await`-style and does not throw',
+      (WidgetTester _) async {
+        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+
+        final AllTypes echoObject =
+            await api.echoModernAsyncAllTypesAndNotThrow(genericAllTypes);
+
+        expect(echoObject, genericAllTypes);
+      },
+      skip: !modernAsyncSupportedTargets.contains(targetGenerator),
+    );
+
+    testWidgets(
+      'all datatypes async serialize correctly using `await`-style and throws',
+      (WidgetTester _) async {
+        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+
+        await expectLater(
+          () => api.echoModernAsyncAllTypesAndThrow(genericAllTypes),
+          throwsA(isA<PlatformException>()),
+        );
+      },
+      skip: !modernAsyncSupportedTargets.contains(targetGenerator),
+    );
 
     testWidgets('all null datatypes async serialize and deserialize correctly',
         (WidgetTester _) async {
@@ -1049,16 +1062,18 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     });
 
     testWidgets(
-        'all null datatypes async serialize and deserialize correctly using `await`-style',
-        (WidgetTester _) async {
-      final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+      'all null datatypes async serialize and deserialize correctly using `await`-style',
+      (WidgetTester _) async {
+        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
 
-      final AllNullableTypes allTypesNull = AllNullableTypes();
+        final AllNullableTypes allTypesNull = AllNullableTypes();
 
-      final AllNullableTypes? echoNullFilledClass =
-          await api.echoModernAsyncNullableAllNullableTypes(allTypesNull);
-      expect(echoNullFilledClass, allTypesNull);
-    });
+        final AllNullableTypes? echoNullFilledClass =
+            await api.echoModernAsyncNullableAllNullableTypes(allTypesNull);
+        expect(echoNullFilledClass, allTypesNull);
+      },
+      skip: !modernAsyncSupportedTargets.contains(targetGenerator),
+    );
 
     testWidgets(
         'all nullable async datatypes without recursion serialize and deserialize correctly',
