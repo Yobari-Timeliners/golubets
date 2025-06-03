@@ -1017,15 +1017,12 @@ protocol HostIntegrationCoreApi {
   func echoAsync(_ everything: AllTypes, completion: @escaping (Result<AllTypes, Error>) -> Void)
   /// Returns the passed object, to test async serialization and deserialization using `await`-style
   /// and Swift does not throw an exception.
-  @available(iOS 13, *)
   func echoModernAsyncAllTypes(_ everything: AllTypes) async -> AllTypes
   /// Returns the passed object, to test async serialization and deserialization using `await`-style
   /// and Swift can throw an exception.
-  @available(iOS 13, *)
   func echoModernAsyncAllTypesAndNotThrow(_ everything: AllTypes) async throws -> AllTypes
   /// Returns the passed object, to test async serialization and deserialization using `await`-style
   /// and throws an exception.
-  @available(iOS 13, *)
   func echoModernAsyncAllTypesAndThrow(_ everything: AllTypes) async throws -> AllTypes
   /// Returns the passed object, to test serialization and deserialization.
   func echoAsync(
@@ -1033,7 +1030,6 @@ protocol HostIntegrationCoreApi {
     completion: @escaping (Result<AllNullableTypes?, Error>) -> Void)
   /// Returns the passed object, to test async serialization and deserialization using `await`-style
   /// and Swift does not throw an exception.
-  @available(iOS 13, *)
   func echoModernAsyncNullableAllNullableTypes(_ everything: AllNullableTypes?) async
     -> AllNullableTypes?
   /// Returns the passed object, to test serialization and deserialization.
