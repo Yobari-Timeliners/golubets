@@ -2810,35 +2810,51 @@ class HostIntegrationCoreApiSetup {
     }
     /// Returns the passed object, to test async serialization and deserialization using `await`-style
     /// and Swift does not throw an exception.
-    let echoModernAsyncAllTypesChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypes\(channelSuffix)",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoModernAsyncAllTypesChannel =
+      taskQueue == nil
+      ? FlutterBasicMessageChannel(
+        name:
+          "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypes\(channelSuffix)",
+        binaryMessenger: binaryMessenger, codec: codec)
+      : FlutterBasicMessageChannel(
+        name:
+          "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypes\(channelSuffix)",
+        binaryMessenger: binaryMessenger, codec: codec, taskQueue: taskQueue)
     if let api = api {
       echoModernAsyncAllTypesChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let everythingArg = args[0] as! AllTypes
-        let result = await api.echoModernAsyncAllTypes(everythingArg)
-        reply(wrapResult(result))
+        Task {
+          let result = await api.echoModernAsyncAllTypes(everythingArg)
+          reply(wrapResult(result))
+        }
       }
     } else {
       echoModernAsyncAllTypesChannel.setMessageHandler(nil)
     }
     /// Returns the passed object, to test async serialization and deserialization using `await`-style
     /// and Swift can throw an exception.
-    let echoModernAsyncAllTypesAndNotThrowChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypesAndNotThrow\(channelSuffix)",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoModernAsyncAllTypesAndNotThrowChannel =
+      taskQueue == nil
+      ? FlutterBasicMessageChannel(
+        name:
+          "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypesAndNotThrow\(channelSuffix)",
+        binaryMessenger: binaryMessenger, codec: codec)
+      : FlutterBasicMessageChannel(
+        name:
+          "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypesAndNotThrow\(channelSuffix)",
+        binaryMessenger: binaryMessenger, codec: codec, taskQueue: taskQueue)
     if let api = api {
       echoModernAsyncAllTypesAndNotThrowChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let everythingArg = args[0] as! AllTypes
-        do {
-          let result = try await api.echoModernAsyncAllTypesAndNotThrow(everythingArg)
-          reply(wrapResult(result))
-        } catch {
-          reply(wrapError(error))
+        Task {
+          do {
+            let result = try await api.echoModernAsyncAllTypesAndNotThrow(everythingArg)
+            reply(wrapResult(result))
+          } catch {
+            reply(wrapError(error))
+          }
         }
       }
     } else {
@@ -2846,19 +2862,27 @@ class HostIntegrationCoreApiSetup {
     }
     /// Returns the passed object, to test async serialization and deserialization using `await`-style
     /// and throws an exception.
-    let echoModernAsyncAllTypesAndThrowChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypesAndThrow\(channelSuffix)",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoModernAsyncAllTypesAndThrowChannel =
+      taskQueue == nil
+      ? FlutterBasicMessageChannel(
+        name:
+          "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypesAndThrow\(channelSuffix)",
+        binaryMessenger: binaryMessenger, codec: codec)
+      : FlutterBasicMessageChannel(
+        name:
+          "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypesAndThrow\(channelSuffix)",
+        binaryMessenger: binaryMessenger, codec: codec, taskQueue: taskQueue)
     if let api = api {
       echoModernAsyncAllTypesAndThrowChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let everythingArg = args[0] as! AllTypes
-        do {
-          let result = try await api.echoModernAsyncAllTypesAndThrow(everythingArg)
-          reply(wrapResult(result))
-        } catch {
-          reply(wrapError(error))
+        Task {
+          do {
+            let result = try await api.echoModernAsyncAllTypesAndThrow(everythingArg)
+            reply(wrapResult(result))
+          } catch {
+            reply(wrapError(error))
+          }
         }
       }
     } else {
@@ -2887,16 +2911,24 @@ class HostIntegrationCoreApiSetup {
     }
     /// Returns the passed object, to test async serialization and deserialization using `await`-style
     /// and Swift does not throw an exception.
-    let echoModernAsyncNullableAllNullableTypesChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncNullableAllNullableTypes\(channelSuffix)",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoModernAsyncNullableAllNullableTypesChannel =
+      taskQueue == nil
+      ? FlutterBasicMessageChannel(
+        name:
+          "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncNullableAllNullableTypes\(channelSuffix)",
+        binaryMessenger: binaryMessenger, codec: codec)
+      : FlutterBasicMessageChannel(
+        name:
+          "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncNullableAllNullableTypes\(channelSuffix)",
+        binaryMessenger: binaryMessenger, codec: codec, taskQueue: taskQueue)
     if let api = api {
       echoModernAsyncNullableAllNullableTypesChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let everythingArg: AllNullableTypes? = nilOrValue(args[0])
-        let result = await api.echoModernAsyncNullableAllNullableTypes(everythingArg)
-        reply(wrapResult(result))
+        Task {
+          let result = await api.echoModernAsyncNullableAllNullableTypes(everythingArg)
+          reply(wrapResult(result))
+        }
       }
     } else {
       echoModernAsyncNullableAllNullableTypesChannel.setMessageHandler(nil)

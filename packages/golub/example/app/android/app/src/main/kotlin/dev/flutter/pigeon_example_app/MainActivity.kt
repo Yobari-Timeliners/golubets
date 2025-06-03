@@ -49,12 +49,12 @@ private class PigeonApiImplementation : ExampleHostApi {
       throw FlutterError("code", "message", "details")
     }
 
-    return true
+    return Thread.currentThread() != Looper.getMainLooper().getThread()
   }
 
   override suspend fun sendMessageModernAsyncThrows(message: MessageData): Boolean {
     if (message.code == Code.ONE) {
-      return true
+      return Thread.currentThread() != Looper.getMainLooper().getThread()
     }
 
     throw FlutterError("code", "message", "details")
@@ -143,7 +143,7 @@ class MainActivity : FlutterActivity() {
     ExampleHostApi.setUp(
         flutterEngine.dartExecutor.binaryMessenger,
         api,
-        coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob()))
+        coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()))
     // #docregion kotlin-init-event
     val eventListener = EventListener()
     StreamEventsStreamHandler.register(flutterEngine.dartExecutor.binaryMessenger, eventListener)

@@ -1830,9 +1830,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
               return body();
             }
 
-            indent.write('do ');
             indent.writeScoped(
-              '{',
+              'do {',
               '}',
               () => body(),
               addTrailingNewline: false,
@@ -1840,6 +1839,12 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
             indent.addScoped(' catch {', '}', () {
               indent.writeln('reply(wrapError(error))');
             });
+          }
+
+          if (asynchronousType.isAwait) {
+            indent.write('Task');
+            indent.addln(' {');
+            indent.inc();
           }
 
           wrapInDo(() {
@@ -1851,6 +1856,11 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
               indent.writeln('reply(wrapResult(result))');
             }
           });
+
+          if (asynchronousType.isAwait) {
+            indent.dec();
+            indent.writeln('}');
+          }
         }
       });
     }, addTrailingNewline: false);

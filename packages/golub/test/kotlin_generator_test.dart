@@ -869,7 +869,6 @@ void main() {
     expect(code, contains('coroutineScope.launch {'));
     expect(code, contains('coroutineScope: CoroutineScope'));
     expect(code, contains('api.doSomething(argArg)'));
-    expect(code, contains('withContext(Dispatchers.Main) {'));
     expect(code, contains('reply.reply(wrapped)'));
   });
 

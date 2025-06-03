@@ -22,7 +22,7 @@ class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, SealedClassApi {
   private var coroutineScope: CoroutineScope? = null
 
   override fun onAttachedToEngine(binding: FlutterPluginBinding) {
-    coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     HostIntegrationCoreApi.setUp(binding.binaryMessenger, this, coroutineScope = coroutineScope!!)
     val testSuffixApiOne = TestPluginWithSuffix()
     testSuffixApiOne.setUp(binding, "suffixOne")

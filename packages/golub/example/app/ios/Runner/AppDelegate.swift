@@ -25,20 +25,22 @@ private class PigeonApiImplementation: ExampleHostApi {
     }
     completion(.success(true))
   }
+
   /// Unlike implementations on other platforms, this function does not throw any exceptions
   /// because the `@Async(type: AsyncType.await(isSwiftThrows: false))` annotation was specified.
   func sendMessageModernAsync(message: MessageData) async -> Bool {
-    return true
+    return !Thread.isMainThread
   }
 
   func sendMessageModernAsyncThrows(message: MessageData) async throws -> Bool {
     if message.code == .one {
-      return true
+      return !Thread.isMainThread
     }
 
     throw PigeonError(code: "code", message: "message", details: "details")
   }
 }
+
 // #enddocregion swift-class
 
 // #docregion swift-class-flutter
@@ -57,6 +59,7 @@ private class PigeonFlutterApi {
     }
   }
 }
+
 // #enddocregion swift-class-flutter
 
 // #docregion swift-class-event
@@ -90,6 +93,7 @@ class EventListener: StreamEventsStreamHandler {
     eventSink = nil
   }
 }
+
 // #enddocregion swift-class-event
 
 func sendEvents(_ eventListener: EventListener) {

@@ -2834,7 +2834,12 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
                                              @"HostIntegrationCoreApi.echoModernAsyncAllTypes",
                                              messageChannelSuffix]
         binaryMessenger:binaryMessenger
-                  codec:FLTGetCoreTestsCodec()];
+                  codec:FLTGetCoreTestsCodec()
+#ifdef TARGET_OS_IOS
+              taskQueue:taskQueue
+#endif
+    ];
+
     if (api) {
       NSCAssert([api respondsToSelector:@selector(echoModernAsyncAllTypes:completion:)],
                 @"FLTHostIntegrationCoreApi api (%@) doesn't respond to "
@@ -2863,7 +2868,12 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
                                       @"HostIntegrationCoreApi.echoModernAsyncAllTypesAndNotThrow",
                                       messageChannelSuffix]
         binaryMessenger:binaryMessenger
-                  codec:FLTGetCoreTestsCodec()];
+                  codec:FLTGetCoreTestsCodec()
+#ifdef TARGET_OS_IOS
+              taskQueue:taskQueue
+#endif
+    ];
+
     if (api) {
       NSCAssert([api respondsToSelector:@selector(echoModernAsyncAllTypesAndNotThrow:completion:)],
                 @"FLTHostIntegrationCoreApi api (%@) doesn't respond to "
@@ -2892,7 +2902,12 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
                                           @"HostIntegrationCoreApi.echoModernAsyncAllTypesAndThrow",
                                           messageChannelSuffix]
         binaryMessenger:binaryMessenger
-                  codec:FLTGetCoreTestsCodec()];
+                  codec:FLTGetCoreTestsCodec()
+#ifdef TARGET_OS_IOS
+              taskQueue:taskQueue
+#endif
+    ];
+
     if (api) {
       NSCAssert([api respondsToSelector:@selector(echoModernAsyncAllTypesAndThrow:completion:)],
                 @"FLTHostIntegrationCoreApi api (%@) doesn't respond to "
@@ -2950,7 +2965,12 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
                                 @"HostIntegrationCoreApi.echoModernAsyncNullableAllNullableTypes",
                                 messageChannelSuffix]
         binaryMessenger:binaryMessenger
-                  codec:FLTGetCoreTestsCodec()];
+                  codec:FLTGetCoreTestsCodec()
+#ifdef TARGET_OS_IOS
+              taskQueue:taskQueue
+#endif
+    ];
+
     if (api) {
       NSCAssert([api respondsToSelector:@selector(echoModernAsyncNullableAllNullableTypes:
                                                                                completion:)],

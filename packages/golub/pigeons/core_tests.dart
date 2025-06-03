@@ -728,6 +728,7 @@ abstract class HostIntegrationCoreApi {
   @Async(type: AsyncType.await(isSwiftThrows: false))
   @ObjCSelector('echoModernAsyncAllTypes:')
   @SwiftFunction('echoModernAsyncAllTypes(_:)')
+  @TaskQueue(type: TaskQueueType.serialBackgroundThread)
   AllTypes echoModernAsyncAllTypes(AllTypes everything);
 
   /// Returns the passed object, to test async serialization and deserialization using `await`-style
@@ -735,6 +736,7 @@ abstract class HostIntegrationCoreApi {
   @Async(type: AsyncType.await(isSwiftThrows: true))
   @ObjCSelector('echoModernAsyncAllTypesAndNotThrow:')
   @SwiftFunction('echoModernAsyncAllTypesAndNotThrow(_:)')
+  @TaskQueue(type: TaskQueueType.serialBackgroundThread)
   AllTypes echoModernAsyncAllTypesAndNotThrow(AllTypes everything);
 
   /// Returns the passed object, to test async serialization and deserialization using `await`-style
@@ -742,6 +744,7 @@ abstract class HostIntegrationCoreApi {
   @Async(type: AsyncType.await(isSwiftThrows: true))
   @ObjCSelector('echoModernAsyncAllTypesAndThrow:')
   @SwiftFunction('echoModernAsyncAllTypesAndThrow(_:)')
+  @TaskQueue(type: TaskQueueType.serialBackgroundThread)
   AllTypes echoModernAsyncAllTypesAndThrow(AllTypes everything);
 
   /// Returns the passed object, to test serialization and deserialization.
@@ -756,6 +759,7 @@ abstract class HostIntegrationCoreApi {
   @Async(type: AsyncType.await(isSwiftThrows: false))
   @ObjCSelector('echoModernAsyncNullableAllNullableTypes:')
   @SwiftFunction('echoModernAsyncNullableAllNullableTypes(_:)')
+  @TaskQueue(type: TaskQueueType.serialBackgroundThread)
   AllNullableTypes? echoModernAsyncNullableAllNullableTypes(
       AllNullableTypes? everything);
 

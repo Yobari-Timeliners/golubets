@@ -3092,7 +3092,8 @@ interface HostIntegrationCoreApi {
             BasicMessageChannel<Any?>(
                 binaryMessenger,
                 "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypes$separatedMessageChannelSuffix",
-                codec)
+                codec,
+                taskQueue)
         if (api != null) {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
@@ -3116,7 +3117,8 @@ interface HostIntegrationCoreApi {
             BasicMessageChannel<Any?>(
                 binaryMessenger,
                 "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypesAndNotThrow$separatedMessageChannelSuffix",
-                codec)
+                codec,
+                taskQueue)
         if (api != null) {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
@@ -3140,7 +3142,8 @@ interface HostIntegrationCoreApi {
             BasicMessageChannel<Any?>(
                 binaryMessenger,
                 "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypesAndThrow$separatedMessageChannelSuffix",
-                codec)
+                codec,
+                taskQueue)
         if (api != null) {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
@@ -3189,7 +3192,8 @@ interface HostIntegrationCoreApi {
             BasicMessageChannel<Any?>(
                 binaryMessenger,
                 "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncNullableAllNullableTypes$separatedMessageChannelSuffix",
-                codec)
+                codec,
+                taskQueue)
         if (api != null) {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>

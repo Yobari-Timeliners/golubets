@@ -156,6 +156,11 @@ void SetUpPGNExampleHostApiWithSuffix(id<FlutterBinaryMessenger> binaryMessenger
   messageChannelSuffix = messageChannelSuffix.length > 0
                              ? [NSString stringWithFormat:@".%@", messageChannelSuffix]
                              : @"";
+#if TARGET_OS_IOS
+  NSObject<FlutterTaskQueue> *taskQueue = [binaryMessenger makeBackgroundTaskQueue];
+#else
+  NSObject<FlutterTaskQueue> *taskQueue = nil;
+#endif
   {
     FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
            initWithName:[NSString stringWithFormat:@"%@%@",
@@ -236,7 +241,12 @@ void SetUpPGNExampleHostApiWithSuffix(id<FlutterBinaryMessenger> binaryMessenger
                                                    @"ExampleHostApi.sendMessageModernAsync",
                                                    messageChannelSuffix]
         binaryMessenger:binaryMessenger
-                  codec:PGNGetMessagesCodec()];
+                  codec:PGNGetMessagesCodec()
+#ifdef TARGET_OS_IOS
+              taskQueue:taskQueue
+#endif
+    ];
+
     if (api) {
       NSCAssert([api respondsToSelector:@selector(sendMessageModernAsyncMessage:completion:)],
                 @"PGNExampleHostApi api (%@) doesn't respond to "
@@ -262,7 +272,12 @@ void SetUpPGNExampleHostApiWithSuffix(id<FlutterBinaryMessenger> binaryMessenger
                                                    @"ExampleHostApi.sendMessageModernAsyncThrows",
                                                    messageChannelSuffix]
         binaryMessenger:binaryMessenger
-                  codec:PGNGetMessagesCodec()];
+                  codec:PGNGetMessagesCodec()
+#ifdef TARGET_OS_IOS
+              taskQueue:taskQueue
+#endif
+    ];
+
     if (api) {
       NSCAssert([api respondsToSelector:@selector(sendMessageModernAsyncThrowsMessage:completion:)],
                 @"PGNExampleHostApi api (%@) doesn't respond to "

@@ -5573,7 +5573,8 @@ public class CoreTests {
                 binaryMessenger,
                 "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypes"
                     + messageChannelSuffix,
-                getCodec());
+                getCodec(),
+                taskQueue);
         if (api != null) {
           channel.setMessageHandler(
               (message, reply) -> {
@@ -5605,7 +5606,8 @@ public class CoreTests {
                 binaryMessenger,
                 "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypesAndNotThrow"
                     + messageChannelSuffix,
-                getCodec());
+                getCodec(),
+                taskQueue);
         if (api != null) {
           channel.setMessageHandler(
               (message, reply) -> {
@@ -5637,7 +5639,8 @@ public class CoreTests {
                 binaryMessenger,
                 "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypesAndThrow"
                     + messageChannelSuffix,
-                getCodec());
+                getCodec(),
+                taskQueue);
         if (api != null) {
           channel.setMessageHandler(
               (message, reply) -> {
@@ -5701,7 +5704,8 @@ public class CoreTests {
                 binaryMessenger,
                 "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncNullableAllNullableTypes"
                     + messageChannelSuffix,
-                getCodec());
+                getCodec(),
+                taskQueue);
         if (api != null) {
           channel.setMessageHandler(
               (message, reply) -> {

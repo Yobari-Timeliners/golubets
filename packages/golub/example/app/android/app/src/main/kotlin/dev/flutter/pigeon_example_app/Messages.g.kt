@@ -180,6 +180,7 @@ interface ExampleHostApi {
     ) {
       val separatedMessageChannelSuffix =
           if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+      val taskQueue = binaryMessenger.makeBackgroundTaskQueue()
       run {
         val channel =
             BasicMessageChannel<Any?>(
@@ -252,7 +253,8 @@ interface ExampleHostApi {
             BasicMessageChannel<Any?>(
                 binaryMessenger,
                 "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsync$separatedMessageChannelSuffix",
-                codec)
+                codec,
+                taskQueue)
         if (api != null) {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
@@ -276,7 +278,8 @@ interface ExampleHostApi {
             BasicMessageChannel<Any?>(
                 binaryMessenger,
                 "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsyncThrows$separatedMessageChannelSuffix",
-                codec)
+                codec,
+                taskQueue)
         if (api != null) {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>

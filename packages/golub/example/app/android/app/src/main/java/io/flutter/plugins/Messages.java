@@ -309,6 +309,7 @@ public class Messages {
         @NonNull String messageChannelSuffix,
         @Nullable ExampleHostApi api) {
       messageChannelSuffix = messageChannelSuffix.isEmpty() ? "" : "." + messageChannelSuffix;
+      BinaryMessenger.TaskQueue taskQueue = binaryMessenger.makeBackgroundTaskQueue();
       {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
@@ -396,7 +397,8 @@ public class Messages {
                 binaryMessenger,
                 "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsync"
                     + messageChannelSuffix,
-                getCodec());
+                getCodec(),
+                taskQueue);
         if (api != null) {
           channel.setMessageHandler(
               (message, reply) -> {
@@ -428,7 +430,8 @@ public class Messages {
                 binaryMessenger,
                 "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsyncThrows"
                     + messageChannelSuffix,
-                getCodec());
+                getCodec(),
+                taskQueue);
         if (api != null) {
           channel.setMessageHandler(
               (message, reply) -> {
