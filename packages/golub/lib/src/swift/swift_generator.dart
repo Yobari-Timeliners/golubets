@@ -796,6 +796,9 @@ if (wrapped == nil) {
       for (final Method method in api.methods) {
         addDocumentationComments(
             indent, method.documentationComments, _docCommentSpec);
+        if (method.asynchronousType.isAwait) {
+          indent.writeln('@available(iOS 13, *)');
+        }
         indent.writeln(_getMethodSignature(
           name: method.name,
           parameters: method.parameters,

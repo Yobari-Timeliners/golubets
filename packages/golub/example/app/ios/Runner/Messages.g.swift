@@ -227,7 +227,9 @@ protocol ExampleHostApi {
   func getHostLanguage() throws -> String
   func add(_ a: Int64, to b: Int64) throws -> Int64
   func sendMessage(message: MessageData, completion: @escaping (Result<Bool, Error>) -> Void)
+  @available(iOS 13, *)
   func sendMessageModernAsync(message: MessageData) async -> Bool
+  @available(iOS 13, *)
   func sendMessageModernAsyncThrows(message: MessageData) async throws -> Bool
 }
 
