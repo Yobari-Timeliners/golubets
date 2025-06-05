@@ -4,6 +4,10 @@ on:
   push:
   pull_request:
     types: [opened, reopened]
+  workflow_run:
+    workflows: [Sync with Upstream]
+    types:
+      - completed
   workflow_dispatch:
 
 concurrency:
