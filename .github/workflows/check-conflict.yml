@@ -1,15 +1,7 @@
 name: Check for Conflict Markers
 
 on:
-  pull_request:
-    branches: [main]
-    types: 
-        - opened
-        - reopened
-        - synchronize
-        - auto_merge_enabled
-  pull_request_review:
-        types: [submitted]
+  push:
   workflow_dispatch:
     
 concurrency:
