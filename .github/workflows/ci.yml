@@ -2,7 +2,6 @@ name: CI
 
 on:
   push:
-  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -11,7 +10,7 @@ concurrency:
 jobs:
   check-conflict-markers:
     name: Check for Conflict Markers
-    if: ${{ github.base_ref == 'main' }}
+    if: ${{ github.head_ref != 'main' }}
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
