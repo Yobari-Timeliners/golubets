@@ -34,9 +34,90 @@ import 'types/task_queue.dart';
 
 export 'types/task_queue.dart' show TaskQueueType;
 
-class _Asynchronous {
-  const _Asynchronous();
+/// {@macro pigeon_lib.async}
+class Async {
+  /// Constructor for [Async].
+  const Async({
+    this.type,
+  });
+
+  /// The type of asynchronous api will be used.
+  ///
+  /// [AsyncType.callback] is used by default.
+  final AsyncType? type;
 }
+
+/// {@template pigeon_lib.async_type}
+/// Represents the type of asynchronous api will be used.
+/// {@endtemplate}
+sealed class AsyncType {
+  const AsyncType();
+
+  /// {@macro pigeon_lib.callback_async_type}
+  const factory AsyncType.callback() = _CallbackAsyncType;
+
+  /// {@macro pigeon_lib.await_async_type}
+  const factory AsyncType.await({bool? isSwiftThrows}) = _AwaitAsyncType;
+}
+
+/// {@template pigeon_lib.callback_async_type}
+/// Represents a callback asynchronous api will be used.
+/// {@endtemplate}
+class _CallbackAsyncType extends AsyncType {
+  /// Constructor for [_CallbackAsyncType].
+  const _CallbackAsyncType();
+}
+
+/// {@template pigeon_lib.await_async_type}
+/// Provides an await-style asynchronous Api (only Swift and Kotlin).
+///
+/// Example:
+///
+///```dart
+///@HostApi()
+///abstract class ExampleHostApi {
+///  @Async(type: AsyncType.await())
+///  bool sendMessage(MessageData message);
+///}
+///```
+/// Swift(iOS 13.0+):
+///
+/// ```swift
+/// func sendMessage(message: MessageData) async throws -> Bool
+/// ```
+///
+/// Kotlin (`ExampleHostApi.setUp` will require `CoroutineScope`):
+///
+/// ```kotlin
+/// suspend fun sendMessage(message: MessageData) : Boolean
+/// ```
+/// {@endtemplate}
+class _AwaitAsyncType extends AsyncType {
+  /// Constructor for [_AwaitAsyncType].
+  const _AwaitAsyncType({this.isSwiftThrows});
+
+  /// Whether the method throws in Swift.
+  ///
+  /// If `true`:
+  ///
+  /// ```swift
+  /// func sendMessage(message: MessageData) async throws -> Bool
+  /// ```
+  ///
+  /// If `false`:
+  ///
+  /// ```swift
+  /// func sendMessage(message: MessageData) async -> Bool
+  /// ```
+  ///
+  /// The default value is `true`.
+  final bool? isSwiftThrows;
+}
+
+/// {@template pigeon_lib.async}
+/// Metadata to annotate a Api method as asynchronous
+/// {@endtemplate}
+const Object async = Async();
 
 class _Attached {
   const _Attached();
@@ -45,9 +126,6 @@ class _Attached {
 class _Static {
   const _Static();
 }
-
-/// Metadata to annotate a Api method as asynchronous
-const Object async = _Asynchronous();
 
 /// Metadata to annotate the field of a ProxyApi as an Attached Field.
 ///

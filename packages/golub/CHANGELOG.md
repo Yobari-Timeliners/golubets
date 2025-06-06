@@ -2,6 +2,10 @@
 
 * Updates minimum supported SDK version to Flutter 3.27/Dart 3.6.
 
+## 25.4.0
+
+* [swift, kotlin] Adds support for Swift concurrency and Kotlin coroutines.
+
 ## 25.3.3
 
 * Adds support for empty data classes.

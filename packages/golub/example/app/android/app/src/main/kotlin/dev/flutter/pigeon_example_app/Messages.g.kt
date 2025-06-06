@@ -12,6 +12,8 @@ import io.flutter.plugin.common.MessageCodec
 import io.flutter.plugin.common.StandardMessageCodec
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 private object MessagesPigeonUtils {
 
@@ -161,6 +163,10 @@ interface ExampleHostApi {
 
   fun sendMessage(message: MessageData, callback: (Result<Boolean>) -> Unit)
 
+  suspend fun sendMessageModernAsync(message: MessageData): Boolean
+
+  suspend fun sendMessageModernAsyncThrows(message: MessageData): Boolean
+
   companion object {
     /** The codec used by ExampleHostApi. */
     val codec: MessageCodec<Any?> by lazy { MessagesPigeonCodec() }
@@ -169,10 +175,12 @@ interface ExampleHostApi {
     fun setUp(
         binaryMessenger: BinaryMessenger,
         api: ExampleHostApi?,
-        messageChannelSuffix: String = ""
+        messageChannelSuffix: String = "",
+        coroutineScope: CoroutineScope
     ) {
       val separatedMessageChannelSuffix =
           if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+      val taskQueue = binaryMessenger.makeBackgroundTaskQueue()
       run {
         val channel =
             BasicMessageChannel<Any?>(
@@ -234,6 +242,56 @@ interface ExampleHostApi {
                 val data = result.getOrNull()
                 reply.reply(MessagesPigeonUtils.wrapResult(data))
               }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsync$separatedMessageChannelSuffix",
+                codec,
+                taskQueue)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val messageArg = args[0] as MessageData
+            coroutineScope.launch {
+              val wrapped: List<Any?> =
+                  try {
+                    listOf(api.sendMessageModernAsync(messageArg))
+                  } catch (exception: Throwable) {
+                    MessagesPigeonUtils.wrapError(exception)
+                  }
+              reply.reply(wrapped)
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsyncThrows$separatedMessageChannelSuffix",
+                codec,
+                taskQueue)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val messageArg = args[0] as MessageData
+            coroutineScope.launch {
+              val wrapped: List<Any?> =
+                  try {
+                    listOf(api.sendMessageModernAsyncThrows(messageArg))
+                  } catch (exception: Throwable) {
+                    MessagesPigeonUtils.wrapError(exception)
+                  }
+              reply.reply(wrapped)
             }
           }
         } else {

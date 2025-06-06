@@ -729,9 +729,9 @@ if (wrapped == nil) {
           parameters: func.parameters,
           returnType: func.returnType,
           errorTypeName: _getErrorClassName(generatorOptions),
-          isAsynchronous: true,
           swiftFunction: func.swiftFunction,
           getParameterName: _getSafeArgumentName,
+          asynchronousType: AsynchronousType.callback,
         ));
       }
     });
@@ -801,8 +801,8 @@ if (wrapped == nil) {
           parameters: method.parameters,
           returnType: method.returnType,
           errorTypeName: 'Error',
-          isAsynchronous: method.isAsynchronous,
           swiftFunction: method.swiftFunction,
+          asynchronousType: method.asynchronousType,
         ));
       }
     });
@@ -844,7 +844,7 @@ if (wrapped == nil) {
                 '${makeChannelName(api, method, dartPackageName)}\\(channelSuffix)',
             parameters: method.parameters,
             returnType: method.returnType,
-            isAsynchronous: method.isAsynchronous,
+            asynchronousType: method.asynchronousType,
             swiftFunction: method.swiftFunction,
             documentationComments: method.documentationComments,
             serialBackgroundQueue:
@@ -944,7 +944,6 @@ if (wrapped == nil) {
             returnType: const TypeDeclaration.voidDeclaration(),
             swiftFunction: 'method(withIdentifier:)',
             setHandlerCondition: setHandlerCondition,
-            isAsynchronous: false,
             onCreateCall: (
               List<String> safeArgNames, {
               required String apiVarName,
@@ -960,7 +959,6 @@ if (wrapped == nil) {
             returnType: const TypeDeclaration.voidDeclaration(),
             setHandlerCondition: setHandlerCondition,
             swiftFunction: null,
-            isAsynchronous: false,
             onCreateCall: (
               List<String> safeArgNames, {
               required String apiVarName,
@@ -1618,9 +1616,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       parameters: parameters,
       returnType: returnType,
       errorTypeName: _getErrorClassName(generatorOptions),
-      isAsynchronous: true,
       swiftFunction: swiftFunction,
       getParameterName: _getSafeArgumentName,
+      asynchronousType: AsynchronousType.callback,
     );
 
     indent.writeScoped('$methodSignature {', '}', () {
@@ -1708,13 +1706,13 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     required String channelName,
     required Iterable<Parameter> parameters,
     required TypeDeclaration returnType,
-    required bool isAsynchronous,
     required String? swiftFunction,
     String? serialBackgroundQueue,
     String setHandlerCondition = 'let api = api',
     List<String> documentationComments = const <String>[],
     String Function(List<String> safeArgNames, {required String apiVarName})?
         onCreateCall,
+    AsynchronousType asynchronousType = AsynchronousType.none,
   }) {
     final _SwiftFunctionComponents components = _SwiftFunctionComponents(
       name: name,
@@ -1784,19 +1782,30 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
             }
           });
         }
-        final String tryStatement = isAsynchronous ? '' : 'try ';
+        final bool throws = switch (asynchronousType) {
+          CallbackAsynchronous() => false,
+          AwaitAsynchronous(
+            :final SwiftAwaitAsynchronousOptions swiftOptions
+          ) =>
+            swiftOptions.throws,
+          NoAsynchronous() => true,
+        };
+        final String tryStatement = throws ? 'try ' : '';
+        final String awaitKeyword = asynchronousType.isAwait ? 'await ' : '';
         late final String call;
         if (onCreateCall == null) {
           // Empty parens are not required when calling a method whose only
           // argument is a trailing closure.
-          final String argumentString = methodArgument.isEmpty && isAsynchronous
-              ? ''
-              : '(${methodArgument.join(', ')})';
-          call = '${tryStatement}api.${components.name}$argumentString';
+          final String argumentString =
+              methodArgument.isEmpty && asynchronousType.isCallback
+                  ? ''
+                  : '(${methodArgument.join(', ')})';
+          call =
+              '$tryStatement${awaitKeyword}api.${components.name}$argumentString';
         } else {
           call = onCreateCall(methodArgument, apiVarName: 'api');
         }
-        if (isAsynchronous) {
+        if (asynchronousType.isCallback) {
           final String resultName = returnType.isVoid ? 'nil' : 'res';
           final String successVariableInit =
               returnType.isVoid ? '' : '(let res)';
@@ -1816,8 +1825,29 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
             });
           });
         } else {
-          indent.write('do ');
-          indent.addScoped('{', '}', () {
+          void wrapInDo(void Function() body) {
+            if (!throws) {
+              return body();
+            }
+
+            indent.writeScoped(
+              'do {',
+              '}',
+              () => body(),
+              addTrailingNewline: false,
+            );
+            indent.addScoped(' catch {', '}', () {
+              indent.writeln('reply(wrapError(error))');
+            });
+          }
+
+          if (asynchronousType.isAwait) {
+            indent.write('Task');
+            indent.addln(' {');
+            indent.inc();
+          }
+
+          wrapInDo(() {
             if (returnType.isVoid) {
               indent.writeln(call);
               indent.writeln('reply(wrapResult(nil))');
@@ -1825,10 +1855,12 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
               indent.writeln('let result = $call');
               indent.writeln('reply(wrapResult(result))');
             }
-          }, addTrailingNewline: false);
-          indent.addScoped(' catch {', '}', () {
-            indent.writeln('reply(wrapError(error))');
           });
+
+          if (asynchronousType.isAwait) {
+            indent.dec();
+            indent.writeln('}');
+          }
         }
       });
     }, addTrailingNewline: false);
@@ -2195,7 +2227,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           ...method.parameters,
         ],
         returnType: method.returnType,
-        isAsynchronous: method.isAsynchronous,
+        asynchronousType: method.asynchronousType,
         errorTypeName: 'Error',
       );
       indent.writeln(methodSignature);
@@ -2332,7 +2364,6 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                 channelName: channelName,
                 returnType: const TypeDeclaration.voidDeclaration(),
                 swiftFunction: null,
-                isAsynchronous: false,
                 onCreateCall: (
                   List<String> methodParameters, {
                   required String apiVarName,
@@ -2383,7 +2414,6 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                 name: field.name,
                 channelName: channelName,
                 swiftFunction: null,
-                isAsynchronous: false,
                 returnType: const TypeDeclaration.voidDeclaration(),
                 onCreateCall: (
                   List<String> methodParameters, {
@@ -2432,14 +2462,14 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                 name: method.name,
                 channelName: makeChannelName(api, method, dartPackageName),
                 returnType: method.returnType,
-                isAsynchronous: method.isAsynchronous,
+                asynchronousType: method.asynchronousType,
                 swiftFunction: null,
                 onCreateCall: (
                   List<String> methodParameters, {
                   required String apiVarName,
                 }) {
                   final String tryStatement =
-                      method.isAsynchronous ? '' : 'try ';
+                      method.asynchronousType.isCallback ? '' : 'try ';
                   final List<String> parameters = <String>[
                     'pigeonApi: $apiVarName',
                     // Skip the identifier used by the InstanceManager.
@@ -2505,8 +2535,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         Parameter(name: 'pigeonInstance', type: apiAsTypeDeclaration),
       ],
       returnType: const TypeDeclaration.voidDeclaration(),
-      isAsynchronous: true,
       errorTypeName: _getErrorClassName(generatorOptions),
+      asynchronousType: AsynchronousType.callback,
     );
     indent.writeScoped('$methodSignature {', '}', () {
       indent.writeScoped(
@@ -2631,9 +2661,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           ...method.parameters,
         ],
         returnType: method.returnType,
-        isAsynchronous: true,
         errorTypeName: _getErrorClassName(generatorOptions),
         getParameterName: _getSafeArgumentName,
+        asynchronousType: AsynchronousType.callback,
       );
 
       indent.write(methodSignature);
@@ -2948,10 +2978,10 @@ String _getMethodSignature({
   required Iterable<Parameter> parameters,
   required TypeDeclaration returnType,
   required String errorTypeName,
-  bool isAsynchronous = false,
   String? swiftFunction,
   String Function(int index, NamedType argument) getParameterName =
       _getArgumentName,
+  AsynchronousType asynchronousType = AsynchronousType.none,
 }) {
   final _SwiftFunctionComponents components = _SwiftFunctionComponents(
     name: name,
@@ -2974,17 +3004,24 @@ String _getMethodSignature({
     return '${label != name ? '$label ' : ''}$name: $type';
   }).join(', ');
 
-  if (isAsynchronous) {
+  if (asynchronousType.isCallback) {
     if (parameters.isEmpty) {
       return 'func ${components.name}(completion: @escaping (Result<$returnTypeString, $errorTypeName>) -> Void)';
     } else {
       return 'func ${components.name}($parameterSignature, completion: @escaping (Result<$returnTypeString, $errorTypeName>) -> Void)';
     }
   } else {
+    final String asyncKeyword = (asynchronousType.isAwait) ? ' async' : '';
+    final String throwsKeyword = switch (asynchronousType) {
+      CallbackAsynchronous() => '',
+      AwaitAsynchronous(:final SwiftAwaitAsynchronousOptions swiftOptions) =>
+        swiftOptions.throws ? ' throws' : '',
+      NoAsynchronous() => ' throws',
+    };
     if (returnType.isVoid) {
-      return 'func ${components.name}($parameterSignature) throws';
+      return 'func ${components.name}($parameterSignature)$asyncKeyword$throwsKeyword';
     } else {
-      return 'func ${components.name}($parameterSignature) throws -> $returnTypeString';
+      return 'func ${components.name}($parameterSignature)$asyncKeyword$throwsKeyword -> $returnTypeString';
     }
   }
 }

@@ -52,6 +52,18 @@ abstract class ExampleHostApi {
 
   @async
   bool sendMessage(MessageData message);
+  // This annotation generates an await-style asynchronous method,
+  // unlike the callback-based approach used in sendMessage.
+  // In Swift, this method does not throw exceptions (`isSwiftThrows: false`).
+  // Will return true if the message was sent from background thread.
+  @TaskQueue(type: TaskQueueType.serialBackgroundThread)
+  @Async(type: AsyncType.await(isSwiftThrows: false))
+  bool sendMessageModernAsync(MessageData message);
+
+  // The same as sendMessageModernAsync, but throws an exception.
+  @TaskQueue(type: TaskQueueType.serialBackgroundThread)
+  @Async(type: AsyncType.await(isSwiftThrows: true))
+  bool sendMessageModernAsyncThrows(MessageData message);
 }
 // #enddocregion host-definitions
 

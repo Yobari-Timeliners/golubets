@@ -1463,19 +1463,20 @@ void main() {
     final Root root = Root(apis: <Api>[
       AstHostApi(name: 'Api', methods: <Method>[
         Method(
-            name: 'doSomething',
-            location: ApiLocation.host,
-            parameters: <Parameter>[
-              Parameter(
-                  type: TypeDeclaration(
-                    baseName: 'Input',
-                    associatedClass: emptyClass,
-                    isNullable: false,
-                  ),
-                  name: 'input')
-            ],
-            returnType: const TypeDeclaration.voidDeclaration(),
-            isAsynchronous: true)
+          name: 'doSomething',
+          location: ApiLocation.host,
+          parameters: <Parameter>[
+            Parameter(
+                type: TypeDeclaration(
+                  baseName: 'Input',
+                  associatedClass: emptyClass,
+                  isNullable: false,
+                ),
+                name: 'input')
+          ],
+          returnType: const TypeDeclaration.voidDeclaration(),
+          asynchronousType: AsynchronousType.callback,
+        )
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
@@ -1518,23 +1519,24 @@ void main() {
     final Root root = Root(apis: <Api>[
       AstHostApi(name: 'Api', methods: <Method>[
         Method(
-            name: 'doSomething',
-            location: ApiLocation.host,
-            parameters: <Parameter>[
-              Parameter(
-                  type: TypeDeclaration(
-                    baseName: 'Input',
-                    associatedClass: emptyClass,
-                    isNullable: false,
-                  ),
-                  name: 'input')
-            ],
-            returnType: TypeDeclaration(
-              baseName: 'Output',
-              associatedClass: emptyClass,
-              isNullable: false,
-            ),
-            isAsynchronous: true)
+          name: 'doSomething',
+          location: ApiLocation.host,
+          parameters: <Parameter>[
+            Parameter(
+                type: TypeDeclaration(
+                  baseName: 'Input',
+                  associatedClass: emptyClass,
+                  isNullable: false,
+                ),
+                name: 'input')
+          ],
+          returnType: TypeDeclaration(
+            baseName: 'Output',
+            associatedClass: emptyClass,
+            isNullable: false,
+          ),
+          asynchronousType: AsynchronousType.callback,
+        )
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
@@ -1577,15 +1579,16 @@ void main() {
     final Root root = Root(apis: <Api>[
       AstHostApi(name: 'Api', methods: <Method>[
         Method(
-            name: 'doSomething',
-            location: ApiLocation.host,
-            parameters: <Parameter>[],
-            returnType: TypeDeclaration(
-              baseName: 'Output',
-              associatedClass: emptyClass,
-              isNullable: false,
-            ),
-            isAsynchronous: true)
+          name: 'doSomething',
+          location: ApiLocation.host,
+          parameters: <Parameter>[],
+          returnType: TypeDeclaration(
+            baseName: 'Output',
+            associatedClass: emptyClass,
+            isNullable: false,
+          ),
+          asynchronousType: AsynchronousType.callback,
+        )
       ])
     ], classes: <Class>[
       Class(name: 'Output', fields: <NamedType>[
@@ -1623,11 +1626,12 @@ void main() {
     final Root root = Root(apis: <Api>[
       AstHostApi(name: 'Api', methods: <Method>[
         Method(
-            name: 'doSomething',
-            location: ApiLocation.host,
-            parameters: <Parameter>[],
-            returnType: const TypeDeclaration.voidDeclaration(),
-            isAsynchronous: true)
+          name: 'doSomething',
+          location: ApiLocation.host,
+          parameters: <Parameter>[],
+          returnType: const TypeDeclaration.voidDeclaration(),
+          asynchronousType: AsynchronousType.callback,
+        )
       ])
     ], classes: <Class>[], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
@@ -1659,23 +1663,24 @@ void main() {
     final Root root = Root(apis: <Api>[
       AstHostApi(name: 'Api', methods: <Method>[
         Method(
-            name: 'doSomething',
-            location: ApiLocation.host,
-            parameters: <Parameter>[
-              Parameter(
-                  type: TypeDeclaration(
-                    baseName: 'Input',
-                    associatedClass: emptyClass,
-                    isNullable: false,
-                  ),
-                  name: '')
-            ],
-            returnType: TypeDeclaration(
-              baseName: 'Output',
-              associatedClass: emptyClass,
-              isNullable: false,
-            ),
-            isAsynchronous: true)
+          name: 'doSomething',
+          location: ApiLocation.host,
+          parameters: <Parameter>[
+            Parameter(
+                type: TypeDeclaration(
+                  baseName: 'Input',
+                  associatedClass: emptyClass,
+                  isNullable: false,
+                ),
+                name: '')
+          ],
+          returnType: TypeDeclaration(
+            baseName: 'Output',
+            associatedClass: emptyClass,
+            isNullable: false,
+          ),
+          asynchronousType: AsynchronousType.callback,
+        )
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
@@ -1718,19 +1723,20 @@ void main() {
     final Root root = Root(apis: <Api>[
       AstHostApi(name: 'Api', methods: <Method>[
         Method(
-            name: 'doSomething',
-            location: ApiLocation.host,
-            parameters: <Parameter>[
-              Parameter(
-                  type: TypeDeclaration(
-                    baseName: 'Input',
-                    associatedClass: emptyClass,
-                    isNullable: false,
-                  ),
-                  name: 'foo')
-            ],
-            returnType: const TypeDeclaration.voidDeclaration(),
-            isAsynchronous: true)
+          name: 'doSomething',
+          location: ApiLocation.host,
+          parameters: <Parameter>[
+            Parameter(
+                type: TypeDeclaration(
+                  baseName: 'Input',
+                  associatedClass: emptyClass,
+                  isNullable: false,
+                ),
+                name: 'foo')
+          ],
+          returnType: const TypeDeclaration.voidDeclaration(),
+          asynchronousType: AsynchronousType.callback,
+        )
       ])
     ], classes: <Class>[
       Class(name: 'Input', fields: <NamedType>[
@@ -1773,11 +1779,12 @@ void main() {
     final Root root = Root(apis: <Api>[
       AstHostApi(name: 'Api', methods: <Method>[
         Method(
-            name: 'doSomething',
-            location: ApiLocation.host,
-            parameters: <Parameter>[],
-            returnType: const TypeDeclaration.voidDeclaration(),
-            isAsynchronous: true)
+          name: 'doSomething',
+          location: ApiLocation.host,
+          parameters: <Parameter>[],
+          returnType: const TypeDeclaration.voidDeclaration(),
+          asynchronousType: AsynchronousType.callback,
+        )
       ])
     ], classes: <Class>[], enums: <Enum>[]);
     final StringBuffer sink = StringBuffer();
@@ -1809,15 +1816,16 @@ void main() {
     final Root root = Root(apis: <Api>[
       AstHostApi(name: 'Api', methods: <Method>[
         Method(
-            name: 'doSomething',
-            location: ApiLocation.host,
-            parameters: <Parameter>[],
-            returnType: TypeDeclaration(
-              baseName: 'Output',
-              associatedClass: emptyClass,
-              isNullable: false,
-            ),
-            isAsynchronous: true)
+          name: 'doSomething',
+          location: ApiLocation.host,
+          parameters: <Parameter>[],
+          returnType: TypeDeclaration(
+            baseName: 'Output',
+            associatedClass: emptyClass,
+            isNullable: false,
+          ),
+          asynchronousType: AsynchronousType.callback,
+        )
       ])
     ], classes: <Class>[
       Class(name: 'Output', fields: <NamedType>[
@@ -2369,7 +2377,7 @@ void main() {
                     const TypeDeclaration(isNullable: false, baseName: 'int')),
           ],
           returnType: const TypeDeclaration(baseName: 'int', isNullable: false),
-          isAsynchronous: true,
+          asynchronousType: AsynchronousType.callback,
         )
       ])
     ], classes: <Class>[], enums: <Enum>[]);
@@ -3089,7 +3097,7 @@ void main() {
             associatedClass: emptyClass,
             isNullable: false,
           ),
-          isAsynchronous: true,
+          asynchronousType: AsynchronousType.callback,
         )
       ])
     ], classes: <Class>[
@@ -3196,7 +3204,7 @@ void main() {
         Method(
           name: 'doSomething',
           location: ApiLocation.flutter,
-          isAsynchronous: true,
+          asynchronousType: AsynchronousType.callback,
           parameters: <Parameter>[],
           returnType: TypeDeclaration(
             baseName: 'Enum1',
@@ -3244,7 +3252,7 @@ void main() {
         Method(
           name: 'doSomething',
           location: ApiLocation.flutter,
-          isAsynchronous: true,
+          asynchronousType: AsynchronousType.callback,
           parameters: <Parameter>[],
           returnType: TypeDeclaration(
             baseName: 'Enum1',
@@ -3297,7 +3305,7 @@ void main() {
         Method(
           name: 'doSomething',
           location: ApiLocation.host,
-          isAsynchronous: true,
+          asynchronousType: AsynchronousType.callback,
           parameters: <Parameter>[Parameter(name: 'value', type: enumType)],
           returnType: enumType,
         )
@@ -3346,7 +3354,7 @@ void main() {
         Method(
           name: 'doSomething',
           location: ApiLocation.host,
-          isAsynchronous: true,
+          asynchronousType: AsynchronousType.callback,
           parameters: <Parameter>[Parameter(name: 'value', type: enumType)],
           returnType: enumType,
         )

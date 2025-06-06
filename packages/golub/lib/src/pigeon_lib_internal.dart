@@ -1701,7 +1701,8 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     final dart_ast.FormalParameterList parameters = node.parameters!;
     final List<Parameter> arguments =
         parameters.parameters.map(_formalParameterToPigeonParameter).toList();
-    final bool isAsynchronous = _hasMetadata(node.metadata, 'async');
+    final AsynchronousType asynchronousType =
+        _parseAsynchronousType(node.metadata);
     final bool isStatic = _hasMetadata(node.metadata, 'static');
     final String objcSelector = _findMetadata(node.metadata, 'ObjCSelector')
             ?.arguments
@@ -1749,7 +1750,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
             AstFlutterApi() => ApiLocation.flutter,
             AstEventChannelApi() => ApiLocation.host,
           },
-          isAsynchronous: isAsynchronous,
+          asynchronousType: asynchronousType,
           objcSelector: objcSelector,
           swiftFunction: swiftFunction,
           offset: node.offset,
@@ -1943,6 +1944,8 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       final TaskQueueType taskQueueType =
           _stringToEnum(TaskQueueType.values, taskQueueTypeName) ??
               TaskQueueType.serial;
+      final AsynchronousType asynchronousType =
+          _parseAsynchronousType(node.metadata);
 
       // Methods without named return types aren't supported.
       final dart_ast.TypeAnnotation returnType = type.returnType!;
@@ -1961,7 +1964,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
           isRequired: type.question == null,
           isStatic: isStatic,
           parameters: parameters,
-          isAsynchronous: _hasMetadata(node.metadata, 'async'),
+          asynchronousType: asynchronousType,
           swiftFunction: swiftFunction,
           offset: node.offset,
           taskQueueType: taskQueueType,
@@ -1999,6 +2002,39 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
             );
       }
     }
+  }
+
+  AsynchronousType _parseAsynchronousType(
+    dart_ast.NodeList<dart_ast.Annotation> metadata,
+  ) {
+    if (_hasMetadata(metadata, 'async')) {
+      return AsynchronousType.callback;
+    }
+
+    final dart_ast.Annotation? meta = _findMetadata(metadata, 'Async');
+
+    if (meta == null) {
+      return AsynchronousType.none;
+    }
+
+    final dart_ast.Expression? type = meta.arguments?.arguments.firstOrNull;
+
+    if (type is! dart_ast.NamedExpression) {
+      return AsynchronousType.callback;
+    }
+
+    if (type.expression.toSource().contains('AsyncType.await')) {
+      final Map<String, Object> options =
+          _expressionToMap(type.expression) as Map<String, Object>;
+
+      return AwaitAsynchronous(
+        swiftOptions: SwiftAwaitAsynchronousOptions(
+          throws: options['isSwiftThrows'] as bool? ?? true,
+        ),
+      );
+    }
+
+    return const CallbackAsynchronous();
   }
 }
 

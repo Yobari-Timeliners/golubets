@@ -76,6 +76,18 @@ abstract class ExampleHostApi {
 
   @async
   bool sendMessage(MessageData message);
+  // This annotation generates an await-style asynchronous method,
+  // unlike the callback-based approach used in sendMessage.
+  // In Swift, this method does not throw exceptions (`isSwiftThrows: false`).
+  // Will return true if the message was sent from background thread.
+  @TaskQueue(type: TaskQueueType.serialBackgroundThread)
+  @Async(type: AsyncType.await(isSwiftThrows: false))
+  bool sendMessageModernAsync(MessageData message);
+
+  // The same as sendMessageModernAsync, but throws an exception.
+  @TaskQueue(type: TaskQueueType.serialBackgroundThread)
+  @Async(type: AsyncType.await(isSwiftThrows: true))
+  bool sendMessageModernAsyncThrows(MessageData message);
 }
 ```
 
@@ -113,6 +125,26 @@ Future<bool> sendMessage(String messageText) {
     return Future<bool>(() => true);
   }
 }
+
+Future<bool> sendMessageModernAsync(String messageText) {
+  final MessageData message = MessageData(
+    code: Code.two,
+    data: <String, String>{'header': 'this is a header'},
+    description: 'uri text',
+  );
+
+  return _api.sendMessageModernAsync(message);
+}
+
+Future<bool> sendMessageModernAsyncAndThrow(String messageText) {
+  final MessageData message = MessageData(
+    code: Code.two,
+    data: <String, String>{'header': 'this is a header'},
+    description: 'uri text',
+  );
+
+  return _api.sendMessageModernAsyncThrows(message);
+}
 ```
 
 ### Swift
@@ -140,7 +172,22 @@ private class PigeonApiImplementation: ExampleHostApi {
     }
     completion(.success(true))
   }
+
+  /// Unlike implementations on other platforms, this function does not throw any exceptions
+  /// because the `@Async(type: AsyncType.await(isSwiftThrows: false))` annotation was specified.
+  func sendMessageModernAsync(message: MessageData) async -> Bool {
+    return !Thread.isMainThread
+  }
+
+  func sendMessageModernAsyncThrows(message: MessageData) async throws -> Bool {
+    if message.code == .one {
+      return !Thread.isMainThread
+    }
+
+    throw PigeonError(code: "code", message: "message", details: "details")
+  }
 }
+
 ```
 
 ### Kotlin
@@ -164,6 +211,22 @@ private class PigeonApiImplementation : ExampleHostApi {
       return
     }
     callback(Result.success(true))
+  }
+
+  override suspend fun sendMessageModernAsync(message: MessageData): Boolean {
+    if (message.code == Code.ONE) {
+      throw FlutterError("code", "message", "details")
+    }
+
+    return Thread.currentThread() != Looper.getMainLooper().getThread()
+  }
+
+  override suspend fun sendMessageModernAsyncThrows(message: MessageData): Boolean {
+    if (message.code == Code.ONE) {
+      return Thread.currentThread() != Looper.getMainLooper().getThread()
+    }
+
+    throw FlutterError("code", "message", "details")
   }
 }
 ```
@@ -191,7 +254,6 @@ class PigeonApiImplementation : public ExampleHostApi {
     }
     result(true);
   }
-};
 ```
 
 ### GObject
@@ -230,11 +292,13 @@ static void handle_send_message(
   pigeon_example_package_example_host_api_respond_send_message(response_handle,
                                                                TRUE);
 }
-
+// ···
 static PigeonExamplePackageExampleHostApiVTable example_host_api_vtable = {
     .get_host_language = handle_get_host_language,
     .add = handle_add,
-    .send_message = handle_send_message};
+    .send_message = handle_send_message,
+    // ···
+};
 ```
 
 ## FlutterApi Example
@@ -288,6 +352,7 @@ private class PigeonFlutterApi {
     }
   }
 }
+
 ```
 
 ### Kotlin
@@ -433,6 +498,7 @@ class EventListener: StreamEventsStreamHandler {
     eventSink = nil
   }
 }
+
 ```
 
 Register the handler with the generated method.

@@ -227,6 +227,8 @@ protocol ExampleHostApi {
   func getHostLanguage() throws -> String
   func add(_ a: Int64, to b: Int64) throws -> Int64
   func sendMessage(message: MessageData, completion: @escaping (Result<Bool, Error>) -> Void)
+  func sendMessageModernAsync(message: MessageData) async -> Bool
+  func sendMessageModernAsyncThrows(message: MessageData) async throws -> Bool
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -237,6 +239,11 @@ class ExampleHostApiSetup {
     binaryMessenger: FlutterBinaryMessenger, api: ExampleHostApi?, messageChannelSuffix: String = ""
   ) {
     let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
+    #if os(iOS)
+      let taskQueue = binaryMessenger.makeBackgroundTaskQueue?()
+    #else
+      let taskQueue: FlutterTaskQueue? = nil
+    #endif
     let getHostLanguageChannel = FlutterBasicMessageChannel(
       name:
         "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.getHostLanguage\(channelSuffix)",
@@ -289,6 +296,54 @@ class ExampleHostApiSetup {
       }
     } else {
       sendMessageChannel.setMessageHandler(nil)
+    }
+    let sendMessageModernAsyncChannel =
+      taskQueue == nil
+      ? FlutterBasicMessageChannel(
+        name:
+          "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsync\(channelSuffix)",
+        binaryMessenger: binaryMessenger, codec: codec)
+      : FlutterBasicMessageChannel(
+        name:
+          "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsync\(channelSuffix)",
+        binaryMessenger: binaryMessenger, codec: codec, taskQueue: taskQueue)
+    if let api = api {
+      sendMessageModernAsyncChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let messageArg = args[0] as! MessageData
+        Task {
+          let result = await api.sendMessageModernAsync(message: messageArg)
+          reply(wrapResult(result))
+        }
+      }
+    } else {
+      sendMessageModernAsyncChannel.setMessageHandler(nil)
+    }
+    let sendMessageModernAsyncThrowsChannel =
+      taskQueue == nil
+      ? FlutterBasicMessageChannel(
+        name:
+          "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsyncThrows\(channelSuffix)",
+        binaryMessenger: binaryMessenger, codec: codec)
+      : FlutterBasicMessageChannel(
+        name:
+          "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsyncThrows\(channelSuffix)",
+        binaryMessenger: binaryMessenger, codec: codec, taskQueue: taskQueue)
+    if let api = api {
+      sendMessageModernAsyncThrowsChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let messageArg = args[0] as! MessageData
+        Task {
+          do {
+            let result = try await api.sendMessageModernAsyncThrows(message: messageArg)
+            reply(wrapResult(result))
+          } catch {
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      sendMessageModernAsyncThrowsChannel.setMessageHandler(nil)
     }
   }
 }

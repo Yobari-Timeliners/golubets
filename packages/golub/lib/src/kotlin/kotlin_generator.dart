@@ -215,6 +215,13 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     indent.writeln('import io.flutter.plugin.common.StandardMessageCodec');
     indent.writeln('import java.io.ByteArrayOutputStream');
     indent.writeln('import java.nio.ByteBuffer');
+    if (root.apis.any((Api api) => api.methods.any((Method it) =>
+        it.asynchronousType.isAwait && it.location == ApiLocation.host))) {
+      indent.writeln('import kotlinx.coroutines.launch');
+      indent.writeln('import kotlinx.coroutines.CoroutineScope');
+      indent.writeln('import kotlinx.coroutines.Dispatchers');
+      indent.writeln('import kotlinx.coroutines.withContext');
+    }
   }
 
   @override
@@ -720,7 +727,7 @@ if (wrapped == null) {
           documentationComments: method.documentationComments,
           returnType: method.returnType,
           parameters: method.parameters,
-          isAsynchronous: method.isAsynchronous,
+          asynchronousType: method.asynchronousType,
         );
       }
 
@@ -736,8 +743,12 @@ if (wrapped == null) {
         indent.writeln(
             '/** Sets up an instance of `$apiName` to handle messages through the `binaryMessenger`. */');
         indent.writeln('@JvmOverloads');
+        final String coroutineScope =
+            api.methods.any((Method method) => method.asynchronousType.isAwait)
+                ? ', coroutineScope: CoroutineScope'
+                : '';
         indent.write(
-            'fun setUp(binaryMessenger: BinaryMessenger, api: $apiName?, messageChannelSuffix: String = "") ');
+            'fun setUp(binaryMessenger: BinaryMessenger, api: $apiName?, messageChannelSuffix: String = ""$coroutineScope) ');
         indent.addScoped('{', '}', () {
           indent.writeln(
               r'val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""');
@@ -758,7 +769,7 @@ if (wrapped == null) {
               taskQueueType: method.taskQueueType,
               parameters: method.parameters,
               returnType: method.returnType,
-              isAsynchronous: method.isAsynchronous,
+              asynchronousType: method.asynchronousType,
               serialBackgroundQueue:
                   method.taskQueueType == TaskQueueType.serialBackgroundThread
                       ? serialBackgroundQueue
@@ -1332,11 +1343,11 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
     required List<Parameter> parameters,
     List<String> documentationComments = const <String>[],
     int? minApiRequirement,
-    bool isAsynchronous = false,
     bool isOpen = false,
     bool isAbstract = false,
     String Function(int index, NamedType type) getArgumentName =
         _getArgumentName,
+    AsynchronousType asynchronousType = AsynchronousType.none,
   }) {
     final List<String> argSignature = <String>[];
     if (parameters.isNotEmpty) {
@@ -1368,11 +1379,12 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
 
     final String openKeyword = isOpen ? 'open ' : '';
     final String abstractKeyword = isAbstract ? 'abstract ' : '';
+    final String suspendKeyword = asynchronousType.isAwait ? 'suspend ' : '';
 
-    if (isAsynchronous) {
+    if (asynchronousType.isCallback) {
       argSignature.add('callback: (Result<$resultType>) -> Unit');
       indent.writeln(
-        '$openKeyword${abstractKeyword}fun $name(${argSignature.join(', ')})',
+        '$openKeyword$abstractKeyword${suspendKeyword}fun $name(${argSignature.join(', ')})',
       );
     } else if (returnType.isVoid) {
       indent.writeln(
@@ -1380,7 +1392,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
       );
     } else {
       indent.writeln(
-        '$openKeyword${abstractKeyword}fun $name(${argSignature.join(', ')}): $returnTypeString',
+        '$openKeyword$abstractKeyword${suspendKeyword}fun $name(${argSignature.join(', ')}): $returnTypeString',
       );
     }
   }
@@ -1394,10 +1406,10 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
     required List<Parameter> parameters,
     required TypeDeclaration returnType,
     String setHandlerCondition = 'api != null',
-    bool isAsynchronous = false,
     String? serialBackgroundQueue,
     String Function(List<String> safeArgNames, {required String apiVarName})?
         onCreateCall,
+    AsynchronousType asynchronousType = AsynchronousType.none,
   }) {
     indent.write('run ');
     indent.addScoped('{', '}', () {
@@ -1432,7 +1444,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
               ? onCreateCall(methodArguments, apiVarName: 'api')
               : 'api.$name(${methodArguments.join(', ')})';
 
-          if (isAsynchronous) {
+          if (asynchronousType.isCallback) {
             final String resultType = returnType.isVoid
                 ? 'Unit'
                 : _nullSafeKotlinTypeForDartType(returnType);
@@ -1455,6 +1467,10 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
               });
             });
           } else {
+            if (asynchronousType.isAwait) {
+              indent.writeln('coroutineScope.launch {');
+              indent.inc();
+            }
             indent.writeScoped('val wrapped: List<Any?> = try {', '}', () {
               if (returnType.isVoid) {
                 indent.writeln(call);
@@ -1471,6 +1487,10 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
             indent.writeln('reply.reply(wrapped)');
           }
         });
+        if (asynchronousType.isAwait) {
+          indent.dec();
+          indent.writeln('}');
+        }
       }, addTrailingNewline: false);
       indent.addScoped(' else {', '}', () {
         indent.writeln('channel.setMessageHandler(null)');
@@ -1503,7 +1523,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
       returnType: returnType,
       parameters: parameters,
       documentationComments: documentationComments,
-      isAsynchronous: true,
+      asynchronousType: AsynchronousType.callback,
       minApiRequirement: minApiRequirement,
       getArgumentName: _getSafeArgumentName,
     );
@@ -1798,7 +1818,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
         name: method.name,
         returnType: method.returnType,
         documentationComments: method.documentationComments,
-        isAsynchronous: method.isAsynchronous,
+        asynchronousType: method.asynchronousType,
         isAbstract: true,
         minApiRequirement: _findAndroidHighestApiRequirement(
           <TypeDeclaration>[
@@ -1996,7 +2016,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
                 channelName: makeChannelName(api, method, dartPackageName),
                 taskQueueType: method.taskQueueType,
                 returnType: method.returnType,
-                isAsynchronous: method.isAsynchronous,
+                asynchronousType: method.asynchronousType,
                 parameters: <Parameter>[
                   if (!method.isStatic)
                     Parameter(

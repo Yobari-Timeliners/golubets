@@ -791,7 +791,7 @@ void main() {
             isNullable: false,
             associatedClass: emptyClass,
           ),
-          isAsynchronous: true,
+          asynchronousType: AsynchronousType.callback,
         )
       ])
     ], classes: <Class>[
@@ -843,7 +843,7 @@ void main() {
                 name: '')
           ],
           returnType: const TypeDeclaration.voidDeclaration(),
-          isAsynchronous: true,
+          asynchronousType: AsynchronousType.callback,
         )
       ])
     ], classes: <Class>[
@@ -898,7 +898,7 @@ void main() {
             isNullable: false,
             associatedClass: emptyClass,
           ),
-          isAsynchronous: true,
+          asynchronousType: AsynchronousType.callback,
         )
       ])
     ], classes: <Class>[
@@ -944,7 +944,7 @@ void main() {
             isNullable: false,
             associatedClass: emptyClass,
           ),
-          isAsynchronous: true,
+          asynchronousType: AsynchronousType.callback,
         )
       ])
     ], classes: <Class>[
@@ -1273,14 +1273,15 @@ void main() {
       apis: <Api>[
         AstHostApi(name: 'Api', methods: <Method>[
           Method(
-              name: 'doit',
-              location: ApiLocation.host,
-              returnType: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: true,
-              ),
-              parameters: <Parameter>[],
-              isAsynchronous: true)
+            name: 'doit',
+            location: ApiLocation.host,
+            returnType: const TypeDeclaration(
+              baseName: 'int',
+              isNullable: true,
+            ),
+            parameters: <Parameter>[],
+            asynchronousType: AsynchronousType.callback,
+          )
         ])
       ],
       classes: <Class>[],
@@ -1334,14 +1335,15 @@ void main() {
       apis: <Api>[
         AstFlutterApi(name: 'Api', methods: <Method>[
           Method(
-              name: 'doit',
-              location: ApiLocation.flutter,
-              returnType: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: true,
-              ),
-              parameters: <Parameter>[],
-              isAsynchronous: true)
+            name: 'doit',
+            location: ApiLocation.flutter,
+            returnType: const TypeDeclaration(
+              baseName: 'int',
+              isNullable: true,
+            ),
+            parameters: <Parameter>[],
+            asynchronousType: AsynchronousType.callback,
+          )
         ])
       ],
       classes: <Class>[],
@@ -1636,7 +1638,7 @@ name: foobar
             isNullable: false,
             associatedClass: emptyClass,
           ),
-          isAsynchronous: true,
+          asynchronousType: AsynchronousType.callback,
         )
       ])
     ], classes: <Class>[

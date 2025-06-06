@@ -19,6 +19,9 @@ import android.os.Looper
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 
 // #docregion kotlin-class
 private class PigeonApiImplementation : ExampleHostApi {
@@ -39,6 +42,22 @@ private class PigeonApiImplementation : ExampleHostApi {
       return
     }
     callback(Result.success(true))
+  }
+
+  override suspend fun sendMessageModernAsync(message: MessageData): Boolean {
+    if (message.code == Code.ONE) {
+      throw FlutterError("code", "message", "details")
+    }
+
+    return Thread.currentThread() != Looper.getMainLooper().getThread()
+  }
+
+  override suspend fun sendMessageModernAsyncThrows(message: MessageData): Boolean {
+    if (message.code == Code.ONE) {
+      return Thread.currentThread() != Looper.getMainLooper().getThread()
+    }
+
+    throw FlutterError("code", "message", "details")
   }
 }
 // #enddocregion kotlin-class
@@ -121,7 +140,10 @@ class MainActivity : FlutterActivity() {
     super.configureFlutterEngine(flutterEngine)
 
     val api = PigeonApiImplementation()
-    ExampleHostApi.setUp(flutterEngine.dartExecutor.binaryMessenger, api)
+    ExampleHostApi.setUp(
+        flutterEngine.dartExecutor.binaryMessenger,
+        api,
+        coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()))
     // #docregion kotlin-init-event
     val eventListener = EventListener()
     StreamEventsStreamHandler.register(flutterEngine.dartExecutor.binaryMessenger, eventListener)
