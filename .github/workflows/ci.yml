@@ -11,7 +11,7 @@ concurrency:
 jobs:
   check-conflict-markers:
     name: Check for Conflict Markers
-    if: ${{ github.event_name == 'pull_request' }}
+    if: ${{ github.base_ref == 'main' }}
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
