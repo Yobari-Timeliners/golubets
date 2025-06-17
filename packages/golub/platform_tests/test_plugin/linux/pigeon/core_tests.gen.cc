@@ -8475,8 +8475,10 @@ core_tests_pigeon_test_host_integration_core_api_echo_modern_async_all_types_res
               core_tests_pigeon_test_host_integration_core_api_echo_modern_async_all_types_response_get_type(),
               nullptr));
   self->value = fl_value_new_list();
-  fl_value_append_take(self->value,
-                       fl_value_new_custom_object(132, G_OBJECT(return_value)));
+  fl_value_append_take(
+      self->value,
+      fl_value_new_custom_object(core_tests_pigeon_test_all_types_type_id,
+                                 G_OBJECT(return_value)));
   return self;
 }
 
@@ -8551,8 +8553,10 @@ core_tests_pigeon_test_host_integration_core_api_echo_modern_async_all_types_and
               core_tests_pigeon_test_host_integration_core_api_echo_modern_async_all_types_and_not_throw_response_get_type(),
               nullptr));
   self->value = fl_value_new_list();
-  fl_value_append_take(self->value,
-                       fl_value_new_custom_object(132, G_OBJECT(return_value)));
+  fl_value_append_take(
+      self->value,
+      fl_value_new_custom_object(core_tests_pigeon_test_all_types_type_id,
+                                 G_OBJECT(return_value)));
   return self;
 }
 
@@ -8627,8 +8631,10 @@ core_tests_pigeon_test_host_integration_core_api_echo_modern_async_all_types_and
               core_tests_pigeon_test_host_integration_core_api_echo_modern_async_all_types_and_throw_response_get_type(),
               nullptr));
   self->value = fl_value_new_list();
-  fl_value_append_take(self->value,
-                       fl_value_new_custom_object(132, G_OBJECT(return_value)));
+  fl_value_append_take(
+      self->value,
+      fl_value_new_custom_object(core_tests_pigeon_test_all_types_type_id,
+                                 G_OBJECT(return_value)));
   return self;
 }
 
@@ -8785,7 +8791,9 @@ core_tests_pigeon_test_host_integration_core_api_echo_modern_async_nullable_all_
   self->value = fl_value_new_list();
   fl_value_append_take(
       self->value, return_value != nullptr
-                       ? fl_value_new_custom_object(133, G_OBJECT(return_value))
+                       ? fl_value_new_custom_object(
+                             core_tests_pigeon_test_all_nullable_types_type_id,
+                             G_OBJECT(return_value))
                        : fl_value_new_null());
   return self;
 }
