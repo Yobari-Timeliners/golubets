@@ -413,7 +413,9 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       final Iterable<NamedType> fields =
           getFieldsInSerializationOrder(classDefinition);
 
-      _writeClassInit(indent, fields.toList());
+      if (!classDefinition.isSealed) {
+        _writeClassInit(indent, fields.toList());
+      }
 
       for (final NamedType field in fields) {
         addDocumentationComments(
@@ -1265,7 +1267,7 @@ if (wrapped == nil) {
 
     final String swiftApiProtocolName =
         '${hostProxyApiPrefix}Protocol${api.name}';
-    indent.writeScoped('public protocol $swiftApiProtocolName {', '}', () {
+    indent.writeScoped('protocol $swiftApiProtocolName {', '}', () {
       _writeProxyApiFlutterMethods(
         indent,
         api,
@@ -1279,7 +1281,7 @@ if (wrapped == nil) {
 
     final String swiftApiName = '$hostProxyApiPrefix${api.name}';
     indent.writeScoped(
-        'public final class $swiftApiName: $swiftApiProtocolName  {', '}', () {
+        'final class $swiftApiName: $swiftApiProtocolName  {', '}', () {
       indent.writeln(
         'unowned let pigeonRegistrar: ${proxyApiRegistrarName(generatorOptions)}',
       );
@@ -1288,7 +1290,7 @@ if (wrapped == nil) {
       _writeProxyApiInheritedApiMethods(indent, api);
 
       indent.writeScoped(
-        'public init(pigeonRegistrar: ${proxyApiRegistrarName(generatorOptions)}, delegate: $swiftApiDelegateName) {',
+        'init(pigeonRegistrar: ${proxyApiRegistrarName(generatorOptions)}, delegate: $swiftApiDelegateName) {',
         '}',
         () {
           indent.writeln('self.pigeonRegistrar = pigeonRegistrar');
@@ -2635,6 +2637,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     required TypeDeclaration apiAsTypeDeclaration,
     required String dartPackageName,
     bool writeBody = true,
+    bool isPublic = false,
   }) {
     for (final Method method in api.flutterMethods) {
       final List<TypeDeclaration> allReferencedTypes = <TypeDeclaration>[
@@ -2671,7 +2674,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         errorTypeName: _getErrorClassName(generatorOptions),
         getParameterName: _getSafeArgumentName,
         asynchronousType: AsynchronousType.callback,
-        isPublic: true,
+        isPublic: isPublic,
       );
 
       indent.write(methodSignature);

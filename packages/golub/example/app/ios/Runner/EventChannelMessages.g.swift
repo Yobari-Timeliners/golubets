@@ -88,8 +88,6 @@ func deepHashEventChannelMessages(value: Any?, hasher: inout Hasher) {
 /// Generated class from Pigeon that represents data sent in messages.
 /// This protocol should not be extended by any user class outside of the generated file.
 public protocol PlatformEvent {
-  public init() {
-  }
 
 }
 

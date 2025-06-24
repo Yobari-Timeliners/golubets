@@ -944,116 +944,116 @@ protocol PigeonApiDelegateProxyApiTestClass {
     completion: @escaping (Result<String, Error>) -> Void)
 }
 
-public protocol PigeonApiProtocolProxyApiTestClass {
+protocol PigeonApiProtocolProxyApiTestClass {
   /// A no-op function taking no arguments and returning no value, to sanity
   /// test basic calling.
-  public func flutterNoop(
+  func flutterNoop(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass,
     completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void)
   /// Responds with an error from an async function returning a value.
-  public func flutterThrowError(
+  func flutterThrowError(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass,
     completion: @escaping (Result<Any?, ProxyApiTestsError>) -> Void)
   /// Responds with an error from an async void function.
-  public func flutterThrowErrorFromVoid(
+  func flutterThrowErrorFromVoid(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass,
     completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void)
   /// Returns the passed boolean, to test serialization and deserialization.
-  public func flutterEchoBool(
+  func flutterEchoBool(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aBool aBoolArg: Bool,
     completion: @escaping (Result<Bool, ProxyApiTestsError>) -> Void)
   /// Returns the passed int, to test serialization and deserialization.
-  public func flutterEchoInt(
+  func flutterEchoInt(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, anInt anIntArg: Int64,
     completion: @escaping (Result<Int64, ProxyApiTestsError>) -> Void)
   /// Returns the passed double, to test serialization and deserialization.
-  public func flutterEchoDouble(
+  func flutterEchoDouble(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aDouble aDoubleArg: Double,
     completion: @escaping (Result<Double, ProxyApiTestsError>) -> Void)
   /// Returns the passed string, to test serialization and deserialization.
-  public func flutterEchoString(
+  func flutterEchoString(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aString aStringArg: String,
     completion: @escaping (Result<String, ProxyApiTestsError>) -> Void)
   /// Returns the passed byte list, to test serialization and deserialization.
-  public func flutterEchoUint8List(
+  func flutterEchoUint8List(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aList aListArg: FlutterStandardTypedData,
     completion: @escaping (Result<FlutterStandardTypedData, ProxyApiTestsError>) -> Void)
   /// Returns the passed list, to test serialization and deserialization.
-  public func flutterEchoList(
+  func flutterEchoList(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aList aListArg: [Any?],
     completion: @escaping (Result<[Any?], ProxyApiTestsError>) -> Void)
   /// Returns the passed list with ProxyApis, to test serialization and
   /// deserialization.
-  public func flutterEchoProxyApiList(
+  func flutterEchoProxyApiList(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aList aListArg: [ProxyApiTestClass?],
     completion: @escaping (Result<[ProxyApiTestClass?], ProxyApiTestsError>) -> Void)
   /// Returns the passed map, to test serialization and deserialization.
-  public func flutterEchoMap(
+  func flutterEchoMap(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aMap aMapArg: [String?: Any?],
     completion: @escaping (Result<[String?: Any?], ProxyApiTestsError>) -> Void)
   /// Returns the passed map with ProxyApis, to test serialization and
   /// deserialization.
-  public func flutterEchoProxyApiMap(
+  func flutterEchoProxyApiMap(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass,
     aMap aMapArg: [String?: ProxyApiTestClass?],
     completion: @escaping (Result<[String?: ProxyApiTestClass?], ProxyApiTestsError>) -> Void)
   /// Returns the passed enum to test serialization and deserialization.
-  public func flutterEchoEnum(
+  func flutterEchoEnum(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, anEnum anEnumArg: ProxyApiTestEnum,
     completion: @escaping (Result<ProxyApiTestEnum, ProxyApiTestsError>) -> Void)
   /// Returns the passed ProxyApi to test serialization and deserialization.
-  public func flutterEchoProxyApi(
+  func flutterEchoProxyApi(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aProxyApi aProxyApiArg: ProxyApiSuperClass,
     completion: @escaping (Result<ProxyApiSuperClass, ProxyApiTestsError>) -> Void)
   /// Returns the passed boolean, to test serialization and deserialization.
-  public func flutterEchoNullableBool(
+  func flutterEchoNullableBool(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aBool aBoolArg: Bool?,
     completion: @escaping (Result<Bool?, ProxyApiTestsError>) -> Void)
   /// Returns the passed int, to test serialization and deserialization.
-  public func flutterEchoNullableInt(
+  func flutterEchoNullableInt(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, anInt anIntArg: Int64?,
     completion: @escaping (Result<Int64?, ProxyApiTestsError>) -> Void)
   /// Returns the passed double, to test serialization and deserialization.
-  public func flutterEchoNullableDouble(
+  func flutterEchoNullableDouble(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aDouble aDoubleArg: Double?,
     completion: @escaping (Result<Double?, ProxyApiTestsError>) -> Void)
   /// Returns the passed string, to test serialization and deserialization.
-  public func flutterEchoNullableString(
+  func flutterEchoNullableString(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aString aStringArg: String?,
     completion: @escaping (Result<String?, ProxyApiTestsError>) -> Void)
   /// Returns the passed byte list, to test serialization and deserialization.
-  public func flutterEchoNullableUint8List(
+  func flutterEchoNullableUint8List(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aList aListArg: FlutterStandardTypedData?,
     completion: @escaping (Result<FlutterStandardTypedData?, ProxyApiTestsError>) -> Void)
   /// Returns the passed list, to test serialization and deserialization.
-  public func flutterEchoNullableList(
+  func flutterEchoNullableList(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aList aListArg: [Any?]?,
     completion: @escaping (Result<[Any?]?, ProxyApiTestsError>) -> Void)
   /// Returns the passed map, to test serialization and deserialization.
-  public func flutterEchoNullableMap(
+  func flutterEchoNullableMap(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aMap aMapArg: [String?: Any?]?,
     completion: @escaping (Result<[String?: Any?]?, ProxyApiTestsError>) -> Void)
   /// Returns the passed enum to test serialization and deserialization.
-  public func flutterEchoNullableEnum(
+  func flutterEchoNullableEnum(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, anEnum anEnumArg: ProxyApiTestEnum?,
     completion: @escaping (Result<ProxyApiTestEnum?, ProxyApiTestsError>) -> Void)
   /// Returns the passed ProxyApi to test serialization and deserialization.
-  public func flutterEchoNullableProxyApi(
+  func flutterEchoNullableProxyApi(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass,
     aProxyApi aProxyApiArg: ProxyApiSuperClass?,
     completion: @escaping (Result<ProxyApiSuperClass?, ProxyApiTestsError>) -> Void)
   /// A no-op function taking no arguments and returning no value, to sanity
   /// test basic asynchronous calling.
-  public func flutterNoopAsync(
+  func flutterNoopAsync(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass,
     completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void)
   /// Returns the passed in generic Object asynchronously.
-  public func flutterEchoAsyncString(
+  func flutterEchoAsyncString(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aString aStringArg: String,
     completion: @escaping (Result<String, ProxyApiTestsError>) -> Void)
 }
 
-public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClass {
+final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClass {
   unowned let pigeonRegistrar: ProxyApiTestsPigeonProxyApiRegistrar
   let pigeonDelegate: PigeonApiDelegateProxyApiTestClass
   ///An implementation of [ProxyApiSuperClass] used to access callback methods
@@ -1066,7 +1066,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
     return pigeonRegistrar.apiDelegate.pigeonApiProxyApiInterface(pigeonRegistrar)
   }
 
-  public init(
+  init(
     pigeonRegistrar: ProxyApiTestsPigeonProxyApiRegistrar,
     delegate: PigeonApiDelegateProxyApiTestClass
   ) {
@@ -2839,7 +2839,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
   /// A no-op function taking no arguments and returning no value, to sanity
   /// test basic calling.
-  public func flutterNoop(
+  func flutterNoop(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass,
     completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
   ) {
@@ -2874,7 +2874,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Responds with an error from an async function returning a value.
-  public func flutterThrowError(
+  func flutterThrowError(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass,
     completion: @escaping (Result<Any?, ProxyApiTestsError>) -> Void
   ) {
@@ -2910,7 +2910,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Responds with an error from an async void function.
-  public func flutterThrowErrorFromVoid(
+  func flutterThrowErrorFromVoid(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass,
     completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
   ) {
@@ -2945,7 +2945,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed boolean, to test serialization and deserialization.
-  public func flutterEchoBool(
+  func flutterEchoBool(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aBool aBoolArg: Bool,
     completion: @escaping (Result<Bool, ProxyApiTestsError>) -> Void
   ) {
@@ -2987,7 +2987,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed int, to test serialization and deserialization.
-  public func flutterEchoInt(
+  func flutterEchoInt(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, anInt anIntArg: Int64,
     completion: @escaping (Result<Int64, ProxyApiTestsError>) -> Void
   ) {
@@ -3029,7 +3029,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed double, to test serialization and deserialization.
-  public func flutterEchoDouble(
+  func flutterEchoDouble(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aDouble aDoubleArg: Double,
     completion: @escaping (Result<Double, ProxyApiTestsError>) -> Void
   ) {
@@ -3071,7 +3071,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed string, to test serialization and deserialization.
-  public func flutterEchoString(
+  func flutterEchoString(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aString aStringArg: String,
     completion: @escaping (Result<String, ProxyApiTestsError>) -> Void
   ) {
@@ -3113,7 +3113,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed byte list, to test serialization and deserialization.
-  public func flutterEchoUint8List(
+  func flutterEchoUint8List(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aList aListArg: FlutterStandardTypedData,
     completion: @escaping (Result<FlutterStandardTypedData, ProxyApiTestsError>) -> Void
   ) {
@@ -3155,7 +3155,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed list, to test serialization and deserialization.
-  public func flutterEchoList(
+  func flutterEchoList(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aList aListArg: [Any?],
     completion: @escaping (Result<[Any?], ProxyApiTestsError>) -> Void
   ) {
@@ -3198,7 +3198,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
 
   /// Returns the passed list with ProxyApis, to test serialization and
   /// deserialization.
-  public func flutterEchoProxyApiList(
+  func flutterEchoProxyApiList(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aList aListArg: [ProxyApiTestClass?],
     completion: @escaping (Result<[ProxyApiTestClass?], ProxyApiTestsError>) -> Void
   ) {
@@ -3240,7 +3240,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed map, to test serialization and deserialization.
-  public func flutterEchoMap(
+  func flutterEchoMap(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aMap aMapArg: [String?: Any?],
     completion: @escaping (Result<[String?: Any?], ProxyApiTestsError>) -> Void
   ) {
@@ -3283,7 +3283,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
 
   /// Returns the passed map with ProxyApis, to test serialization and
   /// deserialization.
-  public func flutterEchoProxyApiMap(
+  func flutterEchoProxyApiMap(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass,
     aMap aMapArg: [String?: ProxyApiTestClass?],
     completion: @escaping (Result<[String?: ProxyApiTestClass?], ProxyApiTestsError>) -> Void
@@ -3326,7 +3326,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed enum to test serialization and deserialization.
-  public func flutterEchoEnum(
+  func flutterEchoEnum(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, anEnum anEnumArg: ProxyApiTestEnum,
     completion: @escaping (Result<ProxyApiTestEnum, ProxyApiTestsError>) -> Void
   ) {
@@ -3368,7 +3368,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed ProxyApi to test serialization and deserialization.
-  public func flutterEchoProxyApi(
+  func flutterEchoProxyApi(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aProxyApi aProxyApiArg: ProxyApiSuperClass,
     completion: @escaping (Result<ProxyApiSuperClass, ProxyApiTestsError>) -> Void
   ) {
@@ -3410,7 +3410,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed boolean, to test serialization and deserialization.
-  public func flutterEchoNullableBool(
+  func flutterEchoNullableBool(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aBool aBoolArg: Bool?,
     completion: @escaping (Result<Bool?, ProxyApiTestsError>) -> Void
   ) {
@@ -3446,7 +3446,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed int, to test serialization and deserialization.
-  public func flutterEchoNullableInt(
+  func flutterEchoNullableInt(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, anInt anIntArg: Int64?,
     completion: @escaping (Result<Int64?, ProxyApiTestsError>) -> Void
   ) {
@@ -3482,7 +3482,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed double, to test serialization and deserialization.
-  public func flutterEchoNullableDouble(
+  func flutterEchoNullableDouble(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aDouble aDoubleArg: Double?,
     completion: @escaping (Result<Double?, ProxyApiTestsError>) -> Void
   ) {
@@ -3518,7 +3518,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed string, to test serialization and deserialization.
-  public func flutterEchoNullableString(
+  func flutterEchoNullableString(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aString aStringArg: String?,
     completion: @escaping (Result<String?, ProxyApiTestsError>) -> Void
   ) {
@@ -3554,7 +3554,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed byte list, to test serialization and deserialization.
-  public func flutterEchoNullableUint8List(
+  func flutterEchoNullableUint8List(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aList aListArg: FlutterStandardTypedData?,
     completion: @escaping (Result<FlutterStandardTypedData?, ProxyApiTestsError>) -> Void
   ) {
@@ -3590,7 +3590,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed list, to test serialization and deserialization.
-  public func flutterEchoNullableList(
+  func flutterEchoNullableList(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aList aListArg: [Any?]?,
     completion: @escaping (Result<[Any?]?, ProxyApiTestsError>) -> Void
   ) {
@@ -3626,7 +3626,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed map, to test serialization and deserialization.
-  public func flutterEchoNullableMap(
+  func flutterEchoNullableMap(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aMap aMapArg: [String?: Any?]?,
     completion: @escaping (Result<[String?: Any?]?, ProxyApiTestsError>) -> Void
   ) {
@@ -3662,7 +3662,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed enum to test serialization and deserialization.
-  public func flutterEchoNullableEnum(
+  func flutterEchoNullableEnum(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, anEnum anEnumArg: ProxyApiTestEnum?,
     completion: @escaping (Result<ProxyApiTestEnum?, ProxyApiTestsError>) -> Void
   ) {
@@ -3698,7 +3698,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed ProxyApi to test serialization and deserialization.
-  public func flutterEchoNullableProxyApi(
+  func flutterEchoNullableProxyApi(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass,
     aProxyApi aProxyApiArg: ProxyApiSuperClass?,
     completion: @escaping (Result<ProxyApiSuperClass?, ProxyApiTestsError>) -> Void
@@ -3736,7 +3736,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
 
   /// A no-op function taking no arguments and returning no value, to sanity
   /// test basic asynchronous calling.
-  public func flutterNoopAsync(
+  func flutterNoopAsync(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass,
     completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
   ) {
@@ -3771,7 +3771,7 @@ public final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClas
   }
 
   /// Returns the passed in generic Object asynchronously.
-  public func flutterEchoAsyncString(
+  func flutterEchoAsyncString(
     pigeonInstance pigeonInstanceArg: ProxyApiTestClass, aString aStringArg: String,
     completion: @escaping (Result<String, ProxyApiTestsError>) -> Void
   ) {
@@ -3819,13 +3819,13 @@ protocol PigeonApiDelegateProxyApiSuperClass {
     throws
 }
 
-public protocol PigeonApiProtocolProxyApiSuperClass {
+protocol PigeonApiProtocolProxyApiSuperClass {
 }
 
-public final class PigeonApiProxyApiSuperClass: PigeonApiProtocolProxyApiSuperClass {
+final class PigeonApiProxyApiSuperClass: PigeonApiProtocolProxyApiSuperClass {
   unowned let pigeonRegistrar: ProxyApiTestsPigeonProxyApiRegistrar
   let pigeonDelegate: PigeonApiDelegateProxyApiSuperClass
-  public init(
+  init(
     pigeonRegistrar: ProxyApiTestsPigeonProxyApiRegistrar,
     delegate: PigeonApiDelegateProxyApiSuperClass
   ) {
@@ -3922,16 +3922,16 @@ public final class PigeonApiProxyApiSuperClass: PigeonApiProtocolProxyApiSuperCl
 open class PigeonApiDelegateProxyApiInterface {
 }
 
-public protocol PigeonApiProtocolProxyApiInterface {
-  public func anInterfaceMethod(
+protocol PigeonApiProtocolProxyApiInterface {
+  func anInterfaceMethod(
     pigeonInstance pigeonInstanceArg: ProxyApiInterface,
     completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void)
 }
 
-public final class PigeonApiProxyApiInterface: PigeonApiProtocolProxyApiInterface {
+final class PigeonApiProxyApiInterface: PigeonApiProtocolProxyApiInterface {
   unowned let pigeonRegistrar: ProxyApiTestsPigeonProxyApiRegistrar
   let pigeonDelegate: PigeonApiDelegateProxyApiInterface
-  public init(
+  init(
     pigeonRegistrar: ProxyApiTestsPigeonProxyApiRegistrar,
     delegate: PigeonApiDelegateProxyApiInterface
   ) {
@@ -3976,7 +3976,7 @@ public final class PigeonApiProxyApiInterface: PigeonApiProtocolProxyApiInterfac
       }
     }
   }
-  public func anInterfaceMethod(
+  func anInterfaceMethod(
     pigeonInstance pigeonInstanceArg: ProxyApiInterface,
     completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
   ) {
@@ -4020,13 +4020,13 @@ protocol PigeonApiDelegateClassWithApiRequirement {
     throws
 }
 
-public protocol PigeonApiProtocolClassWithApiRequirement {
+protocol PigeonApiProtocolClassWithApiRequirement {
 }
 
-public final class PigeonApiClassWithApiRequirement: PigeonApiProtocolClassWithApiRequirement {
+final class PigeonApiClassWithApiRequirement: PigeonApiProtocolClassWithApiRequirement {
   unowned let pigeonRegistrar: ProxyApiTestsPigeonProxyApiRegistrar
   let pigeonDelegate: PigeonApiDelegateClassWithApiRequirement
-  public init(
+  init(
     pigeonRegistrar: ProxyApiTestsPigeonProxyApiRegistrar,
     delegate: PigeonApiDelegateClassWithApiRequirement
   ) {
