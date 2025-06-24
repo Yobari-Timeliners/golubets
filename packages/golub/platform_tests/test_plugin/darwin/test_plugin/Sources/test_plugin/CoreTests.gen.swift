@@ -16,12 +16,12 @@ import Foundation
 #endif
 
 /// Error class for passing custom error details to Dart side.
-final class PigeonError: Error {
+public final class PigeonError: Error {
   let code: String
   let message: String?
   let details: Sendable?
 
-  init(code: String, message: String?, details: Sendable?) {
+  public init(code: String, message: String?, details: Sendable?) {
     self.code = code
     self.message = message
     self.details = details
@@ -136,7 +136,7 @@ func deepHashCoreTests(value: Any?, hasher: inout Hasher) {
   return hasher.combine(String(describing: value))
 }
 
-enum AnEnum: Int {
+public enum AnEnum: Int {
   case one = 0
   case two = 1
   case three = 2
@@ -144,12 +144,17 @@ enum AnEnum: Int {
   case fourHundredTwentyTwo = 4
 }
 
-enum AnotherEnum: Int {
+public enum AnotherEnum: Int {
   case justInCase = 0
 }
 
 /// Generated class from Pigeon that represents data sent in messages.
-struct UnusedClass: Hashable {
+public struct UnusedClass: Hashable {
+  public init(
+    aField: Any? = nil
+  ) {
+    self.aField = aField
+  }
   var aField: Any? = nil
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
@@ -165,10 +170,10 @@ struct UnusedClass: Hashable {
       aField
     ]
   }
-  static func == (lhs: UnusedClass, rhs: UnusedClass) -> Bool {
+  public static func == (lhs: UnusedClass, rhs: UnusedClass) -> Bool {
     return deepEqualsCoreTests(lhs.toList(), rhs.toList())
   }
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     deepHashCoreTests(value: toList(), hasher: &hasher)
   }
 }
@@ -176,7 +181,66 @@ struct UnusedClass: Hashable {
 /// A class containing all supported types.
 ///
 /// Generated class from Pigeon that represents data sent in messages.
-struct AllTypes: Hashable {
+public struct AllTypes: Hashable {
+  public init(
+    aBool: Bool,
+    anInt: Int64,
+    anInt64: Int64,
+    aDouble: Double,
+    aByteArray: FlutterStandardTypedData,
+    a4ByteArray: FlutterStandardTypedData,
+    a8ByteArray: FlutterStandardTypedData,
+    aFloatArray: FlutterStandardTypedData,
+    anEnum: AnEnum,
+    anotherEnum: AnotherEnum,
+    aString: String,
+    anObject: Any,
+    list: [Any?],
+    stringList: [String],
+    intList: [Int64],
+    doubleList: [Double],
+    boolList: [Bool],
+    enumList: [AnEnum],
+    objectList: [Any],
+    listList: [[Any?]],
+    mapList: [[AnyHashable?: Any?]],
+    map: [AnyHashable?: Any?],
+    stringMap: [String: String],
+    intMap: [Int64: Int64],
+    enumMap: [AnEnum: AnEnum],
+    objectMap: [AnyHashable: Any],
+    listMap: [Int64: [Any?]],
+    mapMap: [Int64: [AnyHashable?: Any?]]
+  ) {
+    self.aBool = aBool
+    self.anInt = anInt
+    self.anInt64 = anInt64
+    self.aDouble = aDouble
+    self.aByteArray = aByteArray
+    self.a4ByteArray = a4ByteArray
+    self.a8ByteArray = a8ByteArray
+    self.aFloatArray = aFloatArray
+    self.anEnum = anEnum
+    self.anotherEnum = anotherEnum
+    self.aString = aString
+    self.anObject = anObject
+    self.list = list
+    self.stringList = stringList
+    self.intList = intList
+    self.doubleList = doubleList
+    self.boolList = boolList
+    self.enumList = enumList
+    self.objectList = objectList
+    self.listList = listList
+    self.mapList = mapList
+    self.map = map
+    self.stringMap = stringMap
+    self.intMap = intMap
+    self.enumMap = enumMap
+    self.objectMap = objectMap
+    self.listMap = listMap
+    self.mapMap = mapMap
+  }
   var aBool: Bool
   var anInt: Int64
   var anInt64: Int64
@@ -300,10 +364,10 @@ struct AllTypes: Hashable {
       mapMap,
     ]
   }
-  static func == (lhs: AllTypes, rhs: AllTypes) -> Bool {
+  public static func == (lhs: AllTypes, rhs: AllTypes) -> Bool {
     return deepEqualsCoreTests(lhs.toList(), rhs.toList())
   }
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     deepHashCoreTests(value: toList(), hasher: &hasher)
   }
 }
@@ -311,8 +375,8 @@ struct AllTypes: Hashable {
 /// A class containing all supported nullable types.
 ///
 /// Generated class from Pigeon that represents data sent in messages.
-class AllNullableTypes: Hashable {
-  init(
+public class AllNullableTypes: Hashable {
+  public init(
     aNullableBool: Bool? = nil,
     aNullableInt: Int64? = nil,
     aNullableInt64: Int64? = nil,
@@ -512,13 +576,13 @@ class AllNullableTypes: Hashable {
       recursiveClassMap,
     ]
   }
-  static func == (lhs: AllNullableTypes, rhs: AllNullableTypes) -> Bool {
+  public static func == (lhs: AllNullableTypes, rhs: AllNullableTypes) -> Bool {
     if lhs === rhs {
       return true
     }
     return deepEqualsCoreTests(lhs.toList(), rhs.toList())
   }
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     deepHashCoreTests(value: toList(), hasher: &hasher)
   }
 }
@@ -528,7 +592,66 @@ class AllNullableTypes: Hashable {
 /// test Swift classes.
 ///
 /// Generated class from Pigeon that represents data sent in messages.
-struct AllNullableTypesWithoutRecursion: Hashable {
+public struct AllNullableTypesWithoutRecursion: Hashable {
+  public init(
+    aNullableBool: Bool? = nil,
+    aNullableInt: Int64? = nil,
+    aNullableInt64: Int64? = nil,
+    aNullableDouble: Double? = nil,
+    aNullableByteArray: FlutterStandardTypedData? = nil,
+    aNullable4ByteArray: FlutterStandardTypedData? = nil,
+    aNullable8ByteArray: FlutterStandardTypedData? = nil,
+    aNullableFloatArray: FlutterStandardTypedData? = nil,
+    aNullableEnum: AnEnum? = nil,
+    anotherNullableEnum: AnotherEnum? = nil,
+    aNullableString: String? = nil,
+    aNullableObject: Any? = nil,
+    list: [Any?]? = nil,
+    stringList: [String?]? = nil,
+    intList: [Int64?]? = nil,
+    doubleList: [Double?]? = nil,
+    boolList: [Bool?]? = nil,
+    enumList: [AnEnum?]? = nil,
+    objectList: [Any?]? = nil,
+    listList: [[Any?]?]? = nil,
+    mapList: [[AnyHashable?: Any?]?]? = nil,
+    map: [AnyHashable?: Any?]? = nil,
+    stringMap: [String?: String?]? = nil,
+    intMap: [Int64?: Int64?]? = nil,
+    enumMap: [AnEnum?: AnEnum?]? = nil,
+    objectMap: [AnyHashable?: Any?]? = nil,
+    listMap: [Int64?: [Any?]?]? = nil,
+    mapMap: [Int64?: [AnyHashable?: Any?]?]? = nil
+  ) {
+    self.aNullableBool = aNullableBool
+    self.aNullableInt = aNullableInt
+    self.aNullableInt64 = aNullableInt64
+    self.aNullableDouble = aNullableDouble
+    self.aNullableByteArray = aNullableByteArray
+    self.aNullable4ByteArray = aNullable4ByteArray
+    self.aNullable8ByteArray = aNullable8ByteArray
+    self.aNullableFloatArray = aNullableFloatArray
+    self.aNullableEnum = aNullableEnum
+    self.anotherNullableEnum = anotherNullableEnum
+    self.aNullableString = aNullableString
+    self.aNullableObject = aNullableObject
+    self.list = list
+    self.stringList = stringList
+    self.intList = intList
+    self.doubleList = doubleList
+    self.boolList = boolList
+    self.enumList = enumList
+    self.objectList = objectList
+    self.listList = listList
+    self.mapList = mapList
+    self.map = map
+    self.stringMap = stringMap
+    self.intMap = intMap
+    self.enumMap = enumMap
+    self.objectMap = objectMap
+    self.listMap = listMap
+    self.mapMap = mapMap
+  }
   var aNullableBool: Bool? = nil
   var aNullableInt: Int64? = nil
   var aNullableInt64: Int64? = nil
@@ -652,12 +775,12 @@ struct AllNullableTypesWithoutRecursion: Hashable {
       mapMap,
     ]
   }
-  static func == (lhs: AllNullableTypesWithoutRecursion, rhs: AllNullableTypesWithoutRecursion)
-    -> Bool
-  {
+  public static func == (
+    lhs: AllNullableTypesWithoutRecursion, rhs: AllNullableTypesWithoutRecursion
+  ) -> Bool {
     return deepEqualsCoreTests(lhs.toList(), rhs.toList())
   }
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     deepHashCoreTests(value: toList(), hasher: &hasher)
   }
 }
@@ -669,7 +792,24 @@ struct AllNullableTypesWithoutRecursion: Hashable {
 /// than `AllTypes` when testing doesn't require both (ie. testing null classes).
 ///
 /// Generated class from Pigeon that represents data sent in messages.
-struct AllClassesWrapper: Hashable {
+public struct AllClassesWrapper: Hashable {
+  public init(
+    allNullableTypes: AllNullableTypes,
+    allNullableTypesWithoutRecursion: AllNullableTypesWithoutRecursion? = nil,
+    allTypes: AllTypes? = nil,
+    classList: [AllTypes?],
+    nullableClassList: [AllNullableTypesWithoutRecursion?]? = nil,
+    classMap: [Int64?: AllTypes?],
+    nullableClassMap: [Int64?: AllNullableTypesWithoutRecursion?]? = nil
+  ) {
+    self.allNullableTypes = allNullableTypes
+    self.allNullableTypesWithoutRecursion = allNullableTypesWithoutRecursion
+    self.allTypes = allTypes
+    self.classList = classList
+    self.nullableClassList = nullableClassList
+    self.classMap = classMap
+    self.nullableClassMap = nullableClassMap
+  }
   var allNullableTypes: AllNullableTypes
   var allNullableTypesWithoutRecursion: AllNullableTypesWithoutRecursion? = nil
   var allTypes: AllTypes? = nil
@@ -711,10 +851,10 @@ struct AllClassesWrapper: Hashable {
       nullableClassMap,
     ]
   }
-  static func == (lhs: AllClassesWrapper, rhs: AllClassesWrapper) -> Bool {
+  public static func == (lhs: AllClassesWrapper, rhs: AllClassesWrapper) -> Bool {
     return deepEqualsCoreTests(lhs.toList(), rhs.toList())
   }
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     deepHashCoreTests(value: toList(), hasher: &hasher)
   }
 }
@@ -722,7 +862,12 @@ struct AllClassesWrapper: Hashable {
 /// A data class containing a List, used in unit tests.
 ///
 /// Generated class from Pigeon that represents data sent in messages.
-struct TestMessage: Hashable {
+public struct TestMessage: Hashable {
+  public init(
+    testList: [Any?]? = nil
+  ) {
+    self.testList = testList
+  }
   var testList: [Any?]? = nil
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
@@ -738,10 +883,10 @@ struct TestMessage: Hashable {
       testList
     ]
   }
-  static func == (lhs: TestMessage, rhs: TestMessage) -> Bool {
+  public static func == (lhs: TestMessage, rhs: TestMessage) -> Bool {
     return deepEqualsCoreTests(lhs.toList(), rhs.toList())
   }
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     deepHashCoreTests(value: toList(), hasher: &hasher)
   }
 }
@@ -829,7 +974,7 @@ class CoreTestsPigeonCodec: FlutterStandardMessageCodec, @unchecked Sendable {
 /// platform_test integration tests.
 ///
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
-protocol HostIntegrationCoreApi {
+public protocol HostIntegrationCoreApi {
   /// A no-op function taking no arguments and returning no value, to sanity
   /// test basic calling.
   func noop() throws
@@ -1203,10 +1348,10 @@ protocol HostIntegrationCoreApi {
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
-class HostIntegrationCoreApiSetup {
+public class HostIntegrationCoreApiSetup {
   static var codec: FlutterStandardMessageCodec { CoreTestsPigeonCodec.shared }
   /// Sets up an instance of `HostIntegrationCoreApi` to handle messages through the `binaryMessenger`.
-  static func setUp(
+  public static func setUp(
     binaryMessenger: FlutterBinaryMessenger, api: HostIntegrationCoreApi?,
     messageChannelSuffix: String = ""
   ) {
@@ -4361,7 +4506,7 @@ class HostIntegrationCoreApiSetup {
 /// integration tests to call into.
 ///
 /// Generated protocol from Pigeon that represents Flutter messages that can be called from Swift.
-protocol FlutterIntegrationCoreApiProtocol {
+public protocol FlutterIntegrationCoreApiProtocol {
   /// A no-op function taking no arguments and returning no value, to sanity
   /// test basic calling.
   func noop(completion: @escaping (Result<Void, PigeonError>) -> Void)
@@ -4544,10 +4689,10 @@ protocol FlutterIntegrationCoreApiProtocol {
   /// Returns the passed in generic Object asynchronously.
   func echoAsync(_ aStringArg: String, completion: @escaping (Result<String, PigeonError>) -> Void)
 }
-class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
+public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
   private let binaryMessenger: FlutterBinaryMessenger
   private let messageChannelSuffix: String
-  init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "") {
+  public init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "") {
     self.binaryMessenger = binaryMessenger
     self.messageChannelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
   }
@@ -4556,7 +4701,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
   }
   /// A no-op function taking no arguments and returning no value, to sanity
   /// test basic calling.
-  func noop(completion: @escaping (Result<Void, PigeonError>) -> Void) {
+  public func noop(completion: @escaping (Result<Void, PigeonError>) -> Void) {
     let channelName: String =
       "dev.flutter.pigeon.pigeon_integration_tests.FlutterIntegrationCoreApi.noop\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(
@@ -4577,7 +4722,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Responds with an error from an async function returning a value.
-  func throwError(completion: @escaping (Result<Any?, PigeonError>) -> Void) {
+  public func throwError(completion: @escaping (Result<Any?, PigeonError>) -> Void) {
     let channelName: String =
       "dev.flutter.pigeon.pigeon_integration_tests.FlutterIntegrationCoreApi.throwError\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(
@@ -4599,7 +4744,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Responds with an error from an async void function.
-  func throwErrorFromVoid(completion: @escaping (Result<Void, PigeonError>) -> Void) {
+  public func throwErrorFromVoid(completion: @escaping (Result<Void, PigeonError>) -> Void) {
     let channelName: String =
       "dev.flutter.pigeon.pigeon_integration_tests.FlutterIntegrationCoreApi.throwErrorFromVoid\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(
@@ -4620,7 +4765,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed object, to test serialization and deserialization.
-  func echo(
+  public func echo(
     _ everythingArg: AllTypes, completion: @escaping (Result<AllTypes, PigeonError>) -> Void
   ) {
     let channelName: String =
@@ -4650,7 +4795,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed object, to test serialization and deserialization.
-  func echoNullable(
+  public func echoNullable(
     _ everythingArg: AllNullableTypes?,
     completion: @escaping (Result<AllNullableTypes?, PigeonError>) -> Void
   ) {
@@ -4677,7 +4822,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
   /// Returns passed in arguments of multiple types.
   ///
   /// Tests multiple-arity FlutterApi handling.
-  func sendMultipleNullableTypes(
+  public func sendMultipleNullableTypes(
     aBool aNullableBoolArg: Bool?, anInt aNullableIntArg: Int64?,
     aString aNullableStringArg: String?,
     completion: @escaping (Result<AllNullableTypes, PigeonError>) -> Void
@@ -4710,7 +4855,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed object, to test serialization and deserialization.
-  func echoNullable(
+  public func echoNullable(
     _ everythingArg: AllNullableTypesWithoutRecursion?,
     completion: @escaping (Result<AllNullableTypesWithoutRecursion?, PigeonError>) -> Void
   ) {
@@ -4737,7 +4882,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
   /// Returns passed in arguments of multiple types.
   ///
   /// Tests multiple-arity FlutterApi handling.
-  func sendMultipleNullableTypesWithoutRecursion(
+  public func sendMultipleNullableTypesWithoutRecursion(
     aBool aNullableBoolArg: Bool?, anInt aNullableIntArg: Int64?,
     aString aNullableStringArg: String?,
     completion: @escaping (Result<AllNullableTypesWithoutRecursion, PigeonError>) -> Void
@@ -4770,7 +4915,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed boolean, to test serialization and deserialization.
-  func echo(_ aBoolArg: Bool, completion: @escaping (Result<Bool, PigeonError>) -> Void) {
+  public func echo(_ aBoolArg: Bool, completion: @escaping (Result<Bool, PigeonError>) -> Void) {
     let channelName: String =
       "dev.flutter.pigeon.pigeon_integration_tests.FlutterIntegrationCoreApi.echoBool\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(
@@ -4798,7 +4943,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed int, to test serialization and deserialization.
-  func echo(_ anIntArg: Int64, completion: @escaping (Result<Int64, PigeonError>) -> Void) {
+  public func echo(_ anIntArg: Int64, completion: @escaping (Result<Int64, PigeonError>) -> Void) {
     let channelName: String =
       "dev.flutter.pigeon.pigeon_integration_tests.FlutterIntegrationCoreApi.echoInt\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(
@@ -4826,7 +4971,9 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed double, to test serialization and deserialization.
-  func echo(_ aDoubleArg: Double, completion: @escaping (Result<Double, PigeonError>) -> Void) {
+  public func echo(
+    _ aDoubleArg: Double, completion: @escaping (Result<Double, PigeonError>) -> Void
+  ) {
     let channelName: String =
       "dev.flutter.pigeon.pigeon_integration_tests.FlutterIntegrationCoreApi.echoDouble\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(
@@ -4854,7 +5001,9 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed string, to test serialization and deserialization.
-  func echo(_ aStringArg: String, completion: @escaping (Result<String, PigeonError>) -> Void) {
+  public func echo(
+    _ aStringArg: String, completion: @escaping (Result<String, PigeonError>) -> Void
+  ) {
     let channelName: String =
       "dev.flutter.pigeon.pigeon_integration_tests.FlutterIntegrationCoreApi.echoString\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(
@@ -4882,7 +5031,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed byte list, to test serialization and deserialization.
-  func echo(
+  public func echo(
     _ listArg: FlutterStandardTypedData,
     completion: @escaping (Result<FlutterStandardTypedData, PigeonError>) -> Void
   ) {
@@ -4913,7 +5062,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed list, to test serialization and deserialization.
-  func echo(_ listArg: [Any?], completion: @escaping (Result<[Any?], PigeonError>) -> Void) {
+  public func echo(_ listArg: [Any?], completion: @escaping (Result<[Any?], PigeonError>) -> Void) {
     let channelName: String =
       "dev.flutter.pigeon.pigeon_integration_tests.FlutterIntegrationCoreApi.echoList\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(
@@ -4941,7 +5090,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed list, to test serialization and deserialization.
-  func echo(
+  public func echo(
     enumList enumListArg: [AnEnum?], completion: @escaping (Result<[AnEnum?], PigeonError>) -> Void
   ) {
     let channelName: String =
@@ -4971,7 +5120,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed list, to test serialization and deserialization.
-  func echo(
+  public func echo(
     classList classListArg: [AllNullableTypes?],
     completion: @escaping (Result<[AllNullableTypes?], PigeonError>) -> Void
   ) {
@@ -5002,7 +5151,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNonNull(
+  public func echoNonNull(
     enumList enumListArg: [AnEnum], completion: @escaping (Result<[AnEnum], PigeonError>) -> Void
   ) {
     let channelName: String =
@@ -5032,7 +5181,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNonNull(
+  public func echoNonNull(
     classList classListArg: [AllNullableTypes],
     completion: @escaping (Result<[AllNullableTypes], PigeonError>) -> Void
   ) {
@@ -5063,7 +5212,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echo(
+  public func echo(
     _ mapArg: [AnyHashable?: Any?],
     completion: @escaping (Result<[AnyHashable?: Any?], PigeonError>) -> Void
   ) {
@@ -5094,7 +5243,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echo(
+  public func echo(
     stringMap stringMapArg: [String?: String?],
     completion: @escaping (Result<[String?: String?], PigeonError>) -> Void
   ) {
@@ -5125,7 +5274,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echo(
+  public func echo(
     intMap intMapArg: [Int64?: Int64?],
     completion: @escaping (Result<[Int64?: Int64?], PigeonError>) -> Void
   ) {
@@ -5156,7 +5305,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echo(
+  public func echo(
     enumMap enumMapArg: [AnEnum?: AnEnum?],
     completion: @escaping (Result<[AnEnum?: AnEnum?], PigeonError>) -> Void
   ) {
@@ -5187,7 +5336,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echo(
+  public func echo(
     classMap classMapArg: [Int64?: AllNullableTypes?],
     completion: @escaping (Result<[Int64?: AllNullableTypes?], PigeonError>) -> Void
   ) {
@@ -5218,7 +5367,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNonNull(
+  public func echoNonNull(
     stringMap stringMapArg: [String: String],
     completion: @escaping (Result<[String: String], PigeonError>) -> Void
   ) {
@@ -5249,7 +5398,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNonNull(
+  public func echoNonNull(
     intMap intMapArg: [Int64: Int64],
     completion: @escaping (Result<[Int64: Int64], PigeonError>) -> Void
   ) {
@@ -5280,7 +5429,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNonNull(
+  public func echoNonNull(
     enumMap enumMapArg: [AnEnum: AnEnum],
     completion: @escaping (Result<[AnEnum: AnEnum], PigeonError>) -> Void
   ) {
@@ -5311,7 +5460,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNonNull(
+  public func echoNonNull(
     classMap classMapArg: [Int64: AllNullableTypes],
     completion: @escaping (Result<[Int64: AllNullableTypes], PigeonError>) -> Void
   ) {
@@ -5342,7 +5491,8 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed enum to test serialization and deserialization.
-  func echo(_ anEnumArg: AnEnum, completion: @escaping (Result<AnEnum, PigeonError>) -> Void) {
+  public func echo(_ anEnumArg: AnEnum, completion: @escaping (Result<AnEnum, PigeonError>) -> Void)
+  {
     let channelName: String =
       "dev.flutter.pigeon.pigeon_integration_tests.FlutterIntegrationCoreApi.echoEnum\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(
@@ -5370,7 +5520,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed enum to test serialization and deserialization.
-  func echo(
+  public func echo(
     _ anotherEnumArg: AnotherEnum, completion: @escaping (Result<AnotherEnum, PigeonError>) -> Void
   ) {
     let channelName: String =
@@ -5400,7 +5550,9 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed boolean, to test serialization and deserialization.
-  func echoNullable(_ aBoolArg: Bool?, completion: @escaping (Result<Bool?, PigeonError>) -> Void) {
+  public func echoNullable(
+    _ aBoolArg: Bool?, completion: @escaping (Result<Bool?, PigeonError>) -> Void
+  ) {
     let channelName: String =
       "dev.flutter.pigeon.pigeon_integration_tests.FlutterIntegrationCoreApi.echoNullableBool\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(
@@ -5422,8 +5574,9 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed int, to test serialization and deserialization.
-  func echoNullable(_ anIntArg: Int64?, completion: @escaping (Result<Int64?, PigeonError>) -> Void)
-  {
+  public func echoNullable(
+    _ anIntArg: Int64?, completion: @escaping (Result<Int64?, PigeonError>) -> Void
+  ) {
     let channelName: String =
       "dev.flutter.pigeon.pigeon_integration_tests.FlutterIntegrationCoreApi.echoNullableInt\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(
@@ -5445,7 +5598,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed double, to test serialization and deserialization.
-  func echoNullable(
+  public func echoNullable(
     _ aDoubleArg: Double?, completion: @escaping (Result<Double?, PigeonError>) -> Void
   ) {
     let channelName: String =
@@ -5469,7 +5622,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed string, to test serialization and deserialization.
-  func echoNullable(
+  public func echoNullable(
     _ aStringArg: String?, completion: @escaping (Result<String?, PigeonError>) -> Void
   ) {
     let channelName: String =
@@ -5493,7 +5646,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed byte list, to test serialization and deserialization.
-  func echoNullable(
+  public func echoNullable(
     _ listArg: FlutterStandardTypedData?,
     completion: @escaping (Result<FlutterStandardTypedData?, PigeonError>) -> Void
   ) {
@@ -5518,7 +5671,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNullable(
+  public func echoNullable(
     _ listArg: [Any?]?, completion: @escaping (Result<[Any?]?, PigeonError>) -> Void
   ) {
     let channelName: String =
@@ -5542,7 +5695,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNullable(
+  public func echoNullable(
     enumList enumListArg: [AnEnum?]?,
     completion: @escaping (Result<[AnEnum?]?, PigeonError>) -> Void
   ) {
@@ -5567,7 +5720,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNullable(
+  public func echoNullable(
     classList classListArg: [AllNullableTypes?]?,
     completion: @escaping (Result<[AllNullableTypes?]?, PigeonError>) -> Void
   ) {
@@ -5592,7 +5745,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNullableNonNull(
+  public func echoNullableNonNull(
     enumList enumListArg: [AnEnum]?, completion: @escaping (Result<[AnEnum]?, PigeonError>) -> Void
   ) {
     let channelName: String =
@@ -5616,7 +5769,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNullableNonNull(
+  public func echoNullableNonNull(
     classList classListArg: [AllNullableTypes]?,
     completion: @escaping (Result<[AllNullableTypes]?, PigeonError>) -> Void
   ) {
@@ -5641,7 +5794,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullable(
+  public func echoNullable(
     _ mapArg: [AnyHashable?: Any?]?,
     completion: @escaping (Result<[AnyHashable?: Any?]?, PigeonError>) -> Void
   ) {
@@ -5666,7 +5819,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullable(
+  public func echoNullable(
     stringMap stringMapArg: [String?: String?]?,
     completion: @escaping (Result<[String?: String?]?, PigeonError>) -> Void
   ) {
@@ -5691,7 +5844,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullable(
+  public func echoNullable(
     intMap intMapArg: [Int64?: Int64?]?,
     completion: @escaping (Result<[Int64?: Int64?]?, PigeonError>) -> Void
   ) {
@@ -5716,7 +5869,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullable(
+  public func echoNullable(
     enumMap enumMapArg: [AnEnum?: AnEnum?]?,
     completion: @escaping (Result<[AnEnum?: AnEnum?]?, PigeonError>) -> Void
   ) {
@@ -5741,7 +5894,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullable(
+  public func echoNullable(
     classMap classMapArg: [Int64?: AllNullableTypes?]?,
     completion: @escaping (Result<[Int64?: AllNullableTypes?]?, PigeonError>) -> Void
   ) {
@@ -5766,7 +5919,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullableNonNull(
+  public func echoNullableNonNull(
     stringMap stringMapArg: [String: String]?,
     completion: @escaping (Result<[String: String]?, PigeonError>) -> Void
   ) {
@@ -5791,7 +5944,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullableNonNull(
+  public func echoNullableNonNull(
     intMap intMapArg: [Int64: Int64]?,
     completion: @escaping (Result<[Int64: Int64]?, PigeonError>) -> Void
   ) {
@@ -5816,7 +5969,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullableNonNull(
+  public func echoNullableNonNull(
     enumMap enumMapArg: [AnEnum: AnEnum]?,
     completion: @escaping (Result<[AnEnum: AnEnum]?, PigeonError>) -> Void
   ) {
@@ -5841,7 +5994,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullableNonNull(
+  public func echoNullableNonNull(
     classMap classMapArg: [Int64: AllNullableTypes]?,
     completion: @escaping (Result<[Int64: AllNullableTypes]?, PigeonError>) -> Void
   ) {
@@ -5866,7 +6019,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed enum to test serialization and deserialization.
-  func echoNullable(
+  public func echoNullable(
     _ anEnumArg: AnEnum?, completion: @escaping (Result<AnEnum?, PigeonError>) -> Void
   ) {
     let channelName: String =
@@ -5890,7 +6043,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed enum to test serialization and deserialization.
-  func echoNullable(
+  public func echoNullable(
     _ anotherEnumArg: AnotherEnum?,
     completion: @escaping (Result<AnotherEnum?, PigeonError>) -> Void
   ) {
@@ -5916,7 +6069,7 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
   }
   /// A no-op function taking no arguments and returning no value, to sanity
   /// test basic asynchronous calling.
-  func noopAsync(completion: @escaping (Result<Void, PigeonError>) -> Void) {
+  public func noopAsync(completion: @escaping (Result<Void, PigeonError>) -> Void) {
     let channelName: String =
       "dev.flutter.pigeon.pigeon_integration_tests.FlutterIntegrationCoreApi.noopAsync\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(
@@ -5937,8 +6090,9 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
     }
   }
   /// Returns the passed in generic Object asynchronously.
-  func echoAsync(_ aStringArg: String, completion: @escaping (Result<String, PigeonError>) -> Void)
-  {
+  public func echoAsync(
+    _ aStringArg: String, completion: @escaping (Result<String, PigeonError>) -> Void
+  ) {
     let channelName: String =
       "dev.flutter.pigeon.pigeon_integration_tests.FlutterIntegrationCoreApi.echoAsyncString\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(
@@ -5969,15 +6123,15 @@ class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
 /// An API that can be implemented for minimal, compile-only tests.
 ///
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
-protocol HostTrivialApi {
+public protocol HostTrivialApi {
   func noop() throws
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
-class HostTrivialApiSetup {
+public class HostTrivialApiSetup {
   static var codec: FlutterStandardMessageCodec { CoreTestsPigeonCodec.shared }
   /// Sets up an instance of `HostTrivialApi` to handle messages through the `binaryMessenger`.
-  static func setUp(
+  public static func setUp(
     binaryMessenger: FlutterBinaryMessenger, api: HostTrivialApi?, messageChannelSuffix: String = ""
   ) {
     let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
@@ -6001,16 +6155,16 @@ class HostTrivialApiSetup {
 /// A simple API implemented in some unit tests.
 ///
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
-protocol HostSmallApi {
+public protocol HostSmallApi {
   func echo(aString: String, completion: @escaping (Result<String, Error>) -> Void)
   func voidVoid(completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
-class HostSmallApiSetup {
+public class HostSmallApiSetup {
   static var codec: FlutterStandardMessageCodec { CoreTestsPigeonCodec.shared }
   /// Sets up an instance of `HostSmallApi` to handle messages through the `binaryMessenger`.
-  static func setUp(
+  public static func setUp(
     binaryMessenger: FlutterBinaryMessenger, api: HostSmallApi?, messageChannelSuffix: String = ""
   ) {
     let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
@@ -6055,22 +6209,23 @@ class HostSmallApiSetup {
 /// A simple API called in some unit tests.
 ///
 /// Generated protocol from Pigeon that represents Flutter messages that can be called from Swift.
-protocol FlutterSmallApiProtocol {
+public protocol FlutterSmallApiProtocol {
   func echo(_ msgArg: TestMessage, completion: @escaping (Result<TestMessage, PigeonError>) -> Void)
   func echo(string aStringArg: String, completion: @escaping (Result<String, PigeonError>) -> Void)
 }
-class FlutterSmallApi: FlutterSmallApiProtocol {
+public class FlutterSmallApi: FlutterSmallApiProtocol {
   private let binaryMessenger: FlutterBinaryMessenger
   private let messageChannelSuffix: String
-  init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "") {
+  public init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "") {
     self.binaryMessenger = binaryMessenger
     self.messageChannelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
   }
   var codec: CoreTestsPigeonCodec {
     return CoreTestsPigeonCodec.shared
   }
-  func echo(_ msgArg: TestMessage, completion: @escaping (Result<TestMessage, PigeonError>) -> Void)
-  {
+  public func echo(
+    _ msgArg: TestMessage, completion: @escaping (Result<TestMessage, PigeonError>) -> Void
+  ) {
     let channelName: String =
       "dev.flutter.pigeon.pigeon_integration_tests.FlutterSmallApi.echoWrappedList\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(
@@ -6097,8 +6252,9 @@ class FlutterSmallApi: FlutterSmallApiProtocol {
       }
     }
   }
-  func echo(string aStringArg: String, completion: @escaping (Result<String, PigeonError>) -> Void)
-  {
+  public func echo(
+    string aStringArg: String, completion: @escaping (Result<String, PigeonError>) -> Void
+  ) {
     let channelName: String =
       "dev.flutter.pigeon.pigeon_integration_tests.FlutterSmallApi.echoString\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(

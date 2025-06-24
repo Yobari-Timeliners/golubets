@@ -87,12 +87,17 @@ func deepHashEventChannelMessages(value: Any?, hasher: inout Hasher) {
 
 /// Generated class from Pigeon that represents data sent in messages.
 /// This protocol should not be extended by any user class outside of the generated file.
-protocol PlatformEvent {
+public protocol PlatformEvent {
 
 }
 
 /// Generated class from Pigeon that represents data sent in messages.
-struct IntEvent: PlatformEvent {
+public struct IntEvent: PlatformEvent {
+  public init(
+    data: Int64
+  ) {
+    self.data = data
+  }
   var data: Int64
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
@@ -108,16 +113,21 @@ struct IntEvent: PlatformEvent {
       data
     ]
   }
-  static func == (lhs: IntEvent, rhs: IntEvent) -> Bool {
+  public static func == (lhs: IntEvent, rhs: IntEvent) -> Bool {
     return deepEqualsEventChannelMessages(lhs.toList(), rhs.toList())
   }
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     deepHashEventChannelMessages(value: toList(), hasher: &hasher)
   }
 }
 
 /// Generated class from Pigeon that represents data sent in messages.
-struct StringEvent: PlatformEvent {
+public struct StringEvent: PlatformEvent {
+  public init(
+    data: String
+  ) {
+    self.data = data
+  }
   var data: String
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
@@ -133,16 +143,18 @@ struct StringEvent: PlatformEvent {
       data
     ]
   }
-  static func == (lhs: StringEvent, rhs: StringEvent) -> Bool {
+  public static func == (lhs: StringEvent, rhs: StringEvent) -> Bool {
     return deepEqualsEventChannelMessages(lhs.toList(), rhs.toList())
   }
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     deepHashEventChannelMessages(value: toList(), hasher: &hasher)
   }
 }
 
 /// Generated class from Pigeon that represents data sent in messages.
-struct EmptyEvent: PlatformEvent {
+public struct EmptyEvent: PlatformEvent {
+  public init() {
+  }
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ pigeonVar_list: [Any?]) -> EmptyEvent? {
@@ -152,10 +164,10 @@ struct EmptyEvent: PlatformEvent {
   func toList() -> [Any?] {
     return []
   }
-  static func == (lhs: EmptyEvent, rhs: EmptyEvent) -> Bool {
+  public static func == (lhs: EmptyEvent, rhs: EmptyEvent) -> Bool {
     return deepEqualsEventChannelMessages(lhs.toList(), rhs.toList())
   }
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     deepHashEventChannelMessages(value: toList(), hasher: &hasher)
   }
 }

@@ -15,12 +15,12 @@ import Foundation
 #endif
 
 /// Error class for passing custom error details to Dart side.
-final class PigeonError: Error {
+public final class PigeonError: Error {
   let code: String
   let message: String?
   let details: Sendable?
 
-  init(code: String, message: String?, details: Sendable?) {
+  public init(code: String, message: String?, details: Sendable?) {
     self.code = code
     self.message = message
     self.details = details
@@ -135,13 +135,24 @@ func deepHashMessages(value: Any?, hasher: inout Hasher) {
   return hasher.combine(String(describing: value))
 }
 
-enum Code: Int {
+public enum Code: Int {
   case one = 0
   case two = 1
 }
 
 /// Generated class from Pigeon that represents data sent in messages.
-struct MessageData: Hashable {
+public struct MessageData: Hashable {
+  public init(
+    name: String? = nil,
+    description: String? = nil,
+    code: Code,
+    data: [String: String]
+  ) {
+    self.name = name
+    self.description = description
+    self.code = code
+    self.data = data
+  }
   var name: String? = nil
   var description: String? = nil
   var code: Code
@@ -169,10 +180,10 @@ struct MessageData: Hashable {
       data,
     ]
   }
-  static func == (lhs: MessageData, rhs: MessageData) -> Bool {
+  public static func == (lhs: MessageData, rhs: MessageData) -> Bool {
     return deepEqualsMessages(lhs.toList(), rhs.toList())
   }
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     deepHashMessages(value: toList(), hasher: &hasher)
   }
 }
@@ -223,7 +234,7 @@ class MessagesPigeonCodec: FlutterStandardMessageCodec, @unchecked Sendable {
 }
 
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
-protocol ExampleHostApi {
+public protocol ExampleHostApi {
   func getHostLanguage() throws -> String
   func add(_ a: Int64, to b: Int64) throws -> Int64
   func sendMessage(message: MessageData, completion: @escaping (Result<Bool, Error>) -> Void)
@@ -232,10 +243,10 @@ protocol ExampleHostApi {
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
-class ExampleHostApiSetup {
+public class ExampleHostApiSetup {
   static var codec: FlutterStandardMessageCodec { MessagesPigeonCodec.shared }
   /// Sets up an instance of `ExampleHostApi` to handle messages through the `binaryMessenger`.
-  static func setUp(
+  public static func setUp(
     binaryMessenger: FlutterBinaryMessenger, api: ExampleHostApi?, messageChannelSuffix: String = ""
   ) {
     let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
@@ -348,21 +359,21 @@ class ExampleHostApiSetup {
   }
 }
 /// Generated protocol from Pigeon that represents Flutter messages that can be called from Swift.
-protocol MessageFlutterApiProtocol {
+public protocol MessageFlutterApiProtocol {
   func flutterMethod(
     aString aStringArg: String?, completion: @escaping (Result<String, PigeonError>) -> Void)
 }
-class MessageFlutterApi: MessageFlutterApiProtocol {
+public class MessageFlutterApi: MessageFlutterApiProtocol {
   private let binaryMessenger: FlutterBinaryMessenger
   private let messageChannelSuffix: String
-  init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "") {
+  public init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "") {
     self.binaryMessenger = binaryMessenger
     self.messageChannelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
   }
   var codec: MessagesPigeonCodec {
     return MessagesPigeonCodec.shared
   }
-  func flutterMethod(
+  public func flutterMethod(
     aString aStringArg: String?, completion: @escaping (Result<String, PigeonError>) -> Void
   ) {
     let channelName: String =

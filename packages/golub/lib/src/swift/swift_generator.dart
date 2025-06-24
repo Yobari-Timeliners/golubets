@@ -235,7 +235,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     addDocumentationComments(
         indent, anEnum.documentationComments, _docCommentSpec);
 
-    indent.write('enum ${anEnum.name}: Int ');
+    indent.write('public enum ${anEnum.name}: Int ');
     indent.addScoped('{', '}', () {
       enumerate(anEnum.members, (int index, final EnumMember member) {
         addDocumentationComments(
@@ -393,7 +393,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     bool private = false,
     bool hashable = true,
   }) {
-    final String privateString = private ? 'private ' : '';
+    final String privateString = private ? 'private ' : 'public ';
     final String extendsString = classDefinition.superClass != null
         ? ': ${classDefinition.superClass!.name}'
         : hashable
@@ -403,7 +403,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       indent.write(
           '${privateString}class ${classDefinition.name}$extendsString ');
     } else if (classDefinition.isSealed) {
-      indent.write('protocol ${classDefinition.name} ');
+      indent.write('${privateString}protocol ${classDefinition.name} ');
     } else {
       indent.write(
           '${privateString}struct ${classDefinition.name}$extendsString ');
@@ -413,7 +413,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       final Iterable<NamedType> fields =
           getFieldsInSerializationOrder(classDefinition);
 
-      if (classDefinition.isSwiftClass) {
+      if (!classDefinition.isSealed) {
         _writeClassInit(indent, fields.toList());
       }
 
@@ -554,7 +554,7 @@ if (wrapped == nil) {
   }
 
   void _writeClassInit(Indent indent, List<NamedType> fields) {
-    indent.writeScoped('init(', ')', () {
+    indent.writeScoped('public init(', ')', () {
       for (int i = 0; i < fields.length; i++) {
         indent.write('');
         _writeClassField(indent, fields[i]);
@@ -614,7 +614,7 @@ if (wrapped == nil) {
     required String dartPackageName,
   }) {
     indent.writeScoped(
-        'static func == (lhs: ${classDefinition.name}, rhs: ${classDefinition.name}) -> Bool {',
+        'public static func == (lhs: ${classDefinition.name}, rhs: ${classDefinition.name}) -> Bool {',
         '}', () {
       if (classDefinition.isSwiftClass) {
         indent.writeScoped('if (lhs === rhs) {', '}', () {
@@ -625,7 +625,8 @@ if (wrapped == nil) {
           'return deepEquals${generatorOptions.fileSpecificClassNameComponent}(lhs.toList(), rhs.toList())');
     });
 
-    indent.writeScoped('func hash(into hasher: inout Hasher) {', '}', () {
+    indent.writeScoped('public func hash(into hasher: inout Hasher) {', '}',
+        () {
       indent.writeln(
           'deepHash${generatorOptions.fileSpecificClassNameComponent}(value: toList(), hasher: &hasher)');
     });
@@ -720,7 +721,7 @@ if (wrapped == nil) {
     addDocumentationComments(indent, api.documentationComments, _docCommentSpec,
         generatorComments: generatedComments);
 
-    indent.addScoped('protocol ${api.name}Protocol {', '}', () {
+    indent.addScoped('public protocol ${api.name}Protocol {', '}', () {
       for (final Method func in api.methods) {
         addDocumentationComments(
             indent, func.documentationComments, _docCommentSpec);
@@ -732,16 +733,17 @@ if (wrapped == nil) {
           swiftFunction: func.swiftFunction,
           getParameterName: _getSafeArgumentName,
           asynchronousType: AsynchronousType.callback,
+          isPublic: false,
         ));
       }
     });
 
-    indent.write('class ${api.name}: ${api.name}Protocol ');
+    indent.write('public class ${api.name}: ${api.name}Protocol ');
     indent.addScoped('{', '}', () {
       indent.writeln('private let binaryMessenger: FlutterBinaryMessenger');
       indent.writeln('private let messageChannelSuffix: String');
       indent.write(
-          'init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "") ');
+          'public init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "") ');
       indent.addScoped('{', '}', () {
         indent.writeln('self.binaryMessenger = binaryMessenger');
         indent.writeln(
@@ -791,7 +793,7 @@ if (wrapped == nil) {
     addDocumentationComments(indent, api.documentationComments, _docCommentSpec,
         generatorComments: generatedComments);
 
-    indent.write('protocol $apiName ');
+    indent.write('public protocol $apiName ');
     indent.addScoped('{', '}', () {
       for (final Method method in api.methods) {
         addDocumentationComments(
@@ -803,6 +805,7 @@ if (wrapped == nil) {
           errorTypeName: 'Error',
           swiftFunction: method.swiftFunction,
           asynchronousType: method.asynchronousType,
+          isPublic: false,
         ));
       }
     });
@@ -810,14 +813,14 @@ if (wrapped == nil) {
     indent.newln();
     indent.writeln(
         '$_docCommentPrefix Generated setup class from Pigeon to handle messages through the `binaryMessenger`.');
-    indent.write('class ${apiName}Setup ');
+    indent.write('public class ${apiName}Setup ');
     indent.addScoped('{', '}', () {
       indent.writeln(
           'static var codec: FlutterStandardMessageCodec { ${_getMessageCodecName(generatorOptions)}.shared }');
       indent.writeln(
           '$_docCommentPrefix Sets up an instance of `$apiName` to handle messages through the `binaryMessenger`.');
       indent.write(
-          'static func setUp(binaryMessenger: FlutterBinaryMessenger, api: $apiName?, messageChannelSuffix: String = "") ');
+          'public static func setUp(binaryMessenger: FlutterBinaryMessenger, api: $apiName?, messageChannelSuffix: String = "") ');
       indent.addScoped('{', '}', () {
         indent.writeln(
             r'let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""');
@@ -1619,6 +1622,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       swiftFunction: swiftFunction,
       getParameterName: _getSafeArgumentName,
       asynchronousType: AsynchronousType.callback,
+      isPublic: true,
     );
 
     indent.writeScoped('$methodSignature {', '}', () {
@@ -2055,6 +2059,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         ],
         returnType: apiAsTypeDeclaration,
         errorTypeName: '',
+        isPublic: false,
       );
       indent.writeln(methodSignature);
 
@@ -2112,6 +2117,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         ],
         returnType: field.type,
         errorTypeName: '',
+        isPublic: false,
       );
       indent.writeln(methodSignature);
 
@@ -2168,6 +2174,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         ],
         returnType: field.type,
         errorTypeName: '',
+        isPublic: false,
       );
       indent.writeln(methodSignature);
 
@@ -2229,6 +2236,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         returnType: method.returnType,
         asynchronousType: method.asynchronousType,
         errorTypeName: 'Error',
+        isPublic: false,
       );
       indent.writeln(methodSignature);
 
@@ -2537,6 +2545,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       returnType: const TypeDeclaration.voidDeclaration(),
       errorTypeName: _getErrorClassName(generatorOptions),
       asynchronousType: AsynchronousType.callback,
+      isPublic: true,
     );
     indent.writeScoped('$methodSignature {', '}', () {
       indent.writeScoped(
@@ -2628,6 +2637,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     required TypeDeclaration apiAsTypeDeclaration,
     required String dartPackageName,
     bool writeBody = true,
+    bool isPublic = false,
   }) {
     for (final Method method in api.flutterMethods) {
       final List<TypeDeclaration> allReferencedTypes = <TypeDeclaration>[
@@ -2664,6 +2674,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         errorTypeName: _getErrorClassName(generatorOptions),
         getParameterName: _getSafeArgumentName,
         asynchronousType: AsynchronousType.callback,
+        isPublic: isPublic,
       );
 
       indent.write(methodSignature);
@@ -2712,15 +2723,15 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     indent.writeln(
         '/// Error class for passing custom error details to Dart side.');
     indent.writeScoped(
-        'final class ${_getErrorClassName(generatorOptions)}: Error {', '}',
-        () {
+        'public final class ${_getErrorClassName(generatorOptions)}: Error {',
+        '}', () {
       indent.writeln('let code: String');
       indent.writeln('let message: String?');
       indent.writeln('let details: Sendable?');
       indent.newln();
       indent.writeScoped(
-          'init(code: String, message: String?, details: Sendable?) {', '}',
-          () {
+          'public init(code: String, message: String?, details: Sendable?) {',
+          '}', () {
         indent.writeln('self.code = code');
         indent.writeln('self.message = message');
         indent.writeln('self.details = details');
@@ -2982,6 +2993,7 @@ String _getMethodSignature({
   String Function(int index, NamedType argument) getParameterName =
       _getArgumentName,
   AsynchronousType asynchronousType = AsynchronousType.none,
+  required bool isPublic,
 }) {
   final _SwiftFunctionComponents components = _SwiftFunctionComponents(
     name: name,
@@ -2989,6 +3001,7 @@ String _getMethodSignature({
     returnType: returnType,
     swiftFunction: swiftFunction,
   );
+  final String public = isPublic ? 'public' : '';
   final String returnTypeString =
       returnType.isVoid ? 'Void' : _nullSafeSwiftTypeForDartType(returnType);
 
@@ -3006,9 +3019,9 @@ String _getMethodSignature({
 
   if (asynchronousType.isCallback) {
     if (parameters.isEmpty) {
-      return 'func ${components.name}(completion: @escaping (Result<$returnTypeString, $errorTypeName>) -> Void)';
+      return '$public func ${components.name}(completion: @escaping (Result<$returnTypeString, $errorTypeName>) -> Void)';
     } else {
-      return 'func ${components.name}($parameterSignature, completion: @escaping (Result<$returnTypeString, $errorTypeName>) -> Void)';
+      return '$public func ${components.name}($parameterSignature, completion: @escaping (Result<$returnTypeString, $errorTypeName>) -> Void)';
     }
   } else {
     final String asyncKeyword = (asynchronousType.isAwait) ? ' async' : '';
@@ -3019,9 +3032,9 @@ String _getMethodSignature({
       NoAsynchronous() => ' throws',
     };
     if (returnType.isVoid) {
-      return 'func ${components.name}($parameterSignature)$asyncKeyword$throwsKeyword';
+      return '$public func ${components.name}($parameterSignature)$asyncKeyword$throwsKeyword';
     } else {
-      return 'func ${components.name}($parameterSignature)$asyncKeyword$throwsKeyword -> $returnTypeString';
+      return '$public func ${components.name}($parameterSignature)$asyncKeyword$throwsKeyword -> $returnTypeString';
     }
   }
 }

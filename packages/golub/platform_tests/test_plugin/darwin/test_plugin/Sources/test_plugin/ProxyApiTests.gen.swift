@@ -16,12 +16,12 @@ import Foundation
 #endif
 
 /// Error class for passing custom error details to Dart side.
-final class ProxyApiTestsError: Error {
+public final class ProxyApiTestsError: Error {
   let code: String
   let message: String?
   let details: Sendable?
 
-  init(code: String, message: String?, details: Sendable?) {
+  public init(code: String, message: String?, details: Sendable?) {
     self.code = code
     self.message = message
     self.details = details
@@ -354,7 +354,7 @@ private class ProxyApiTestsPigeonInstanceManagerApi {
   }
 
   /// Sends a message to the Dart `InstanceManager` to remove the strong reference of the instance associated with `identifier`.
-  func removeStrongReference(
+  public func removeStrongReference(
     identifier identifierArg: Int64,
     completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
   ) {
@@ -580,7 +580,7 @@ private class ProxyApiTestsPigeonInternalProxyApiCodecReaderWriter: FlutterStand
   }
 }
 
-enum ProxyApiTestEnum: Int {
+public enum ProxyApiTestEnum: Int {
   case one = 0
   case two = 1
   case three = 2
@@ -2815,7 +2815,7 @@ final class PigeonApiProxyApiTestClass: PigeonApiProtocolProxyApiTestClass {
   }
 
   ///Creates a Dart instance of ProxyApiTestClass and attaches it to [pigeonInstance].
-  func pigeonNewInstance(
+  public func pigeonNewInstance(
     pigeonInstance: ProxyApiTestClass,
     completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
   ) {
@@ -3881,7 +3881,7 @@ final class PigeonApiProxyApiSuperClass: PigeonApiProtocolProxyApiSuperClass {
   }
 
   ///Creates a Dart instance of ProxyApiSuperClass and attaches it to [pigeonInstance].
-  func pigeonNewInstance(
+  public func pigeonNewInstance(
     pigeonInstance: ProxyApiSuperClass,
     completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
   ) {
@@ -3939,7 +3939,7 @@ final class PigeonApiProxyApiInterface: PigeonApiProtocolProxyApiInterface {
     self.pigeonDelegate = delegate
   }
   ///Creates a Dart instance of ProxyApiInterface and attaches it to [pigeonInstance].
-  func pigeonNewInstance(
+  public func pigeonNewInstance(
     pigeonInstance: ProxyApiInterface,
     completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
   ) {
@@ -4123,7 +4123,7 @@ final class PigeonApiClassWithApiRequirement: PigeonApiProtocolClassWithApiRequi
 
   ///Creates a Dart instance of ClassWithApiRequirement and attaches it to [pigeonInstance].
   @available(iOS 15.0.0, macOS 10.0.0, *)
-  func pigeonNewInstance(
+  public func pigeonNewInstance(
     pigeonInstance: ClassWithApiRequirement,
     completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
   ) {
