@@ -60,156 +60,155 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
 
   // MARK: HostIntegrationCoreApi implementation
 
-  func noop() {
+  public func noop() {}
 
-  }
-
-  func echo(_ everything: AllTypes) -> AllTypes {
+  public func echo(_ everything: AllTypes) -> AllTypes {
     return everything
   }
 
-  func echo(_ everything: AllNullableTypes?) -> AllNullableTypes? {
+  public func echo(_ everything: AllNullableTypes?) -> AllNullableTypes? {
     return everything
   }
-  func echo(_ everything: AllNullableTypesWithoutRecursion?) throws
+
+  public func echo(_ everything: AllNullableTypesWithoutRecursion?) throws
     -> AllNullableTypesWithoutRecursion?
   {
     return everything
   }
 
-  func echoModernAsyncAllTypes(_ everything: AllTypes) async -> AllTypes {
+  public func echoModernAsyncAllTypes(_ everything: AllTypes) async -> AllTypes {
     return everything
   }
 
-  func echoModernAsyncAllTypesAndNotThrow(_ everything: AllTypes) async throws -> AllTypes {
+  public func echoModernAsyncAllTypesAndNotThrow(_ everything: AllTypes) async throws -> AllTypes {
     return everything
   }
 
-  func echoModernAsyncAllTypesAndThrow(_ everything: AllTypes) async throws -> AllTypes {
+  public func echoModernAsyncAllTypesAndThrow(_ everything: AllTypes) async throws -> AllTypes {
     throw PigeonError(code: "code", message: "message", details: "details")
   }
 
-  func echoModernAsyncNullableAllNullableTypes(_ everything: AllNullableTypes?) async
+  public func echoModernAsyncNullableAllNullableTypes(_ everything: AllNullableTypes?) async
     -> AllNullableTypes?
   {
     return everything
   }
 
-  func throwError() throws -> Any? {
+  public func throwError() throws -> Any? {
     throw PigeonError(code: "code", message: "message", details: "details")
   }
 
-  func throwErrorFromVoid() throws {
+  public func throwErrorFromVoid() throws {
     throw PigeonError(code: "code", message: "message", details: "details")
   }
 
-  func throwFlutterError() throws -> Any? {
+  public func throwFlutterError() throws -> Any? {
     throw PigeonError(code: "code", message: "message", details: "details")
   }
 
-  func echo(_ anInt: Int64) -> Int64 {
+  public func echo(_ anInt: Int64) -> Int64 {
     return anInt
   }
 
-  func echo(_ aDouble: Double) -> Double {
+  public func echo(_ aDouble: Double) -> Double {
     return aDouble
   }
 
-  func echo(_ aBool: Bool) -> Bool {
+  public func echo(_ aBool: Bool) -> Bool {
     return aBool
   }
 
-  func echo(_ aString: String) -> String {
+  public func echo(_ aString: String) -> String {
     return aString
   }
 
-  func echo(_ aUint8List: FlutterStandardTypedData) -> FlutterStandardTypedData {
+  public func echo(_ aUint8List: FlutterStandardTypedData) -> FlutterStandardTypedData {
     return aUint8List
   }
 
-  func echo(_ anObject: Any) -> Any {
+  public func echo(_ anObject: Any) -> Any {
     return anObject
   }
 
-  func echo(_ list: [Any?]) throws -> [Any?] {
+  public func echo(_ list: [Any?]) throws -> [Any?] {
     return list
   }
 
-  func echo(enumList: [AnEnum?]) throws -> [AnEnum?] {
+  public func echo(enumList: [AnEnum?]) throws -> [AnEnum?] {
     return enumList
   }
 
-  func echo(classList: [AllNullableTypes?]) throws -> [AllNullableTypes?] {
+  public func echo(classList: [AllNullableTypes?]) throws -> [AllNullableTypes?] {
     return classList
   }
 
-  func echoNonNull(enumList: [AnEnum]) throws -> [AnEnum] {
+  public func echoNonNull(enumList: [AnEnum]) throws -> [AnEnum] {
     return enumList
   }
 
-  func echoNonNull(classList: [AllNullableTypes]) throws -> [AllNullableTypes] {
+  public func echoNonNull(classList: [AllNullableTypes]) throws -> [AllNullableTypes] {
     return classList
   }
 
-  func echo(_ map: [AnyHashable?: Any?]) throws -> [AnyHashable?: Any?] {
+  public func echo(_ map: [AnyHashable?: Any?]) throws -> [AnyHashable?: Any?] {
     return map
   }
 
-  func echo(stringMap: [String?: String?]) throws -> [String?: String?] {
+  public func echo(stringMap: [String?: String?]) throws -> [String?: String?] {
     return stringMap
   }
 
-  func echo(intMap: [Int64?: Int64?]) throws -> [Int64?: Int64?] {
+  public func echo(intMap: [Int64?: Int64?]) throws -> [Int64?: Int64?] {
     return intMap
   }
 
-  func echo(enumMap: [AnEnum?: AnEnum?]) throws -> [AnEnum?: AnEnum?] {
+  public func echo(enumMap: [AnEnum?: AnEnum?]) throws -> [AnEnum?: AnEnum?] {
     return enumMap
   }
 
-  func echo(classMap: [Int64?: AllNullableTypes?]) throws -> [Int64?: AllNullableTypes?] {
+  public func echo(classMap: [Int64?: AllNullableTypes?]) throws -> [Int64?: AllNullableTypes?] {
     return classMap
   }
 
-  func echoNonNull(stringMap: [String: String]) throws -> [String: String] {
+  public func echoNonNull(stringMap: [String: String]) throws -> [String: String] {
     return stringMap
   }
 
-  func echoNonNull(intMap: [Int64: Int64]) throws -> [Int64: Int64] {
+  public func echoNonNull(intMap: [Int64: Int64]) throws -> [Int64: Int64] {
     return intMap
   }
 
-  func echoNonNull(enumMap: [AnEnum: AnEnum]) throws -> [AnEnum: AnEnum] {
+  public func echoNonNull(enumMap: [AnEnum: AnEnum]) throws -> [AnEnum: AnEnum] {
     return enumMap
   }
 
-  func echoNonNull(classMap: [Int64: AllNullableTypes]) throws -> [Int64: AllNullableTypes] {
+  public func echoNonNull(classMap: [Int64: AllNullableTypes]) throws -> [Int64: AllNullableTypes] {
     return classMap
   }
 
-  func echo(_ wrapper: AllClassesWrapper) throws -> AllClassesWrapper {
+  public func echo(_ wrapper: AllClassesWrapper) throws -> AllClassesWrapper {
     return wrapper
   }
 
-  func echo(_ anEnum: AnEnum) throws -> AnEnum {
+  public func echo(_ anEnum: AnEnum) throws -> AnEnum {
     return anEnum
   }
 
-  func echo(_ anotherEnum: AnotherEnum) throws -> AnotherEnum {
+  public func echo(_ anotherEnum: AnotherEnum) throws -> AnotherEnum {
     return anotherEnum
   }
 
-  func extractNestedNullableString(from wrapper: AllClassesWrapper) -> String? {
+  public func extractNestedNullableString(from wrapper: AllClassesWrapper) -> String? {
     return wrapper.allNullableTypes.aNullableString
   }
 
-  func createNestedObject(with nullableString: String?) -> AllClassesWrapper {
+  public func createNestedObject(with nullableString: String?) -> AllClassesWrapper {
     return AllClassesWrapper(
       allNullableTypes: AllNullableTypes(aNullableString: nullableString), classList: [],
       classMap: [:])
   }
 
-  func sendMultipleNullableTypes(
+  public func sendMultipleNullableTypes(
     aBool aNullableBool: Bool?, anInt aNullableInt: Int64?, aString aNullableString: String?
   ) -> AllNullableTypes {
     let someThings = AllNullableTypes(
@@ -217,7 +216,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     return someThings
   }
 
-  func sendMultipleNullableTypesWithoutRecursion(
+  public func sendMultipleNullableTypesWithoutRecursion(
     aBool aNullableBool: Bool?, anInt aNullableInt: Int64?, aString aNullableString: String?
   ) throws -> AllNullableTypesWithoutRecursion {
     let someThings = AllNullableTypesWithoutRecursion(
@@ -225,333 +224,349 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     return someThings
   }
 
-  func echo(_ aNullableInt: Int64?) -> Int64? {
+  public func echo(_ aNullableInt: Int64?) -> Int64? {
     return aNullableInt
   }
 
-  func echo(_ aNullableDouble: Double?) -> Double? {
+  public func echo(_ aNullableDouble: Double?) -> Double? {
     return aNullableDouble
   }
 
-  func echo(_ aNullableBool: Bool?) -> Bool? {
+  public func echo(_ aNullableBool: Bool?) -> Bool? {
     return aNullableBool
   }
 
-  func echo(_ aNullableString: String?) -> String? {
+  public func echo(_ aNullableString: String?) -> String? {
     return aNullableString
   }
 
-  func echo(_ aNullableUint8List: FlutterStandardTypedData?) -> FlutterStandardTypedData? {
+  public func echo(_ aNullableUint8List: FlutterStandardTypedData?) -> FlutterStandardTypedData? {
     return aNullableUint8List
   }
 
-  func echo(_ aNullableObject: Any?) -> Any? {
+  public func echo(_ aNullableObject: Any?) -> Any? {
     return aNullableObject
   }
 
-  func echoNamedDefault(_ aString: String) throws -> String {
+  public func echoNamedDefault(_ aString: String) throws -> String {
     return aString
   }
 
-  func echoOptionalDefault(_ aDouble: Double) throws -> Double {
+  public func echoOptionalDefault(_ aDouble: Double) throws -> Double {
     return aDouble
   }
 
-  func echoRequired(_ anInt: Int64) throws -> Int64 {
+  public func echoRequired(_ anInt: Int64) throws -> Int64 {
     return anInt
   }
 
-  func echoNullable(_ aNullableList: [Any?]?) throws -> [Any?]? {
+  public func echoNullable(_ aNullableList: [Any?]?) throws -> [Any?]? {
     return aNullableList
   }
 
-  func echoNullable(enumList: [AnEnum?]?) throws -> [AnEnum?]? {
+  public func echoNullable(enumList: [AnEnum?]?) throws -> [AnEnum?]? {
     return enumList
   }
 
-  func echoNullable(classList: [AllNullableTypes?]?) throws -> [AllNullableTypes?]? {
+  public func echoNullable(classList: [AllNullableTypes?]?) throws -> [AllNullableTypes?]? {
     return classList
   }
 
-  func echoNullableNonNull(enumList: [AnEnum]?) throws -> [AnEnum]? {
+  public func echoNullableNonNull(enumList: [AnEnum]?) throws -> [AnEnum]? {
     return enumList
   }
 
-  func echoNullableNonNull(classList: [AllNullableTypes]?) throws -> [AllNullableTypes]? {
+  public func echoNullableNonNull(classList: [AllNullableTypes]?) throws -> [AllNullableTypes]? {
     return classList
   }
 
-  func echoNullable(_ map: [AnyHashable?: Any?]?) throws -> [AnyHashable?: Any?]? {
+  public func echoNullable(_ map: [AnyHashable?: Any?]?) throws -> [AnyHashable?: Any?]? {
     return map
   }
 
-  func echoNullable(stringMap: [String?: String?]?) throws -> [String?: String?]? {
+  public func echoNullable(stringMap: [String?: String?]?) throws -> [String?: String?]? {
     return stringMap
   }
 
-  func echoNullable(intMap: [Int64?: Int64?]?) throws -> [Int64?: Int64?]? {
+  public func echoNullable(intMap: [Int64?: Int64?]?) throws -> [Int64?: Int64?]? {
     return intMap
   }
 
-  func echoNullable(enumMap: [AnEnum?: AnEnum?]?) throws -> [AnEnum?: AnEnum?]? {
+  public func echoNullable(enumMap: [AnEnum?: AnEnum?]?) throws -> [AnEnum?: AnEnum?]? {
     return enumMap
   }
 
-  func echoNullable(classMap: [Int64?: AllNullableTypes?]?) throws -> [Int64?: AllNullableTypes?]? {
+  public func echoNullable(classMap: [Int64?: AllNullableTypes?]?) throws -> [Int64?:
+    AllNullableTypes?]?
+  {
     return classMap
   }
 
-  func echoNullableNonNull(stringMap: [String: String]?) throws -> [String: String]? {
+  public func echoNullableNonNull(stringMap: [String: String]?) throws -> [String: String]? {
     return stringMap
   }
 
-  func echoNullableNonNull(intMap: [Int64: Int64]?) throws -> [Int64: Int64]? {
+  public func echoNullableNonNull(intMap: [Int64: Int64]?) throws -> [Int64: Int64]? {
     return intMap
   }
 
-  func echoNullableNonNull(enumMap: [AnEnum: AnEnum]?) throws -> [AnEnum: AnEnum]? {
+  public func echoNullableNonNull(enumMap: [AnEnum: AnEnum]?) throws -> [AnEnum: AnEnum]? {
     return enumMap
   }
 
-  func echoNullableNonNull(classMap: [Int64: AllNullableTypes]?) throws -> [Int64:
+  public func echoNullableNonNull(classMap: [Int64: AllNullableTypes]?) throws -> [Int64:
     AllNullableTypes]?
   {
     return classMap
   }
 
-  func echoNullable(_ anEnum: AnEnum?) throws -> AnEnum? {
+  public func echoNullable(_ anEnum: AnEnum?) throws -> AnEnum? {
     return anEnum
   }
 
-  func echoNullable(_ anotherEnum: AnotherEnum?) throws -> AnotherEnum? {
+  public func echoNullable(_ anotherEnum: AnotherEnum?) throws -> AnotherEnum? {
     return anotherEnum
   }
 
-  func echoOptional(_ aNullableInt: Int64?) throws -> Int64? {
+  public func echoOptional(_ aNullableInt: Int64?) throws -> Int64? {
     return aNullableInt
   }
 
-  func echoNamed(_ aNullableString: String?) throws -> String? {
+  public func echoNamed(_ aNullableString: String?) throws -> String? {
     return aNullableString
   }
 
-  func noopAsync(completion: @escaping (Result<Void, Error>) -> Void) {
-    completion(.success(Void()))
+  public func noopAsync(completion: @escaping (Result<Void, Error>) -> Void) {
+    completion(.success(()))
   }
 
-  func throwAsyncError(completion: @escaping (Result<Any?, Error>) -> Void) {
+  public func throwAsyncError(completion: @escaping (Result<Any?, Error>) -> Void) {
     completion(.failure(PigeonError(code: "code", message: "message", details: "details")))
   }
 
-  func throwAsyncErrorFromVoid(completion: @escaping (Result<Void, Error>) -> Void) {
+  public func throwAsyncErrorFromVoid(completion: @escaping (Result<Void, Error>) -> Void) {
     completion(.failure(PigeonError(code: "code", message: "message", details: "details")))
   }
 
-  func throwAsyncFlutterError(completion: @escaping (Result<Any?, Error>) -> Void) {
+  public func throwAsyncFlutterError(completion: @escaping (Result<Any?, Error>) -> Void) {
     completion(.failure(PigeonError(code: "code", message: "message", details: "details")))
   }
 
-  func echoAsync(_ everything: AllTypes, completion: @escaping (Result<AllTypes, Error>) -> Void) {
+  public func echoAsync(
+    _ everything: AllTypes, completion: @escaping (Result<AllTypes, Error>) -> Void
+  ) {
     completion(.success(everything))
   }
 
-  func echoAsync(
+  public func echoAsync(
     _ everything: AllNullableTypes?,
     completion: @escaping (Result<AllNullableTypes?, Error>) -> Void
   ) {
     completion(.success(everything))
   }
 
-  func echoAsync(
+  public func echoAsync(
     _ everything: AllNullableTypesWithoutRecursion?,
     completion: @escaping (Result<AllNullableTypesWithoutRecursion?, Error>) -> Void
   ) {
     completion(.success(everything))
   }
 
-  func echoAsync(_ anInt: Int64, completion: @escaping (Result<Int64, Error>) -> Void) {
+  public func echoAsync(_ anInt: Int64, completion: @escaping (Result<Int64, Error>) -> Void) {
     completion(.success(anInt))
   }
 
-  func echoAsync(_ aDouble: Double, completion: @escaping (Result<Double, Error>) -> Void) {
+  public func echoAsync(_ aDouble: Double, completion: @escaping (Result<Double, Error>) -> Void) {
     completion(.success(aDouble))
   }
 
-  func echoAsync(_ aBool: Bool, completion: @escaping (Result<Bool, Error>) -> Void) {
+  public func echoAsync(_ aBool: Bool, completion: @escaping (Result<Bool, Error>) -> Void) {
     completion(.success(aBool))
   }
 
-  func echoAsync(_ aString: String, completion: @escaping (Result<String, Error>) -> Void) {
+  public func echoAsync(_ aString: String, completion: @escaping (Result<String, Error>) -> Void) {
     completion(.success(aString))
   }
 
-  func echoAsync(
+  public func echoAsync(
     _ aUint8List: FlutterStandardTypedData,
     completion: @escaping (Result<FlutterStandardTypedData, Error>) -> Void
   ) {
     completion(.success(aUint8List))
   }
 
-  func echoAsync(_ anObject: Any, completion: @escaping (Result<Any, Error>) -> Void) {
+  public func echoAsync(_ anObject: Any, completion: @escaping (Result<Any, Error>) -> Void) {
     completion(.success(anObject))
   }
 
-  func echoAsync(_ list: [Any?], completion: @escaping (Result<[Any?], Error>) -> Void) {
+  public func echoAsync(_ list: [Any?], completion: @escaping (Result<[Any?], Error>) -> Void) {
     completion(.success(list))
   }
 
-  func echoAsync(enumList: [AnEnum?], completion: @escaping (Result<[AnEnum?], Error>) -> Void) {
+  public func echoAsync(
+    enumList: [AnEnum?], completion: @escaping (Result<[AnEnum?], Error>) -> Void
+  ) {
     completion(.success(enumList))
   }
 
-  func echoAsync(
+  public func echoAsync(
     classList: [AllNullableTypes?],
     completion: @escaping (Result<[AllNullableTypes?], Error>) -> Void
   ) {
     completion(.success(classList))
   }
 
-  func echoAsync(
+  public func echoAsync(
     _ map: [AnyHashable?: Any?], completion: @escaping (Result<[AnyHashable?: Any?], Error>) -> Void
   ) {
     completion(.success(map))
   }
 
-  func echoAsync(
+  public func echoAsync(
     stringMap: [String?: String?], completion: @escaping (Result<[String?: String?], Error>) -> Void
   ) {
     completion(.success(stringMap))
   }
 
-  func echoAsync(
+  public func echoAsync(
     intMap: [Int64?: Int64?], completion: @escaping (Result<[Int64?: Int64?], Error>) -> Void
   ) {
     completion(.success(intMap))
   }
 
-  func echoAsync(
+  public func echoAsync(
     enumMap: [AnEnum?: AnEnum?], completion: @escaping (Result<[AnEnum?: AnEnum?], Error>) -> Void
   ) {
     completion(.success(enumMap))
   }
 
-  func echoAsync(
+  public func echoAsync(
     classMap: [Int64?: AllNullableTypes?],
     completion: @escaping (Result<[Int64?: AllNullableTypes?], Error>) -> Void
   ) {
     completion(.success(classMap))
   }
 
-  func echoAsync(_ anEnum: AnEnum, completion: @escaping (Result<AnEnum, Error>) -> Void) {
+  public func echoAsync(_ anEnum: AnEnum, completion: @escaping (Result<AnEnum, Error>) -> Void) {
     completion(.success(anEnum))
   }
 
-  func echoAsync(
+  public func echoAsync(
     _ anotherEnum: AnotherEnum, completion: @escaping (Result<AnotherEnum, Error>) -> Void
   ) {
     completion(.success(anotherEnum))
   }
 
-  func echoAsyncNullable(_ anInt: Int64?, completion: @escaping (Result<Int64?, Error>) -> Void) {
+  public func echoAsyncNullable(
+    _ anInt: Int64?, completion: @escaping (Result<Int64?, Error>) -> Void
+  ) {
     completion(.success(anInt))
   }
 
-  func echoAsyncNullable(_ aDouble: Double?, completion: @escaping (Result<Double?, Error>) -> Void)
-  {
+  public func echoAsyncNullable(
+    _ aDouble: Double?, completion: @escaping (Result<Double?, Error>) -> Void
+  ) {
     completion(.success(aDouble))
   }
 
-  func echoAsyncNullable(_ aBool: Bool?, completion: @escaping (Result<Bool?, Error>) -> Void) {
+  public func echoAsyncNullable(
+    _ aBool: Bool?, completion: @escaping (Result<Bool?, Error>) -> Void
+  ) {
     completion(.success(aBool))
   }
 
-  func echoAsyncNullable(_ aString: String?, completion: @escaping (Result<String?, Error>) -> Void)
-  {
+  public func echoAsyncNullable(
+    _ aString: String?, completion: @escaping (Result<String?, Error>) -> Void
+  ) {
     completion(.success(aString))
   }
 
-  func echoAsyncNullable(
+  public func echoAsyncNullable(
     _ aUint8List: FlutterStandardTypedData?,
     completion: @escaping (Result<FlutterStandardTypedData?, Error>) -> Void
   ) {
     completion(.success(aUint8List))
   }
 
-  func echoAsyncNullable(_ anObject: Any?, completion: @escaping (Result<Any?, Error>) -> Void) {
+  public func echoAsyncNullable(
+    _ anObject: Any?, completion: @escaping (Result<Any?, Error>) -> Void
+  ) {
     completion(.success(anObject))
   }
 
-  func echoAsyncNullable(_ list: [Any?]?, completion: @escaping (Result<[Any?]?, Error>) -> Void) {
+  public func echoAsyncNullable(
+    _ list: [Any?]?, completion: @escaping (Result<[Any?]?, Error>) -> Void
+  ) {
     completion(.success(list))
   }
 
-  func echoAsyncNullable(
+  public func echoAsyncNullable(
     enumList: [AnEnum?]?, completion: @escaping (Result<[AnEnum?]?, Error>) -> Void
   ) {
     completion(.success(enumList))
   }
 
-  func echoAsyncNullable(
+  public func echoAsyncNullable(
     classList: [AllNullableTypes?]?,
     completion: @escaping (Result<[AllNullableTypes?]?, Error>) -> Void
   ) {
     completion(.success(classList))
   }
 
-  func echoAsyncNullable(
+  public func echoAsyncNullable(
     _ map: [AnyHashable?: Any?]?,
     completion: @escaping (Result<[AnyHashable?: Any?]?, Error>) -> Void
   ) {
     completion(.success(map))
   }
 
-  func echoAsyncNullable(
+  public func echoAsyncNullable(
     stringMap: [String?: String?]?,
     completion: @escaping (Result<[String?: String?]?, Error>) -> Void
   ) {
     completion(.success(stringMap))
   }
 
-  func echoAsyncNullable(
+  public func echoAsyncNullable(
     intMap: [Int64?: Int64?]?, completion: @escaping (Result<[Int64?: Int64?]?, Error>) -> Void
   ) {
     completion(.success(intMap))
   }
 
-  func echoAsyncNullable(
+  public func echoAsyncNullable(
     enumMap: [AnEnum?: AnEnum?]?, completion: @escaping (Result<[AnEnum?: AnEnum?]?, Error>) -> Void
   ) {
     completion(.success(enumMap))
   }
 
-  func echoAsyncNullable(
+  public func echoAsyncNullable(
     classMap: [Int64?: AllNullableTypes?]?,
     completion: @escaping (Result<[Int64?: AllNullableTypes?]?, Error>) -> Void
   ) {
     completion(.success(classMap))
   }
 
-  func echoAsyncNullable(
+  public func echoAsyncNullable(
     _ anEnum: AnEnum?, completion: @escaping (Result<AnEnum?, Error>) -> Void
   ) {
     completion(.success(anEnum))
   }
 
-  func echoAsyncNullable(
+  public func echoAsyncNullable(
     _ anotherEnum: AnotherEnum?, completion: @escaping (Result<AnotherEnum?, Error>) -> Void
   ) {
     completion(.success(anotherEnum))
   }
 
-  func defaultIsMainThread() -> Bool {
+  public func defaultIsMainThread() -> Bool {
     return Thread.isMainThread
   }
 
-  func taskQueueIsBackgroundThread() -> Bool {
+  public func taskQueueIsBackgroundThread() -> Bool {
     return !Thread.isMainThread
   }
 
-  func callFlutterNoop(completion: @escaping (Result<Void, Error>) -> Void) {
+  public func callFlutterNoop(completion: @escaping (Result<Void, Error>) -> Void) {
     flutterAPI.noop { response in
       switch response {
       case .success(let res):
@@ -562,7 +577,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterThrowError(completion: @escaping (Result<Any?, Error>) -> Void) {
+  public func callFlutterThrowError(completion: @escaping (Result<Any?, Error>) -> Void) {
     flutterAPI.throwError { response in
       switch response {
       case .success(let res):
@@ -573,7 +588,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterThrowErrorFromVoid(completion: @escaping (Result<Void, Error>) -> Void) {
+  public func callFlutterThrowErrorFromVoid(completion: @escaping (Result<Void, Error>) -> Void) {
     flutterAPI.throwErrorFromVoid { response in
       switch response {
       case .success(let res):
@@ -584,7 +599,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(
+  public func callFlutterEcho(
     _ everything: AllTypes, completion: @escaping (Result<AllTypes, Error>) -> Void
   ) {
     flutterAPI.echo(everything) { response in
@@ -597,7 +612,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(
+  public func callFlutterEcho(
     _ everything: AllNullableTypes?,
     completion: @escaping (Result<AllNullableTypes?, Error>) -> Void
   ) {
@@ -611,7 +626,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(
+  public func callFlutterEcho(
     _ everything: AllNullableTypesWithoutRecursion?,
     completion: @escaping (Result<AllNullableTypesWithoutRecursion?, Error>) -> Void
   ) {
@@ -625,7 +640,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterSendMultipleNullableTypes(
+  public func callFlutterSendMultipleNullableTypes(
     aBool aNullableBool: Bool?,
     anInt aNullableInt: Int64?,
     aString aNullableString: String?,
@@ -645,7 +660,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterSendMultipleNullableTypesWithoutRecursion(
+  public func callFlutterSendMultipleNullableTypesWithoutRecursion(
     aBool aNullableBool: Bool?, anInt aNullableInt: Int64?, aString aNullableString: String?,
     completion: @escaping (Result<AllNullableTypesWithoutRecursion, Error>) -> Void
   ) {
@@ -663,7 +678,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(_ aBool: Bool, completion: @escaping (Result<Bool, Error>) -> Void) {
+  public func callFlutterEcho(_ aBool: Bool, completion: @escaping (Result<Bool, Error>) -> Void) {
     flutterAPI.echo(aBool) { response in
       switch response {
       case .success(let res):
@@ -674,7 +689,8 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(_ anInt: Int64, completion: @escaping (Result<Int64, Error>) -> Void) {
+  public func callFlutterEcho(_ anInt: Int64, completion: @escaping (Result<Int64, Error>) -> Void)
+  {
     flutterAPI.echo(anInt) { response in
       switch response {
       case .success(let res):
@@ -685,7 +701,9 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(_ aDouble: Double, completion: @escaping (Result<Double, Error>) -> Void) {
+  public func callFlutterEcho(
+    _ aDouble: Double, completion: @escaping (Result<Double, Error>) -> Void
+  ) {
     flutterAPI.echo(aDouble) { response in
       switch response {
       case .success(let res):
@@ -696,7 +714,9 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(_ aString: String, completion: @escaping (Result<String, Error>) -> Void) {
+  public func callFlutterEcho(
+    _ aString: String, completion: @escaping (Result<String, Error>) -> Void
+  ) {
     flutterAPI.echo(aString) { response in
       switch response {
       case .success(let res):
@@ -707,7 +727,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(
+  public func callFlutterEcho(
     _ list: FlutterStandardTypedData,
     completion: @escaping (Result<FlutterStandardTypedData, Error>) -> Void
   ) {
@@ -721,7 +741,8 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(_ list: [Any?], completion: @escaping (Result<[Any?], Error>) -> Void) {
+  public func callFlutterEcho(_ list: [Any?], completion: @escaping (Result<[Any?], Error>) -> Void)
+  {
     flutterAPI.echo(list) { response in
       switch response {
       case .success(let res):
@@ -732,7 +753,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(
+  public func callFlutterEcho(
     enumList: [AnEnum?], completion: @escaping (Result<[AnEnum?], Error>) -> Void
   ) {
     flutterAPI.echo(enumList: enumList) { response in
@@ -745,7 +766,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(
+  public func callFlutterEcho(
     classList: [AllNullableTypes?],
     completion: @escaping (Result<[AllNullableTypes?], Error>) -> Void
   ) {
@@ -759,7 +780,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNonNull(
+  public func callFlutterEchoNonNull(
     enumList: [AnEnum], completion: @escaping (Result<[AnEnum], Error>) -> Void
   ) {
     flutterAPI.echoNonNull(enumList: enumList) { response in
@@ -772,7 +793,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNonNull(
+  public func callFlutterEchoNonNull(
     classList: [AllNullableTypes], completion: @escaping (Result<[AllNullableTypes], Error>) -> Void
   ) {
     flutterAPI.echoNonNull(classList: classList) { response in
@@ -785,7 +806,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(
+  public func callFlutterEcho(
     _ map: [AnyHashable?: Any?], completion: @escaping (Result<[AnyHashable?: Any?], Error>) -> Void
   ) {
     flutterAPI.echo(map) { response in
@@ -798,7 +819,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(
+  public func callFlutterEcho(
     stringMap: [String?: String?], completion: @escaping (Result<[String?: String?], Error>) -> Void
   ) {
     flutterAPI.echo(stringMap: stringMap) { response in
@@ -811,7 +832,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(
+  public func callFlutterEcho(
     intMap: [Int64?: Int64?], completion: @escaping (Result<[Int64?: Int64?], Error>) -> Void
   ) {
     flutterAPI.echo(intMap: intMap) { response in
@@ -824,7 +845,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(
+  public func callFlutterEcho(
     enumMap: [AnEnum?: AnEnum?], completion: @escaping (Result<[AnEnum?: AnEnum?], Error>) -> Void
   ) {
     flutterAPI.echo(enumMap: enumMap) { response in
@@ -837,7 +858,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(
+  public func callFlutterEcho(
     classMap: [Int64?: AllNullableTypes?],
     completion: @escaping (Result<[Int64?: AllNullableTypes?], Error>) -> Void
   ) {
@@ -851,7 +872,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNonNull(
+  public func callFlutterEchoNonNull(
     stringMap: [String: String], completion: @escaping (Result<[String: String], Error>) -> Void
   ) {
     flutterAPI.echoNonNull(stringMap: stringMap) { response in
@@ -864,7 +885,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNonNull(
+  public func callFlutterEchoNonNull(
     intMap: [Int64: Int64], completion: @escaping (Result<[Int64: Int64], Error>) -> Void
   ) {
     flutterAPI.echoNonNull(intMap: intMap) { response in
@@ -877,7 +898,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNonNull(
+  public func callFlutterEchoNonNull(
     enumMap: [AnEnum: AnEnum], completion: @escaping (Result<[AnEnum: AnEnum], Error>) -> Void
   ) {
     flutterAPI.echoNonNull(enumMap: enumMap) { response in
@@ -890,7 +911,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNonNull(
+  public func callFlutterEchoNonNull(
     classMap: [Int64: AllNullableTypes],
     completion: @escaping (Result<[Int64: AllNullableTypes], Error>) -> Void
   ) {
@@ -904,7 +925,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(
+  public func callFlutterEcho(
     _ anEnum: AnEnum, completion: @escaping (Result<AnEnum, Error>) -> Void
   ) {
     flutterAPI.echo(anEnum) { response in
@@ -917,7 +938,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEcho(
+  public func callFlutterEcho(
     _ anotherEnum: AnotherEnum, completion: @escaping (Result<AnotherEnum, Error>) -> Void
   ) {
     flutterAPI.echo(anotherEnum) { response in
@@ -930,8 +951,9 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullable(_ aBool: Bool?, completion: @escaping (Result<Bool?, Error>) -> Void)
-  {
+  public func callFlutterEchoNullable(
+    _ aBool: Bool?, completion: @escaping (Result<Bool?, Error>) -> Void
+  ) {
     flutterAPI.echoNullable(aBool) { response in
       switch response {
       case .success(let res):
@@ -942,7 +964,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullable(
+  public func callFlutterEchoNullable(
     _ anInt: Int64?, completion: @escaping (Result<Int64?, Error>) -> Void
   ) {
     flutterAPI.echoNullable(anInt) { response in
@@ -955,7 +977,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullable(
+  public func callFlutterEchoNullable(
     _ aDouble: Double?, completion: @escaping (Result<Double?, Error>) -> Void
   ) {
     flutterAPI.echoNullable(aDouble) { response in
@@ -968,7 +990,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullable(
+  public func callFlutterEchoNullable(
     _ aString: String?, completion: @escaping (Result<String?, Error>) -> Void
   ) {
     flutterAPI.echoNullable(aString) { response in
@@ -981,7 +1003,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullable(
+  public func callFlutterEchoNullable(
     _ list: FlutterStandardTypedData?,
     completion: @escaping (Result<FlutterStandardTypedData?, Error>) -> Void
   ) {
@@ -995,7 +1017,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullable(
+  public func callFlutterEchoNullable(
     _ list: [Any?]?, completion: @escaping (Result<[Any?]?, Error>) -> Void
   ) {
     flutterAPI.echoNullable(list) { response in
@@ -1008,7 +1030,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullable(
+  public func callFlutterEchoNullable(
     enumList: [AnEnum?]?, completion: @escaping (Result<[AnEnum?]?, Error>) -> Void
   ) {
     flutterAPI.echoNullable(enumList: enumList) { response in
@@ -1021,7 +1043,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullable(
+  public func callFlutterEchoNullable(
     classList: [AllNullableTypes?]?,
     completion: @escaping (Result<[AllNullableTypes?]?, Error>) -> Void
   ) {
@@ -1035,7 +1057,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullableNonNull(
+  public func callFlutterEchoNullableNonNull(
     enumList: [AnEnum]?, completion: @escaping (Result<[AnEnum]?, Error>) -> Void
   ) {
     flutterAPI.echoNullableNonNull(enumList: enumList) { response in
@@ -1048,7 +1070,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullableNonNull(
+  public func callFlutterEchoNullableNonNull(
     classList: [AllNullableTypes]?,
     completion: @escaping (Result<[AllNullableTypes]?, Error>) -> Void
   ) {
@@ -1062,7 +1084,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullable(
+  public func callFlutterEchoNullable(
     _ map: [AnyHashable?: Any?]?,
     completion: @escaping (Result<[AnyHashable?: Any?]?, Error>) -> Void
   ) {
@@ -1076,7 +1098,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullable(
+  public func callFlutterEchoNullable(
     stringMap: [String?: String?]?,
     completion: @escaping (Result<[String?: String?]?, Error>) -> Void
   ) {
@@ -1090,7 +1112,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullable(
+  public func callFlutterEchoNullable(
     intMap: [Int64?: Int64?]?, completion: @escaping (Result<[Int64?: Int64?]?, Error>) -> Void
   ) {
     flutterAPI.echoNullable(intMap: intMap) { response in
@@ -1103,7 +1125,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullable(
+  public func callFlutterEchoNullable(
     enumMap: [AnEnum?: AnEnum?]?, completion: @escaping (Result<[AnEnum?: AnEnum?]?, Error>) -> Void
   ) {
     flutterAPI.echoNullable(enumMap: enumMap) { response in
@@ -1116,7 +1138,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullable(
+  public func callFlutterEchoNullable(
     classMap: [Int64?: AllNullableTypes?]?,
     completion: @escaping (Result<[Int64?: AllNullableTypes?]?, Error>) -> Void
   ) {
@@ -1130,7 +1152,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullableNonNull(
+  public func callFlutterEchoNullableNonNull(
     stringMap: [String: String]?, completion: @escaping (Result<[String: String]?, Error>) -> Void
   ) {
     flutterAPI.echoNullableNonNull(stringMap: stringMap) { response in
@@ -1143,7 +1165,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullableNonNull(
+  public func callFlutterEchoNullableNonNull(
     intMap: [Int64: Int64]?, completion: @escaping (Result<[Int64: Int64]?, Error>) -> Void
   ) {
     flutterAPI.echoNullableNonNull(intMap: intMap) { response in
@@ -1156,7 +1178,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullableNonNull(
+  public func callFlutterEchoNullableNonNull(
     enumMap: [AnEnum: AnEnum]?, completion: @escaping (Result<[AnEnum: AnEnum]?, Error>) -> Void
   ) {
     flutterAPI.echoNullableNonNull(enumMap: enumMap) { response in
@@ -1169,7 +1191,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullableNonNull(
+  public func callFlutterEchoNullableNonNull(
     classMap: [Int64: AllNullableTypes]?,
     completion: @escaping (Result<[Int64: AllNullableTypes]?, Error>) -> Void
   ) {
@@ -1183,7 +1205,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullable(
+  public func callFlutterEchoNullable(
     _ anEnum: AnEnum?, completion: @escaping (Result<AnEnum?, Error>) -> Void
   ) {
     flutterAPI.echoNullable(anEnum) { response in
@@ -1196,7 +1218,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterEchoNullable(
+  public func callFlutterEchoNullable(
     _ anotherEnum: AnotherEnum?, completion: @escaping (Result<AnotherEnum?, Error>) -> Void
   ) {
     flutterAPI.echoNullable(anotherEnum) { response in
@@ -1209,7 +1231,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func callFlutterSmallApiEcho(
+  public func callFlutterSmallApiEcho(
     _ aString: String, completion: @escaping (Result<String, Error>) -> Void
   ) {
     flutterSmallApiOne.echo(string: aString) { responseOne in
@@ -1238,11 +1260,11 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     }
   }
 
-  func testUnusedClassesGenerate() -> UnusedClass {
+  public func testUnusedClassesGenerate() -> UnusedClass {
     return UnusedClass()
   }
 
-  func echo(event: any PlatformEvent) throws -> any PlatformEvent { event }
+  public func echo(event: any PlatformEvent) throws -> any PlatformEvent { event }
 }
 
 public class TestPluginWithSuffix: HostSmallApi {
@@ -1258,21 +1280,20 @@ public class TestPluginWithSuffix: HostSmallApi {
       binaryMessenger: messenger, api: plugin, messageChannelSuffix: suffix)
   }
 
-  func echo(aString: String, completion: @escaping (Result<String, Error>) -> Void) {
+  public func echo(aString: String, completion: @escaping (Result<String, Error>) -> Void) {
     completion(.success(aString))
   }
 
-  func voidVoid(completion: @escaping (Result<Void, Error>) -> Void) {
-    completion(.success(Void()))
+  public func voidVoid(completion: @escaping (Result<Void, Error>) -> Void) {
+    completion(.success(()))
   }
-
 }
 
 class SendInts: StreamIntsStreamHandler {
   var timerActive = false
   var timer: Timer?
 
-  override func onListen(withArguments arguments: Any?, sink: PigeonEventSink<Int64>) {
+  override public func onListen(withArguments arguments: Any?, sink: PigeonEventSink<Int64>) {
     var count: Int64 = 0
     if !timerActive {
       timerActive = true
@@ -1305,7 +1326,8 @@ class SendEvents: StreamEventsStreamHandler {
       EmptyEvent(),
     ]
 
-  override func onListen(withArguments arguments: Any?, sink: PigeonEventSink<PlatformEvent>) {
+  override public func onListen(withArguments arguments: Any?, sink: PigeonEventSink<PlatformEvent>)
+  {
     var count = 0
     if !timerActive {
       timerActive = true
@@ -1329,10 +1351,11 @@ class SendConsistentNumbers: StreamConsistentNumbersStreamHandler {
   init(numberToSend: Int64) {
     self.numberToSend = numberToSend
   }
+
   var timerActive = false
   var timer: Timer?
 
-  override func onListen(withArguments arguments: Any?, sink: PigeonEventSink<Int64>) {
+  override public func onListen(withArguments arguments: Any?, sink: PigeonEventSink<Int64>) {
     let numberThatWillBeSent: Int64 = numberToSend
     var count: Int64 = 0
     if !timerActive {
@@ -1352,11 +1375,11 @@ class SendConsistentNumbers: StreamConsistentNumbersStreamHandler {
 }
 
 class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
-  func pigeonApiProxyApiTestClass(_ registrar: ProxyApiTestsPigeonProxyApiRegistrar)
+  public func pigeonApiProxyApiTestClass(_ registrar: ProxyApiTestsPigeonProxyApiRegistrar)
     -> PigeonApiProxyApiTestClass
   {
     class ProxyApiTestClassDelegate: PigeonApiDelegateProxyApiTestClass {
-      func pigeonDefaultConstructor(
+      public func pigeonDefaultConstructor(
         pigeonApi: PigeonApiProxyApiTestClass, aBool: Bool, anInt: Int64, aDouble: Double,
         aString: String, aUint8List: FlutterStandardTypedData, aList: [Any?], aMap: [String?: Any?],
         anEnum: ProxyApiTestEnum, aProxyApi: ProxyApiSuperClass, aNullableBool: Bool?,
@@ -1375,7 +1398,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         return ProxyApiTestClass()
       }
 
-      func namedConstructor(
+      public func namedConstructor(
         pigeonApi: PigeonApiProxyApiTestClass, aBool: Bool, anInt: Int64, aDouble: Double,
         aString: String, aUint8List: FlutterStandardTypedData, aList: [Any?], aMap: [String?: Any?],
         anEnum: ProxyApiTestEnum, aProxyApi: ProxyApiSuperClass, aNullableBool: Bool?,
@@ -1387,329 +1410,361 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         return ProxyApiTestClass()
       }
 
-      func attachedField(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func attachedField(
+        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+      )
         throws -> ProxyApiSuperClass
       {
         return ProxyApiSuperClass()
       }
 
-      func staticAttachedField(pigeonApi: PigeonApiProxyApiTestClass) throws -> ProxyApiSuperClass {
+      public func staticAttachedField(pigeonApi: PigeonApiProxyApiTestClass) throws
+        -> ProxyApiSuperClass
+      {
         return ProxyApiSuperClass()
       }
 
-      func aBool(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass) throws
+      public func aBool(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+        throws
         -> Bool
       {
         return true
       }
 
-      func anInt(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass) throws
+      public func anInt(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+        throws
         -> Int64
       {
         return 0
       }
 
-      func aDouble(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass) throws
+      public func aDouble(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+        throws
         -> Double
       {
         return 0.0
       }
 
-      func aString(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass) throws
+      public func aString(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+        throws
         -> String
       {
         return ""
       }
 
-      func aUint8List(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func aUint8List(
+        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+      )
         throws -> FlutterStandardTypedData
       {
         return FlutterStandardTypedData(bytes: Data())
       }
 
-      func aList(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass) throws
+      public func aList(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+        throws
         -> [Any?]
       {
         return []
       }
 
-      func aMap(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass) throws
+      public func aMap(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+        throws
         -> [String?: Any?]
       {
         return [:]
       }
 
-      func anEnum(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass) throws
+      public func anEnum(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+        throws
         -> ProxyApiTestEnum
       {
         return ProxyApiTestEnum.one
       }
 
-      func aProxyApi(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func aProxyApi(
+        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+      )
         throws -> ProxyApiSuperClass
       {
         return ProxyApiSuperClass()
       }
 
-      func aNullableBool(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func aNullableBool(
+        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+      )
         throws -> Bool?
       {
         return nil
       }
 
-      func aNullableInt(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func aNullableInt(
+        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+      )
         throws -> Int64?
       {
         return nil
       }
 
-      func aNullableDouble(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func aNullableDouble(
+        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+      )
         throws -> Double?
       {
         return nil
       }
 
-      func aNullableString(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func aNullableString(
+        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+      )
         throws -> String?
       {
         return nil
       }
 
-      func aNullableUint8List(
+      public func aNullableUint8List(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
       ) throws -> FlutterStandardTypedData? {
         return nil
       }
 
-      func aNullableList(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func aNullableList(
+        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+      )
         throws -> [Any?]?
       {
         return nil
       }
 
-      func aNullableMap(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func aNullableMap(
+        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+      )
         throws -> [String?: Any?]?
       {
         return nil
       }
 
-      func aNullableEnum(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func aNullableEnum(
+        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+      )
         throws -> ProxyApiTestEnum?
       {
         return nil
       }
 
-      func aNullableProxyApi(
+      public func aNullableProxyApi(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
       ) throws -> ProxyApiSuperClass? {
         return nil
       }
 
-      func noop(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass) throws {
-      }
+      public func noop(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+        throws
+      {}
 
-      func throwError(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func throwError(
+        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+      )
         throws -> Any?
       {
         throw ProxyApiTestsError(code: "code", message: "message", details: "details")
       }
 
-      func throwErrorFromVoid(
+      public func throwErrorFromVoid(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
       ) throws {
         throw ProxyApiTestsError(code: "code", message: "message", details: "details")
       }
 
-      func throwFlutterError(
+      public func throwFlutterError(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
       ) throws -> Any? {
         throw ProxyApiTestsError(code: "code", message: "message", details: "details")
       }
 
-      func echoInt(
+      public func echoInt(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, anInt: Int64
       ) throws -> Int64 {
         return anInt
       }
 
-      func echoDouble(
+      public func echoDouble(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aDouble: Double
       ) throws -> Double {
         return aDouble
       }
 
-      func echoBool(
+      public func echoBool(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aBool: Bool
       ) throws -> Bool {
         return aBool
       }
 
-      func echoString(
+      public func echoString(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aString: String
       ) throws -> String {
         return aString
       }
 
-      func echoUint8List(
+      public func echoUint8List(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aUint8List: FlutterStandardTypedData
       ) throws -> FlutterStandardTypedData {
         return aUint8List
       }
 
-      func echoObject(
+      public func echoObject(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, anObject: Any
       ) throws -> Any {
         return anObject
       }
 
-      func echoList(
+      public func echoList(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aList: [Any?]
       ) throws -> [Any?] {
         return aList
       }
 
-      func echoProxyApiList(
+      public func echoProxyApiList(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aList: [ProxyApiTestClass]
       ) throws -> [ProxyApiTestClass] {
         return aList
       }
 
-      func echoMap(
+      public func echoMap(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aMap: [String?: Any?]
       ) throws -> [String?: Any?] {
         return aMap
       }
 
-      func echoProxyApiMap(
+      public func echoProxyApiMap(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aMap: [String: ProxyApiTestClass]
       ) throws -> [String: ProxyApiTestClass] {
         return aMap
       }
 
-      func echoEnum(
+      public func echoEnum(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         anEnum: ProxyApiTestEnum
       ) throws -> ProxyApiTestEnum {
         return anEnum
       }
 
-      func echoProxyApi(
+      public func echoProxyApi(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aProxyApi: ProxyApiSuperClass
       ) throws -> ProxyApiSuperClass {
         return aProxyApi
       }
 
-      func echoNullableInt(
+      public func echoNullableInt(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aNullableInt: Int64?
       ) throws -> Int64? {
         return aNullableInt
       }
 
-      func echoNullableDouble(
+      public func echoNullableDouble(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aNullableDouble: Double?
       ) throws -> Double? {
         return aNullableDouble
       }
 
-      func echoNullableBool(
+      public func echoNullableBool(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aNullableBool: Bool?
       ) throws -> Bool? {
         return aNullableBool
       }
 
-      func echoNullableString(
+      public func echoNullableString(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aNullableString: String?
       ) throws -> String? {
         return aNullableString
       }
 
-      func echoNullableUint8List(
+      public func echoNullableUint8List(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aNullableUint8List: FlutterStandardTypedData?
       ) throws -> FlutterStandardTypedData? {
         return aNullableUint8List
       }
 
-      func echoNullableObject(
+      public func echoNullableObject(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aNullableObject: Any?
       ) throws -> Any? {
         return aNullableObject
       }
 
-      func echoNullableList(
+      public func echoNullableList(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aNullableList: [Any?]?
       ) throws -> [Any?]? {
         return aNullableList
       }
 
-      func echoNullableMap(
+      public func echoNullableMap(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aNullableMap: [String?: Any?]?
       ) throws -> [String?: Any?]? {
         return aNullableMap
       }
 
-      func echoNullableEnum(
+      public func echoNullableEnum(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aNullableEnum: ProxyApiTestEnum?
       ) throws -> ProxyApiTestEnum? {
         return aNullableEnum
       }
 
-      func echoNullableProxyApi(
+      public func echoNullableProxyApi(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aNullableProxyApi: ProxyApiSuperClass?
       ) throws -> ProxyApiSuperClass? {
         return aNullableProxyApi
       }
 
-      func noopAsync(
+      public func noopAsync(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         completion: @escaping (Result<Void, Error>) -> Void
       ) {
-        completion(.success(Void()))
+        completion(.success(()))
       }
 
-      func echoAsyncInt(
+      public func echoAsyncInt(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, anInt: Int64,
         completion: @escaping (Result<Int64, Error>) -> Void
       ) {
         completion(.success(anInt))
       }
 
-      func echoAsyncDouble(
+      public func echoAsyncDouble(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aDouble: Double,
         completion: @escaping (Result<Double, Error>) -> Void
       ) {
         completion(.success(aDouble))
       }
 
-      func echoAsyncBool(
+      public func echoAsyncBool(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aBool: Bool,
         completion: @escaping (Result<Bool, Error>) -> Void
       ) {
         completion(.success(aBool))
       }
 
-      func echoAsyncString(
+      public func echoAsyncString(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aString: String,
         completion: @escaping (Result<String, Error>) -> Void
       ) {
         completion(.success(aString))
       }
 
-      func echoAsyncUint8List(
+      public func echoAsyncUint8List(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aUint8List: FlutterStandardTypedData,
         completion: @escaping (Result<FlutterStandardTypedData, Error>) -> Void
@@ -1717,35 +1772,35 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         completion(.success(aUint8List))
       }
 
-      func echoAsyncObject(
+      public func echoAsyncObject(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, anObject: Any,
         completion: @escaping (Result<Any, Error>) -> Void
       ) {
         completion(.success(anObject))
       }
 
-      func echoAsyncList(
+      public func echoAsyncList(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aList: [Any?],
         completion: @escaping (Result<[Any?], Error>) -> Void
       ) {
         completion(.success(aList))
       }
 
-      func echoAsyncMap(
+      public func echoAsyncMap(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aMap: [String?: Any?], completion: @escaping (Result<[String?: Any?], Error>) -> Void
       ) {
         completion(.success(aMap))
       }
 
-      func echoAsyncEnum(
+      public func echoAsyncEnum(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         anEnum: ProxyApiTestEnum, completion: @escaping (Result<ProxyApiTestEnum, Error>) -> Void
       ) {
         completion(.success(anEnum))
       }
 
-      func throwAsyncError(
+      public func throwAsyncError(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         completion: @escaping (Result<Any?, Error>) -> Void
       ) {
@@ -1753,7 +1808,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
           .failure(ProxyApiTestsError(code: "code", message: "message", details: "details")))
       }
 
-      func throwAsyncErrorFromVoid(
+      public func throwAsyncErrorFromVoid(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         completion: @escaping (Result<Void, Error>) -> Void
       ) {
@@ -1761,7 +1816,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
           .failure(ProxyApiTestsError(code: "code", message: "message", details: "details")))
       }
 
-      func throwAsyncFlutterError(
+      public func throwAsyncFlutterError(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         completion: @escaping (Result<Any?, Error>) -> Void
       ) {
@@ -1769,35 +1824,35 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
           .failure(ProxyApiTestsError(code: "code", message: "message", details: "details")))
       }
 
-      func echoAsyncNullableInt(
+      public func echoAsyncNullableInt(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, anInt: Int64?,
         completion: @escaping (Result<Int64?, Error>) -> Void
       ) {
         completion(.success(anInt))
       }
 
-      func echoAsyncNullableDouble(
+      public func echoAsyncNullableDouble(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aDouble: Double?,
         completion: @escaping (Result<Double?, Error>) -> Void
       ) {
         completion(.success(aDouble))
       }
 
-      func echoAsyncNullableBool(
+      public func echoAsyncNullableBool(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aBool: Bool?,
         completion: @escaping (Result<Bool?, Error>) -> Void
       ) {
         completion(.success(aBool))
       }
 
-      func echoAsyncNullableString(
+      public func echoAsyncNullableString(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aString: String?,
         completion: @escaping (Result<String?, Error>) -> Void
       ) {
         completion(.success(aString))
       }
 
-      func echoAsyncNullableUint8List(
+      public func echoAsyncNullableUint8List(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aUint8List: FlutterStandardTypedData?,
         completion: @escaping (Result<FlutterStandardTypedData?, Error>) -> Void
@@ -1805,50 +1860,49 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         completion(.success(aUint8List))
       }
 
-      func echoAsyncNullableObject(
+      public func echoAsyncNullableObject(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, anObject: Any?,
         completion: @escaping (Result<Any?, Error>) -> Void
       ) {
         completion(.success(anObject))
       }
 
-      func echoAsyncNullableList(
+      public func echoAsyncNullableList(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aList: [Any?]?,
         completion: @escaping (Result<[Any?]?, Error>) -> Void
       ) {
         completion(.success(aList))
       }
 
-      func echoAsyncNullableMap(
+      public func echoAsyncNullableMap(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aMap: [String?: Any?]?, completion: @escaping (Result<[String?: Any?]?, Error>) -> Void
       ) {
         completion(.success(aMap))
       }
 
-      func echoAsyncNullableEnum(
+      public func echoAsyncNullableEnum(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         anEnum: ProxyApiTestEnum?, completion: @escaping (Result<ProxyApiTestEnum?, Error>) -> Void
       ) {
         completion(.success(anEnum))
       }
 
-      func staticNoop(pigeonApi: PigeonApiProxyApiTestClass) throws {
+      public func staticNoop(pigeonApi: PigeonApiProxyApiTestClass) throws {}
 
-      }
-
-      func echoStaticString(pigeonApi: PigeonApiProxyApiTestClass, aString: String) throws -> String
+      public func echoStaticString(pigeonApi: PigeonApiProxyApiTestClass, aString: String) throws
+        -> String
       {
         return aString
       }
 
-      func staticAsyncNoop(
+      public func staticAsyncNoop(
         pigeonApi: PigeonApiProxyApiTestClass, completion: @escaping (Result<Void, Error>) -> Void
       ) {
-        completion(.success(Void()))
+        completion(.success(()))
       }
 
-      func callFlutterNoop(
+      public func callFlutterNoop(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         completion: @escaping (Result<Void, Error>) -> Void
       ) {
@@ -1862,7 +1916,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterThrowError(
+      public func callFlutterThrowError(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         completion: @escaping (Result<Any?, Error>) -> Void
       ) {
@@ -1876,7 +1930,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterThrowErrorFromVoid(
+      public func callFlutterThrowErrorFromVoid(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         completion: @escaping (Result<Void, Error>) -> Void
       ) {
@@ -1890,7 +1944,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoBool(
+      public func callFlutterEchoBool(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aBool: Bool,
         completion: @escaping (Result<Bool, Error>) -> Void
       ) {
@@ -1904,7 +1958,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoInt(
+      public func callFlutterEchoInt(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, anInt: Int64,
         completion: @escaping (Result<Int64, Error>) -> Void
       ) {
@@ -1918,7 +1972,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoDouble(
+      public func callFlutterEchoDouble(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aDouble: Double,
         completion: @escaping (Result<Double, Error>) -> Void
       ) {
@@ -1932,7 +1986,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoString(
+      public func callFlutterEchoString(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aString: String,
         completion: @escaping (Result<String, Error>) -> Void
       ) {
@@ -1946,7 +2000,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoUint8List(
+      public func callFlutterEchoUint8List(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aUint8List: FlutterStandardTypedData,
         completion: @escaping (Result<FlutterStandardTypedData, Error>) -> Void
@@ -1962,7 +2016,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoList(
+      public func callFlutterEchoList(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aList: [Any?],
         completion: @escaping (Result<[Any?], Error>) -> Void
       ) {
@@ -1976,7 +2030,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoProxyApiList(
+      public func callFlutterEchoProxyApiList(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aList: [ProxyApiTestClass?],
         completion: @escaping (Result<[ProxyApiTestClass?], Error>) -> Void
@@ -1992,7 +2046,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoMap(
+      public func callFlutterEchoMap(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aMap: [String?: Any?], completion: @escaping (Result<[String?: Any?], Error>) -> Void
       ) {
@@ -2006,7 +2060,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoProxyApiMap(
+      public func callFlutterEchoProxyApiMap(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aMap: [String?: ProxyApiTestClass?],
         completion: @escaping (Result<[String?: ProxyApiTestClass?], Error>) -> Void
@@ -2021,7 +2075,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoEnum(
+      public func callFlutterEchoEnum(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         anEnum: ProxyApiTestEnum, completion: @escaping (Result<ProxyApiTestEnum, Error>) -> Void
       ) {
@@ -2035,7 +2089,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoProxyApi(
+      public func callFlutterEchoProxyApi(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aProxyApi: ProxyApiSuperClass,
         completion: @escaping (Result<ProxyApiSuperClass, Error>) -> Void
@@ -2051,7 +2105,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoNullableBool(
+      public func callFlutterEchoNullableBool(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aBool: Bool?,
         completion: @escaping (Result<Bool?, Error>) -> Void
       ) {
@@ -2066,7 +2120,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoNullableInt(
+      public func callFlutterEchoNullableInt(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, anInt: Int64?,
         completion: @escaping (Result<Int64?, Error>) -> Void
       ) {
@@ -2080,7 +2134,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoNullableDouble(
+      public func callFlutterEchoNullableDouble(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aDouble: Double?,
         completion: @escaping (Result<Double?, Error>) -> Void
       ) {
@@ -2095,7 +2149,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoNullableString(
+      public func callFlutterEchoNullableString(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aString: String?,
         completion: @escaping (Result<String?, Error>) -> Void
       ) {
@@ -2110,7 +2164,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoNullableUint8List(
+      public func callFlutterEchoNullableUint8List(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aUint8List: FlutterStandardTypedData?,
         completion: @escaping (Result<FlutterStandardTypedData?, Error>) -> Void
@@ -2126,7 +2180,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoNullableList(
+      public func callFlutterEchoNullableList(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aList: [Any?]?,
         completion: @escaping (Result<[Any?]?, Error>) -> Void
       ) {
@@ -2141,7 +2195,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoNullableMap(
+      public func callFlutterEchoNullableMap(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aMap: [String?: Any?]?, completion: @escaping (Result<[String?: Any?]?, Error>) -> Void
       ) {
@@ -2155,7 +2209,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoNullableEnum(
+      public func callFlutterEchoNullableEnum(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         anEnum: ProxyApiTestEnum?, completion: @escaping (Result<ProxyApiTestEnum?, Error>) -> Void
       ) {
@@ -2170,7 +2224,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoNullableProxyApi(
+      public func callFlutterEchoNullableProxyApi(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         aProxyApi: ProxyApiSuperClass?,
         completion: @escaping (Result<ProxyApiSuperClass?, Error>) -> Void
@@ -2186,7 +2240,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterNoopAsync(
+      public func callFlutterNoopAsync(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
         completion: @escaping (Result<Void, Error>) -> Void
       ) {
@@ -2200,7 +2254,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
 
-      func callFlutterEchoAsyncString(
+      public func callFlutterEchoAsyncString(
         pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aString: String,
         completion: @escaping (Result<String, Error>) -> Void
       ) {
@@ -2214,23 +2268,24 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
           }
         }
       }
-
     }
     return PigeonApiProxyApiTestClass(
       pigeonRegistrar: registrar, delegate: ProxyApiTestClassDelegate())
   }
 
-  func pigeonApiProxyApiSuperClass(_ registrar: ProxyApiTestsPigeonProxyApiRegistrar)
+  public func pigeonApiProxyApiSuperClass(_ registrar: ProxyApiTestsPigeonProxyApiRegistrar)
     -> PigeonApiProxyApiSuperClass
   {
     class ProxyApiSuperClassDelegate: PigeonApiDelegateProxyApiSuperClass {
-      func pigeonDefaultConstructor(pigeonApi: PigeonApiProxyApiSuperClass) throws
+      public func pigeonDefaultConstructor(pigeonApi: PigeonApiProxyApiSuperClass) throws
         -> ProxyApiSuperClass
       {
         return ProxyApiSuperClass()
       }
 
-      func aSuperMethod(pigeonApi: PigeonApiProxyApiSuperClass, pigeonInstance: ProxyApiSuperClass)
+      public func aSuperMethod(
+        pigeonApi: PigeonApiProxyApiSuperClass, pigeonInstance: ProxyApiSuperClass
+      )
         throws
       {}
     }
@@ -2238,7 +2293,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       pigeonRegistrar: registrar, delegate: ProxyApiSuperClassDelegate())
   }
 
-  func pigeonApiProxyApiInterface(_ registrar: ProxyApiTestsPigeonProxyApiRegistrar)
+  public func pigeonApiProxyApiInterface(_ registrar: ProxyApiTestsPigeonProxyApiRegistrar)
     -> PigeonApiProxyApiInterface
   {
     class ProxyApiInterfaceDelegate: PigeonApiDelegateProxyApiInterface {}
@@ -2246,23 +2301,21 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       pigeonRegistrar: registrar, delegate: ProxyApiInterfaceDelegate())
   }
 
-  func pigeonApiClassWithApiRequirement(_ registrar: ProxyApiTestsPigeonProxyApiRegistrar)
+  public func pigeonApiClassWithApiRequirement(_ registrar: ProxyApiTestsPigeonProxyApiRegistrar)
     -> PigeonApiClassWithApiRequirement
   {
     class ClassWithApiRequirementDelegate: PigeonApiDelegateClassWithApiRequirement {
       @available(iOS 15, macOS 10, *)
-      func pigeonDefaultConstructor(pigeonApi: PigeonApiClassWithApiRequirement) throws
+      public func pigeonDefaultConstructor(pigeonApi: PigeonApiClassWithApiRequirement) throws
         -> ClassWithApiRequirement
       {
         return ClassWithApiRequirement()
       }
 
       @available(iOS 15, macOS 10, *)
-      func aMethod(
+      public func aMethod(
         pigeonApi: PigeonApiClassWithApiRequirement, pigeonInstance: ClassWithApiRequirement
-      ) throws {
-
-      }
+      ) throws {}
     }
 
     return PigeonApiClassWithApiRequirement(

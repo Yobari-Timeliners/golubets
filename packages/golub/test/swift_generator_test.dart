@@ -121,7 +121,7 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('enum Foo: Int'));
+    expect(code, contains('public enum Foo: Int'));
     expect(
         code,
         contains(
@@ -182,10 +182,20 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('protocol Api'));
-    expect(code, matches('func doSomething.*Input.*Output'));
+    expect(code, contains('public protocol Api'));
+    expect(code, contains('public class ApiSetup'));
     expect(code, contains('doSomethingChannel.setMessageHandler'));
     expect(code, isNot(contains('if (')));
+    expect(code, contains('public class Api'));
+    expect(code, contains('public final class PigeonError'));
+    expect(code, contains('public struct Output'));
+    expect(code, contains('public struct Input'));
+    expect(
+      code,
+      contains(
+        'public static func setUp(binaryMessenger: FlutterBinaryMessenger, api: Api?, messageChannelSuffix: String = "")',
+      ),
+    );
   });
 
   test('all the simple datatypes header', () {
@@ -286,10 +296,11 @@ void main() {
   });
 
   test('gen one flutter api', () {
+    const String methodName = 'doSomething';
     final Root root = Root(apis: <Api>[
       AstFlutterApi(name: 'Api', methods: <Method>[
         Method(
-          name: 'doSomething',
+          name: methodName,
           location: ApiLocation.flutter,
           parameters: <Parameter>[
             Parameter(
@@ -336,14 +347,18 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('class Api'));
+    expect(code, contains('public class Api'));
     expect(
         code,
         contains(
-            'init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "")'));
-    expect(code, matches('func doSomething.*Input.*Output'));
+            'public init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "")'));
+    expect(code, matches('public func doSomething.*Input.*Output'));
     expect(code, isNot(contains('if (')));
     expect(code, isNot(matches(RegExp(r';$', multiLine: true))));
+    expect(code, contains('public protocol Api'));
+    expect(code, contains('public final class PigeonError'));
+    expect(code, contains('public struct Input'));
+    expect(code, contains('public struct Output'));
   });
 
   test('gen host void api', () {
@@ -1774,15 +1789,16 @@ void main() {
     final String code = sink.toString();
     expect(
       code,
-      contains('protocol PlatformEvent'),
+      contains('public protocol PlatformEvent'),
     );
     expect(
       code,
-      contains('struct IntEvent: PlatformEvent'),
+      contains('public struct IntEvent: PlatformEvent'),
     );
     expect(
       code,
-      contains('struct ClassEvent: PlatformEvent'),
+      contains('public struct ClassEvent: PlatformEvent'),
     );
+    expect(code, contains('public init('));
   });
 }
