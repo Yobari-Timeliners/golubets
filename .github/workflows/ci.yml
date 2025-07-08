@@ -106,7 +106,7 @@ jobs:
             platform: linux
           - os: macos-latest
             platform: macos
-          - os: windows-2019
+          - os: windows-latest
             platform: windows
       fail-fast: false
     steps:
@@ -147,7 +147,16 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-      
+      - name: Add MSBuild to PATH
+        if: matrix.platform == 'windows'
+        uses: microsoft/setup-msbuild@v2
+        with:
+          msbuild-architecture: x64
+      - name: Set up MSVC Developer Command Prompt
+        if: matrix.platform == 'windows'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
 
       - name: prepare tool
         run: .ci/scripts/prepare_tool.sh
