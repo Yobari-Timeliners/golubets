@@ -157,7 +157,7 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: x64
-          toolset: v142
+          vsversion: "2019"
 
       - name: prepare tool
         run: .ci/scripts/prepare_tool.sh
