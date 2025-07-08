@@ -156,7 +156,8 @@ jobs:
         if: matrix.platform == 'windows'
         uses: ilammy/msvc-dev-cmd@v1
         with:
-          vsversion: 16.0
+          toolset: 14.4
+          vsversion: 2019
 
       - name: prepare tool
         run: .ci/scripts/prepare_tool.sh
