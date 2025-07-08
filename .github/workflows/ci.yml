@@ -140,6 +140,7 @@ jobs:
         if: matrix.platform == 'windows'
         run: |
           choco install llvm --version=15.0.7 --force -y
+          choco install visualstudio2019buildtools --package-parameters "--allWorkloads --includeRecommended --includeOptional --passive --locale en-US"
 
       - name: Set up Java
         if: matrix.platform == 'linux' || matrix.platform == 'windows'
