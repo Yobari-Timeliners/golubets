@@ -215,28 +215,16 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       if (classDefinition.isSealed) {
         return;
       }
-<<<<<<< HEAD:packages/golub/lib/src/dart/dart_generator.dart
 
       if (classDefinition.fields.isNotEmpty) {
         _writeConstructor(indent, classDefinition);
-=======
-      _writeConstructor(indent, classDefinition);
-      indent.newln();
-      for (final NamedType field
-          in getFieldsInSerializationOrder(classDefinition)) {
-        addDocumentationComments(
-            indent, field.documentationComments, docCommentSpec);
-
-        final String datatype = addGenericTypesNullable(field.type);
-        indent.writeln('$datatype ${field.name};');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
         indent.newln();
         for (final NamedType field
             in getFieldsInSerializationOrder(classDefinition)) {
           addDocumentationComments(
-              indent, field.documentationComments, _docCommentSpec);
+              indent, field.documentationComments, docCommentSpec);
 
-          final String datatype = _addGenericTypesNullable(field.type);
+          final String datatype = addGenericTypesNullable(field.type);
           indent.writeln('$datatype ${field.name};');
           indent.newln();
         }
