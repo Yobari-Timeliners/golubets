@@ -106,7 +106,7 @@ jobs:
             platform: linux
           - os: macos-latest
             platform: macos
-          - os: windows-2022
+          - os: windows-latest
             platform: windows
       fail-fast: false
     steps:
@@ -118,7 +118,7 @@ jobs:
       
       - name: Setup Visual Studio 2019
         if: matrix.platform == 'windows'
-        uses: microsoft/setup-msbuild@v1.3
+        uses: microsoft/setup-msbuild@v2
         with:
           vs-version: '[16.4,16.5)' # VS 2019 version range
           # msbuild-architecture: x64
