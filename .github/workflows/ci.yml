@@ -106,6 +106,7 @@ jobs:
             platform: linux
           - os: macos-latest
             platform: macos
+          # Option 1: Use windows-2022 with VS 2019 setup
           - os: windows-2022
             platform: windows
       fail-fast: false
@@ -115,6 +116,14 @@ jobs:
           fetch-depth: 0
       - name: Make all scripts executable
         run: find .ci/scripts -type f -name "*.sh" -exec chmod +x {} \;
+      
+      - name: Setup Visual Studio 2019
+        if: matrix.platform == 'windows'
+        uses: microsoft/setup-msbuild@v2
+        with:
+          vs-version: '[16.0,17.0)'  # VS 2019 version range
+          msbuild-architecture: x64
+      
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -128,7 +137,6 @@ jobs:
         run: |
           brew install clang-format
           brew install swift-format
-          
 
       - name: Install Linux dependencies
         if: matrix.platform == 'linux'
@@ -139,8 +147,8 @@ jobs:
       - name: Install Windows dependencies
         if: matrix.platform == 'windows'
         run: |
+          # Use LLVM 15.0.7 which is compatible with VS 2019
           choco install llvm --version=15.0.7 --force -y
-          choco install visualstudio2019buildtools --package-parameters "--allWorkloads --includeRecommended --includeOptional --passive --locale en-US"
 
       - name: Set up Java
         if: matrix.platform == 'linux' || matrix.platform == 'windows'
@@ -148,28 +156,15 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-      - name: Add MSBuild to PATH
-        if: matrix.platform == 'windows'
-        uses: microsoft/setup-msbuild@v2
-        with:
-          msbuild-architecture: x64
-      - name: Set up MSVC Developer Command Prompt
-        if: matrix.platform == 'windows'
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          toolset: 14.0
-          vsversion: 2019
 
       - name: prepare tool
         run: .ci/scripts/prepare_tool.sh
       - name: download Dart deps
         run: .ci/scripts/tool_runner.sh fetch-deps
 
-      
       - name: build examples (Win32)
         if: matrix.platform == 'windows'
         run: .ci/scripts/build_examples_win32.sh
-
 
       - name: Build Linux examples
         if: matrix.platform == 'linux'
@@ -190,7 +185,6 @@ jobs:
           script: dart run tool/run_tests.dart
           working-directory: packages/golub
 
-
       - name: MacOS updates pods repo
         if: matrix.platform == 'macos'
         run: .ci/scripts/update_pods.sh
@@ -203,13 +197,10 @@ jobs:
           .ci/scripts/create_simulator.sh
           .ci/scripts/boot_simulator.sh
 
-
       - name: Run tests
         if: matrix.platform != 'linux'
         run: dart run tool/run_tests.dart
         working-directory: packages/golub
-
-
 
       - name: Shutdown iOS simulator
         if: matrix.platform == 'macos'
