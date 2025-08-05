@@ -121,7 +121,7 @@ jobs:
         if: matrix.platform == 'windows'
         uses: microsoft/setup-msbuild@v1.1
         with:
-          vs-version: '[16.0,17.0)'  # VS 2019 version range
+          vs-version: '[16.4,16.5)' # VS 2019 version range
           msbuild-architecture: x64
       
       - name: Set up Flutter
