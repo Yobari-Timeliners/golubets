@@ -116,13 +116,6 @@ jobs:
       - name: Make all scripts executable
         run: find .ci/scripts -type f -name "*.sh" -exec chmod +x {} \;
       
-      - name: Setup Visual Studio 2019
-        if: matrix.platform == 'windows'
-        uses: microsoft/setup-msbuild@v2
-        with:
-          vs-version: '[16.4,16.5)' # VS 2019 version range
-          # msbuild-architecture: x64
-      
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
