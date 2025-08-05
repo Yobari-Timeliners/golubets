@@ -115,6 +115,8 @@ jobs:
         run: |
           choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --includeOptional --passive --locale en-US"
           choco install visualstudio2019-workload-vctools
+          echo "CMAKE_GENERATOR=Visual Studio 16 2019" >> $GITHUB_ENV
+          echo "CMAKE_GENERATOR_PLATFORM=x64" >> $GITHUB_ENV
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
