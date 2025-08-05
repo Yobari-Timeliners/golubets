@@ -118,7 +118,7 @@ jobs:
       
       - name: Setup Visual Studio 2019
         if: matrix.platform == 'windows'
-        uses: microsoft/setup-msbuild@v2
+        uses: microsoft/setup-msbuild@v1.3
         with:
           vs-version: '[16.4,16.5)' # VS 2019 version range
           # msbuild-architecture: x64
