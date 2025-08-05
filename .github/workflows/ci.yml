@@ -106,10 +106,16 @@ jobs:
             platform: linux
           - os: macos-latest
             platform: macos
-          - os: windows-latest
+          - os: windows-2022
             platform: windows
       fail-fast: false
     steps:
+      - name: Setup Visual Studio 2019
+        if: matrix.platform == 'windows'
+        uses: microsoft/setup-msbuild@v2
+        with:
+          vs-version: '[16.0,17.0)'  # VS 2019 version range
+          msbuild-architecture: x64
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
