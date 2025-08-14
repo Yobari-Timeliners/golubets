@@ -106,36 +106,15 @@ jobs:
             platform: linux
           - os: macos-latest
             platform: macos
-          - os: windows-2022
+          - os: windows-latest
             platform: windows
       fail-fast: false
     steps:
-      - name: Install Visual Studio 2019 Build Tools
-        if: matrix.platform == 'windows'
-        run: |
-          choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --includeOptional --passive --locale en-US"
-          choco install visualstudio2019-workload-vctools
-          choco install windows-sdk-10-version-2004-all -y
-          echo "CMAKE_GENERATOR=Visual Studio 16 2019" >> $GITHUB_ENV
-          echo "CMAKE_GENERATOR_PLATFORM=x64" >> $GITHUB_ENV
-          choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Workload.MSBuildTools --includeRecommended --passive" -y
-      - name: Install Visual Studio 2019 Build Tools
-        if: matrix.platform == 'windows'
-        run: |
-          Invoke-WebRequest -Uri "https://aka.ms/vs/16/release/vs_buildtools.exe" -OutFile "vs_buildtools.exe"
-          Start-Process -FilePath "vs_buildtools.exe" -ArgumentList "--quiet", "--wait", "--add", "Microsoft.VisualStudio.Workload.VCTools", "--add", "Microsoft.VisualStudio.Workload.MSBuildTools", "--add", "Microsoft.VisualStudio.Component.Windows10SDK.19041" -Wait
-        shell: powershell
-      - name: Setup MSBuild (VS 2019)
-        if: matrix.platform == 'windows'
-        uses: microsoft/setup-msbuild@v2
-        with:
-          vs-version: '[16.0,17.0)'
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Make all scripts executable
         run: find .ci/scripts -type f -name "*.sh" -exec chmod +x {} \;
-      
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -149,6 +128,7 @@ jobs:
         run: |
           brew install clang-format
           brew install swift-format
+          
 
       - name: Install Linux dependencies
         if: matrix.platform == 'linux'
@@ -159,7 +139,6 @@ jobs:
       - name: Install Windows dependencies
         if: matrix.platform == 'windows'
         run: |
-          # Use LLVM 15.0.7 which is compatible with VS 2019
           choco install llvm --version=15.0.7 --force -y
 
       - name: Set up Java
@@ -168,15 +147,18 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+      
 
       - name: prepare tool
         run: .ci/scripts/prepare_tool.sh
       - name: download Dart deps
         run: .ci/scripts/tool_runner.sh fetch-deps
 
+      
       - name: build examples (Win32)
         if: matrix.platform == 'windows'
         run: .ci/scripts/build_examples_win32.sh
+
 
       - name: Build Linux examples
         if: matrix.platform == 'linux'
@@ -197,6 +179,7 @@ jobs:
           script: dart run tool/run_tests.dart
           working-directory: packages/golub
 
+
       - name: MacOS updates pods repo
         if: matrix.platform == 'macos'
         run: .ci/scripts/update_pods.sh
@@ -209,10 +192,13 @@ jobs:
           .ci/scripts/create_simulator.sh
           .ci/scripts/boot_simulator.sh
 
+
       - name: Run tests
         if: matrix.platform != 'linux'
         run: dart run tool/run_tests.dart
         working-directory: packages/golub
+
+
 
       - name: Shutdown iOS simulator
         if: matrix.platform == 'macos'
