@@ -23,9 +23,9 @@ class _ExampleFlutterApi implements MessageFlutterApi {
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-// #docregion main-dart-flutter
+  // #docregion main-dart-flutter
   MessageFlutterApi.setUp(_ExampleFlutterApi());
-// #enddocregion main-dart-flutter
+  // #enddocregion main-dart-flutter
   runApp(const MyApp());
 }
 
@@ -129,15 +129,18 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _hostApi.getHostLanguage().then((String response) {
-      setState(() {
-        _hostCallResult = 'Hello from $response!';
-      });
-    }).onError<PlatformException>((PlatformException error, StackTrace _) {
-      setState(() {
-        _hostCallResult = 'Failed to get host language: ${error.message}';
-      });
-    });
+    _hostApi
+        .getHostLanguage()
+        .then((String response) {
+          setState(() {
+            _hostCallResult = 'Hello from $response!';
+          });
+        })
+        .onError<PlatformException>((PlatformException error, StackTrace _) {
+          setState(() {
+            _hostCallResult = 'Failed to get host language: ${error.message}';
+          });
+        });
   }
 
   @override
@@ -151,15 +154,15 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              _hostCallResult ?? 'Waiting for host language...',
-            ),
+            Text(_hostCallResult ?? 'Waiting for host language...'),
             if (_hostCallResult == null) const CircularProgressIndicator(),
             if (Platform.isAndroid || Platform.isIOS)
               StreamBuilder<String>(
                 stream: getEventStream(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                builder: (
+                  BuildContext context,
+                  AsyncSnapshot<String> snapshot,
+                ) {
                   if (snapshot.hasData) {
                     return Text(snapshot.data ?? '');
                   } else {
@@ -169,6 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
               )
             else
               const Text('event channels are not supported on this platform'),
+<<<<<<< HEAD:packages/golub/example/app/lib/main.dart
             if (Platform.isAndroid || Platform.isIOS)
               ElevatedButton(
                 onPressed: () async {
@@ -217,6 +221,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: const Text('Send message modern async and throw'),
               )
+=======
+>>>>>>> filtered-upstream/main:packages/pigeon/example/app/lib/main.dart
           ],
         ),
       ),
