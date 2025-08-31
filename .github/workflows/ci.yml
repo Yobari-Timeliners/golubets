@@ -69,11 +69,16 @@ jobs:
           fetch-depth: 0
       - name: Make all scripts executable
         run: find .ci/scripts -type f -name "*.sh" -exec chmod +x {} \;
+      - name: Read Flutter version from file
+        id: read_flutter_version
+        run: |
+          FLUTTER_VERSION=$(cat .ci/flutter_stable.version)
+          echo "FLUTTER_VERSION=$FLUTTER_VERSION" >> $GITHUB_ENV
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
-          flutter-version: 3.27.4
+          channel: master
+          flutter-version: ${{ steps.read_flutter_version.outputs.flutter_version }}
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
@@ -105,7 +110,7 @@ jobs:
         include:
           - os: ubuntu-22.04
             platform: linux
-          - os: macos-latest
+          - os: macos-14
             platform: macos
           - os: windows-latest
             platform: windows
@@ -116,11 +121,16 @@ jobs:
           fetch-depth: 0
       - name: Make all scripts executable
         run: find .ci/scripts -type f -name "*.sh" -exec chmod +x {} \;
+      - name: Read Flutter version from file
+        id: read_flutter_version
+        run: |
+          FLUTTER_VERSION=$(cat .ci/flutter_stable.version)
+          echo "FLUTTER_VERSION=$FLUTTER_VERSION" >> $GITHUB_ENV
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
-          flutter-version: 3.27.4
+          channel: master
+          flutter-version: ${{ steps.read_flutter_version.outputs.flutter_version }}
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
