@@ -109,7 +109,7 @@ jobs:
         include:
           - os: ubuntu-22.04
             platform: linux
-          - os: macos-latest
+          - os: macos-15
             platform: macos
           - os: windows-latest
             platform: windows
@@ -200,7 +200,7 @@ jobs:
       - name: MacOS setup iOS simulator
         if: matrix.platform == 'macos'
         run: |
-          .ci/scripts/create_simulator_golub.sh
+          .ci/scripts/create_simulator.sh
           .ci/scripts/boot_simulator.sh
 
 
