@@ -71,8 +71,8 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
-          flutter-version: '05db9689081f091050f01aed79f04dce0c750154'
+          channel: master
+          flutter-version: da5523afc3c1081d54f92ad5bf59fcc1be431bf2
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
@@ -118,8 +118,8 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
-          flutter-version: '05db9689081f091050f01aed79f04dce0c750154'
+          channel: master
+          flutter-version: da5523afc3c1081d54f92ad5bf59fcc1be431bf2
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
