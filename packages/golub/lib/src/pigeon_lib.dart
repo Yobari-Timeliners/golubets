@@ -22,8 +22,8 @@ import 'package:path/path.dart' as path;
 import 'ast.dart';
 import 'cpp/cpp_generator.dart';
 import 'dart/dart_generator.dart';
-import 'generator_tools.dart';
 import 'generator_tools.dart' as generator_tools;
+import 'generator_tools.dart';
 import 'gobject/gobject_generator.dart';
 import 'java/java_generator.dart';
 import 'kotlin/kotlin_generator.dart';
@@ -37,9 +37,7 @@ export 'types/task_queue.dart' show TaskQueueType;
 /// {@macro pigeon_lib.async}
 class Async {
   /// Constructor for [Async].
-  const Async({
-    this.type,
-  });
+  const Async({this.type});
 
   /// The type of asynchronous api will be used.
   ///

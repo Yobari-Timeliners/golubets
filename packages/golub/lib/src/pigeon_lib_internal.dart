@@ -50,90 +50,97 @@ class InternalPigeonOptions {
   InternalPigeonOptions._fromPigeonOptionsWithHeader(
     PigeonOptions options,
     Iterable<String>? copyrightHeader,
-  )   : input = options.input,
-        objcOptions =
-            (options.objcHeaderOut == null || options.objcSourceOut == null)
-                ? null
-                : InternalObjcOptions.fromObjcOptions(
-                    options.objcOptions ?? const ObjcOptions(),
-                    objcHeaderOut: options.objcHeaderOut!,
-                    objcSourceOut: options.objcSourceOut!,
-                    fileSpecificClassNameComponent: options.objcSourceOut
-                            ?.split('/')
-                            .lastOrNull
-                            ?.split('.')
-                            .firstOrNull ??
-                        '',
-                    copyrightHeader: copyrightHeader,
-                  ),
-        javaOptions = options.javaOut == null
-            ? null
-            : InternalJavaOptions.fromJavaOptions(
+  ) : input = options.input,
+      objcOptions =
+          (options.objcHeaderOut == null || options.objcSourceOut == null)
+              ? null
+              : InternalObjcOptions.fromObjcOptions(
+                options.objcOptions ?? const ObjcOptions(),
+                objcHeaderOut: options.objcHeaderOut!,
+                objcSourceOut: options.objcSourceOut!,
+                fileSpecificClassNameComponent:
+                    options.objcSourceOut
+                        ?.split('/')
+                        .lastOrNull
+                        ?.split('.')
+                        .firstOrNull ??
+                    '',
+                copyrightHeader: copyrightHeader,
+              ),
+      javaOptions =
+          options.javaOut == null
+              ? null
+              : InternalJavaOptions.fromJavaOptions(
                 options.javaOptions ?? const JavaOptions(),
                 javaOut: options.javaOut!,
                 copyrightHeader: copyrightHeader,
               ),
-        swiftOptions = options.swiftOut == null
-            ? null
-            : InternalSwiftOptions.fromSwiftOptions(
+      swiftOptions =
+          options.swiftOut == null
+              ? null
+              : InternalSwiftOptions.fromSwiftOptions(
                 options.swiftOptions ?? const SwiftOptions(),
                 swiftOut: options.swiftOut!,
                 copyrightHeader: copyrightHeader,
               ),
-        kotlinOptions = options.kotlinOut == null
-            ? null
-            : InternalKotlinOptions.fromKotlinOptions(
+      kotlinOptions =
+          options.kotlinOut == null
+              ? null
+              : InternalKotlinOptions.fromKotlinOptions(
                 options.kotlinOptions ?? const KotlinOptions(),
                 kotlinOut: options.kotlinOut!,
                 copyrightHeader: copyrightHeader,
               ),
-        cppOptions =
-            (options.cppHeaderOut == null || options.cppSourceOut == null)
-                ? null
-                : InternalCppOptions.fromCppOptions(
-                    options.cppOptions ?? const CppOptions(),
-                    cppHeaderOut: options.cppHeaderOut!,
-                    cppSourceOut: options.cppSourceOut!,
-                    copyrightHeader: copyrightHeader,
-                  ),
-        gobjectOptions =
-            options.gobjectHeaderOut == null || options.gobjectSourceOut == null
-                ? null
-                : InternalGObjectOptions.fromGObjectOptions(
-                    options.gobjectOptions ?? const GObjectOptions(),
-                    gobjectHeaderOut: options.gobjectHeaderOut!,
-                    gobjectSourceOut: options.gobjectSourceOut!,
-                    copyrightHeader: copyrightHeader,
-                  ),
-        dartOptions = (options.dartOut == null &&
-                options.dartOptions?.sourceOutPath == null)
-            ? null
-            : InternalDartOptions.fromDartOptions(
+      cppOptions =
+          (options.cppHeaderOut == null || options.cppSourceOut == null)
+              ? null
+              : InternalCppOptions.fromCppOptions(
+                options.cppOptions ?? const CppOptions(),
+                cppHeaderOut: options.cppHeaderOut!,
+                cppSourceOut: options.cppSourceOut!,
+                copyrightHeader: copyrightHeader,
+              ),
+      gobjectOptions =
+          options.gobjectHeaderOut == null || options.gobjectSourceOut == null
+              ? null
+              : InternalGObjectOptions.fromGObjectOptions(
+                options.gobjectOptions ?? const GObjectOptions(),
+                gobjectHeaderOut: options.gobjectHeaderOut!,
+                gobjectSourceOut: options.gobjectSourceOut!,
+                copyrightHeader: copyrightHeader,
+              ),
+      dartOptions =
+          (options.dartOut == null &&
+                  options.dartOptions?.sourceOutPath == null)
+              ? null
+              : InternalDartOptions.fromDartOptions(
                 options.dartOptions ?? const DartOptions(),
                 dartOut: options.dartOut,
                 testOut: options.dartTestOut,
                 copyrightHeader: copyrightHeader,
               ),
-        copyrightHeader = options.copyrightHeader != null
-            ? _lineReader(
+      copyrightHeader =
+          options.copyrightHeader != null
+              ? _lineReader(
                 path.posix.join(
                   options.basePath ?? '',
                   options.copyrightHeader,
                 ),
               )
-            : null,
-        astOut = options.astOut,
-        debugGenerators = options.debugGenerators,
-        basePath = options.basePath,
-        dartPackageName = options.getPackageName();
+              : null,
+      astOut = options.astOut,
+      debugGenerators = options.debugGenerators,
+      basePath = options.basePath,
+      dartPackageName = options.getPackageName();
 
   /// Creates a instance of InternalPigeonOptions from PigeonOptions.
   static InternalPigeonOptions fromPigeonOptions(PigeonOptions options) {
-    final Iterable<String>? copyrightHeader = options.copyrightHeader != null
-        ? _lineReader(
-            path.posix.join(options.basePath ?? '', options.copyrightHeader),
-          )
-        : null;
+    final Iterable<String>? copyrightHeader =
+        options.copyrightHeader != null
+            ? _lineReader(
+              path.posix.join(options.basePath ?? '', options.copyrightHeader),
+            )
+            : null;
 
     return InternalPigeonOptions._fromPigeonOptionsWithHeader(
       options,
@@ -343,7 +350,7 @@ class DartTestGeneratorAdapter implements GeneratorAdapter {
     // the package name has been overridden for other uses.
     final String outputPackageName =
         deducePackageName(options.dartOptions?.dartOut ?? '') ??
-            options.dartPackageName;
+        options.dartPackageName;
     testGenerator.generateTest(
       options.dartOptions!,
       root,
@@ -393,9 +400,9 @@ class ObjcGeneratorAdapter implements GeneratorAdapter {
     }
     final OutputFileOptions<InternalObjcOptions> outputFileOptions =
         OutputFileOptions<InternalObjcOptions>(
-      fileType: fileType,
-      languageOptions: options.objcOptions!,
-    );
+          fileType: fileType,
+          languageOptions: options.objcOptions!,
+        );
     const ObjcGenerator generator = ObjcGenerator();
     generator.generate(
       outputFileOptions,
@@ -540,9 +547,9 @@ class CppGeneratorAdapter implements GeneratorAdapter {
     }
     final OutputFileOptions<InternalCppOptions> outputFileOptions =
         OutputFileOptions<InternalCppOptions>(
-      fileType: fileType,
-      languageOptions: options.cppOptions!,
-    );
+          fileType: fileType,
+          languageOptions: options.cppOptions!,
+        );
     const CppGenerator generator = CppGenerator();
     generator.generate(
       outputFileOptions,
@@ -602,9 +609,9 @@ class GObjectGeneratorAdapter implements GeneratorAdapter {
     }
     final OutputFileOptions<InternalGObjectOptions> outputFileOptions =
         OutputFileOptions<InternalGObjectOptions>(
-      fileType: fileType,
-      languageOptions: options.gobjectOptions!,
-    );
+          fileType: fileType,
+          languageOptions: options.gobjectOptions!,
+        );
     const GObjectGenerator generator = GObjectGenerator();
     generator.generate(
       outputFileOptions,
@@ -1054,7 +1061,8 @@ List<Error> _validateProxyApi(
 
     // Validate this api isn't used as an interface and contains anything except
     // Flutter methods, a static host method, attached methods.
-    final bool isValidInterfaceProxyApi = api.constructors.isEmpty &&
+    final bool isValidInterfaceProxyApi =
+        api.constructors.isEmpty &&
         api.fields.where((ApiField field) => !field.isStatic).isEmpty &&
         api.hostMethods.where((Method method) => !method.isStatic).isEmpty;
     if (!isValidInterfaceProxyApi) {
@@ -1356,9 +1364,10 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
           element.key.baseName != 'dynamic' &&
           element.key.baseName != 'Object' &&
           element.key.baseName.isNotEmpty) {
-        final int? lineNumber = element.value.isEmpty
-            ? null
-            : calculateLineNumber(source, element.value.first);
+        final int? lineNumber =
+            element.value.isEmpty
+                ? null
+                : calculateLineNumber(source, element.value.first);
         totalErrors.add(
           Error(
             message: 'Unknown type: ${element.key.baseName}',
@@ -1403,9 +1412,10 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     totalErrors.addAll(validateErrors);
 
     return ParseResults(
-      root: totalErrors.isEmpty
-          ? completeRoot
-          : Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]),
+      root:
+          totalErrors.isEmpty
+              ? completeRoot
+              : Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]),
       errors: totalErrors,
       pigeonOptions: _pigeonOptions,
     );
@@ -1418,10 +1428,11 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     final Class? assocClass = _classes.firstWhereOrNull(
       (Class classDefinition) => classDefinition.name == type.baseName,
     );
-    final AstProxyApi? assocProxyApi =
-        _apis.whereType<AstProxyApi>().firstWhereOrNull(
-              (Api apiDefinition) => apiDefinition.name == type.baseName,
-            );
+    final AstProxyApi? assocProxyApi = _apis
+        .whereType<AstProxyApi>()
+        .firstWhereOrNull(
+          (Api apiDefinition) => apiDefinition.name == type.baseName,
+        );
     if (assocClass != null) {
       type = type.copyWithClass(assocClass);
     } else if (assocEnum != null) {
@@ -1775,7 +1786,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         fields: <NamedType>[],
         superClassName:
             node.implementsClause?.interfaces.first.name2.toString() ??
-                node.extendsClause?.superclass.name2.toString(),
+            node.extendsClause?.superclass.name2.toString(),
         isSealed: node.sealedKeyword != null,
         isSwiftClass: _hasMetadata(node.metadata, 'SwiftClass'),
         documentationComments: _documentationCommentsParser(
@@ -1793,9 +1804,10 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     const String docCommentPrefix = '///';
     return comments
             ?.map(
-              (Token line) => line.length > docCommentPrefix.length
-                  ? line.toString().substring(docCommentPrefix.length)
-                  : '',
+              (Token line) =>
+                  line.length > docCommentPrefix.length
+                      ? line.toString().substring(docCommentPrefix.length)
+                      : '',
             )
             .toList() ??
         <String>[];
@@ -1882,17 +1894,17 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     final dart_ast.FormalParameterList parameters = node.parameters!;
     final List<Parameter> arguments =
         parameters.parameters.map(_formalParameterToPigeonParameter).toList();
-    final AsynchronousType asynchronousType =
-        _parseAsynchronousType(node.metadata);
+    final AsynchronousType asynchronousType = _parseAsynchronousType(
+      node.metadata,
+    );
     final bool isStatic = _hasMetadata(node.metadata, 'static');
-    final String objcSelector = _findMetadata(node.metadata, 'ObjCSelector')
-            ?.arguments
-            ?.arguments
-            .first
+    final String objcSelector =
+        _findMetadata(node.metadata, 'ObjCSelector')?.arguments?.arguments.first
             .asNullable<dart_ast.SimpleStringLiteral>()
             ?.value ??
         '';
-    final String swiftFunction = _findMetadata(node.metadata, 'SwiftFunction')
+    final String swiftFunction =
+        _findMetadata(node.metadata, 'SwiftFunction')
             ?.arguments
             ?.arguments
             .first
@@ -1901,14 +1913,15 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         '';
     final dart_ast.ArgumentList? taskQueueArguments =
         _findMetadata(node.metadata, 'TaskQueue')?.arguments;
-    final String? taskQueueTypeName = taskQueueArguments == null
-        ? null
-        : _getFirstChildOfType<dart_ast.NamedExpression>(
-            taskQueueArguments,
-          )?.expression.asNullable<dart_ast.PrefixedIdentifier>()?.name;
+    final String? taskQueueTypeName =
+        taskQueueArguments == null
+            ? null
+            : _getFirstChildOfType<dart_ast.NamedExpression>(
+              taskQueueArguments,
+            )?.expression.asNullable<dart_ast.PrefixedIdentifier>()?.name;
     final TaskQueueType taskQueueType =
         _stringToEnum(TaskQueueType.values, taskQueueTypeName) ??
-            TaskQueueType.serial;
+        TaskQueueType.serial;
 
     if (_currentApi != null) {
       // Methods without named return types aren't supported.
@@ -1960,16 +1973,17 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     _enums.add(
       Enum(
         name: node.name.lexeme,
-        members: node.constants
-            .map(
-              (dart_ast.EnumConstantDeclaration e) => EnumMember(
-                name: e.name.lexeme,
-                documentationComments: _documentationCommentsParser(
-                  e.documentationComment?.tokens,
-                ),
-              ),
-            )
-            .toList(),
+        members:
+            node.constants
+                .map(
+                  (dart_ast.EnumConstantDeclaration e) => EnumMember(
+                    name: e.name.lexeme,
+                    documentationComments: _documentationCommentsParser(
+                      e.documentationComment?.tokens,
+                    ),
+                  ),
+                )
+                .toList(),
         documentationComments: _documentationCommentsParser(
           node.documentationComment?.tokens,
         ),
@@ -2068,7 +2082,8 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       final dart_ast.FormalParameterList parameters = node.parameters;
       final List<Parameter> arguments =
           parameters.parameters.map(_formalParameterToPigeonParameter).toList();
-      final String swiftFunction = _findMetadata(node.metadata, 'SwiftFunction')
+      final String swiftFunction =
+          _findMetadata(node.metadata, 'SwiftFunction')
               ?.arguments
               ?.arguments
               .first
@@ -2077,16 +2092,16 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
           '';
 
       (_currentApi as AstProxyApi?)!.constructors.add(
-            Constructor(
-              name: node.name?.lexeme ?? '',
-              parameters: arguments,
-              swiftFunction: swiftFunction,
-              offset: node.offset,
-              documentationComments: _documentationCommentsParser(
-                node.documentationComment?.tokens,
-              ),
-            ),
-          );
+        Constructor(
+          name: node.name?.lexeme ?? '',
+          parameters: arguments,
+          swiftFunction: swiftFunction,
+          offset: node.offset,
+          documentationComments: _documentationCommentsParser(
+            node.documentationComment?.tokens,
+          ),
+        ),
+      );
     } else if (_currentApi != null) {
       _errors.add(
         Error(
@@ -2141,10 +2156,12 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
   ) {
     final bool isStatic = _hasMetadata(node.metadata, 'static');
     if (type is dart_ast.GenericFunctionType) {
-      final List<Parameter> parameters = type.parameters.parameters
-          .map(_formalParameterToPigeonParameter)
-          .toList();
-      final String swiftFunction = _findMetadata(node.metadata, 'SwiftFunction')
+      final List<Parameter> parameters =
+          type.parameters.parameters
+              .map(_formalParameterToPigeonParameter)
+              .toList();
+      final String swiftFunction =
+          _findMetadata(node.metadata, 'SwiftFunction')
               ?.arguments
               ?.arguments
               .first
@@ -2153,16 +2170,18 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
           '';
       final dart_ast.ArgumentList? taskQueueArguments =
           _findMetadata(node.metadata, 'TaskQueue')?.arguments;
-      final String? taskQueueTypeName = taskQueueArguments == null
-          ? null
-          : _getFirstChildOfType<dart_ast.NamedExpression>(
-              taskQueueArguments,
-            )?.expression.asNullable<dart_ast.PrefixedIdentifier>()?.name;
+      final String? taskQueueTypeName =
+          taskQueueArguments == null
+              ? null
+              : _getFirstChildOfType<dart_ast.NamedExpression>(
+                taskQueueArguments,
+              )?.expression.asNullable<dart_ast.PrefixedIdentifier>()?.name;
       final TaskQueueType taskQueueType =
           _stringToEnum(TaskQueueType.values, taskQueueTypeName) ??
-              TaskQueueType.serial;
-      final AsynchronousType asynchronousType =
-          _parseAsynchronousType(node.metadata);
+          TaskQueueType.serial;
+      final AsynchronousType asynchronousType = _parseAsynchronousType(
+        node.metadata,
+      );
 
       // Methods without named return types aren't supported.
       final dart_ast.TypeAnnotation returnType = type.returnType!;
@@ -2205,21 +2224,21 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       } else {
         final dart_ast.TypeArgumentList? typeArguments = type.typeArguments;
         (_currentApi as AstProxyApi?)!.fields.add(
-              ApiField(
-                type: TypeDeclaration(
-                  baseName: _getNamedTypeQualifiedName(type),
-                  isNullable: type.question != null,
-                  typeArguments: _typeAnnotationsToTypeArguments(typeArguments),
-                ),
-                name: node.fields.variables[0].name.lexeme,
-                isAttached: _hasMetadata(node.metadata, 'attached') || isStatic,
-                isStatic: isStatic,
-                offset: node.offset,
-                documentationComments: _documentationCommentsParser(
-                  node.documentationComment?.tokens,
-                ),
-              ),
-            );
+          ApiField(
+            type: TypeDeclaration(
+              baseName: _getNamedTypeQualifiedName(type),
+              isNullable: type.question != null,
+              typeArguments: _typeAnnotationsToTypeArguments(typeArguments),
+            ),
+            name: node.fields.variables[0].name.lexeme,
+            isAttached: _hasMetadata(node.metadata, 'attached') || isStatic,
+            isStatic: isStatic,
+            offset: node.offset,
+            documentationComments: _documentationCommentsParser(
+              node.documentationComment?.tokens,
+            ),
+          ),
+        );
       }
     }
   }

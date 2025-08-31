@@ -818,51 +818,62 @@ void main() {
   });
 
   test('gen one modern async Host Api that throws', () {
-    final Root root = Root(apis: <Api>[
-      AstHostApi(name: 'Api', methods: <Method>[
-        Method(
-          name: 'doSomething',
-          location: ApiLocation.host,
-          parameters: <Parameter>[
-            Parameter(
-                type: TypeDeclaration(
-                  baseName: 'Input',
-                  associatedClass: emptyClass,
-                  isNullable: false,
+    final Root root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'doSomething',
+              location: ApiLocation.host,
+              parameters: <Parameter>[
+                Parameter(
+                  type: TypeDeclaration(
+                    baseName: 'Input',
+                    associatedClass: emptyClass,
+                    isNullable: false,
+                  ),
+                  name: 'arg',
                 ),
-                name: 'arg')
+              ],
+              returnType: TypeDeclaration(
+                baseName: 'Output',
+                associatedClass: emptyClass,
+                isNullable: false,
+              ),
+              asynchronousType: const AwaitAsynchronous(
+                swiftOptions: SwiftAwaitAsynchronousOptions(throws: true),
+              ),
+            ),
           ],
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            associatedClass: emptyClass,
-            isNullable: false,
-          ),
-          asynchronousType: const AwaitAsynchronous(
-            swiftOptions: SwiftAwaitAsynchronousOptions(throws: true),
-          ),
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: true,
+        ),
+      ],
+      classes: <Class>[
+        Class(
+          name: 'Input',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'input',
             ),
-            name: 'input')
-      ]),
-      Class(name: 'Output', fields: <NamedType>[
-        NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: true,
+          ],
+        ),
+        Class(
+          name: 'Output',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'output',
             ),
-            name: 'output')
-      ])
-    ], enums: <Enum>[]);
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions =
-        InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      swiftOut: '',
+    );
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -882,51 +893,62 @@ void main() {
   });
 
   test('gen one modern async Host Api that does not throw', () {
-    final Root root = Root(apis: <Api>[
-      AstHostApi(name: 'Api', methods: <Method>[
-        Method(
-          name: 'doSomething',
-          location: ApiLocation.host,
-          parameters: <Parameter>[
-            Parameter(
-                type: TypeDeclaration(
-                  baseName: 'Input',
-                  associatedClass: emptyClass,
-                  isNullable: false,
+    final Root root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'doSomething',
+              location: ApiLocation.host,
+              parameters: <Parameter>[
+                Parameter(
+                  type: TypeDeclaration(
+                    baseName: 'Input',
+                    associatedClass: emptyClass,
+                    isNullable: false,
+                  ),
+                  name: 'arg',
                 ),
-                name: 'arg')
+              ],
+              returnType: TypeDeclaration(
+                baseName: 'Output',
+                associatedClass: emptyClass,
+                isNullable: false,
+              ),
+              asynchronousType: const AwaitAsynchronous(
+                swiftOptions: SwiftAwaitAsynchronousOptions(throws: false),
+              ),
+            ),
           ],
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            associatedClass: emptyClass,
-            isNullable: false,
-          ),
-          asynchronousType: const AwaitAsynchronous(
-            swiftOptions: SwiftAwaitAsynchronousOptions(throws: false),
-          ),
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: true,
+        ),
+      ],
+      classes: <Class>[
+        Class(
+          name: 'Input',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'input',
             ),
-            name: 'input')
-      ]),
-      Class(name: 'Output', fields: <NamedType>[
-        NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: true,
+          ],
+        ),
+        Class(
+          name: 'Output',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'output',
             ),
-            name: 'output')
-      ])
-    ], enums: <Enum>[]);
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
     final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions =
-        InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      swiftOut: '',
+    );
     const SwiftGenerator generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
@@ -936,10 +958,7 @@ void main() {
     );
     final String code = sink.toString();
     expect(code, contains('protocol Api'));
-    expect(
-      code,
-      contains('func doSomething(arg: Input) async -> Output'),
-    );
+    expect(code, contains('func doSomething(arg: Input) async -> Output'));
     expect(code, contains('await api.doSomething(arg: argArg)'));
     expect(code, contains('Task {'));
     expect(code, contains('reply(wrapResult(result))'));
@@ -2022,12 +2041,9 @@ void main() {
           superClassName: superClass.name,
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: false,
-              ),
+              type: const TypeDeclaration(baseName: 'int', isNullable: false),
               name: 'value',
-            )
+            ),
           ],
         ),
         Class(
@@ -2042,7 +2058,7 @@ void main() {
                 associatedClass: emptyClass,
               ),
               name: 'value',
-            )
+            ),
           ],
         ),
       ],
@@ -2050,8 +2066,9 @@ void main() {
     );
     final StringBuffer sink = StringBuffer();
     const SwiftGenerator generator = SwiftGenerator();
-    const InternalSwiftOptions kotlinOptions =
-        InternalSwiftOptions(swiftOut: '');
+    const InternalSwiftOptions kotlinOptions = InternalSwiftOptions(
+      swiftOut: '',
+    );
     generator.generate(
       kotlinOptions,
       root,
@@ -2059,18 +2076,9 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(
-      code,
-      contains('public protocol PlatformEvent'),
-    );
-    expect(
-      code,
-      contains('public struct IntEvent: PlatformEvent'),
-    );
-    expect(
-      code,
-      contains('public struct ClassEvent: PlatformEvent'),
-    );
+    expect(code, contains('public protocol PlatformEvent'));
+    expect(code, contains('public struct IntEvent: PlatformEvent'));
+    expect(code, contains('public struct ClassEvent: PlatformEvent'));
     expect(code, contains('public init('));
   });
 }

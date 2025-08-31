@@ -210,19 +210,16 @@ class EventAllNullableTypes {
       stringMap:
           (result[24] as Map<Object?, Object?>?)?.cast<String?, String?>(),
       intMap: (result[25] as Map<Object?, Object?>?)?.cast<int?, int?>(),
-      enumMap:
-          (result[26] as Map<Object?, Object?>?)
-              ?.cast<EventEnum?, EventEnum?>(),
+      enumMap: (result[26] as Map<Object?, Object?>?)
+          ?.cast<EventEnum?, EventEnum?>(),
       objectMap:
           (result[27] as Map<Object?, Object?>?)?.cast<Object?, Object?>(),
       listMap:
           (result[28] as Map<Object?, Object?>?)?.cast<int?, List<Object?>?>(),
-      mapMap:
-          (result[29] as Map<Object?, Object?>?)
-              ?.cast<int?, Map<Object?, Object?>?>(),
-      recursiveClassMap:
-          (result[30] as Map<Object?, Object?>?)
-              ?.cast<int?, EventAllNullableTypes?>(),
+      mapMap: (result[29] as Map<Object?, Object?>?)
+          ?.cast<int?, Map<Object?, Object?>?>(),
+      recursiveClassMap: (result[30] as Map<Object?, Object?>?)
+          ?.cast<int?, EventAllNullableTypes?>(),
     );
   }
 

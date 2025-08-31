@@ -885,51 +885,62 @@ void main() {
   });
 
   test('gen one modern async Host Api', () {
-    final Root root = Root(apis: <Api>[
-      AstHostApi(name: 'Api', methods: <Method>[
-        Method(
-          name: 'doSomething',
-          location: ApiLocation.host,
-          parameters: <Parameter>[
-            Parameter(
-                type: TypeDeclaration(
-                  baseName: 'Input',
-                  associatedClass: emptyClass,
-                  isNullable: false,
+    final Root root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'doSomething',
+              location: ApiLocation.host,
+              parameters: <Parameter>[
+                Parameter(
+                  type: TypeDeclaration(
+                    baseName: 'Input',
+                    associatedClass: emptyClass,
+                    isNullable: false,
+                  ),
+                  name: 'arg',
                 ),
-                name: 'arg')
+              ],
+              returnType: TypeDeclaration(
+                baseName: 'Output',
+                associatedClass: emptyClass,
+                isNullable: false,
+              ),
+              asynchronousType: const AwaitAsynchronous(
+                swiftOptions: SwiftAwaitAsynchronousOptions(throws: true),
+              ),
+            ),
           ],
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            associatedClass: emptyClass,
-            isNullable: false,
-          ),
-          asynchronousType: const AwaitAsynchronous(
-            swiftOptions: SwiftAwaitAsynchronousOptions(throws: true),
-          ),
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: true,
+        ),
+      ],
+      classes: <Class>[
+        Class(
+          name: 'Input',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'input',
             ),
-            name: 'input')
-      ]),
-      Class(name: 'Output', fields: <NamedType>[
-        NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: true,
+          ],
+        ),
+        Class(
+          name: 'Output',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'output',
             ),
-            name: 'output')
-      ])
-    ], enums: <Enum>[]);
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -939,10 +950,7 @@ void main() {
     );
     final String code = sink.toString();
     expect(code, contains('interface Api'));
-    expect(
-      code,
-      contains('suspend fun doSomething(arg: Input): Output'),
-    );
+    expect(code, contains('suspend fun doSomething(arg: Input): Output'));
     expect(code, contains('coroutineScope.launch {'));
     expect(code, contains('coroutineScope: CoroutineScope'));
     expect(code, contains('api.doSomething(argArg)'));
@@ -2182,12 +2190,9 @@ void main() {
           superClassName: superClass.name,
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: false,
-              ),
+              type: const TypeDeclaration(baseName: 'int', isNullable: false),
               name: 'value',
-            )
+            ),
           ],
         ),
         Class(
@@ -2202,7 +2207,7 @@ void main() {
                 associatedClass: emptyClass,
               ),
               name: 'value',
-            )
+            ),
           ],
         ),
       ],
@@ -2210,8 +2215,9 @@ void main() {
     );
     final StringBuffer sink = StringBuffer();
     const KotlinGenerator generator = KotlinGenerator();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     generator.generate(
       kotlinOptions,
       root,
@@ -2219,36 +2225,23 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(
-      code,
-      contains('sealed class PlatformEvent'),
-    );
-    expect(
-      code,
-      contains('data class IntEvent'),
-    );
+    expect(code, contains('sealed class PlatformEvent'));
+    expect(code, contains('data class IntEvent'));
     expect(code, contains(': PlatformEvent'));
-    expect(
-      code,
-      contains('data class ClassEvent'),
-    );
+    expect(code, contains('data class ClassEvent'));
   });
 
   test('empty class', () {
     final Root root = Root(
       apis: <Api>[],
-      classes: <Class>[
-        Class(
-          name: 'EmptyClass',
-          fields: <NamedType>[],
-        ),
-      ],
+      classes: <Class>[Class(name: 'EmptyClass', fields: <NamedType>[])],
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
     const KotlinGenerator generator = KotlinGenerator();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     generator.generate(
       kotlinOptions,
       root,

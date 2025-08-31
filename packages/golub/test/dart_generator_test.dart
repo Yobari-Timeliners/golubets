@@ -2107,12 +2107,9 @@ name: foobar
           superClassName: superClass.name,
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: false,
-              ),
+              type: const TypeDeclaration(baseName: 'int', isNullable: false),
               name: 'value',
-            )
+            ),
           ],
         ),
         Class(
@@ -2127,7 +2124,7 @@ name: foobar
                 associatedClass: emptyClass,
               ),
               name: 'value',
-            )
+            ),
           ],
         ),
       ],
@@ -2142,37 +2139,17 @@ name: foobar
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(
-      code,
-      contains('sealed class PlatformEvent'),
-    );
-    expect(
-      code,
-      contains('class IntEvent extends PlatformEvent'),
-    );
-    expect(
-      code,
-      contains('class ClassEvent extends PlatformEvent'),
-    );
-    expect(
-      code,
-      contains('result[0]! as int'),
-    );
-    expect(
-      code,
-      contains('result[0] as Input?'),
-    );
+    expect(code, contains('sealed class PlatformEvent'));
+    expect(code, contains('class IntEvent extends PlatformEvent'));
+    expect(code, contains('class ClassEvent extends PlatformEvent'));
+    expect(code, contains('result[0]! as int'));
+    expect(code, contains('result[0] as Input?'));
   });
 
   test('empty class', () {
     final Root root = Root(
       apis: <Api>[],
-      classes: <Class>[
-        Class(
-          name: 'EmptyClass',
-          fields: <NamedType>[],
-        ),
-      ],
+      classes: <Class>[Class(name: 'EmptyClass', fields: <NamedType>[])],
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
