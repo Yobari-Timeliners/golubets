@@ -131,9 +131,6 @@ jobs:
         with:
           channel: master
           flutter-version: ${{ steps.read_flutter_version.outputs.flutter_version }}
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: stable
       - name: Install MacOS dependencies
         if: matrix.platform == 'macos'
         run: |
