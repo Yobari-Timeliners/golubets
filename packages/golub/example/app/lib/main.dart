@@ -129,18 +129,15 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _hostApi
-        .getHostLanguage()
-        .then((String response) {
-          setState(() {
-            _hostCallResult = 'Hello from $response!';
-          });
-        })
-        .onError<PlatformException>((PlatformException error, StackTrace _) {
-          setState(() {
-            _hostCallResult = 'Failed to get host language: ${error.message}';
-          });
-        });
+    _hostApi.getHostLanguage().then((String response) {
+      setState(() {
+        _hostCallResult = 'Hello from $response!';
+      });
+    }).onError<PlatformException>((PlatformException error, StackTrace _) {
+      setState(() {
+        _hostCallResult = 'Failed to get host language: ${error.message}';
+      });
+    });
   }
 
   @override
@@ -172,7 +169,6 @@ class _MyHomePageState extends State<MyHomePage> {
               )
             else
               const Text('event channels are not supported on this platform'),
-<<<<<<< HEAD:packages/golub/example/app/lib/main.dart
             if (Platform.isAndroid || Platform.isIOS)
               ElevatedButton(
                 onPressed: () async {
@@ -221,8 +217,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: const Text('Send message modern async and throw'),
               )
-=======
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/lib/main.dart
           ],
         ),
       ),

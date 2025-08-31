@@ -81,13 +81,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.header,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.header,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -105,13 +105,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.source,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.source,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -204,13 +204,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.header,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.header,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -237,13 +237,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.source,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.source,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -291,13 +291,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.header,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.header,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -360,13 +360,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.header,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.header,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -445,13 +445,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.header,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.header,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -467,13 +467,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.source,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.source,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -520,13 +520,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.header,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.header,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -553,13 +553,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.source,
-            languageOptions: const InternalCppOptions(
-              headerIncludePath: 'a_header.h',
-              cppHeaderOut: '',
-              cppSourceOut: '',
-            ),
-          );
+        fileType: FileType.source,
+        languageOptions: const InternalCppOptions(
+          headerIncludePath: 'a_header.h',
+          cppHeaderOut: '',
+          cppSourceOut: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -619,14 +619,14 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.header,
-            languageOptions: const InternalCppOptions(
-              namespace: 'foo',
-              headerIncludePath: '',
-              cppHeaderOut: '',
-              cppSourceOut: '',
-            ),
-          );
+        fileType: FileType.header,
+        languageOptions: const InternalCppOptions(
+          namespace: 'foo',
+          headerIncludePath: '',
+          cppHeaderOut: '',
+          cppSourceOut: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -642,14 +642,14 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.source,
-            languageOptions: const InternalCppOptions(
-              namespace: 'foo',
-              headerIncludePath: '',
-              cppHeaderOut: '',
-              cppSourceOut: '',
-            ),
-          );
+        fileType: FileType.source,
+        languageOptions: const InternalCppOptions(
+          namespace: 'foo',
+          headerIncludePath: '',
+          cppHeaderOut: '',
+          cppSourceOut: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -729,13 +729,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.header,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.header,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -792,13 +792,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.source,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.source,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -962,13 +962,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.header,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.header,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -1016,13 +1016,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.source,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.source,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -1162,13 +1162,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.header,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.header,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -1298,13 +1298,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.header,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.header,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -1412,13 +1412,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.header,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.header,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -1447,13 +1447,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.source,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.source,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -1610,13 +1610,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.header,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.header,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -1645,13 +1645,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.source,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.source,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -1805,13 +1805,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.header,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.header,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -1859,13 +1859,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.source,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.source,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -2001,13 +2001,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.header,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.header,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -2049,13 +2049,13 @@ void main() {
       const CppGenerator generator = CppGenerator();
       final OutputFileOptions<InternalCppOptions> generatorOptions =
           OutputFileOptions<InternalCppOptions>(
-            fileType: FileType.source,
-            languageOptions: const InternalCppOptions(
-              cppHeaderOut: '',
-              cppSourceOut: '',
-              headerIncludePath: '',
-            ),
-          );
+        fileType: FileType.source,
+        languageOptions: const InternalCppOptions(
+          cppHeaderOut: '',
+          cppSourceOut: '',
+          headerIncludePath: '',
+        ),
+      );
       generator.generate(
         generatorOptions,
         root,
@@ -2105,13 +2105,13 @@ void main() {
     const CppGenerator generator = CppGenerator();
     final OutputFileOptions<InternalCppOptions> generatorOptions =
         OutputFileOptions<InternalCppOptions>(
-          fileType: FileType.source,
-          languageOptions: const InternalCppOptions(
-            cppHeaderOut: '',
-            cppSourceOut: '',
-            headerIncludePath: '',
-          ),
-        );
+      fileType: FileType.source,
+      languageOptions: const InternalCppOptions(
+        cppHeaderOut: '',
+        cppSourceOut: '',
+        headerIncludePath: '',
+      ),
+    );
     generator.generate(
       generatorOptions,
       root,
@@ -2253,13 +2253,13 @@ void main() {
     const CppGenerator generator = CppGenerator();
     final OutputFileOptions<InternalCppOptions> generatorOptions =
         OutputFileOptions<InternalCppOptions>(
-          fileType: FileType.header,
-          languageOptions: const InternalCppOptions(
-            headerIncludePath: 'foo',
-            cppHeaderOut: '',
-            cppSourceOut: '',
-          ),
-        );
+      fileType: FileType.header,
+      languageOptions: const InternalCppOptions(
+        headerIncludePath: 'foo',
+        cppHeaderOut: '',
+        cppSourceOut: '',
+      ),
+    );
     generator.generate(
       generatorOptions,
       root,
@@ -2297,25 +2297,9 @@ void main() {
                 isNullable: false,
                 associatedClass: emptyClass,
               ),
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
             ),
           ],
-<<<<<<< HEAD:packages/golub/test/cpp_generator_test.dart
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            isNullable: false,
-            associatedClass: emptyClass,
-          ),
-          asynchronousType: AsynchronousType.callback,
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: true,
-=======
         ),
       ],
       classes: <Class>[
@@ -2325,7 +2309,6 @@ void main() {
             NamedType(
               type: const TypeDeclaration(baseName: 'String', isNullable: true),
               name: 'input',
->>>>>>> filtered-upstream/main:packages/pigeon/test/cpp_generator_test.dart
             ),
           ],
         ),
@@ -2345,13 +2328,13 @@ void main() {
     const CppGenerator generator = CppGenerator();
     final OutputFileOptions<InternalCppOptions> generatorOptions =
         OutputFileOptions<InternalCppOptions>(
-          fileType: FileType.header,
-          languageOptions: const InternalCppOptions(
-            cppHeaderOut: '',
-            cppSourceOut: '',
-            headerIncludePath: '',
-          ),
-        );
+      fileType: FileType.header,
+      languageOptions: const InternalCppOptions(
+        cppHeaderOut: '',
+        cppSourceOut: '',
+        headerIncludePath: '',
+      ),
+    );
     generator.generate(
       generatorOptions,
       root,
@@ -2445,13 +2428,13 @@ void main() {
     const CppGenerator generator = CppGenerator();
     final OutputFileOptions<InternalCppOptions> generatorOptions =
         OutputFileOptions<InternalCppOptions>(
-          fileType: FileType.source,
-          languageOptions: const InternalCppOptions(
-            cppHeaderOut: '',
-            cppSourceOut: '',
-            headerIncludePath: '',
-          ),
-        );
+      fileType: FileType.source,
+      languageOptions: const InternalCppOptions(
+        cppHeaderOut: '',
+        cppSourceOut: '',
+        headerIncludePath: '',
+      ),
+    );
     generator.generate(
       generatorOptions,
       root,
@@ -2464,25 +2447,6 @@ void main() {
   });
 
   test('does not keep unowned references in async handlers', () {
-<<<<<<< HEAD:packages/golub/test/cpp_generator_test.dart
-    final Root root = Root(apis: <Api>[
-      AstHostApi(name: 'HostApi', methods: <Method>[
-        Method(
-          name: 'noop',
-          location: ApiLocation.host,
-          parameters: <Parameter>[],
-          returnType: const TypeDeclaration.voidDeclaration(),
-          asynchronousType: AsynchronousType.callback,
-        ),
-        Method(
-          name: 'doSomething',
-          location: ApiLocation.host,
-          parameters: <Parameter>[
-            Parameter(
-                type: const TypeDeclaration(
-                  baseName: 'int',
-                  isNullable: false,
-=======
     final Root root = Root(
       apis: <Api>[
         AstHostApi(
@@ -2493,7 +2457,7 @@ void main() {
               location: ApiLocation.host,
               parameters: <Parameter>[],
               returnType: const TypeDeclaration.voidDeclaration(),
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
             ),
             Method(
               name: 'doSomething',
@@ -2505,39 +2469,15 @@ void main() {
                     isNullable: false,
                   ),
                   name: '',
->>>>>>> filtered-upstream/main:packages/pigeon/test/cpp_generator_test.dart
                 ),
               ],
               returnType: const TypeDeclaration(
                 baseName: 'double',
                 isNullable: false,
               ),
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
             ),
           ],
-<<<<<<< HEAD:packages/golub/test/cpp_generator_test.dart
-          returnType:
-              const TypeDeclaration(baseName: 'double', isNullable: false),
-          asynchronousType: AsynchronousType.callback,
-        ),
-      ]),
-      AstFlutterApi(name: 'FlutterApi', methods: <Method>[
-        Method(
-          name: 'noop',
-          location: ApiLocation.flutter,
-          parameters: <Parameter>[],
-          returnType: const TypeDeclaration.voidDeclaration(),
-          asynchronousType: AsynchronousType.callback,
-        ),
-        Method(
-          name: 'doSomething',
-          location: ApiLocation.flutter,
-          parameters: <Parameter>[
-            Parameter(
-                type: const TypeDeclaration(
-                  baseName: 'String',
-                  isNullable: false,
-=======
         ),
         AstFlutterApi(
           name: 'FlutterApi',
@@ -2547,7 +2487,7 @@ void main() {
               location: ApiLocation.flutter,
               parameters: <Parameter>[],
               returnType: const TypeDeclaration.voidDeclaration(),
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
             ),
             Method(
               name: 'doSomething',
@@ -2559,22 +2499,15 @@ void main() {
                     isNullable: false,
                   ),
                   name: '',
->>>>>>> filtered-upstream/main:packages/pigeon/test/cpp_generator_test.dart
                 ),
               ],
               returnType: const TypeDeclaration(
                 baseName: 'bool',
                 isNullable: false,
               ),
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
             ),
           ],
-<<<<<<< HEAD:packages/golub/test/cpp_generator_test.dart
-          returnType:
-              const TypeDeclaration(baseName: 'bool', isNullable: false),
-          asynchronousType: AsynchronousType.callback,
-=======
->>>>>>> filtered-upstream/main:packages/pigeon/test/cpp_generator_test.dart
         ),
       ],
       classes: <Class>[],
@@ -2584,13 +2517,13 @@ void main() {
     const CppGenerator generator = CppGenerator();
     final OutputFileOptions<InternalCppOptions> generatorOptions =
         OutputFileOptions<InternalCppOptions>(
-          fileType: FileType.source,
-          languageOptions: const InternalCppOptions(
-            cppHeaderOut: '',
-            cppSourceOut: '',
-            headerIncludePath: '',
-          ),
-        );
+      fileType: FileType.source,
+      languageOptions: const InternalCppOptions(
+        cppHeaderOut: '',
+        cppSourceOut: '',
+        headerIncludePath: '',
+      ),
+    );
     generator.generate(
       generatorOptions,
       root,
@@ -2639,13 +2572,13 @@ void main() {
     const CppGenerator generator = CppGenerator();
     final OutputFileOptions<InternalCppOptions> generatorOptions =
         OutputFileOptions<InternalCppOptions>(
-          fileType: FileType.source,
-          languageOptions: const InternalCppOptions(
-            cppHeaderOut: '',
-            cppSourceOut: '',
-            headerIncludePath: '',
-          ),
-        );
+      fileType: FileType.source,
+      languageOptions: const InternalCppOptions(
+        cppHeaderOut: '',
+        cppSourceOut: '',
+        headerIncludePath: '',
+      ),
+    );
     generator.generate(
       generatorOptions,
       root,
@@ -2692,13 +2625,13 @@ void main() {
     const CppGenerator generator = CppGenerator();
     final OutputFileOptions<InternalCppOptions> generatorOptions =
         OutputFileOptions<InternalCppOptions>(
-          fileType: FileType.source,
-          languageOptions: const InternalCppOptions(
-            cppHeaderOut: '',
-            cppSourceOut: '',
-            headerIncludePath: '',
-          ),
-        );
+      fileType: FileType.source,
+      languageOptions: const InternalCppOptions(
+        cppHeaderOut: '',
+        cppSourceOut: '',
+        headerIncludePath: '',
+      ),
+    );
     generator.generate(
       generatorOptions,
       root,

@@ -840,39 +840,9 @@ void main() {
                 associatedClass: emptyClass,
                 isNullable: false,
               ),
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
             ),
           ],
-<<<<<<< HEAD:packages/golub/test/kotlin_generator_test.dart
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            associatedClass: emptyClass,
-            isNullable: false,
-          ),
-          asynchronousType: AsynchronousType.callback,
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'String',
-            isNullable: true,
-          ),
-          name: 'input',
-        )
-      ]),
-      Class(name: 'Output', fields: <NamedType>[
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'String',
-            isNullable: true,
-          ),
-          name: 'output',
-        )
-      ])
-    ], enums: <Enum>[]);
-=======
         ),
       ],
       classes: <Class>[
@@ -897,7 +867,6 @@ void main() {
       ],
       enums: <Enum>[],
     );
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin_generator_test.dart
     final StringBuffer sink = StringBuffer();
     const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
       kotlinOut: '',
@@ -1004,39 +973,9 @@ void main() {
                 associatedClass: emptyClass,
                 isNullable: false,
               ),
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
             ),
           ],
-<<<<<<< HEAD:packages/golub/test/kotlin_generator_test.dart
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            associatedClass: emptyClass,
-            isNullable: false,
-          ),
-          asynchronousType: AsynchronousType.callback,
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'String',
-            isNullable: true,
-          ),
-          name: 'input',
-        )
-      ]),
-      Class(name: 'Output', fields: <NamedType>[
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'String',
-            isNullable: true,
-          ),
-          name: 'output',
-        )
-      ])
-    ], enums: <Enum>[]);
-=======
         ),
       ],
       classes: <Class>[
@@ -1061,7 +1000,6 @@ void main() {
       ],
       enums: <Enum>[],
     );
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin_generator_test.dart
     final StringBuffer sink = StringBuffer();
     const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
       kotlinOut: '',
@@ -1550,17 +1488,11 @@ void main() {
                 baseName: 'int',
                 isNullable: true,
               ),
-<<<<<<< HEAD:packages/golub/test/kotlin_generator_test.dart
               asynchronousType: AsynchronousType.callback,
-              parameters: <Parameter>[])
-        ])
-=======
-              isAsynchronous: true,
               parameters: <Parameter>[],
             ),
           ],
         ),
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin_generator_test.dart
       ],
       classes: <Class>[],
       enums: <Enum>[],
@@ -1844,25 +1776,9 @@ void main() {
                 associatedClass: emptyClass,
                 isNullable: false,
               ),
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
             ),
           ],
-<<<<<<< HEAD:packages/golub/test/kotlin_generator_test.dart
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            associatedClass: emptyClass,
-            isNullable: false,
-          ),
-          asynchronousType: AsynchronousType.callback,
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: true,
-=======
         ),
       ],
       classes: <Class>[
@@ -1872,7 +1788,6 @@ void main() {
             NamedType(
               type: const TypeDeclaration(baseName: 'String', isNullable: true),
               name: 'input',
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin_generator_test.dart
             ),
           ],
         ),

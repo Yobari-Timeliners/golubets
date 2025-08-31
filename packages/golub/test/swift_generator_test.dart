@@ -331,20 +331,6 @@ void main() {
   });
 
   test('gen one flutter api', () {
-<<<<<<< HEAD:packages/golub/test/swift_generator_test.dart
-    const String methodName = 'doSomething';
-    final Root root = Root(apis: <Api>[
-      AstFlutterApi(name: 'Api', methods: <Method>[
-        Method(
-          name: methodName,
-          location: ApiLocation.flutter,
-          parameters: <Parameter>[
-            Parameter(
-                type: TypeDeclaration(
-                  baseName: 'Input',
-                  associatedClass: emptyClass,
-                  isNullable: false,
-=======
     final Root root = Root(
       apis: <Api>[
         AstFlutterApi(
@@ -361,7 +347,6 @@ void main() {
                     isNullable: false,
                   ),
                   name: '',
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
                 ),
               ],
               returnType: TypeDeclaration(
@@ -409,19 +394,12 @@ void main() {
     final String code = sink.toString();
     expect(code, contains('public class Api'));
     expect(
-<<<<<<< HEAD:packages/golub/test/swift_generator_test.dart
-        code,
-        contains(
-            'public init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "")'));
-    expect(code, matches('public func doSomething.*Input.*Output'));
-=======
       code,
       contains(
-        'init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "")',
+        'public init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "")',
       ),
     );
-    expect(code, matches('func doSomething.*Input.*Output'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
+    expect(code, matches('public func doSomething.*Input.*Output'));
     expect(code, isNot(contains('if (')));
     expect(code, isNot(matches(RegExp(r';$', multiLine: true))));
     expect(code, contains('public protocol Api'));
@@ -792,25 +770,11 @@ void main() {
                 associatedClass: emptyClass,
                 isNullable: false,
               ),
-              isAsynchronous: true,
+              asynchronousType: const AwaitAsynchronous(
+                swiftOptions: SwiftAwaitAsynchronousOptions(throws: false),
+              ),
             ),
           ],
-<<<<<<< HEAD:packages/golub/test/swift_generator_test.dart
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            associatedClass: emptyClass,
-            isNullable: false,
-          ),
-          asynchronousType: AsynchronousType.callback,
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: true,
-=======
         ),
       ],
       classes: <Class>[
@@ -820,7 +784,6 @@ void main() {
             NamedType(
               type: const TypeDeclaration(baseName: 'String', isNullable: true),
               name: 'input',
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
             ),
           ],
         ),
@@ -1008,25 +971,11 @@ void main() {
                 associatedClass: emptyClass,
                 isNullable: false,
               ),
-              isAsynchronous: true,
+              asynchronousType: const AwaitAsynchronous(
+                swiftOptions: SwiftAwaitAsynchronousOptions(throws: false),
+              ),
             ),
           ],
-<<<<<<< HEAD:packages/golub/test/swift_generator_test.dart
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            associatedClass: emptyClass,
-            isNullable: false,
-          ),
-          asynchronousType: AsynchronousType.callback,
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: true,
-=======
         ),
       ],
       classes: <Class>[
@@ -1036,7 +985,6 @@ void main() {
             NamedType(
               type: const TypeDeclaration(baseName: 'String', isNullable: true),
               name: 'input',
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
             ),
           ],
         ),
@@ -1538,20 +1486,6 @@ void main() {
   test('return nullable host async', () {
     final Root root = Root(
       apis: <Api>[
-<<<<<<< HEAD:packages/golub/test/swift_generator_test.dart
-        AstHostApi(name: 'Api', methods: <Method>[
-          Method(
-            name: 'doit',
-            location: ApiLocation.host,
-            returnType: const TypeDeclaration(
-              baseName: 'int',
-              isNullable: true,
-            ),
-            asynchronousType: AsynchronousType.callback,
-            parameters: <Parameter>[],
-          )
-        ])
-=======
         AstHostApi(
           name: 'Api',
           methods: <Method>[
@@ -1562,12 +1496,11 @@ void main() {
                 baseName: 'int',
                 isNullable: true,
               ),
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
               parameters: <Parameter>[],
             ),
           ],
         ),
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
       ],
       classes: <Class>[],
       enums: <Enum>[],
@@ -1851,25 +1784,11 @@ void main() {
                 associatedClass: emptyClass,
                 isNullable: false,
               ),
-              isAsynchronous: true,
+              asynchronousType: const AwaitAsynchronous(
+                swiftOptions: SwiftAwaitAsynchronousOptions(throws: false),
+              ),
             ),
           ],
-<<<<<<< HEAD:packages/golub/test/swift_generator_test.dart
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            associatedClass: emptyClass,
-            isNullable: false,
-          ),
-          asynchronousType: AsynchronousType.callback,
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: true,
-=======
         ),
       ],
       classes: <Class>[
@@ -1879,7 +1798,6 @@ void main() {
             NamedType(
               type: const TypeDeclaration(baseName: 'String', isNullable: true),
               name: 'input',
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
             ),
           ],
         ),

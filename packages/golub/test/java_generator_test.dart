@@ -717,25 +717,9 @@ void main() {
                 associatedClass: emptyClass,
                 isNullable: false,
               ),
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
             ),
           ],
-<<<<<<< HEAD:packages/golub/test/java_generator_test.dart
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            associatedClass: emptyClass,
-            isNullable: false,
-          ),
-          asynchronousType: AsynchronousType.callback,
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: true,
-=======
         ),
       ],
       classes: <Class>[
@@ -745,7 +729,6 @@ void main() {
             NamedType(
               type: const TypeDeclaration(baseName: 'String', isNullable: true),
               name: 'input',
->>>>>>> filtered-upstream/main:packages/pigeon/test/java_generator_test.dart
             ),
           ],
         ),
@@ -811,25 +794,9 @@ void main() {
                 associatedClass: emptyClass,
                 isNullable: false,
               ),
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
             ),
           ],
-<<<<<<< HEAD:packages/golub/test/java_generator_test.dart
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            associatedClass: emptyClass,
-            isNullable: false,
-          ),
-          asynchronousType: AsynchronousType.callback,
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: true,
-=======
         ),
       ],
       classes: <Class>[
@@ -839,7 +806,6 @@ void main() {
             NamedType(
               type: const TypeDeclaration(baseName: 'String', isNullable: true),
               name: 'input',
->>>>>>> filtered-upstream/main:packages/pigeon/test/java_generator_test.dart
             ),
           ],
         ),
@@ -1266,18 +1232,6 @@ void main() {
   test('flutter int return', () {
     final Root root = Root(
       apis: <Api>[
-<<<<<<< HEAD:packages/golub/test/java_generator_test.dart
-        AstFlutterApi(name: 'Api', methods: <Method>[
-          Method(
-            name: 'doit',
-            location: ApiLocation.flutter,
-            returnType:
-                const TypeDeclaration(baseName: 'int', isNullable: false),
-            parameters: <Parameter>[],
-            asynchronousType: AsynchronousType.callback,
-          )
-        ])
-=======
         AstFlutterApi(
           name: 'Api',
           methods: <Method>[
@@ -1289,11 +1243,10 @@ void main() {
                 isNullable: false,
               ),
               parameters: <Parameter>[],
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
             ),
           ],
         ),
->>>>>>> filtered-upstream/main:packages/pigeon/test/java_generator_test.dart
       ],
       classes: <Class>[],
       enums: <Enum>[],
@@ -1577,20 +1530,6 @@ void main() {
   test('return nullable host async', () {
     final Root root = Root(
       apis: <Api>[
-<<<<<<< HEAD:packages/golub/test/java_generator_test.dart
-        AstHostApi(name: 'Api', methods: <Method>[
-          Method(
-            name: 'doit',
-            location: ApiLocation.host,
-            returnType: const TypeDeclaration(
-              baseName: 'int',
-              isNullable: true,
-            ),
-            asynchronousType: AsynchronousType.callback,
-            parameters: <Parameter>[],
-          )
-        ])
-=======
         AstHostApi(
           name: 'Api',
           methods: <Method>[
@@ -1601,12 +1540,11 @@ void main() {
                 baseName: 'int',
                 isNullable: true,
               ),
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
               parameters: <Parameter>[],
             ),
           ],
         ),
->>>>>>> filtered-upstream/main:packages/pigeon/test/java_generator_test.dart
       ],
       classes: <Class>[],
       enums: <Enum>[],
@@ -1948,25 +1886,9 @@ void main() {
                 associatedClass: emptyClass,
                 isNullable: false,
               ),
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
             ),
           ],
-<<<<<<< HEAD:packages/golub/test/java_generator_test.dart
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            associatedClass: emptyClass,
-            isNullable: false,
-          ),
-          asynchronousType: AsynchronousType.callback,
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: true,
-=======
         ),
       ],
       classes: <Class>[
@@ -1976,7 +1898,6 @@ void main() {
             NamedType(
               type: const TypeDeclaration(baseName: 'String', isNullable: true),
               name: 'input',
->>>>>>> filtered-upstream/main:packages/pigeon/test/java_generator_test.dart
             ),
           ],
         ),
