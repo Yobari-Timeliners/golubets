@@ -23,10 +23,10 @@ const String _docCommentSuffix = ' */';
 /// Documentation comment spec.
 const DocumentCommentSpecification _docCommentSpec =
     DocumentCommentSpecification(
-  _docCommentPrefix,
-  closeCommentToken: _docCommentSuffix,
-  blockContinuationToken: _docCommentContinuation,
-);
+      _docCommentPrefix,
+      closeCommentToken: _docCommentSuffix,
+      blockContinuationToken: _docCommentContinuation,
+    );
 
 const String _codecName = 'PigeonCodec';
 
@@ -115,13 +115,13 @@ class InternalKotlinOptions extends InternalOptions {
     KotlinOptions options, {
     required this.kotlinOut,
     Iterable<String>? copyrightHeader,
-  })  : package = options.package,
-        copyrightHeader = options.copyrightHeader ?? copyrightHeader,
-        errorClassName = options.errorClassName,
-        includeErrorClass = options.includeErrorClass,
-        fileSpecificClassNameComponent =
-            options.fileSpecificClassNameComponent ??
-                kotlinOut.split('/').lastOrNull?.split('.').first;
+  }) : package = options.package,
+       copyrightHeader = options.copyrightHeader ?? copyrightHeader,
+       errorClassName = options.errorClassName,
+       includeErrorClass = options.includeErrorClass,
+       fileSpecificClassNameComponent =
+           options.fileSpecificClassNameComponent ??
+           kotlinOut.split('/').lastOrNull?.split('.').first;
 
   /// The package where the generated class will live.
   final String? package;
@@ -215,8 +215,12 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     indent.writeln('import io.flutter.plugin.common.StandardMessageCodec');
     indent.writeln('import java.io.ByteArrayOutputStream');
     indent.writeln('import java.nio.ByteBuffer');
-    if (root.apis.any((Api api) => api.methods.any((Method it) =>
-        it.asynchronousType.isAwait && it.location == ApiLocation.host))) {
+    if (root.apis.any(
+      (Api api) => api.methods.any(
+        (Method it) =>
+            it.asynchronousType.isAwait && it.location == ApiLocation.host,
+      ),
+    )) {
       indent.writeln('import kotlinx.coroutines.launch');
       indent.writeln('import kotlinx.coroutines.CoroutineScope');
       indent.writeln('import kotlinx.coroutines.Dispatchers');
@@ -348,14 +352,16 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     bool private = false,
   }) {
     final String privateString = private ? 'private ' : '';
-    final String classType = classDefinition.isSealed
-        ? 'sealed'
-        : classDefinition.fields.isNotEmpty
+    final String classType =
+        classDefinition.isSealed
+            ? 'sealed'
+            : classDefinition.fields.isNotEmpty
             ? 'data'
             : '';
-    final String inheritance = classDefinition.superClass != null
-        ? ' : ${classDefinition.superClassName}()'
-        : '';
+    final String inheritance =
+        classDefinition.superClass != null
+            ? ' : ${classDefinition.superClassName}()'
+            : '';
     indent.write('$privateString$classType class ${classDefinition.name} ');
     if (classDefinition.isSealed) {
       return;
@@ -490,12 +496,14 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     void writeEncodeLogic(EnumeratedType customType) {
       final String encodeString =
           customType.type == CustomTypes.customClass ? 'toList()' : 'raw';
-      final String valueString = customType.enumeration < maximumCodecFieldKey
-          ? 'value.$encodeString'
-          : 'wrap.toList()';
-      final int enumeration = customType.enumeration < maximumCodecFieldKey
-          ? customType.enumeration
-          : maximumCodecFieldKey;
+      final String valueString =
+          customType.enumeration < maximumCodecFieldKey
+              ? 'value.$encodeString'
+              : 'wrap.toList()';
+      final int enumeration =
+          customType.enumeration < maximumCodecFieldKey
+              ? customType.enumeration
+              : maximumCodecFieldKey;
       indent.writeScoped('is ${customType.name} -> {', '}', () {
         if (customType.enumeration >= maximumCodecFieldKey) {
           indent.writeln(
@@ -858,38 +866,28 @@ if (wrapped == null) {
     final String instanceManagerApiName =
         '${kotlinInstanceManagerClassName(generatorOptions)}Api';
 
-    addDocumentationComments(
-        indent,
-        <String>[
-          ' Generated API for managing the Dart and native `InstanceManager`s.',
-        ],
-        _docCommentSpec);
+    addDocumentationComments(indent, <String>[
+      ' Generated API for managing the Dart and native `InstanceManager`s.',
+    ], _docCommentSpec);
     indent.writeScoped(
       'private class $instanceManagerApiName(val binaryMessenger: BinaryMessenger) {',
       '}',
       () {
         indent.writeScoped('companion object {', '}', () {
-          addDocumentationComments(
-              indent,
-              <String>[
-                ' The codec used by $instanceManagerApiName.',
-              ],
-              _docCommentSpec);
-          indent.writeScoped('val codec: MessageCodec<Any?> by lazy {', '}',
-              () {
+          addDocumentationComments(indent, <String>[
+            ' The codec used by $instanceManagerApiName.',
+          ], _docCommentSpec);
+          indent.writeScoped('val codec: MessageCodec<Any?> by lazy {', '}', () {
             indent.writeln(
               '${generatorOptions.fileSpecificClassNameComponent}$_codecName()',
             );
           });
           indent.newln();
 
-          addDocumentationComments(
-              indent,
-              <String>[
-                ' Sets up an instance of `$instanceManagerApiName` to handle messages from the',
-                ' `binaryMessenger`.',
-              ],
-              _docCommentSpec);
+          addDocumentationComments(indent, <String>[
+            ' Sets up an instance of `$instanceManagerApiName` to handle messages from the',
+            ' `binaryMessenger`.',
+          ], _docCommentSpec);
           indent.writeScoped(
             'fun setUpMessageHandlers(binaryMessenger: BinaryMessenger, instanceManager: ${kotlinInstanceManagerClassName(generatorOptions)}?) {',
             '}',
@@ -1046,7 +1044,8 @@ if (wrapped == null) {
             ];
             final String isSupportedExpression = nonProxyApiTypes
                 .map((String kotlinType) => 'value is $kotlinType')
-                .followedBy(<String>['value == null']).join(' || ');
+                .followedBy(<String>['value == null'])
+                .join(' || ');
             // Non ProxyApi types are checked first to handle the scenario
             // where a client wraps the `Object` class which all the
             // classes above extend.
@@ -1061,9 +1060,10 @@ if (wrapped == null) {
                   api.kotlinOptions?.fullClassName ?? api.name;
 
               final int? minApi = api.kotlinOptions?.minAndroidApi;
-              final String versionCheck = minApi != null
-                  ? 'android.os.Build.VERSION.SDK_INT >= $minApi && '
-                  : '';
+              final String versionCheck =
+                  minApi != null
+                      ? 'android.os.Build.VERSION.SDK_INT >= $minApi && '
+                      : '';
 
               indent.format('''
                   ${index > 0 ? ' else ' : ''}if (${versionCheck}value is $className) {
@@ -1459,7 +1459,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
     String setHandlerCondition = 'api != null',
     String? serialBackgroundQueue,
     String Function(List<String> safeArgNames, {required String apiVarName})?
-        onCreateCall,
+    onCreateCall,
     AsynchronousType asynchronousType = AsynchronousType.none,
   }) {
     indent.write('run ');
@@ -1492,14 +1492,16 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
               methodArguments.add(argName);
             });
           }
-          final String call = onCreateCall != null
-              ? onCreateCall(methodArguments, apiVarName: 'api')
-              : 'api.$name(${methodArguments.join(', ')})';
+          final String call =
+              onCreateCall != null
+                  ? onCreateCall(methodArguments, apiVarName: 'api')
+                  : 'api.$name(${methodArguments.join(', ')})';
 
           if (asynchronousType.isCallback) {
-            final String resultType = returnType.isVoid
-                ? 'Unit'
-                : _nullSafeKotlinTypeForDartType(returnType);
+            final String resultType =
+                returnType.isVoid
+                    ? 'Unit'
+                    : _nullSafeKotlinTypeForDartType(returnType);
             indent.write(methodArguments.isNotEmpty ? '$call ' : 'api.$name');
             indent.addScoped('{ result: Result<$resultType> ->', '}', () {
               indent.writeln('val error = result.exceptionOrNull()');
@@ -1565,13 +1567,15 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
     List<String> documentationComments = const <String>[],
     int? minApiRequirement,
     void Function(
-      Indent indent, {
-      required InternalKotlinOptions generatorOptions,
-      required List<Parameter> parameters,
-      required TypeDeclaration returnType,
-      required String channelName,
-      required String errorClassName,
-    }) onWriteBody = _writeFlutterMethodMessageCall,
+          Indent indent, {
+          required InternalKotlinOptions generatorOptions,
+          required List<Parameter> parameters,
+          required TypeDeclaration returnType,
+          required String channelName,
+          required String errorClassName,
+        })
+        onWriteBody =
+        _writeFlutterMethodMessageCall,
   }) {
     _writeMethodDeclaration(
       indent,
@@ -1668,23 +1672,17 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
     );
     final String instanceManagerApiName = '${instanceManagerName}Api';
 
-    addDocumentationComments(
-        indent,
-        <String>[
-          ' Provides implementations for each ProxyApi implementation and provides access to resources',
-          ' needed by any implementation.',
-        ],
-        _docCommentSpec);
+    addDocumentationComments(indent, <String>[
+      ' Provides implementations for each ProxyApi implementation and provides access to resources',
+      ' needed by any implementation.',
+    ], _docCommentSpec);
     indent.writeScoped(
       'abstract class $registrarName(val binaryMessenger: BinaryMessenger) {',
       '}',
       () {
-        addDocumentationComments(
-            indent,
-            <String>[
-              ' Whether APIs should ignore calling to Dart.',
-            ],
-            _docCommentSpec);
+        addDocumentationComments(indent, <String>[
+          ' Whether APIs should ignore calling to Dart.',
+        ], _docCommentSpec);
         indent.writeln('public var ignoreCallsToDart = false');
         indent.format('''
           val instanceManager: $instanceManagerName
@@ -1748,7 +1746,8 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
             '$instanceManagerApiName.setUpMessageHandlers(binaryMessenger, instanceManager)',
           );
           for (final AstProxyApi api in allProxyApis) {
-            final bool hasHostMessageCalls = api.constructors.isNotEmpty ||
+            final bool hasHostMessageCalls =
+                api.constructors.isNotEmpty ||
                 api.attachedFields.isNotEmpty ||
                 api.hostMethods.isNotEmpty;
             if (hasHostMessageCalls) {
@@ -1785,17 +1784,19 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
     for (final Constructor constructor in api.constructors) {
       _writeMethodDeclaration(
         indent,
-        name: constructor.name.isNotEmpty
-            ? constructor.name
-            : '${classMemberNamePrefix}defaultConstructor',
+        name:
+            constructor.name.isNotEmpty
+                ? constructor.name
+                : '${classMemberNamePrefix}defaultConstructor',
         returnType: apiAsTypeDeclaration,
         documentationComments: constructor.documentationComments,
-        minApiRequirement: _findAndroidHighestApiRequirement(<TypeDeclaration>[
-          apiAsTypeDeclaration,
-          ...constructor.parameters.map(
-            (Parameter parameter) => parameter.type,
-          ),
-        ])?.version,
+        minApiRequirement:
+            _findAndroidHighestApiRequirement(<TypeDeclaration>[
+              apiAsTypeDeclaration,
+              ...constructor.parameters.map(
+                (Parameter parameter) => parameter.type,
+              ),
+            ])?.version,
         isAbstract: true,
         parameters: <Parameter>[
           ...api.unattachedFields.map((ApiField field) {
@@ -1821,10 +1822,11 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
         documentationComments: field.documentationComments,
         returnType: field.type,
         isAbstract: true,
-        minApiRequirement: _findAndroidHighestApiRequirement(<TypeDeclaration>[
-          apiAsTypeDeclaration,
-          field.type,
-        ])?.version,
+        minApiRequirement:
+            _findAndroidHighestApiRequirement(<TypeDeclaration>[
+              apiAsTypeDeclaration,
+              field.type,
+            ])?.version,
         parameters: <Parameter>[
           if (!field.isStatic)
             Parameter(
@@ -1850,10 +1852,11 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
         documentationComments: field.documentationComments,
         returnType: field.type,
         isAbstract: true,
-        minApiRequirement: _findAndroidHighestApiRequirement(<TypeDeclaration>[
-          apiAsTypeDeclaration,
-          field.type,
-        ])?.version,
+        minApiRequirement:
+            _findAndroidHighestApiRequirement(<TypeDeclaration>[
+              apiAsTypeDeclaration,
+              field.type,
+            ])?.version,
         parameters: <Parameter>[
           Parameter(
             name: '${classMemberNamePrefix}instance',
@@ -1880,11 +1883,12 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
         documentationComments: method.documentationComments,
         asynchronousType: method.asynchronousType,
         isAbstract: true,
-        minApiRequirement: _findAndroidHighestApiRequirement(<TypeDeclaration>[
-          if (!method.isStatic) apiAsTypeDeclaration,
-          method.returnType,
-          ...method.parameters.map((Parameter p) => p.type),
-        ])?.version,
+        minApiRequirement:
+            _findAndroidHighestApiRequirement(<TypeDeclaration>[
+              if (!method.isStatic) apiAsTypeDeclaration,
+              method.returnType,
+              ...method.parameters.map((Parameter p) => p.type),
+            ])?.version,
         parameters: <Parameter>[
           if (!method.isStatic)
             Parameter(
@@ -1933,8 +1937,12 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
               addTrailingNewline: false,
             );
             indent.writeScoped(' else {', '}', () {
-              final String className = typeWithRequirement
-                      .type.associatedProxyApi!.kotlinOptions?.fullClassName ??
+              final String className =
+                  typeWithRequirement
+                      .type
+                      .associatedProxyApi!
+                      .kotlinOptions
+                      ?.fullClassName ??
                   typeWithRequirement.type.baseName;
               indent.format('''
                 val channel = BasicMessageChannel<Any?>(
@@ -1958,9 +1966,10 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
         }
 
         for (final Constructor constructor in api.constructors) {
-          final String name = constructor.name.isNotEmpty
-              ? constructor.name
-              : '${classMemberNamePrefix}defaultConstructor';
+          final String name =
+              constructor.name.isNotEmpty
+                  ? constructor.name
+                  : '${classMemberNamePrefix}defaultConstructor';
           final String channelName = makeChannelNameWithStrings(
             apiName: api.name,
             methodName: name,
@@ -2116,10 +2125,11 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
         methodName: newInstanceMethodName,
         dartPackageName: dartPackageName,
       ),
-      minApiRequirement: _findAndroidHighestApiRequirement(<TypeDeclaration>[
-        apiAsTypeDeclaration,
-        ...api.unattachedFields.map((ApiField field) => field.type),
-      ])?.version,
+      minApiRequirement:
+          _findAndroidHighestApiRequirement(<TypeDeclaration>[
+            apiAsTypeDeclaration,
+            ...api.unattachedFields.map((ApiField field) => field.type),
+          ])?.version,
       dartPackageName: dartPackageName,
       parameters: <Parameter>[
         Parameter(
@@ -2221,11 +2231,12 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
         channelName: makeChannelName(api, method, dartPackageName),
         dartPackageName: dartPackageName,
         documentationComments: method.documentationComments,
-        minApiRequirement: _findAndroidHighestApiRequirement(<TypeDeclaration>[
-          apiAsTypeDeclaration,
-          method.returnType,
-          ...method.parameters.map((Parameter parameter) => parameter.type),
-        ])?.version,
+        minApiRequirement:
+            _findAndroidHighestApiRequirement(<TypeDeclaration>[
+              apiAsTypeDeclaration,
+              method.returnType,
+              ...method.parameters.map((Parameter parameter) => parameter.type),
+            ])?.version,
         parameters: <Parameter>[
           Parameter(
             name: '${classMemberNamePrefix}instance',
