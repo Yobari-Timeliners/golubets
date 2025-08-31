@@ -189,7 +189,7 @@ jobs:
       - name: MacOS setup iOS simulator
         if: matrix.platform == 'macos'
         run: |
-          .ci/scripts/create_simulator.sh
+          .ci/scripts/create_simulator_golub.sh
           .ci/scripts/boot_simulator.sh
 
 
