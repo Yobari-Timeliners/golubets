@@ -50,7 +50,10 @@ bool _deepEquals(Object? a, Object? b) {
   return a == b;
 }
 
-enum Code { one, two }
+enum Code {
+  one,
+  two,
+}
 
 class MessageData {
   MessageData({
@@ -69,7 +72,12 @@ class MessageData {
   Map<String, String> data;
 
   List<Object?> _toList() {
-    return <Object?>[name, description, code, data];
+    return <Object?>[
+      name,
+      description,
+      code,
+      data,
+    ];
   }
 
   Object encode() {
@@ -250,12 +258,13 @@ class ExampleHostApi {
         'dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsync$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel =
         BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[message],
     );
-    final Future<Object?> pigeonVar_sendFuture =
-        pigeonVar_channel.send(<Object?>[message]);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {
@@ -281,12 +290,13 @@ class ExampleHostApi {
         'dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsyncThrows$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel =
         BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[message],
     );
-    final Future<Object?> pigeonVar_sendFuture =
-        pigeonVar_channel.send(<Object?>[message]);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {

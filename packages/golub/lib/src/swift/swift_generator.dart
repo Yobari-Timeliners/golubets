@@ -419,18 +419,11 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     bool private = false,
     bool hashable = true,
   }) {
-<<<<<<< HEAD:packages/golub/lib/src/swift/swift_generator.dart
     final String privateString = private ? 'private ' : 'public ';
-    final String extendsString = classDefinition.superClass != null
-        ? ': ${classDefinition.superClass!.name}'
-        : hashable
-=======
-    final String privateString = private ? 'private ' : '';
     final String extendsString =
         classDefinition.superClass != null
             ? ': ${classDefinition.superClass!.name}'
             : hashable
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
             ? ': Hashable'
             : '';
     if (classDefinition.isSwiftClass) {
@@ -669,19 +662,7 @@ if (wrapped == nil) {
     required String dartPackageName,
   }) {
     indent.writeScoped(
-<<<<<<< HEAD:packages/golub/lib/src/swift/swift_generator.dart
-        'public static func == (lhs: ${classDefinition.name}, rhs: ${classDefinition.name}) -> Bool {',
-        '}', () {
-      if (classDefinition.isSwiftClass) {
-        indent.writeScoped('if (lhs === rhs) {', '}', () {
-          indent.writeln('return true');
-        });
-      }
-      indent.write(
-          'return deepEquals${generatorOptions.fileSpecificClassNameComponent}(lhs.toList(), rhs.toList())');
-    });
-=======
-      'static func == (lhs: ${classDefinition.name}, rhs: ${classDefinition.name}) -> Bool {',
+      'public static func == (lhs: ${classDefinition.name}, rhs: ${classDefinition.name}) -> Bool {',
       '}',
       () {
         if (classDefinition.isSwiftClass) {
@@ -694,10 +675,8 @@ if (wrapped == nil) {
         );
       },
     );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
 
-    indent.writeScoped('public func hash(into hasher: inout Hasher) {', '}',
-        () {
+    indent.writeScoped('public func hash(into hasher: inout Hasher) {', '}', () {
       indent.writeln(
         'deepHash${generatorOptions.fileSpecificClassNameComponent}(value: toList(), hasher: &hasher)',
       );
@@ -812,19 +791,6 @@ if (wrapped == nil) {
     indent.addScoped('public protocol ${api.name}Protocol {', '}', () {
       for (final Method func in api.methods) {
         addDocumentationComments(
-<<<<<<< HEAD:packages/golub/lib/src/swift/swift_generator.dart
-            indent, func.documentationComments, _docCommentSpec);
-        indent.writeln(_getMethodSignature(
-          name: func.name,
-          parameters: func.parameters,
-          returnType: func.returnType,
-          errorTypeName: _getErrorClassName(generatorOptions),
-          swiftFunction: func.swiftFunction,
-          getParameterName: _getSafeArgumentName,
-          asynchronousType: AsynchronousType.callback,
-          isPublic: false,
-        ));
-=======
           indent,
           func.documentationComments,
           _docCommentSpec,
@@ -835,12 +801,12 @@ if (wrapped == nil) {
             parameters: func.parameters,
             returnType: func.returnType,
             errorTypeName: _getErrorClassName(generatorOptions),
-            isAsynchronous: true,
             swiftFunction: func.swiftFunction,
             getParameterName: _getSafeArgumentName,
+            asynchronousType: AsynchronousType.callback,
+            isPublic: false,
           ),
         );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
       }
     });
 
@@ -849,12 +815,8 @@ if (wrapped == nil) {
       indent.writeln('private let binaryMessenger: FlutterBinaryMessenger');
       indent.writeln('private let messageChannelSuffix: String');
       indent.write(
-<<<<<<< HEAD:packages/golub/lib/src/swift/swift_generator.dart
-          'public init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "") ');
-=======
-        'init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "") ',
+        'public init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "") ',
       );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
       indent.addScoped('{', '}', () {
         indent.writeln('self.binaryMessenger = binaryMessenger');
         indent.writeln(
@@ -916,18 +878,6 @@ if (wrapped == nil) {
     indent.addScoped('{', '}', () {
       for (final Method method in api.methods) {
         addDocumentationComments(
-<<<<<<< HEAD:packages/golub/lib/src/swift/swift_generator.dart
-            indent, method.documentationComments, _docCommentSpec);
-        indent.writeln(_getMethodSignature(
-          name: method.name,
-          parameters: method.parameters,
-          returnType: method.returnType,
-          errorTypeName: 'Error',
-          swiftFunction: method.swiftFunction,
-          asynchronousType: method.asynchronousType,
-          isPublic: false,
-        ));
-=======
           indent,
           method.documentationComments,
           _docCommentSpec,
@@ -938,24 +888,19 @@ if (wrapped == nil) {
             parameters: method.parameters,
             returnType: method.returnType,
             errorTypeName: 'Error',
-            isAsynchronous: method.isAsynchronous,
+            asynchronousType: method.asynchronousType,
             swiftFunction: method.swiftFunction,
+            isPublic: false,
           ),
         );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
       }
     });
 
     indent.newln();
     indent.writeln(
-<<<<<<< HEAD:packages/golub/lib/src/swift/swift_generator.dart
-        '$_docCommentPrefix Generated setup class from Pigeon to handle messages through the `binaryMessenger`.');
-    indent.write('public class ${apiName}Setup ');
-=======
       '$_docCommentPrefix Generated setup class from Pigeon to handle messages through the `binaryMessenger`.',
     );
-    indent.write('class ${apiName}Setup ');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+    indent.write('public class ${apiName}Setup ');
     indent.addScoped('{', '}', () {
       indent.writeln(
         'static var codec: FlutterStandardMessageCodec { ${_getMessageCodecName(generatorOptions)}.shared }',
@@ -964,12 +909,8 @@ if (wrapped == nil) {
         '$_docCommentPrefix Sets up an instance of `$apiName` to handle messages through the `binaryMessenger`.',
       );
       indent.write(
-<<<<<<< HEAD:packages/golub/lib/src/swift/swift_generator.dart
-          'public static func setUp(binaryMessenger: FlutterBinaryMessenger, api: $apiName?, messageChannelSuffix: String = "") ');
-=======
-        'static func setUp(binaryMessenger: FlutterBinaryMessenger, api: $apiName?, messageChannelSuffix: String = "") ',
+        'public static func setUp(binaryMessenger: FlutterBinaryMessenger, api: $apiName?, messageChannelSuffix: String = "") ',
       );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
       indent.addScoped('{', '}', () {
         indent.writeln(
           r'let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""',
@@ -1849,13 +1790,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     String? serialBackgroundQueue,
     String setHandlerCondition = 'let api = api',
     List<String> documentationComments = const <String>[],
-    String Function(List<String> safeArgNames, {required String apiVarName})?
-<<<<<<< HEAD:packages/golub/lib/src/swift/swift_generator.dart
-        onCreateCall,
     AsynchronousType asynchronousType = AsynchronousType.none,
-=======
+    String Function(List<String> safeArgNames, {required String apiVarName})?
     onCreateCall,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
   }) {
     final _SwiftFunctionComponents components = _SwiftFunctionComponents(
       name: name,
@@ -1935,7 +1872,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         final bool throws = switch (asynchronousType) {
           CallbackAsynchronous() => false,
           AwaitAsynchronous(
-            :final SwiftAwaitAsynchronousOptions swiftOptions
+            :final SwiftAwaitAsynchronousOptions swiftOptions,
           ) =>
             swiftOptions.throws,
           NoAsynchronous() => true,
@@ -1947,18 +1884,11 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           // Empty parens are not required when calling a method whose only
           // argument is a trailing closure.
           final String argumentString =
-<<<<<<< HEAD:packages/golub/lib/src/swift/swift_generator.dart
               methodArgument.isEmpty && asynchronousType.isCallback
                   ? ''
                   : '(${methodArgument.join(', ')})';
           call =
               '$tryStatement${awaitKeyword}api.${components.name}$argumentString';
-=======
-              methodArgument.isEmpty && isAsynchronous
-                  ? ''
-                  : '(${methodArgument.join(', ')})';
-          call = '${tryStatement}api.${components.name}$argumentString';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
         } else {
           call = onCreateCall(methodArgument, apiVarName: 'api');
         }
@@ -2847,30 +2777,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       '/// Error class for passing custom error details to Dart side.',
     );
     indent.writeScoped(
-<<<<<<< HEAD:packages/golub/lib/src/swift/swift_generator.dart
-        'public final class ${_getErrorClassName(generatorOptions)}: Error {',
-        '}', () {
-      indent.writeln('let code: String');
-      indent.writeln('let message: String?');
-      indent.writeln('let details: Sendable?');
-      indent.newln();
-      indent.writeScoped(
-          'public init(code: String, message: String?, details: Sendable?) {',
-          '}', () {
-        indent.writeln('self.code = code');
-        indent.writeln('self.message = message');
-        indent.writeln('self.details = details');
-      });
-      indent.newln();
-      indent.writeScoped('var localizedDescription: String {', '}', () {
-        indent.writeScoped('return', '', () {
-          indent.writeln(
-              '"${_getErrorClassName(generatorOptions)}(code: \\(code), message: \\(message ?? "<nil>"), details: \\(details ?? "<nil>")"');
-        }, addTrailingNewline: false);
-      });
-    });
-=======
-      'final class ${_getErrorClassName(generatorOptions)}: Error {',
+      'public final class ${_getErrorClassName(generatorOptions)}: Error {',
       '}',
       () {
         indent.writeln('let code: String');
@@ -2878,7 +2785,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         indent.writeln('let details: Sendable?');
         indent.newln();
         indent.writeScoped(
-          'init(code: String, message: String?, details: Sendable?) {',
+          'public init(code: String, message: String?, details: Sendable?) {',
           '}',
           () {
             indent.writeln('self.code = code');
@@ -2896,7 +2803,6 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         });
       },
     );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
   }
 
   void _writeProxyApiImports(Indent indent, Iterable<AstProxyApi> apis) {

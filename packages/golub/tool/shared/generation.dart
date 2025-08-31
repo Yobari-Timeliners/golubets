@@ -346,46 +346,12 @@ Future<int> formatAllFiles({
 }) {
   final String dartCommand = Platform.isWindows ? 'dart.exe' : 'dart';
   return runProcess(
-<<<<<<< HEAD:packages/golub/tool/shared/generation.dart
-      dartCommand,
-      <String>[
-        'run',
-        'script/tool/bin/flutter_plugin_tools.dart',
-        'format',
-        '--packages=golub',
-        if (languages.contains(GeneratorLanguage.cpp) ||
-            languages.contains(GeneratorLanguage.gobject) ||
-            languages.contains(GeneratorLanguage.objc))
-          '--clang-format'
-        else
-          '--no-clang-format',
-        if (languages.contains(GeneratorLanguage.java))
-          '--java'
-        else
-          '--no-java',
-        if (languages.contains(GeneratorLanguage.dart))
-          '--dart'
-        else
-          '--no-dart',
-        if (languages.contains(GeneratorLanguage.kotlin))
-          '--kotlin'
-        else
-          '--no-kotlin',
-        if (languages.contains(GeneratorLanguage.swift))
-          '--swift'
-        else
-          '--no-swift',
-      ],
-      workingDirectory: repositoryRoot,
-      streamOutput: false,
-      logFailure: true);
-=======
     dartCommand,
     <String>[
       'run',
       'script/tool/bin/flutter_plugin_tools.dart',
       'format',
-      '--packages=pigeon',
+      '--packages=golub',
       if (languages.contains(GeneratorLanguage.cpp) ||
           languages.contains(GeneratorLanguage.gobject) ||
           languages.contains(GeneratorLanguage.objc))
@@ -407,5 +373,4 @@ Future<int> formatAllFiles({
     streamOutput: false,
     logFailure: true,
   );
->>>>>>> filtered-upstream/main:packages/pigeon/tool/shared/generation.dart
 }

@@ -19,16 +19,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch latest main and PR head
+      - name: Fetch base and head
         run: |
-          git fetch origin main:main
-          git fetch origin ${{ github.head_ref }}:pr-head
-          git checkout pr-head
+          git fetch origin ${{ github.event.ref }}:pr-head
+          git fetch origin ${{ github.event.base_ref }}:pr-target
+          echo "Fetched branches: ${{ github.event.ref }} and ${{ github.event.base_ref }}"
 
       - name: Get changed files in PR
         id: changed-files
         run: |
-          CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRTUXB origin/main..pr-head)
+          CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRTUXB pr-target..pr-head)
           echo "changed_files<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -128,6 +128,10 @@ jobs:
         with:
           channel: master
           flutter-version: ${{ steps.read_flutter_version.outputs.flutter_version }}
+      - name: Flutter doctor
+        run: | 
+            flutter --version
+            dart --version
       - name: Install MacOS dependencies
         if: matrix.platform == 'macos'
         run: |

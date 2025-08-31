@@ -56,13 +56,25 @@ class PigeonOverrides {
     required Map<String?, Object?> aMap,
     required ProxyApiTestEnum anEnum,
     required ProxyApiSuperClass aProxyApi,
-    required bool Function(ProxyApiTestClass pigeon_instance, bool aBool)
+    required bool Function(
+      ProxyApiTestClass pigeon_instance,
+      bool aBool,
+    )
     flutterEchoBool,
-    required int Function(ProxyApiTestClass pigeon_instance, int anInt)
+    required int Function(
+      ProxyApiTestClass pigeon_instance,
+      int anInt,
+    )
     flutterEchoInt,
-    required double Function(ProxyApiTestClass pigeon_instance, double aDouble)
+    required double Function(
+      ProxyApiTestClass pigeon_instance,
+      double aDouble,
+    )
     flutterEchoDouble,
-    required String Function(ProxyApiTestClass pigeon_instance, String aString)
+    required String Function(
+      ProxyApiTestClass pigeon_instance,
+      String aString,
+    )
     flutterEchoString,
     required Uint8List Function(
       ProxyApiTestClass pigeon_instance,
@@ -126,15 +138,30 @@ class PigeonOverrides {
     void Function(ProxyApiTestClass pigeon_instance)? flutterNoop,
     Object? Function(ProxyApiTestClass pigeon_instance)? flutterThrowError,
     void Function(ProxyApiTestClass pigeon_instance)? flutterThrowErrorFromVoid,
-    bool? Function(ProxyApiTestClass pigeon_instance, bool? aBool)?
+    bool? Function(
+      ProxyApiTestClass pigeon_instance,
+      bool? aBool,
+    )?
     flutterEchoNullableBool,
-    int? Function(ProxyApiTestClass pigeon_instance, int? anInt)?
+    int? Function(
+      ProxyApiTestClass pigeon_instance,
+      int? anInt,
+    )?
     flutterEchoNullableInt,
-    double? Function(ProxyApiTestClass pigeon_instance, double? aDouble)?
+    double? Function(
+      ProxyApiTestClass pigeon_instance,
+      double? aDouble,
+    )?
     flutterEchoNullableDouble,
-    String? Function(ProxyApiTestClass pigeon_instance, String? aString)?
+    String? Function(
+      ProxyApiTestClass pigeon_instance,
+      String? aString,
+    )?
     flutterEchoNullableString,
-    Uint8List? Function(ProxyApiTestClass pigeon_instance, Uint8List? aList)?
+    Uint8List? Function(
+      ProxyApiTestClass pigeon_instance,
+      Uint8List? aList,
+    )?
     flutterEchoNullableUint8List,
     List<Object?>? Function(
       ProxyApiTestClass pigeon_instance,
@@ -180,13 +207,25 @@ class PigeonOverrides {
     required Map<String?, Object?> aMap,
     required ProxyApiTestEnum anEnum,
     required ProxyApiSuperClass aProxyApi,
-    required bool Function(ProxyApiTestClass pigeon_instance, bool aBool)
+    required bool Function(
+      ProxyApiTestClass pigeon_instance,
+      bool aBool,
+    )
     flutterEchoBool,
-    required int Function(ProxyApiTestClass pigeon_instance, int anInt)
+    required int Function(
+      ProxyApiTestClass pigeon_instance,
+      int anInt,
+    )
     flutterEchoInt,
-    required double Function(ProxyApiTestClass pigeon_instance, double aDouble)
+    required double Function(
+      ProxyApiTestClass pigeon_instance,
+      double aDouble,
+    )
     flutterEchoDouble,
-    required String Function(ProxyApiTestClass pigeon_instance, String aString)
+    required String Function(
+      ProxyApiTestClass pigeon_instance,
+      String aString,
+    )
     flutterEchoString,
     required Uint8List Function(
       ProxyApiTestClass pigeon_instance,
@@ -241,15 +280,30 @@ class PigeonOverrides {
     void Function(ProxyApiTestClass pigeon_instance)? flutterNoop,
     Object? Function(ProxyApiTestClass pigeon_instance)? flutterThrowError,
     void Function(ProxyApiTestClass pigeon_instance)? flutterThrowErrorFromVoid,
-    bool? Function(ProxyApiTestClass pigeon_instance, bool? aBool)?
+    bool? Function(
+      ProxyApiTestClass pigeon_instance,
+      bool? aBool,
+    )?
     flutterEchoNullableBool,
-    int? Function(ProxyApiTestClass pigeon_instance, int? anInt)?
+    int? Function(
+      ProxyApiTestClass pigeon_instance,
+      int? anInt,
+    )?
     flutterEchoNullableInt,
-    double? Function(ProxyApiTestClass pigeon_instance, double? aDouble)?
+    double? Function(
+      ProxyApiTestClass pigeon_instance,
+      double? aDouble,
+    )?
     flutterEchoNullableDouble,
-    String? Function(ProxyApiTestClass pigeon_instance, String? aString)?
+    String? Function(
+      ProxyApiTestClass pigeon_instance,
+      String? aString,
+    )?
     flutterEchoNullableString,
-    Uint8List? Function(ProxyApiTestClass pigeon_instance, Uint8List? aList)?
+    Uint8List? Function(
+      ProxyApiTestClass pigeon_instance,
+      Uint8List? aList,
+    )?
     flutterEchoNullableUint8List,
     List<Object?>? Function(
       ProxyApiTestClass pigeon_instance,
@@ -706,7 +760,11 @@ class _PigeonInternalProxyApiBaseCodec extends _PigeonCodec {
   }
 }
 
-enum ProxyApiTestEnum { one, two, three }
+enum ProxyApiTestEnum {
+  one,
+  two,
+  three,
+}
 
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
@@ -764,13 +822,25 @@ class ProxyApiTestClass extends ProxyApiSuperClass
     void Function(ProxyApiTestClass pigeon_instance)? flutterNoop,
     Object? Function(ProxyApiTestClass pigeon_instance)? flutterThrowError,
     void Function(ProxyApiTestClass pigeon_instance)? flutterThrowErrorFromVoid,
-    required bool Function(ProxyApiTestClass pigeon_instance, bool aBool)
+    required bool Function(
+      ProxyApiTestClass pigeon_instance,
+      bool aBool,
+    )
     flutterEchoBool,
-    required int Function(ProxyApiTestClass pigeon_instance, int anInt)
+    required int Function(
+      ProxyApiTestClass pigeon_instance,
+      int anInt,
+    )
     flutterEchoInt,
-    required double Function(ProxyApiTestClass pigeon_instance, double aDouble)
+    required double Function(
+      ProxyApiTestClass pigeon_instance,
+      double aDouble,
+    )
     flutterEchoDouble,
-    required String Function(ProxyApiTestClass pigeon_instance, String aString)
+    required String Function(
+      ProxyApiTestClass pigeon_instance,
+      String aString,
+    )
     flutterEchoString,
     required Uint8List Function(
       ProxyApiTestClass pigeon_instance,
@@ -807,15 +877,30 @@ class ProxyApiTestClass extends ProxyApiSuperClass
       ProxyApiSuperClass aProxyApi,
     )
     flutterEchoProxyApi,
-    bool? Function(ProxyApiTestClass pigeon_instance, bool? aBool)?
+    bool? Function(
+      ProxyApiTestClass pigeon_instance,
+      bool? aBool,
+    )?
     flutterEchoNullableBool,
-    int? Function(ProxyApiTestClass pigeon_instance, int? anInt)?
+    int? Function(
+      ProxyApiTestClass pigeon_instance,
+      int? anInt,
+    )?
     flutterEchoNullableInt,
-    double? Function(ProxyApiTestClass pigeon_instance, double? aDouble)?
+    double? Function(
+      ProxyApiTestClass pigeon_instance,
+      double? aDouble,
+    )?
     flutterEchoNullableDouble,
-    String? Function(ProxyApiTestClass pigeon_instance, String? aString)?
+    String? Function(
+      ProxyApiTestClass pigeon_instance,
+      String? aString,
+    )?
     flutterEchoNullableString,
-    Uint8List? Function(ProxyApiTestClass pigeon_instance, Uint8List? aList)?
+    Uint8List? Function(
+      ProxyApiTestClass pigeon_instance,
+      Uint8List? aList,
+    )?
     flutterEchoNullableUint8List,
     List<Object?>? Function(
       ProxyApiTestClass pigeon_instance,
@@ -1076,46 +1161,47 @@ class ProxyApiTestClass extends ProxyApiSuperClass
           pigeonChannelCodec,
           binaryMessenger: pigeonVar_binaryMessenger,
         );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel
-        .send(<Object?>[
-          pigeonVar_instanceIdentifier,
-          aBool,
-          anInt,
-          aDouble,
-          aString,
-          aUint8List,
-          aList,
-          aMap,
-          anEnum,
-          aProxyApi,
-          aNullableBool,
-          aNullableInt,
-          aNullableDouble,
-          aNullableString,
-          aNullableUint8List,
-          aNullableList,
-          aNullableMap,
-          aNullableEnum,
-          aNullableProxyApi,
-          boolParam,
-          intParam,
-          doubleParam,
-          stringParam,
-          aUint8ListParam,
-          listParam,
-          mapParam,
-          enumParam,
-          proxyApiParam,
-          nullableBoolParam,
-          nullableIntParam,
-          nullableDoubleParam,
-          nullableStringParam,
-          nullableUint8ListParam,
-          nullableListParam,
-          nullableMapParam,
-          nullableEnumParam,
-          nullableProxyApiParam,
-        ]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[
+        pigeonVar_instanceIdentifier,
+        aBool,
+        anInt,
+        aDouble,
+        aString,
+        aUint8List,
+        aList,
+        aMap,
+        anEnum,
+        aProxyApi,
+        aNullableBool,
+        aNullableInt,
+        aNullableDouble,
+        aNullableString,
+        aNullableUint8List,
+        aNullableList,
+        aNullableMap,
+        aNullableEnum,
+        aNullableProxyApi,
+        boolParam,
+        intParam,
+        doubleParam,
+        stringParam,
+        aUint8ListParam,
+        listParam,
+        mapParam,
+        enumParam,
+        proxyApiParam,
+        nullableBoolParam,
+        nullableIntParam,
+        nullableDoubleParam,
+        nullableStringParam,
+        nullableUint8ListParam,
+        nullableListParam,
+        nullableMapParam,
+        nullableEnumParam,
+        nullableProxyApiParam,
+      ],
+    );
     () async {
       final List<Object?>? pigeonVar_replyList =
           await pigeonVar_sendFuture as List<Object?>?;
@@ -1158,13 +1244,25 @@ class ProxyApiTestClass extends ProxyApiSuperClass
     void Function(ProxyApiTestClass pigeon_instance)? flutterNoop,
     Object? Function(ProxyApiTestClass pigeon_instance)? flutterThrowError,
     void Function(ProxyApiTestClass pigeon_instance)? flutterThrowErrorFromVoid,
-    required bool Function(ProxyApiTestClass pigeon_instance, bool aBool)
+    required bool Function(
+      ProxyApiTestClass pigeon_instance,
+      bool aBool,
+    )
     flutterEchoBool,
-    required int Function(ProxyApiTestClass pigeon_instance, int anInt)
+    required int Function(
+      ProxyApiTestClass pigeon_instance,
+      int anInt,
+    )
     flutterEchoInt,
-    required double Function(ProxyApiTestClass pigeon_instance, double aDouble)
+    required double Function(
+      ProxyApiTestClass pigeon_instance,
+      double aDouble,
+    )
     flutterEchoDouble,
-    required String Function(ProxyApiTestClass pigeon_instance, String aString)
+    required String Function(
+      ProxyApiTestClass pigeon_instance,
+      String aString,
+    )
     flutterEchoString,
     required Uint8List Function(
       ProxyApiTestClass pigeon_instance,
@@ -1201,15 +1299,30 @@ class ProxyApiTestClass extends ProxyApiSuperClass
       ProxyApiSuperClass aProxyApi,
     )
     flutterEchoProxyApi,
-    bool? Function(ProxyApiTestClass pigeon_instance, bool? aBool)?
+    bool? Function(
+      ProxyApiTestClass pigeon_instance,
+      bool? aBool,
+    )?
     flutterEchoNullableBool,
-    int? Function(ProxyApiTestClass pigeon_instance, int? anInt)?
+    int? Function(
+      ProxyApiTestClass pigeon_instance,
+      int? anInt,
+    )?
     flutterEchoNullableInt,
-    double? Function(ProxyApiTestClass pigeon_instance, double? aDouble)?
+    double? Function(
+      ProxyApiTestClass pigeon_instance,
+      double? aDouble,
+    )?
     flutterEchoNullableDouble,
-    String? Function(ProxyApiTestClass pigeon_instance, String? aString)?
+    String? Function(
+      ProxyApiTestClass pigeon_instance,
+      String? aString,
+    )?
     flutterEchoNullableString,
-    Uint8List? Function(ProxyApiTestClass pigeon_instance, Uint8List? aList)?
+    Uint8List? Function(
+      ProxyApiTestClass pigeon_instance,
+      Uint8List? aList,
+    )?
     flutterEchoNullableUint8List,
     List<Object?>? Function(
       ProxyApiTestClass pigeon_instance,
@@ -1398,28 +1511,29 @@ class ProxyApiTestClass extends ProxyApiSuperClass
           pigeonChannelCodec,
           binaryMessenger: pigeonVar_binaryMessenger,
         );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel
-        .send(<Object?>[
-          pigeonVar_instanceIdentifier,
-          aBool,
-          anInt,
-          aDouble,
-          aString,
-          aUint8List,
-          aList,
-          aMap,
-          anEnum,
-          aProxyApi,
-          aNullableBool,
-          aNullableInt,
-          aNullableDouble,
-          aNullableString,
-          aNullableUint8List,
-          aNullableList,
-          aNullableMap,
-          aNullableEnum,
-          aNullableProxyApi,
-        ]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[
+        pigeonVar_instanceIdentifier,
+        aBool,
+        anInt,
+        aDouble,
+        aString,
+        aUint8List,
+        aList,
+        aMap,
+        anEnum,
+        aProxyApi,
+        aNullableBool,
+        aNullableInt,
+        aNullableDouble,
+        aNullableString,
+        aNullableUint8List,
+        aNullableList,
+        aNullableMap,
+        aNullableEnum,
+        aNullableProxyApi,
+      ],
+    );
     () async {
       final List<Object?>? pigeonVar_replyList =
           await pigeonVar_sendFuture as List<Object?>?;
@@ -1616,7 +1730,10 @@ class ProxyApiTestClass extends ProxyApiSuperClass
   ///
   /// Alternatively, [PigeonInstanceManager.removeWeakReference] can be used to
   /// release the associated Native object manually.
-  final bool Function(ProxyApiTestClass pigeon_instance, bool aBool)
+  final bool Function(
+    ProxyApiTestClass pigeon_instance,
+    bool aBool,
+  )
   flutterEchoBool;
 
   /// Returns the passed int, to test serialization and deserialization.
@@ -1638,7 +1755,10 @@ class ProxyApiTestClass extends ProxyApiSuperClass
   ///
   /// Alternatively, [PigeonInstanceManager.removeWeakReference] can be used to
   /// release the associated Native object manually.
-  final int Function(ProxyApiTestClass pigeon_instance, int anInt)
+  final int Function(
+    ProxyApiTestClass pigeon_instance,
+    int anInt,
+  )
   flutterEchoInt;
 
   /// Returns the passed double, to test serialization and deserialization.
@@ -1660,7 +1780,10 @@ class ProxyApiTestClass extends ProxyApiSuperClass
   ///
   /// Alternatively, [PigeonInstanceManager.removeWeakReference] can be used to
   /// release the associated Native object manually.
-  final double Function(ProxyApiTestClass pigeon_instance, double aDouble)
+  final double Function(
+    ProxyApiTestClass pigeon_instance,
+    double aDouble,
+  )
   flutterEchoDouble;
 
   /// Returns the passed string, to test serialization and deserialization.
@@ -1682,7 +1805,10 @@ class ProxyApiTestClass extends ProxyApiSuperClass
   ///
   /// Alternatively, [PigeonInstanceManager.removeWeakReference] can be used to
   /// release the associated Native object manually.
-  final String Function(ProxyApiTestClass pigeon_instance, String aString)
+  final String Function(
+    ProxyApiTestClass pigeon_instance,
+    String aString,
+  )
   flutterEchoString;
 
   /// Returns the passed byte list, to test serialization and deserialization.
@@ -1704,7 +1830,10 @@ class ProxyApiTestClass extends ProxyApiSuperClass
   ///
   /// Alternatively, [PigeonInstanceManager.removeWeakReference] can be used to
   /// release the associated Native object manually.
-  final Uint8List Function(ProxyApiTestClass pigeon_instance, Uint8List aList)
+  final Uint8List Function(
+    ProxyApiTestClass pigeon_instance,
+    Uint8List aList,
+  )
   flutterEchoUint8List;
 
   /// Returns the passed list, to test serialization and deserialization.
@@ -1878,7 +2007,10 @@ class ProxyApiTestClass extends ProxyApiSuperClass
   ///
   /// Alternatively, [PigeonInstanceManager.removeWeakReference] can be used to
   /// release the associated Native object manually.
-  final bool? Function(ProxyApiTestClass pigeon_instance, bool? aBool)?
+  final bool? Function(
+    ProxyApiTestClass pigeon_instance,
+    bool? aBool,
+  )?
   flutterEchoNullableBool;
 
   /// Returns the passed int, to test serialization and deserialization.
@@ -1900,7 +2032,10 @@ class ProxyApiTestClass extends ProxyApiSuperClass
   ///
   /// Alternatively, [PigeonInstanceManager.removeWeakReference] can be used to
   /// release the associated Native object manually.
-  final int? Function(ProxyApiTestClass pigeon_instance, int? anInt)?
+  final int? Function(
+    ProxyApiTestClass pigeon_instance,
+    int? anInt,
+  )?
   flutterEchoNullableInt;
 
   /// Returns the passed double, to test serialization and deserialization.
@@ -1922,7 +2057,10 @@ class ProxyApiTestClass extends ProxyApiSuperClass
   ///
   /// Alternatively, [PigeonInstanceManager.removeWeakReference] can be used to
   /// release the associated Native object manually.
-  final double? Function(ProxyApiTestClass pigeon_instance, double? aDouble)?
+  final double? Function(
+    ProxyApiTestClass pigeon_instance,
+    double? aDouble,
+  )?
   flutterEchoNullableDouble;
 
   /// Returns the passed string, to test serialization and deserialization.
@@ -1944,7 +2082,10 @@ class ProxyApiTestClass extends ProxyApiSuperClass
   ///
   /// Alternatively, [PigeonInstanceManager.removeWeakReference] can be used to
   /// release the associated Native object manually.
-  final String? Function(ProxyApiTestClass pigeon_instance, String? aString)?
+  final String? Function(
+    ProxyApiTestClass pigeon_instance,
+    String? aString,
+  )?
   flutterEchoNullableString;
 
   /// Returns the passed byte list, to test serialization and deserialization.
@@ -2139,14 +2280,30 @@ class ProxyApiTestClass extends ProxyApiSuperClass
     void Function(ProxyApiTestClass pigeon_instance)? flutterNoop,
     Object? Function(ProxyApiTestClass pigeon_instance)? flutterThrowError,
     void Function(ProxyApiTestClass pigeon_instance)? flutterThrowErrorFromVoid,
-    bool Function(ProxyApiTestClass pigeon_instance, bool aBool)?
+    bool Function(
+      ProxyApiTestClass pigeon_instance,
+      bool aBool,
+    )?
     flutterEchoBool,
-    int Function(ProxyApiTestClass pigeon_instance, int anInt)? flutterEchoInt,
-    double Function(ProxyApiTestClass pigeon_instance, double aDouble)?
+    int Function(
+      ProxyApiTestClass pigeon_instance,
+      int anInt,
+    )?
+    flutterEchoInt,
+    double Function(
+      ProxyApiTestClass pigeon_instance,
+      double aDouble,
+    )?
     flutterEchoDouble,
-    String Function(ProxyApiTestClass pigeon_instance, String aString)?
+    String Function(
+      ProxyApiTestClass pigeon_instance,
+      String aString,
+    )?
     flutterEchoString,
-    Uint8List Function(ProxyApiTestClass pigeon_instance, Uint8List aList)?
+    Uint8List Function(
+      ProxyApiTestClass pigeon_instance,
+      Uint8List aList,
+    )?
     flutterEchoUint8List,
     List<Object?> Function(
       ProxyApiTestClass pigeon_instance,
@@ -2178,15 +2335,30 @@ class ProxyApiTestClass extends ProxyApiSuperClass
       ProxyApiSuperClass aProxyApi,
     )?
     flutterEchoProxyApi,
-    bool? Function(ProxyApiTestClass pigeon_instance, bool? aBool)?
+    bool? Function(
+      ProxyApiTestClass pigeon_instance,
+      bool? aBool,
+    )?
     flutterEchoNullableBool,
-    int? Function(ProxyApiTestClass pigeon_instance, int? anInt)?
+    int? Function(
+      ProxyApiTestClass pigeon_instance,
+      int? anInt,
+    )?
     flutterEchoNullableInt,
-    double? Function(ProxyApiTestClass pigeon_instance, double? aDouble)?
+    double? Function(
+      ProxyApiTestClass pigeon_instance,
+      double? aDouble,
+    )?
     flutterEchoNullableDouble,
-    String? Function(ProxyApiTestClass pigeon_instance, String? aString)?
+    String? Function(
+      ProxyApiTestClass pigeon_instance,
+      String? aString,
+    )?
     flutterEchoNullableString,
-    Uint8List? Function(ProxyApiTestClass pigeon_instance, Uint8List? aList)?
+    Uint8List? Function(
+      ProxyApiTestClass pigeon_instance,
+      Uint8List? aList,
+    )?
     flutterEchoNullableUint8List,
     List<Object?>? Function(
       ProxyApiTestClass pigeon_instance,
@@ -2209,7 +2381,10 @@ class ProxyApiTestClass extends ProxyApiSuperClass
     )?
     flutterEchoNullableProxyApi,
     Future<void> Function(ProxyApiTestClass pigeon_instance)? flutterNoopAsync,
-    Future<String> Function(ProxyApiTestClass pigeon_instance, String aString)?
+    Future<String> Function(
+      ProxyApiTestClass pigeon_instance,
+      String aString,
+    )?
     flutterEchoAsyncString,
   }) {
     final _PigeonInternalProxyApiBaseCodec pigeonChannelCodec =

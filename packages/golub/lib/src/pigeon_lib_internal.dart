@@ -1894,8 +1894,9 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     final dart_ast.FormalParameterList parameters = node.parameters!;
     final List<Parameter> arguments =
         parameters.parameters.map(_formalParameterToPigeonParameter).toList();
-    final AsynchronousType asynchronousType =
-        _parseAsynchronousType(node.metadata);
+    final AsynchronousType asynchronousType = _parseAsynchronousType(
+      node.metadata,
+    );
     final bool isStatic = _hasMetadata(node.metadata, 'static');
     final String objcSelector =
         _findMetadata(node.metadata, 'ObjCSelector')?.arguments?.arguments.first
@@ -2177,13 +2178,10 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
               )?.expression.asNullable<dart_ast.PrefixedIdentifier>()?.name;
       final TaskQueueType taskQueueType =
           _stringToEnum(TaskQueueType.values, taskQueueTypeName) ??
-<<<<<<< HEAD:packages/golub/lib/src/pigeon_lib_internal.dart
-              TaskQueueType.serial;
-      final AsynchronousType asynchronousType =
-          _parseAsynchronousType(node.metadata);
-=======
           TaskQueueType.serial;
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+      final AsynchronousType asynchronousType = _parseAsynchronousType(
+        node.metadata,
+      );
 
       // Methods without named return types aren't supported.
       final dart_ast.TypeAnnotation returnType = type.returnType!;

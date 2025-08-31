@@ -215,8 +215,12 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     indent.writeln('import io.flutter.plugin.common.StandardMessageCodec');
     indent.writeln('import java.io.ByteArrayOutputStream');
     indent.writeln('import java.nio.ByteBuffer');
-    if (root.apis.any((Api api) => api.methods.any((Method it) =>
-        it.asynchronousType.isAwait && it.location == ApiLocation.host))) {
+    if (root.apis.any(
+      (Api api) => api.methods.any(
+        (Method it) =>
+            it.asynchronousType.isAwait && it.location == ApiLocation.host,
+      ),
+    )) {
       indent.writeln('import kotlinx.coroutines.launch');
       indent.writeln('import kotlinx.coroutines.CoroutineScope');
       indent.writeln('import kotlinx.coroutines.Dispatchers');
@@ -348,22 +352,16 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     bool private = false,
   }) {
     final String privateString = private ? 'private ' : '';
-<<<<<<< HEAD:packages/golub/lib/src/kotlin/kotlin_generator.dart
-    final String classType = classDefinition.isSealed
-        ? 'sealed'
-        : classDefinition.fields.isNotEmpty
+    final String classType =
+        classDefinition.isSealed
+            ? 'sealed'
+            : classDefinition.fields.isNotEmpty
             ? 'data'
             : '';
-    final String inheritance = classDefinition.superClass != null
-        ? ' : ${classDefinition.superClassName}()'
-        : '';
-=======
-    final String classType = classDefinition.isSealed ? 'sealed' : 'data';
     final String inheritance =
         classDefinition.superClass != null
             ? ' : ${classDefinition.superClassName}()'
             : '';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
     indent.write('$privateString$classType class ${classDefinition.name} ');
     if (classDefinition.isSealed) {
       return;
@@ -416,18 +414,13 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
 
     indent.write('companion object ');
     indent.addScoped('{', '}', () {
-<<<<<<< HEAD:packages/golub/lib/src/kotlin/kotlin_generator.dart
       if (getFieldsInSerializationOrder(classDefinition).isEmpty) {
         indent.writeln('@Suppress("UNUSED_PARAMETER")');
       }
 
-      indent
-          .write('fun fromList(${varNamePrefix}list: List<Any?>): $className ');
-=======
       indent.write(
         'fun fromList(${varNamePrefix}list: List<Any?>): $className ',
       );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
 
       indent.addScoped('{', '}', () {
         enumerate(getFieldsInSerializationOrder(classDefinition), (
@@ -814,12 +807,8 @@ if (wrapped == null) {
                 ? ', coroutineScope: CoroutineScope'
                 : '';
         indent.write(
-<<<<<<< HEAD:packages/golub/lib/src/kotlin/kotlin_generator.dart
-            'fun setUp(binaryMessenger: BinaryMessenger, api: $apiName?, messageChannelSuffix: String = ""$coroutineScope) ');
-=======
-          'fun setUp(binaryMessenger: BinaryMessenger, api: $apiName?, messageChannelSuffix: String = "") ',
+          'fun setUp(binaryMessenger: BinaryMessenger, api: $apiName?, messageChannelSuffix: String = ""$coroutineScope) ',
         );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
         indent.addScoped('{', '}', () {
           indent.writeln(
             r'val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""',
@@ -1470,12 +1459,8 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
     String setHandlerCondition = 'api != null',
     String? serialBackgroundQueue,
     String Function(List<String> safeArgNames, {required String apiVarName})?
-<<<<<<< HEAD:packages/golub/lib/src/kotlin/kotlin_generator.dart
-        onCreateCall,
-    AsynchronousType asynchronousType = AsynchronousType.none,
-=======
     onCreateCall,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
+    AsynchronousType asynchronousType = AsynchronousType.none,
   }) {
     indent.write('run ');
     indent.addScoped('{', '}', () {
@@ -1512,18 +1497,11 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
                   ? onCreateCall(methodArguments, apiVarName: 'api')
                   : 'api.$name(${methodArguments.join(', ')})';
 
-<<<<<<< HEAD:packages/golub/lib/src/kotlin/kotlin_generator.dart
           if (asynchronousType.isCallback) {
-            final String resultType = returnType.isVoid
-                ? 'Unit'
-                : _nullSafeKotlinTypeForDartType(returnType);
-=======
-          if (isAsynchronous) {
             final String resultType =
                 returnType.isVoid
                     ? 'Unit'
                     : _nullSafeKotlinTypeForDartType(returnType);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
             indent.write(methodArguments.isNotEmpty ? '$call ' : 'api.$name');
             indent.addScoped('{ result: Result<$resultType> ->', '}', () {
               indent.writeln('val error = result.exceptionOrNull()');

@@ -771,7 +771,8 @@ abstract class HostIntegrationCoreApi {
   @SwiftFunction('echoModernAsyncNullableAllNullableTypes(_:)')
   @TaskQueue(type: TaskQueueType.serialBackgroundThread)
   AllNullableTypes? echoModernAsyncNullableAllNullableTypes(
-      AllNullableTypes? everything);
+    AllNullableTypes? everything,
+  );
 
   /// Returns the passed object, to test serialization and deserialization.
   @async

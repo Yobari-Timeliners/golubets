@@ -38,12 +38,16 @@ bool _deepEquals(Object? a, Object? b) {
 }
 
 class FlutterSearchRequest {
-  FlutterSearchRequest({this.query});
+  FlutterSearchRequest({
+    this.query,
+  });
 
   String? query;
 
   List<Object?> _toList() {
-    return <Object?>[query];
+    return <Object?>[
+      query,
+    ];
   }
 
   Object encode() {
@@ -52,7 +56,9 @@ class FlutterSearchRequest {
 
   static FlutterSearchRequest decode(Object result) {
     result as List<Object?>;
-    return FlutterSearchRequest(query: result[0] as String?);
+    return FlutterSearchRequest(
+      query: result[0] as String?,
+    );
   }
 
   @override
@@ -73,14 +79,20 @@ class FlutterSearchRequest {
 }
 
 class FlutterSearchReply {
-  FlutterSearchReply({this.result, this.error});
+  FlutterSearchReply({
+    this.result,
+    this.error,
+  });
 
   String? result;
 
   String? error;
 
   List<Object?> _toList() {
-    return <Object?>[result, error];
+    return <Object?>[
+      result,
+      error,
+    ];
   }
 
   Object encode() {
@@ -113,12 +125,16 @@ class FlutterSearchReply {
 }
 
 class FlutterSearchRequests {
-  FlutterSearchRequests({this.requests});
+  FlutterSearchRequests({
+    this.requests,
+  });
 
   List<Object?>? requests;
 
   List<Object?> _toList() {
-    return <Object?>[requests];
+    return <Object?>[
+      requests,
+    ];
   }
 
   Object encode() {
@@ -127,7 +143,9 @@ class FlutterSearchRequests {
 
   static FlutterSearchRequests decode(Object result) {
     result as List<Object?>;
-    return FlutterSearchRequests(requests: result[0] as List<Object?>?);
+    return FlutterSearchRequests(
+      requests: result[0] as List<Object?>?,
+    );
   }
 
   @override
@@ -148,12 +166,16 @@ class FlutterSearchRequests {
 }
 
 class FlutterSearchReplies {
-  FlutterSearchReplies({this.replies});
+  FlutterSearchReplies({
+    this.replies,
+  });
 
   List<Object?>? replies;
 
   List<Object?> _toList() {
-    return <Object?>[replies];
+    return <Object?>[
+      replies,
+    ];
   }
 
   Object encode() {
@@ -162,7 +184,9 @@ class FlutterSearchReplies {
 
   static FlutterSearchReplies decode(Object result) {
     result as List<Object?>;
-    return FlutterSearchReplies(replies: result[0] as List<Object?>?);
+    return FlutterSearchReplies(
+      replies: result[0] as List<Object?>?,
+    );
   }
 
   @override

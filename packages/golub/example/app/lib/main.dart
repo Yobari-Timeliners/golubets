@@ -172,7 +172,6 @@ class _MyHomePageState extends State<MyHomePage> {
               )
             else
               const Text('event channels are not supported on this platform'),
-<<<<<<< HEAD:packages/golub/example/app/lib/main.dart
             if (Platform.isAndroid || Platform.isIOS)
               ElevatedButton(
                 onPressed: () async {
@@ -220,9 +219,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   }
                 },
                 child: const Text('Send message modern async and throw'),
-              )
-=======
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/lib/main.dart
+              ),
           ],
         ),
       ),

@@ -68,13 +68,17 @@ enum EnumState {
 
 /// This comment is to test class documentation comments.
 class DataWithEnum {
-  DataWithEnum({this.state});
+  DataWithEnum({
+    this.state,
+  });
 
   /// This comment is to test field documentation comments.
   EnumState? state;
 
   List<Object?> _toList() {
-    return <Object?>[state];
+    return <Object?>[
+      state,
+    ];
   }
 
   Object encode() {
@@ -83,7 +87,9 @@ class DataWithEnum {
 
   static DataWithEnum decode(Object result) {
     result as List<Object?>;
-    return DataWithEnum(state: result[0] as EnumState?);
+    return DataWithEnum(
+      state: result[0] as EnumState?,
+    );
   }
 
   @override

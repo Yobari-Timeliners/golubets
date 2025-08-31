@@ -51,17 +51,26 @@ bool _deepEquals(Object? a, Object? b) {
   return a == b;
 }
 
-enum NullFieldsSearchReplyType { success, failure }
+enum NullFieldsSearchReplyType {
+  success,
+  failure,
+}
 
 class NullFieldsSearchRequest {
-  NullFieldsSearchRequest({this.query, required this.identifier});
+  NullFieldsSearchRequest({
+    this.query,
+    required this.identifier,
+  });
 
   String? query;
 
   int identifier;
 
   List<Object?> _toList() {
-    return <Object?>[query, identifier];
+    return <Object?>[
+      query,
+      identifier,
+    ];
   }
 
   Object encode() {
@@ -113,7 +122,13 @@ class NullFieldsSearchReply {
   NullFieldsSearchReplyType? type;
 
   List<Object?> _toList() {
-    return <Object?>[result, error, indices, request, type];
+    return <Object?>[
+      result,
+      error,
+      indices,
+      request,
+      type,
+    ];
   }
 
   Object encode() {

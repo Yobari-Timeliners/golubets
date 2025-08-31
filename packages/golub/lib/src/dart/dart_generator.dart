@@ -222,27 +222,18 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       if (classDefinition.isSealed) {
         return;
       }
-<<<<<<< HEAD:packages/golub/lib/src/dart/dart_generator.dart
-=======
-      _writeConstructor(indent, classDefinition);
-      indent.newln();
-      for (final NamedType field in getFieldsInSerializationOrder(
-        classDefinition,
-      )) {
-        addDocumentationComments(
-          indent,
-          field.documentationComments,
-          docCommentSpec,
-        );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
 
       if (classDefinition.fields.isNotEmpty) {
         _writeConstructor(indent, classDefinition);
         indent.newln();
-        for (final NamedType field
-            in getFieldsInSerializationOrder(classDefinition)) {
+        for (final NamedType field in getFieldsInSerializationOrder(
+          classDefinition,
+        )) {
           addDocumentationComments(
-              indent, field.documentationComments, docCommentSpec);
+            indent,
+            field.documentationComments,
+            docCommentSpec,
+          );
 
           final String datatype = addGenericTypesNullable(field.type);
           indent.writeln('$datatype ${field.name};');
@@ -347,16 +338,10 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       }
     }
 
-<<<<<<< HEAD:packages/golub/lib/src/dart/dart_generator.dart
     final bool isResultUsed = classDefinition.fields.isNotEmpty;
     final String result = isResultUsed ? 'result' : '_';
 
-    indent.write(
-      'static ${classDefinition.name} decode(Object $result) ',
-    );
-=======
-    indent.write('static ${classDefinition.name} decode(Object result) ');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
+    indent.write('static ${classDefinition.name} decode(Object $result) ');
     indent.addScoped('{', '}', () {
       if (isResultUsed) {
         indent.writeln('result as List<Object?>;');

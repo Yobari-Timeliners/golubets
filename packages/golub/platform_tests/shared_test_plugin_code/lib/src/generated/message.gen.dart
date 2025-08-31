@@ -58,13 +58,21 @@ bool _deepEquals(Object? a, Object? b) {
 /// ////////////////////////
 /// This comment also tests comments that start with '/'
 /// ////////////////////////
-enum MessageRequestState { pending, success, failure }
+enum MessageRequestState {
+  pending,
+  success,
+  failure,
+}
 
 /// This comment is to test class documentation comments.
 ///
 /// This comment also tests multiple line comments.
 class MessageSearchRequest {
-  MessageSearchRequest({this.query, this.anInt, this.aBool});
+  MessageSearchRequest({
+    this.query,
+    this.anInt,
+    this.aBool,
+  });
 
   /// This comment is to test field documentation comments.
   String? query;
@@ -76,7 +84,11 @@ class MessageSearchRequest {
   bool? aBool;
 
   List<Object?> _toList() {
-    return <Object?>[query, anInt, aBool];
+    return <Object?>[
+      query,
+      anInt,
+      aBool,
+    ];
   }
 
   Object encode() {
@@ -111,7 +123,11 @@ class MessageSearchRequest {
 
 /// This comment is to test class documentation comments.
 class MessageSearchReply {
-  MessageSearchReply({this.result, this.error, this.state});
+  MessageSearchReply({
+    this.result,
+    this.error,
+    this.state,
+  });
 
   /// This comment is to test field documentation comments.
   ///
@@ -125,7 +141,11 @@ class MessageSearchReply {
   MessageRequestState? state;
 
   List<Object?> _toList() {
-    return <Object?>[result, error, state];
+    return <Object?>[
+      result,
+      error,
+      state,
+    ];
   }
 
   Object encode() {
@@ -160,13 +180,17 @@ class MessageSearchReply {
 
 /// This comment is to test class documentation comments.
 class MessageNested {
-  MessageNested({this.request});
+  MessageNested({
+    this.request,
+  });
 
   /// This comment is to test field documentation comments.
   MessageSearchRequest? request;
 
   List<Object?> _toList() {
-    return <Object?>[request];
+    return <Object?>[
+      request,
+    ];
   }
 
   Object encode() {
@@ -175,7 +199,9 @@ class MessageNested {
 
   static MessageNested decode(Object result) {
     result as List<Object?>;
-    return MessageNested(request: result[0] as MessageSearchRequest?);
+    return MessageNested(
+      request: result[0] as MessageSearchRequest?,
+    );
   }
 
   @override

@@ -51,17 +51,29 @@ bool _deepEquals(Object? a, Object? b) {
   return a == b;
 }
 
-enum AnEnum { one, two, three, fortyTwo, fourHundredTwentyTwo }
+enum AnEnum {
+  one,
+  two,
+  three,
+  fortyTwo,
+  fourHundredTwentyTwo,
+}
 
-enum AnotherEnum { justInCase }
+enum AnotherEnum {
+  justInCase,
+}
 
 class UnusedClass {
-  UnusedClass({this.aField});
+  UnusedClass({
+    this.aField,
+  });
 
   Object? aField;
 
   List<Object?> _toList() {
-    return <Object?>[aField];
+    return <Object?>[
+      aField,
+    ];
   }
 
   Object encode() {
@@ -70,7 +82,9 @@ class UnusedClass {
 
   static UnusedClass decode(Object result) {
     result as List<Object?>;
-    return UnusedClass(aField: result[0]);
+    return UnusedClass(
+      aField: result[0],
+    );
   }
 
   @override
@@ -738,12 +752,16 @@ class AllClassesWrapper {
 
 /// A data class containing a List, used in unit tests.
 class TestMessage {
-  TestMessage({this.testList});
+  TestMessage({
+    this.testList,
+  });
 
   List<Object?>? testList;
 
   List<Object?> _toList() {
-    return <Object?>[testList];
+    return <Object?>[
+      testList,
+    ];
   }
 
   Object encode() {
@@ -752,7 +770,9 @@ class TestMessage {
 
   static TestMessage decode(Object result) {
     result as List<Object?>;
-    return TestMessage(testList: result[0] as List<Object?>?);
+    return TestMessage(
+      testList: result[0] as List<Object?>?,
+    );
   }
 
   @override
@@ -3469,12 +3489,13 @@ class HostIntegrationCoreApi {
         'dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypes$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel =
         BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[everything],
     );
-    final Future<Object?> pigeonVar_sendFuture =
-        pigeonVar_channel.send(<Object?>[everything]);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {
@@ -3498,17 +3519,19 @@ class HostIntegrationCoreApi {
   /// Returns the passed object, to test async serialization and deserialization using `await`-style
   /// and Swift can throw an exception.
   Future<AllTypes> echoModernAsyncAllTypesAndNotThrow(
-      AllTypes everything) async {
+    AllTypes everything,
+  ) async {
     final String pigeonVar_channelName =
         'dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypesAndNotThrow$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel =
         BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[everything],
     );
-    final Future<Object?> pigeonVar_sendFuture =
-        pigeonVar_channel.send(<Object?>[everything]);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {
@@ -3536,12 +3559,13 @@ class HostIntegrationCoreApi {
         'dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncAllTypesAndThrow$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel =
         BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[everything],
     );
-    final Future<Object?> pigeonVar_sendFuture =
-        pigeonVar_channel.send(<Object?>[everything]);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {
@@ -3595,17 +3619,19 @@ class HostIntegrationCoreApi {
   /// Returns the passed object, to test async serialization and deserialization using `await`-style
   /// and Swift does not throw an exception.
   Future<AllNullableTypes?> echoModernAsyncNullableAllNullableTypes(
-      AllNullableTypes? everything) async {
+    AllNullableTypes? everything,
+  ) async {
     final String pigeonVar_channelName =
         'dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoModernAsyncNullableAllNullableTypes$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel =
         BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[everything],
     );
-    final Future<Object?> pigeonVar_sendFuture =
-        pigeonVar_channel.send(<Object?>[everything]);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {

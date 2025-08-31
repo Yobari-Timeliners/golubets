@@ -51,15 +51,22 @@ bool _deepEquals(Object? a, Object? b) {
   return a == b;
 }
 
-enum ReplyType { success, error }
+enum ReplyType {
+  success,
+  error,
+}
 
 class NonNullFieldSearchRequest {
-  NonNullFieldSearchRequest({required this.query});
+  NonNullFieldSearchRequest({
+    required this.query,
+  });
 
   String query;
 
   List<Object?> _toList() {
-    return <Object?>[query];
+    return <Object?>[
+      query,
+    ];
   }
 
   Object encode() {
@@ -68,7 +75,9 @@ class NonNullFieldSearchRequest {
 
   static NonNullFieldSearchRequest decode(Object result) {
     result as List<Object?>;
-    return NonNullFieldSearchRequest(query: result[0]! as String);
+    return NonNullFieldSearchRequest(
+      query: result[0]! as String,
+    );
   }
 
   @override
@@ -90,14 +99,20 @@ class NonNullFieldSearchRequest {
 }
 
 class ExtraData {
-  ExtraData({required this.detailA, required this.detailB});
+  ExtraData({
+    required this.detailA,
+    required this.detailB,
+  });
 
   String detailA;
 
   String detailB;
 
   List<Object?> _toList() {
-    return <Object?>[detailA, detailB];
+    return <Object?>[
+      detailA,
+      detailB,
+    ];
   }
 
   Object encode() {
@@ -149,7 +164,13 @@ class NonNullFieldSearchReply {
   ReplyType type;
 
   List<Object?> _toList() {
-    return <Object?>[result, error, indices, extraData, type];
+    return <Object?>[
+      result,
+      error,
+      indices,
+      extraData,
+      type,
+    ];
   }
 
   Object encode() {

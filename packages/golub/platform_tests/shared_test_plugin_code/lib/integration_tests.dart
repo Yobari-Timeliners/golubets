@@ -1115,97 +1115,6 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
         final AllNullableTypes? echoObject = await api
             .echoAsyncNullableAllNullableTypes(recursiveAllNullableTypes);
 
-<<<<<<< HEAD:packages/golub/platform_tests/shared_test_plugin_code/lib/integration_tests.dart
-      expect(echoObject, recursiveAllNullableTypes);
-    });
-
-    const List<TargetGenerator> modernAsyncSupportedTargets = <TargetGenerator>[
-      TargetGenerator.kotlin,
-      TargetGenerator.swift
-    ];
-
-    testWidgets(
-      'all nullable async datatypes serialize and deserialize correctly using `await`-style',
-      (WidgetTester _) async {
-        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
-
-        final AllNullableTypes? echoObject = await api
-            .echoModernAsyncNullableAllNullableTypes(recursiveAllNullableTypes);
-
-        expect(echoObject, recursiveAllNullableTypes);
-      },
-      skip: !modernAsyncSupportedTargets.contains(targetGenerator),
-    );
-
-    testWidgets(
-      'all datatypes async serialize and deserialize correctly using `await`-style',
-      (WidgetTester _) async {
-        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
-
-        final AllTypes echoObject =
-            await api.echoModernAsyncAllTypes(genericAllTypes);
-
-        expect(echoObject, genericAllTypes);
-      },
-      skip: !modernAsyncSupportedTargets.contains(targetGenerator),
-    );
-
-    testWidgets(
-      'all datatypes async serialize and deserialize correctly using `await`-style and does not throw',
-      (WidgetTester _) async {
-        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
-
-        final AllTypes echoObject =
-            await api.echoModernAsyncAllTypesAndNotThrow(genericAllTypes);
-
-        expect(echoObject, genericAllTypes);
-      },
-      skip: !modernAsyncSupportedTargets.contains(targetGenerator),
-    );
-
-    testWidgets(
-      'all datatypes async serialize correctly using `await`-style and throws',
-      (WidgetTester _) async {
-        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
-
-        await expectLater(
-          () => api.echoModernAsyncAllTypesAndThrow(genericAllTypes),
-          throwsA(isA<PlatformException>()),
-        );
-      },
-      skip: !modernAsyncSupportedTargets.contains(targetGenerator),
-    );
-
-    testWidgets('all null datatypes async serialize and deserialize correctly',
-        (WidgetTester _) async {
-      final HostIntegrationCoreApi api = HostIntegrationCoreApi();
-
-      final AllNullableTypes allTypesNull = AllNullableTypes();
-
-      final AllNullableTypes? echoNullFilledClass =
-          await api.echoAsyncNullableAllNullableTypes(allTypesNull);
-      expect(echoNullFilledClass, allTypesNull);
-    });
-
-    testWidgets(
-      'all null datatypes async serialize and deserialize correctly using `await`-style',
-      (WidgetTester _) async {
-        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
-
-        final AllNullableTypes allTypesNull = AllNullableTypes();
-
-        final AllNullableTypes? echoNullFilledClass =
-            await api.echoModernAsyncNullableAllNullableTypes(allTypesNull);
-        expect(echoNullFilledClass, allTypesNull);
-      },
-      skip: !modernAsyncSupportedTargets.contains(targetGenerator),
-    );
-
-    testWidgets(
-        'all nullable async datatypes without recursion serialize and deserialize correctly',
-        (WidgetTester _) async {
-      final HostIntegrationCoreApi api = HostIntegrationCoreApi();
-=======
         expect(echoObject, recursiveAllNullableTypes);
       },
     );
@@ -1214,7 +1123,6 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       'all null datatypes async serialize and deserialize correctly',
       (WidgetTester _) async {
         final HostIntegrationCoreApi api = HostIntegrationCoreApi();
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/integration_tests.dart
 
         final AllNullableTypes allTypesNull = AllNullableTypes();
 
@@ -1776,6 +1684,91 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       );
       expect(echoEnum, sentEnum);
     });
+
+    const List<TargetGenerator> modernAsyncSupportedTargets = <TargetGenerator>[
+      TargetGenerator.kotlin,
+      TargetGenerator.swift,
+    ];
+
+    testWidgets(
+      'all nullable async datatypes serialize and deserialize correctly using `await`-style',
+      (WidgetTester _) async {
+        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+
+        final AllNullableTypes? echoObject = await api
+            .echoModernAsyncNullableAllNullableTypes(recursiveAllNullableTypes);
+
+        expect(echoObject, recursiveAllNullableTypes);
+      },
+      skip: !modernAsyncSupportedTargets.contains(targetGenerator),
+    );
+
+    testWidgets(
+      'all datatypes async serialize and deserialize correctly using `await`-style',
+      (WidgetTester _) async {
+        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+
+        final AllTypes echoObject = await api.echoModernAsyncAllTypes(
+          genericAllTypes,
+        );
+
+        expect(echoObject, genericAllTypes);
+      },
+      skip: !modernAsyncSupportedTargets.contains(targetGenerator),
+    );
+
+    testWidgets(
+      'all datatypes async serialize and deserialize correctly using `await`-style and does not throw',
+      (WidgetTester _) async {
+        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+
+        final AllTypes echoObject = await api
+            .echoModernAsyncAllTypesAndNotThrow(genericAllTypes);
+
+        expect(echoObject, genericAllTypes);
+      },
+      skip: !modernAsyncSupportedTargets.contains(targetGenerator),
+    );
+
+    testWidgets(
+      'all datatypes async serialize correctly using `await`-style and throws',
+      (WidgetTester _) async {
+        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+
+        await expectLater(
+          () => api.echoModernAsyncAllTypesAndThrow(genericAllTypes),
+          throwsA(isA<PlatformException>()),
+        );
+      },
+      skip: !modernAsyncSupportedTargets.contains(targetGenerator),
+    );
+
+    testWidgets(
+      'all null datatypes async serialize and deserialize correctly',
+      (WidgetTester _) async {
+        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+
+        final AllNullableTypes allTypesNull = AllNullableTypes();
+
+        final AllNullableTypes? echoNullFilledClass = await api
+            .echoAsyncNullableAllNullableTypes(allTypesNull);
+        expect(echoNullFilledClass, allTypesNull);
+      },
+    );
+
+    testWidgets(
+      'all null datatypes async serialize and deserialize correctly using `await`-style',
+      (WidgetTester _) async {
+        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+
+        final AllNullableTypes allTypesNull = AllNullableTypes();
+
+        final AllNullableTypes? echoNullFilledClass = await api
+            .echoModernAsyncNullableAllNullableTypes(allTypesNull);
+        expect(echoNullFilledClass, allTypesNull);
+      },
+      skip: !modernAsyncSupportedTargets.contains(targetGenerator),
+    );
   });
 
   group('Host API with suffix', () {
@@ -3270,54 +3263,6 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     TargetGenerator.swift,
   ];
 
-<<<<<<< HEAD:packages/golub/platform_tests/shared_test_plugin_code/lib/integration_tests.dart
-  testWidgets('event channel sends continuous ints', (_) async {
-    final Stream<int> events = streamInts();
-    final List<int> listEvents = await events.toList();
-    for (final int value in listEvents) {
-      expect(listEvents[value], value);
-    }
-  }, skip: !eventChannelSupported.contains(targetGenerator));
-
-  testWidgets('event channel handles extended sealed classes', (_) async {
-    final Completer<void> completer = Completer<void>();
-    int count = 0;
-    final Stream<PlatformEvent> events = streamEvents();
-    events.listen((PlatformEvent event) {
-      switch (event) {
-        case IntEvent():
-          expect(event.value, 1);
-          expect(count, 0);
-          count++;
-        case StringEvent():
-          expect(event.value, 'string');
-          expect(count, 1);
-          count++;
-        case BoolEvent():
-          expect(event.value, false);
-          expect(count, 2);
-          count++;
-        case DoubleEvent():
-          expect(event.value, 3.14);
-          expect(count, 3);
-          count++;
-        case ObjectsEvent():
-          expect(event.value, true);
-          expect(count, 4);
-          count++;
-        case EnumEvent():
-          expect(event.value, EventEnum.fortyTwo);
-          expect(count, 5);
-          count++;
-        case ClassEvent():
-          expect(event.value.aNullableInt, 0);
-          expect(count, 6);
-          count++;
-        case EmptyEvent():
-          expect(count, 7);
-          count++;
-          completer.complete();
-=======
   testWidgets(
     'event channel sends continuous ints',
     (_) async {
@@ -3325,7 +3270,6 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       final List<int> listEvents = await events.toList();
       for (final int value in listEvents) {
         expect(listEvents[value], value);
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/integration_tests.dart
       }
     },
     skip: !eventChannelSupported.contains(targetGenerator),
@@ -3367,6 +3311,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
             expect(event.value.aNullableInt, 0);
             expect(count, 6);
             count++;
+          case EmptyEvent():
+            expect(count, 7);
             completer.complete();
         }
       });
@@ -3389,10 +3335,17 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
           })
           .onDone(() => completer1.complete());
 
-<<<<<<< HEAD:packages/golub/platform_tests/shared_test_plugin_code/lib/integration_tests.dart
-    await completer1.future;
-    await completer2.future;
-  }, skip: !eventChannelSupported.contains(targetGenerator));
+      events2
+          .listen((int event) {
+            expect(event, 2);
+          })
+          .onDone(() => completer2.complete());
+
+      await completer1.future;
+      await completer2.future;
+    },
+    skip: !eventChannelSupported.contains(targetGenerator),
+  );
 
   testWidgets(
     'sealed subclass IntEvent with Int and deserialize correctly',
@@ -3400,8 +3353,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       final SealedClassApi api = SealedClassApi();
 
       const int sentInt = regularInt;
-      final PlatformEvent receivedEvent =
-          await api.echo(IntEvent(value: sentInt));
+      final PlatformEvent receivedEvent = await api.echo(
+        IntEvent(value: sentInt),
+      );
       switch (receivedEvent) {
         case IntEvent():
           expect(receivedEvent.value, sentInt);
@@ -3418,8 +3372,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       final SealedClassApi api = SealedClassApi();
 
       const int sentInt = biggerThanBigInt;
-      final PlatformEvent receivedEvent =
-          await api.echo(IntEvent(value: sentInt));
+      final PlatformEvent receivedEvent = await api.echo(
+        IntEvent(value: sentInt),
+      );
       switch (receivedEvent) {
         case IntEvent():
           expect(receivedEvent.value, sentInt);
@@ -3436,8 +3391,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       final SealedClassApi api = SealedClassApi();
 
       const double sentDouble = 2.0694;
-      final PlatformEvent receivedEvent =
-          await api.echo(DoubleEvent(value: sentDouble));
+      final PlatformEvent receivedEvent = await api.echo(
+        DoubleEvent(value: sentDouble),
+      );
       switch (receivedEvent) {
         case DoubleEvent():
           expect(receivedEvent.value, sentDouble);
@@ -3454,8 +3410,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       final SealedClassApi api = SealedClassApi();
 
       for (final bool sentBool in <bool>[true, false]) {
-        final PlatformEvent receivedEvent =
-            await api.echo(BoolEvent(value: sentBool));
+        final PlatformEvent receivedEvent = await api.echo(
+          BoolEvent(value: sentBool),
+        );
         switch (receivedEvent) {
           case BoolEvent():
             expect(receivedEvent.value, sentBool);
@@ -3473,8 +3430,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       final SealedClassApi api = SealedClassApi();
 
       const String sentString = 'default';
-      final PlatformEvent receivedEvent =
-          await api.echo(StringEvent(value: sentString));
+      final PlatformEvent receivedEvent = await api.echo(
+        StringEvent(value: sentString),
+      );
       switch (receivedEvent) {
         case StringEvent():
           expect(receivedEvent.value, sentString);
@@ -3491,8 +3449,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       final SealedClassApi api = SealedClassApi();
 
       const Object sentObject = true;
-      final PlatformEvent receivedEvent =
-          await api.echo(ObjectsEvent(value: sentObject));
+      final PlatformEvent receivedEvent = await api.echo(
+        ObjectsEvent(value: sentObject),
+      );
       switch (receivedEvent) {
         case ObjectsEvent():
           expect(receivedEvent.value, sentObject);
@@ -3509,8 +3468,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       final SealedClassApi api = SealedClassApi();
 
       const EventEnum sentEnum = EventEnum.fortyTwo;
-      final PlatformEvent receivedEvent =
-          await api.echo(EnumEvent(value: sentEnum));
+      final PlatformEvent receivedEvent = await api.echo(
+        EnumEvent(value: sentEnum),
+      );
       switch (receivedEvent) {
         case EnumEvent():
           expect(receivedEvent.value, sentEnum);
@@ -3551,16 +3511,6 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
       final PlatformEvent receivedEvent = await api.echo(EmptyEvent());
       expect(receivedEvent, isA<EmptyEvent>());
-=======
-      events2
-          .listen((int event) {
-            expect(event, 2);
-          })
-          .onDone(() => completer2.complete());
-
-      await completer1.future;
-      await completer2.future;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/integration_tests.dart
     },
     skip: !eventChannelSupported.contains(targetGenerator),
   );
