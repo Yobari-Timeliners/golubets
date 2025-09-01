@@ -8,12 +8,15 @@ import 'package:test/test.dart';
 
 const String DEFAULT_PACKAGE_NAME = 'test_package';
 
-final Class emptyClass = Class(name: 'className', fields: <NamedType>[
-  NamedType(
-    name: 'namedTypeName',
-    type: const TypeDeclaration(baseName: 'baseName', isNullable: false),
-  )
-]);
+final Class emptyClass = Class(
+  name: 'className',
+  fields: <NamedType>[
+    NamedType(
+      name: 'namedTypeName',
+      type: const TypeDeclaration(baseName: 'baseName', isNullable: false),
+    ),
+  ],
+);
 
 final Enum emptyEnum = Enum(
   name: 'enumName',
@@ -26,10 +29,7 @@ void main() {
       name: 'Foobar',
       fields: <NamedType>[
         NamedType(
-          type: const TypeDeclaration(
-            baseName: 'int',
-            isNullable: true,
-          ),
+          type: const TypeDeclaration(baseName: 'int', isNullable: true),
           name: 'field1',
         ),
       ],
@@ -40,8 +40,9 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -59,10 +60,7 @@ void main() {
   test('gen one enum', () {
     final Enum anEnum = Enum(
       name: 'Foobar',
-      members: <EnumMember>[
-        EnumMember(name: 'one'),
-        EnumMember(name: 'two'),
-      ],
+      members: <EnumMember>[EnumMember(name: 'one'), EnumMember(name: 'two')],
     );
     final Root root = Root(
       apis: <Api>[],
@@ -70,8 +68,9 @@ void main() {
       enums: <Enum>[anEnum],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -121,8 +120,9 @@ void main() {
       ],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -143,31 +143,44 @@ void main() {
   });
 
   test('primitive enum host', () {
-    final Root root = Root(apis: <Api>[
-      AstHostApi(name: 'Bar', methods: <Method>[
-        Method(
-            name: 'bar',
-            location: ApiLocation.host,
-            returnType: const TypeDeclaration.voidDeclaration(),
-            parameters: <Parameter>[
-              Parameter(
+    final Root root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Bar',
+          methods: <Method>[
+            Method(
+              name: 'bar',
+              location: ApiLocation.host,
+              returnType: const TypeDeclaration.voidDeclaration(),
+              parameters: <Parameter>[
+                Parameter(
                   name: 'foo',
                   type: TypeDeclaration(
                     baseName: 'Foo',
                     isNullable: false,
                     associatedEnum: emptyEnum,
-                  ))
-            ])
-      ])
-    ], classes: <Class>[], enums: <Enum>[
-      Enum(name: 'Foo', members: <EnumMember>[
-        EnumMember(name: 'one'),
-        EnumMember(name: 'two'),
-      ])
-    ]);
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[],
+      enums: <Enum>[
+        Enum(
+          name: 'Foo',
+          members: <EnumMember>[
+            EnumMember(name: 'one'),
+            EnumMember(name: 'two'),
+          ],
+        ),
+      ],
+    );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -181,51 +194,59 @@ void main() {
   });
 
   test('gen one host api', () {
-    final Root root = Root(apis: <Api>[
-      AstHostApi(name: 'Api', methods: <Method>[
-        Method(
-          name: 'doSomething',
-          location: ApiLocation.host,
-          parameters: <Parameter>[
-            Parameter(
-              type: TypeDeclaration(
-                baseName: 'Input',
+    final Root root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'doSomething',
+              location: ApiLocation.host,
+              parameters: <Parameter>[
+                Parameter(
+                  type: TypeDeclaration(
+                    baseName: 'Input',
+                    associatedClass: emptyClass,
+                    isNullable: false,
+                  ),
+                  name: 'input',
+                ),
+              ],
+              returnType: TypeDeclaration(
+                baseName: 'Output',
                 associatedClass: emptyClass,
                 isNullable: false,
               ),
-              name: 'input',
-            )
+            ),
           ],
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            associatedClass: emptyClass,
-            isNullable: false,
-          ),
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'String',
-            isNullable: true,
-          ),
-          name: 'input',
-        )
-      ]),
-      Class(name: 'Output', fields: <NamedType>[
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'String',
-            isNullable: true,
-          ),
-          name: 'output',
-        )
-      ])
-    ], enums: <Enum>[]);
+        ),
+      ],
+      classes: <Class>[
+        Class(
+          name: 'Input',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'input',
+            ),
+          ],
+        ),
+        Class(
+          name: 'Output',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'output',
+            ),
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -236,12 +257,17 @@ void main() {
     final String code = sink.toString();
     expect(code, contains('interface Api'));
     expect(code, contains('fun doSomething(input: Input): Output'));
-    expect(code, contains('''
+    expect(
+      code,
+      contains('''
     @JvmOverloads
     fun setUp(binaryMessenger: BinaryMessenger, api: Api?, messageChannelSuffix: String = "") {
-    '''));
+    '''),
+    );
     expect(code, contains('channel.setMessageHandler'));
-    expect(code, contains('''
+    expect(
+      code,
+      contains('''
         if (api != null) {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
@@ -256,131 +282,122 @@ void main() {
         } else {
           channel.setMessageHandler(null)
         }
-    '''));
+    '''),
+    );
   });
 
   test('all the simple datatypes header', () {
-    final Root root = Root(apis: <Api>[], classes: <Class>[
-      Class(name: 'Foobar', fields: <NamedType>[
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'bool',
-            isNullable: false,
-          ),
-          name: 'aBool',
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[
+        Class(
+          name: 'Foobar',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'bool', isNullable: false),
+              name: 'aBool',
+            ),
+            NamedType(
+              type: const TypeDeclaration(baseName: 'int', isNullable: false),
+              name: 'aInt',
+            ),
+            NamedType(
+              type: const TypeDeclaration(
+                baseName: 'double',
+                isNullable: false,
+              ),
+              name: 'aDouble',
+            ),
+            NamedType(
+              type: const TypeDeclaration(
+                baseName: 'String',
+                isNullable: false,
+              ),
+              name: 'aString',
+            ),
+            NamedType(
+              type: const TypeDeclaration(
+                baseName: 'Uint8List',
+                isNullable: true,
+              ),
+              name: 'aUint8List',
+            ),
+            NamedType(
+              type: const TypeDeclaration(
+                baseName: 'Int32List',
+                isNullable: false,
+              ),
+              name: 'aInt32List',
+            ),
+            NamedType(
+              type: const TypeDeclaration(
+                baseName: 'Int64List',
+                isNullable: false,
+              ),
+              name: 'aInt64List',
+            ),
+            NamedType(
+              type: const TypeDeclaration(
+                baseName: 'Float64List',
+                isNullable: false,
+              ),
+              name: 'aFloat64List',
+            ),
+            NamedType(
+              type: const TypeDeclaration(baseName: 'bool', isNullable: true),
+              name: 'aNullableBool',
+            ),
+            NamedType(
+              type: const TypeDeclaration(baseName: 'int', isNullable: true),
+              name: 'aNullableInt',
+            ),
+            NamedType(
+              type: const TypeDeclaration(baseName: 'double', isNullable: true),
+              name: 'aNullableDouble',
+            ),
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'aNullableString',
+            ),
+            NamedType(
+              type: const TypeDeclaration(
+                baseName: 'Uint8List',
+                isNullable: true,
+              ),
+              name: 'aNullableUint8List',
+            ),
+            NamedType(
+              type: const TypeDeclaration(
+                baseName: 'Int32List',
+                isNullable: true,
+              ),
+              name: 'aNullableInt32List',
+            ),
+            NamedType(
+              type: const TypeDeclaration(
+                baseName: 'Int64List',
+                isNullable: true,
+              ),
+              name: 'aNullableInt64List',
+            ),
+            NamedType(
+              type: const TypeDeclaration(
+                baseName: 'Float64List',
+                isNullable: true,
+              ),
+              name: 'aNullableFloat64List',
+            ),
+          ],
         ),
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'int',
-            isNullable: false,
-          ),
-          name: 'aInt',
-        ),
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'double',
-            isNullable: false,
-          ),
-          name: 'aDouble',
-        ),
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'String',
-            isNullable: false,
-          ),
-          name: 'aString',
-        ),
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'Uint8List',
-            isNullable: true,
-          ),
-          name: 'aUint8List',
-        ),
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'Int32List',
-            isNullable: false,
-          ),
-          name: 'aInt32List',
-        ),
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'Int64List',
-            isNullable: false,
-          ),
-          name: 'aInt64List',
-        ),
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'Float64List',
-            isNullable: false,
-          ),
-          name: 'aFloat64List',
-        ),
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'bool',
-            isNullable: true,
-          ),
-          name: 'aNullableBool',
-        ),
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'int',
-            isNullable: true,
-          ),
-          name: 'aNullableInt',
-        ),
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'double',
-            isNullable: true,
-          ),
-          name: 'aNullableDouble',
-        ),
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'String',
-            isNullable: true,
-          ),
-          name: 'aNullableString',
-        ),
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'Uint8List',
-            isNullable: true,
-          ),
-          name: 'aNullableUint8List',
-        ),
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'Int32List',
-            isNullable: true,
-          ),
-          name: 'aNullableInt32List',
-        ),
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'Int64List',
-            isNullable: true,
-          ),
-          name: 'aNullableInt64List',
-        ),
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'Float64List',
-            isNullable: true,
-          ),
-          name: 'aNullableFloat64List',
-        ),
-      ]),
-    ], enums: <Enum>[]);
+      ],
+      enums: <Enum>[],
+    );
 
     final StringBuffer sink = StringBuffer();
 
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -408,51 +425,59 @@ void main() {
   });
 
   test('gen one flutter api', () {
-    final Root root = Root(apis: <Api>[
-      AstFlutterApi(name: 'Api', methods: <Method>[
-        Method(
-          name: 'doSomething',
-          location: ApiLocation.flutter,
-          parameters: <Parameter>[
-            Parameter(
-              type: TypeDeclaration(
-                baseName: 'Input',
+    final Root root = Root(
+      apis: <Api>[
+        AstFlutterApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'doSomething',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[
+                Parameter(
+                  type: TypeDeclaration(
+                    baseName: 'Input',
+                    associatedClass: emptyClass,
+                    isNullable: false,
+                  ),
+                  name: '',
+                ),
+              ],
+              returnType: TypeDeclaration(
+                baseName: 'Output',
                 associatedClass: emptyClass,
                 isNullable: false,
               ),
-              name: '',
-            )
+            ),
           ],
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            associatedClass: emptyClass,
-            isNullable: false,
-          ),
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'String',
-            isNullable: true,
-          ),
-          name: 'input',
-        )
-      ]),
-      Class(name: 'Output', fields: <NamedType>[
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'String',
-            isNullable: true,
-          ),
-          name: 'output',
-        )
-      ])
-    ], enums: <Enum>[]);
+        ),
+      ],
+      classes: <Class>[
+        Class(
+          name: 'Input',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'input',
+            ),
+          ],
+        ),
+        Class(
+          name: 'Output',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'output',
+            ),
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -462,45 +487,55 @@ void main() {
     );
     final String code = sink.toString();
     expect(
-        code,
-        contains(
-            'class Api(private val binaryMessenger: BinaryMessenger, private val messageChannelSuffix: String = "")'));
+      code,
+      contains(
+        'class Api(private val binaryMessenger: BinaryMessenger, private val messageChannelSuffix: String = "")',
+      ),
+    );
     expect(code, matches('fun doSomething.*Input.*Output'));
   });
 
   test('gen host void api', () {
-    final Root root = Root(apis: <Api>[
-      AstHostApi(name: 'Api', methods: <Method>[
-        Method(
-          name: 'doSomething',
-          location: ApiLocation.host,
-          parameters: <Parameter>[
-            Parameter(
-              type: TypeDeclaration(
-                baseName: 'Input',
-                associatedClass: emptyClass,
-                isNullable: false,
-              ),
-              name: '',
-            )
+    final Root root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'doSomething',
+              location: ApiLocation.host,
+              parameters: <Parameter>[
+                Parameter(
+                  type: TypeDeclaration(
+                    baseName: 'Input',
+                    associatedClass: emptyClass,
+                    isNullable: false,
+                  ),
+                  name: '',
+                ),
+              ],
+              returnType: const TypeDeclaration.voidDeclaration(),
+            ),
           ],
-          returnType: const TypeDeclaration.voidDeclaration(),
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'String',
-            isNullable: true,
-          ),
-          name: 'input',
-        )
-      ]),
-    ], enums: <Enum>[]);
+        ),
+      ],
+      classes: <Class>[
+        Class(
+          name: 'Input',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'input',
+            ),
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -514,38 +549,46 @@ void main() {
   });
 
   test('gen flutter void return api', () {
-    final Root root = Root(apis: <Api>[
-      AstFlutterApi(name: 'Api', methods: <Method>[
-        Method(
-          name: 'doSomething',
-          location: ApiLocation.flutter,
-          parameters: <Parameter>[
-            Parameter(
-              type: TypeDeclaration(
-                baseName: 'Input',
-                associatedClass: emptyClass,
-                isNullable: false,
-              ),
-              name: '',
-            )
+    final Root root = Root(
+      apis: <Api>[
+        AstFlutterApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'doSomething',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[
+                Parameter(
+                  type: TypeDeclaration(
+                    baseName: 'Input',
+                    associatedClass: emptyClass,
+                    isNullable: false,
+                  ),
+                  name: '',
+                ),
+              ],
+              returnType: const TypeDeclaration.voidDeclaration(),
+            ),
           ],
-          returnType: const TypeDeclaration.voidDeclaration(),
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'String',
-            isNullable: true,
-          ),
-          name: 'input',
-        )
-      ]),
-    ], enums: <Enum>[]);
+        ),
+      ],
+      classes: <Class>[
+        Class(
+          name: 'Input',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'input',
+            ),
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -561,33 +604,41 @@ void main() {
   });
 
   test('gen host void argument api', () {
-    final Root root = Root(apis: <Api>[
-      AstHostApi(name: 'Api', methods: <Method>[
-        Method(
-          name: 'doSomething',
-          location: ApiLocation.host,
-          parameters: <Parameter>[],
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            associatedClass: emptyClass,
-            isNullable: false,
-          ),
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Output', fields: <NamedType>[
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'String',
-            isNullable: true,
-          ),
-          name: 'output',
-        )
-      ]),
-    ], enums: <Enum>[]);
+    final Root root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'doSomething',
+              location: ApiLocation.host,
+              parameters: <Parameter>[],
+              returnType: TypeDeclaration(
+                baseName: 'Output',
+                associatedClass: emptyClass,
+                isNullable: false,
+              ),
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[
+        Class(
+          name: 'Output',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'output',
+            ),
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -603,33 +654,41 @@ void main() {
   });
 
   test('gen flutter void argument api', () {
-    final Root root = Root(apis: <Api>[
-      AstFlutterApi(name: 'Api', methods: <Method>[
-        Method(
-          name: 'doSomething',
-          location: ApiLocation.flutter,
-          parameters: <Parameter>[],
-          returnType: TypeDeclaration(
-            baseName: 'Output',
-            associatedClass: emptyClass,
-            isNullable: false,
-          ),
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Output', fields: <NamedType>[
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'String',
-            isNullable: true,
-          ),
-          name: 'output',
-        )
-      ]),
-    ], enums: <Enum>[]);
+    final Root root = Root(
+      apis: <Api>[
+        AstFlutterApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'doSomething',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[],
+              returnType: TypeDeclaration(
+                baseName: 'Output',
+                associatedClass: emptyClass,
+                isNullable: false,
+              ),
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[
+        Class(
+          name: 'Output',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'output',
+            ),
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -639,25 +698,32 @@ void main() {
     );
     final String code = sink.toString();
     expect(
-        code, contains('fun doSomething(callback: (Result<Output>) -> Unit)'));
+      code,
+      contains('fun doSomething(callback: (Result<Output>) -> Unit)'),
+    );
     expect(code, contains('channel.send(null)'));
   });
 
   test('gen list', () {
-    final Root root = Root(apis: <Api>[], classes: <Class>[
-      Class(name: 'Foobar', fields: <NamedType>[
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'List',
-            isNullable: true,
-          ),
-          name: 'field1',
-        )
-      ]),
-    ], enums: <Enum>[]);
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[
+        Class(
+          name: 'Foobar',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'List', isNullable: true),
+              name: 'field1',
+            ),
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -671,20 +737,25 @@ void main() {
   });
 
   test('gen map', () {
-    final Root root = Root(apis: <Api>[], classes: <Class>[
-      Class(name: 'Foobar', fields: <NamedType>[
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'Map',
-            isNullable: true,
-          ),
-          name: 'field1',
-        )
-      ]),
-    ], enums: <Enum>[]);
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[
+        Class(
+          name: 'Foobar',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'Map', isNullable: true),
+              name: 'field1',
+            ),
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -708,19 +779,16 @@ void main() {
             isNullable: true,
           ),
           name: 'nested',
-        )
+        ),
       ],
     );
     final Class nestedClass = Class(
       name: 'Nested',
       fields: <NamedType>[
         NamedType(
-          type: const TypeDeclaration(
-            baseName: 'int',
-            isNullable: true,
-          ),
+          type: const TypeDeclaration(baseName: 'int', isNullable: true),
           name: 'data',
-        )
+        ),
       ],
     );
     final Root root = Root(
@@ -729,8 +797,9 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -748,21 +817,33 @@ void main() {
   });
 
   test('gen one async Host Api', () {
-    final Root root = Root(apis: <Api>[
-      AstHostApi(name: 'Api', methods: <Method>[
-        Method(
-          name: 'doSomething',
-          location: ApiLocation.host,
-          parameters: <Parameter>[
-            Parameter(
-              type: TypeDeclaration(
-                baseName: 'Input',
+    final Root root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'doSomething',
+              location: ApiLocation.host,
+              parameters: <Parameter>[
+                Parameter(
+                  type: TypeDeclaration(
+                    baseName: 'Input',
+                    associatedClass: emptyClass,
+                    isNullable: false,
+                  ),
+                  name: 'arg',
+                ),
+              ],
+              returnType: TypeDeclaration(
+                baseName: 'Output',
                 associatedClass: emptyClass,
                 isNullable: false,
               ),
-              name: 'arg',
-            )
+              isAsynchronous: true,
+            ),
           ],
+<<<<<<< HEAD:packages/golub/test/kotlin_generator_test.dart
           returnType: TypeDeclaration(
             baseName: 'Output',
             associatedClass: emptyClass,
@@ -791,9 +872,36 @@ void main() {
         )
       ])
     ], enums: <Enum>[]);
+=======
+        ),
+      ],
+      classes: <Class>[
+        Class(
+          name: 'Input',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'input',
+            ),
+          ],
+        ),
+        Class(
+          name: 'Output',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'output',
+            ),
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
+>>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin_generator_test.dart
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -873,21 +981,33 @@ void main() {
   });
 
   test('gen one async Flutter Api', () {
-    final Root root = Root(apis: <Api>[
-      AstFlutterApi(name: 'Api', methods: <Method>[
-        Method(
-          name: 'doSomething',
-          location: ApiLocation.flutter,
-          parameters: <Parameter>[
-            Parameter(
-              type: TypeDeclaration(
-                baseName: 'Input',
+    final Root root = Root(
+      apis: <Api>[
+        AstFlutterApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'doSomething',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[
+                Parameter(
+                  type: TypeDeclaration(
+                    baseName: 'Input',
+                    associatedClass: emptyClass,
+                    isNullable: false,
+                  ),
+                  name: '',
+                ),
+              ],
+              returnType: TypeDeclaration(
+                baseName: 'Output',
                 associatedClass: emptyClass,
                 isNullable: false,
               ),
-              name: '',
-            )
+              isAsynchronous: true,
+            ),
           ],
+<<<<<<< HEAD:packages/golub/test/kotlin_generator_test.dart
           returnType: TypeDeclaration(
             baseName: 'Output',
             associatedClass: emptyClass,
@@ -916,9 +1036,36 @@ void main() {
         )
       ])
     ], enums: <Enum>[]);
+=======
+        ),
+      ],
+      classes: <Class>[
+        Class(
+          name: 'Input',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'input',
+            ),
+          ],
+        ),
+        Class(
+          name: 'Output',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'output',
+            ),
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
+>>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin_generator_test.dart
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -958,8 +1105,9 @@ void main() {
       enums: <Enum>[anEnum],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1001,11 +1149,12 @@ void main() {
       fields: <NamedType>[
         NamedType(
           type: const TypeDeclaration(
-              baseName: 'List',
-              isNullable: true,
-              typeArguments: <TypeDeclaration>[
-                TypeDeclaration(baseName: 'int', isNullable: true)
-              ]),
+            baseName: 'List',
+            isNullable: true,
+            typeArguments: <TypeDeclaration>[
+              TypeDeclaration(baseName: 'int', isNullable: true),
+            ],
+          ),
           name: 'field1',
         ),
       ],
@@ -1016,8 +1165,9 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1036,12 +1186,13 @@ void main() {
       fields: <NamedType>[
         NamedType(
           type: const TypeDeclaration(
-              baseName: 'Map',
-              isNullable: true,
-              typeArguments: <TypeDeclaration>[
-                TypeDeclaration(baseName: 'String', isNullable: true),
-                TypeDeclaration(baseName: 'String', isNullable: true),
-              ]),
+            baseName: 'Map',
+            isNullable: true,
+            typeArguments: <TypeDeclaration>[
+              TypeDeclaration(baseName: 'String', isNullable: true),
+              TypeDeclaration(baseName: 'String', isNullable: true),
+            ],
+          ),
           name: 'field1',
         ),
       ],
@@ -1052,8 +1203,9 @@ void main() {
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1069,30 +1221,36 @@ void main() {
   test('host generics argument', () {
     final Root root = Root(
       apis: <Api>[
-        AstHostApi(name: 'Api', methods: <Method>[
-          Method(
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
               name: 'doit',
               location: ApiLocation.host,
               returnType: const TypeDeclaration.voidDeclaration(),
               parameters: <Parameter>[
                 Parameter(
                   type: const TypeDeclaration(
-                      baseName: 'List',
-                      isNullable: false,
-                      typeArguments: <TypeDeclaration>[
-                        TypeDeclaration(baseName: 'int', isNullable: true)
-                      ]),
+                    baseName: 'List',
+                    isNullable: false,
+                    typeArguments: <TypeDeclaration>[
+                      TypeDeclaration(baseName: 'int', isNullable: true),
+                    ],
+                  ),
                   name: 'arg',
-                )
-              ])
-        ])
+                ),
+              ],
+            ),
+          ],
+        ),
       ],
       classes: <Class>[],
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1107,30 +1265,36 @@ void main() {
   test('flutter generics argument', () {
     final Root root = Root(
       apis: <Api>[
-        AstFlutterApi(name: 'Api', methods: <Method>[
-          Method(
+        AstFlutterApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
               name: 'doit',
               location: ApiLocation.flutter,
               returnType: const TypeDeclaration.voidDeclaration(),
               parameters: <Parameter>[
                 Parameter(
                   type: const TypeDeclaration(
-                      baseName: 'List',
-                      isNullable: false,
-                      typeArguments: <TypeDeclaration>[
-                        TypeDeclaration(baseName: 'int', isNullable: true)
-                      ]),
+                    baseName: 'List',
+                    isNullable: false,
+                    typeArguments: <TypeDeclaration>[
+                      TypeDeclaration(baseName: 'int', isNullable: true),
+                    ],
+                  ),
                   name: 'arg',
-                )
-              ])
-        ])
+                ),
+              ],
+            ),
+          ],
+        ),
       ],
       classes: <Class>[],
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1145,25 +1309,31 @@ void main() {
   test('host generics return', () {
     final Root root = Root(
       apis: <Api>[
-        AstHostApi(name: 'Api', methods: <Method>[
-          Method(
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
               name: 'doit',
               location: ApiLocation.host,
               returnType: const TypeDeclaration(
-                  baseName: 'List',
-                  isNullable: false,
-                  typeArguments: <TypeDeclaration>[
-                    TypeDeclaration(baseName: 'int', isNullable: true)
-                  ]),
-              parameters: <Parameter>[])
-        ])
+                baseName: 'List',
+                isNullable: false,
+                typeArguments: <TypeDeclaration>[
+                  TypeDeclaration(baseName: 'int', isNullable: true),
+                ],
+              ),
+              parameters: <Parameter>[],
+            ),
+          ],
+        ),
       ],
       classes: <Class>[],
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1180,25 +1350,31 @@ void main() {
   test('flutter generics return', () {
     final Root root = Root(
       apis: <Api>[
-        AstFlutterApi(name: 'Api', methods: <Method>[
-          Method(
+        AstFlutterApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
               name: 'doit',
               location: ApiLocation.flutter,
               returnType: const TypeDeclaration(
-                  baseName: 'List',
-                  isNullable: false,
-                  typeArguments: <TypeDeclaration>[
-                    TypeDeclaration(baseName: 'int', isNullable: true)
-                  ]),
-              parameters: <Parameter>[])
-        ])
+                baseName: 'List',
+                isNullable: false,
+                typeArguments: <TypeDeclaration>[
+                  TypeDeclaration(baseName: 'int', isNullable: true),
+                ],
+              ),
+              parameters: <Parameter>[],
+            ),
+          ],
+        ),
       ],
       classes: <Class>[],
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1213,28 +1389,45 @@ void main() {
   });
 
   test('host multiple args', () {
-    final Root root = Root(apis: <Api>[
-      AstHostApi(name: 'Api', methods: <Method>[
-        Method(
-          name: 'add',
-          location: ApiLocation.host,
-          parameters: <Parameter>[
-            Parameter(
-                name: 'x',
-                type:
-                    const TypeDeclaration(isNullable: false, baseName: 'int')),
-            Parameter(
-                name: 'y',
-                type:
-                    const TypeDeclaration(isNullable: false, baseName: 'int')),
+    final Root root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'add',
+              location: ApiLocation.host,
+              parameters: <Parameter>[
+                Parameter(
+                  name: 'x',
+                  type: const TypeDeclaration(
+                    isNullable: false,
+                    baseName: 'int',
+                  ),
+                ),
+                Parameter(
+                  name: 'y',
+                  type: const TypeDeclaration(
+                    isNullable: false,
+                    baseName: 'int',
+                  ),
+                ),
+              ],
+              returnType: const TypeDeclaration(
+                baseName: 'int',
+                isNullable: false,
+              ),
+            ),
           ],
-          returnType: const TypeDeclaration(baseName: 'int', isNullable: false),
-        )
-      ])
-    ], classes: <Class>[], enums: <Enum>[]);
+        ),
+      ],
+      classes: <Class>[],
+      enums: <Enum>[],
+    );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1250,28 +1443,45 @@ void main() {
   });
 
   test('flutter multiple args', () {
-    final Root root = Root(apis: <Api>[
-      AstFlutterApi(name: 'Api', methods: <Method>[
-        Method(
-          name: 'add',
-          location: ApiLocation.flutter,
-          parameters: <Parameter>[
-            Parameter(
-                name: 'x',
-                type:
-                    const TypeDeclaration(baseName: 'int', isNullable: false)),
-            Parameter(
-                name: 'y',
-                type:
-                    const TypeDeclaration(baseName: 'int', isNullable: false)),
+    final Root root = Root(
+      apis: <Api>[
+        AstFlutterApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'add',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[
+                Parameter(
+                  name: 'x',
+                  type: const TypeDeclaration(
+                    baseName: 'int',
+                    isNullable: false,
+                  ),
+                ),
+                Parameter(
+                  name: 'y',
+                  type: const TypeDeclaration(
+                    baseName: 'int',
+                    isNullable: false,
+                  ),
+                ),
+              ],
+              returnType: const TypeDeclaration(
+                baseName: 'int',
+                isNullable: false,
+              ),
+            ),
           ],
-          returnType: const TypeDeclaration(baseName: 'int', isNullable: false),
-        )
-      ])
-    ], classes: <Class>[], enums: <Enum>[]);
+        ),
+      ],
+      classes: <Class>[],
+      enums: <Enum>[],
+    );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1283,32 +1493,39 @@ void main() {
     expect(code, contains('val channel = BasicMessageChannel'));
     expect(code, contains('callback(Result.success(output))'));
     expect(
-        code,
-        contains(
-            'fun add(xArg: Long, yArg: Long, callback: (Result<Long>) -> Unit)'));
+      code,
+      contains(
+        'fun add(xArg: Long, yArg: Long, callback: (Result<Long>) -> Unit)',
+      ),
+    );
     expect(code, contains('channel.send(listOf(xArg, yArg)) {'));
   });
 
   test('return nullable host', () {
     final Root root = Root(
       apis: <Api>[
-        AstHostApi(name: 'Api', methods: <Method>[
-          Method(
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
               name: 'doit',
               location: ApiLocation.host,
               returnType: const TypeDeclaration(
                 baseName: 'int',
                 isNullable: true,
               ),
-              parameters: <Parameter>[])
-        ])
+              parameters: <Parameter>[],
+            ),
+          ],
+        ),
       ],
       classes: <Class>[],
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1323,24 +1540,35 @@ void main() {
   test('return nullable host async', () {
     final Root root = Root(
       apis: <Api>[
-        AstHostApi(name: 'Api', methods: <Method>[
-          Method(
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
               name: 'doit',
               location: ApiLocation.host,
               returnType: const TypeDeclaration(
                 baseName: 'int',
                 isNullable: true,
               ),
+<<<<<<< HEAD:packages/golub/test/kotlin_generator_test.dart
               asynchronousType: AsynchronousType.callback,
               parameters: <Parameter>[])
         ])
+=======
+              isAsynchronous: true,
+              parameters: <Parameter>[],
+            ),
+          ],
+        ),
+>>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin_generator_test.dart
       ],
       classes: <Class>[],
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1355,27 +1583,33 @@ void main() {
   test('nullable argument host', () {
     final Root root = Root(
       apis: <Api>[
-        AstHostApi(name: 'Api', methods: <Method>[
-          Method(
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
               name: 'doit',
               location: ApiLocation.host,
               returnType: const TypeDeclaration.voidDeclaration(),
               parameters: <Parameter>[
                 Parameter(
-                    name: 'foo',
-                    type: const TypeDeclaration(
-                      baseName: 'int',
-                      isNullable: true,
-                    )),
-              ])
-        ])
+                  name: 'foo',
+                  type: const TypeDeclaration(
+                    baseName: 'int',
+                    isNullable: true,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ],
       classes: <Class>[],
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1390,27 +1624,33 @@ void main() {
   test('nullable argument flutter', () {
     final Root root = Root(
       apis: <Api>[
-        AstFlutterApi(name: 'Api', methods: <Method>[
-          Method(
+        AstFlutterApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
               name: 'doit',
               location: ApiLocation.flutter,
               returnType: const TypeDeclaration.voidDeclaration(),
               parameters: <Parameter>[
                 Parameter(
-                    name: 'foo',
-                    type: const TypeDeclaration(
-                      baseName: 'int',
-                      isNullable: true,
-                    )),
-              ])
-        ])
+                  name: 'foo',
+                  type: const TypeDeclaration(
+                    baseName: 'int',
+                    isNullable: true,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ],
       classes: <Class>[],
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1426,38 +1666,49 @@ void main() {
   });
 
   test('nonnull fields', () {
-    final Root root = Root(apis: <Api>[
-      AstHostApi(name: 'Api', methods: <Method>[
-        Method(
-          name: 'doSomething',
-          location: ApiLocation.host,
-          parameters: <Parameter>[
-            Parameter(
-              type: TypeDeclaration(
-                baseName: 'Input',
-                associatedClass: emptyClass,
+    final Root root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'doSomething',
+              location: ApiLocation.host,
+              parameters: <Parameter>[
+                Parameter(
+                  type: TypeDeclaration(
+                    baseName: 'Input',
+                    associatedClass: emptyClass,
+                    isNullable: false,
+                  ),
+                  name: '',
+                ),
+              ],
+              returnType: const TypeDeclaration.voidDeclaration(),
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[
+        Class(
+          name: 'Input',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(
+                baseName: 'String',
                 isNullable: false,
               ),
-              name: '',
-            )
+              name: 'input',
+            ),
           ],
-          returnType: const TypeDeclaration.voidDeclaration(),
-        )
-      ])
-    ], classes: <Class>[
-      Class(name: 'Input', fields: <NamedType>[
-        NamedType(
-          type: const TypeDeclaration(
-            baseName: 'String',
-            isNullable: false,
-          ),
-          name: 'input',
-        )
-      ]),
-    ], enums: <Enum>[]);
+        ),
+      ],
+      enums: <Enum>[],
+    );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1503,9 +1754,9 @@ void main() {
                   ),
                 ),
               ],
-            )
+            ),
           ],
-        )
+        ),
       ],
       classes: <Class>[
         Class(
@@ -1515,12 +1766,13 @@ void main() {
             NamedType(
               documentationComments: <String>[comments[count++]],
               type: const TypeDeclaration(
-                  baseName: 'Map',
-                  isNullable: true,
-                  typeArguments: <TypeDeclaration>[
-                    TypeDeclaration(baseName: 'String', isNullable: true),
-                    TypeDeclaration(baseName: 'int', isNullable: true),
-                  ]),
+                baseName: 'Map',
+                isNullable: true,
+                typeArguments: <TypeDeclaration>[
+                  TypeDeclaration(baseName: 'String', isNullable: true),
+                  TypeDeclaration(baseName: 'int', isNullable: true),
+                ],
+              ),
               name: 'field1',
             ),
           ],
@@ -1531,7 +1783,7 @@ void main() {
           name: 'enum',
           documentationComments: <String>[
             comments[count++],
-            unspacedComments[unspacedCount++]
+            unspacedComments[unspacedCount++],
           ],
           members: <EnumMember>[
             EnumMember(
@@ -1544,8 +1796,9 @@ void main() {
       ],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1557,28 +1810,44 @@ void main() {
     for (final String comment in comments) {
       // This regex finds the comment only between the open and close comment block
       expect(
-          RegExp(r'(?<=\/\*\*.*?)' + comment + r'(?=.*?\*\/)', dotAll: true)
-              .hasMatch(code),
-          true);
+        RegExp(
+          r'(?<=\/\*\*.*?)' + comment + r'(?=.*?\*\/)',
+          dotAll: true,
+        ).hasMatch(code),
+        true,
+      );
     }
     expect(code, isNot(contains('*//')));
   });
 
   test('creates custom codecs', () {
-    final Root root = Root(apis: <Api>[
-      AstFlutterApi(name: 'Api', methods: <Method>[
-        Method(
-          name: 'doSomething',
-          location: ApiLocation.flutter,
-          parameters: <Parameter>[
-            Parameter(
-                type: TypeDeclaration(
-                  baseName: 'Input',
-                  associatedClass: emptyClass,
-                  isNullable: false,
+    final Root root = Root(
+      apis: <Api>[
+        AstFlutterApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'doSomething',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[
+                Parameter(
+                  type: TypeDeclaration(
+                    baseName: 'Input',
+                    associatedClass: emptyClass,
+                    isNullable: false,
+                  ),
+                  name: '',
                 ),
-                name: '')
+              ],
+              returnType: TypeDeclaration(
+                baseName: 'Output',
+                associatedClass: emptyClass,
+                isNullable: false,
+              ),
+              isAsynchronous: true,
+            ),
           ],
+<<<<<<< HEAD:packages/golub/test/kotlin_generator_test.dart
           returnType: TypeDeclaration(
             baseName: 'Output',
             associatedClass: emptyClass,
@@ -1593,21 +1862,36 @@ void main() {
             type: const TypeDeclaration(
               baseName: 'String',
               isNullable: true,
+=======
+        ),
+      ],
+      classes: <Class>[
+        Class(
+          name: 'Input',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'input',
+>>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin_generator_test.dart
             ),
-            name: 'input')
-      ]),
-      Class(name: 'Output', fields: <NamedType>[
-        NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: true,
+          ],
+        ),
+        Class(
+          name: 'Output',
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+              name: 'output',
             ),
-            name: 'output')
-      ])
-    ], enums: <Enum>[]);
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1621,12 +1905,15 @@ void main() {
 
   test('creates api error class for custom errors', () {
     final Method method = Method(
-        name: 'doSomething',
-        location: ApiLocation.host,
-        returnType: const TypeDeclaration.voidDeclaration(),
-        parameters: <Parameter>[]);
-    final AstHostApi api =
-        AstHostApi(name: 'SomeApi', methods: <Method>[method]);
+      name: 'doSomething',
+      location: ApiLocation.host,
+      returnType: const TypeDeclaration.voidDeclaration(),
+      parameters: <Parameter>[],
+    );
+    final AstHostApi api = AstHostApi(
+      name: 'SomeApi',
+      methods: <Method>[method],
+    );
     final Root root = Root(
       apis: <Api>[api],
       classes: <Class>[],
@@ -1634,8 +1921,10 @@ void main() {
       containsHostApi: true,
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(errorClassName: 'SomeError', kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      errorClassName: 'SomeError',
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1670,17 +1959,18 @@ void main() {
                   ),
                 ),
               ],
-            )
+            ),
           ],
-        )
+        ),
       ],
       classes: <Class>[],
       enums: <Enum>[],
       containsFlutterApi: true,
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1690,13 +1980,17 @@ void main() {
     );
     final String code = sink.toString();
     expect(
-        code,
-        contains(
-            'return FlutterError("channel-error",  "Unable to establish connection on channel: \'\$channelName\'.", "")'));
+      code,
+      contains(
+        'return FlutterError("channel-error",  "Unable to establish connection on channel: \'\$channelName\'.", "")',
+      ),
+    );
     expect(
-        code,
-        contains(
-            'callback(Result.failure(PigeonUtils.createConnectionError(channelName)))'));
+      code,
+      contains(
+        'callback(Result.failure(PigeonUtils.createConnectionError(channelName)))',
+      ),
+    );
   });
 
   test('gen host uses default error class', () {
@@ -1718,16 +2012,17 @@ void main() {
                   ),
                 ),
               ],
-            )
+            ),
           ],
-        )
+        ),
       ],
       classes: <Class>[],
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1758,16 +2053,17 @@ void main() {
                   ),
                 ),
               ],
-            )
+            ),
           ],
-        )
+        ),
       ],
       classes: <Class>[],
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1798,17 +2094,19 @@ void main() {
                   ),
                 ),
               ],
-            )
+            ),
           ],
-        )
+        ),
       ],
       classes: <Class>[],
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
     const String errorClassName = 'FooError';
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(errorClassName: errorClassName, kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      errorClassName: errorClassName,
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1840,17 +2138,19 @@ void main() {
                   ),
                 ),
               ],
-            )
+            ),
           ],
-        )
+        ),
       ],
       classes: <Class>[],
       enums: <Enum>[],
     );
     final StringBuffer sink = StringBuffer();
     const String errorClassName = 'FooError';
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(errorClassName: errorClassName, kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      errorClassName: errorClassName,
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
@@ -1882,19 +2182,16 @@ void main() {
                   ),
                 ),
               ],
-            )
+            ),
           ],
-        )
+        ),
       ],
       classes: <Class>[
         Class(
           name: 'Foo',
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: false,
-              ),
+              type: const TypeDeclaration(baseName: 'int', isNullable: false),
               name: 'foo',
             ),
           ],
@@ -1903,17 +2200,11 @@ void main() {
           name: 'Bar',
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'Foo',
-                isNullable: false,
-              ),
+              type: const TypeDeclaration(baseName: 'Foo', isNullable: false),
               name: 'foo',
             ),
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'Foo',
-                isNullable: true,
-              ),
+              type: const TypeDeclaration(baseName: 'Foo', isNullable: true),
               name: 'foo2',
             ),
           ],
@@ -1924,8 +2215,10 @@ void main() {
 
     final StringBuffer sink = StringBuffer();
     const String errorClassName = 'FooError';
-    const InternalKotlinOptions kotlinOptions =
-        InternalKotlinOptions(errorClassName: errorClassName, kotlinOut: '');
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      errorClassName: errorClassName,
+      kotlinOut: '',
+    );
     const KotlinGenerator generator = KotlinGenerator();
     generator.generate(
       kotlinOptions,
