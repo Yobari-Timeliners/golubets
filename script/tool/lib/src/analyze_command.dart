@@ -65,6 +65,7 @@ class AnalyzeCommand extends PackageLoopingCommand {
   final bool hasLongOutput = false;
 
   /// Checks that there are no unexpected analysis_options.yaml files.
+  // ignore: unused_element
   bool _hasUnexpectedAnalysisOptions(RepositoryPackage package) {
     final List<FileSystemEntity> files =
         package.directory.listSync(recursive: true, followLinks: false);

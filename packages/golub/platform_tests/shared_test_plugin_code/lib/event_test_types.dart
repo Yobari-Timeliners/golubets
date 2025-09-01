@@ -5,10 +5,10 @@ import 'test_types.dart';
 
 final Map<int, EventAllNullableTypes?> eventAllNullableTypesMap =
     <int, EventAllNullableTypes?>{
-  0: genericEventAllNullableTypesWithoutRecursion,
-  1: EventAllNullableTypes(),
-  2: null,
-};
+      0: genericEventAllNullableTypesWithoutRecursion,
+      1: EventAllNullableTypes(),
+      2: null,
+    };
 
 final Map<EventEnum?, EventEnum?> eventEnumMap = <EventEnum, EventEnum>{
   EventEnum.one: EventEnum.one,
@@ -31,7 +31,7 @@ final List<List<Object?>?> eventListList = <List<Object?>?>[
   doubleList,
   boolList,
   eventEnumList,
-  null
+  null,
 ];
 
 final List<Map<Object?, Object?>?> eventMapList = <Map<Object?, Object?>?>[
@@ -41,7 +41,7 @@ final List<Map<Object?, Object?>?> eventMapList = <Map<Object?, Object?>?>[
   intMap,
   boolMap,
   eventEnumMap,
-  null
+  null,
 ];
 
 final Map<int?, List<Object?>?> eventListMap = <int?, List<Object?>?>{
@@ -51,48 +51,48 @@ final Map<int?, List<Object?>?> eventListMap = <int?, List<Object?>?>{
   4: intList,
   5: boolList,
   6: eventEnumList,
-  7: null
+  7: null,
 };
 
 final Map<int?, Map<Object?, Object?>?> eventMapMap =
     <int?, Map<Object?, Object?>?>{
-  0: map,
-  1: stringMap,
-  2: doubleMap,
-  4: intMap,
-  5: boolMap,
-  6: eventEnumMap,
-  7: null
-};
+      0: map,
+      1: stringMap,
+      2: doubleMap,
+      4: intMap,
+      5: boolMap,
+      6: eventEnumMap,
+      7: null,
+    };
 
 final EventAllNullableTypes genericEventAllNullableTypesWithoutRecursion =
     EventAllNullableTypes(
-  aNullableBool: true,
-  aNullableInt: regularInt,
-  aNullableInt64: biggerThanBigInt,
-  aNullableDouble: doublePi,
-  aNullableByteArray: genericAllNullableTypes.aNullableByteArray,
-  aNullable4ByteArray: genericAllNullableTypes.aNullable4ByteArray,
-  aNullable8ByteArray: genericAllNullableTypes.aNullable8ByteArray,
-  aNullableFloatArray: genericAllNullableTypes.aNullableFloatArray,
-  aNullableEnum: EventEnum.fortyTwo,
-  anotherNullableEnum: AnotherEventEnum.justInCase,
-  aNullableString: genericAllNullableTypes.aNullableString,
-  aNullableObject: genericAllNullableTypes.aNullableObject,
-  list: list,
-  stringList: stringList,
-  intList: intList,
-  doubleList: doubleList,
-  boolList: boolList,
-  enumList: eventEnumList,
-  objectList: list,
-  listList: eventListList,
-  mapList: eventMapList,
-  map: map,
-  stringMap: stringMap,
-  intMap: intMap,
-  enumMap: eventEnumMap,
-  objectMap: map,
-  listMap: eventListMap,
-  mapMap: eventMapMap,
-);
+      aNullableBool: true,
+      aNullableInt: regularInt,
+      aNullableInt64: biggerThanBigInt,
+      aNullableDouble: doublePi,
+      aNullableByteArray: genericAllNullableTypes.aNullableByteArray,
+      aNullable4ByteArray: genericAllNullableTypes.aNullable4ByteArray,
+      aNullable8ByteArray: genericAllNullableTypes.aNullable8ByteArray,
+      aNullableFloatArray: genericAllNullableTypes.aNullableFloatArray,
+      aNullableEnum: EventEnum.fortyTwo,
+      anotherNullableEnum: AnotherEventEnum.justInCase,
+      aNullableString: genericAllNullableTypes.aNullableString,
+      aNullableObject: genericAllNullableTypes.aNullableObject,
+      list: list,
+      stringList: stringList,
+      intList: intList,
+      doubleList: doubleList,
+      boolList: boolList,
+      enumList: eventEnumList,
+      objectList: list,
+      listList: eventListList,
+      mapList: eventMapList,
+      map: map,
+      stringMap: stringMap,
+      intMap: intMap,
+      enumMap: eventEnumMap,
+      objectMap: map,
+      listMap: eventListMap,
+      mapMap: eventMapMap,
+    );

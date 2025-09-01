@@ -14,14 +14,17 @@ import 'package:flutter/services.dart';
 bool _deepEquals(Object? a, Object? b) {
   if (a is List && b is List) {
     return a.length == b.length &&
-        a.indexed
-            .every(((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]));
+        a.indexed.every(
+          ((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]),
+        );
   }
   if (a is Map && b is Map) {
     return a.length == b.length &&
-        a.entries.every((MapEntry<Object?, Object?> entry) =>
-            (b as Map<Object?, Object?>).containsKey(entry.key) &&
-            _deepEquals(entry.value, b[entry.key]));
+        a.entries.every(
+          (MapEntry<Object?, Object?> entry) =>
+              (b as Map<Object?, Object?>).containsKey(entry.key) &&
+              _deepEquals(entry.value, b[entry.key]),
+        );
   }
   return a == b;
 }
@@ -176,16 +179,18 @@ class _PigeonCodec extends StandardMessageCodec {
   }
 }
 
-const StandardMethodCodec pigeonMethodCodec =
-    StandardMethodCodec(_PigeonCodec());
+const StandardMethodCodec pigeonMethodCodec = StandardMethodCodec(
+  _PigeonCodec(),
+);
 
 Stream<PlatformEvent> streamEvents({String instanceName = ''}) {
   if (instanceName.isNotEmpty) {
     instanceName = '.$instanceName';
   }
   final EventChannel streamEventsChannel = EventChannel(
-      'dev.flutter.pigeon.pigeon_example_package.EventChannelMethods.streamEvents$instanceName',
-      pigeonMethodCodec);
+    'dev.flutter.pigeon.pigeon_example_package.EventChannelMethods.streamEvents$instanceName',
+    pigeonMethodCodec,
+  );
   return streamEventsChannel.receiveBroadcastStream().map((dynamic event) {
     return event as PlatformEvent;
   });

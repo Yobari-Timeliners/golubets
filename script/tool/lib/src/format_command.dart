@@ -162,7 +162,6 @@ class FormatCommand extends PackageLoopingCommand {
         'ls-files',
         '--modified',
         packagesDir.path,
-        thirdPartyPackagesDir.path
       ],
       workingDir: packagesDir.parent,
       logOnError: true,
@@ -189,7 +188,7 @@ class FormatCommand extends PackageLoopingCommand {
 
     final io.ProcessResult diff = await processRunner.run(
       'git',
-      <String>['diff', packagesDir.path, thirdPartyPackagesDir.path],
+      <String>['diff', packagesDir.path],
       workingDir: packagesDir.parent,
       logOnError: true,
     );

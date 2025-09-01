@@ -22,14 +22,17 @@ PlatformException _createConnectionError(String channelName) {
 bool _deepEquals(Object? a, Object? b) {
   if (a is List && b is List) {
     return a.length == b.length &&
-        a.indexed
-            .every(((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]));
+        a.indexed.every(
+          ((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]),
+        );
   }
   if (a is Map && b is Map) {
     return a.length == b.length &&
-        a.entries.every((MapEntry<Object?, Object?> entry) =>
-            (b as Map<Object?, Object?>).containsKey(entry.key) &&
-            _deepEquals(entry.value, b[entry.key]));
+        a.entries.every(
+          (MapEntry<Object?, Object?> entry) =>
+              (b as Map<Object?, Object?>).containsKey(entry.key) &&
+              _deepEquals(entry.value, b[entry.key]),
+        );
   }
   return a == b;
 }
@@ -215,16 +218,19 @@ class EventAllNullableTypes {
       stringMap:
           (result[24] as Map<Object?, Object?>?)?.cast<String?, String?>(),
       intMap: (result[25] as Map<Object?, Object?>?)?.cast<int?, int?>(),
-      enumMap: (result[26] as Map<Object?, Object?>?)
-          ?.cast<EventEnum?, EventEnum?>(),
+      enumMap:
+          (result[26] as Map<Object?, Object?>?)
+              ?.cast<EventEnum?, EventEnum?>(),
       objectMap:
           (result[27] as Map<Object?, Object?>?)?.cast<Object?, Object?>(),
       listMap:
           (result[28] as Map<Object?, Object?>?)?.cast<int?, List<Object?>?>(),
-      mapMap: (result[29] as Map<Object?, Object?>?)
-          ?.cast<int?, Map<Object?, Object?>?>(),
-      recursiveClassMap: (result[30] as Map<Object?, Object?>?)
-          ?.cast<int?, EventAllNullableTypes?>(),
+      mapMap:
+          (result[29] as Map<Object?, Object?>?)
+              ?.cast<int?, Map<Object?, Object?>?>(),
+      recursiveClassMap:
+          (result[30] as Map<Object?, Object?>?)
+              ?.cast<int?, EventAllNullableTypes?>(),
     );
   }
 
@@ -642,16 +648,18 @@ class _PigeonCodec extends StandardMessageCodec {
   }
 }
 
-const StandardMethodCodec pigeonMethodCodec =
-    StandardMethodCodec(_PigeonCodec());
+const StandardMethodCodec pigeonMethodCodec = StandardMethodCodec(
+  _PigeonCodec(),
+);
 
 Stream<int> streamInts({String instanceName = ''}) {
   if (instanceName.isNotEmpty) {
     instanceName = '.$instanceName';
   }
   final EventChannel streamIntsChannel = EventChannel(
-      'dev.flutter.pigeon.pigeon_integration_tests.EventChannelMethods.streamInts$instanceName',
-      pigeonMethodCodec);
+    'dev.flutter.pigeon.pigeon_integration_tests.EventChannelMethods.streamInts$instanceName',
+    pigeonMethodCodec,
+  );
   return streamIntsChannel.receiveBroadcastStream().map((dynamic event) {
     return event as int;
   });
@@ -662,8 +670,9 @@ Stream<PlatformEvent> streamEvents({String instanceName = ''}) {
     instanceName = '.$instanceName';
   }
   final EventChannel streamEventsChannel = EventChannel(
-      'dev.flutter.pigeon.pigeon_integration_tests.EventChannelMethods.streamEvents$instanceName',
-      pigeonMethodCodec);
+    'dev.flutter.pigeon.pigeon_integration_tests.EventChannelMethods.streamEvents$instanceName',
+    pigeonMethodCodec,
+  );
   return streamEventsChannel.receiveBroadcastStream().map((dynamic event) {
     return event as PlatformEvent;
   });
@@ -674,11 +683,12 @@ Stream<int> streamConsistentNumbers({String instanceName = ''}) {
     instanceName = '.$instanceName';
   }
   final EventChannel streamConsistentNumbersChannel = EventChannel(
-      'dev.flutter.pigeon.pigeon_integration_tests.EventChannelMethods.streamConsistentNumbers$instanceName',
-      pigeonMethodCodec);
-  return streamConsistentNumbersChannel
-      .receiveBroadcastStream()
-      .map((dynamic event) {
+    'dev.flutter.pigeon.pigeon_integration_tests.EventChannelMethods.streamConsistentNumbers$instanceName',
+    pigeonMethodCodec,
+  );
+  return streamConsistentNumbersChannel.receiveBroadcastStream().map((
+    dynamic event,
+  ) {
     return event as int;
   });
 }
@@ -687,11 +697,12 @@ class SealedClassApi {
   /// Constructor for [SealedClassApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  SealedClassApi(
-      {BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-      : pigeonVar_binaryMessenger = binaryMessenger,
-        pigeonVar_messageChannelSuffix =
-            messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+  SealedClassApi({
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+  }) : pigeonVar_binaryMessenger = binaryMessenger,
+       pigeonVar_messageChannelSuffix =
+           messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
   final BinaryMessenger? pigeonVar_binaryMessenger;
 
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
@@ -703,12 +714,13 @@ class SealedClassApi {
         'dev.flutter.pigeon.pigeon_integration_tests.SealedClassApi.echo$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel =
         BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[event],
     );
-    final Future<Object?> pigeonVar_sendFuture =
-        pigeonVar_channel.send(<Object?>[event]);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {

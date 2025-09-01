@@ -233,28 +233,24 @@ class AstProxyApi extends Api {
   final KotlinProxyApiOptions? kotlinOptions;
 
   /// Methods that handled by an implementation of the native type api.
-  Iterable<Method> get hostMethods => methods.where(
-        (Method method) => method.location == ApiLocation.host,
-      );
+  Iterable<Method> get hostMethods =>
+      methods.where((Method method) => method.location == ApiLocation.host);
 
   /// Methods that are handled by an instance of the Dart proxy class.
-  Iterable<Method> get flutterMethods => methods.where(
-        (Method method) => method.location == ApiLocation.flutter,
-      );
+  Iterable<Method> get flutterMethods =>
+      methods.where((Method method) => method.location == ApiLocation.flutter);
 
   /// All fields that are attached.
   ///
   /// See [attached].
-  Iterable<ApiField> get attachedFields => fields.where(
-        (ApiField field) => field.isAttached,
-      );
+  Iterable<ApiField> get attachedFields =>
+      fields.where((ApiField field) => field.isAttached);
 
   /// All fields that are not attached.
   ///
   /// See [attached].
-  Iterable<ApiField> get unattachedFields => fields.where(
-        (ApiField field) => !field.isAttached,
-      );
+  Iterable<ApiField> get unattachedFields =>
+      fields.where((ApiField field) => !field.isAttached);
 
   /// A list of [AstProxyApi]s where each is the [superClass] of the one
   /// proceeding it.
@@ -316,7 +312,7 @@ class AstProxyApi extends Api {
   ///
   /// This also includes methods that the [superClass] inherits from interfaces.
   Iterable<(Method, AstProxyApi)>
-      flutterMethodsFromSuperClassesWithApis() sync* {
+  flutterMethodsFromSuperClassesWithApis() sync* {
     for (final AstProxyApi proxyApi in allSuperClasses().toList().reversed) {
       yield* proxyApi.flutterMethods.map((Method method) => (method, proxyApi));
     }
@@ -387,20 +383,18 @@ class AstProxyApi extends Api {
     final Set<AstProxyApi> allInterfaces = <AstProxyApi>{};
 
     allInterfaces.addAll(
-      interfaces.map(
-        (TypeDeclaration type) {
-          if (!type.isProxyApi) {
-            throw ArgumentError(
-              'Could not find a valid ProxyApi for an interface: $type',
-            );
-          } else if (seenApis.contains(type.associatedProxyApi)) {
-            throw ArgumentError(
-              'A ProxyApi cannot be a super class of itself: ${type.baseName}',
-            );
-          }
-          return type.associatedProxyApi!;
-        },
-      ),
+      interfaces.map((TypeDeclaration type) {
+        if (!type.isProxyApi) {
+          throw ArgumentError(
+            'Could not find a valid ProxyApi for an interface: $type',
+          );
+        } else if (seenApis.contains(type.associatedProxyApi)) {
+          throw ArgumentError(
+            'A ProxyApi cannot be a super class of itself: ${type.baseName}',
+          );
+        }
+        return type.associatedProxyApi!;
+      }),
     );
 
     // Adds the current api since it would be invalid for it to be an interface
@@ -457,9 +451,9 @@ class Constructor extends Method {
     super.swiftFunction = '',
     super.documentationComments = const <String>[],
   }) : super(
-          returnType: const TypeDeclaration.voidDeclaration(),
-          location: ApiLocation.host,
-        );
+         returnType: const TypeDeclaration.voidDeclaration(),
+         location: ApiLocation.host,
+       );
 
   @override
   String toString() {
@@ -554,12 +548,12 @@ class TypeDeclaration {
 
   /// Void constructor.
   const TypeDeclaration.voidDeclaration()
-      : baseName = 'void',
-        isNullable = false,
-        associatedEnum = null,
-        associatedClass = null,
-        associatedProxyApi = null,
-        typeArguments = const <TypeDeclaration>[];
+    : baseName = 'void',
+      isNullable = false,
+      associatedEnum = null,
+      associatedClass = null,
+      associatedProxyApi = null,
+      typeArguments = const <TypeDeclaration>[];
 
   /// The base name of the [TypeDeclaration] (ex 'Foo' to 'Foo<Bar>?').
   final String baseName;
@@ -733,10 +727,10 @@ class Parameter extends NamedType {
     bool? isPositional,
     bool? isRequired,
     super.documentationComments,
-  })  : isNamed = isNamed ?? false,
-        isOptional = isOptional ?? false,
-        isPositional = isPositional ?? true,
-        isRequired = isRequired ?? true;
+  }) : isNamed = isNamed ?? false,
+       isOptional = isOptional ?? false,
+       isPositional = isPositional ?? true,
+       isRequired = isRequired ?? true;
 
   /// Whether this parameter is a named parameter.
   ///
