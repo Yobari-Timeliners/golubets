@@ -267,6 +267,8 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
         getEnumeratedTypes(root, excludeSealedClasses: true).toList();
 
     void writeDecodeLogic(EnumeratedType customType) {
+      final (Class, Class)? sealedHierarchy = customType.findSealedHierarchy();
+
       indent.writeln('case ${customType.enumeration}:');
       indent.nest(1, () {
         if (customType.type == CustomTypes.customEnum) {
@@ -283,6 +285,12 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
             },
           );
           indent.writeln('return nil');
+        } else if (sealedHierarchy != null) {
+          final (Class associatedClass, Class superClass) = sealedHierarchy;
+
+          indent.writeln(
+            'return ${superClass.name}.fromList${associatedClass.name}(self.readValue() as! [Any?])',
+          );
         } else {
           indent.writeln(
             'return ${customType.name}.fromList(self.readValue() as! [Any?])',
@@ -343,7 +351,23 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
         indent.addScoped('{', '}', () {
           indent.write('');
           for (final EnumeratedType customType in enumeratedTypes) {
-            indent.add('if let value = value as? ${customType.name} ');
+            final (Class, Class)? sealedHierarchy =
+                customType.findSealedHierarchy();
+            final bool isSealedChild = sealedHierarchy != null;
+
+            final String value = isSealedChild ? 'childValue' : 'value';
+
+            if (isSealedChild) {
+              final (Class associatedClass, Class superClass) = sealedHierarchy;
+              final String caseName = associatedClass.name.toLowFirstLetter();
+
+              indent.add(
+                'if let $value = value as? ${superClass.name}, case .$caseName = $value ',
+              );
+            } else {
+              indent.add('if let $value = value as? ${customType.name} ');
+            }
+
             indent.addScoped('{', '} else ', () {
               final String encodeString =
                   customType.type == CustomTypes.customClass
@@ -351,7 +375,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
                       : 'rawValue';
               final String valueString =
                   customType.enumeration < maximumCodecFieldKey
-                      ? 'value.$encodeString'
+                      ? '$value.$encodeString'
                       : 'wrap.toList()';
               final int enumeration =
                   customType.enumeration < maximumCodecFieldKey
@@ -359,7 +383,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
                       : maximumCodecFieldKey;
               if (customType.enumeration >= maximumCodecFieldKey) {
                 indent.writeln(
-                  'let wrap = $_overflowClassName(type: ${customType.enumeration - maximumCodecFieldKey}, wrapped: value.$encodeString)',
+                  'let wrap = $_overflowClassName(type: ${customType.enumeration - maximumCodecFieldKey}, wrapped: $value.$encodeString)',
                 );
               }
               indent.writeln('super.writeByte($enumeration)');
@@ -419,6 +443,17 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     bool private = false,
     bool hashable = true,
   }) {
+    if (classDefinition.isSealed) {
+      _writeSealedClassSignature(
+        indent,
+        classDefinition,
+        private: private,
+        hashable: hashable,
+      );
+
+      return;
+    }
+
     final String privateString = private ? 'private ' : 'public ';
     final String extendsString =
         classDefinition.superClass != null
@@ -555,14 +590,14 @@ if (wrapped == nil) {
     Class classDefinition, {
     required String dartPackageName,
   }) {
+    // Children will be covered in _writeSealedClass()
+    if (classDefinition.superClass?.isSealed ?? false) {
+      return;
+    }
+
     final List<String> generatedComments = <String>[
       ' Generated class from Pigeon that represents data sent in messages.',
     ];
-    if (classDefinition.isSealed) {
-      generatedComments.add(
-        ' This protocol should not be extended by any user class outside of the generated file.',
-      );
-    }
     indent.newln();
     addDocumentationComments(
       indent,
@@ -572,9 +607,6 @@ if (wrapped == nil) {
     );
     _writeDataClassSignature(indent, classDefinition);
     indent.writeScoped('', '}', () {
-      if (classDefinition.isSealed) {
-        return;
-      }
       indent.newln();
       writeClassDecode(
         generatorOptions,
@@ -637,6 +669,24 @@ if (wrapped == nil) {
     Class classDefinition, {
     required String dartPackageName,
   }) {
+    if (classDefinition.isSealed) {
+      if (classDefinition.children.isEmpty) {
+        throw Exception(
+          'Sealed class ${classDefinition.name} has no children.',
+        );
+      }
+
+      _writeSealedClassEncode(
+        generatorOptions,
+        root,
+        indent,
+        classDefinition,
+        dartPackageName,
+      );
+
+      return;
+    }
+
     indent.write('func toList() -> [Any?] ');
     indent.addScoped('{', '}', () {
       indent.write('return ');
@@ -692,6 +742,76 @@ if (wrapped == nil) {
     required String dartPackageName,
   }) {
     final String className = classDefinition.name;
+
+    if (classDefinition.isSealed) {
+      final List<Class> children = classDefinition.children;
+
+      if (children.isEmpty) {
+        throw Exception(
+          'Sealed class ${classDefinition.name} has no children.',
+        );
+      }
+
+      // Generate functions for each child to decode like fromListB, fromListC etc
+      for (final Class child in children) {
+        final Iterable<NamedType> orderedFields = getFieldsInSerializationOrder(
+          child,
+        );
+        final String name = child.name;
+        indent.newln();
+        indent.write(
+          'internal static func fromList$name(_ list: [Any?]) -> ${classDefinition.name}? {',
+        );
+        indent.addScoped('', '}', () {
+          for (int i = 0; i < orderedFields.length; i++) {
+            final NamedType field = orderedFields.elementAt(i);
+            final String listValue = 'list[$i]';
+
+            _writeGenericCasting(
+              indent: indent,
+              value: listValue,
+              variableName: field.name,
+              fieldType: _swiftTypeForDartType(field.type),
+              type: field.type,
+            );
+
+            if (i == orderedFields.length - 1) {
+              indent.newln();
+            }
+          }
+
+          indent.write('return .${name.toLowFirstLetter()}');
+          if (orderedFields.isEmpty) {
+            indent.newln();
+          } else {
+            indent.addScoped('(', ')', () {
+              for (final NamedType field in orderedFields) {
+                final String comma = orderedFields.last == field ? '' : ', ';
+
+                // Force-casting nullable enums in maps doesn't work the same as other types.
+                // It needs soft-casting followed by force unwrapping.
+                final String forceUnwrapMapWithNullableEnums =
+                    (field.type.baseName == 'Map' &&
+                            !field.type.isNullable &&
+                            field.type.typeArguments.any(
+                              (TypeDeclaration type) => type.isEnum,
+                            ))
+                        ? '!'
+                        : '';
+                indent.writeln(
+                  '${field.name}: ${field.name}$forceUnwrapMapWithNullableEnums$comma',
+                );
+              }
+            });
+          }
+        });
+      }
+
+      indent.newln();
+
+      return;
+    }
+
     indent.writeln('// swift-format-ignore: AlwaysUseLowerCamelCase');
     indent.write(
       'static func fromList(_ ${varNamePrefix}list: [Any?]) -> $className? ',
@@ -2841,6 +2961,116 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         indent.writeln('#endif');
       }
     }
+  }
+
+  void _writeSealedClassEncode(
+    InternalSwiftOptions generatorOptions,
+    Root root,
+    Indent indent,
+    Class classDefinition,
+    String dartPackageName,
+  ) {
+    indent.write('public func toList() -> [Any?]');
+    indent.addScoped(' {', '}', () {
+      indent.writeScoped('switch self {', '}', () {
+        for (final Class child in classDefinition.children) {
+          final Iterable<NamedType> orderedFields =
+              getFieldsInSerializationOrder(child);
+          indent.write('case .${child.name.toLowFirstLetter()}');
+          if (orderedFields.isNotEmpty) {
+            indent.addScoped('(', '):', () {
+              for (int i = 0; i < orderedFields.length; i++) {
+                final NamedType field = orderedFields.elementAt(i);
+                indent.write('let ${field.name}');
+
+                if (field != orderedFields.last) {
+                  indent.addln(',');
+                } else {
+                  indent.newln();
+                }
+              }
+            });
+          } else {
+            indent.add(':');
+            indent.newln();
+          }
+          indent.write('return');
+
+          indent.addScoped(' [', ']', () {
+            // Follow swift-format style, which is to use a trailing comma unless
+            // there is only one element.
+            final String separator = orderedFields.length > 1 ? ',' : '';
+            for (final NamedType field in orderedFields) {
+              indent.writeln('${field.name}$separator');
+            }
+          });
+        }
+      });
+    });
+  }
+
+  void _writeSealedClassSignature(
+    Indent indent,
+    Class classDefinition, {
+    bool private = false,
+    bool hashable = true,
+  }) {
+    final List<Class> children = classDefinition.children;
+
+    if (children.isEmpty) {
+      throw Exception(
+        'Sealed class ${classDefinition.name} has no children.',
+      );
+    }
+    final String privateString = private ? 'private' : 'public';
+
+    final String extendsString = hashable ? ': Hashable' : '';
+
+    indent.write(
+      '$privateString enum ${classDefinition.name}$extendsString',
+    );
+
+    indent.writeScoped(' {', '', () {
+      // Generate the cases for each child
+      for (final Class child in children) {
+        final Iterable<NamedType> childFields = getFieldsInSerializationOrder(
+          child,
+        );
+
+        // Generate the enum case with associated values
+        addDocumentationComments(
+          indent,
+          child.documentationComments,
+          _docCommentSpec,
+        );
+        indent.write('case ${child.name.toLowFirstLetter()}');
+
+        if (childFields.isNotEmpty) {
+          indent.addScoped(
+            '(',
+            ')',
+            () {
+              for (final NamedType field in childFields) {
+                addDocumentationComments(
+                  indent,
+                  field.documentationComments,
+                  _docCommentSpec,
+                );
+                indent.write(
+                  '${field.name}: ${_nullSafeSwiftTypeForDartType(field.type)}',
+                );
+
+                childFields.last != field ? indent.addln(',') : indent.newln();
+              }
+            },
+          );
+        }
+
+        if (children.last != child) {
+          indent.newln();
+        }
+      }
+    });
   }
 }
 

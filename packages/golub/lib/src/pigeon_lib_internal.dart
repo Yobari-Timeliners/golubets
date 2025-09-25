@@ -519,7 +519,70 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
       );
 
   @override
-  List<Error> validate(InternalPigeonOptions options, Root root) => <Error>[];
+  List<Error> validate(InternalPigeonOptions options, Root root) {
+    final List<Error> result = <Error>[];
+
+    for (final Class classDefinition in root.classes) {
+      for (final NamedType field in classDefinition.fields) {
+        final Class? associatedClass = field.type.associatedClass;
+        final Class? superClass = associatedClass?.superClass;
+        final bool isSealedChild =
+            associatedClass != null &&
+            superClass != null &&
+            superClass.isSealed;
+
+        if (isSealedChild) {
+          result.add(
+            Error(
+              message:
+                  'Swift generator does not support concrete sealed types due to Swift enum nature. '
+                  'Class "${associatedClass.name}" is a child of sealed class "${superClass.name}".',
+            ),
+          );
+        }
+      }
+    }
+
+    for (final Method method in root.apis.expand((Api api) => api.methods)) {
+      final Class? associatedClass = method.returnType.associatedClass;
+      final Class? superClass = associatedClass?.superClass;
+      final bool isSealedChild =
+          associatedClass != null && superClass != null && superClass.isSealed;
+
+      if (isSealedChild) {
+        result.add(
+          Error(
+            message:
+                'Swift generator does not support concrete sealed types due to Swift enum nature. '
+                'Class "${associatedClass.name}" is a child of sealed class "${superClass.name}". '
+                'Method "${method.name}" has a return type of this type.',
+          ),
+        );
+      }
+
+      for (final Parameter parameter in method.parameters) {
+        final Class? associatedClass = parameter.type.associatedClass;
+        final Class? superClass = associatedClass?.superClass;
+        final bool isSealedChild =
+            associatedClass != null &&
+            superClass != null &&
+            superClass.isSealed;
+
+        if (isSealedChild) {
+          result.add(
+            Error(
+              message:
+                  'Swift generator does not support concrete sealed types due to Swift enum nature. '
+                  'Class "${associatedClass.name}" is a child of sealed class "${superClass.name}". '
+                  'Method "${method.name}" has a parameter of this type.',
+            ),
+          );
+        }
+      }
+    }
+
+    return result;
+  }
 }
 
 /// A [GeneratorAdapter] that generates C++ source code.
