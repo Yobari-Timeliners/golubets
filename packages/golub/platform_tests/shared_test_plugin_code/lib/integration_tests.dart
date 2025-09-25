@@ -13,6 +13,7 @@ import 'package:integration_test/integration_test.dart';
 
 import 'event_test_types.dart';
 import 'generated.dart';
+import 'src/generated/kotlin_nested_sealed_tests.gen.dart';
 import 'test_types.dart';
 
 /// Possible host languages that test can target.
@@ -125,8 +126,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
         final AllNullableTypesWithoutRecursion? echoObject = await api
             .echoAllNullableTypesWithoutRecursion(
-              genericAllNullableTypesWithoutRecursion,
-            );
+          genericAllNullableTypesWithoutRecursion,
+        );
 
         expect(echoObject, genericAllNullableTypesWithoutRecursion);
       },
@@ -168,8 +169,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
         final AllNullableTypesWithoutRecursion listTypes =
             AllNullableTypesWithoutRecursion(
-              map: <String?, String?>{'String': 'string', 'null': null},
-            );
+          map: <String?, String?>{'String': 'string', 'null': null},
+        );
 
         final AllNullableTypesWithoutRecursion? echoNullFilledClass = await api
             .echoAllNullableTypesWithoutRecursion(listTypes);
@@ -301,10 +302,10 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
         final AllNullableTypesWithoutRecursion echoObject = await api
             .sendMultipleNullableTypesWithoutRecursion(
-              aNullableBool,
-              aNullableInt,
-              aNullableString,
-            );
+          aNullableBool,
+          aNullableInt,
+          aNullableString,
+        );
         expect(echoObject.aNullableInt, aNullableInt);
         expect(echoObject.aNullableBool, aNullableBool);
         expect(echoObject.aNullableString, aNullableString);
@@ -1139,8 +1140,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
         final AllNullableTypesWithoutRecursion? echoObject = await api
             .echoAsyncNullableAllNullableTypesWithoutRecursion(
-              genericAllNullableTypesWithoutRecursion,
-            );
+          genericAllNullableTypesWithoutRecursion,
+        );
 
         expect(echoObject, genericAllNullableTypesWithoutRecursion);
       },
@@ -1870,10 +1871,10 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
         final AllNullableTypes compositeObject = await api
             .callFlutterSendMultipleNullableTypes(
-              aNullableBool,
-              aNullableInt,
-              aNullableString,
-            );
+          aNullableBool,
+          aNullableInt,
+          aNullableString,
+        );
         expect(compositeObject.aNullableInt, aNullableInt);
         expect(compositeObject.aNullableBool, aNullableBool);
         expect(compositeObject.aNullableString, aNullableString);
@@ -1903,10 +1904,10 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
         final AllNullableTypesWithoutRecursion compositeObject = await api
             .callFlutterSendMultipleNullableTypesWithoutRecursion(
-              aNullableBool,
-              aNullableInt,
-              aNullableString,
-            );
+          aNullableBool,
+          aNullableInt,
+          aNullableString,
+        );
         expect(compositeObject.aNullableInt, aNullableInt);
         expect(compositeObject.aNullableBool, aNullableBool);
         expect(compositeObject.aNullableString, aNullableString);
@@ -1920,10 +1921,10 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
         final AllNullableTypesWithoutRecursion compositeObject = await api
             .callFlutterSendMultipleNullableTypesWithoutRecursion(
-              null,
-              null,
-              null,
-            );
+          null,
+          null,
+          null,
+        );
         expect(compositeObject.aNullableInt, null);
         expect(compositeObject.aNullableBool, null);
         expect(compositeObject.aNullableString, null);
@@ -2353,8 +2354,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
         final List<AllNullableTypes?>? echoObject = await api
             .callFlutterEchoNullableNonNullClassList(
-              nonNullAllNullableTypesList,
-            );
+          nonNullAllNullableTypesList,
+        );
         for (final (int index, AllNullableTypes? value)
             in echoObject!.indexed) {
           expect(value, nonNullAllNullableTypesList[index]);
@@ -3075,8 +3076,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
       final Map<String?, ProxyApiTestClass?> value =
           <String?, ProxyApiTestClass?>{
-            'a String': _createGenericProxyApiTestClass(),
-          };
+        'a String': _createGenericProxyApiTestClass(),
+      };
       expect(await api.callFlutterEchoProxyApiMap(value), value);
     });
 
@@ -3252,7 +3253,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     // background is not supported.
     final bool taskQueuesSupported =
         defaultTargetPlatform == TargetPlatform.android ||
-        defaultTargetPlatform == TargetPlatform.iOS;
+            defaultTargetPlatform == TargetPlatform.iOS;
     expect(await api.taskQueueIsBackgroundThread(), taskQueuesSupported);
   });
 
@@ -3348,171 +3349,48 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
   );
 
   testWidgets(
-    'sealed subclass IntEvent with Int and deserialize correctly',
+    'sealed subclasses serialize and deserialize correctly',
     (WidgetTester _) async {
+      final List<PlatformEvent> events = <PlatformEvent>[
+        IntEvent(value: regularInt),
+        IntEvent(value: biggerThanBigInt),
+        DoubleEvent(value: 2.0694),
+        BoolEvent(value: true),
+        BoolEvent(value: false),
+        StringEvent(value: 'default'),
+        ObjectsEvent(value: true),
+        EnumEvent(value: EventEnum.fortyTwo),
+        ClassEvent(value: genericEventAllNullableTypesWithoutRecursion),
+        EmptyEvent(),
+      ];
+
       final SealedClassApi api = SealedClassApi();
 
-      const int sentInt = regularInt;
-      final PlatformEvent receivedEvent = await api.echo(
-        IntEvent(value: sentInt),
-      );
-      switch (receivedEvent) {
-        case IntEvent():
-          expect(receivedEvent.value, sentInt);
-        default:
-          fail('Received unexpected event: $receivedEvent');
+      for (final PlatformEvent sentEvent in events) {
+        final PlatformEvent receivedEvent = await api.echo(sentEvent);
+        expect(receivedEvent, equals(sentEvent));
       }
     },
     skip: !eventChannelSupported.contains(targetGenerator),
   );
 
-  testWidgets(
-    'sealed subclass IntEvent with Int64 serialize and deserialize correctly',
-    (WidgetTester _) async {
-      final SealedClassApi api = SealedClassApi();
+  test(
+    'nested kotlin sealed classes serialize and deserialize correctly',
+    () async {
+      final KotlinNestedSealedApi api = KotlinNestedSealedApi();
 
-      const int sentInt = biggerThanBigInt;
-      final PlatformEvent receivedEvent = await api.echo(
-        IntEvent(value: sentInt),
-      );
-      switch (receivedEvent) {
-        case IntEvent():
-          expect(receivedEvent.value, sentInt);
-        default:
-          fail('Received unexpected event: $receivedEvent');
+      final List<SomeState> states = <SomeState>[
+        Loading(progress: 42),
+        Success(data: 'ok'),
+        Error(code: 7),
+      ];
+
+      for (final SomeState sentState in states) {
+        final SomeState receivedState = await api.echo(sentState);
+        expect(receivedState, equals(sentState));
       }
     },
-    skip: !eventChannelSupported.contains(targetGenerator),
-  );
-
-  testWidgets(
-    'sealed subclass DoubleEvent serialize and deserialize correctly',
-    (WidgetTester _) async {
-      final SealedClassApi api = SealedClassApi();
-
-      const double sentDouble = 2.0694;
-      final PlatformEvent receivedEvent = await api.echo(
-        DoubleEvent(value: sentDouble),
-      );
-      switch (receivedEvent) {
-        case DoubleEvent():
-          expect(receivedEvent.value, sentDouble);
-        default:
-          fail('Received unexpected event: $receivedEvent');
-      }
-    },
-    skip: !eventChannelSupported.contains(targetGenerator),
-  );
-
-  testWidgets(
-    'sealed subclass BooleanEvent serialize and deserialize correctly',
-    (WidgetTester _) async {
-      final SealedClassApi api = SealedClassApi();
-
-      for (final bool sentBool in <bool>[true, false]) {
-        final PlatformEvent receivedEvent = await api.echo(
-          BoolEvent(value: sentBool),
-        );
-        switch (receivedEvent) {
-          case BoolEvent():
-            expect(receivedEvent.value, sentBool);
-          default:
-            fail('Received unexpected event: $receivedEvent');
-        }
-      }
-    },
-    skip: !eventChannelSupported.contains(targetGenerator),
-  );
-
-  testWidgets(
-    'sealed subclass StringEvent serialize and deserialize correctly',
-    (WidgetTester _) async {
-      final SealedClassApi api = SealedClassApi();
-
-      const String sentString = 'default';
-      final PlatformEvent receivedEvent = await api.echo(
-        StringEvent(value: sentString),
-      );
-      switch (receivedEvent) {
-        case StringEvent():
-          expect(receivedEvent.value, sentString);
-        default:
-          fail('Received unexpected event: $receivedEvent');
-      }
-    },
-    skip: !eventChannelSupported.contains(targetGenerator),
-  );
-
-  testWidgets(
-    'sealed subclass ObjectsEvent serialize and deserialize correctly',
-    (WidgetTester _) async {
-      final SealedClassApi api = SealedClassApi();
-
-      const Object sentObject = true;
-      final PlatformEvent receivedEvent = await api.echo(
-        ObjectsEvent(value: sentObject),
-      );
-      switch (receivedEvent) {
-        case ObjectsEvent():
-          expect(receivedEvent.value, sentObject);
-        default:
-          fail('Received unexpected event: $receivedEvent');
-      }
-    },
-    skip: !eventChannelSupported.contains(targetGenerator),
-  );
-
-  testWidgets(
-    'sealed subclass EnumEvent serialize and deserialize correctly',
-    (WidgetTester _) async {
-      final SealedClassApi api = SealedClassApi();
-
-      const EventEnum sentEnum = EventEnum.fortyTwo;
-      final PlatformEvent receivedEvent = await api.echo(
-        EnumEvent(value: sentEnum),
-      );
-      switch (receivedEvent) {
-        case EnumEvent():
-          expect(receivedEvent.value, sentEnum);
-        default:
-          fail('Received unexpected event: $receivedEvent');
-      }
-    },
-    skip: !eventChannelSupported.contains(targetGenerator),
-  );
-
-  testWidgets(
-    'sealed subclass ClassEvent serialize and deserialize correctly',
-    (WidgetTester _) async {
-      final SealedClassApi api = SealedClassApi();
-      final EventAllNullableTypes sentEventAllNullableTypes =
-          genericEventAllNullableTypesWithoutRecursion;
-      final PlatformEvent receivedEvent = await api.echo(
-        ClassEvent(value: sentEventAllNullableTypes),
-      );
-
-      switch (receivedEvent) {
-        case ClassEvent():
-          expect(
-            receivedEvent.value,
-            sentEventAllNullableTypes,
-          );
-        default:
-          fail('Received unexpected event: $receivedEvent');
-      }
-    },
-    skip: !eventChannelSupported.contains(targetGenerator),
-  );
-
-  testWidgets(
-    'sealed Empty subclass serialize and deserialize correctly',
-    (WidgetTester _) async {
-      final SealedClassApi api = SealedClassApi();
-
-      final PlatformEvent receivedEvent = await api.echo(EmptyEvent());
-      expect(receivedEvent, isA<EmptyEvent>());
-    },
-    skip: !eventChannelSupported.contains(targetGenerator),
+    skip: targetGenerator != TargetGenerator.kotlin,
   );
 }
 

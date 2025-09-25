@@ -2279,4 +2279,80 @@ void main() {
     expect(code, contains('class EmptyClass'));
     expect(code, isNot(contains('data class EmptyClass')));
   });
+
+  test('nested sealed class', () {
+    final Class superClass = Class(
+      name: 'PlatformEvent',
+      isSealed: true,
+      fields: const <NamedType>[],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[
+        superClass,
+        Class(
+          name: 'Int',
+          superClass: superClass,
+          superClassName: superClass.name,
+          fields: <NamedType>[
+            NamedType(
+              type: const TypeDeclaration(
+                baseName: 'int',
+                isNullable: false,
+              ),
+              name: 'value',
+            ),
+          ],
+        ),
+        Class(
+          name: 'Class',
+          superClass: superClass,
+          superClassName: superClass.name,
+          fields: <NamedType>[
+            NamedType(
+              type: TypeDeclaration(
+                baseName: 'Input',
+                isNullable: true,
+                associatedClass: emptyClass,
+              ),
+              name: 'value',
+            ),
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const KotlinGenerator generator = KotlinGenerator();
+    const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+      kotlinOut: '',
+    );
+    generator.generate(
+      kotlinOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(
+      code,
+      contains('sealed class PlatformEvent'),
+    );
+    expect(
+      code,
+      contains('is PlatformEvent.Int'),
+    );
+    expect(
+      code,
+      contains('is PlatformEvent.Class'),
+    );
+    expect(
+      code,
+      contains('PlatformEvent.Int.fromList'),
+    );
+    expect(
+      code,
+      contains('PlatformEvent.Class.fromList'),
+    );
+  });
 }

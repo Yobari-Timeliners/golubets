@@ -267,7 +267,8 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
         getEnumeratedTypes(root, excludeSealedClasses: true).toList();
 
     void writeDecodeLogic(EnumeratedType customType) {
-      final (Class, Class)? sealedHierarchy = customType.findSealedHierarchy();
+      final ({Class child, Class superClass})? sealedHierarchy =
+          customType.findSealedHierarchy();
 
       indent.writeln('case ${customType.enumeration}:');
       indent.nest(1, () {
@@ -286,10 +287,11 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
           );
           indent.writeln('return nil');
         } else if (sealedHierarchy != null) {
-          final (Class associatedClass, Class superClass) = sealedHierarchy;
+          final (child: Class child, superClass: Class superClass) =
+              sealedHierarchy;
 
           indent.writeln(
-            'return ${superClass.name}.fromList${associatedClass.name}(self.readValue() as! [Any?])',
+            'return ${superClass.name}.fromList${child.name}(self.readValue() as! [Any?])',
           );
         } else {
           indent.writeln(
@@ -351,15 +353,15 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
         indent.addScoped('{', '}', () {
           indent.write('');
           for (final EnumeratedType customType in enumeratedTypes) {
-            final (Class, Class)? sealedHierarchy =
+            final ({Class child, Class superClass})? sealedHierarchy =
                 customType.findSealedHierarchy();
             final bool isSealedChild = sealedHierarchy != null;
 
             final String value = isSealedChild ? 'childValue' : 'value';
 
             if (isSealedChild) {
-              final (Class associatedClass, Class superClass) = sealedHierarchy;
-              final String caseName = associatedClass.name.toLowFirstLetter();
+              final (child: Class child, superClass: Class superClass) = sealedHierarchy;
+              final String caseName = child.name.toLowFirstLetter();
 
               indent.add(
                 'if let $value = value as? ${superClass.name}, case .$caseName = $value ',
@@ -590,7 +592,7 @@ if (wrapped == nil) {
     Class classDefinition, {
     required String dartPackageName,
   }) {
-    // Children will be covered in _writeSealedClass()
+    // Children will be covered in _writeDataClassSignature()
     if (classDefinition.superClass?.isSealed ?? false) {
       return;
     }

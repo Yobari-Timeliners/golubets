@@ -44,6 +44,7 @@ class KotlinOptions {
     this.errorClassName,
     this.includeErrorClass = true,
     this.fileSpecificClassNameComponent,
+    this.nestSealedClasses = false,
   });
 
   /// The package where the generated class will live.
@@ -64,6 +65,29 @@ class KotlinOptions {
   /// A String to augment class names to avoid cross file collisions.
   final String? fileSpecificClassNameComponent;
 
+  /// {@template kotlin_options.nest_sealed_classes}
+  /// Whether to nest sealed classes inside their base class.
+  ///
+  /// Defaults to false.
+  ///
+  /// Example:
+  ///
+  /// ```kotlin
+  /// sealed class SomeClass {
+  ///  class A : SomeClass()
+  ///  class B : SomeClass()
+  /// }
+  /// ```
+  ///
+  /// instead of:
+  /// ```kotlin
+  /// sealed class SomeClass
+  /// class SomeClassA : SomeClass()
+  /// class SomeClassB : SomeClass()
+  /// ```
+  /// {@endtemplate}
+  final bool nestSealedClasses;
+
   /// Creates a [KotlinOptions] from a Map representation where:
   /// `x = KotlinOptions.fromMap(x.toMap())`.
   static KotlinOptions fromMap(Map<String, Object> map) {
@@ -74,6 +98,7 @@ class KotlinOptions {
       includeErrorClass: map['includeErrorClass'] as bool? ?? true,
       fileSpecificClassNameComponent:
           map['fileSpecificClassNameComponent'] as String?,
+      nestSealedClasses: map['nestSealedClasses'] as bool? ?? false,
     );
   }
 
@@ -87,6 +112,7 @@ class KotlinOptions {
       'includeErrorClass': includeErrorClass,
       if (fileSpecificClassNameComponent != null)
         'fileSpecificClassNameComponent': fileSpecificClassNameComponent!,
+      'nestSealedClasses': nestSealedClasses,
     };
     return result;
   }
@@ -108,6 +134,7 @@ class InternalKotlinOptions extends InternalOptions {
     this.errorClassName,
     this.includeErrorClass = true,
     this.fileSpecificClassNameComponent,
+    this.nestSealedClasses = false,
   });
 
   /// Creates InternalKotlinOptions from KotlinOptions.
@@ -121,7 +148,8 @@ class InternalKotlinOptions extends InternalOptions {
        includeErrorClass = options.includeErrorClass,
        fileSpecificClassNameComponent =
            options.fileSpecificClassNameComponent ??
-           kotlinOut.split('/').lastOrNull?.split('.').first;
+           kotlinOut.split('/').lastOrNull?.split('.').first,
+       nestSealedClasses = options.nestSealedClasses;
 
   /// The package where the generated class will live.
   final String? package;
@@ -143,6 +171,9 @@ class InternalKotlinOptions extends InternalOptions {
 
   /// A String to augment class names to avoid cross file collisions.
   final String? fileSpecificClassNameComponent;
+
+  /// {@macro kotlin_options.nest_sealed_classes}
+  final bool nestSealedClasses;
 }
 
 /// Options that control how Kotlin code will be generated for a specific
@@ -277,7 +308,17 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     Indent indent,
     Class classDefinition, {
     required String dartPackageName,
+    bool ignoreSealedChildren = true,
   }) {
+    final bool isSealedChild = classDefinition.superClass?.isSealed ?? false;
+
+    // Children will be covered by superclass
+    if (isSealedChild &&
+        generatorOptions.nestSealedClasses &&
+        ignoreSealedChildren) {
+      return;
+    }
+
     final List<String> generatedMessages = <String>[
       ' Generated class from Pigeon that represents data sent in messages.',
     ];
@@ -295,6 +336,26 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     );
     _writeDataClassSignature(indent, classDefinition);
     if (classDefinition.isSealed) {
+      if (generatorOptions.nestSealedClasses) {
+        indent.writeScoped(
+          ' {',
+          '}',
+          nestCount: 2,
+          () {
+            for (final Class child in classDefinition.children) {
+              writeDataClass(
+                generatorOptions,
+                root,
+                indent,
+                child,
+                dartPackageName: dartPackageName,
+                ignoreSealedChildren: false,
+              );
+            }
+          },
+        );
+      }
+
       return;
     }
     indent.addScoped(' {', '}', () {
@@ -504,7 +565,14 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
           customType.enumeration < maximumCodecFieldKey
               ? customType.enumeration
               : maximumCodecFieldKey;
-      indent.writeScoped('is ${customType.name} -> {', '}', () {
+
+      final String? sealedSuperClassName =
+          customType.findSealedHierarchy()?.superClass.name;
+      final String nestedClassPrefix =
+          sealedSuperClassName != null && generatorOptions.nestSealedClasses
+              ? '$sealedSuperClassName.'
+              : '';
+      indent.writeScoped('is $nestedClassPrefix${customType.name} -> {', '}', () {
         if (customType.enumeration >= maximumCodecFieldKey) {
           indent.writeln(
             'val wrap = ${generatorOptions.fileSpecificClassNameComponent}$_overflowClassName(type = ${customType.enumeration - maximumCodecFieldKey}, wrapped = value.$encodeString)',
@@ -516,12 +584,18 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     }
 
     void writeDecodeLogic(EnumeratedType customType) {
+      final String? sealedSuperClassName =
+          customType.findSealedHierarchy()?.superClass.name;
+      final String nestedClassPrefix =
+          sealedSuperClassName != null && generatorOptions.nestSealedClasses
+              ? '$sealedSuperClassName.'
+              : '';
       indent.write('${customType.enumeration}.toByte() -> ');
       indent.addScoped('{', '}', () {
         if (customType.type == CustomTypes.customClass) {
           indent.write('return (readValue(buffer) as? List<Any?>)?.let ');
           indent.addScoped('{', '}', () {
-            indent.writeln('${customType.name}.fromList(it)');
+            indent.writeln('$nestedClassPrefix${customType.name}.fromList(it)');
           });
         } else if (customType.type == CustomTypes.customEnum) {
           indent.write('return (readValue(buffer) as Long?)?.let ');
@@ -624,7 +698,11 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       fields: overflowFields,
     );
 
-    _writeDataClassSignature(indent, overflowClass, private: true);
+    _writeDataClassSignature(
+      indent,
+      overflowClass,
+      private: true,
+    );
     indent.addScoped(' {', '}', () {
       writeClassEncode(
         generatorOptions,
