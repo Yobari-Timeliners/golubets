@@ -2326,6 +2326,7 @@ void main() {
     const KotlinGenerator generator = KotlinGenerator();
     const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
       kotlinOut: '',
+      nestSealedClasses: true,
     );
     generator.generate(
       kotlinOptions,
