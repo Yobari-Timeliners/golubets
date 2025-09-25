@@ -126,8 +126,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
         final AllNullableTypesWithoutRecursion? echoObject = await api
             .echoAllNullableTypesWithoutRecursion(
-          genericAllNullableTypesWithoutRecursion,
-        );
+              genericAllNullableTypesWithoutRecursion,
+            );
 
         expect(echoObject, genericAllNullableTypesWithoutRecursion);
       },
@@ -169,8 +169,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
         final AllNullableTypesWithoutRecursion listTypes =
             AllNullableTypesWithoutRecursion(
-          map: <String?, String?>{'String': 'string', 'null': null},
-        );
+              map: <String?, String?>{'String': 'string', 'null': null},
+            );
 
         final AllNullableTypesWithoutRecursion? echoNullFilledClass = await api
             .echoAllNullableTypesWithoutRecursion(listTypes);
@@ -302,10 +302,10 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
         final AllNullableTypesWithoutRecursion echoObject = await api
             .sendMultipleNullableTypesWithoutRecursion(
-          aNullableBool,
-          aNullableInt,
-          aNullableString,
-        );
+              aNullableBool,
+              aNullableInt,
+              aNullableString,
+            );
         expect(echoObject.aNullableInt, aNullableInt);
         expect(echoObject.aNullableBool, aNullableBool);
         expect(echoObject.aNullableString, aNullableString);
@@ -1140,8 +1140,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
         final AllNullableTypesWithoutRecursion? echoObject = await api
             .echoAsyncNullableAllNullableTypesWithoutRecursion(
-          genericAllNullableTypesWithoutRecursion,
-        );
+              genericAllNullableTypesWithoutRecursion,
+            );
 
         expect(echoObject, genericAllNullableTypesWithoutRecursion);
       },
@@ -1871,10 +1871,10 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
         final AllNullableTypes compositeObject = await api
             .callFlutterSendMultipleNullableTypes(
-          aNullableBool,
-          aNullableInt,
-          aNullableString,
-        );
+              aNullableBool,
+              aNullableInt,
+              aNullableString,
+            );
         expect(compositeObject.aNullableInt, aNullableInt);
         expect(compositeObject.aNullableBool, aNullableBool);
         expect(compositeObject.aNullableString, aNullableString);
@@ -1904,10 +1904,10 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
         final AllNullableTypesWithoutRecursion compositeObject = await api
             .callFlutterSendMultipleNullableTypesWithoutRecursion(
-          aNullableBool,
-          aNullableInt,
-          aNullableString,
-        );
+              aNullableBool,
+              aNullableInt,
+              aNullableString,
+            );
         expect(compositeObject.aNullableInt, aNullableInt);
         expect(compositeObject.aNullableBool, aNullableBool);
         expect(compositeObject.aNullableString, aNullableString);
@@ -1921,10 +1921,10 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
         final AllNullableTypesWithoutRecursion compositeObject = await api
             .callFlutterSendMultipleNullableTypesWithoutRecursion(
-          null,
-          null,
-          null,
-        );
+              null,
+              null,
+              null,
+            );
         expect(compositeObject.aNullableInt, null);
         expect(compositeObject.aNullableBool, null);
         expect(compositeObject.aNullableString, null);
@@ -2354,8 +2354,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
         final List<AllNullableTypes?>? echoObject = await api
             .callFlutterEchoNullableNonNullClassList(
-          nonNullAllNullableTypesList,
-        );
+              nonNullAllNullableTypesList,
+            );
         for (final (int index, AllNullableTypes? value)
             in echoObject!.indexed) {
           expect(value, nonNullAllNullableTypesList[index]);
@@ -3076,8 +3076,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
       final Map<String?, ProxyApiTestClass?> value =
           <String?, ProxyApiTestClass?>{
-        'a String': _createGenericProxyApiTestClass(),
-      };
+            'a String': _createGenericProxyApiTestClass(),
+          };
       expect(await api.callFlutterEchoProxyApiMap(value), value);
     });
 
@@ -3253,7 +3253,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     // background is not supported.
     final bool taskQueuesSupported =
         defaultTargetPlatform == TargetPlatform.android ||
-            defaultTargetPlatform == TargetPlatform.iOS;
+        defaultTargetPlatform == TargetPlatform.iOS;
     expect(await api.taskQueueIsBackgroundThread(), taskQueuesSupported);
   });
 

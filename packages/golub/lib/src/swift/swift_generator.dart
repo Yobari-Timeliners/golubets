@@ -360,7 +360,8 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
             final String value = isSealedChild ? 'childValue' : 'value';
 
             if (isSealedChild) {
-              final (child: Class child, superClass: Class superClass) = sealedHierarchy;
+              final (child: Class child, superClass: Class superClass) =
+                  sealedHierarchy;
               final String caseName = child.name.toLowFirstLetter();
 
               indent.add(
