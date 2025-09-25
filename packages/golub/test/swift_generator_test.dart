@@ -2110,7 +2110,7 @@ void main() {
     );
     expect(
       code,
-      contains('internal static func fromListObjectEvent'),
+      contains('internal static func fromListClassEvent'),
     );
   });
 }
