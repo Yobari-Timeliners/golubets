@@ -903,3 +903,37 @@ bool isCollectionType(TypeDeclaration type) {
       !type.isProxyApi &&
       (type.baseName.contains('List') || type.baseName == 'Map');
 }
+
+/// String manipulation extensions.
+extension StringExtension on String {
+  /// Converts the first letter of the string to lowercase.
+  String toLowFirstLetter() {
+    return '${this[0].toLowerCase()}${substring(1)}';
+  }
+
+  /// Converts the first letter of the string to uppercase.
+  String capitalize() {
+    if (length < 2) {
+      return toUpperCase();
+    }
+
+    return this[0].toUpperCase() + substring(1);
+  }
+}
+
+/// [EnumeratedType] extensions.
+extension EnumeratedTypeExtensions on EnumeratedType {
+  /// Returns true if the enumerated type represents a sealed class hierarchy.
+  (Class child, Class parent)? findSealedHierarchy() {
+    final Class? associatedClass = this.associatedClass;
+    final Class? superClass = associatedClass?.superClass;
+    final bool isSealedChild =
+        associatedClass != null && superClass != null && superClass.isSealed;
+
+    if (isSealedChild) {
+      return (associatedClass, superClass);
+    }
+
+    return null;
+  }
+}

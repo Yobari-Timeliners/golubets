@@ -86,85 +86,56 @@ func deepHashEventChannelMessages(value: Any?, hasher: inout Hasher) {
 }
 
 /// Generated class from Pigeon that represents data sent in messages.
-/// This protocol should not be extended by any user class outside of the generated file.
-public protocol PlatformEvent {
-
-}
-
-/// Generated class from Pigeon that represents data sent in messages.
-public struct IntEvent: PlatformEvent {
-  public init(
+public enum PlatformEvent: Hashable {
+  case intEvent(
     data: Int64
-  ) {
-    self.data = data
-  }
-  var data: Int64
+  )
 
-  // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> IntEvent? {
-    let data = pigeonVar_list[0] as! Int64
-
-    return IntEvent(
-      data: data
-    )
-  }
-  func toList() -> [Any?] {
-    return [
-      data
-    ]
-  }
-  public static func == (lhs: IntEvent, rhs: IntEvent) -> Bool {
-    return deepEqualsEventChannelMessages(lhs.toList(), rhs.toList())
-  }
-  public func hash(into hasher: inout Hasher) {
-    deepHashEventChannelMessages(value: toList(), hasher: &hasher)
-  }
-}
-
-/// Generated class from Pigeon that represents data sent in messages.
-public struct StringEvent: PlatformEvent {
-  public init(
+  case stringEvent(
     data: String
-  ) {
-    self.data = data
-  }
-  var data: String
+  )
 
-  // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> StringEvent? {
-    let data = pigeonVar_list[0] as! String
+  case emptyEvent
 
-    return StringEvent(
+  internal static func fromListIntEvent(_ list: [Any?]) -> PlatformEvent? {
+    let data = list[0] as! Int64
+
+    return .intEvent(
       data: data
     )
   }
-  func toList() -> [Any?] {
-    return [
-      data
-    ]
-  }
-  public static func == (lhs: StringEvent, rhs: StringEvent) -> Bool {
-    return deepEqualsEventChannelMessages(lhs.toList(), rhs.toList())
-  }
-  public func hash(into hasher: inout Hasher) {
-    deepHashEventChannelMessages(value: toList(), hasher: &hasher)
-  }
-}
 
-/// Generated class from Pigeon that represents data sent in messages.
-public struct EmptyEvent: PlatformEvent {
-  public init() {
+  internal static func fromListStringEvent(_ list: [Any?]) -> PlatformEvent? {
+    let data = list[0] as! String
+
+    return .stringEvent(
+      data: data
+    )
   }
 
-  // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> EmptyEvent? {
+  internal static func fromListEmptyEvent(_ list: [Any?]) -> PlatformEvent? {
+    return .emptyEvent
+  }
 
-    return EmptyEvent()
+  public func toList() -> [Any?] {
+    switch self {
+    case .intEvent(
+      let data
+    ):
+      return [
+        data
+      ]
+    case .stringEvent(
+      let data
+    ):
+      return [
+        data
+      ]
+    case .emptyEvent:
+      return []
+    }
   }
-  func toList() -> [Any?] {
-    return []
-  }
-  public static func == (lhs: EmptyEvent, rhs: EmptyEvent) -> Bool {
+  public static func == (lhs: PlatformEvent, rhs: PlatformEvent) -> Bool {
     return deepEqualsEventChannelMessages(lhs.toList(), rhs.toList())
   }
   public func hash(into hasher: inout Hasher) {
@@ -176,11 +147,11 @@ private class EventChannelMessagesPigeonCodecReader: FlutterStandardReader {
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
     case 129:
-      return IntEvent.fromList(self.readValue() as! [Any?])
+      return PlatformEvent.fromListIntEvent(self.readValue() as! [Any?])
     case 130:
-      return StringEvent.fromList(self.readValue() as! [Any?])
+      return PlatformEvent.fromListStringEvent(self.readValue() as! [Any?])
     case 131:
-      return EmptyEvent.fromList(self.readValue() as! [Any?])
+      return PlatformEvent.fromListEmptyEvent(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
     }
@@ -189,15 +160,15 @@ private class EventChannelMessagesPigeonCodecReader: FlutterStandardReader {
 
 private class EventChannelMessagesPigeonCodecWriter: FlutterStandardWriter {
   override func writeValue(_ value: Any) {
-    if let value = value as? IntEvent {
+    if let childValue = value as? PlatformEvent, case .intEvent = childValue {
       super.writeByte(129)
-      super.writeValue(value.toList())
-    } else if let value = value as? StringEvent {
+      super.writeValue(childValue.toList())
+    } else if let childValue = value as? PlatformEvent, case .stringEvent = childValue {
       super.writeByte(130)
-      super.writeValue(value.toList())
-    } else if let value = value as? EmptyEvent {
+      super.writeValue(childValue.toList())
+    } else if let childValue = value as? PlatformEvent, case .emptyEvent = childValue {
       super.writeByte(131)
-      super.writeValue(value.toList())
+      super.writeValue(childValue.toList())
     } else {
       super.writeValue(value)
     }

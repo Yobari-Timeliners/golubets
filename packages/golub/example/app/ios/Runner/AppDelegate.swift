@@ -72,19 +72,19 @@ class EventListener: StreamEventsStreamHandler {
 
   func onIntEvent(event: Int64) {
     if let eventSink = eventSink {
-      eventSink.success(IntEvent(data: event))
+      eventSink.success(.intEvent(data: event))
     }
   }
 
   func onStringEvent(event: String) {
     if let eventSink = eventSink {
-      eventSink.success(StringEvent(data: event))
+      eventSink.success(.stringEvent(data: event))
     }
   }
 
   func onEmptyEvent() {
     if let eventSink = eventSink {
-      eventSink.success(EmptyEvent())
+      eventSink.success(.emptyEvent)
     }
   }
 

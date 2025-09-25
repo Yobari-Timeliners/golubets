@@ -2040,39 +2040,43 @@ void main() {
       isSealed: true,
       fields: const <NamedType>[],
     );
+    final List<Class> children = <Class>[
+      Class(
+        name: 'IntEvent',
+        superClass: superClass,
+        superClassName: superClass.name,
+        fields: <NamedType>[
+          NamedType(
+            type: const TypeDeclaration(
+              baseName: 'int',
+              isNullable: false,
+            ),
+            name: 'value',
+          ),
+        ],
+      ),
+      Class(
+        name: 'ClassEvent',
+        superClass: superClass,
+        superClassName: superClass.name,
+        fields: <NamedType>[
+          NamedType(
+            type: TypeDeclaration(
+              baseName: 'Input',
+              isNullable: true,
+              associatedClass: emptyClass,
+            ),
+            name: 'value',
+          ),
+        ],
+      ),
+    ];
+    superClass.children = children;
     final Root root = Root(
       apis: <Api>[],
       classes: <Class>[
         superClass,
-        Class(
-          name: 'IntEvent',
-          superClass: superClass,
-          superClassName: superClass.name,
-          fields: <NamedType>[
-            NamedType(
-              type: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: false,
-              ),
-              name: 'value',
-            ),
-          ],
-        ),
-        Class(
-          name: 'ClassEvent',
-          superClass: superClass,
-          superClassName: superClass.name,
-          fields: <NamedType>[
-            NamedType(
-              type: TypeDeclaration(
-                baseName: 'Input',
-                isNullable: true,
-                associatedClass: emptyClass,
-              ),
-              name: 'value',
-            ),
-          ],
-        ),
+        ...children,
       ],
       enums: <Enum>[],
     );
@@ -2090,16 +2094,23 @@ void main() {
     final String code = sink.toString();
     expect(
       code,
-      contains('public protocol PlatformEvent'),
+      contains('public enum PlatformEvent'),
     );
     expect(
       code,
-      contains('public struct IntEvent: PlatformEvent'),
+      contains('case intEvent'),
     );
     expect(
       code,
-      contains('public struct ClassEvent: PlatformEvent'),
+      contains('case classEvent'),
     );
-    expect(code, contains('public init('));
+    expect(
+      code,
+      contains('internal static func fromListIntEvent'),
+    );
+    expect(
+      code,
+      contains('internal static func fromListClassEvent'),
+    );
   });
 }

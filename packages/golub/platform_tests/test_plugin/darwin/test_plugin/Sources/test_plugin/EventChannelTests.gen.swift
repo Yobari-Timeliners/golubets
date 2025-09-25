@@ -358,235 +358,146 @@ public class EventAllNullableTypes: Hashable {
 }
 
 /// Generated class from Pigeon that represents data sent in messages.
-/// This protocol should not be extended by any user class outside of the generated file.
-public protocol PlatformEvent {
-
-}
-
-/// Generated class from Pigeon that represents data sent in messages.
-public struct IntEvent: PlatformEvent {
-  public init(
+public enum PlatformEvent: Hashable {
+  case intEvent(
     value: Int64
-  ) {
-    self.value = value
-  }
-  var value: Int64
+  )
 
-  // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> IntEvent? {
-    let value = pigeonVar_list[0] as! Int64
-
-    return IntEvent(
-      value: value
-    )
-  }
-  func toList() -> [Any?] {
-    return [
-      value
-    ]
-  }
-  public static func == (lhs: IntEvent, rhs: IntEvent) -> Bool {
-    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
-  }
-  public func hash(into hasher: inout Hasher) {
-    deepHashEventChannelTests(value: toList(), hasher: &hasher)
-  }
-}
-
-/// Generated class from Pigeon that represents data sent in messages.
-public struct StringEvent: PlatformEvent {
-  public init(
+  case stringEvent(
     value: String
-  ) {
-    self.value = value
-  }
-  var value: String
+  )
 
-  // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> StringEvent? {
-    let value = pigeonVar_list[0] as! String
-
-    return StringEvent(
-      value: value
-    )
-  }
-  func toList() -> [Any?] {
-    return [
-      value
-    ]
-  }
-  public static func == (lhs: StringEvent, rhs: StringEvent) -> Bool {
-    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
-  }
-  public func hash(into hasher: inout Hasher) {
-    deepHashEventChannelTests(value: toList(), hasher: &hasher)
-  }
-}
-
-/// Generated class from Pigeon that represents data sent in messages.
-public struct BoolEvent: PlatformEvent {
-  public init(
+  case boolEvent(
     value: Bool
-  ) {
-    self.value = value
-  }
-  var value: Bool
+  )
 
-  // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> BoolEvent? {
-    let value = pigeonVar_list[0] as! Bool
-
-    return BoolEvent(
-      value: value
-    )
-  }
-  func toList() -> [Any?] {
-    return [
-      value
-    ]
-  }
-  public static func == (lhs: BoolEvent, rhs: BoolEvent) -> Bool {
-    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
-  }
-  public func hash(into hasher: inout Hasher) {
-    deepHashEventChannelTests(value: toList(), hasher: &hasher)
-  }
-}
-
-/// Generated class from Pigeon that represents data sent in messages.
-public struct DoubleEvent: PlatformEvent {
-  public init(
+  case doubleEvent(
     value: Double
-  ) {
-    self.value = value
-  }
-  var value: Double
+  )
 
-  // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> DoubleEvent? {
-    let value = pigeonVar_list[0] as! Double
-
-    return DoubleEvent(
-      value: value
-    )
-  }
-  func toList() -> [Any?] {
-    return [
-      value
-    ]
-  }
-  public static func == (lhs: DoubleEvent, rhs: DoubleEvent) -> Bool {
-    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
-  }
-  public func hash(into hasher: inout Hasher) {
-    deepHashEventChannelTests(value: toList(), hasher: &hasher)
-  }
-}
-
-/// Generated class from Pigeon that represents data sent in messages.
-public struct ObjectsEvent: PlatformEvent {
-  public init(
+  case objectsEvent(
     value: Any
-  ) {
-    self.value = value
-  }
-  var value: Any
+  )
 
-  // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> ObjectsEvent? {
-    let value = pigeonVar_list[0]!
-
-    return ObjectsEvent(
-      value: value
-    )
-  }
-  func toList() -> [Any?] {
-    return [
-      value
-    ]
-  }
-  public static func == (lhs: ObjectsEvent, rhs: ObjectsEvent) -> Bool {
-    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
-  }
-  public func hash(into hasher: inout Hasher) {
-    deepHashEventChannelTests(value: toList(), hasher: &hasher)
-  }
-}
-
-/// Generated class from Pigeon that represents data sent in messages.
-public struct EnumEvent: PlatformEvent {
-  public init(
+  case enumEvent(
     value: EventEnum
-  ) {
-    self.value = value
-  }
-  var value: EventEnum
+  )
 
-  // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> EnumEvent? {
-    let value = pigeonVar_list[0] as! EventEnum
-
-    return EnumEvent(
-      value: value
-    )
-  }
-  func toList() -> [Any?] {
-    return [
-      value
-    ]
-  }
-  public static func == (lhs: EnumEvent, rhs: EnumEvent) -> Bool {
-    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
-  }
-  public func hash(into hasher: inout Hasher) {
-    deepHashEventChannelTests(value: toList(), hasher: &hasher)
-  }
-}
-
-/// Generated class from Pigeon that represents data sent in messages.
-public struct ClassEvent: PlatformEvent {
-  public init(
+  case classEvent(
     value: EventAllNullableTypes
-  ) {
-    self.value = value
-  }
-  var value: EventAllNullableTypes
+  )
 
-  // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> ClassEvent? {
-    let value = pigeonVar_list[0] as! EventAllNullableTypes
+  case emptyEvent
 
-    return ClassEvent(
+  internal static func fromListIntEvent(_ list: [Any?]) -> PlatformEvent? {
+    let value = list[0] as! Int64
+
+    return .intEvent(
       value: value
     )
   }
-  func toList() -> [Any?] {
-    return [
-      value
-    ]
-  }
-  public static func == (lhs: ClassEvent, rhs: ClassEvent) -> Bool {
-    return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
-  }
-  public func hash(into hasher: inout Hasher) {
-    deepHashEventChannelTests(value: toList(), hasher: &hasher)
-  }
-}
 
-/// Generated class from Pigeon that represents data sent in messages.
-public struct EmptyEvent: PlatformEvent {
-  public init() {
+  internal static func fromListStringEvent(_ list: [Any?]) -> PlatformEvent? {
+    let value = list[0] as! String
+
+    return .stringEvent(
+      value: value
+    )
   }
 
-  // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> EmptyEvent? {
+  internal static func fromListBoolEvent(_ list: [Any?]) -> PlatformEvent? {
+    let value = list[0] as! Bool
 
-    return EmptyEvent()
+    return .boolEvent(
+      value: value
+    )
   }
-  func toList() -> [Any?] {
-    return []
+
+  internal static func fromListDoubleEvent(_ list: [Any?]) -> PlatformEvent? {
+    let value = list[0] as! Double
+
+    return .doubleEvent(
+      value: value
+    )
   }
-  public static func == (lhs: EmptyEvent, rhs: EmptyEvent) -> Bool {
+
+  internal static func fromListObjectsEvent(_ list: [Any?]) -> PlatformEvent? {
+    let value = list[0]!
+
+    return .objectsEvent(
+      value: value
+    )
+  }
+
+  internal static func fromListEnumEvent(_ list: [Any?]) -> PlatformEvent? {
+    let value = list[0] as! EventEnum
+
+    return .enumEvent(
+      value: value
+    )
+  }
+
+  internal static func fromListClassEvent(_ list: [Any?]) -> PlatformEvent? {
+    let value = list[0] as! EventAllNullableTypes
+
+    return .classEvent(
+      value: value
+    )
+  }
+
+  internal static func fromListEmptyEvent(_ list: [Any?]) -> PlatformEvent? {
+    return .emptyEvent
+  }
+
+  public func toList() -> [Any?] {
+    switch self {
+    case .intEvent(
+      let value
+    ):
+      return [
+        value
+      ]
+    case .stringEvent(
+      let value
+    ):
+      return [
+        value
+      ]
+    case .boolEvent(
+      let value
+    ):
+      return [
+        value
+      ]
+    case .doubleEvent(
+      let value
+    ):
+      return [
+        value
+      ]
+    case .objectsEvent(
+      let value
+    ):
+      return [
+        value
+      ]
+    case .enumEvent(
+      let value
+    ):
+      return [
+        value
+      ]
+    case .classEvent(
+      let value
+    ):
+      return [
+        value
+      ]
+    case .emptyEvent:
+      return []
+    }
+  }
+  public static func == (lhs: PlatformEvent, rhs: PlatformEvent) -> Bool {
     return deepEqualsEventChannelTests(lhs.toList(), rhs.toList())
   }
   public func hash(into hasher: inout Hasher) {
@@ -612,21 +523,21 @@ private class EventChannelTestsPigeonCodecReader: FlutterStandardReader {
     case 131:
       return EventAllNullableTypes.fromList(self.readValue() as! [Any?])
     case 132:
-      return IntEvent.fromList(self.readValue() as! [Any?])
+      return PlatformEvent.fromListIntEvent(self.readValue() as! [Any?])
     case 133:
-      return StringEvent.fromList(self.readValue() as! [Any?])
+      return PlatformEvent.fromListStringEvent(self.readValue() as! [Any?])
     case 134:
-      return BoolEvent.fromList(self.readValue() as! [Any?])
+      return PlatformEvent.fromListBoolEvent(self.readValue() as! [Any?])
     case 135:
-      return DoubleEvent.fromList(self.readValue() as! [Any?])
+      return PlatformEvent.fromListDoubleEvent(self.readValue() as! [Any?])
     case 136:
-      return ObjectsEvent.fromList(self.readValue() as! [Any?])
+      return PlatformEvent.fromListObjectsEvent(self.readValue() as! [Any?])
     case 137:
-      return EnumEvent.fromList(self.readValue() as! [Any?])
+      return PlatformEvent.fromListEnumEvent(self.readValue() as! [Any?])
     case 138:
-      return ClassEvent.fromList(self.readValue() as! [Any?])
+      return PlatformEvent.fromListClassEvent(self.readValue() as! [Any?])
     case 139:
-      return EmptyEvent.fromList(self.readValue() as! [Any?])
+      return PlatformEvent.fromListEmptyEvent(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
     }
@@ -644,30 +555,30 @@ private class EventChannelTestsPigeonCodecWriter: FlutterStandardWriter {
     } else if let value = value as? EventAllNullableTypes {
       super.writeByte(131)
       super.writeValue(value.toList())
-    } else if let value = value as? IntEvent {
+    } else if let childValue = value as? PlatformEvent, case .intEvent = childValue {
       super.writeByte(132)
-      super.writeValue(value.toList())
-    } else if let value = value as? StringEvent {
+      super.writeValue(childValue.toList())
+    } else if let childValue = value as? PlatformEvent, case .stringEvent = childValue {
       super.writeByte(133)
-      super.writeValue(value.toList())
-    } else if let value = value as? BoolEvent {
+      super.writeValue(childValue.toList())
+    } else if let childValue = value as? PlatformEvent, case .boolEvent = childValue {
       super.writeByte(134)
-      super.writeValue(value.toList())
-    } else if let value = value as? DoubleEvent {
+      super.writeValue(childValue.toList())
+    } else if let childValue = value as? PlatformEvent, case .doubleEvent = childValue {
       super.writeByte(135)
-      super.writeValue(value.toList())
-    } else if let value = value as? ObjectsEvent {
+      super.writeValue(childValue.toList())
+    } else if let childValue = value as? PlatformEvent, case .objectsEvent = childValue {
       super.writeByte(136)
-      super.writeValue(value.toList())
-    } else if let value = value as? EnumEvent {
+      super.writeValue(childValue.toList())
+    } else if let childValue = value as? PlatformEvent, case .enumEvent = childValue {
       super.writeByte(137)
-      super.writeValue(value.toList())
-    } else if let value = value as? ClassEvent {
+      super.writeValue(childValue.toList())
+    } else if let childValue = value as? PlatformEvent, case .classEvent = childValue {
       super.writeByte(138)
-      super.writeValue(value.toList())
-    } else if let value = value as? EmptyEvent {
+      super.writeValue(childValue.toList())
+    } else if let childValue = value as? PlatformEvent, case .emptyEvent = childValue {
       super.writeByte(139)
-      super.writeValue(value.toList())
+      super.writeValue(childValue.toList())
     } else {
       super.writeValue(value)
     }
