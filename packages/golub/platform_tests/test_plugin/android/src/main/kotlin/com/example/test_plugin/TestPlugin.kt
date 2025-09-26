@@ -14,7 +14,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 
 /** This plugin handles the native side of the integration tests in example/integration_test/. */
-class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, SealedClassApi {
+class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, SealedClassApi, KotlinNestedSealedApi {
   private var flutterApi: FlutterIntegrationCoreApi? = null
   private var flutterSmallApiOne: FlutterSmallApi? = null
   private var flutterSmallApiTwo: FlutterSmallApi? = null
@@ -42,6 +42,7 @@ class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, SealedClassApi {
     StreamConsistentNumbersStreamHandler.register(
         binding.binaryMessenger, SendConsistentNumbers(2), "2")
     SealedClassApi.setUp(binding.binaryMessenger, this)
+    KotlinNestedSealedApi.setUp(binding.binaryMessenger, this)
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -896,6 +897,8 @@ class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, SealedClassApi {
   }
 
   override fun echo(event: PlatformEvent): PlatformEvent = event
+
+  override fun echo(state: SomeState): SomeState = state
 }
 
 class TestPluginWithSuffix : HostSmallApi {

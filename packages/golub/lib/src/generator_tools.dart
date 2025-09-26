@@ -924,14 +924,14 @@ extension StringExtension on String {
 /// [EnumeratedType] extensions.
 extension EnumeratedTypeExtensions on EnumeratedType {
   /// Returns true if the enumerated type represents a sealed class hierarchy.
-  (Class child, Class parent)? findSealedHierarchy() {
+  ({Class child, Class superClass})? findSealedHierarchy() {
     final Class? associatedClass = this.associatedClass;
     final Class? superClass = associatedClass?.superClass;
     final bool isSealedChild =
         associatedClass != null && superClass != null && superClass.isSealed;
 
     if (isSealedChild) {
-      return (associatedClass, superClass);
+      return (child: associatedClass, superClass: superClass);
     }
 
     return null;

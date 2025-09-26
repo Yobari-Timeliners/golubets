@@ -35,6 +35,13 @@ const Map<String, Set<GeneratorLanguage>> _unsupportedFiles =
         GeneratorLanguage.java,
         GeneratorLanguage.objc,
       },
+      'kotlin_nested_sealed_tests': <GeneratorLanguage>{
+        GeneratorLanguage.cpp,
+        GeneratorLanguage.gobject,
+        GeneratorLanguage.java,
+        GeneratorLanguage.objc,
+        GeneratorLanguage.swift,
+      },
     };
 
 String _snakeToPascalCase(String snake) {
@@ -94,6 +101,7 @@ Future<int> generateTestPigeons({
     'nullable_returns',
     'primitive',
     'proxy_api_tests',
+    'kotlin_nested_sealed_tests',
   };
 
   const String testPluginName = 'test_plugin';
@@ -147,6 +155,7 @@ Future<int> generateTestPigeons({
       kotlinPackage: 'com.example.test_plugin',
       kotlinErrorClassName: kotlinErrorName,
       kotlinIncludeErrorClass: input != 'primitive',
+      kotlinNestSealedClasses: input == 'kotlin_nested_sealed_tests',
       // iOS/macOS
       swiftOut:
           skipLanguages.contains(GeneratorLanguage.swift)
@@ -253,6 +262,7 @@ Future<int> runPigeon({
   String? dartPackageName,
   bool injectOverflowTypes = false,
   bool mergeDefinitionFileOptions = true,
+  bool kotlinNestSealedClasses = false,
 }) async {
   // Temporarily suppress the version output via the global flag if requested.
   // This is done because having the version in all the generated test output
@@ -304,6 +314,7 @@ Future<int> runPigeon({
         package: kotlinPackage,
         errorClassName: kotlinErrorClassName,
         includeErrorClass: kotlinIncludeErrorClass,
+        nestSealedClasses: kotlinNestSealedClasses,
       ),
       objcHeaderOut: objcHeaderOut,
       objcSourceOut: objcSourceOut,
