@@ -225,6 +225,16 @@ ErrorOr<double> TestPlugin::EchoOptionalDefaultDouble(double a_double) {
   return a_double;
 }
 
+ErrorOr<AllTypesWithDefaults> TestPlugin::CreateAllTypesWithDefaults() {
+  return FlutterError("NotImplemented", 
+                      "CreateAllTypesWithDefaults is not implemented - test will never be executed");
+}
+
+ErrorOr<AllTypesWithDefaults> TestPlugin::EchoAllTypesWithDefaults(
+    const AllTypesWithDefaults& all_types) {
+  return all_types;
+}
+
 ErrorOr<int64_t> TestPlugin::EchoRequiredInt(int64_t an_int) { return an_int; }
 
 ErrorOr<std::optional<std::string>> TestPlugin::ExtractNestedNullableString(

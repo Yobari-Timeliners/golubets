@@ -52,31 +52,10 @@
 
 - (nullable FLTAllTypesWithDefaults *)createAllTypesWithDefaults:
     (FlutterError *_Nullable *_Nonnull)error {
-  return [FLTAllTypesWithDefaults makeWithABool:nil
-                                          anInt:nil
-                                        anInt64:nil
-                                        aDouble:nil
-                                         anEnum:FLTAnEnumOne
-                                    anotherEnum:FLTAnotherEnumJustInCase
-                                        aString:nil
-                                       anObject:nil
-                                           list:nil
-                                     stringList:nil
-                                        intList:nil
-                                     doubleList:nil
-                                       boolList:nil
-                                       enumList:nil
-                                     objectList:nil
-                                       listList:nil
-                                        mapList:nil
-                                            map:nil
-                                      stringMap:nil
-                                         intMap:nil
-                                        enumMap:nil
-                                      objectMap:nil
-                                        listMap:nil
-                                         mapMap:nil
-                                       allTypes:nil];
+  *error = [FlutterError errorWithCode:@"NotImplemented" 
+                               message:@"createAllTypesWithDefaults is not implemented - test will never be executed" 
+                               details:nil];
+  return nil;
 }
 
 - (nullable FLTAllTypesWithDefaults *)echoAllTypesWithDefaults:(FLTAllTypesWithDefaults *)allTypes

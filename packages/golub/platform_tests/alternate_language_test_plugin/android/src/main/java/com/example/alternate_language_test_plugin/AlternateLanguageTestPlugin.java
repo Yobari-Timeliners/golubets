@@ -76,7 +76,7 @@ public class AlternateLanguageTestPlugin implements FlutterPlugin, HostIntegrati
 
   @Override
   public @NonNull AllTypesWithDefaults createAllTypesWithDefaults() {
-    return AllTypesWithDefaults.makeWithDefaults();
+    throw new RuntimeException("createAllTypesWithDefaults is not implemented - test will never be executed");
   }
 
   @Override

@@ -246,6 +246,21 @@ echo_required_int(int64_t an_int, gpointer user_data) {
       an_int);
 }
 
+static CoreTestsPigeonTestHostIntegrationCoreApiCreateAllTypesWithDefaultsResponse*
+create_all_types_with_defaults(gpointer user_data) {
+  return core_tests_pigeon_test_host_integration_core_api_create_all_types_with_defaults_response_new_error(
+      "NotImplemented", 
+      "createAllTypesWithDefaults is not implemented - test will never be executed", 
+      nullptr);
+}
+
+static CoreTestsPigeonTestHostIntegrationCoreApiEchoAllTypesWithDefaultsResponse*
+echo_all_types_with_defaults(CoreTestsPigeonTestAllTypesWithDefaults* all_types,
+                            gpointer user_data) {
+  return core_tests_pigeon_test_host_integration_core_api_echo_all_types_with_defaults_response_new(
+      all_types);
+}
+
 static CoreTestsPigeonTestHostIntegrationCoreApiEchoAllNullableTypesResponse*
 echo_all_nullable_types(CoreTestsPigeonTestAllNullableTypes* everything,
                         gpointer user_data) {
@@ -3260,6 +3275,8 @@ static CoreTestsPigeonTestHostIntegrationCoreApiVTable host_core_api_vtable = {
     .echo_another_enum = echo_another_enum,
     .echo_named_default_string = echo_named_default_string,
     .echo_optional_default_double = echo_optional_default_double,
+    .create_all_types_with_defaults = create_all_types_with_defaults,
+    .echo_all_types_with_defaults = echo_all_types_with_defaults,
     .echo_required_int = echo_required_int,
     .echo_all_nullable_types = echo_all_nullable_types,
     .echo_all_nullable_types_without_recursion =
