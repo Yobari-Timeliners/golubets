@@ -283,6 +283,9 @@ final AllTypes genericAllTypes = AllTypes(
   mapMap: nonNullMapMap,
 );
 
+// AllTypesWithDefaults object with predefined default values for testing
+final AllTypesWithDefaults allTypesWithDefaults = AllTypesWithDefaults();
+
 final List<AllTypes?> allTypesClassList = <AllTypes?>[genericAllTypes, null];
 
 final Map<int, AllTypes?> allTypesClassMap = <int, AllTypes?>{

@@ -750,6 +750,896 @@ class AllClassesWrapper {
   int get hashCode => Object.hashAll(_toList());
 }
 
+/// A class containing all supported types but with default values.
+class AllTypesWithDefaults {
+  AllTypesWithDefaults({
+    this.aBool = false,
+    this.anInt = 0,
+    this.anInt64 = 0,
+    this.aDouble = 0.0,
+    this.anEnum = AnEnum.one,
+    this.anotherEnum = AnotherEnum.justInCase,
+    this.aString = '',
+    this.anObject = 0,
+    this.list = const <Object?>[
+      1,
+      'string',
+      3.0,
+      true,
+      AnEnum.fortyTwo,
+      const <Object?>[],
+      const <String, String>{
+        'hello': 'world',
+      },
+    ],
+    this.stringList = const <String>[
+      'hello',
+      'world',
+    ],
+    this.intList = const <int>[
+      1,
+      2,
+      3,
+    ],
+    this.doubleList = const <double>[
+      1.0,
+      2.0,
+      3.0,
+      5,
+      10,
+      20.0,
+      3,
+    ],
+    this.boolList = const <bool>[
+      true,
+      false,
+      true,
+    ],
+    this.enumList = const <AnEnum>[
+      AnEnum.one,
+      AnEnum.two,
+      AnEnum.three,
+      AnEnum.fortyTwo,
+      AnEnum.fourHundredTwentyTwo,
+    ],
+    this.objectList = const <Object>[
+      1,
+      'string',
+      3.0,
+      true,
+      AnEnum.fortyTwo,
+      const <Object?>[],
+      const <String, String>{
+        'hello': 'world',
+      },
+    ],
+    this.listList = const <List<Object?>>[
+      const <Object?>[
+        1,
+        2,
+        3,
+      ],
+      const <Object?>[
+        'hello',
+        'world',
+      ],
+      const <Object?>[
+        true,
+        false,
+        true,
+      ],
+      const <Object?>[
+        AnEnum.one,
+        AnEnum.two,
+        AnEnum.three,
+      ],
+      const <Object?>[
+        const <Object?>[],
+        const <Object?>[
+          1,
+          2,
+          3,
+        ],
+      ],
+      const <Object?>[
+        const <String, String>{
+          'hello': 'world',
+        },
+        const <String, String>{
+          'lorem': 'ipsum',
+        },
+      ],
+      const <Object?>[
+        const <Object?>[],
+        const <Object?>[
+          1,
+          2,
+          3,
+        ],
+      ],
+      const <Object?>[
+        const <String, double>{
+          'hello': 0.0,
+          'world': 1,
+        },
+      ],
+    ],
+    this.mapList = const <Map<Object?, Object?>>[
+      const <Object?, Object?>{
+        1: 'hello',
+        2: 'world',
+      },
+      const <Object?, Object?>{
+        'hello': 1,
+        'world': 2,
+      },
+      const <Object?, Object?>{
+        AnEnum.one: 'hello',
+        AnEnum.two: 'world',
+      },
+      const <Object?, Object?>{
+        'hello': AnEnum.one,
+        'world': AnEnum.two,
+      },
+      const <Object?, Object?>{
+        1: const <Object?>[
+          1,
+          2,
+          3,
+        ],
+        2: const <Object?>[
+          'hello',
+          'world',
+        ],
+      },
+      const <Object?, Object?>{
+        'hello': const <String, String>{
+          'hello': 'world',
+        },
+        'lorem': const <String, String>{
+          'lorem': 'ipsum',
+        },
+      },
+      const <Object?, Object?>{
+        AnEnum.one: const <String, double>{
+          'hello': 0.0,
+          'world': 1,
+        },
+      },
+    ],
+    this.map = const <Object?, Object?>{
+      1: 'hello',
+      'world': 2.0,
+      AnEnum.one: 'hello',
+      'worldEnum': AnEnum.two,
+      'list': const <Object?>[
+        1,
+        2,
+        3,
+      ],
+      'map': const <String, String>{
+        'hello': 'world',
+      },
+      'mapDouble': const <String, double>{
+        'hello': 2,
+        'world': 3.0,
+      },
+    },
+    this.stringMap = const <String, String>{
+      'hello': 'world',
+      'lorem': 'ipsum',
+      'golub': 'rocks',
+    },
+    this.intMap = const <int, int>{
+      1: 2,
+      3: 4,
+      5: 6,
+    },
+    this.enumMap = const <AnEnum, AnEnum>{
+      AnEnum.one: AnEnum.two,
+      AnEnum.three: AnEnum.fortyTwo,
+      AnEnum.fourHundredTwentyTwo: AnEnum.one,
+    },
+    this.objectMap = const <Object, Object>{
+      1: 'hello',
+      'world': 2.0,
+      AnEnum.one: 'hello',
+      'worldEnum': AnEnum.two,
+      'list': const <Object?>[
+        1,
+        2,
+        3,
+      ],
+      'map': const <String, String>{
+        'hello': 'world',
+      },
+      'doubleMap': const <int, double>{
+        1: 1.0,
+        2: 0.0,
+        3: 3.0,
+      },
+    },
+    this.listMap = const <int, List<Object?>>{
+      1: const <Object?>[
+        1,
+        2,
+        3,
+      ],
+      2: const <Object?>[
+        'hello',
+        'world',
+      ],
+      3: const <Object?>[
+        true,
+        false,
+        true,
+      ],
+      4: const <Object?>[
+        AnEnum.one,
+        AnEnum.two,
+        AnEnum.three,
+      ],
+      5: const <Object?>[
+        const <Object?>[],
+        const <Object?>[
+          1,
+          2,
+          3,
+        ],
+      ],
+      6: const <Object?>[
+        const <String, String>{
+          'hello': 'world',
+        },
+        const <String, String>{
+          'lorem': 'ipsum',
+        },
+      ],
+      7: const <Object?>[
+        2,
+        3.0,
+        5,
+        10,
+        20.0,
+        3,
+      ],
+    },
+    this.mapMap = const <int, Map<Object?, Object?>>{
+      1: const <Object?, Object?>{
+        1: 'hello',
+        2: 'world',
+      },
+      2: const <Object?, Object?>{
+        'hello': 1,
+        'world': 2,
+      },
+      3: const <Object?, Object?>{
+        AnEnum.one: 'hello',
+        AnEnum.two: 'world',
+      },
+      4: const <Object?, Object?>{
+        'hello': AnEnum.one,
+        'world': AnEnum.two,
+      },
+      5: const <Object?, Object?>{
+        1: const <Object?>[
+          1,
+          2,
+          3,
+        ],
+        2: const <Object?>[
+          'hello',
+          'world',
+        ],
+      },
+      6: const <Object?, Object?>{
+        'hello': const <String, String>{
+          'hello': 'world',
+        },
+        'lorem': const <String, String>{
+          'lorem': 'ipsum',
+        },
+      },
+      7: const <Object?, Object?>{
+        AnEnum.one: const <String, double>{
+          'hello': 0.0,
+          'world': 1,
+        },
+      },
+    },
+    this.allTypes = const ImmutableAllTypes(
+      aBool: false,
+      anInt: 0,
+      anInt64: 0,
+      aDouble: 0,
+      anEnum: AnEnum.one,
+      anotherEnum: AnotherEnum.justInCase,
+      aString: 'some string',
+      anObject: 0,
+      list: const <Object?>[
+        1,
+        'string',
+        3.0,
+        true,
+        AnEnum.fortyTwo,
+        const <Object?>[],
+        const <String, String>{
+          'hello': 'world',
+        },
+      ],
+      stringList: const <String>[
+        'hello',
+        'world',
+      ],
+      intList: const <int>[
+        1,
+        2,
+        3,
+      ],
+      doubleList: const <double>[
+        1.0,
+        2.0,
+        3.0,
+        5,
+        10,
+        20.0,
+        3,
+      ],
+      boolList: const <bool>[
+        true,
+        false,
+        true,
+      ],
+      enumList: const <AnEnum>[
+        AnEnum.one,
+        AnEnum.two,
+        AnEnum.three,
+        AnEnum.fortyTwo,
+        AnEnum.fourHundredTwentyTwo,
+      ],
+      objectList: const <Object>[
+        1,
+        'string',
+        3.0,
+        true,
+        AnEnum.fortyTwo,
+        const <Object?>[],
+        const <String, String>{
+          'hello': 'world',
+        },
+      ],
+      listList: const <List<Object?>>[
+        const <Object?>[
+          1,
+          2,
+          3,
+        ],
+        const <Object?>[
+          'hello',
+          'world',
+        ],
+        const <Object?>[
+          true,
+          false,
+          true,
+        ],
+        const <Object?>[
+          AnEnum.one,
+          AnEnum.two,
+          AnEnum.three,
+        ],
+        const <Object?>[
+          const <Object?>[],
+          const <Object?>[
+            1,
+            2,
+            3,
+          ],
+        ],
+        const <Object?>[
+          const <String, String>{
+            'hello': 'world',
+          },
+          const <String, String>{
+            'lorem': 'ipsum',
+          },
+        ],
+        const <Object?>[
+          const <Object?>[],
+          const <Object?>[
+            1,
+            2,
+            3,
+          ],
+        ],
+        const <Object?>[
+          const <String, double>{
+            'hello': 0.0,
+            'world': 1,
+          },
+        ],
+      ],
+      mapList: const <Map<Object?, Object?>>[
+        const <Object?, Object?>{
+          1: 'hello',
+          2: 'world',
+        },
+        const <Object?, Object?>{
+          'hello': 1,
+          'world': 2,
+        },
+        const <Object?, Object?>{
+          AnEnum.one: 'hello',
+          AnEnum.two: 'world',
+        },
+        const <Object?, Object?>{
+          'hello': AnEnum.one,
+          'world': AnEnum.two,
+        },
+        const <Object?, Object?>{
+          1: const <Object?>[
+            1,
+            2,
+            3,
+          ],
+          2: const <Object?>[
+            'hello',
+            'world',
+          ],
+        },
+        const <Object?, Object?>{
+          'hello': const <String, String>{
+            'hello': 'world',
+          },
+          'lorem': const <String, String>{
+            'lorem': 'ipsum',
+          },
+        },
+        const <Object?, Object?>{
+          AnEnum.one: const <String, double>{
+            'hello': 0.0,
+            'world': 1,
+          },
+        },
+      ],
+      map: const <Object?, Object?>{
+        1: 'hello',
+        'world': 2.0,
+        AnEnum.one: 'hello',
+        'worldEnum': AnEnum.two,
+        'list': const <Object?>[
+          1,
+          2,
+          3,
+        ],
+        'map': const <String, String>{
+          'hello': 'world',
+        },
+        'mapDouble': const <String, double>{
+          'hello': 2,
+          'world': 3.0,
+        },
+      },
+      stringMap: const <String, String>{
+        'hello': 'world',
+        'lorem': 'ipsum',
+        'golub': 'rocks',
+      },
+      intMap: const <int, int>{
+        1: 2,
+        3: 4,
+        5: 6,
+      },
+      enumMap: const <AnEnum, AnEnum>{
+        AnEnum.one: AnEnum.two,
+        AnEnum.three: AnEnum.fortyTwo,
+        AnEnum.fourHundredTwentyTwo: AnEnum.one,
+      },
+      objectMap: const <Object, Object>{
+        1: 'hello',
+        'world': 2.0,
+        AnEnum.one: 'hello',
+        'worldEnum': AnEnum.two,
+        'list': const <Object?>[
+          1,
+          2,
+          3,
+        ],
+        'map': const <String, String>{
+          'hello': 'world',
+        },
+        'doubleMap': const <int, double>{
+          1: 1,
+          2: 0,
+          3: 3.0,
+        },
+      },
+      listMap: const <int, List<Object?>>{
+        1: const <Object?>[
+          1,
+          2,
+          3,
+        ],
+        2: const <Object?>[
+          'hello',
+          'world',
+        ],
+        3: const <Object?>[
+          true,
+          false,
+          true,
+        ],
+        4: const <Object?>[
+          AnEnum.one,
+          AnEnum.two,
+          AnEnum.three,
+        ],
+        5: const <Object?>[
+          const <Object?>[],
+          const <Object?>[
+            1,
+            2,
+            3,
+          ],
+        ],
+        6: const <Object?>[
+          const <String, String>{
+            'hello': 'world',
+          },
+          const <String, String>{
+            'lorem': 'ipsum',
+          },
+        ],
+        7: const <Object?>[
+          2,
+          3.0,
+          5,
+          10,
+          20.0,
+          3,
+        ],
+      },
+      mapMap: const <int, Map<Object?, Object?>>{
+        1: const <Object?, Object?>{
+          1: 'hello',
+          2: 'world',
+        },
+        2: const <Object?, Object?>{
+          'hello': 1,
+          'world': 2,
+        },
+        3: const <Object?, Object?>{
+          AnEnum.one: 'hello',
+          AnEnum.two: 'world',
+        },
+        4: const <Object?, Object?>{
+          'hello': AnEnum.one,
+          'world': AnEnum.two,
+        },
+        5: const <Object?, Object?>{
+          1: const <Object?>[
+            1,
+            2,
+            3,
+          ],
+          2: const <Object?>[
+            'hello',
+            'world',
+          ],
+        },
+        6: const <Object?, Object?>{
+          'hello': const <String, String>{
+            'hello': 'world',
+          },
+          'lorem': const <String, String>{
+            'lorem': 'ipsum',
+          },
+        },
+        7: const <Object?, Object?>{
+          AnEnum.one: const <String, double>{
+            'hello': 0.0,
+            'world': 1,
+          },
+        },
+      },
+    ),
+  });
+
+  bool aBool;
+
+  int anInt;
+
+  int anInt64;
+
+  double aDouble;
+
+  AnEnum anEnum;
+
+  AnotherEnum anotherEnum;
+
+  String aString;
+
+  Object anObject;
+
+  List<Object?> list;
+
+  List<String> stringList;
+
+  List<int> intList;
+
+  List<double> doubleList;
+
+  List<bool> boolList;
+
+  List<AnEnum> enumList;
+
+  List<Object> objectList;
+
+  List<List<Object?>> listList;
+
+  List<Map<Object?, Object?>> mapList;
+
+  Map<Object?, Object?> map;
+
+  Map<String, String> stringMap;
+
+  Map<int, int> intMap;
+
+  Map<AnEnum, AnEnum> enumMap;
+
+  Map<Object, Object> objectMap;
+
+  Map<int, List<Object?>> listMap;
+
+  Map<int, Map<Object?, Object?>> mapMap;
+
+  ImmutableAllTypes allTypes;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      aBool,
+      anInt,
+      anInt64,
+      aDouble,
+      anEnum,
+      anotherEnum,
+      aString,
+      anObject,
+      list,
+      stringList,
+      intList,
+      doubleList,
+      boolList,
+      enumList,
+      objectList,
+      listList,
+      mapList,
+      map,
+      stringMap,
+      intMap,
+      enumMap,
+      objectMap,
+      listMap,
+      mapMap,
+      allTypes,
+    ];
+  }
+
+  Object encode() {
+    return _toList();
+  }
+
+  static AllTypesWithDefaults decode(Object result) {
+    result as List<Object?>;
+    return AllTypesWithDefaults(
+      aBool: result[0]! as bool,
+      anInt: result[1]! as int,
+      anInt64: result[2]! as int,
+      aDouble: result[3]! as double,
+      anEnum: result[4]! as AnEnum,
+      anotherEnum: result[5]! as AnotherEnum,
+      aString: result[6]! as String,
+      anObject: result[7]!,
+      list: result[8]! as List<Object?>,
+      stringList: (result[9] as List<Object?>?)!.cast<String>(),
+      intList: (result[10] as List<Object?>?)!.cast<int>(),
+      doubleList: (result[11] as List<Object?>?)!.cast<double>(),
+      boolList: (result[12] as List<Object?>?)!.cast<bool>(),
+      enumList: (result[13] as List<Object?>?)!.cast<AnEnum>(),
+      objectList: (result[14] as List<Object?>?)!.cast<Object>(),
+      listList: (result[15] as List<Object?>?)!.cast<List<Object?>>(),
+      mapList: (result[16] as List<Object?>?)!.cast<Map<Object?, Object?>>(),
+      map: result[17]! as Map<Object?, Object?>,
+      stringMap: (result[18] as Map<Object?, Object?>?)!.cast<String, String>(),
+      intMap: (result[19] as Map<Object?, Object?>?)!.cast<int, int>(),
+      enumMap: (result[20] as Map<Object?, Object?>?)!.cast<AnEnum, AnEnum>(),
+      objectMap: (result[21] as Map<Object?, Object?>?)!.cast<Object, Object>(),
+      listMap:
+          (result[22] as Map<Object?, Object?>?)!.cast<int, List<Object?>>(),
+      mapMap:
+          (result[23] as Map<Object?, Object?>?)!
+              .cast<int, Map<Object?, Object?>>(),
+      allTypes: result[24]! as ImmutableAllTypes,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! AllTypesWithDefaults || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(encode(), other.encode());
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => Object.hashAll(_toList());
+}
+
+/// A class containing all supported types but immutable.
+class ImmutableAllTypes {
+  const ImmutableAllTypes({
+    required this.aBool,
+    required this.anInt,
+    required this.anInt64,
+    required this.aDouble,
+    required this.anEnum,
+    required this.anotherEnum,
+    required this.aString,
+    required this.anObject,
+    required this.list,
+    required this.stringList,
+    required this.intList,
+    required this.doubleList,
+    required this.boolList,
+    required this.enumList,
+    required this.objectList,
+    required this.listList,
+    required this.mapList,
+    required this.map,
+    required this.stringMap,
+    required this.intMap,
+    required this.enumMap,
+    required this.objectMap,
+    required this.listMap,
+    required this.mapMap,
+  });
+
+  final bool aBool;
+
+  final int anInt;
+
+  final int anInt64;
+
+  final double aDouble;
+
+  final AnEnum anEnum;
+
+  final AnotherEnum anotherEnum;
+
+  final String aString;
+
+  final Object anObject;
+
+  final List<Object?> list;
+
+  final List<String> stringList;
+
+  final List<int> intList;
+
+  final List<double> doubleList;
+
+  final List<bool> boolList;
+
+  final List<AnEnum> enumList;
+
+  final List<Object> objectList;
+
+  final List<List<Object?>> listList;
+
+  final List<Map<Object?, Object?>> mapList;
+
+  final Map<Object?, Object?> map;
+
+  final Map<String, String> stringMap;
+
+  final Map<int, int> intMap;
+
+  final Map<AnEnum, AnEnum> enumMap;
+
+  final Map<Object, Object> objectMap;
+
+  final Map<int, List<Object?>> listMap;
+
+  final Map<int, Map<Object?, Object?>> mapMap;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      aBool,
+      anInt,
+      anInt64,
+      aDouble,
+      anEnum,
+      anotherEnum,
+      aString,
+      anObject,
+      list,
+      stringList,
+      intList,
+      doubleList,
+      boolList,
+      enumList,
+      objectList,
+      listList,
+      mapList,
+      map,
+      stringMap,
+      intMap,
+      enumMap,
+      objectMap,
+      listMap,
+      mapMap,
+    ];
+  }
+
+  Object encode() {
+    return _toList();
+  }
+
+  static ImmutableAllTypes decode(Object result) {
+    result as List<Object?>;
+    return ImmutableAllTypes(
+      aBool: result[0]! as bool,
+      anInt: result[1]! as int,
+      anInt64: result[2]! as int,
+      aDouble: result[3]! as double,
+      anEnum: result[4]! as AnEnum,
+      anotherEnum: result[5]! as AnotherEnum,
+      aString: result[6]! as String,
+      anObject: result[7]!,
+      list: result[8]! as List<Object?>,
+      stringList: (result[9] as List<Object?>?)!.cast<String>(),
+      intList: (result[10] as List<Object?>?)!.cast<int>(),
+      doubleList: (result[11] as List<Object?>?)!.cast<double>(),
+      boolList: (result[12] as List<Object?>?)!.cast<bool>(),
+      enumList: (result[13] as List<Object?>?)!.cast<AnEnum>(),
+      objectList: (result[14] as List<Object?>?)!.cast<Object>(),
+      listList: (result[15] as List<Object?>?)!.cast<List<Object?>>(),
+      mapList: (result[16] as List<Object?>?)!.cast<Map<Object?, Object?>>(),
+      map: result[17]! as Map<Object?, Object?>,
+      stringMap: (result[18] as Map<Object?, Object?>?)!.cast<String, String>(),
+      intMap: (result[19] as Map<Object?, Object?>?)!.cast<int, int>(),
+      enumMap: (result[20] as Map<Object?, Object?>?)!.cast<AnEnum, AnEnum>(),
+      objectMap: (result[21] as Map<Object?, Object?>?)!.cast<Object, Object>(),
+      listMap:
+          (result[22] as Map<Object?, Object?>?)!.cast<int, List<Object?>>(),
+      mapMap:
+          (result[23] as Map<Object?, Object?>?)!
+              .cast<int, Map<Object?, Object?>>(),
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! ImmutableAllTypes || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(encode(), other.encode());
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => Object.hashAll(_toList());
+}
+
 /// A data class containing a List, used in unit tests.
 class TestMessage {
   TestMessage({
@@ -820,8 +1710,14 @@ class _PigeonCodec extends StandardMessageCodec {
     } else if (value is AllClassesWrapper) {
       buffer.putUint8(135);
       writeValue(buffer, value.encode());
-    } else if (value is TestMessage) {
+    } else if (value is AllTypesWithDefaults) {
       buffer.putUint8(136);
+      writeValue(buffer, value.encode());
+    } else if (value is ImmutableAllTypes) {
+      buffer.putUint8(137);
+      writeValue(buffer, value.encode());
+    } else if (value is TestMessage) {
+      buffer.putUint8(138);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -848,6 +1744,10 @@ class _PigeonCodec extends StandardMessageCodec {
       case 135:
         return AllClassesWrapper.decode(readValue(buffer)!);
       case 136:
+        return AllTypesWithDefaults.decode(readValue(buffer)!);
+      case 137:
+        return ImmutableAllTypes.decode(readValue(buffer)!);
+      case 138:
         return TestMessage.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -1860,6 +2760,72 @@ class HostIntegrationCoreApi {
       );
     } else {
       return (pigeonVar_replyList[0] as double?)!;
+    }
+  }
+
+  /// Returns a new AllTypesWithDefaults instance with all default values.
+  Future<AllTypesWithDefaults> createAllTypesWithDefaults() async {
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.createAllTypesWithDefaults$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_sendFuture as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else if (pigeonVar_replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (pigeonVar_replyList[0] as AllTypesWithDefaults?)!;
+    }
+  }
+
+  /// Returns an AllTypesWithDefaults instance, verifying default values work in cross-platform communication.
+  Future<AllTypesWithDefaults> echoAllTypesWithDefaults(
+    AllTypesWithDefaults allTypes,
+  ) async {
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoAllTypesWithDefaults$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[allTypes],
+    );
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_sendFuture as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else if (pigeonVar_replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (pigeonVar_replyList[0] as AllTypesWithDefaults?)!;
     }
   }
 

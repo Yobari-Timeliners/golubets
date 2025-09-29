@@ -1343,7 +1343,8 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
   final String source;
 
   Class? _currentClass;
-  Map<String, String> _currentClassDefaultValues = <String, String>{};
+  Map<String, DefaultValue?> _currentClassDefaultValues =
+      <String, DefaultValue?>{};
   Api? _currentApi;
   Map<String, Object>? _pigeonOptions;
 
@@ -1356,9 +1357,10 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
 
   void _storeCurrentClass() {
     if (_currentClass != null) {
+      _ensureDefaultValuesStored();
       _classes.add(_currentClass!);
       _currentClass = null;
-      _currentClassDefaultValues = <String, String>{};
+      _currentClassDefaultValues = <String, DefaultValue?>{};
     }
   }
 
@@ -1855,6 +1857,10 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         documentationComments: _documentationCommentsParser(
           node.documentationComment?.tokens,
         ),
+        isImmutable: node.members
+            .whereType<dart_ast.ConstructorDeclaration>()
+            .where((dart_ast.ConstructorDeclaration c) => c.name == null)
+            .any((dart_ast.ConstructorDeclaration c) => c.constKeyword != null),
       );
     }
 
@@ -1882,7 +1888,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     bool? isOptional,
     bool? isPositional,
     bool? isRequired,
-    String? defaultValue,
+    DefaultValue? defaultValue,
   }) {
     final dart_ast.NamedType? parameter =
         _getFirstChildOfType<dart_ast.NamedType>(formalParameter);
@@ -1908,9 +1914,20 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         defaultValue: defaultValue,
       );
     } else if (simpleFormalParameter != null) {
-      String? defaultValue;
+      DefaultValue? defaultValue;
       if (formalParameter is dart_ast.DefaultFormalParameter) {
-        defaultValue = formalParameter.defaultValue?.toString();
+        try {
+          defaultValue = formalParameter.defaultValue?.accept(
+            const _DefaultValueVisitor(),
+          );
+        } on Object catch (e) {
+          _errors.add(
+            Error(
+              message: e.toString(),
+              lineNumber: calculateLineNumber(source, formalParameter.offset),
+            ),
+          );
+        }
       }
 
       return _formalParameterToPigeonParameter(
@@ -2056,7 +2073,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     return null;
   }
 
-  List<TypeDeclaration> _typeAnnotationsToTypeArguments(
+  static List<TypeDeclaration> _typeAnnotationsToTypeArguments(
     dart_ast.TypeArgumentList? typeArguments,
   ) {
     final List<TypeDeclaration> result = <TypeDeclaration>[];
@@ -2193,9 +2210,27 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         for (final dart_ast.FormalParameter param
             in node.parameters.parameters) {
           if (param is dart_ast.DefaultFormalParameter) {
-            if (param.name != null && param.defaultValue != null) {
-              _currentClassDefaultValues[param.name!.toString()] =
-                  param.defaultValue!.toString();
+            final Token? name = param.name;
+
+            final dart_ast.Expression? defaultValue = param.defaultValue;
+
+            if (name == null || defaultValue == null) {
+              continue;
+            }
+
+            try {
+              final DefaultValue? value = defaultValue.accept(
+                const _DefaultValueVisitor(),
+              );
+
+              _currentClassDefaultValues[name.toString()] = value;
+            } catch (e) {
+              _errors.add(
+                Error(
+                  message: e.toString(),
+                  lineNumber: calculateLineNumber(source, node.offset),
+                ),
+              );
             }
           }
         }
@@ -2338,6 +2373,27 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
 
     return const CallbackAsynchronous();
   }
+
+  /// Ensures that default values are properly stored in class fields.
+  ///
+  /// During the AST parsing process, constructors and fields can be visited
+  /// in different orders. When a constructor with default parameter values
+  /// is visited after the corresponding class fields have already been processed,
+  /// the default values may not be properly associated with their respective fields.
+  void _ensureDefaultValuesStored() {
+    if (_currentClassDefaultValues.isEmpty) {
+      return;
+    }
+
+    for (int i = 0; i < _currentClass!.fields.length; i++) {
+      final NamedType field = _currentClass!.fields[i];
+      final String fieldName = field.name;
+
+      _currentClass!.fields[i] = field.copyWith(
+        defaultValue: _currentClassDefaultValues[fieldName],
+      );
+    }
+  }
 }
 
 int? _calculateLineNumberNullable(String contents, int? offset) {
@@ -2353,4 +2409,166 @@ int calculateLineNumber(String contents, int offset) {
     }
   }
   return result;
+}
+
+class _DefaultValueVisitor
+    extends dart_ast_visitor.SimpleAstVisitor<DefaultValue> {
+  const _DefaultValueVisitor();
+
+  @override
+  DefaultValue? visitSimpleStringLiteral(dart_ast.SimpleStringLiteral node) {
+    return StringLiteral(value: node.value);
+  }
+
+  @override
+  DefaultValue? visitSimpleIdentifier(dart_ast.SimpleIdentifier node) {
+    throw Exception(
+      'Unsupported "${node.name}" in default value "$node"',
+    );
+  }
+
+  @override
+  DefaultValue? visitIntegerLiteral(dart_ast.IntegerLiteral node) {
+    return IntLiteral(value: node.value!);
+  }
+
+  @override
+  DefaultValue? visitDoubleLiteral(dart_ast.DoubleLiteral node) {
+    return DoubleLiteral(value: node.value);
+  }
+
+  @override
+  DefaultValue? visitBooleanLiteral(dart_ast.BooleanLiteral node) {
+    return BoolLiteral(value: node.value);
+  }
+
+  @override
+  DefaultValue? visitListLiteral(dart_ast.ListLiteral node) {
+    final List<DefaultValue> values =
+        node.elements
+            .whereType<dart_ast.Expression>()
+            .map((dart_ast.Expression e) => e.accept(this))
+            .whereType<DefaultValue>()
+            .toList();
+
+    final TypeDeclaration? type =
+        RootBuilder._typeAnnotationsToTypeArguments(
+          node.typeArguments,
+        ).firstOrNull;
+
+    if (type == null) {
+      throw Exception(
+        'Default List value type arguments must be specified.',
+      );
+    }
+
+    return ListLiteral(
+      elements: values,
+      elementType: type,
+    );
+  }
+
+  @override
+  DefaultValue? visitSetOrMapLiteral(dart_ast.SetOrMapLiteral node) {
+    final List<TypeDeclaration> typeArguments =
+        RootBuilder._typeAnnotationsToTypeArguments(
+          node.typeArguments,
+        );
+    final TypeDeclaration? keyType = typeArguments.firstOrNull;
+    final TypeDeclaration? valueType = typeArguments.lastOrNull;
+
+    if (keyType == null || valueType == null) {
+      throw Exception(
+        'Default Map value type arguments must be specified.',
+      );
+    }
+
+    final Map<DefaultValue, DefaultValue> entries =
+        <DefaultValue, DefaultValue>{};
+
+    for (final dart_ast.MapLiteralEntry entry
+        in node.elements.whereType<dart_ast.MapLiteralEntry>()) {
+      final DefaultValue? key = entry.key.accept(this);
+      final DefaultValue? value = entry.value.accept(this);
+
+      if (key != null && value != null) {
+        entries[key] = value;
+      }
+    }
+
+    return MapLiteral(
+      entries: entries,
+      keyType: keyType,
+      valueType: valueType,
+    );
+  }
+
+  @override
+  DefaultValue? visitPrefixedIdentifier(dart_ast.PrefixedIdentifier node) {
+    return EnumLiteral(
+      value: node.identifier.name,
+      name: node.prefix.name,
+    );
+  }
+
+  @override
+  DefaultValue? visitInstanceCreationExpression(
+    dart_ast.InstanceCreationExpression node,
+  ) {
+    final List<DefaultValue> args =
+        node.argumentList.arguments
+            .map((dart_ast.Expression e) => e.accept(this))
+            .whereNotNull()
+            .toList();
+    final TypeDeclaration type = TypeDeclaration(
+      baseName: RootBuilder._getNamedTypeQualifiedName(
+        node.constructorName.type,
+      ),
+      isNullable: node.constructorName.type.question != null,
+      typeArguments: RootBuilder._typeAnnotationsToTypeArguments(
+        node.constructorName.type.typeArguments,
+      ),
+    );
+
+    return ObjectCreation(
+      type: type,
+      arguments: args,
+    );
+  }
+
+  @override
+  DefaultValue? visitNamedExpression(dart_ast.NamedExpression node) {
+    final DefaultValue? defaultValue = node.expression.accept(this);
+
+    if (defaultValue == null) {
+      return null;
+    }
+
+    return NamedDefaultValue(
+      value: defaultValue,
+      name: node.name.label.name,
+    );
+  }
+
+  @override
+  DefaultValue? visitMethodInvocation(dart_ast.MethodInvocation node) {
+    final List<DefaultValue> args =
+        node.argumentList.arguments
+            .map((dart_ast.Expression e) => e.accept(this))
+            .whereNotNull()
+            .toList();
+
+    final TypeDeclaration type = TypeDeclaration(
+      baseName: node.methodName.name,
+      isNullable: false,
+      typeArguments: RootBuilder._typeAnnotationsToTypeArguments(
+        node.typeArguments,
+      ),
+    );
+
+    return ObjectCreation(
+      type: type,
+      arguments: args,
+    );
+  }
 }

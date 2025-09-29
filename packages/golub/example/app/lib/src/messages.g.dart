@@ -57,10 +57,14 @@ enum Code {
 
 class MessageData {
   MessageData({
-    this.name,
-    this.description,
-    required this.code,
-    required this.data,
+    this.name = 'Golub',
+    this.description = 'Example description',
+    this.code = Code.one,
+    this.data = const <String, String>{
+      'hello': 'world',
+      'lorem': 'ipsum',
+      'golub': 'rocks',
+    },
   });
 
   String? name;

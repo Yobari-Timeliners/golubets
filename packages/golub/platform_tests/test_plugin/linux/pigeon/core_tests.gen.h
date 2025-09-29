@@ -1397,6 +1397,656 @@ FlValue* core_tests_pigeon_test_all_classes_wrapper_get_nullable_class_map(
     CoreTestsPigeonTestAllClassesWrapper* object);
 
 /**
+ * CoreTestsPigeonTestAllTypesWithDefaults:
+ *
+ * A class containing all supported types but with default values.
+ */
+
+G_DECLARE_FINAL_TYPE(CoreTestsPigeonTestAllTypesWithDefaults,
+                     core_tests_pigeon_test_all_types_with_defaults,
+                     CORE_TESTS_PIGEON_TEST, ALL_TYPES_WITH_DEFAULTS, GObject)
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_new:
+ * a_bool: field in this object.
+ * an_int: field in this object.
+ * an_int64: field in this object.
+ * a_double: field in this object.
+ * an_enum: field in this object.
+ * another_enum: field in this object.
+ * a_string: field in this object.
+ * an_object: field in this object.
+ * list: field in this object.
+ * string_list: field in this object.
+ * int_list: field in this object.
+ * double_list: field in this object.
+ * bool_list: field in this object.
+ * enum_list: field in this object.
+ * object_list: field in this object.
+ * list_list: field in this object.
+ * map_list: field in this object.
+ * map: field in this object.
+ * string_map: field in this object.
+ * int_map: field in this object.
+ * enum_map: field in this object.
+ * object_map: field in this object.
+ * list_map: field in this object.
+ * map_map: field in this object.
+ * all_types: field in this object.
+ *
+ * Creates a new #AllTypesWithDefaults object.
+ *
+ * Returns: a new #CoreTestsPigeonTestAllTypesWithDefaults
+ */
+CoreTestsPigeonTestAllTypesWithDefaults*
+core_tests_pigeon_test_all_types_with_defaults_new(
+    gboolean a_bool, int64_t an_int, int64_t an_int64, double a_double,
+    CoreTestsPigeonTestAnEnum an_enum,
+    CoreTestsPigeonTestAnotherEnum another_enum, const gchar* a_string,
+    FlValue* an_object, FlValue* list, FlValue* string_list, FlValue* int_list,
+    FlValue* double_list, FlValue* bool_list, FlValue* enum_list,
+    FlValue* object_list, FlValue* list_list, FlValue* map_list, FlValue* map,
+    FlValue* string_map, FlValue* int_map, FlValue* enum_map,
+    FlValue* object_map, FlValue* list_map, FlValue* map_map,
+    CoreTestsPigeonTestImmutableAllTypes* all_types);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_a_bool
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the aBool field of @object.
+ *
+ * Returns: the field value.
+ */
+gboolean core_tests_pigeon_test_all_types_with_defaults_get_a_bool(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_an_int
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the anInt field of @object.
+ *
+ * Returns: the field value.
+ */
+int64_t core_tests_pigeon_test_all_types_with_defaults_get_an_int(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_an_int64
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the anInt64 field of @object.
+ *
+ * Returns: the field value.
+ */
+int64_t core_tests_pigeon_test_all_types_with_defaults_get_an_int64(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_a_double
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the aDouble field of @object.
+ *
+ * Returns: the field value.
+ */
+double core_tests_pigeon_test_all_types_with_defaults_get_a_double(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_an_enum
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the anEnum field of @object.
+ *
+ * Returns: the field value.
+ */
+CoreTestsPigeonTestAnEnum
+core_tests_pigeon_test_all_types_with_defaults_get_an_enum(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_another_enum
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the anotherEnum field of @object.
+ *
+ * Returns: the field value.
+ */
+CoreTestsPigeonTestAnotherEnum
+core_tests_pigeon_test_all_types_with_defaults_get_another_enum(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_a_string
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the aString field of @object.
+ *
+ * Returns: the field value.
+ */
+const gchar* core_tests_pigeon_test_all_types_with_defaults_get_a_string(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_an_object
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the anObject field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_an_object(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_list
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the list field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_list(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_string_list
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the stringList field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_string_list(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_int_list
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the intList field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_int_list(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_double_list
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the doubleList field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_double_list(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_bool_list
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the boolList field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_bool_list(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_enum_list
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the enumList field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_enum_list(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_object_list
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the objectList field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_object_list(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_list_list
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the listList field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_list_list(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_map_list
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the mapList field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_map_list(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_map
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the map field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_map(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_string_map
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the stringMap field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_string_map(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_int_map
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the intMap field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_int_map(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_enum_map
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the enumMap field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_enum_map(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_object_map
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the objectMap field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_object_map(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_list_map
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the listMap field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_list_map(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_map_map
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the mapMap field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_all_types_with_defaults_get_map_map(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * core_tests_pigeon_test_all_types_with_defaults_get_all_types
+ * @object: a #CoreTestsPigeonTestAllTypesWithDefaults.
+ *
+ * Gets the value of the allTypes field of @object.
+ *
+ * Returns: the field value.
+ */
+CoreTestsPigeonTestImmutableAllTypes*
+core_tests_pigeon_test_all_types_with_defaults_get_all_types(
+    CoreTestsPigeonTestAllTypesWithDefaults* object);
+
+/**
+ * CoreTestsPigeonTestImmutableAllTypes:
+ *
+ * A class containing all supported types but immutable.
+ */
+
+G_DECLARE_FINAL_TYPE(CoreTestsPigeonTestImmutableAllTypes,
+                     core_tests_pigeon_test_immutable_all_types,
+                     CORE_TESTS_PIGEON_TEST, IMMUTABLE_ALL_TYPES, GObject)
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_new:
+ * a_bool: field in this object.
+ * an_int: field in this object.
+ * an_int64: field in this object.
+ * a_double: field in this object.
+ * an_enum: field in this object.
+ * another_enum: field in this object.
+ * a_string: field in this object.
+ * an_object: field in this object.
+ * list: field in this object.
+ * string_list: field in this object.
+ * int_list: field in this object.
+ * double_list: field in this object.
+ * bool_list: field in this object.
+ * enum_list: field in this object.
+ * object_list: field in this object.
+ * list_list: field in this object.
+ * map_list: field in this object.
+ * map: field in this object.
+ * string_map: field in this object.
+ * int_map: field in this object.
+ * enum_map: field in this object.
+ * object_map: field in this object.
+ * list_map: field in this object.
+ * map_map: field in this object.
+ *
+ * Creates a new #ImmutableAllTypes object.
+ *
+ * Returns: a new #CoreTestsPigeonTestImmutableAllTypes
+ */
+CoreTestsPigeonTestImmutableAllTypes*
+core_tests_pigeon_test_immutable_all_types_new(
+    gboolean a_bool, int64_t an_int, int64_t an_int64, double a_double,
+    CoreTestsPigeonTestAnEnum an_enum,
+    CoreTestsPigeonTestAnotherEnum another_enum, const gchar* a_string,
+    FlValue* an_object, FlValue* list, FlValue* string_list, FlValue* int_list,
+    FlValue* double_list, FlValue* bool_list, FlValue* enum_list,
+    FlValue* object_list, FlValue* list_list, FlValue* map_list, FlValue* map,
+    FlValue* string_map, FlValue* int_map, FlValue* enum_map,
+    FlValue* object_map, FlValue* list_map, FlValue* map_map);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_a_bool
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the aBool field of @object.
+ *
+ * Returns: the field value.
+ */
+gboolean core_tests_pigeon_test_immutable_all_types_get_a_bool(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_an_int
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the anInt field of @object.
+ *
+ * Returns: the field value.
+ */
+int64_t core_tests_pigeon_test_immutable_all_types_get_an_int(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_an_int64
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the anInt64 field of @object.
+ *
+ * Returns: the field value.
+ */
+int64_t core_tests_pigeon_test_immutable_all_types_get_an_int64(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_a_double
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the aDouble field of @object.
+ *
+ * Returns: the field value.
+ */
+double core_tests_pigeon_test_immutable_all_types_get_a_double(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_an_enum
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the anEnum field of @object.
+ *
+ * Returns: the field value.
+ */
+CoreTestsPigeonTestAnEnum
+core_tests_pigeon_test_immutable_all_types_get_an_enum(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_another_enum
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the anotherEnum field of @object.
+ *
+ * Returns: the field value.
+ */
+CoreTestsPigeonTestAnotherEnum
+core_tests_pigeon_test_immutable_all_types_get_another_enum(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_a_string
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the aString field of @object.
+ *
+ * Returns: the field value.
+ */
+const gchar* core_tests_pigeon_test_immutable_all_types_get_a_string(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_an_object
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the anObject field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_an_object(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_list
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the list field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_list(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_string_list
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the stringList field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_string_list(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_int_list
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the intList field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_int_list(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_double_list
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the doubleList field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_double_list(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_bool_list
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the boolList field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_bool_list(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_enum_list
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the enumList field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_enum_list(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_object_list
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the objectList field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_object_list(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_list_list
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the listList field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_list_list(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_map_list
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the mapList field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_map_list(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_map
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the map field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_map(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_string_map
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the stringMap field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_string_map(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_int_map
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the intMap field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_int_map(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_enum_map
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the enumMap field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_enum_map(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_object_map
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the objectMap field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_object_map(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_list_map
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the listMap field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_list_map(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
+ * core_tests_pigeon_test_immutable_all_types_get_map_map
+ * @object: a #CoreTestsPigeonTestImmutableAllTypes.
+ *
+ * Gets the value of the mapMap field of @object.
+ *
+ * Returns: the field value.
+ */
+FlValue* core_tests_pigeon_test_immutable_all_types_get_map_map(
+    CoreTestsPigeonTestImmutableAllTypes* object);
+
+/**
  * CoreTestsPigeonTestTestMessage:
  *
  * A data class containing a List, used in unit tests.
@@ -1448,6 +2098,8 @@ extern const int core_tests_pigeon_test_all_nullable_types_type_id;
 extern const int
     core_tests_pigeon_test_all_nullable_types_without_recursion_type_id;
 extern const int core_tests_pigeon_test_all_classes_wrapper_type_id;
+extern const int core_tests_pigeon_test_all_types_with_defaults_type_id;
+extern const int core_tests_pigeon_test_immutable_all_types_type_id;
 extern const int core_tests_pigeon_test_test_message_type_id;
 
 G_DECLARE_FINAL_TYPE(CoreTestsPigeonTestHostIntegrationCoreApi,
@@ -2416,6 +3068,74 @@ core_tests_pigeon_test_host_integration_core_api_echo_optional_default_double_re
  */
 CoreTestsPigeonTestHostIntegrationCoreApiEchoOptionalDefaultDoubleResponse*
 core_tests_pigeon_test_host_integration_core_api_echo_optional_default_double_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details);
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsPigeonTestHostIntegrationCoreApiCreateAllTypesWithDefaultsResponse,
+    core_tests_pigeon_test_host_integration_core_api_create_all_types_with_defaults_response,
+    CORE_TESTS_PIGEON_TEST,
+    HOST_INTEGRATION_CORE_API_CREATE_ALL_TYPES_WITH_DEFAULTS_RESPONSE, GObject)
+
+/**
+ * core_tests_pigeon_test_host_integration_core_api_create_all_types_with_defaults_response_new:
+ *
+ * Creates a new response to HostIntegrationCoreApi.createAllTypesWithDefaults.
+ *
+ * Returns: a new
+ * #CoreTestsPigeonTestHostIntegrationCoreApiCreateAllTypesWithDefaultsResponse
+ */
+CoreTestsPigeonTestHostIntegrationCoreApiCreateAllTypesWithDefaultsResponse*
+core_tests_pigeon_test_host_integration_core_api_create_all_types_with_defaults_response_new(
+    CoreTestsPigeonTestAllTypesWithDefaults* return_value);
+
+/**
+ * core_tests_pigeon_test_host_integration_core_api_create_all_types_with_defaults_response_new_error:
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Creates a new error response to
+ * HostIntegrationCoreApi.createAllTypesWithDefaults.
+ *
+ * Returns: a new
+ * #CoreTestsPigeonTestHostIntegrationCoreApiCreateAllTypesWithDefaultsResponse
+ */
+CoreTestsPigeonTestHostIntegrationCoreApiCreateAllTypesWithDefaultsResponse*
+core_tests_pigeon_test_host_integration_core_api_create_all_types_with_defaults_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details);
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsPigeonTestHostIntegrationCoreApiEchoAllTypesWithDefaultsResponse,
+    core_tests_pigeon_test_host_integration_core_api_echo_all_types_with_defaults_response,
+    CORE_TESTS_PIGEON_TEST,
+    HOST_INTEGRATION_CORE_API_ECHO_ALL_TYPES_WITH_DEFAULTS_RESPONSE, GObject)
+
+/**
+ * core_tests_pigeon_test_host_integration_core_api_echo_all_types_with_defaults_response_new:
+ *
+ * Creates a new response to HostIntegrationCoreApi.echoAllTypesWithDefaults.
+ *
+ * Returns: a new
+ * #CoreTestsPigeonTestHostIntegrationCoreApiEchoAllTypesWithDefaultsResponse
+ */
+CoreTestsPigeonTestHostIntegrationCoreApiEchoAllTypesWithDefaultsResponse*
+core_tests_pigeon_test_host_integration_core_api_echo_all_types_with_defaults_response_new(
+    CoreTestsPigeonTestAllTypesWithDefaults* return_value);
+
+/**
+ * core_tests_pigeon_test_host_integration_core_api_echo_all_types_with_defaults_response_new_error:
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Creates a new error response to
+ * HostIntegrationCoreApi.echoAllTypesWithDefaults.
+ *
+ * Returns: a new
+ * #CoreTestsPigeonTestHostIntegrationCoreApiEchoAllTypesWithDefaultsResponse
+ */
+CoreTestsPigeonTestHostIntegrationCoreApiEchoAllTypesWithDefaultsResponse*
+core_tests_pigeon_test_host_integration_core_api_echo_all_types_with_defaults_response_new_error(
     const gchar* code, const gchar* message, FlValue* details);
 
 G_DECLARE_FINAL_TYPE(
@@ -3603,6 +4323,11 @@ typedef struct {
       *echo_named_default_string)(const gchar* a_string, gpointer user_data);
   CoreTestsPigeonTestHostIntegrationCoreApiEchoOptionalDefaultDoubleResponse* (
       *echo_optional_default_double)(double a_double, gpointer user_data);
+  CoreTestsPigeonTestHostIntegrationCoreApiCreateAllTypesWithDefaultsResponse* (
+      *create_all_types_with_defaults)(gpointer user_data);
+  CoreTestsPigeonTestHostIntegrationCoreApiEchoAllTypesWithDefaultsResponse* (
+      *echo_all_types_with_defaults)(
+      CoreTestsPigeonTestAllTypesWithDefaults* all_types, gpointer user_data);
   CoreTestsPigeonTestHostIntegrationCoreApiEchoRequiredIntResponse* (
       *echo_required_int)(int64_t an_int, gpointer user_data);
   CoreTestsPigeonTestHostIntegrationCoreApiEchoAllNullableTypesResponse* (

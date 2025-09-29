@@ -2704,6 +2704,1419 @@ public class CoreTests {
   }
 
   /**
+   * A class containing all supported types but with default values.
+   *
+   * <p>Generated class from Pigeon that represents data sent in messages.
+   */
+  public static final class AllTypesWithDefaults {
+    private @NonNull Boolean aBool;
+
+    public @NonNull Boolean getABool() {
+      return aBool;
+    }
+
+    public void setABool(@NonNull Boolean setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"aBool\" is null.");
+      }
+      this.aBool = setterArg;
+    }
+
+    private @NonNull Long anInt;
+
+    public @NonNull Long getAnInt() {
+      return anInt;
+    }
+
+    public void setAnInt(@NonNull Long setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"anInt\" is null.");
+      }
+      this.anInt = setterArg;
+    }
+
+    private @NonNull Long anInt64;
+
+    public @NonNull Long getAnInt64() {
+      return anInt64;
+    }
+
+    public void setAnInt64(@NonNull Long setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"anInt64\" is null.");
+      }
+      this.anInt64 = setterArg;
+    }
+
+    private @NonNull Double aDouble;
+
+    public @NonNull Double getADouble() {
+      return aDouble;
+    }
+
+    public void setADouble(@NonNull Double setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"aDouble\" is null.");
+      }
+      this.aDouble = setterArg;
+    }
+
+    private @NonNull AnEnum anEnum;
+
+    public @NonNull AnEnum getAnEnum() {
+      return anEnum;
+    }
+
+    public void setAnEnum(@NonNull AnEnum setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"anEnum\" is null.");
+      }
+      this.anEnum = setterArg;
+    }
+
+    private @NonNull AnotherEnum anotherEnum;
+
+    public @NonNull AnotherEnum getAnotherEnum() {
+      return anotherEnum;
+    }
+
+    public void setAnotherEnum(@NonNull AnotherEnum setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"anotherEnum\" is null.");
+      }
+      this.anotherEnum = setterArg;
+    }
+
+    private @NonNull String aString;
+
+    public @NonNull String getAString() {
+      return aString;
+    }
+
+    public void setAString(@NonNull String setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"aString\" is null.");
+      }
+      this.aString = setterArg;
+    }
+
+    private @NonNull Object anObject;
+
+    public @NonNull Object getAnObject() {
+      return anObject;
+    }
+
+    public void setAnObject(@NonNull Object setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"anObject\" is null.");
+      }
+      this.anObject = setterArg;
+    }
+
+    private @NonNull List<Object> list;
+
+    public @NonNull List<Object> getList() {
+      return list;
+    }
+
+    public void setList(@NonNull List<Object> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"list\" is null.");
+      }
+      this.list = setterArg;
+    }
+
+    private @NonNull List<String> stringList;
+
+    public @NonNull List<String> getStringList() {
+      return stringList;
+    }
+
+    public void setStringList(@NonNull List<String> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"stringList\" is null.");
+      }
+      this.stringList = setterArg;
+    }
+
+    private @NonNull List<Long> intList;
+
+    public @NonNull List<Long> getIntList() {
+      return intList;
+    }
+
+    public void setIntList(@NonNull List<Long> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"intList\" is null.");
+      }
+      this.intList = setterArg;
+    }
+
+    private @NonNull List<Double> doubleList;
+
+    public @NonNull List<Double> getDoubleList() {
+      return doubleList;
+    }
+
+    public void setDoubleList(@NonNull List<Double> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"doubleList\" is null.");
+      }
+      this.doubleList = setterArg;
+    }
+
+    private @NonNull List<Boolean> boolList;
+
+    public @NonNull List<Boolean> getBoolList() {
+      return boolList;
+    }
+
+    public void setBoolList(@NonNull List<Boolean> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"boolList\" is null.");
+      }
+      this.boolList = setterArg;
+    }
+
+    private @NonNull List<AnEnum> enumList;
+
+    public @NonNull List<AnEnum> getEnumList() {
+      return enumList;
+    }
+
+    public void setEnumList(@NonNull List<AnEnum> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"enumList\" is null.");
+      }
+      this.enumList = setterArg;
+    }
+
+    private @NonNull List<Object> objectList;
+
+    public @NonNull List<Object> getObjectList() {
+      return objectList;
+    }
+
+    public void setObjectList(@NonNull List<Object> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"objectList\" is null.");
+      }
+      this.objectList = setterArg;
+    }
+
+    private @NonNull List<List<Object>> listList;
+
+    public @NonNull List<List<Object>> getListList() {
+      return listList;
+    }
+
+    public void setListList(@NonNull List<List<Object>> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"listList\" is null.");
+      }
+      this.listList = setterArg;
+    }
+
+    private @NonNull List<Map<Object, Object>> mapList;
+
+    public @NonNull List<Map<Object, Object>> getMapList() {
+      return mapList;
+    }
+
+    public void setMapList(@NonNull List<Map<Object, Object>> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"mapList\" is null.");
+      }
+      this.mapList = setterArg;
+    }
+
+    private @NonNull Map<Object, Object> map;
+
+    public @NonNull Map<Object, Object> getMap() {
+      return map;
+    }
+
+    public void setMap(@NonNull Map<Object, Object> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"map\" is null.");
+      }
+      this.map = setterArg;
+    }
+
+    private @NonNull Map<String, String> stringMap;
+
+    public @NonNull Map<String, String> getStringMap() {
+      return stringMap;
+    }
+
+    public void setStringMap(@NonNull Map<String, String> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"stringMap\" is null.");
+      }
+      this.stringMap = setterArg;
+    }
+
+    private @NonNull Map<Long, Long> intMap;
+
+    public @NonNull Map<Long, Long> getIntMap() {
+      return intMap;
+    }
+
+    public void setIntMap(@NonNull Map<Long, Long> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"intMap\" is null.");
+      }
+      this.intMap = setterArg;
+    }
+
+    private @NonNull Map<AnEnum, AnEnum> enumMap;
+
+    public @NonNull Map<AnEnum, AnEnum> getEnumMap() {
+      return enumMap;
+    }
+
+    public void setEnumMap(@NonNull Map<AnEnum, AnEnum> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"enumMap\" is null.");
+      }
+      this.enumMap = setterArg;
+    }
+
+    private @NonNull Map<Object, Object> objectMap;
+
+    public @NonNull Map<Object, Object> getObjectMap() {
+      return objectMap;
+    }
+
+    public void setObjectMap(@NonNull Map<Object, Object> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"objectMap\" is null.");
+      }
+      this.objectMap = setterArg;
+    }
+
+    private @NonNull Map<Long, List<Object>> listMap;
+
+    public @NonNull Map<Long, List<Object>> getListMap() {
+      return listMap;
+    }
+
+    public void setListMap(@NonNull Map<Long, List<Object>> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"listMap\" is null.");
+      }
+      this.listMap = setterArg;
+    }
+
+    private @NonNull Map<Long, Map<Object, Object>> mapMap;
+
+    public @NonNull Map<Long, Map<Object, Object>> getMapMap() {
+      return mapMap;
+    }
+
+    public void setMapMap(@NonNull Map<Long, Map<Object, Object>> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"mapMap\" is null.");
+      }
+      this.mapMap = setterArg;
+    }
+
+    private @NonNull ImmutableAllTypes allTypes;
+
+    public @NonNull ImmutableAllTypes getAllTypes() {
+      return allTypes;
+    }
+
+    public void setAllTypes(@NonNull ImmutableAllTypes setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"allTypes\" is null.");
+      }
+      this.allTypes = setterArg;
+    }
+
+    /** Constructor is non-public to enforce null safety; use Builder. */
+    AllTypesWithDefaults() {}
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+      AllTypesWithDefaults that = (AllTypesWithDefaults) o;
+      return aBool.equals(that.aBool)
+          && anInt.equals(that.anInt)
+          && anInt64.equals(that.anInt64)
+          && aDouble.equals(that.aDouble)
+          && anEnum.equals(that.anEnum)
+          && anotherEnum.equals(that.anotherEnum)
+          && aString.equals(that.aString)
+          && anObject.equals(that.anObject)
+          && list.equals(that.list)
+          && stringList.equals(that.stringList)
+          && intList.equals(that.intList)
+          && doubleList.equals(that.doubleList)
+          && boolList.equals(that.boolList)
+          && enumList.equals(that.enumList)
+          && objectList.equals(that.objectList)
+          && listList.equals(that.listList)
+          && mapList.equals(that.mapList)
+          && map.equals(that.map)
+          && stringMap.equals(that.stringMap)
+          && intMap.equals(that.intMap)
+          && enumMap.equals(that.enumMap)
+          && objectMap.equals(that.objectMap)
+          && listMap.equals(that.listMap)
+          && mapMap.equals(that.mapMap)
+          && allTypes.equals(that.allTypes);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(
+          aBool,
+          anInt,
+          anInt64,
+          aDouble,
+          anEnum,
+          anotherEnum,
+          aString,
+          anObject,
+          list,
+          stringList,
+          intList,
+          doubleList,
+          boolList,
+          enumList,
+          objectList,
+          listList,
+          mapList,
+          map,
+          stringMap,
+          intMap,
+          enumMap,
+          objectMap,
+          listMap,
+          mapMap,
+          allTypes);
+    }
+
+    public static final class Builder {
+
+      private @Nullable Boolean aBool;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setABool(@NonNull Boolean setterArg) {
+        this.aBool = setterArg;
+        return this;
+      }
+
+      private @Nullable Long anInt;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setAnInt(@NonNull Long setterArg) {
+        this.anInt = setterArg;
+        return this;
+      }
+
+      private @Nullable Long anInt64;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setAnInt64(@NonNull Long setterArg) {
+        this.anInt64 = setterArg;
+        return this;
+      }
+
+      private @Nullable Double aDouble;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setADouble(@NonNull Double setterArg) {
+        this.aDouble = setterArg;
+        return this;
+      }
+
+      private @Nullable AnEnum anEnum;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setAnEnum(@NonNull AnEnum setterArg) {
+        this.anEnum = setterArg;
+        return this;
+      }
+
+      private @Nullable AnotherEnum anotherEnum;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setAnotherEnum(@NonNull AnotherEnum setterArg) {
+        this.anotherEnum = setterArg;
+        return this;
+      }
+
+      private @Nullable String aString;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setAString(@NonNull String setterArg) {
+        this.aString = setterArg;
+        return this;
+      }
+
+      private @Nullable Object anObject;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setAnObject(@NonNull Object setterArg) {
+        this.anObject = setterArg;
+        return this;
+      }
+
+      private @Nullable List<Object> list;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setList(@NonNull List<Object> setterArg) {
+        this.list = setterArg;
+        return this;
+      }
+
+      private @Nullable List<String> stringList;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setStringList(@NonNull List<String> setterArg) {
+        this.stringList = setterArg;
+        return this;
+      }
+
+      private @Nullable List<Long> intList;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setIntList(@NonNull List<Long> setterArg) {
+        this.intList = setterArg;
+        return this;
+      }
+
+      private @Nullable List<Double> doubleList;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setDoubleList(@NonNull List<Double> setterArg) {
+        this.doubleList = setterArg;
+        return this;
+      }
+
+      private @Nullable List<Boolean> boolList;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setBoolList(@NonNull List<Boolean> setterArg) {
+        this.boolList = setterArg;
+        return this;
+      }
+
+      private @Nullable List<AnEnum> enumList;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setEnumList(@NonNull List<AnEnum> setterArg) {
+        this.enumList = setterArg;
+        return this;
+      }
+
+      private @Nullable List<Object> objectList;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setObjectList(@NonNull List<Object> setterArg) {
+        this.objectList = setterArg;
+        return this;
+      }
+
+      private @Nullable List<List<Object>> listList;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setListList(@NonNull List<List<Object>> setterArg) {
+        this.listList = setterArg;
+        return this;
+      }
+
+      private @Nullable List<Map<Object, Object>> mapList;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setMapList(@NonNull List<Map<Object, Object>> setterArg) {
+        this.mapList = setterArg;
+        return this;
+      }
+
+      private @Nullable Map<Object, Object> map;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setMap(@NonNull Map<Object, Object> setterArg) {
+        this.map = setterArg;
+        return this;
+      }
+
+      private @Nullable Map<String, String> stringMap;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setStringMap(@NonNull Map<String, String> setterArg) {
+        this.stringMap = setterArg;
+        return this;
+      }
+
+      private @Nullable Map<Long, Long> intMap;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setIntMap(@NonNull Map<Long, Long> setterArg) {
+        this.intMap = setterArg;
+        return this;
+      }
+
+      private @Nullable Map<AnEnum, AnEnum> enumMap;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setEnumMap(@NonNull Map<AnEnum, AnEnum> setterArg) {
+        this.enumMap = setterArg;
+        return this;
+      }
+
+      private @Nullable Map<Object, Object> objectMap;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setObjectMap(@NonNull Map<Object, Object> setterArg) {
+        this.objectMap = setterArg;
+        return this;
+      }
+
+      private @Nullable Map<Long, List<Object>> listMap;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setListMap(@NonNull Map<Long, List<Object>> setterArg) {
+        this.listMap = setterArg;
+        return this;
+      }
+
+      private @Nullable Map<Long, Map<Object, Object>> mapMap;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setMapMap(@NonNull Map<Long, Map<Object, Object>> setterArg) {
+        this.mapMap = setterArg;
+        return this;
+      }
+
+      private @Nullable ImmutableAllTypes allTypes;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setAllTypes(@NonNull ImmutableAllTypes setterArg) {
+        this.allTypes = setterArg;
+        return this;
+      }
+
+      public @NonNull AllTypesWithDefaults build() {
+        AllTypesWithDefaults pigeonReturn = new AllTypesWithDefaults();
+        pigeonReturn.setABool(aBool);
+        pigeonReturn.setAnInt(anInt);
+        pigeonReturn.setAnInt64(anInt64);
+        pigeonReturn.setADouble(aDouble);
+        pigeonReturn.setAnEnum(anEnum);
+        pigeonReturn.setAnotherEnum(anotherEnum);
+        pigeonReturn.setAString(aString);
+        pigeonReturn.setAnObject(anObject);
+        pigeonReturn.setList(list);
+        pigeonReturn.setStringList(stringList);
+        pigeonReturn.setIntList(intList);
+        pigeonReturn.setDoubleList(doubleList);
+        pigeonReturn.setBoolList(boolList);
+        pigeonReturn.setEnumList(enumList);
+        pigeonReturn.setObjectList(objectList);
+        pigeonReturn.setListList(listList);
+        pigeonReturn.setMapList(mapList);
+        pigeonReturn.setMap(map);
+        pigeonReturn.setStringMap(stringMap);
+        pigeonReturn.setIntMap(intMap);
+        pigeonReturn.setEnumMap(enumMap);
+        pigeonReturn.setObjectMap(objectMap);
+        pigeonReturn.setListMap(listMap);
+        pigeonReturn.setMapMap(mapMap);
+        pigeonReturn.setAllTypes(allTypes);
+        return pigeonReturn;
+      }
+    }
+
+    @NonNull
+    ArrayList<Object> toList() {
+      ArrayList<Object> toListResult = new ArrayList<>(25);
+      toListResult.add(aBool);
+      toListResult.add(anInt);
+      toListResult.add(anInt64);
+      toListResult.add(aDouble);
+      toListResult.add(anEnum);
+      toListResult.add(anotherEnum);
+      toListResult.add(aString);
+      toListResult.add(anObject);
+      toListResult.add(list);
+      toListResult.add(stringList);
+      toListResult.add(intList);
+      toListResult.add(doubleList);
+      toListResult.add(boolList);
+      toListResult.add(enumList);
+      toListResult.add(objectList);
+      toListResult.add(listList);
+      toListResult.add(mapList);
+      toListResult.add(map);
+      toListResult.add(stringMap);
+      toListResult.add(intMap);
+      toListResult.add(enumMap);
+      toListResult.add(objectMap);
+      toListResult.add(listMap);
+      toListResult.add(mapMap);
+      toListResult.add(allTypes);
+      return toListResult;
+    }
+
+    static @NonNull AllTypesWithDefaults fromList(@NonNull ArrayList<Object> pigeonVar_list) {
+      AllTypesWithDefaults pigeonResult = new AllTypesWithDefaults();
+      Object aBool = pigeonVar_list.get(0);
+      pigeonResult.setABool((Boolean) aBool);
+      Object anInt = pigeonVar_list.get(1);
+      pigeonResult.setAnInt((Long) anInt);
+      Object anInt64 = pigeonVar_list.get(2);
+      pigeonResult.setAnInt64((Long) anInt64);
+      Object aDouble = pigeonVar_list.get(3);
+      pigeonResult.setADouble((Double) aDouble);
+      Object anEnum = pigeonVar_list.get(4);
+      pigeonResult.setAnEnum((AnEnum) anEnum);
+      Object anotherEnum = pigeonVar_list.get(5);
+      pigeonResult.setAnotherEnum((AnotherEnum) anotherEnum);
+      Object aString = pigeonVar_list.get(6);
+      pigeonResult.setAString((String) aString);
+      Object anObject = pigeonVar_list.get(7);
+      pigeonResult.setAnObject(anObject);
+      Object list = pigeonVar_list.get(8);
+      pigeonResult.setList((List<Object>) list);
+      Object stringList = pigeonVar_list.get(9);
+      pigeonResult.setStringList((List<String>) stringList);
+      Object intList = pigeonVar_list.get(10);
+      pigeonResult.setIntList((List<Long>) intList);
+      Object doubleList = pigeonVar_list.get(11);
+      pigeonResult.setDoubleList((List<Double>) doubleList);
+      Object boolList = pigeonVar_list.get(12);
+      pigeonResult.setBoolList((List<Boolean>) boolList);
+      Object enumList = pigeonVar_list.get(13);
+      pigeonResult.setEnumList((List<AnEnum>) enumList);
+      Object objectList = pigeonVar_list.get(14);
+      pigeonResult.setObjectList((List<Object>) objectList);
+      Object listList = pigeonVar_list.get(15);
+      pigeonResult.setListList((List<List<Object>>) listList);
+      Object mapList = pigeonVar_list.get(16);
+      pigeonResult.setMapList((List<Map<Object, Object>>) mapList);
+      Object map = pigeonVar_list.get(17);
+      pigeonResult.setMap((Map<Object, Object>) map);
+      Object stringMap = pigeonVar_list.get(18);
+      pigeonResult.setStringMap((Map<String, String>) stringMap);
+      Object intMap = pigeonVar_list.get(19);
+      pigeonResult.setIntMap((Map<Long, Long>) intMap);
+      Object enumMap = pigeonVar_list.get(20);
+      pigeonResult.setEnumMap((Map<AnEnum, AnEnum>) enumMap);
+      Object objectMap = pigeonVar_list.get(21);
+      pigeonResult.setObjectMap((Map<Object, Object>) objectMap);
+      Object listMap = pigeonVar_list.get(22);
+      pigeonResult.setListMap((Map<Long, List<Object>>) listMap);
+      Object mapMap = pigeonVar_list.get(23);
+      pigeonResult.setMapMap((Map<Long, Map<Object, Object>>) mapMap);
+      Object allTypes = pigeonVar_list.get(24);
+      pigeonResult.setAllTypes((ImmutableAllTypes) allTypes);
+      return pigeonResult;
+    }
+  }
+
+  /**
+   * A class containing all supported types but immutable.
+   *
+   * <p>Generated class from Pigeon that represents data sent in messages.
+   */
+  public static final class ImmutableAllTypes {
+    private @NonNull Boolean aBool;
+
+    public @NonNull Boolean getABool() {
+      return aBool;
+    }
+
+    public void setABool(@NonNull Boolean setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"aBool\" is null.");
+      }
+      this.aBool = setterArg;
+    }
+
+    private @NonNull Long anInt;
+
+    public @NonNull Long getAnInt() {
+      return anInt;
+    }
+
+    public void setAnInt(@NonNull Long setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"anInt\" is null.");
+      }
+      this.anInt = setterArg;
+    }
+
+    private @NonNull Long anInt64;
+
+    public @NonNull Long getAnInt64() {
+      return anInt64;
+    }
+
+    public void setAnInt64(@NonNull Long setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"anInt64\" is null.");
+      }
+      this.anInt64 = setterArg;
+    }
+
+    private @NonNull Double aDouble;
+
+    public @NonNull Double getADouble() {
+      return aDouble;
+    }
+
+    public void setADouble(@NonNull Double setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"aDouble\" is null.");
+      }
+      this.aDouble = setterArg;
+    }
+
+    private @NonNull AnEnum anEnum;
+
+    public @NonNull AnEnum getAnEnum() {
+      return anEnum;
+    }
+
+    public void setAnEnum(@NonNull AnEnum setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"anEnum\" is null.");
+      }
+      this.anEnum = setterArg;
+    }
+
+    private @NonNull AnotherEnum anotherEnum;
+
+    public @NonNull AnotherEnum getAnotherEnum() {
+      return anotherEnum;
+    }
+
+    public void setAnotherEnum(@NonNull AnotherEnum setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"anotherEnum\" is null.");
+      }
+      this.anotherEnum = setterArg;
+    }
+
+    private @NonNull String aString;
+
+    public @NonNull String getAString() {
+      return aString;
+    }
+
+    public void setAString(@NonNull String setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"aString\" is null.");
+      }
+      this.aString = setterArg;
+    }
+
+    private @NonNull Object anObject;
+
+    public @NonNull Object getAnObject() {
+      return anObject;
+    }
+
+    public void setAnObject(@NonNull Object setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"anObject\" is null.");
+      }
+      this.anObject = setterArg;
+    }
+
+    private @NonNull List<Object> list;
+
+    public @NonNull List<Object> getList() {
+      return list;
+    }
+
+    public void setList(@NonNull List<Object> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"list\" is null.");
+      }
+      this.list = setterArg;
+    }
+
+    private @NonNull List<String> stringList;
+
+    public @NonNull List<String> getStringList() {
+      return stringList;
+    }
+
+    public void setStringList(@NonNull List<String> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"stringList\" is null.");
+      }
+      this.stringList = setterArg;
+    }
+
+    private @NonNull List<Long> intList;
+
+    public @NonNull List<Long> getIntList() {
+      return intList;
+    }
+
+    public void setIntList(@NonNull List<Long> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"intList\" is null.");
+      }
+      this.intList = setterArg;
+    }
+
+    private @NonNull List<Double> doubleList;
+
+    public @NonNull List<Double> getDoubleList() {
+      return doubleList;
+    }
+
+    public void setDoubleList(@NonNull List<Double> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"doubleList\" is null.");
+      }
+      this.doubleList = setterArg;
+    }
+
+    private @NonNull List<Boolean> boolList;
+
+    public @NonNull List<Boolean> getBoolList() {
+      return boolList;
+    }
+
+    public void setBoolList(@NonNull List<Boolean> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"boolList\" is null.");
+      }
+      this.boolList = setterArg;
+    }
+
+    private @NonNull List<AnEnum> enumList;
+
+    public @NonNull List<AnEnum> getEnumList() {
+      return enumList;
+    }
+
+    public void setEnumList(@NonNull List<AnEnum> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"enumList\" is null.");
+      }
+      this.enumList = setterArg;
+    }
+
+    private @NonNull List<Object> objectList;
+
+    public @NonNull List<Object> getObjectList() {
+      return objectList;
+    }
+
+    public void setObjectList(@NonNull List<Object> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"objectList\" is null.");
+      }
+      this.objectList = setterArg;
+    }
+
+    private @NonNull List<List<Object>> listList;
+
+    public @NonNull List<List<Object>> getListList() {
+      return listList;
+    }
+
+    public void setListList(@NonNull List<List<Object>> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"listList\" is null.");
+      }
+      this.listList = setterArg;
+    }
+
+    private @NonNull List<Map<Object, Object>> mapList;
+
+    public @NonNull List<Map<Object, Object>> getMapList() {
+      return mapList;
+    }
+
+    public void setMapList(@NonNull List<Map<Object, Object>> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"mapList\" is null.");
+      }
+      this.mapList = setterArg;
+    }
+
+    private @NonNull Map<Object, Object> map;
+
+    public @NonNull Map<Object, Object> getMap() {
+      return map;
+    }
+
+    public void setMap(@NonNull Map<Object, Object> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"map\" is null.");
+      }
+      this.map = setterArg;
+    }
+
+    private @NonNull Map<String, String> stringMap;
+
+    public @NonNull Map<String, String> getStringMap() {
+      return stringMap;
+    }
+
+    public void setStringMap(@NonNull Map<String, String> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"stringMap\" is null.");
+      }
+      this.stringMap = setterArg;
+    }
+
+    private @NonNull Map<Long, Long> intMap;
+
+    public @NonNull Map<Long, Long> getIntMap() {
+      return intMap;
+    }
+
+    public void setIntMap(@NonNull Map<Long, Long> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"intMap\" is null.");
+      }
+      this.intMap = setterArg;
+    }
+
+    private @NonNull Map<AnEnum, AnEnum> enumMap;
+
+    public @NonNull Map<AnEnum, AnEnum> getEnumMap() {
+      return enumMap;
+    }
+
+    public void setEnumMap(@NonNull Map<AnEnum, AnEnum> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"enumMap\" is null.");
+      }
+      this.enumMap = setterArg;
+    }
+
+    private @NonNull Map<Object, Object> objectMap;
+
+    public @NonNull Map<Object, Object> getObjectMap() {
+      return objectMap;
+    }
+
+    public void setObjectMap(@NonNull Map<Object, Object> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"objectMap\" is null.");
+      }
+      this.objectMap = setterArg;
+    }
+
+    private @NonNull Map<Long, List<Object>> listMap;
+
+    public @NonNull Map<Long, List<Object>> getListMap() {
+      return listMap;
+    }
+
+    public void setListMap(@NonNull Map<Long, List<Object>> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"listMap\" is null.");
+      }
+      this.listMap = setterArg;
+    }
+
+    private @NonNull Map<Long, Map<Object, Object>> mapMap;
+
+    public @NonNull Map<Long, Map<Object, Object>> getMapMap() {
+      return mapMap;
+    }
+
+    public void setMapMap(@NonNull Map<Long, Map<Object, Object>> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"mapMap\" is null.");
+      }
+      this.mapMap = setterArg;
+    }
+
+    /** Constructor is non-public to enforce null safety; use Builder. */
+    ImmutableAllTypes() {}
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+      ImmutableAllTypes that = (ImmutableAllTypes) o;
+      return aBool.equals(that.aBool)
+          && anInt.equals(that.anInt)
+          && anInt64.equals(that.anInt64)
+          && aDouble.equals(that.aDouble)
+          && anEnum.equals(that.anEnum)
+          && anotherEnum.equals(that.anotherEnum)
+          && aString.equals(that.aString)
+          && anObject.equals(that.anObject)
+          && list.equals(that.list)
+          && stringList.equals(that.stringList)
+          && intList.equals(that.intList)
+          && doubleList.equals(that.doubleList)
+          && boolList.equals(that.boolList)
+          && enumList.equals(that.enumList)
+          && objectList.equals(that.objectList)
+          && listList.equals(that.listList)
+          && mapList.equals(that.mapList)
+          && map.equals(that.map)
+          && stringMap.equals(that.stringMap)
+          && intMap.equals(that.intMap)
+          && enumMap.equals(that.enumMap)
+          && objectMap.equals(that.objectMap)
+          && listMap.equals(that.listMap)
+          && mapMap.equals(that.mapMap);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(
+          aBool,
+          anInt,
+          anInt64,
+          aDouble,
+          anEnum,
+          anotherEnum,
+          aString,
+          anObject,
+          list,
+          stringList,
+          intList,
+          doubleList,
+          boolList,
+          enumList,
+          objectList,
+          listList,
+          mapList,
+          map,
+          stringMap,
+          intMap,
+          enumMap,
+          objectMap,
+          listMap,
+          mapMap);
+    }
+
+    public static final class Builder {
+
+      private @Nullable Boolean aBool;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setABool(@NonNull Boolean setterArg) {
+        this.aBool = setterArg;
+        return this;
+      }
+
+      private @Nullable Long anInt;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setAnInt(@NonNull Long setterArg) {
+        this.anInt = setterArg;
+        return this;
+      }
+
+      private @Nullable Long anInt64;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setAnInt64(@NonNull Long setterArg) {
+        this.anInt64 = setterArg;
+        return this;
+      }
+
+      private @Nullable Double aDouble;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setADouble(@NonNull Double setterArg) {
+        this.aDouble = setterArg;
+        return this;
+      }
+
+      private @Nullable AnEnum anEnum;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setAnEnum(@NonNull AnEnum setterArg) {
+        this.anEnum = setterArg;
+        return this;
+      }
+
+      private @Nullable AnotherEnum anotherEnum;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setAnotherEnum(@NonNull AnotherEnum setterArg) {
+        this.anotherEnum = setterArg;
+        return this;
+      }
+
+      private @Nullable String aString;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setAString(@NonNull String setterArg) {
+        this.aString = setterArg;
+        return this;
+      }
+
+      private @Nullable Object anObject;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setAnObject(@NonNull Object setterArg) {
+        this.anObject = setterArg;
+        return this;
+      }
+
+      private @Nullable List<Object> list;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setList(@NonNull List<Object> setterArg) {
+        this.list = setterArg;
+        return this;
+      }
+
+      private @Nullable List<String> stringList;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setStringList(@NonNull List<String> setterArg) {
+        this.stringList = setterArg;
+        return this;
+      }
+
+      private @Nullable List<Long> intList;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setIntList(@NonNull List<Long> setterArg) {
+        this.intList = setterArg;
+        return this;
+      }
+
+      private @Nullable List<Double> doubleList;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setDoubleList(@NonNull List<Double> setterArg) {
+        this.doubleList = setterArg;
+        return this;
+      }
+
+      private @Nullable List<Boolean> boolList;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setBoolList(@NonNull List<Boolean> setterArg) {
+        this.boolList = setterArg;
+        return this;
+      }
+
+      private @Nullable List<AnEnum> enumList;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setEnumList(@NonNull List<AnEnum> setterArg) {
+        this.enumList = setterArg;
+        return this;
+      }
+
+      private @Nullable List<Object> objectList;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setObjectList(@NonNull List<Object> setterArg) {
+        this.objectList = setterArg;
+        return this;
+      }
+
+      private @Nullable List<List<Object>> listList;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setListList(@NonNull List<List<Object>> setterArg) {
+        this.listList = setterArg;
+        return this;
+      }
+
+      private @Nullable List<Map<Object, Object>> mapList;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setMapList(@NonNull List<Map<Object, Object>> setterArg) {
+        this.mapList = setterArg;
+        return this;
+      }
+
+      private @Nullable Map<Object, Object> map;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setMap(@NonNull Map<Object, Object> setterArg) {
+        this.map = setterArg;
+        return this;
+      }
+
+      private @Nullable Map<String, String> stringMap;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setStringMap(@NonNull Map<String, String> setterArg) {
+        this.stringMap = setterArg;
+        return this;
+      }
+
+      private @Nullable Map<Long, Long> intMap;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setIntMap(@NonNull Map<Long, Long> setterArg) {
+        this.intMap = setterArg;
+        return this;
+      }
+
+      private @Nullable Map<AnEnum, AnEnum> enumMap;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setEnumMap(@NonNull Map<AnEnum, AnEnum> setterArg) {
+        this.enumMap = setterArg;
+        return this;
+      }
+
+      private @Nullable Map<Object, Object> objectMap;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setObjectMap(@NonNull Map<Object, Object> setterArg) {
+        this.objectMap = setterArg;
+        return this;
+      }
+
+      private @Nullable Map<Long, List<Object>> listMap;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setListMap(@NonNull Map<Long, List<Object>> setterArg) {
+        this.listMap = setterArg;
+        return this;
+      }
+
+      private @Nullable Map<Long, Map<Object, Object>> mapMap;
+
+      @CanIgnoreReturnValue
+      public @NonNull Builder setMapMap(@NonNull Map<Long, Map<Object, Object>> setterArg) {
+        this.mapMap = setterArg;
+        return this;
+      }
+
+      public @NonNull ImmutableAllTypes build() {
+        ImmutableAllTypes pigeonReturn = new ImmutableAllTypes();
+        pigeonReturn.setABool(aBool);
+        pigeonReturn.setAnInt(anInt);
+        pigeonReturn.setAnInt64(anInt64);
+        pigeonReturn.setADouble(aDouble);
+        pigeonReturn.setAnEnum(anEnum);
+        pigeonReturn.setAnotherEnum(anotherEnum);
+        pigeonReturn.setAString(aString);
+        pigeonReturn.setAnObject(anObject);
+        pigeonReturn.setList(list);
+        pigeonReturn.setStringList(stringList);
+        pigeonReturn.setIntList(intList);
+        pigeonReturn.setDoubleList(doubleList);
+        pigeonReturn.setBoolList(boolList);
+        pigeonReturn.setEnumList(enumList);
+        pigeonReturn.setObjectList(objectList);
+        pigeonReturn.setListList(listList);
+        pigeonReturn.setMapList(mapList);
+        pigeonReturn.setMap(map);
+        pigeonReturn.setStringMap(stringMap);
+        pigeonReturn.setIntMap(intMap);
+        pigeonReturn.setEnumMap(enumMap);
+        pigeonReturn.setObjectMap(objectMap);
+        pigeonReturn.setListMap(listMap);
+        pigeonReturn.setMapMap(mapMap);
+        return pigeonReturn;
+      }
+    }
+
+    @NonNull
+    ArrayList<Object> toList() {
+      ArrayList<Object> toListResult = new ArrayList<>(24);
+      toListResult.add(aBool);
+      toListResult.add(anInt);
+      toListResult.add(anInt64);
+      toListResult.add(aDouble);
+      toListResult.add(anEnum);
+      toListResult.add(anotherEnum);
+      toListResult.add(aString);
+      toListResult.add(anObject);
+      toListResult.add(list);
+      toListResult.add(stringList);
+      toListResult.add(intList);
+      toListResult.add(doubleList);
+      toListResult.add(boolList);
+      toListResult.add(enumList);
+      toListResult.add(objectList);
+      toListResult.add(listList);
+      toListResult.add(mapList);
+      toListResult.add(map);
+      toListResult.add(stringMap);
+      toListResult.add(intMap);
+      toListResult.add(enumMap);
+      toListResult.add(objectMap);
+      toListResult.add(listMap);
+      toListResult.add(mapMap);
+      return toListResult;
+    }
+
+    static @NonNull ImmutableAllTypes fromList(@NonNull ArrayList<Object> pigeonVar_list) {
+      ImmutableAllTypes pigeonResult = new ImmutableAllTypes();
+      Object aBool = pigeonVar_list.get(0);
+      pigeonResult.setABool((Boolean) aBool);
+      Object anInt = pigeonVar_list.get(1);
+      pigeonResult.setAnInt((Long) anInt);
+      Object anInt64 = pigeonVar_list.get(2);
+      pigeonResult.setAnInt64((Long) anInt64);
+      Object aDouble = pigeonVar_list.get(3);
+      pigeonResult.setADouble((Double) aDouble);
+      Object anEnum = pigeonVar_list.get(4);
+      pigeonResult.setAnEnum((AnEnum) anEnum);
+      Object anotherEnum = pigeonVar_list.get(5);
+      pigeonResult.setAnotherEnum((AnotherEnum) anotherEnum);
+      Object aString = pigeonVar_list.get(6);
+      pigeonResult.setAString((String) aString);
+      Object anObject = pigeonVar_list.get(7);
+      pigeonResult.setAnObject(anObject);
+      Object list = pigeonVar_list.get(8);
+      pigeonResult.setList((List<Object>) list);
+      Object stringList = pigeonVar_list.get(9);
+      pigeonResult.setStringList((List<String>) stringList);
+      Object intList = pigeonVar_list.get(10);
+      pigeonResult.setIntList((List<Long>) intList);
+      Object doubleList = pigeonVar_list.get(11);
+      pigeonResult.setDoubleList((List<Double>) doubleList);
+      Object boolList = pigeonVar_list.get(12);
+      pigeonResult.setBoolList((List<Boolean>) boolList);
+      Object enumList = pigeonVar_list.get(13);
+      pigeonResult.setEnumList((List<AnEnum>) enumList);
+      Object objectList = pigeonVar_list.get(14);
+      pigeonResult.setObjectList((List<Object>) objectList);
+      Object listList = pigeonVar_list.get(15);
+      pigeonResult.setListList((List<List<Object>>) listList);
+      Object mapList = pigeonVar_list.get(16);
+      pigeonResult.setMapList((List<Map<Object, Object>>) mapList);
+      Object map = pigeonVar_list.get(17);
+      pigeonResult.setMap((Map<Object, Object>) map);
+      Object stringMap = pigeonVar_list.get(18);
+      pigeonResult.setStringMap((Map<String, String>) stringMap);
+      Object intMap = pigeonVar_list.get(19);
+      pigeonResult.setIntMap((Map<Long, Long>) intMap);
+      Object enumMap = pigeonVar_list.get(20);
+      pigeonResult.setEnumMap((Map<AnEnum, AnEnum>) enumMap);
+      Object objectMap = pigeonVar_list.get(21);
+      pigeonResult.setObjectMap((Map<Object, Object>) objectMap);
+      Object listMap = pigeonVar_list.get(22);
+      pigeonResult.setListMap((Map<Long, List<Object>>) listMap);
+      Object mapMap = pigeonVar_list.get(23);
+      pigeonResult.setMapMap((Map<Long, Map<Object, Object>>) mapMap);
+      return pigeonResult;
+    }
+  }
+
+  /**
    * A data class containing a List, used in unit tests.
    *
    * <p>Generated class from Pigeon that represents data sent in messages.
@@ -2797,6 +4210,10 @@ public class CoreTests {
         case (byte) 135:
           return AllClassesWrapper.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 136:
+          return AllTypesWithDefaults.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 137:
+          return ImmutableAllTypes.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 138:
           return TestMessage.fromList((ArrayList<Object>) readValue(buffer));
         default:
           return super.readValueOfType(type, buffer);
@@ -2826,8 +4243,14 @@ public class CoreTests {
       } else if (value instanceof AllClassesWrapper) {
         stream.write(135);
         writeValue(stream, ((AllClassesWrapper) value).toList());
-      } else if (value instanceof TestMessage) {
+      } else if (value instanceof AllTypesWithDefaults) {
         stream.write(136);
+        writeValue(stream, ((AllTypesWithDefaults) value).toList());
+      } else if (value instanceof ImmutableAllTypes) {
+        stream.write(137);
+        writeValue(stream, ((ImmutableAllTypes) value).toList());
+      } else if (value instanceof TestMessage) {
+        stream.write(138);
         writeValue(stream, ((TestMessage) value).toList());
       } else {
         super.writeValue(stream, value);
@@ -2956,6 +4379,15 @@ public class CoreTests {
     /** Returns passed in double. */
     @NonNull
     Double echoOptionalDefaultDouble(@NonNull Double aDouble);
+    /** Returns a new AllTypesWithDefaults instance with all default values. */
+    @NonNull
+    AllTypesWithDefaults createAllTypesWithDefaults();
+    /**
+     * Returns an AllTypesWithDefaults instance, verifying default values work in cross-platform
+     * communication.
+     */
+    @NonNull
+    AllTypesWithDefaults echoAllTypesWithDefaults(@NonNull AllTypesWithDefaults allTypes);
     /** Returns passed in int. */
     @NonNull
     Long echoRequiredInt(@NonNull Long anInt);
@@ -4108,6 +5540,54 @@ public class CoreTests {
                 Double aDoubleArg = (Double) args.get(0);
                 try {
                   Double output = api.echoOptionalDefaultDouble(aDoubleArg);
+                  wrapped.add(0, output);
+                } catch (Throwable exception) {
+                  wrapped = wrapError(exception);
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger,
+                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.createAllTypesWithDefaults"
+                    + messageChannelSuffix,
+                getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<>();
+                try {
+                  AllTypesWithDefaults output = api.createAllTypesWithDefaults();
+                  wrapped.add(0, output);
+                } catch (Throwable exception) {
+                  wrapped = wrapError(exception);
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger,
+                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoAllTypesWithDefaults"
+                    + messageChannelSuffix,
+                getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                AllTypesWithDefaults allTypesArg = (AllTypesWithDefaults) args.get(0);
+                try {
+                  AllTypesWithDefaults output = api.echoAllTypesWithDefaults(allTypesArg);
                   wrapped.add(0, output);
                 } catch (Throwable exception) {
                   wrapped = wrapError(exception);

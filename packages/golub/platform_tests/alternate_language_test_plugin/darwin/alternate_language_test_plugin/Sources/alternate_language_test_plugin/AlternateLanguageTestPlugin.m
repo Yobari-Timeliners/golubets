@@ -50,6 +50,41 @@
   return everything;
 }
 
+- (nullable FLTAllTypesWithDefaults *)createAllTypesWithDefaults:
+    (FlutterError *_Nullable *_Nonnull)error {
+  return [FLTAllTypesWithDefaults makeWithABool:nil
+                                          anInt:nil
+                                        anInt64:nil
+                                        aDouble:nil
+                                         anEnum:FLTAnEnumOne
+                                    anotherEnum:FLTAnotherEnumJustInCase
+                                        aString:nil
+                                       anObject:nil
+                                           list:nil
+                                     stringList:nil
+                                        intList:nil
+                                     doubleList:nil
+                                       boolList:nil
+                                       enumList:nil
+                                     objectList:nil
+                                       listList:nil
+                                        mapList:nil
+                                            map:nil
+                                      stringMap:nil
+                                         intMap:nil
+                                        enumMap:nil
+                                      objectMap:nil
+                                        listMap:nil
+                                         mapMap:nil
+                                       allTypes:nil];
+}
+
+- (nullable FLTAllTypesWithDefaults *)echoAllTypesWithDefaults:(FLTAllTypesWithDefaults *)allTypes
+                                                         error:(FlutterError *_Nullable *_Nonnull)
+                                                                   error {
+  return allTypes;
+}
+
 - (nullable id)throwErrorWithError:(FlutterError *_Nullable *_Nonnull)error {
   *error = [FlutterError errorWithCode:@"An error" message:nil details:nil];
   return nil;

@@ -234,9 +234,10 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
             field.documentationComments,
             docCommentSpec,
           );
-
+          final String finalKeyword =
+              classDefinition.isImmutable ? 'final ' : '';
           final String datatype = addGenericTypesNullable(field.type);
-          indent.writeln('$datatype ${field.name};');
+          indent.writeln('$finalKeyword$datatype ${field.name};');
           indent.newln();
         }
       }
@@ -269,18 +270,24 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
   }
 
   void _writeConstructor(Indent indent, Class classDefinition) {
-    indent.write(classDefinition.name);
+    final String constKeyword = classDefinition.isImmutable ? 'const ' : '';
+
+    indent.write('$constKeyword${classDefinition.name}');
     indent.addScoped('({', '});', () {
       for (final NamedType field in getFieldsInSerializationOrder(
         classDefinition,
       )) {
+        final DefaultValue? defaultValue = field.defaultValue;
         final String required =
-            !field.type.isNullable && field.defaultValue == null
-                ? 'required '
-                : '';
-        final String defaultValueString =
-            field.defaultValue == null ? '' : ' = ${field.defaultValue}';
-        indent.writeln('${required}this.${field.name}$defaultValueString,');
+            !field.type.isNullable && defaultValue == null ? 'required ' : '';
+
+        if (defaultValue == null) {
+          indent.writeln('${required}this.${field.name},');
+        } else {
+          indent.write('${required}this.${field.name} = ');
+          defaultValue.write(indent, prefix: '');
+          indent.addln(',');
+        }
       }
     });
   }
@@ -1581,12 +1588,17 @@ String _getMethodParameterSignature(
 
   String getParameterString(Parameter p) {
     final String required = p.isRequired && !p.isPositional ? 'required ' : '';
-
     final String type = addGenericTypesNullable(p.type);
+    final DefaultValue? defaultValue = p.defaultValue;
 
-    final String defaultValue =
-        p.defaultValue == null ? '' : ' = ${p.defaultValue}';
-    return '$required$type ${p.name}$defaultValue';
+    if (defaultValue == null) {
+      return '$required$type ${p.name}';
+    } else {
+      final StringBuffer buffer = StringBuffer('$required$type ${p.name} = ');
+      final Indent indent = Indent(buffer);
+      defaultValue.write(indent, prefix: '');
+      return buffer.toString();
+    }
   }
 
   final String baseParameterString = requiredPositionalParams
@@ -1667,4 +1679,97 @@ String addGenericTypesNullable(TypeDeclaration type) {
 String _posixify(String inputPath) {
   final path.Context context = path.Context(style: path.Style.posix);
   return context.fromUri(path.toUri(path.absolute(inputPath)));
+}
+
+extension on DefaultValue {
+  /// [prefix] - used for pretty formatting.
+  void write(Indent indent, {String? prefix}) {
+    prefix = prefix ?? indent.str();
+
+    return switch (this) {
+      StringLiteral(:final String value) => indent.add("$prefix'$value'"),
+      IntLiteral(:final int value) => indent.add('$prefix$value'),
+      DoubleLiteral(:final double value) => indent.add('$prefix$value'),
+      BoolLiteral(:final bool value) => indent.add('$prefix$value'),
+      ListLiteral(
+        :final List<DefaultValue> elements,
+        :final TypeDeclaration elementType,
+      ) =>
+        elements.isEmpty
+            ? indent.add(
+              '${prefix}const <${addGenericTypesNullable(elementType)}>[]',
+            )
+            : indent.addScoped(
+              '${prefix}const <${addGenericTypesNullable(elementType)}>[',
+              ']',
+              () {
+                for (final DefaultValue element in elements) {
+                  element.write(indent);
+                  indent.addln(', ');
+                }
+              },
+              addTrailingNewline: false,
+            ),
+      MapLiteral(
+        :final Map<DefaultValue, DefaultValue> entries,
+        :final TypeDeclaration keyType,
+        :final TypeDeclaration valueType,
+      ) =>
+        entries.isEmpty
+            ? indent.add(
+              '${prefix}const <${addGenericTypesNullable(keyType)}, ${addGenericTypesNullable(valueType)}>{}',
+            )
+            : indent.addScoped(
+              '${prefix}const <${addGenericTypesNullable(keyType)}, ${addGenericTypesNullable(valueType)}>{',
+              '}',
+              () {
+                for (final MapEntry<DefaultValue, DefaultValue> entry
+                    in entries.entries) {
+                  entry.key.write(indent);
+                  indent.add(': ');
+                  entry.value.write(indent, prefix: '');
+                  indent.addln(', ');
+                }
+              },
+              addTrailingNewline: false,
+            ),
+      EnumLiteral(:final String name, :final String value) => indent.add(
+        '$prefix$name.$value',
+      ),
+      ObjectCreation(
+        :final TypeDeclaration type,
+        :final List<DefaultValue> arguments,
+      ) =>
+        () {
+          indent.add('${prefix}const ${type.baseName}');
+
+          if (arguments.isEmpty) {
+            indent.add('()');
+            return;
+          }
+
+          indent.addScoped(
+            '(',
+            ')',
+            () {
+              for (final DefaultValue argument in arguments) {
+                argument.write(indent);
+                argument == arguments.last
+                    ? indent.newln()
+                    : indent.addln(', ');
+              }
+            },
+            addTrailingNewline: false,
+          );
+        }(),
+      NamedDefaultValue(
+        :final String name,
+        :final DefaultValue value,
+      ) =>
+        () {
+          indent.add('$prefix$name: ');
+          value.write(indent, prefix: '');
+        }(),
+    };
+  }
 }

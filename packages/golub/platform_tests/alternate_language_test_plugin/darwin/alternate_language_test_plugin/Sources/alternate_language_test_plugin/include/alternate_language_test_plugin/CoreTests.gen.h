@@ -43,6 +43,8 @@ typedef NS_ENUM(NSUInteger, FLTAnotherEnum) {
 @class FLTAllNullableTypes;
 @class FLTAllNullableTypesWithoutRecursion;
 @class FLTAllClassesWrapper;
+@class FLTAllTypesWithDefaults;
+@class FLTImmutableAllTypes;
 @class FLTTestMessage;
 
 @interface FLTUnusedClass : NSObject
@@ -276,6 +278,116 @@ typedef NS_ENUM(NSUInteger, FLTAnotherEnum) {
     NSDictionary<NSNumber *, FLTAllNullableTypesWithoutRecursion *> *nullableClassMap;
 @end
 
+/// A class containing all supported types but with default values.
+@interface FLTAllTypesWithDefaults : NSObject
+/// `init` unavailable to enforce nonnull fields, see the `make` class method.
+- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)makeWithABool:(BOOL)aBool
+                        anInt:(NSInteger)anInt
+                      anInt64:(NSInteger)anInt64
+                      aDouble:(double)aDouble
+                       anEnum:(FLTAnEnum)anEnum
+                  anotherEnum:(FLTAnotherEnum)anotherEnum
+                      aString:(NSString *)aString
+                     anObject:(id)anObject
+                         list:(NSArray<id> *)list
+                   stringList:(NSArray<NSString *> *)stringList
+                      intList:(NSArray<NSNumber *> *)intList
+                   doubleList:(NSArray<NSNumber *> *)doubleList
+                     boolList:(NSArray<NSNumber *> *)boolList
+                     enumList:(NSArray<FLTAnEnumBox *> *)enumList
+                   objectList:(NSArray<id> *)objectList
+                     listList:(NSArray<NSArray<id> *> *)listList
+                      mapList:(NSArray<NSDictionary<id, id> *> *)mapList
+                          map:(NSDictionary *)map
+                    stringMap:(NSDictionary<NSString *, NSString *> *)stringMap
+                       intMap:(NSDictionary<NSNumber *, NSNumber *> *)intMap
+                      enumMap:(NSDictionary<FLTAnEnumBox *, FLTAnEnumBox *> *)enumMap
+                    objectMap:(NSDictionary<id, id> *)objectMap
+                      listMap:(NSDictionary<NSNumber *, NSArray<id> *> *)listMap
+                       mapMap:(NSDictionary<NSNumber *, NSDictionary<id, id> *> *)mapMap
+                     allTypes:(FLTImmutableAllTypes *)allTypes;
+@property(nonatomic, assign) BOOL aBool;
+@property(nonatomic, assign) NSInteger anInt;
+@property(nonatomic, assign) NSInteger anInt64;
+@property(nonatomic, assign) double aDouble;
+@property(nonatomic, assign) FLTAnEnum anEnum;
+@property(nonatomic, assign) FLTAnotherEnum anotherEnum;
+@property(nonatomic, copy) NSString *aString;
+@property(nonatomic, strong) id anObject;
+@property(nonatomic, copy) NSArray<id> *list;
+@property(nonatomic, copy) NSArray<NSString *> *stringList;
+@property(nonatomic, copy) NSArray<NSNumber *> *intList;
+@property(nonatomic, copy) NSArray<NSNumber *> *doubleList;
+@property(nonatomic, copy) NSArray<NSNumber *> *boolList;
+@property(nonatomic, copy) NSArray<FLTAnEnumBox *> *enumList;
+@property(nonatomic, copy) NSArray<id> *objectList;
+@property(nonatomic, copy) NSArray<NSArray<id> *> *listList;
+@property(nonatomic, copy) NSArray<NSDictionary<id, id> *> *mapList;
+@property(nonatomic, copy) NSDictionary *map;
+@property(nonatomic, copy) NSDictionary<NSString *, NSString *> *stringMap;
+@property(nonatomic, copy) NSDictionary<NSNumber *, NSNumber *> *intMap;
+@property(nonatomic, copy) NSDictionary<FLTAnEnumBox *, FLTAnEnumBox *> *enumMap;
+@property(nonatomic, copy) NSDictionary<id, id> *objectMap;
+@property(nonatomic, copy) NSDictionary<NSNumber *, NSArray<id> *> *listMap;
+@property(nonatomic, copy) NSDictionary<NSNumber *, NSDictionary<id, id> *> *mapMap;
+@property(nonatomic, strong) FLTImmutableAllTypes *allTypes;
+@end
+
+/// A class containing all supported types but immutable.
+@interface FLTImmutableAllTypes : NSObject
+/// `init` unavailable to enforce nonnull fields, see the `make` class method.
+- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)makeWithABool:(BOOL)aBool
+                        anInt:(NSInteger)anInt
+                      anInt64:(NSInteger)anInt64
+                      aDouble:(double)aDouble
+                       anEnum:(FLTAnEnum)anEnum
+                  anotherEnum:(FLTAnotherEnum)anotherEnum
+                      aString:(NSString *)aString
+                     anObject:(id)anObject
+                         list:(NSArray<id> *)list
+                   stringList:(NSArray<NSString *> *)stringList
+                      intList:(NSArray<NSNumber *> *)intList
+                   doubleList:(NSArray<NSNumber *> *)doubleList
+                     boolList:(NSArray<NSNumber *> *)boolList
+                     enumList:(NSArray<FLTAnEnumBox *> *)enumList
+                   objectList:(NSArray<id> *)objectList
+                     listList:(NSArray<NSArray<id> *> *)listList
+                      mapList:(NSArray<NSDictionary<id, id> *> *)mapList
+                          map:(NSDictionary *)map
+                    stringMap:(NSDictionary<NSString *, NSString *> *)stringMap
+                       intMap:(NSDictionary<NSNumber *, NSNumber *> *)intMap
+                      enumMap:(NSDictionary<FLTAnEnumBox *, FLTAnEnumBox *> *)enumMap
+                    objectMap:(NSDictionary<id, id> *)objectMap
+                      listMap:(NSDictionary<NSNumber *, NSArray<id> *> *)listMap
+                       mapMap:(NSDictionary<NSNumber *, NSDictionary<id, id> *> *)mapMap;
+@property(nonatomic, assign) BOOL aBool;
+@property(nonatomic, assign) NSInteger anInt;
+@property(nonatomic, assign) NSInteger anInt64;
+@property(nonatomic, assign) double aDouble;
+@property(nonatomic, assign) FLTAnEnum anEnum;
+@property(nonatomic, assign) FLTAnotherEnum anotherEnum;
+@property(nonatomic, copy) NSString *aString;
+@property(nonatomic, strong) id anObject;
+@property(nonatomic, copy) NSArray<id> *list;
+@property(nonatomic, copy) NSArray<NSString *> *stringList;
+@property(nonatomic, copy) NSArray<NSNumber *> *intList;
+@property(nonatomic, copy) NSArray<NSNumber *> *doubleList;
+@property(nonatomic, copy) NSArray<NSNumber *> *boolList;
+@property(nonatomic, copy) NSArray<FLTAnEnumBox *> *enumList;
+@property(nonatomic, copy) NSArray<id> *objectList;
+@property(nonatomic, copy) NSArray<NSArray<id> *> *listList;
+@property(nonatomic, copy) NSArray<NSDictionary<id, id> *> *mapList;
+@property(nonatomic, copy) NSDictionary *map;
+@property(nonatomic, copy) NSDictionary<NSString *, NSString *> *stringMap;
+@property(nonatomic, copy) NSDictionary<NSNumber *, NSNumber *> *intMap;
+@property(nonatomic, copy) NSDictionary<FLTAnEnumBox *, FLTAnEnumBox *> *enumMap;
+@property(nonatomic, copy) NSDictionary<id, id> *objectMap;
+@property(nonatomic, copy) NSDictionary<NSNumber *, NSArray<id> *> *listMap;
+@property(nonatomic, copy) NSDictionary<NSNumber *, NSDictionary<id, id> *> *mapMap;
+@end
+
 /// A data class containing a List, used in unit tests.
 @interface FLTTestMessage : NSObject
 + (instancetype)makeWithTestList:(nullable NSArray<id> *)testList;
@@ -433,6 +545,18 @@ NSObject<FlutterMessageCodec> *FLTGetCoreTestsCodec(void);
 /// @return `nil` only when `error != nil`.
 - (nullable NSNumber *)echoOptionalDefaultDouble:(double)aDouble
                                            error:(FlutterError *_Nullable *_Nonnull)error;
+/// Returns a new AllTypesWithDefaults instance with all default values.
+///
+/// @return `nil` only when `error != nil`.
+- (nullable FLTAllTypesWithDefaults *)createAllTypesWithDefaults:
+    (FlutterError *_Nullable *_Nonnull)error;
+/// Returns an AllTypesWithDefaults instance, verifying default values work in cross-platform
+/// communication.
+///
+/// @return `nil` only when `error != nil`.
+- (nullable FLTAllTypesWithDefaults *)echoAllTypesWithDefaults:(FLTAllTypesWithDefaults *)allTypes
+                                                         error:(FlutterError *_Nullable *_Nonnull)
+                                                                   error;
 /// Returns passed in int.
 ///
 /// @return `nil` only when `error != nil`.

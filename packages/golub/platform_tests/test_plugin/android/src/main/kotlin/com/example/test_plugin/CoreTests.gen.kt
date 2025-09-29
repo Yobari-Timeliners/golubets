@@ -138,18 +138,18 @@ data class UnusedClass(val aField: Any? = null) {
  * Generated class from Pigeon that represents data sent in messages.
  */
 data class AllTypes(
-    val aBool: Boolean,
-    val anInt: Long,
-    val anInt64: Long,
-    val aDouble: Double,
+    val aBool: Boolean = false,
+    val anInt: Long = 0L,
+    val anInt64: Long = 0L,
+    val aDouble: Double = 0.0,
     val aByteArray: ByteArray,
     val a4ByteArray: IntArray,
     val a8ByteArray: LongArray,
     val aFloatArray: DoubleArray,
-    val anEnum: AnEnum,
-    val anotherEnum: AnotherEnum,
-    val aString: String,
-    val anObject: Any,
+    val anEnum: AnEnum = AnEnum.ONE,
+    val anotherEnum: AnotherEnum = AnotherEnum.JUST_IN_CASE,
+    val aString: String = "",
+    val anObject: Any = 0L,
     val list: List<Any?>,
     val stringList: List<String>,
     val intList: List<Long>,
@@ -638,6 +638,671 @@ data class AllClassesWrapper(
 }
 
 /**
+ * A class containing all supported types but with default values.
+ *
+ * Generated class from Pigeon that represents data sent in messages.
+ */
+data class AllTypesWithDefaults(
+    val aBool: Boolean = false,
+    val anInt: Long = 0L,
+    val anInt64: Long = 0L,
+    val aDouble: Double = 0.0,
+    val anEnum: AnEnum = AnEnum.ONE,
+    val anotherEnum: AnotherEnum = AnotherEnum.JUST_IN_CASE,
+    val aString: String = "",
+    val anObject: Any = 0L,
+    val list: List<Any?> =
+        listOf(
+            1L,
+            "string",
+            3.0,
+            true,
+            AnEnum.FORTY_TWO,
+            listOf<Any?>(),
+            mapOf(
+                "hello" to "world",
+            )),
+    val stringList: List<String> = listOf("hello", "world"),
+    val intList: List<Long> = listOf(1L, 2L, 3L),
+    val doubleList: List<Double> = listOf(1.0, 2.0, 3.0, 5.0, 10.0, 20.0, 3.0),
+    val boolList: List<Boolean> = listOf(true, false, true),
+    val enumList: List<AnEnum> =
+        listOf(
+            AnEnum.ONE, AnEnum.TWO, AnEnum.THREE, AnEnum.FORTY_TWO, AnEnum.FOUR_HUNDRED_TWENTY_TWO),
+    val objectList: List<Any> =
+        listOf(
+            1L,
+            "string",
+            3.0,
+            true,
+            AnEnum.FORTY_TWO,
+            listOf<Any?>(),
+            mapOf(
+                "hello" to "world",
+            )),
+    val listList: List<List<Any?>> =
+        listOf(
+            listOf(1L, 2L, 3L),
+            listOf("hello", "world"),
+            listOf(true, false, true),
+            listOf(AnEnum.ONE, AnEnum.TWO, AnEnum.THREE),
+            listOf(listOf<Any?>(), listOf(1L, 2L, 3L)),
+            listOf(
+                mapOf(
+                    "hello" to "world",
+                ),
+                mapOf(
+                    "lorem" to "ipsum",
+                )),
+            listOf(listOf<Any?>(), listOf(1L, 2L, 3L)),
+            listOf(
+                mapOf(
+                    "hello" to 0.0,
+                    "world" to 1.0,
+                ))),
+    val mapList: List<Map<Any?, Any?>> =
+        listOf(
+            mapOf(
+                1L to "hello",
+                2L to "world",
+            ),
+            mapOf(
+                "hello" to 1L,
+                "world" to 2L,
+            ),
+            mapOf(
+                AnEnum.ONE to "hello",
+                AnEnum.TWO to "world",
+            ),
+            mapOf(
+                "hello" to AnEnum.ONE,
+                "world" to AnEnum.TWO,
+            ),
+            mapOf(
+                1L to listOf(1L, 2L, 3L),
+                2L to listOf("hello", "world"),
+            ),
+            mapOf(
+                "hello" to
+                    mapOf(
+                        "hello" to "world",
+                    ),
+                "lorem" to
+                    mapOf(
+                        "lorem" to "ipsum",
+                    ),
+            ),
+            mapOf(
+                AnEnum.ONE to
+                    mapOf(
+                        "hello" to 0.0,
+                        "world" to 1.0,
+                    ),
+            )),
+    val map: Map<Any, Any?> =
+        mapOf(
+            1L to "hello",
+            "world" to 2.0,
+            AnEnum.ONE to "hello",
+            "worldEnum" to AnEnum.TWO,
+            "list" to listOf(1L, 2L, 3L),
+            "map" to
+                mapOf(
+                    "hello" to "world",
+                ),
+            "mapDouble" to
+                mapOf(
+                    "hello" to 2.0,
+                    "world" to 3.0,
+                ),
+        ),
+    val stringMap: Map<String, String> =
+        mapOf(
+            "hello" to "world",
+            "lorem" to "ipsum",
+            "golub" to "rocks",
+        ),
+    val intMap: Map<Long, Long> =
+        mapOf(
+            1L to 2L,
+            3L to 4L,
+            5L to 6L,
+        ),
+    val enumMap: Map<AnEnum, AnEnum> =
+        mapOf(
+            AnEnum.ONE to AnEnum.TWO,
+            AnEnum.THREE to AnEnum.FORTY_TWO,
+            AnEnum.FOUR_HUNDRED_TWENTY_TWO to AnEnum.ONE,
+        ),
+    val objectMap: Map<Any, Any> =
+        mapOf(
+            1L to "hello",
+            "world" to 2.0,
+            AnEnum.ONE to "hello",
+            "worldEnum" to AnEnum.TWO,
+            "list" to listOf(1L, 2L, 3L),
+            "map" to
+                mapOf(
+                    "hello" to "world",
+                ),
+            "doubleMap" to
+                mapOf(
+                    1L to 1.0,
+                    2L to 0.0,
+                    3L to 3.0,
+                ),
+        ),
+    val listMap: Map<Long, List<Any?>> =
+        mapOf(
+            1L to listOf(1L, 2L, 3L),
+            2L to listOf("hello", "world"),
+            3L to listOf(true, false, true),
+            4L to listOf(AnEnum.ONE, AnEnum.TWO, AnEnum.THREE),
+            5L to listOf(listOf<Any?>(), listOf(1L, 2L, 3L)),
+            6L to
+                listOf(
+                    mapOf(
+                        "hello" to "world",
+                    ),
+                    mapOf(
+                        "lorem" to "ipsum",
+                    )),
+            7L to listOf(2L, 3.0, 5L, 10L, 20.0, 3L),
+        ),
+    val mapMap: Map<Long, Map<Any?, Any?>> =
+        mapOf(
+            1L to
+                mapOf(
+                    1L to "hello",
+                    2L to "world",
+                ),
+            2L to
+                mapOf(
+                    "hello" to 1L,
+                    "world" to 2L,
+                ),
+            3L to
+                mapOf(
+                    AnEnum.ONE to "hello",
+                    AnEnum.TWO to "world",
+                ),
+            4L to
+                mapOf(
+                    "hello" to AnEnum.ONE,
+                    "world" to AnEnum.TWO,
+                ),
+            5L to
+                mapOf(
+                    1L to listOf(1L, 2L, 3L),
+                    2L to listOf("hello", "world"),
+                ),
+            6L to
+                mapOf(
+                    "hello" to
+                        mapOf(
+                            "hello" to "world",
+                        ),
+                    "lorem" to
+                        mapOf(
+                            "lorem" to "ipsum",
+                        ),
+                ),
+            7L to
+                mapOf(
+                    AnEnum.ONE to
+                        mapOf(
+                            "hello" to 0.0,
+                            "world" to 1.0,
+                        ),
+                ),
+        ),
+    val allTypes: ImmutableAllTypes =
+        ImmutableAllTypes(
+            aBool = false,
+            anInt = 0L,
+            anInt64 = 0L,
+            aDouble = 0.0,
+            anEnum = AnEnum.ONE,
+            anotherEnum = AnotherEnum.JUST_IN_CASE,
+            aString = "some string",
+            anObject = 0L,
+            list =
+                listOf(
+                    1L,
+                    "string",
+                    3.0,
+                    true,
+                    AnEnum.FORTY_TWO,
+                    listOf<Any?>(),
+                    mapOf(
+                        "hello" to "world",
+                    )),
+            stringList = listOf("hello", "world"),
+            intList = listOf(1L, 2L, 3L),
+            doubleList = listOf(1.0, 2.0, 3.0, 5.0, 10.0, 20.0, 3.0),
+            boolList = listOf(true, false, true),
+            enumList =
+                listOf(
+                    AnEnum.ONE,
+                    AnEnum.TWO,
+                    AnEnum.THREE,
+                    AnEnum.FORTY_TWO,
+                    AnEnum.FOUR_HUNDRED_TWENTY_TWO),
+            objectList =
+                listOf(
+                    1L,
+                    "string",
+                    3.0,
+                    true,
+                    AnEnum.FORTY_TWO,
+                    listOf<Any?>(),
+                    mapOf(
+                        "hello" to "world",
+                    )),
+            listList =
+                listOf(
+                    listOf(1L, 2L, 3L),
+                    listOf("hello", "world"),
+                    listOf(true, false, true),
+                    listOf(AnEnum.ONE, AnEnum.TWO, AnEnum.THREE),
+                    listOf(listOf<Any?>(), listOf(1L, 2L, 3L)),
+                    listOf(
+                        mapOf(
+                            "hello" to "world",
+                        ),
+                        mapOf(
+                            "lorem" to "ipsum",
+                        )),
+                    listOf(listOf<Any?>(), listOf(1L, 2L, 3L)),
+                    listOf(
+                        mapOf(
+                            "hello" to 0.0,
+                            "world" to 1.0,
+                        ))),
+            mapList =
+                listOf(
+                    mapOf(
+                        1L to "hello",
+                        2L to "world",
+                    ),
+                    mapOf(
+                        "hello" to 1L,
+                        "world" to 2L,
+                    ),
+                    mapOf(
+                        AnEnum.ONE to "hello",
+                        AnEnum.TWO to "world",
+                    ),
+                    mapOf(
+                        "hello" to AnEnum.ONE,
+                        "world" to AnEnum.TWO,
+                    ),
+                    mapOf(
+                        1L to listOf(1L, 2L, 3L),
+                        2L to listOf("hello", "world"),
+                    ),
+                    mapOf(
+                        "hello" to
+                            mapOf(
+                                "hello" to "world",
+                            ),
+                        "lorem" to
+                            mapOf(
+                                "lorem" to "ipsum",
+                            ),
+                    ),
+                    mapOf(
+                        AnEnum.ONE to
+                            mapOf(
+                                "hello" to 0.0,
+                                "world" to 1.0,
+                            ),
+                    )),
+            map =
+                mapOf(
+                    1L to "hello",
+                    "world" to 2.0,
+                    AnEnum.ONE to "hello",
+                    "worldEnum" to AnEnum.TWO,
+                    "list" to listOf(1L, 2L, 3L),
+                    "map" to
+                        mapOf(
+                            "hello" to "world",
+                        ),
+                    "mapDouble" to
+                        mapOf(
+                            "hello" to 2.0,
+                            "world" to 3.0,
+                        ),
+                ),
+            stringMap =
+                mapOf(
+                    "hello" to "world",
+                    "lorem" to "ipsum",
+                    "golub" to "rocks",
+                ),
+            intMap =
+                mapOf(
+                    1L to 2L,
+                    3L to 4L,
+                    5L to 6L,
+                ),
+            enumMap =
+                mapOf(
+                    AnEnum.ONE to AnEnum.TWO,
+                    AnEnum.THREE to AnEnum.FORTY_TWO,
+                    AnEnum.FOUR_HUNDRED_TWENTY_TWO to AnEnum.ONE,
+                ),
+            objectMap =
+                mapOf(
+                    1L to "hello",
+                    "world" to 2.0,
+                    AnEnum.ONE to "hello",
+                    "worldEnum" to AnEnum.TWO,
+                    "list" to listOf(1L, 2L, 3L),
+                    "map" to
+                        mapOf(
+                            "hello" to "world",
+                        ),
+                    "doubleMap" to
+                        mapOf(
+                            1L to 1.0,
+                            2L to 0.0,
+                            3L to 3.0,
+                        ),
+                ),
+            listMap =
+                mapOf(
+                    1L to listOf(1L, 2L, 3L),
+                    2L to listOf("hello", "world"),
+                    3L to listOf(true, false, true),
+                    4L to listOf(AnEnum.ONE, AnEnum.TWO, AnEnum.THREE),
+                    5L to listOf(listOf<Any?>(), listOf(1L, 2L, 3L)),
+                    6L to
+                        listOf(
+                            mapOf(
+                                "hello" to "world",
+                            ),
+                            mapOf(
+                                "lorem" to "ipsum",
+                            )),
+                    7L to listOf(2L, 3.0, 5L, 10L, 20.0, 3L),
+                ),
+            mapMap =
+                mapOf(
+                    1L to
+                        mapOf(
+                            1L to "hello",
+                            2L to "world",
+                        ),
+                    2L to
+                        mapOf(
+                            "hello" to 1L,
+                            "world" to 2L,
+                        ),
+                    3L to
+                        mapOf(
+                            AnEnum.ONE to "hello",
+                            AnEnum.TWO to "world",
+                        ),
+                    4L to
+                        mapOf(
+                            "hello" to AnEnum.ONE,
+                            "world" to AnEnum.TWO,
+                        ),
+                    5L to
+                        mapOf(
+                            1L to listOf(1L, 2L, 3L),
+                            2L to listOf("hello", "world"),
+                        ),
+                    6L to
+                        mapOf(
+                            "hello" to
+                                mapOf(
+                                    "hello" to "world",
+                                ),
+                            "lorem" to
+                                mapOf(
+                                    "lorem" to "ipsum",
+                                ),
+                        ),
+                    7L to
+                        mapOf(
+                            AnEnum.ONE to
+                                mapOf(
+                                    "hello" to 0.0,
+                                    "world" to 1.0,
+                                ),
+                        ),
+                ))
+) {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): AllTypesWithDefaults {
+      val aBool = pigeonVar_list[0] as Boolean
+      val anInt = pigeonVar_list[1] as Long
+      val anInt64 = pigeonVar_list[2] as Long
+      val aDouble = pigeonVar_list[3] as Double
+      val anEnum = pigeonVar_list[4] as AnEnum
+      val anotherEnum = pigeonVar_list[5] as AnotherEnum
+      val aString = pigeonVar_list[6] as String
+      val anObject = pigeonVar_list[7] as Any
+      val list = pigeonVar_list[8] as List<Any?>
+      val stringList = pigeonVar_list[9] as List<String>
+      val intList = pigeonVar_list[10] as List<Long>
+      val doubleList = pigeonVar_list[11] as List<Double>
+      val boolList = pigeonVar_list[12] as List<Boolean>
+      val enumList = pigeonVar_list[13] as List<AnEnum>
+      val objectList = pigeonVar_list[14] as List<Any>
+      val listList = pigeonVar_list[15] as List<List<Any?>>
+      val mapList = pigeonVar_list[16] as List<Map<Any?, Any?>>
+      val map = pigeonVar_list[17] as Map<Any, Any?>
+      val stringMap = pigeonVar_list[18] as Map<String, String>
+      val intMap = pigeonVar_list[19] as Map<Long, Long>
+      val enumMap = pigeonVar_list[20] as Map<AnEnum, AnEnum>
+      val objectMap = pigeonVar_list[21] as Map<Any, Any>
+      val listMap = pigeonVar_list[22] as Map<Long, List<Any?>>
+      val mapMap = pigeonVar_list[23] as Map<Long, Map<Any?, Any?>>
+      val allTypes = pigeonVar_list[24] as ImmutableAllTypes
+      return AllTypesWithDefaults(
+          aBool,
+          anInt,
+          anInt64,
+          aDouble,
+          anEnum,
+          anotherEnum,
+          aString,
+          anObject,
+          list,
+          stringList,
+          intList,
+          doubleList,
+          boolList,
+          enumList,
+          objectList,
+          listList,
+          mapList,
+          map,
+          stringMap,
+          intMap,
+          enumMap,
+          objectMap,
+          listMap,
+          mapMap,
+          allTypes)
+    }
+  }
+
+  fun toList(): List<Any?> {
+    return listOf(
+        aBool,
+        anInt,
+        anInt64,
+        aDouble,
+        anEnum,
+        anotherEnum,
+        aString,
+        anObject,
+        list,
+        stringList,
+        intList,
+        doubleList,
+        boolList,
+        enumList,
+        objectList,
+        listList,
+        mapList,
+        map,
+        stringMap,
+        intMap,
+        enumMap,
+        objectMap,
+        listMap,
+        mapMap,
+        allTypes,
+    )
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (other !is AllTypesWithDefaults) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    return CoreTestsPigeonUtils.deepEquals(toList(), other.toList())
+  }
+
+  override fun hashCode(): Int = toList().hashCode()
+}
+
+/**
+ * A class containing all supported types but immutable.
+ *
+ * Generated class from Pigeon that represents data sent in messages.
+ */
+data class ImmutableAllTypes(
+    val aBool: Boolean,
+    val anInt: Long,
+    val anInt64: Long,
+    val aDouble: Double,
+    val anEnum: AnEnum,
+    val anotherEnum: AnotherEnum,
+    val aString: String,
+    val anObject: Any,
+    val list: List<Any?>,
+    val stringList: List<String>,
+    val intList: List<Long>,
+    val doubleList: List<Double>,
+    val boolList: List<Boolean>,
+    val enumList: List<AnEnum>,
+    val objectList: List<Any>,
+    val listList: List<List<Any?>>,
+    val mapList: List<Map<Any?, Any?>>,
+    val map: Map<Any, Any?>,
+    val stringMap: Map<String, String>,
+    val intMap: Map<Long, Long>,
+    val enumMap: Map<AnEnum, AnEnum>,
+    val objectMap: Map<Any, Any>,
+    val listMap: Map<Long, List<Any?>>,
+    val mapMap: Map<Long, Map<Any?, Any?>>
+) {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): ImmutableAllTypes {
+      val aBool = pigeonVar_list[0] as Boolean
+      val anInt = pigeonVar_list[1] as Long
+      val anInt64 = pigeonVar_list[2] as Long
+      val aDouble = pigeonVar_list[3] as Double
+      val anEnum = pigeonVar_list[4] as AnEnum
+      val anotherEnum = pigeonVar_list[5] as AnotherEnum
+      val aString = pigeonVar_list[6] as String
+      val anObject = pigeonVar_list[7] as Any
+      val list = pigeonVar_list[8] as List<Any?>
+      val stringList = pigeonVar_list[9] as List<String>
+      val intList = pigeonVar_list[10] as List<Long>
+      val doubleList = pigeonVar_list[11] as List<Double>
+      val boolList = pigeonVar_list[12] as List<Boolean>
+      val enumList = pigeonVar_list[13] as List<AnEnum>
+      val objectList = pigeonVar_list[14] as List<Any>
+      val listList = pigeonVar_list[15] as List<List<Any?>>
+      val mapList = pigeonVar_list[16] as List<Map<Any?, Any?>>
+      val map = pigeonVar_list[17] as Map<Any, Any?>
+      val stringMap = pigeonVar_list[18] as Map<String, String>
+      val intMap = pigeonVar_list[19] as Map<Long, Long>
+      val enumMap = pigeonVar_list[20] as Map<AnEnum, AnEnum>
+      val objectMap = pigeonVar_list[21] as Map<Any, Any>
+      val listMap = pigeonVar_list[22] as Map<Long, List<Any?>>
+      val mapMap = pigeonVar_list[23] as Map<Long, Map<Any?, Any?>>
+      return ImmutableAllTypes(
+          aBool,
+          anInt,
+          anInt64,
+          aDouble,
+          anEnum,
+          anotherEnum,
+          aString,
+          anObject,
+          list,
+          stringList,
+          intList,
+          doubleList,
+          boolList,
+          enumList,
+          objectList,
+          listList,
+          mapList,
+          map,
+          stringMap,
+          intMap,
+          enumMap,
+          objectMap,
+          listMap,
+          mapMap)
+    }
+  }
+
+  fun toList(): List<Any?> {
+    return listOf(
+        aBool,
+        anInt,
+        anInt64,
+        aDouble,
+        anEnum,
+        anotherEnum,
+        aString,
+        anObject,
+        list,
+        stringList,
+        intList,
+        doubleList,
+        boolList,
+        enumList,
+        objectList,
+        listList,
+        mapList,
+        map,
+        stringMap,
+        intMap,
+        enumMap,
+        objectMap,
+        listMap,
+        mapMap,
+    )
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (other !is ImmutableAllTypes) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    return CoreTestsPigeonUtils.deepEquals(toList(), other.toList())
+  }
+
+  override fun hashCode(): Int = toList().hashCode()
+}
+
+/**
  * A data class containing a List, used in unit tests.
  *
  * Generated class from Pigeon that represents data sent in messages.
@@ -696,6 +1361,12 @@ private open class CoreTestsPigeonCodec : StandardMessageCodec() {
         return (readValue(buffer) as? List<Any?>)?.let { AllClassesWrapper.fromList(it) }
       }
       136.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let { AllTypesWithDefaults.fromList(it) }
+      }
+      137.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let { ImmutableAllTypes.fromList(it) }
+      }
+      138.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let { TestMessage.fromList(it) }
       }
       else -> super.readValueOfType(type, buffer)
@@ -732,8 +1403,16 @@ private open class CoreTestsPigeonCodec : StandardMessageCodec() {
         stream.write(135)
         writeValue(stream, value.toList())
       }
-      is TestMessage -> {
+      is AllTypesWithDefaults -> {
         stream.write(136)
+        writeValue(stream, value.toList())
+      }
+      is ImmutableAllTypes -> {
+        stream.write(137)
+        writeValue(stream, value.toList())
+      }
+      is TestMessage -> {
+        stream.write(138)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)
@@ -808,6 +1487,13 @@ interface HostIntegrationCoreApi {
   fun echoNamedDefaultString(aString: String): String
   /** Returns passed in double. */
   fun echoOptionalDefaultDouble(aDouble: Double): Double
+  /** Returns a new AllTypesWithDefaults instance with all default values. */
+  fun createAllTypesWithDefaults(): AllTypesWithDefaults
+  /**
+   * Returns an AllTypesWithDefaults instance, verifying default values work in cross-platform
+   * communication.
+   */
+  fun echoAllTypesWithDefaults(allTypes: AllTypesWithDefaults): AllTypesWithDefaults
   /** Returns passed in int. */
   fun echoRequiredInt(anInt: Long): Long
   /** Returns the passed object, to test serialization and deserialization. */
@@ -1894,6 +2580,48 @@ interface HostIntegrationCoreApi {
             val wrapped: List<Any?> =
                 try {
                   listOf(api.echoOptionalDefaultDouble(aDoubleArg))
+                } catch (exception: Throwable) {
+                  CoreTestsPigeonUtils.wrapError(exception)
+                }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.createAllTypesWithDefaults$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> =
+                try {
+                  listOf(api.createAllTypesWithDefaults())
+                } catch (exception: Throwable) {
+                  CoreTestsPigeonUtils.wrapError(exception)
+                }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoAllTypesWithDefaults$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val allTypesArg = args[0] as AllTypesWithDefaults
+            val wrapped: List<Any?> =
+                try {
+                  listOf(api.echoAllTypesWithDefaults(allTypesArg))
                 } catch (exception: Throwable) {
                   CoreTestsPigeonUtils.wrapError(exception)
                 }
