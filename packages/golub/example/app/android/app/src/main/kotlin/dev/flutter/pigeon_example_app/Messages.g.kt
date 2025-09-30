@@ -90,10 +90,15 @@ enum class Code(val raw: Int) {
 
 /** Generated class from Pigeon that represents data sent in messages. */
 data class MessageData(
-    val name: String? = null,
-    val description: String? = null,
-    val code: Code,
-    val data: Map<String, String>
+    val name: String? = "Golub",
+    val description: String? = "Example description",
+    val code: Code = Code.ONE,
+    val data: Map<String, String> =
+        mapOf(
+            "hello" to "world",
+            "lorem" to "ipsum",
+            "golub" to "rocks",
+        )
 ) {
   companion object {
     fun fromList(pigeonVar_list: List<Any?>): MessageData {

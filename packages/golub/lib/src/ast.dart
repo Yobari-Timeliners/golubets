@@ -685,8 +685,8 @@ class NamedType extends Node {
   /// The offset in the source file where the [NamedType] appears.
   final int? offset;
 
-  /// Stringified version of the default value of types that have default values.
-  final String? defaultValue;
+  /// The default value of types that have default values.
+  final DefaultValue? defaultValue;
 
   /// List of documentation comments, separated by line.
   ///
@@ -710,6 +710,24 @@ class NamedType extends Node {
   @override
   String toString() {
     return '(NamedType name:$name type:$type defaultValue:$defaultValue documentationComments:$documentationComments)';
+  }
+
+  /// Returns a copy of [NamedType] instance with new attached [TypeDeclaration].
+  NamedType copyWith({
+    TypeDeclaration? type,
+    String? name,
+    int? offset,
+    DefaultValue? defaultValue,
+    List<String>? documentationComments,
+  }) {
+    return NamedType(
+      name: name ?? this.name,
+      type: type ?? this.type,
+      offset: offset ?? this.offset,
+      defaultValue: defaultValue ?? this.defaultValue,
+      documentationComments:
+          documentationComments ?? this.documentationComments,
+    );
   }
 }
 
@@ -786,6 +804,7 @@ class Class extends Node {
     this.isReferenced = true,
     this.isSwiftClass = false,
     this.documentationComments = const <String>[],
+    this.isImmutable = false,
   });
 
   /// The name of the class.
@@ -823,6 +842,9 @@ class Class extends Node {
   /// leading whitespace, so that any indentation in the original comment is preserved.
   /// For example: [" List of documentation comments, separated by line.", ...]
   List<String> documentationComments;
+
+  /// Whether the class is immutable.
+  bool isImmutable;
 
   @override
   String toString() {
@@ -933,4 +955,160 @@ class Root extends Node {
   String toString() {
     return '(Root classes:$classes apis:$apis enums:$enums)';
   }
+}
+
+/// Represents a default value for a field or parameter.
+sealed class DefaultValue {
+  const DefaultValue();
+}
+
+/// [String] default value.
+class StringLiteral extends DefaultValue {
+  /// Constructor for [StringLiteral].
+  const StringLiteral({
+    required this.value,
+  });
+
+  /// The default value.
+  final String value;
+
+  @override
+  String toString() => '"$value"';
+}
+
+/// [int] default value.
+class IntLiteral extends DefaultValue {
+  /// Constructor for [IntLiteral].
+  const IntLiteral({
+    required this.value,
+  });
+
+  /// The default value.
+  final int value;
+
+  @override
+  String toString() => '$value';
+}
+
+/// [double] default value.
+class DoubleLiteral extends DefaultValue {
+  /// Constructor for [DoubleLiteral].
+  const DoubleLiteral({
+    required this.value,
+  });
+
+  /// The default value.
+  final double value;
+
+  @override
+  String toString() => '$value';
+}
+
+/// [bool] default value.
+class BoolLiteral extends DefaultValue {
+  /// Constructor for [BoolLiteral].
+  const BoolLiteral({
+    required this.value,
+  });
+
+  /// The default value.
+  final bool value;
+
+  @override
+  String toString() => '$value';
+}
+
+/// [List] default value.
+class ListLiteral extends DefaultValue {
+  /// Constructor for [ListLiteral].
+  const ListLiteral({
+    required this.elements,
+    required this.elementType,
+  });
+
+  /// The default value.
+  final List<DefaultValue> elements;
+
+  /// The type of the elements in the list.
+  final TypeDeclaration elementType;
+
+  @override
+  String toString() => '<$elementType>[${elements.join(', ')}]';
+}
+
+/// [Map] default value.
+class MapLiteral extends DefaultValue {
+  /// Constructor for [MapLiteral].
+  const MapLiteral({
+    required this.entries,
+    required this.keyType,
+    required this.valueType,
+  });
+
+  /// The type of the keys in the map.
+  final TypeDeclaration keyType;
+
+  /// The type of the values in the map.
+  final TypeDeclaration valueType;
+
+  /// The default value.
+  final Map<DefaultValue, DefaultValue> entries;
+
+  @override
+  String toString() =>
+      '<$keyType, $valueType>{${entries.entries.map((MapEntry<DefaultValue, DefaultValue> e) => '${e.key}: ${e.value}').join(', ')}}';
+}
+
+/// [Enum] default value.
+class EnumLiteral extends DefaultValue {
+  /// Constructor for [EnumLiteral].
+  const EnumLiteral({
+    required this.name,
+    required this.value,
+  });
+
+  /// The name of the enum.
+  final String name;
+
+  /// The value of the enum.
+  final String value;
+
+  @override
+  String toString() => '$name.$value';
+}
+
+/// [Object] default value.
+class ObjectCreation extends DefaultValue {
+  /// Constructor for [ObjectCreation].
+  const ObjectCreation({
+    required this.type,
+    required this.arguments,
+  });
+
+  /// The type of the object.
+  final TypeDeclaration type;
+
+  /// The arguments to the object.
+  final List<DefaultValue> arguments;
+
+  @override
+  String toString() => '${type.baseName}(${arguments.join(", ")})';
+}
+
+/// Value for a named default value.
+class NamedDefaultValue extends DefaultValue {
+  /// Constructor for [NamedDefaultValue].
+  const NamedDefaultValue({
+    required this.value,
+    required this.name,
+  });
+
+  /// The value of the field.
+  final DefaultValue value;
+
+  /// The name of the field.
+  final String name;
+
+  @override
+  String toString() => '$name: $value';
 }

@@ -2188,4 +2188,613 @@ name: foobar
     expect(code, contains('static EmptyClass decode(Object _)'));
     expect(code, isNot(contains('result as List<Object?>')));
   });
+
+  group('default values', () {
+    test('gen class with string default value', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(baseName: 'String', isNullable: false),
+            defaultValue: const StringLiteral(
+              value: 'hello world',
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const DartGenerator generator = DartGenerator();
+      generator.generate(
+        const InternalDartOptions(),
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('class Foobar'));
+      expect(code, contains("this.field1 = 'hello world'"));
+    });
+
+    test('gen class with int default value', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(baseName: 'int', isNullable: false),
+            defaultValue: const IntLiteral(
+              value: 42,
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const DartGenerator generator = DartGenerator();
+      generator.generate(
+        const InternalDartOptions(),
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('class Foobar'));
+      expect(code, contains('this.field1 = 42'));
+    });
+
+    test('gen class with int default value for double type', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(baseName: 'double', isNullable: false),
+            defaultValue: const IntLiteral(
+              value: 42,
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const DartGenerator generator = DartGenerator();
+      generator.generate(
+        const InternalDartOptions(),
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('class Foobar'));
+      expect(code, contains('this.field1 = 42'));
+    });
+
+    test('gen class with double default value', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(baseName: 'double', isNullable: false),
+            defaultValue: const DoubleLiteral(
+              value: 3.14,
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const DartGenerator generator = DartGenerator();
+      generator.generate(
+        const InternalDartOptions(),
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('class Foobar'));
+      expect(code, contains('this.field1 = 3.14'));
+    });
+
+    test('gen class with bool default value', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(baseName: 'bool', isNullable: false),
+            defaultValue: const BoolLiteral(
+              value: true,
+            ),
+          ),
+          NamedType(
+            name: 'field2',
+            type: const TypeDeclaration(baseName: 'bool', isNullable: false),
+            defaultValue: const BoolLiteral(
+              value: false,
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const DartGenerator generator = DartGenerator();
+      generator.generate(
+        const InternalDartOptions(),
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('class Foobar'));
+      expect(code, contains('this.field1 = true'));
+      expect(code, contains('this.field2 = false'));
+    });
+
+    test('gen class with empty list default value', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(
+              baseName: 'List',
+              isNullable: false,
+              typeArguments: <TypeDeclaration>[
+                TypeDeclaration(baseName: 'int', isNullable: false),
+              ],
+            ),
+            defaultValue: const ListLiteral(
+              elements: <DefaultValue>[],
+              elementType: TypeDeclaration(baseName: 'int', isNullable: false),
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const DartGenerator generator = DartGenerator();
+      generator.generate(
+        const InternalDartOptions(),
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('class Foobar'));
+      expect(code, contains('this.field1 = const <int>[]'));
+    });
+
+    test('gen class with list default value with elements', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(
+              baseName: 'List',
+              isNullable: false,
+              typeArguments: <TypeDeclaration>[
+                TypeDeclaration(baseName: 'int', isNullable: false),
+              ],
+            ),
+            defaultValue: const ListLiteral(
+              elements: <DefaultValue>[
+                IntLiteral(value: 1),
+                IntLiteral(value: 2),
+                IntLiteral(value: 3),
+              ],
+              elementType: TypeDeclaration(baseName: 'int', isNullable: false),
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const DartGenerator generator = DartGenerator();
+      generator.generate(
+        const InternalDartOptions(),
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('class Foobar'));
+      expect(code, contains('this.field1 = const <int>['));
+      expect(code, contains('1,'));
+      expect(code, contains('2,'));
+      expect(code, contains('3'));
+    });
+
+    test('gen class with empty map default value', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(
+              baseName: 'Map',
+              isNullable: false,
+              typeArguments: <TypeDeclaration>[
+                TypeDeclaration(baseName: 'String', isNullable: false),
+                TypeDeclaration(baseName: 'int', isNullable: false),
+              ],
+            ),
+            defaultValue: const MapLiteral(
+              entries: <DefaultValue, DefaultValue>{},
+              keyType: TypeDeclaration(baseName: 'String', isNullable: false),
+              valueType: TypeDeclaration(baseName: 'int', isNullable: false),
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const DartGenerator generator = DartGenerator();
+      generator.generate(
+        const InternalDartOptions(),
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('class Foobar'));
+      expect(
+        code,
+        contains('this.field1 = const <String, int>{}'),
+      );
+    });
+
+    test('gen class with map default value with entries', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(
+              baseName: 'Map',
+              isNullable: false,
+              typeArguments: <TypeDeclaration>[
+                TypeDeclaration(baseName: 'String', isNullable: false),
+                TypeDeclaration(baseName: 'int', isNullable: false),
+              ],
+            ),
+            defaultValue: const MapLiteral(
+              entries: <DefaultValue, DefaultValue>{
+                StringLiteral(value: 'key1'): IntLiteral(
+                  value: 100,
+                ),
+                StringLiteral(value: 'key2'): IntLiteral(
+                  value: 200,
+                ),
+              },
+              keyType: TypeDeclaration(baseName: 'String', isNullable: false),
+              valueType: TypeDeclaration(baseName: 'int', isNullable: false),
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const DartGenerator generator = DartGenerator();
+      generator.generate(
+        const InternalDartOptions(),
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('class Foobar'));
+      expect(code, contains('this.field1 = const <String, int>{'));
+      expect(code, contains("'key1': 100,"));
+      expect(code, contains("'key2': 200"));
+    });
+
+    test('gen class with enum default value', () {
+      final Enum testEnum = Enum(
+        name: 'TestEnum',
+        members: <EnumMember>[
+          EnumMember(name: 'firstValue'),
+          EnumMember(name: 'secondValue'),
+        ],
+      );
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: TypeDeclaration(
+              baseName: 'TestEnum',
+              isNullable: false,
+              associatedEnum: testEnum,
+            ),
+            defaultValue: const EnumLiteral(
+              name: 'TestEnum',
+              value: 'firstValue',
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[testEnum],
+      );
+      final StringBuffer sink = StringBuffer();
+      const DartGenerator generator = DartGenerator();
+      generator.generate(
+        const InternalDartOptions(),
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('class Foobar'));
+      expect(code, contains('this.field1 = TestEnum.firstValue'));
+      expect(code, contains('enum TestEnum {'));
+      expect(code, contains('firstValue,'));
+      expect(code, contains('secondValue,'));
+    });
+
+    test('gen class with object creation default value', () {
+      final Class innerClass = Class(
+        name: 'InnerClass',
+        fields: <NamedType>[
+          NamedType(
+            name: 'value',
+            type: const TypeDeclaration(baseName: 'int', isNullable: false),
+          ),
+        ],
+      );
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: TypeDeclaration(
+              baseName: 'InnerClass',
+              isNullable: false,
+              associatedClass: innerClass,
+            ),
+            defaultValue: const ObjectCreation(
+              type: TypeDeclaration(baseName: 'InnerClass', isNullable: false),
+              arguments: <DefaultValue>[
+                IntLiteral(value: 42),
+              ],
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition, innerClass],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const DartGenerator generator = DartGenerator();
+      generator.generate(
+        const InternalDartOptions(),
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('class Foobar'));
+      expect(code, contains('this.field1 = const InnerClass('));
+      expect(code, contains('42'));
+      expect(code, contains('class InnerClass'));
+    });
+
+    test('gen class with object creation default value - no arguments', () {
+      final Class innerClass = Class(
+        name: 'InnerClass',
+        fields: <NamedType>[],
+      );
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: TypeDeclaration(
+              baseName: 'InnerClass',
+              isNullable: false,
+              associatedClass: innerClass,
+            ),
+            defaultValue: const ObjectCreation(
+              type: TypeDeclaration(baseName: 'InnerClass', isNullable: false),
+              arguments: <DefaultValue>[],
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition, innerClass],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const DartGenerator generator = DartGenerator();
+      generator.generate(
+        const InternalDartOptions(),
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('class Foobar'));
+      expect(code, contains('this.field1 = const InnerClass()'));
+    });
+
+    test('gen class with named default value', () {
+      final Class innerClass = Class(
+        name: 'InnerClass',
+        fields: <NamedType>[
+          NamedType(
+            name: 'x',
+            type: const TypeDeclaration(baseName: 'int', isNullable: false),
+          ),
+          NamedType(
+            name: 'y',
+            type: const TypeDeclaration(baseName: 'int', isNullable: false),
+          ),
+        ],
+      );
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: TypeDeclaration(
+              baseName: 'InnerClass',
+              isNullable: false,
+              associatedClass: innerClass,
+            ),
+            defaultValue: const ObjectCreation(
+              type: TypeDeclaration(baseName: 'InnerClass', isNullable: false),
+              arguments: <DefaultValue>[
+                NamedDefaultValue(
+                  name: 'x',
+                  value: IntLiteral(value: 10),
+                ),
+                NamedDefaultValue(
+                  name: 'y',
+                  value: IntLiteral(value: 20),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition, innerClass],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const DartGenerator generator = DartGenerator();
+      generator.generate(
+        const InternalDartOptions(),
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('class Foobar'));
+      expect(code, contains('this.field1 = const InnerClass('));
+      expect(code, contains('x: 10,'));
+      expect(code, contains('y: 20'));
+    });
+
+    test('gen class with nested list default value', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(
+              baseName: 'List',
+              isNullable: false,
+              typeArguments: <TypeDeclaration>[
+                TypeDeclaration(
+                  baseName: 'List',
+                  isNullable: false,
+                  typeArguments: <TypeDeclaration>[
+                    TypeDeclaration(baseName: 'String', isNullable: false),
+                  ],
+                ),
+              ],
+            ),
+            defaultValue: const ListLiteral(
+              elements: <DefaultValue>[
+                ListLiteral(
+                  elements: <DefaultValue>[
+                    StringLiteral(value: 'a'),
+                    StringLiteral(value: 'b'),
+                  ],
+                  elementType: TypeDeclaration(
+                    baseName: 'String',
+                    isNullable: false,
+                  ),
+                ),
+                ListLiteral(
+                  elements: <DefaultValue>[
+                    StringLiteral(value: 'c'),
+                  ],
+                  elementType: TypeDeclaration(
+                    baseName: 'String',
+                    isNullable: false,
+                  ),
+                ),
+              ],
+              elementType: TypeDeclaration(
+                baseName: 'List',
+                isNullable: false,
+                typeArguments: <TypeDeclaration>[
+                  TypeDeclaration(baseName: 'String', isNullable: false),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const DartGenerator generator = DartGenerator();
+      generator.generate(
+        const InternalDartOptions(),
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('class Foobar'));
+      expect(code, contains('this.field1 = const <List<String>>['));
+      expect(code, contains('const <String>['));
+      expect(code, contains("'a',"));
+      expect(code, contains("'b'"));
+      expect(code, contains("'c'"));
+    });
+  });
 }

@@ -2356,4 +2356,655 @@ void main() {
       contains('PlatformEvent.Class.fromList'),
     );
   });
+
+  group('default values', () {
+    test('gen class with string default value', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(baseName: 'String', isNullable: false),
+            defaultValue: const StringLiteral(
+              value: 'hello world',
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+        kotlinOut: '',
+      );
+      const KotlinGenerator generator = KotlinGenerator();
+      generator.generate(
+        kotlinOptions,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('data class Foobar'));
+      expect(code, contains('val field1: String = "hello world"'));
+    });
+
+    test('gen class with int default value', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(baseName: 'int', isNullable: false),
+            defaultValue: const IntLiteral(
+              value: 42,
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+        kotlinOut: '',
+      );
+      const KotlinGenerator generator = KotlinGenerator();
+      generator.generate(
+        kotlinOptions,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('data class Foobar'));
+      expect(code, contains('val field1: Long = 42L'));
+    });
+
+    test('gen class with int default value for double type', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(baseName: 'double', isNullable: false),
+            defaultValue: const IntLiteral(
+              value: 42,
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+        kotlinOut: '',
+      );
+      const KotlinGenerator generator = KotlinGenerator();
+      generator.generate(
+        kotlinOptions,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('data class Foobar'));
+      expect(code, contains('val field1: Double = 42.0'));
+    });
+
+    test('gen class with double default value', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(baseName: 'double', isNullable: false),
+            defaultValue: const DoubleLiteral(
+              value: 3.14,
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+        kotlinOut: '',
+      );
+      const KotlinGenerator generator = KotlinGenerator();
+      generator.generate(
+        kotlinOptions,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('data class Foobar'));
+      expect(code, contains('val field1: Double = 3.14'));
+    });
+
+    test('gen class with bool default value', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(baseName: 'bool', isNullable: false),
+            defaultValue: const BoolLiteral(
+              value: true,
+            ),
+          ),
+          NamedType(
+            name: 'field2',
+            type: const TypeDeclaration(baseName: 'bool', isNullable: false),
+            defaultValue: const BoolLiteral(
+              value: false,
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+        kotlinOut: '',
+      );
+      const KotlinGenerator generator = KotlinGenerator();
+      generator.generate(
+        kotlinOptions,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('data class Foobar'));
+      expect(code, contains('val field1: Boolean = true'));
+      expect(code, contains('val field2: Boolean = false'));
+    });
+
+    test('gen class with empty list default value', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(
+              baseName: 'List',
+              isNullable: false,
+              typeArguments: <TypeDeclaration>[
+                TypeDeclaration(baseName: 'int', isNullable: false),
+              ],
+            ),
+            defaultValue: const ListLiteral(
+              elements: <DefaultValue>[],
+              elementType: TypeDeclaration(baseName: 'int', isNullable: false),
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+        kotlinOut: '',
+      );
+      const KotlinGenerator generator = KotlinGenerator();
+      generator.generate(
+        kotlinOptions,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('data class Foobar'));
+      expect(code, contains('val field1: List<Long> = listOf<Long>()'));
+    });
+
+    test('gen class with list default value with elements', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(
+              baseName: 'List',
+              isNullable: false,
+              typeArguments: <TypeDeclaration>[
+                TypeDeclaration(baseName: 'int', isNullable: false),
+              ],
+            ),
+            defaultValue: const ListLiteral(
+              elements: <DefaultValue>[
+                IntLiteral(value: 1),
+                IntLiteral(value: 2),
+                IntLiteral(value: 3),
+              ],
+              elementType: TypeDeclaration(baseName: 'int', isNullable: false),
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+        kotlinOut: '',
+      );
+      const KotlinGenerator generator = KotlinGenerator();
+      generator.generate(
+        kotlinOptions,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('data class Foobar'));
+      expect(code, contains('val field1: List<Long> = listOf('));
+      expect(code, contains('1L,'));
+      expect(code, contains('2L,'));
+      expect(code, contains('3L'));
+    });
+
+    test('gen class with empty map default value', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(
+              baseName: 'Map',
+              isNullable: false,
+              typeArguments: <TypeDeclaration>[
+                TypeDeclaration(baseName: 'String', isNullable: false),
+                TypeDeclaration(baseName: 'int', isNullable: false),
+              ],
+            ),
+            defaultValue: const MapLiteral(
+              entries: <DefaultValue, DefaultValue>{},
+              keyType: TypeDeclaration(baseName: 'String', isNullable: false),
+              valueType: TypeDeclaration(baseName: 'int', isNullable: false),
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+        kotlinOut: '',
+      );
+      const KotlinGenerator generator = KotlinGenerator();
+      generator.generate(
+        kotlinOptions,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('data class Foobar'));
+      expect(
+        code,
+        contains('val field1: Map<String, Long> = mapOf<String, Long>()'),
+      );
+    });
+
+    test('gen class with map default value with entries', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(
+              baseName: 'Map',
+              isNullable: false,
+              typeArguments: <TypeDeclaration>[
+                TypeDeclaration(baseName: 'String', isNullable: false),
+                TypeDeclaration(baseName: 'int', isNullable: false),
+              ],
+            ),
+            defaultValue: const MapLiteral(
+              entries: <DefaultValue, DefaultValue>{
+                StringLiteral(value: 'key1'): IntLiteral(
+                  value: 100,
+                ),
+                StringLiteral(value: 'key2'): IntLiteral(
+                  value: 200,
+                ),
+              },
+              keyType: TypeDeclaration(baseName: 'String', isNullable: false),
+              valueType: TypeDeclaration(baseName: 'int', isNullable: false),
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+        kotlinOut: '',
+      );
+      const KotlinGenerator generator = KotlinGenerator();
+      generator.generate(
+        kotlinOptions,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('data class Foobar'));
+      expect(code, contains('val field1: Map<String, Long> = mapOf('));
+      expect(code, contains('"key1" to 100L,'));
+      expect(code, contains('"key2" to 200L'));
+    });
+
+    test('gen class with enum default value', () {
+      final Enum testEnum = Enum(
+        name: 'TestEnum',
+        members: <EnumMember>[
+          EnumMember(name: 'firstValue'),
+          EnumMember(name: 'secondValue'),
+        ],
+      );
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: TypeDeclaration(
+              baseName: 'TestEnum',
+              isNullable: false,
+              associatedEnum: testEnum,
+            ),
+            defaultValue: const EnumLiteral(
+              name: 'TestEnum',
+              value: 'firstValue',
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[testEnum],
+      );
+      final StringBuffer sink = StringBuffer();
+      const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+        kotlinOut: '',
+      );
+      const KotlinGenerator generator = KotlinGenerator();
+      generator.generate(
+        kotlinOptions,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('data class Foobar'));
+      expect(code, contains('val field1: TestEnum = TestEnum.FIRST_VALUE'));
+      expect(code, contains('enum class TestEnum(val raw: Int)'));
+      expect(code, contains('FIRST_VALUE(0)'));
+      expect(code, contains('SECOND_VALUE(1)'));
+    });
+
+    test('gen class with object creation default value', () {
+      final Class innerClass = Class(
+        name: 'InnerClass',
+        fields: <NamedType>[
+          NamedType(
+            name: 'value',
+            type: const TypeDeclaration(baseName: 'int', isNullable: false),
+          ),
+        ],
+      );
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: TypeDeclaration(
+              baseName: 'InnerClass',
+              isNullable: false,
+              associatedClass: innerClass,
+            ),
+            defaultValue: const ObjectCreation(
+              type: TypeDeclaration(baseName: 'InnerClass', isNullable: false),
+              arguments: <DefaultValue>[
+                IntLiteral(value: 42),
+              ],
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition, innerClass],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+        kotlinOut: '',
+      );
+      const KotlinGenerator generator = KotlinGenerator();
+      generator.generate(
+        kotlinOptions,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('data class Foobar'));
+      expect(code, contains('val field1: InnerClass = InnerClass('));
+      expect(code, contains('42L'));
+      expect(code, contains('data class InnerClass'));
+    });
+
+    test('gen class with object creation default value - no arguments', () {
+      final Class innerClass = Class(
+        name: 'InnerClass',
+        fields: <NamedType>[],
+      );
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: TypeDeclaration(
+              baseName: 'InnerClass',
+              isNullable: false,
+              associatedClass: innerClass,
+            ),
+            defaultValue: const ObjectCreation(
+              type: TypeDeclaration(baseName: 'InnerClass', isNullable: false),
+              arguments: <DefaultValue>[],
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition, innerClass],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+        kotlinOut: '',
+      );
+      const KotlinGenerator generator = KotlinGenerator();
+      generator.generate(
+        kotlinOptions,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('data class Foobar'));
+      expect(code, contains('val field1: InnerClass = InnerClass()'));
+    });
+
+    test('gen class with named default value', () {
+      final Class innerClass = Class(
+        name: 'InnerClass',
+        fields: <NamedType>[
+          NamedType(
+            name: 'x',
+            type: const TypeDeclaration(baseName: 'int', isNullable: false),
+          ),
+          NamedType(
+            name: 'y',
+            type: const TypeDeclaration(baseName: 'int', isNullable: false),
+          ),
+        ],
+      );
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: TypeDeclaration(
+              baseName: 'InnerClass',
+              isNullable: false,
+              associatedClass: innerClass,
+            ),
+            defaultValue: const ObjectCreation(
+              type: TypeDeclaration(baseName: 'InnerClass', isNullable: false),
+              arguments: <DefaultValue>[
+                NamedDefaultValue(
+                  name: 'x',
+                  value: IntLiteral(value: 10),
+                ),
+                NamedDefaultValue(
+                  name: 'y',
+                  value: IntLiteral(value: 20),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition, innerClass],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+        kotlinOut: '',
+      );
+      const KotlinGenerator generator = KotlinGenerator();
+      generator.generate(
+        kotlinOptions,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('data class Foobar'));
+      expect(code, contains('val field1: InnerClass = InnerClass('));
+      expect(code, contains('x = 10L,'));
+      expect(code, contains('y = 20L'));
+    });
+
+    test('gen class with nested list default value', () {
+      final Class classDefinition = Class(
+        name: 'Foobar',
+        fields: <NamedType>[
+          NamedType(
+            name: 'field1',
+            type: const TypeDeclaration(
+              baseName: 'List',
+              isNullable: false,
+              typeArguments: <TypeDeclaration>[
+                TypeDeclaration(
+                  baseName: 'List',
+                  isNullable: false,
+                  typeArguments: <TypeDeclaration>[
+                    TypeDeclaration(baseName: 'String', isNullable: false),
+                  ],
+                ),
+              ],
+            ),
+            defaultValue: const ListLiteral(
+              elements: <DefaultValue>[
+                ListLiteral(
+                  elements: <DefaultValue>[
+                    StringLiteral(value: 'a'),
+                    StringLiteral(value: 'b'),
+                  ],
+                  elementType: TypeDeclaration(
+                    baseName: 'String',
+                    isNullable: false,
+                  ),
+                ),
+                ListLiteral(
+                  elements: <DefaultValue>[
+                    StringLiteral(value: 'c'),
+                  ],
+                  elementType: TypeDeclaration(
+                    baseName: 'String',
+                    isNullable: false,
+                  ),
+                ),
+              ],
+              elementType: TypeDeclaration(
+                baseName: 'List',
+                isNullable: false,
+                typeArguments: <TypeDeclaration>[
+                  TypeDeclaration(baseName: 'String', isNullable: false),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+      final Root root = Root(
+        apis: <Api>[],
+        classes: <Class>[classDefinition],
+        enums: <Enum>[],
+      );
+      final StringBuffer sink = StringBuffer();
+      const InternalKotlinOptions kotlinOptions = InternalKotlinOptions(
+        kotlinOut: '',
+      );
+      const KotlinGenerator generator = KotlinGenerator();
+      generator.generate(
+        kotlinOptions,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final String code = sink.toString();
+      expect(code, contains('data class Foobar'));
+      expect(code, contains('val field1: List<List<String>> = listOf('));
+      expect(code, contains('listOf('));
+      expect(code, contains('"a",'));
+      expect(code, contains('"b"'));
+      expect(code, contains('"c"'));
+    });
+  });
 }

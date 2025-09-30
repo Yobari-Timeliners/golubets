@@ -35,7 +35,17 @@ import 'package:pigeon/pigeon.dart';
 enum Code { one, two }
 
 class MessageData {
-  MessageData({required this.code, required this.data});
+  MessageData({
+    this.code = Code.one,
+    this.data = const <String, String>{
+      'hello': 'world',
+      'lorem': 'ipsum',
+      'golub': 'rocks',
+    },
+    this.name = 'Golub',
+    this.description = 'Example description',
+  });
+
   String? name;
   String? description;
   Code code;

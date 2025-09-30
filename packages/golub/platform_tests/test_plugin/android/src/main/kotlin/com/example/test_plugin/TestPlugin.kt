@@ -184,6 +184,14 @@ class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, SealedClassApi, Kotlin
     return aDouble
   }
 
+  override fun createAllTypesWithDefaults(): AllTypesWithDefaults {
+    return AllTypesWithDefaults()
+  }
+
+  override fun echoAllTypesWithDefaults(allTypes: AllTypesWithDefaults): AllTypesWithDefaults {
+    return allTypes
+  }
+
   override fun echoRequiredInt(anInt: Long): Long {
     return anInt
   }

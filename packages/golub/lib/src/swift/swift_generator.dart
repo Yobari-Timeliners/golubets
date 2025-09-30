@@ -491,8 +491,16 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
           field.documentationComments,
           _docCommentSpec,
         );
-        indent.write('var ');
-        _writeClassField(indent, field, addNil: !classDefinition.isSwiftClass);
+        final String varKeyword = classDefinition.isImmutable ? 'let' : 'var';
+        indent.write('$varKeyword ');
+        _writeClassField(
+          indent,
+          field,
+          addNil:
+              !classDefinition.isSwiftClass &&
+              field.defaultValue == null &&
+              !classDefinition.isImmutable,
+        );
         indent.newln();
       }
     }, addTrailingNewline: false);
@@ -639,7 +647,7 @@ if (wrapped == nil) {
     indent.writeScoped('public init(', ')', () {
       for (int i = 0; i < fields.length; i++) {
         indent.write('');
-        _writeClassField(indent, fields[i]);
+        _writeClassField(indent, fields[i], addDefault: true);
         if (i == fields.length - 1) {
           indent.newln();
         } else {
@@ -654,10 +662,21 @@ if (wrapped == nil) {
     });
   }
 
-  void _writeClassField(Indent indent, NamedType field, {bool addNil = true}) {
+  void _writeClassField(
+    Indent indent,
+    NamedType field, {
+    bool addNil = true,
+    bool addDefault = false,
+  }) {
+    final DefaultValue? defaultValue = field.defaultValue;
     indent.add('${field.name}: ${_nullSafeSwiftTypeForDartType(field.type)}');
-    final String defaultNil = field.type.isNullable && addNil ? ' = nil' : '';
-    indent.add(defaultNil);
+    if (defaultValue != null && addDefault) {
+      indent.add(' = ');
+      defaultValue.write(indent, prefix: '');
+    } else {
+      final String defaultNil = field.type.isNullable && addNil ? ' = nil' : '';
+      indent.add(defaultNil);
+    }
   }
 
   void _writeClassFieldInit(Indent indent, NamedType field) {
@@ -3062,6 +3081,12 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                 indent.write(
                   '${field.name}: ${_nullSafeSwiftTypeForDartType(field.type)}',
                 );
+                final DefaultValue? defaultValue = field.defaultValue;
+
+                if (defaultValue != null) {
+                  indent.add(' = ');
+                  defaultValue.write(indent, prefix: '');
+                }
 
                 childFields.last != field ? indent.addln(',') : indent.newln();
               }
@@ -3426,4 +3451,86 @@ class _SwiftFunctionComponents {
   final String name;
   final List<_SwiftFunctionArgument> arguments;
   final TypeDeclaration returnType;
+}
+
+extension on DefaultValue {
+  /// [prefix] - used for pretty formatting.
+  void write(Indent indent, {String? prefix}) {
+    prefix = prefix ?? indent.str();
+
+    return switch (this) {
+      StringLiteral(:final String value) => indent.add('$prefix"$value"'),
+      IntLiteral(:final int value) => indent.add('$prefix$value'),
+      DoubleLiteral(:final double value) => indent.add('$prefix$value'),
+      BoolLiteral(:final bool value) => indent.add('$prefix$value'),
+      ListLiteral(:final List<DefaultValue> elements) =>
+        elements.isEmpty
+            ? indent.add('$prefix[]')
+            : indent.addScoped(
+              '$prefix[',
+              ']',
+              () {
+                for (final DefaultValue element in elements) {
+                  element.write(indent);
+                  indent.addln(', ');
+                }
+              },
+              addTrailingNewline: false,
+            ),
+      MapLiteral(:final Map<DefaultValue, DefaultValue> entries) =>
+        entries.isEmpty
+            ? indent.add('$prefix[:]')
+            : indent.addScoped(
+              '$prefix[',
+              ']',
+              () {
+                for (final MapEntry<DefaultValue, DefaultValue> entry
+                    in entries.entries) {
+                  entry.key.write(indent);
+                  indent.add(': ');
+                  entry.value.write(indent, prefix: '');
+                  indent.addln(', ');
+                }
+              },
+              addTrailingNewline: false,
+            ),
+      EnumLiteral(:final String name, :final String value) => indent.add(
+        '$prefix$name.$value',
+      ),
+      ObjectCreation(
+        :final TypeDeclaration type,
+        :final List<DefaultValue> arguments,
+      ) =>
+        () {
+          indent.add('$prefix${type.baseName}');
+
+          if (arguments.isEmpty) {
+            indent.add('()');
+            return;
+          }
+
+          indent.addScoped(
+            '(',
+            ')',
+            () {
+              for (final DefaultValue argument in arguments) {
+                argument.write(indent);
+                argument == arguments.last
+                    ? indent.newln()
+                    : indent.addln(', ');
+              }
+            },
+            addTrailingNewline: false,
+          );
+        }(),
+      NamedDefaultValue(
+        :final String name,
+        :final DefaultValue value,
+      ) =>
+        () {
+          indent.add('$prefix$name: ');
+          value.write(indent, prefix: '');
+        }(),
+    };
+  }
 }

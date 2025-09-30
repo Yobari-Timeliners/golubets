@@ -11,6 +11,7 @@ import com.example.alternate_language_test_plugin.CoreTests.AllClassesWrapper;
 import com.example.alternate_language_test_plugin.CoreTests.AllNullableTypes;
 import com.example.alternate_language_test_plugin.CoreTests.AllNullableTypesWithoutRecursion;
 import com.example.alternate_language_test_plugin.CoreTests.AllTypes;
+import com.example.alternate_language_test_plugin.CoreTests.AllTypesWithDefaults;
 import com.example.alternate_language_test_plugin.CoreTests.AnEnum;
 import com.example.alternate_language_test_plugin.CoreTests.AnotherEnum;
 import com.example.alternate_language_test_plugin.CoreTests.FlutterIntegrationCoreApi;
@@ -65,6 +66,18 @@ public class AlternateLanguageTestPlugin implements FlutterPlugin, HostIntegrati
   public @Nullable AllNullableTypesWithoutRecursion echoAllNullableTypesWithoutRecursion(
       @Nullable AllNullableTypesWithoutRecursion everything) {
     return everything;
+  }
+
+  @Override
+  public @NonNull AllTypesWithDefaults echoAllTypesWithDefaults(
+      @NonNull AllTypesWithDefaults allTypes) {
+    return allTypes;
+  }
+
+  @Override
+  public @NonNull AllTypesWithDefaults createAllTypesWithDefaults() {
+    throw new RuntimeException(
+        "createAllTypesWithDefaults is not implemented - test will never be executed");
   }
 
   @Override

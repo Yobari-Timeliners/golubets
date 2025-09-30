@@ -120,6 +120,11 @@ class TestPlugin : public flutter::Plugin,
       const std::string& a_string) override;
   core_tests_pigeontest::ErrorOr<double> EchoOptionalDefaultDouble(
       double a_double) override;
+  core_tests_pigeontest::ErrorOr<core_tests_pigeontest::AllTypesWithDefaults>
+  CreateAllTypesWithDefaults() override;
+  core_tests_pigeontest::ErrorOr<core_tests_pigeontest::AllTypesWithDefaults>
+  EchoAllTypesWithDefaults(
+      const core_tests_pigeontest::AllTypesWithDefaults& all_types) override;
   core_tests_pigeontest::ErrorOr<int64_t> EchoRequiredInt(
       int64_t an_int) override;
   core_tests_pigeontest::ErrorOr<std::optional<std::string>>

@@ -50,6 +50,21 @@
   return everything;
 }
 
+- (nullable FLTAllTypesWithDefaults *)createAllTypesWithDefaults:
+    (FlutterError *_Nullable *_Nonnull)error {
+  *error = [FlutterError
+      errorWithCode:@"NotImplemented"
+            message:@"createAllTypesWithDefaults is not implemented - test will never be executed"
+            details:nil];
+  return nil;
+}
+
+- (nullable FLTAllTypesWithDefaults *)echoAllTypesWithDefaults:(FLTAllTypesWithDefaults *)allTypes
+                                                         error:(FlutterError *_Nullable *_Nonnull)
+                                                                   error {
+  return allTypes;
+}
+
 - (nullable id)throwErrorWithError:(FlutterError *_Nullable *_Nonnull)error {
   *error = [FlutterError errorWithCode:@"An error" message:nil details:nil];
   return nil;

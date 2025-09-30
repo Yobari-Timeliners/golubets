@@ -143,18 +143,22 @@ public enum Code: Int {
 /// Generated class from Pigeon that represents data sent in messages.
 public struct MessageData: Hashable {
   public init(
-    name: String? = nil,
-    description: String? = nil,
-    code: Code,
-    data: [String: String]
+    name: String? = "Golub",
+    description: String? = "Example description",
+    code: Code = Code.one,
+    data: [String: String] = [
+      "hello": "world",
+      "lorem": "ipsum",
+      "golub": "rocks",
+    ]
   ) {
     self.name = name
     self.description = description
     self.code = code
     self.data = data
   }
-  var name: String? = nil
-  var description: String? = nil
+  var name: String?
+  var description: String?
   var code: Code
   var data: [String: String]
 

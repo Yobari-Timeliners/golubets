@@ -256,6 +256,16 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     return aDouble
   }
 
+  public func createAllTypesWithDefaults() throws -> AllTypesWithDefaults {
+    return AllTypesWithDefaults()
+  }
+
+  public func echo(allTypesWithDefaults allTypes: AllTypesWithDefaults) throws
+    -> AllTypesWithDefaults
+  {
+    return allTypes
+  }
+
   public func echoRequired(_ anInt: Int64) throws -> Int64 {
     return anInt
   }

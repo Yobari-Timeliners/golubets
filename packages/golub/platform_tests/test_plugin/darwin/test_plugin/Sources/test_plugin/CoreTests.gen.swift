@@ -183,18 +183,18 @@ public struct UnusedClass: Hashable {
 /// Generated class from Pigeon that represents data sent in messages.
 public struct AllTypes: Hashable {
   public init(
-    aBool: Bool,
-    anInt: Int64,
-    anInt64: Int64,
-    aDouble: Double,
+    aBool: Bool = false,
+    anInt: Int64 = 0,
+    anInt64: Int64 = 0,
+    aDouble: Double = 0,
     aByteArray: FlutterStandardTypedData,
     a4ByteArray: FlutterStandardTypedData,
     a8ByteArray: FlutterStandardTypedData,
     aFloatArray: FlutterStandardTypedData,
-    anEnum: AnEnum,
-    anotherEnum: AnotherEnum,
-    aString: String,
-    anObject: Any,
+    anEnum: AnEnum = AnEnum.one,
+    anotherEnum: AnotherEnum = AnotherEnum.justInCase,
+    aString: String = "",
+    anObject: Any = 0,
     list: [Any?],
     stringList: [String],
     intList: [Int64],
@@ -859,6 +859,917 @@ public struct AllClassesWrapper: Hashable {
   }
 }
 
+/// A class containing all supported types but immutable.
+///
+/// Generated class from Pigeon that represents data sent in messages.
+public struct ImmutableAllTypes: Hashable {
+  public init(
+    aBool: Bool,
+    anInt: Int64,
+    anInt64: Int64,
+    aDouble: Double,
+    anEnum: AnEnum,
+    anotherEnum: AnotherEnum,
+    aString: String,
+    anObject: Any,
+    list: [Any?],
+    stringList: [String],
+    intList: [Int64],
+    doubleList: [Double],
+    boolList: [Bool],
+    enumList: [AnEnum],
+    objectList: [Any],
+    listList: [[Any?]],
+    mapList: [[AnyHashable?: Any?]],
+    map: [AnyHashable?: Any?],
+    stringMap: [String: String],
+    intMap: [Int64: Int64],
+    enumMap: [AnEnum: AnEnum],
+    objectMap: [AnyHashable: Any],
+    listMap: [Int64: [Any?]],
+    mapMap: [Int64: [AnyHashable?: Any?]]
+  ) {
+    self.aBool = aBool
+    self.anInt = anInt
+    self.anInt64 = anInt64
+    self.aDouble = aDouble
+    self.anEnum = anEnum
+    self.anotherEnum = anotherEnum
+    self.aString = aString
+    self.anObject = anObject
+    self.list = list
+    self.stringList = stringList
+    self.intList = intList
+    self.doubleList = doubleList
+    self.boolList = boolList
+    self.enumList = enumList
+    self.objectList = objectList
+    self.listList = listList
+    self.mapList = mapList
+    self.map = map
+    self.stringMap = stringMap
+    self.intMap = intMap
+    self.enumMap = enumMap
+    self.objectMap = objectMap
+    self.listMap = listMap
+    self.mapMap = mapMap
+  }
+  let aBool: Bool
+  let anInt: Int64
+  let anInt64: Int64
+  let aDouble: Double
+  let anEnum: AnEnum
+  let anotherEnum: AnotherEnum
+  let aString: String
+  let anObject: Any
+  let list: [Any?]
+  let stringList: [String]
+  let intList: [Int64]
+  let doubleList: [Double]
+  let boolList: [Bool]
+  let enumList: [AnEnum]
+  let objectList: [Any]
+  let listList: [[Any?]]
+  let mapList: [[AnyHashable?: Any?]]
+  let map: [AnyHashable?: Any?]
+  let stringMap: [String: String]
+  let intMap: [Int64: Int64]
+  let enumMap: [AnEnum: AnEnum]
+  let objectMap: [AnyHashable: Any]
+  let listMap: [Int64: [Any?]]
+  let mapMap: [Int64: [AnyHashable?: Any?]]
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> ImmutableAllTypes? {
+    let aBool = pigeonVar_list[0] as! Bool
+    let anInt = pigeonVar_list[1] as! Int64
+    let anInt64 = pigeonVar_list[2] as! Int64
+    let aDouble = pigeonVar_list[3] as! Double
+    let anEnum = pigeonVar_list[4] as! AnEnum
+    let anotherEnum = pigeonVar_list[5] as! AnotherEnum
+    let aString = pigeonVar_list[6] as! String
+    let anObject = pigeonVar_list[7]!
+    let list = pigeonVar_list[8] as! [Any?]
+    let stringList = pigeonVar_list[9] as! [String]
+    let intList = pigeonVar_list[10] as! [Int64]
+    let doubleList = pigeonVar_list[11] as! [Double]
+    let boolList = pigeonVar_list[12] as! [Bool]
+    let enumList = pigeonVar_list[13] as! [AnEnum]
+    let objectList = pigeonVar_list[14] as! [Any]
+    let listList = pigeonVar_list[15] as! [[Any?]]
+    let mapList = pigeonVar_list[16] as! [[AnyHashable?: Any?]]
+    let map = pigeonVar_list[17] as! [AnyHashable?: Any?]
+    let stringMap = pigeonVar_list[18] as! [String: String]
+    let intMap = pigeonVar_list[19] as! [Int64: Int64]
+    let enumMap = pigeonVar_list[20] as? [AnEnum: AnEnum]
+    let objectMap = pigeonVar_list[21] as! [AnyHashable: Any]
+    let listMap = pigeonVar_list[22] as! [Int64: [Any?]]
+    let mapMap = pigeonVar_list[23] as! [Int64: [AnyHashable?: Any?]]
+
+    return ImmutableAllTypes(
+      aBool: aBool,
+      anInt: anInt,
+      anInt64: anInt64,
+      aDouble: aDouble,
+      anEnum: anEnum,
+      anotherEnum: anotherEnum,
+      aString: aString,
+      anObject: anObject,
+      list: list,
+      stringList: stringList,
+      intList: intList,
+      doubleList: doubleList,
+      boolList: boolList,
+      enumList: enumList,
+      objectList: objectList,
+      listList: listList,
+      mapList: mapList,
+      map: map,
+      stringMap: stringMap,
+      intMap: intMap,
+      enumMap: enumMap!,
+      objectMap: objectMap,
+      listMap: listMap,
+      mapMap: mapMap
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      aBool,
+      anInt,
+      anInt64,
+      aDouble,
+      anEnum,
+      anotherEnum,
+      aString,
+      anObject,
+      list,
+      stringList,
+      intList,
+      doubleList,
+      boolList,
+      enumList,
+      objectList,
+      listList,
+      mapList,
+      map,
+      stringMap,
+      intMap,
+      enumMap,
+      objectMap,
+      listMap,
+      mapMap,
+    ]
+  }
+  public static func == (lhs: ImmutableAllTypes, rhs: ImmutableAllTypes) -> Bool {
+    return deepEqualsCoreTests(lhs.toList(), rhs.toList())
+  }
+  public func hash(into hasher: inout Hasher) {
+    deepHashCoreTests(value: toList(), hasher: &hasher)
+  }
+}
+
+/// A class containing all supported types but with default values.
+///
+/// Generated class from Pigeon that represents data sent in messages.
+public struct AllTypesWithDefaults: Hashable {
+  public init(
+    aBool: Bool = false,
+    anInt: Int64 = 0,
+    anInt64: Int64 = 0,
+    aDouble: Double = 0.0,
+    anEnum: AnEnum = AnEnum.one,
+    anotherEnum: AnotherEnum = AnotherEnum.justInCase,
+    aString: String = "",
+    anObject: Any = 0,
+    list: [Any?] = [
+      1,
+      "string",
+      3.0,
+      true,
+      AnEnum.fortyTwo,
+      [],
+      [
+        "hello": "world"
+      ],
+    ],
+    stringList: [String] = [
+      "hello",
+      "world",
+    ],
+    intList: [Int64] = [
+      1,
+      2,
+      3,
+    ],
+    doubleList: [Double] = [
+      1.0,
+      2.0,
+      3.0,
+      5,
+      10,
+      20.0,
+      3,
+    ],
+    boolList: [Bool] = [
+      true,
+      false,
+      true,
+    ],
+    enumList: [AnEnum] = [
+      AnEnum.one,
+      AnEnum.two,
+      AnEnum.three,
+      AnEnum.fortyTwo,
+      AnEnum.fourHundredTwentyTwo,
+    ],
+    objectList: [Any] = [
+      1,
+      "string",
+      3.0,
+      true,
+      AnEnum.fortyTwo,
+      [],
+      [
+        "hello": "world"
+      ],
+    ],
+    listList: [[Any?]] = [
+      [
+        1,
+        2,
+        3,
+      ],
+      [
+        "hello",
+        "world",
+      ],
+      [
+        true,
+        false,
+        true,
+      ],
+      [
+        AnEnum.one,
+        AnEnum.two,
+        AnEnum.three,
+      ],
+      [
+        [],
+        [
+          1,
+          2,
+          3,
+        ],
+      ],
+      [
+        [
+          "hello": "world"
+        ],
+        [
+          "lorem": "ipsum"
+        ],
+      ],
+      [
+        [],
+        [
+          1,
+          2,
+          3,
+        ],
+      ],
+      [
+        [
+          "hello": 0.0,
+          "world": 1,
+        ]
+      ],
+    ],
+    mapList: [[AnyHashable?: Any?]] = [
+      [
+        1: "hello",
+        2: "world",
+      ],
+      [
+        "hello": 1,
+        "world": 2,
+      ],
+      [
+        AnEnum.one: "hello",
+        AnEnum.two: "world",
+      ],
+      [
+        "hello": AnEnum.one,
+        "world": AnEnum.two,
+      ],
+      [
+        1: [
+          1,
+          2,
+          3,
+        ],
+        2: [
+          "hello",
+          "world",
+        ],
+      ],
+      [
+        "hello": [
+          "hello": "world"
+        ],
+        "lorem": [
+          "lorem": "ipsum"
+        ],
+      ],
+      [
+        AnEnum.one: [
+          "hello": 0.0,
+          "world": 1,
+        ]
+      ],
+    ],
+    map: [AnyHashable?: Any?] = [
+      1: "hello",
+      "world": 2.0,
+      AnEnum.one: "hello",
+      "worldEnum": AnEnum.two,
+      "list": [
+        1,
+        2,
+        3,
+      ],
+      "map": [
+        "hello": "world"
+      ],
+      "mapDouble": [
+        "hello": 2,
+        "world": 3.0,
+      ],
+    ],
+    stringMap: [String: String] = [
+      "hello": "world",
+      "lorem": "ipsum",
+      "golub": "rocks",
+    ],
+    intMap: [Int64: Int64] = [
+      1: 2,
+      3: 4,
+      5: 6,
+    ],
+    enumMap: [AnEnum: AnEnum] = [
+      AnEnum.one: AnEnum.two,
+      AnEnum.three: AnEnum.fortyTwo,
+      AnEnum.fourHundredTwentyTwo: AnEnum.one,
+    ],
+    objectMap: [AnyHashable: Any] = [
+      1: "hello",
+      "world": 2.0,
+      AnEnum.one: "hello",
+      "worldEnum": AnEnum.two,
+      "list": [
+        1,
+        2,
+        3,
+      ],
+      "map": [
+        "hello": "world"
+      ],
+      "doubleMap": [
+        1: 1.0,
+        2: 0.0,
+        3: 3.0,
+      ],
+    ],
+    listMap: [Int64: [Any?]] = [
+      1: [
+        1,
+        2,
+        3,
+      ],
+      2: [
+        "hello",
+        "world",
+      ],
+      3: [
+        true,
+        false,
+        true,
+      ],
+      4: [
+        AnEnum.one,
+        AnEnum.two,
+        AnEnum.three,
+      ],
+      5: [
+        [],
+        [
+          1,
+          2,
+          3,
+        ],
+      ],
+      6: [
+        [
+          "hello": "world"
+        ],
+        [
+          "lorem": "ipsum"
+        ],
+      ],
+      7: [
+        2,
+        3.0,
+        5,
+        10,
+        20.0,
+        3,
+      ],
+    ],
+    mapMap: [Int64: [AnyHashable?: Any?]] = [
+      1: [
+        1: "hello",
+        2: "world",
+      ],
+      2: [
+        "hello": 1,
+        "world": 2,
+      ],
+      3: [
+        AnEnum.one: "hello",
+        AnEnum.two: "world",
+      ],
+      4: [
+        "hello": AnEnum.one,
+        "world": AnEnum.two,
+      ],
+      5: [
+        1: [
+          1,
+          2,
+          3,
+        ],
+        2: [
+          "hello",
+          "world",
+        ],
+      ],
+      6: [
+        "hello": [
+          "hello": "world"
+        ],
+        "lorem": [
+          "lorem": "ipsum"
+        ],
+      ],
+      7: [
+        AnEnum.one: [
+          "hello": 0.0,
+          "world": 1,
+        ]
+      ],
+    ],
+    allTypes: ImmutableAllTypes = ImmutableAllTypes(
+      aBool: false,
+      anInt: 0,
+      anInt64: 0,
+      aDouble: 0,
+      anEnum: AnEnum.one,
+      anotherEnum: AnotherEnum.justInCase,
+      aString: "some string",
+      anObject: 0,
+      list: [
+        1,
+        "string",
+        3.0,
+        true,
+        AnEnum.fortyTwo,
+        [],
+        [
+          "hello": "world"
+        ],
+      ],
+      stringList: [
+        "hello",
+        "world",
+      ],
+      intList: [
+        1,
+        2,
+        3,
+      ],
+      doubleList: [
+        1.0,
+        2.0,
+        3.0,
+        5,
+        10,
+        20.0,
+        3,
+      ],
+      boolList: [
+        true,
+        false,
+        true,
+      ],
+      enumList: [
+        AnEnum.one,
+        AnEnum.two,
+        AnEnum.three,
+        AnEnum.fortyTwo,
+        AnEnum.fourHundredTwentyTwo,
+      ],
+      objectList: [
+        1,
+        "string",
+        3.0,
+        true,
+        AnEnum.fortyTwo,
+        [],
+        [
+          "hello": "world"
+        ],
+      ],
+      listList: [
+        [
+          1,
+          2,
+          3,
+        ],
+        [
+          "hello",
+          "world",
+        ],
+        [
+          true,
+          false,
+          true,
+        ],
+        [
+          AnEnum.one,
+          AnEnum.two,
+          AnEnum.three,
+        ],
+        [
+          [],
+          [
+            1,
+            2,
+            3,
+          ],
+        ],
+        [
+          [
+            "hello": "world"
+          ],
+          [
+            "lorem": "ipsum"
+          ],
+        ],
+        [
+          [],
+          [
+            1,
+            2,
+            3,
+          ],
+        ],
+        [
+          [
+            "hello": 0.0,
+            "world": 1,
+          ]
+        ],
+      ],
+      mapList: [
+        [
+          1: "hello",
+          2: "world",
+        ],
+        [
+          "hello": 1,
+          "world": 2,
+        ],
+        [
+          AnEnum.one: "hello",
+          AnEnum.two: "world",
+        ],
+        [
+          "hello": AnEnum.one,
+          "world": AnEnum.two,
+        ],
+        [
+          1: [
+            1,
+            2,
+            3,
+          ],
+          2: [
+            "hello",
+            "world",
+          ],
+        ],
+        [
+          "hello": [
+            "hello": "world"
+          ],
+          "lorem": [
+            "lorem": "ipsum"
+          ],
+        ],
+        [
+          AnEnum.one: [
+            "hello": 0.0,
+            "world": 1,
+          ]
+        ],
+      ],
+      map: [
+        1: "hello",
+        "world": 2.0,
+        AnEnum.one: "hello",
+        "worldEnum": AnEnum.two,
+        "list": [
+          1,
+          2,
+          3,
+        ],
+        "map": [
+          "hello": "world"
+        ],
+        "mapDouble": [
+          "hello": 2,
+          "world": 3.0,
+        ],
+      ],
+      stringMap: [
+        "hello": "world",
+        "lorem": "ipsum",
+        "golub": "rocks",
+      ],
+      intMap: [
+        1: 2,
+        3: 4,
+        5: 6,
+      ],
+      enumMap: [
+        AnEnum.one: AnEnum.two,
+        AnEnum.three: AnEnum.fortyTwo,
+        AnEnum.fourHundredTwentyTwo: AnEnum.one,
+      ],
+      objectMap: [
+        1: "hello",
+        "world": 2.0,
+        AnEnum.one: "hello",
+        "worldEnum": AnEnum.two,
+        "list": [
+          1,
+          2,
+          3,
+        ],
+        "map": [
+          "hello": "world"
+        ],
+        "doubleMap": [
+          1: 1,
+          2: 0,
+          3: 3.0,
+        ],
+      ],
+      listMap: [
+        1: [
+          1,
+          2,
+          3,
+        ],
+        2: [
+          "hello",
+          "world",
+        ],
+        3: [
+          true,
+          false,
+          true,
+        ],
+        4: [
+          AnEnum.one,
+          AnEnum.two,
+          AnEnum.three,
+        ],
+        5: [
+          [],
+          [
+            1,
+            2,
+            3,
+          ],
+        ],
+        6: [
+          [
+            "hello": "world"
+          ],
+          [
+            "lorem": "ipsum"
+          ],
+        ],
+        7: [
+          2,
+          3.0,
+          5,
+          10,
+          20.0,
+          3,
+        ],
+      ],
+      mapMap: [
+        1: [
+          1: "hello",
+          2: "world",
+        ],
+        2: [
+          "hello": 1,
+          "world": 2,
+        ],
+        3: [
+          AnEnum.one: "hello",
+          AnEnum.two: "world",
+        ],
+        4: [
+          "hello": AnEnum.one,
+          "world": AnEnum.two,
+        ],
+        5: [
+          1: [
+            1,
+            2,
+            3,
+          ],
+          2: [
+            "hello",
+            "world",
+          ],
+        ],
+        6: [
+          "hello": [
+            "hello": "world"
+          ],
+          "lorem": [
+            "lorem": "ipsum"
+          ],
+        ],
+        7: [
+          AnEnum.one: [
+            "hello": 0.0,
+            "world": 1,
+          ]
+        ],
+      ]
+    )
+  ) {
+    self.aBool = aBool
+    self.anInt = anInt
+    self.anInt64 = anInt64
+    self.aDouble = aDouble
+    self.anEnum = anEnum
+    self.anotherEnum = anotherEnum
+    self.aString = aString
+    self.anObject = anObject
+    self.list = list
+    self.stringList = stringList
+    self.intList = intList
+    self.doubleList = doubleList
+    self.boolList = boolList
+    self.enumList = enumList
+    self.objectList = objectList
+    self.listList = listList
+    self.mapList = mapList
+    self.map = map
+    self.stringMap = stringMap
+    self.intMap = intMap
+    self.enumMap = enumMap
+    self.objectMap = objectMap
+    self.listMap = listMap
+    self.mapMap = mapMap
+    self.allTypes = allTypes
+  }
+  var aBool: Bool
+  var anInt: Int64
+  var anInt64: Int64
+  var aDouble: Double
+  var anEnum: AnEnum
+  var anotherEnum: AnotherEnum
+  var aString: String
+  var anObject: Any
+  var list: [Any?]
+  var stringList: [String]
+  var intList: [Int64]
+  var doubleList: [Double]
+  var boolList: [Bool]
+  var enumList: [AnEnum]
+  var objectList: [Any]
+  var listList: [[Any?]]
+  var mapList: [[AnyHashable?: Any?]]
+  var map: [AnyHashable?: Any?]
+  var stringMap: [String: String]
+  var intMap: [Int64: Int64]
+  var enumMap: [AnEnum: AnEnum]
+  var objectMap: [AnyHashable: Any]
+  var listMap: [Int64: [Any?]]
+  var mapMap: [Int64: [AnyHashable?: Any?]]
+  var allTypes: ImmutableAllTypes
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> AllTypesWithDefaults? {
+    let aBool = pigeonVar_list[0] as! Bool
+    let anInt = pigeonVar_list[1] as! Int64
+    let anInt64 = pigeonVar_list[2] as! Int64
+    let aDouble = pigeonVar_list[3] as! Double
+    let anEnum = pigeonVar_list[4] as! AnEnum
+    let anotherEnum = pigeonVar_list[5] as! AnotherEnum
+    let aString = pigeonVar_list[6] as! String
+    let anObject = pigeonVar_list[7]!
+    let list = pigeonVar_list[8] as! [Any?]
+    let stringList = pigeonVar_list[9] as! [String]
+    let intList = pigeonVar_list[10] as! [Int64]
+    let doubleList = pigeonVar_list[11] as! [Double]
+    let boolList = pigeonVar_list[12] as! [Bool]
+    let enumList = pigeonVar_list[13] as! [AnEnum]
+    let objectList = pigeonVar_list[14] as! [Any]
+    let listList = pigeonVar_list[15] as! [[Any?]]
+    let mapList = pigeonVar_list[16] as! [[AnyHashable?: Any?]]
+    let map = pigeonVar_list[17] as! [AnyHashable?: Any?]
+    let stringMap = pigeonVar_list[18] as! [String: String]
+    let intMap = pigeonVar_list[19] as! [Int64: Int64]
+    let enumMap = pigeonVar_list[20] as? [AnEnum: AnEnum]
+    let objectMap = pigeonVar_list[21] as! [AnyHashable: Any]
+    let listMap = pigeonVar_list[22] as! [Int64: [Any?]]
+    let mapMap = pigeonVar_list[23] as! [Int64: [AnyHashable?: Any?]]
+    let allTypes = pigeonVar_list[24] as! ImmutableAllTypes
+
+    return AllTypesWithDefaults(
+      aBool: aBool,
+      anInt: anInt,
+      anInt64: anInt64,
+      aDouble: aDouble,
+      anEnum: anEnum,
+      anotherEnum: anotherEnum,
+      aString: aString,
+      anObject: anObject,
+      list: list,
+      stringList: stringList,
+      intList: intList,
+      doubleList: doubleList,
+      boolList: boolList,
+      enumList: enumList,
+      objectList: objectList,
+      listList: listList,
+      mapList: mapList,
+      map: map,
+      stringMap: stringMap,
+      intMap: intMap,
+      enumMap: enumMap!,
+      objectMap: objectMap,
+      listMap: listMap,
+      mapMap: mapMap,
+      allTypes: allTypes
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      aBool,
+      anInt,
+      anInt64,
+      aDouble,
+      anEnum,
+      anotherEnum,
+      aString,
+      anObject,
+      list,
+      stringList,
+      intList,
+      doubleList,
+      boolList,
+      enumList,
+      objectList,
+      listList,
+      mapList,
+      map,
+      stringMap,
+      intMap,
+      enumMap,
+      objectMap,
+      listMap,
+      mapMap,
+      allTypes,
+    ]
+  }
+  public static func == (lhs: AllTypesWithDefaults, rhs: AllTypesWithDefaults) -> Bool {
+    return deepEqualsCoreTests(lhs.toList(), rhs.toList())
+  }
+  public func hash(into hasher: inout Hasher) {
+    deepHashCoreTests(value: toList(), hasher: &hasher)
+  }
+}
+
 /// A data class containing a List, used in unit tests.
 ///
 /// Generated class from Pigeon that represents data sent in messages.
@@ -917,6 +1828,10 @@ private class CoreTestsPigeonCodecReader: FlutterStandardReader {
     case 135:
       return AllClassesWrapper.fromList(self.readValue() as! [Any?])
     case 136:
+      return ImmutableAllTypes.fromList(self.readValue() as! [Any?])
+    case 137:
+      return AllTypesWithDefaults.fromList(self.readValue() as! [Any?])
+    case 138:
       return TestMessage.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
@@ -947,8 +1862,14 @@ private class CoreTestsPigeonCodecWriter: FlutterStandardWriter {
     } else if let value = value as? AllClassesWrapper {
       super.writeByte(135)
       super.writeValue(value.toList())
-    } else if let value = value as? TestMessage {
+    } else if let value = value as? ImmutableAllTypes {
       super.writeByte(136)
+      super.writeValue(value.toList())
+    } else if let value = value as? AllTypesWithDefaults {
+      super.writeByte(137)
+      super.writeValue(value.toList())
+    } else if let value = value as? TestMessage {
+      super.writeByte(138)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -1036,6 +1957,10 @@ public protocol HostIntegrationCoreApi {
   func echoNamedDefault(_ aString: String) throws -> String
   /// Returns passed in double.
   func echoOptionalDefault(_ aDouble: Double) throws -> Double
+  /// Returns a new AllTypesWithDefaults instance with all default values.
+  func createAllTypesWithDefaults() throws -> AllTypesWithDefaults
+  /// Returns an AllTypesWithDefaults instance, verifying default values work in cross-platform communication.
+  func echo(allTypesWithDefaults allTypes: AllTypesWithDefaults) throws -> AllTypesWithDefaults
   /// Returns passed in int.
   func echoRequired(_ anInt: Int64) throws -> Int64
   /// Returns the passed object, to test serialization and deserialization.
@@ -1923,6 +2848,42 @@ public class HostIntegrationCoreApiSetup {
       }
     } else {
       echoOptionalDefaultDoubleChannel.setMessageHandler(nil)
+    }
+    /// Returns a new AllTypesWithDefaults instance with all default values.
+    let createAllTypesWithDefaultsChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.createAllTypesWithDefaults\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      createAllTypesWithDefaultsChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.createAllTypesWithDefaults()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      createAllTypesWithDefaultsChannel.setMessageHandler(nil)
+    }
+    /// Returns an AllTypesWithDefaults instance, verifying default values work in cross-platform communication.
+    let echoAllTypesWithDefaultsChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoAllTypesWithDefaults\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      echoAllTypesWithDefaultsChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let allTypesArg = args[0] as! AllTypesWithDefaults
+        do {
+          let result = try api.echo(allTypesWithDefaults: allTypesArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      echoAllTypesWithDefaultsChannel.setMessageHandler(nil)
     }
     /// Returns passed in int.
     let echoRequiredIntChannel = FlutterBasicMessageChannel(

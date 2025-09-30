@@ -737,6 +737,289 @@ class AllClassesWrapper {
   std::optional<flutter::EncodableMap> nullable_class_map_;
 };
 
+// A class containing all supported types but immutable.
+//
+// Generated class from Pigeon that represents data sent in messages.
+class ImmutableAllTypes {
+ public:
+  // Constructs an object setting all fields.
+  explicit ImmutableAllTypes(bool a_bool, int64_t an_int, int64_t an_int64,
+                             double a_double, const AnEnum& an_enum,
+                             const AnotherEnum& another_enum,
+                             const std::string& a_string,
+                             const flutter::EncodableValue& an_object,
+                             const flutter::EncodableList& list,
+                             const flutter::EncodableList& string_list,
+                             const flutter::EncodableList& int_list,
+                             const flutter::EncodableList& double_list,
+                             const flutter::EncodableList& bool_list,
+                             const flutter::EncodableList& enum_list,
+                             const flutter::EncodableList& object_list,
+                             const flutter::EncodableList& list_list,
+                             const flutter::EncodableList& map_list,
+                             const flutter::EncodableMap& map,
+                             const flutter::EncodableMap& string_map,
+                             const flutter::EncodableMap& int_map,
+                             const flutter::EncodableMap& enum_map,
+                             const flutter::EncodableMap& object_map,
+                             const flutter::EncodableMap& list_map,
+                             const flutter::EncodableMap& map_map);
+
+  bool a_bool() const;
+  void set_a_bool(bool value_arg);
+
+  int64_t an_int() const;
+  void set_an_int(int64_t value_arg);
+
+  int64_t an_int64() const;
+  void set_an_int64(int64_t value_arg);
+
+  double a_double() const;
+  void set_a_double(double value_arg);
+
+  const AnEnum& an_enum() const;
+  void set_an_enum(const AnEnum& value_arg);
+
+  const AnotherEnum& another_enum() const;
+  void set_another_enum(const AnotherEnum& value_arg);
+
+  const std::string& a_string() const;
+  void set_a_string(std::string_view value_arg);
+
+  const flutter::EncodableValue& an_object() const;
+  void set_an_object(const flutter::EncodableValue& value_arg);
+
+  const flutter::EncodableList& list() const;
+  void set_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableList& string_list() const;
+  void set_string_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableList& int_list() const;
+  void set_int_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableList& double_list() const;
+  void set_double_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableList& bool_list() const;
+  void set_bool_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableList& enum_list() const;
+  void set_enum_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableList& object_list() const;
+  void set_object_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableList& list_list() const;
+  void set_list_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableList& map_list() const;
+  void set_map_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableMap& map() const;
+  void set_map(const flutter::EncodableMap& value_arg);
+
+  const flutter::EncodableMap& string_map() const;
+  void set_string_map(const flutter::EncodableMap& value_arg);
+
+  const flutter::EncodableMap& int_map() const;
+  void set_int_map(const flutter::EncodableMap& value_arg);
+
+  const flutter::EncodableMap& enum_map() const;
+  void set_enum_map(const flutter::EncodableMap& value_arg);
+
+  const flutter::EncodableMap& object_map() const;
+  void set_object_map(const flutter::EncodableMap& value_arg);
+
+  const flutter::EncodableMap& list_map() const;
+  void set_list_map(const flutter::EncodableMap& value_arg);
+
+  const flutter::EncodableMap& map_map() const;
+  void set_map_map(const flutter::EncodableMap& value_arg);
+
+ private:
+  static ImmutableAllTypes FromEncodableList(
+      const flutter::EncodableList& list);
+  flutter::EncodableList ToEncodableList() const;
+  friend class AllTypesWithDefaults;
+  friend class HostIntegrationCoreApi;
+  friend class FlutterIntegrationCoreApi;
+  friend class HostTrivialApi;
+  friend class HostSmallApi;
+  friend class FlutterSmallApi;
+  friend class PigeonInternalCodecSerializer;
+  friend class CoreTestsTest;
+  bool a_bool_;
+  int64_t an_int_;
+  int64_t an_int64_;
+  double a_double_;
+  AnEnum an_enum_;
+  AnotherEnum another_enum_;
+  std::string a_string_;
+  flutter::EncodableValue an_object_;
+  flutter::EncodableList list_;
+  flutter::EncodableList string_list_;
+  flutter::EncodableList int_list_;
+  flutter::EncodableList double_list_;
+  flutter::EncodableList bool_list_;
+  flutter::EncodableList enum_list_;
+  flutter::EncodableList object_list_;
+  flutter::EncodableList list_list_;
+  flutter::EncodableList map_list_;
+  flutter::EncodableMap map_;
+  flutter::EncodableMap string_map_;
+  flutter::EncodableMap int_map_;
+  flutter::EncodableMap enum_map_;
+  flutter::EncodableMap object_map_;
+  flutter::EncodableMap list_map_;
+  flutter::EncodableMap map_map_;
+};
+
+// A class containing all supported types but with default values.
+//
+// Generated class from Pigeon that represents data sent in messages.
+class AllTypesWithDefaults {
+ public:
+  // Constructs an object setting all fields.
+  explicit AllTypesWithDefaults(
+      bool a_bool, int64_t an_int, int64_t an_int64, double a_double,
+      const AnEnum& an_enum, const AnotherEnum& another_enum,
+      const std::string& a_string, const flutter::EncodableValue& an_object,
+      const flutter::EncodableList& list,
+      const flutter::EncodableList& string_list,
+      const flutter::EncodableList& int_list,
+      const flutter::EncodableList& double_list,
+      const flutter::EncodableList& bool_list,
+      const flutter::EncodableList& enum_list,
+      const flutter::EncodableList& object_list,
+      const flutter::EncodableList& list_list,
+      const flutter::EncodableList& map_list, const flutter::EncodableMap& map,
+      const flutter::EncodableMap& string_map,
+      const flutter::EncodableMap& int_map,
+      const flutter::EncodableMap& enum_map,
+      const flutter::EncodableMap& object_map,
+      const flutter::EncodableMap& list_map,
+      const flutter::EncodableMap& map_map, const ImmutableAllTypes& all_types);
+
+  ~AllTypesWithDefaults() = default;
+  AllTypesWithDefaults(const AllTypesWithDefaults& other);
+  AllTypesWithDefaults& operator=(const AllTypesWithDefaults& other);
+  AllTypesWithDefaults(AllTypesWithDefaults&& other) = default;
+  AllTypesWithDefaults& operator=(AllTypesWithDefaults&& other) noexcept =
+      default;
+  bool a_bool() const;
+  void set_a_bool(bool value_arg);
+
+  int64_t an_int() const;
+  void set_an_int(int64_t value_arg);
+
+  int64_t an_int64() const;
+  void set_an_int64(int64_t value_arg);
+
+  double a_double() const;
+  void set_a_double(double value_arg);
+
+  const AnEnum& an_enum() const;
+  void set_an_enum(const AnEnum& value_arg);
+
+  const AnotherEnum& another_enum() const;
+  void set_another_enum(const AnotherEnum& value_arg);
+
+  const std::string& a_string() const;
+  void set_a_string(std::string_view value_arg);
+
+  const flutter::EncodableValue& an_object() const;
+  void set_an_object(const flutter::EncodableValue& value_arg);
+
+  const flutter::EncodableList& list() const;
+  void set_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableList& string_list() const;
+  void set_string_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableList& int_list() const;
+  void set_int_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableList& double_list() const;
+  void set_double_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableList& bool_list() const;
+  void set_bool_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableList& enum_list() const;
+  void set_enum_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableList& object_list() const;
+  void set_object_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableList& list_list() const;
+  void set_list_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableList& map_list() const;
+  void set_map_list(const flutter::EncodableList& value_arg);
+
+  const flutter::EncodableMap& map() const;
+  void set_map(const flutter::EncodableMap& value_arg);
+
+  const flutter::EncodableMap& string_map() const;
+  void set_string_map(const flutter::EncodableMap& value_arg);
+
+  const flutter::EncodableMap& int_map() const;
+  void set_int_map(const flutter::EncodableMap& value_arg);
+
+  const flutter::EncodableMap& enum_map() const;
+  void set_enum_map(const flutter::EncodableMap& value_arg);
+
+  const flutter::EncodableMap& object_map() const;
+  void set_object_map(const flutter::EncodableMap& value_arg);
+
+  const flutter::EncodableMap& list_map() const;
+  void set_list_map(const flutter::EncodableMap& value_arg);
+
+  const flutter::EncodableMap& map_map() const;
+  void set_map_map(const flutter::EncodableMap& value_arg);
+
+  const ImmutableAllTypes& all_types() const;
+  void set_all_types(const ImmutableAllTypes& value_arg);
+
+ private:
+  static AllTypesWithDefaults FromEncodableList(
+      const flutter::EncodableList& list);
+  flutter::EncodableList ToEncodableList() const;
+  friend class HostIntegrationCoreApi;
+  friend class FlutterIntegrationCoreApi;
+  friend class HostTrivialApi;
+  friend class HostSmallApi;
+  friend class FlutterSmallApi;
+  friend class PigeonInternalCodecSerializer;
+  friend class CoreTestsTest;
+  bool a_bool_;
+  int64_t an_int_;
+  int64_t an_int64_;
+  double a_double_;
+  AnEnum an_enum_;
+  AnotherEnum another_enum_;
+  std::string a_string_;
+  flutter::EncodableValue an_object_;
+  flutter::EncodableList list_;
+  flutter::EncodableList string_list_;
+  flutter::EncodableList int_list_;
+  flutter::EncodableList double_list_;
+  flutter::EncodableList bool_list_;
+  flutter::EncodableList enum_list_;
+  flutter::EncodableList object_list_;
+  flutter::EncodableList list_list_;
+  flutter::EncodableList map_list_;
+  flutter::EncodableMap map_;
+  flutter::EncodableMap string_map_;
+  flutter::EncodableMap int_map_;
+  flutter::EncodableMap enum_map_;
+  flutter::EncodableMap object_map_;
+  flutter::EncodableMap list_map_;
+  flutter::EncodableMap map_map_;
+  std::unique_ptr<ImmutableAllTypes> all_types_;
+};
+
 // A data class containing a List, used in unit tests.
 //
 // Generated class from Pigeon that represents data sent in messages.
@@ -873,6 +1156,12 @@ class HostIntegrationCoreApi {
       const std::string& a_string) = 0;
   // Returns passed in double.
   virtual ErrorOr<double> EchoOptionalDefaultDouble(double a_double) = 0;
+  // Returns a new AllTypesWithDefaults instance with all default values.
+  virtual ErrorOr<AllTypesWithDefaults> CreateAllTypesWithDefaults() = 0;
+  // Returns an AllTypesWithDefaults instance, verifying default values work in
+  // cross-platform communication.
+  virtual ErrorOr<AllTypesWithDefaults> EchoAllTypesWithDefaults(
+      const AllTypesWithDefaults& all_types) = 0;
   // Returns passed in int.
   virtual ErrorOr<int64_t> EchoRequiredInt(int64_t an_int) = 0;
   // Returns the passed object, to test serialization and deserialization.

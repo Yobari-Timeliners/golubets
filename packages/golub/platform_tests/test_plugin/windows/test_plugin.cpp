@@ -21,6 +21,7 @@ using core_tests_pigeontest::AllClassesWrapper;
 using core_tests_pigeontest::AllNullableTypes;
 using core_tests_pigeontest::AllNullableTypesWithoutRecursion;
 using core_tests_pigeontest::AllTypes;
+using core_tests_pigeontest::AllTypesWithDefaults;
 using core_tests_pigeontest::AnEnum;
 using core_tests_pigeontest::AnotherEnum;
 using core_tests_pigeontest::ErrorOr;
@@ -223,6 +224,17 @@ ErrorOr<std::string> TestPlugin::EchoNamedDefaultString(
 
 ErrorOr<double> TestPlugin::EchoOptionalDefaultDouble(double a_double) {
   return a_double;
+}
+
+ErrorOr<AllTypesWithDefaults> TestPlugin::CreateAllTypesWithDefaults() {
+  return FlutterError("NotImplemented",
+                      "CreateAllTypesWithDefaults is not implemented - test "
+                      "will never be executed");
+}
+
+ErrorOr<AllTypesWithDefaults> TestPlugin::EchoAllTypesWithDefaults(
+    const AllTypesWithDefaults& all_types) {
+  return all_types;
 }
 
 ErrorOr<int64_t> TestPlugin::EchoRequiredInt(int64_t an_int) { return an_int; }

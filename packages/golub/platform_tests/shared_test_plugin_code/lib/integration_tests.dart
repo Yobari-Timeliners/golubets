@@ -1051,6 +1051,300 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       final String? receivedNullString = await api.echoNamedNullableString();
       expect(receivedNullString, null);
     });
+
+    const List<TargetGenerator> defaultValuesSupportedTargets =
+        <TargetGenerator>[
+          TargetGenerator.kotlin,
+          TargetGenerator.swift,
+        ];
+
+    testWidgets(
+      'createAllTypesWithDefaults returns object with correct default values',
+      (WidgetTester _) async {
+        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+
+        final AllTypesWithDefaults createdObject =
+            await api.createAllTypesWithDefaults();
+
+        // Verify basic field defaults
+        expect(createdObject.aBool, false);
+        expect(createdObject.anInt, 0);
+        expect(createdObject.anInt64, 0);
+        expect(createdObject.aDouble, 0.0);
+        expect(createdObject.aString, '');
+        expect(createdObject.anObject, 0);
+        expect(createdObject.anEnum, AnEnum.one);
+        expect(createdObject.anotherEnum, AnotherEnum.justInCase);
+
+        // The collection fields should have predefined default values
+        expect(createdObject.list.length, 7);
+        expect(createdObject.list[0], 1);
+        expect(createdObject.list[1], 'string');
+        expect(createdObject.list[2], 3.0);
+        expect(createdObject.list[3], true);
+        expect(createdObject.list[4], AnEnum.fortyTwo);
+
+        expect(createdObject.stringList.length, 2);
+        expect(createdObject.stringList[0], 'hello');
+        expect(createdObject.stringList[1], 'world');
+
+        expect(createdObject.intList.length, 3);
+        expect(createdObject.intList[0], 1);
+        expect(createdObject.intList[1], 2);
+        expect(createdObject.intList[2], 3);
+
+        expect(createdObject.doubleList.length, 7);
+        expect(createdObject.doubleList[0], 1.0);
+        expect(createdObject.doubleList[1], 2.0);
+        expect(createdObject.doubleList[2], 3.0);
+        expect(createdObject.doubleList[3], 5.0);
+        expect(createdObject.doubleList[4], 10.0);
+        expect(createdObject.doubleList[5], 20.0);
+        expect(createdObject.doubleList[6], 3.0);
+
+        expect(createdObject.boolList.length, 3);
+        expect(createdObject.boolList[0], true);
+        expect(createdObject.boolList[1], false);
+        expect(createdObject.boolList[2], true);
+
+        expect(createdObject.enumList.length, 5);
+        expect(createdObject.enumList[0], AnEnum.one);
+        expect(createdObject.enumList[1], AnEnum.two);
+        expect(createdObject.enumList[2], AnEnum.three);
+        expect(createdObject.enumList[3], AnEnum.fortyTwo);
+        expect(createdObject.enumList[4], AnEnum.fourHundredTwentyTwo);
+
+        expect(createdObject.objectList.length, 7);
+        expect(createdObject.objectList[0], 1);
+        expect(createdObject.objectList[1], 'string');
+        expect(createdObject.objectList[2], 3.0);
+        expect(createdObject.objectList[3], true);
+        expect(createdObject.objectList[4], AnEnum.fortyTwo);
+
+        expect(createdObject.listList.length, 8);
+        expect(createdObject.mapList.length, 7);
+        expect(createdObject.map.length, 7);
+        expect(createdObject.stringMap.length, 3);
+        expect(createdObject.intMap.length, 3);
+        expect(createdObject.enumMap.length, 3);
+        expect(createdObject.objectMap.length, 7);
+        expect(createdObject.listMap.length, 7);
+        expect(createdObject.mapMap.length, 7);
+
+        // Verify some key map contents
+        expect(createdObject.stringMap['hello'], 'world');
+        expect(createdObject.stringMap['lorem'], 'ipsum');
+        expect(createdObject.stringMap['golub'], 'rocks');
+
+        expect(createdObject.intMap[1], 2);
+        expect(createdObject.intMap[3], 4);
+        expect(createdObject.intMap[5], 6);
+
+        expect(createdObject.enumMap[AnEnum.one], AnEnum.two);
+        expect(createdObject.enumMap[AnEnum.three], AnEnum.fortyTwo);
+        expect(createdObject.enumMap[AnEnum.fourHundredTwentyTwo], AnEnum.one);
+
+        // Verify objectMap contains the expected keys
+        expect(createdObject.objectMap[1], 'hello');
+        expect(createdObject.objectMap['world'], 2.0);
+        expect(createdObject.objectMap[AnEnum.one], 'hello');
+        expect(createdObject.objectMap['worldEnum'], AnEnum.two);
+
+        // But the nested ImmutableAllTypes should have predefined values
+        final ImmutableAllTypes immutable = createdObject.allTypes;
+
+        // Verify immutable basic fields
+        expect(immutable.aBool, false);
+        expect(immutable.anInt, 0);
+        expect(immutable.anInt64, 0);
+        expect(immutable.aDouble, 0);
+        expect(immutable.anEnum, AnEnum.one);
+        expect(immutable.anotherEnum, AnotherEnum.justInCase);
+        expect(immutable.aString, 'some string');
+        expect(immutable.anObject, 0);
+
+        // Verify predefined list values
+        expect(immutable.list.length, 7);
+        expect(immutable.list[0], 1);
+        expect(immutable.list[1], 'string');
+        expect(immutable.list[2], 3.0);
+        expect(immutable.list[3], true);
+        expect(immutable.list[4], AnEnum.fortyTwo);
+        expect(immutable.list[5], isA<List<Object?>>());
+        expect(immutable.list[6], <String, String>{'hello': 'world'});
+
+        expect(immutable.stringList.length, 2);
+        expect(immutable.stringList[0], 'hello');
+        expect(immutable.stringList[1], 'world');
+
+        expect(immutable.intList.length, 3);
+        expect(immutable.intList[0], 1);
+        expect(immutable.intList[1], 2);
+        expect(immutable.intList[2], 3);
+
+        expect(immutable.doubleList.length, 7);
+        expect(immutable.doubleList[0], 1.0);
+        expect(immutable.doubleList[1], 2.0);
+        expect(immutable.doubleList[2], 3.0);
+        expect(immutable.doubleList[3], 5);
+        expect(immutable.doubleList[4], 10);
+        expect(immutable.doubleList[5], 20.0);
+        expect(immutable.doubleList[6], 3);
+
+        expect(immutable.boolList.length, 3);
+        expect(immutable.boolList[0], true);
+        expect(immutable.boolList[1], false);
+        expect(immutable.boolList[2], true);
+
+        expect(immutable.enumList.length, 5);
+        expect(immutable.enumList[0], AnEnum.one);
+        expect(immutable.enumList[1], AnEnum.two);
+        expect(immutable.enumList[2], AnEnum.three);
+        expect(immutable.enumList[3], AnEnum.fortyTwo);
+        expect(immutable.enumList[4], AnEnum.fourHundredTwentyTwo);
+
+        expect(immutable.objectList.length, 7);
+        expect(immutable.objectList[0], 1);
+        expect(immutable.objectList[1], 'string');
+        expect(immutable.objectList[2], 3.0);
+        expect(immutable.objectList[3], true);
+        expect(immutable.objectList[4], AnEnum.fortyTwo);
+        expect(immutable.objectList[5], isA<List<Object?>>());
+        expect(immutable.objectList[6], <String, String>{'hello': 'world'});
+
+        // Verify predefined map values
+        expect(immutable.stringMap.length, 3);
+        expect(immutable.stringMap['hello'], 'world');
+        expect(immutable.stringMap['lorem'], 'ipsum');
+        expect(immutable.stringMap['golub'], 'rocks');
+
+        expect(immutable.intMap.length, 3);
+        expect(immutable.intMap[1], 2);
+        expect(immutable.intMap[3], 4);
+        expect(immutable.intMap[5], 6);
+
+        expect(immutable.enumMap.length, 3);
+        expect(immutable.enumMap[AnEnum.one], AnEnum.two);
+        expect(immutable.enumMap[AnEnum.three], AnEnum.fortyTwo);
+        expect(immutable.enumMap[AnEnum.fourHundredTwentyTwo], AnEnum.one);
+
+        expect(immutable.objectMap.length, 7);
+        expect(immutable.objectMap[1], 'hello');
+        expect(immutable.objectMap['world'], 2.0);
+        expect(immutable.objectMap[AnEnum.one], 'hello');
+        expect(immutable.objectMap['worldEnum'], AnEnum.two);
+        expect(immutable.objectMap['list'], <int>[1, 2, 3]);
+        expect(immutable.objectMap['map'], <String, String>{'hello': 'world'});
+        expect(immutable.objectMap['doubleMap'], <int, num>{
+          1: 1,
+          2: 0,
+          3: 3.0,
+        });
+
+        expect(immutable.listMap.length, 7);
+        expect(immutable.listMap[1], <int>[1, 2, 3]);
+        expect(immutable.listMap[2], <String>['hello', 'world']);
+        expect(immutable.listMap[3], <bool>[true, false, true]);
+        expect(immutable.listMap[4], <AnEnum>[
+          AnEnum.one,
+          AnEnum.two,
+          AnEnum.three,
+        ]);
+        expect(immutable.listMap[5], <List<Object?>>[
+          <Object?>[],
+          <Object?>[1, 2, 3],
+        ]);
+        expect(immutable.listMap[6], <Map<String, String>>[
+          <String, String>{'hello': 'world'},
+          <String, String>{'lorem': 'ipsum'},
+        ]);
+        expect(immutable.listMap[7], <num>[2, 3.0, 5, 10, 20.0, 3]);
+
+        expect(immutable.mapMap.length, 7);
+        expect(immutable.mapMap[1], <int, String>{1: 'hello', 2: 'world'});
+        expect(immutable.mapMap[2], <String, int>{'hello': 1, 'world': 2});
+        expect(immutable.mapMap[3], <AnEnum, String>{
+          AnEnum.one: 'hello',
+          AnEnum.two: 'world',
+        });
+        expect(immutable.mapMap[4], <String, AnEnum>{
+          'hello': AnEnum.one,
+          'world': AnEnum.two,
+        });
+        expect(immutable.mapMap[5], <int, List<Object>>{
+          1: <int>[1, 2, 3],
+          2: <String>['hello', 'world'],
+        });
+        expect(immutable.mapMap[6], <String, Map<String, String>>{
+          'hello': <String, String>{'hello': 'world'},
+          'lorem': <String, String>{'lorem': 'ipsum'},
+        });
+        expect(immutable.mapMap[7], <AnEnum, Map<String, num>>{
+          AnEnum.one: <String, num>{'hello': 0.0, 'world': 1},
+        });
+      },
+      skip: !defaultValuesSupportedTargets.contains(targetGenerator),
+    );
+
+    testWidgets(
+      'echoAllTypesWithDefaults preserves default values across platforms',
+      (WidgetTester _) async {
+        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+
+        // Test that our test data with defaults roundtrips correctly
+        final AllTypesWithDefaults echoedObject = await api
+            .echoAllTypesWithDefaults(allTypesWithDefaults);
+        expect(echoedObject, allTypesWithDefaults);
+      },
+      skip: !defaultValuesSupportedTargets.contains(targetGenerator),
+    );
+
+    testWidgets(
+      'default values are correctly generated in target platform',
+      (WidgetTester _) async {
+        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+
+        // Create object with defaults on the platform side
+        final AllTypesWithDefaults platformDefaults =
+            await api.createAllTypesWithDefaults();
+
+        // Echo it back to ensure serialization works
+        final AllTypesWithDefaults echoedDefaults = await api
+            .echoAllTypesWithDefaults(platformDefaults);
+
+        // Should be equal to themselves
+        expect(echoedDefaults, platformDefaults);
+
+        // Should match our local defaults
+        expect(platformDefaults.aBool, allTypesWithDefaults.aBool);
+        expect(platformDefaults.anInt, allTypesWithDefaults.anInt);
+        expect(platformDefaults.anInt64, allTypesWithDefaults.anInt64);
+        expect(platformDefaults.aDouble, allTypesWithDefaults.aDouble);
+        expect(platformDefaults.aString, allTypesWithDefaults.aString);
+        expect(platformDefaults.anObject, allTypesWithDefaults.anObject);
+        expect(platformDefaults.anEnum, allTypesWithDefaults.anEnum);
+        expect(platformDefaults.anotherEnum, allTypesWithDefaults.anotherEnum);
+
+        // Verify the nested ImmutableAllTypes matches
+        expect(
+          platformDefaults.allTypes.aBool,
+          allTypesWithDefaults.allTypes.aBool,
+        );
+        expect(
+          platformDefaults.allTypes.aString,
+          allTypesWithDefaults.allTypes.aString,
+        );
+        expect(
+          platformDefaults.allTypes.stringList.length,
+          allTypesWithDefaults.allTypes.stringList.length,
+        );
+        expect(
+          platformDefaults.allTypes.stringMap.length,
+          allTypesWithDefaults.allTypes.stringMap.length,
+        );
+      },
+      skip: !defaultValuesSupportedTargets.contains(targetGenerator),
+    );
   });
 
   group('Host async API tests', () {

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:collection/collection.dart' hide mergeMaps;
 import 'package:graphs/graphs.dart';
 
 import '../ast.dart';
@@ -334,7 +335,14 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       _docCommentSpec,
       generatorComments: generatedMessages,
     );
-    _writeDataClassSignature(indent, classDefinition);
+    _writeDataClassSignature(
+      indent,
+      classDefinition,
+      classLookup: <String, Class>{
+        for (final Class classDefinition in root.classes)
+          classDefinition.name: classDefinition,
+      },
+    );
     if (classDefinition.isSealed) {
       if (generatorOptions.nestSealedClasses) {
         indent.writeScoped(
@@ -411,6 +419,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     Indent indent,
     Class classDefinition, {
     bool private = false,
+    required Map<String, Class> classLookup,
   }) {
     final String privateString = private ? 'private ' : '';
     final String classType =
@@ -431,7 +440,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       for (final NamedType element in getFieldsInSerializationOrder(
         classDefinition,
       )) {
-        _writeClassField(indent, element);
+        _writeClassField(indent, element, classLookup: classLookup);
         if (getFieldsInSerializationOrder(classDefinition).last != element) {
           indent.addln(',');
         } else {
@@ -509,7 +518,11 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     });
   }
 
-  void _writeClassField(Indent indent, NamedType field) {
+  void _writeClassField(
+    Indent indent,
+    NamedType field, {
+    required Map<String, Class> classLookup,
+  }) {
     addDocumentationComments(
       indent,
       field.documentationComments,
@@ -518,8 +531,19 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     indent.write(
       'val ${field.name}: ${_nullSafeKotlinTypeForDartType(field.type)}',
     );
-    final String defaultNil = field.type.isNullable ? ' = null' : '';
-    indent.add(defaultNil);
+    final DefaultValue? defaultValue = field.defaultValue;
+    if (defaultValue != null) {
+      indent.add(' = ');
+      defaultValue.write(
+        indent,
+        prefix: '',
+        expectedType: field.type,
+        classLookup: classLookup,
+      );
+    } else {
+      final String defaultNil = field.type.isNullable ? ' = null' : '';
+      indent.add(defaultNil);
+    }
   }
 
   @override
@@ -702,6 +726,10 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       indent,
       overflowClass,
       private: true,
+      classLookup: <String, Class>{
+        for (final Class classDefinition in root.classes)
+          classDefinition.name: classDefinition,
+      },
     );
     indent.addScoped(' {', '}', () {
       writeClassEncode(
@@ -2511,4 +2539,144 @@ String _cast(Indent indent, String variable, {required TypeDeclaration type}) {
     return variable;
   }
   return '$variable as ${_nullSafeKotlinTypeForDartType(type)}';
+}
+
+/// Helper to add comma or newline based on whether it's the last element.
+void _addCommaOrNewline(Indent indent, bool isLast) =>
+    isLast ? indent.newln() : indent.addln(', ');
+
+extension on DefaultValue {
+  void write(
+    Indent indent, {
+    String? prefix,
+    TypeDeclaration? expectedType,
+    required Map<String, Class> classLookup,
+  }) {
+    prefix ??= indent.str();
+
+    switch (this) {
+      case StringLiteral(:final String value):
+        indent.add('$prefix"$value"');
+
+      case IntLiteral(:final int value):
+        indent.add(
+          // The root cause is that Kotlin disallows integer literals for double types
+          expectedType?.baseName == 'double'
+              ? '$prefix$value.0'
+              // Dart int maps to Kotlin Long, so add L suffix
+              : '$prefix${value}L',
+        );
+
+      case DoubleLiteral(:final double value):
+        indent.add('$prefix$value');
+
+      case BoolLiteral(:final bool value):
+        indent.add('$prefix$value');
+
+      case ListLiteral(
+        :final List<DefaultValue> elements,
+        :final TypeDeclaration elementType,
+      ):
+        final String kotlinElementType = _nullSafeKotlinTypeForDartType(
+          elementType,
+        );
+        if (elements.isEmpty) {
+          indent.add('${prefix}listOf<$kotlinElementType>()');
+        } else {
+          indent.addScoped(
+            '${prefix}listOf(',
+            ')',
+            () {
+              for (final DefaultValue element in elements) {
+                element.write(
+                  indent,
+                  classLookup: classLookup,
+                  expectedType: elementType,
+                );
+                _addCommaOrNewline(indent, element == elements.last);
+              }
+            },
+            addTrailingNewline: false,
+          );
+        }
+
+      case MapLiteral(
+        :final Map<DefaultValue, DefaultValue> entries,
+        :final TypeDeclaration keyType,
+        :final TypeDeclaration valueType,
+      ):
+        final String kotlinKeyType = _nullSafeKotlinTypeForDartType(keyType);
+        final String kotlinValueType = _nullSafeKotlinTypeForDartType(
+          valueType,
+        );
+        if (entries.isEmpty) {
+          indent.add('${prefix}mapOf<$kotlinKeyType, $kotlinValueType>()');
+        } else {
+          indent.addScoped(
+            '${prefix}mapOf(',
+            ')',
+            () {
+              for (final MapEntry<DefaultValue, DefaultValue> entry
+                  in entries.entries) {
+                entry.key.write(
+                  indent,
+                  expectedType: keyType,
+                  classLookup: classLookup,
+                );
+                indent.add(' to ');
+                entry.value.write(
+                  indent,
+                  prefix: '',
+                  expectedType: valueType,
+                  classLookup: classLookup,
+                );
+                _addCommaOrNewline(indent, entry == entries.entries.last);
+              }
+            },
+            addTrailingNewline: false,
+          );
+        }
+
+      case EnumLiteral(:final String name, :final String value):
+        indent.add('$prefix$name.${toScreamingSnakeCase(value)}');
+
+      case ObjectCreation(
+        :final TypeDeclaration type,
+        :final List<DefaultValue> arguments,
+      ):
+        indent.add('$prefix${type.baseName}');
+        if (arguments.isEmpty) {
+          indent.add('()');
+          return;
+        }
+
+        indent.addScoped('(', ')', () {
+          for (int i = 0; i < arguments.length; i++) {
+            arguments[i].write(
+              indent,
+              expectedType: type, // Pass the object type, not the field type
+              classLookup: classLookup,
+            );
+            _addCommaOrNewline(indent, i == arguments.length - 1);
+          }
+        }, addTrailingNewline: false);
+
+      case NamedDefaultValue(
+        :final String name,
+        :final DefaultValue value,
+      ):
+        indent.add('$prefix$name = ');
+        final TypeDeclaration? parameterType =
+            classLookup[expectedType?.baseName]?.fields
+                .firstWhereOrNull((NamedType f) => f.name == name)
+                ?.type;
+
+        value.write(
+          indent,
+          prefix: '',
+          expectedType: parameterType,
+          classLookup: classLookup,
+        );
+    }
+  }
 }
