@@ -750,6 +750,166 @@ class AllClassesWrapper {
   int get hashCode => Object.hashAll(_toList());
 }
 
+/// A class containing all supported types but immutable.
+class ImmutableAllTypes {
+  const ImmutableAllTypes({
+    required this.aBool,
+    required this.anInt,
+    required this.anInt64,
+    required this.aDouble,
+    required this.anEnum,
+    required this.anotherEnum,
+    required this.aString,
+    required this.anObject,
+    required this.list,
+    required this.stringList,
+    required this.intList,
+    required this.doubleList,
+    required this.boolList,
+    required this.enumList,
+    required this.objectList,
+    required this.listList,
+    required this.mapList,
+    required this.map,
+    required this.stringMap,
+    required this.intMap,
+    required this.enumMap,
+    required this.objectMap,
+    required this.listMap,
+    required this.mapMap,
+  });
+
+  final bool aBool;
+
+  final int anInt;
+
+  final int anInt64;
+
+  final double aDouble;
+
+  final AnEnum anEnum;
+
+  final AnotherEnum anotherEnum;
+
+  final String aString;
+
+  final Object anObject;
+
+  final List<Object?> list;
+
+  final List<String> stringList;
+
+  final List<int> intList;
+
+  final List<double> doubleList;
+
+  final List<bool> boolList;
+
+  final List<AnEnum> enumList;
+
+  final List<Object> objectList;
+
+  final List<List<Object?>> listList;
+
+  final List<Map<Object?, Object?>> mapList;
+
+  final Map<Object?, Object?> map;
+
+  final Map<String, String> stringMap;
+
+  final Map<int, int> intMap;
+
+  final Map<AnEnum, AnEnum> enumMap;
+
+  final Map<Object, Object> objectMap;
+
+  final Map<int, List<Object?>> listMap;
+
+  final Map<int, Map<Object?, Object?>> mapMap;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      aBool,
+      anInt,
+      anInt64,
+      aDouble,
+      anEnum,
+      anotherEnum,
+      aString,
+      anObject,
+      list,
+      stringList,
+      intList,
+      doubleList,
+      boolList,
+      enumList,
+      objectList,
+      listList,
+      mapList,
+      map,
+      stringMap,
+      intMap,
+      enumMap,
+      objectMap,
+      listMap,
+      mapMap,
+    ];
+  }
+
+  Object encode() {
+    return _toList();
+  }
+
+  static ImmutableAllTypes decode(Object result) {
+    result as List<Object?>;
+    return ImmutableAllTypes(
+      aBool: result[0]! as bool,
+      anInt: result[1]! as int,
+      anInt64: result[2]! as int,
+      aDouble: result[3]! as double,
+      anEnum: result[4]! as AnEnum,
+      anotherEnum: result[5]! as AnotherEnum,
+      aString: result[6]! as String,
+      anObject: result[7]!,
+      list: result[8]! as List<Object?>,
+      stringList: (result[9] as List<Object?>?)!.cast<String>(),
+      intList: (result[10] as List<Object?>?)!.cast<int>(),
+      doubleList: (result[11] as List<Object?>?)!.cast<double>(),
+      boolList: (result[12] as List<Object?>?)!.cast<bool>(),
+      enumList: (result[13] as List<Object?>?)!.cast<AnEnum>(),
+      objectList: (result[14] as List<Object?>?)!.cast<Object>(),
+      listList: (result[15] as List<Object?>?)!.cast<List<Object?>>(),
+      mapList: (result[16] as List<Object?>?)!.cast<Map<Object?, Object?>>(),
+      map: result[17]! as Map<Object?, Object?>,
+      stringMap: (result[18] as Map<Object?, Object?>?)!.cast<String, String>(),
+      intMap: (result[19] as Map<Object?, Object?>?)!.cast<int, int>(),
+      enumMap: (result[20] as Map<Object?, Object?>?)!.cast<AnEnum, AnEnum>(),
+      objectMap: (result[21] as Map<Object?, Object?>?)!.cast<Object, Object>(),
+      listMap:
+          (result[22] as Map<Object?, Object?>?)!.cast<int, List<Object?>>(),
+      mapMap:
+          (result[23] as Map<Object?, Object?>?)!
+              .cast<int, Map<Object?, Object?>>(),
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! ImmutableAllTypes || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(encode(), other.encode());
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => Object.hashAll(_toList());
+}
+
 /// A class containing all supported types but with default values.
 class AllTypesWithDefaults {
   AllTypesWithDefaults({
@@ -1480,166 +1640,6 @@ class AllTypesWithDefaults {
   int get hashCode => Object.hashAll(_toList());
 }
 
-/// A class containing all supported types but immutable.
-class ImmutableAllTypes {
-  const ImmutableAllTypes({
-    required this.aBool,
-    required this.anInt,
-    required this.anInt64,
-    required this.aDouble,
-    required this.anEnum,
-    required this.anotherEnum,
-    required this.aString,
-    required this.anObject,
-    required this.list,
-    required this.stringList,
-    required this.intList,
-    required this.doubleList,
-    required this.boolList,
-    required this.enumList,
-    required this.objectList,
-    required this.listList,
-    required this.mapList,
-    required this.map,
-    required this.stringMap,
-    required this.intMap,
-    required this.enumMap,
-    required this.objectMap,
-    required this.listMap,
-    required this.mapMap,
-  });
-
-  final bool aBool;
-
-  final int anInt;
-
-  final int anInt64;
-
-  final double aDouble;
-
-  final AnEnum anEnum;
-
-  final AnotherEnum anotherEnum;
-
-  final String aString;
-
-  final Object anObject;
-
-  final List<Object?> list;
-
-  final List<String> stringList;
-
-  final List<int> intList;
-
-  final List<double> doubleList;
-
-  final List<bool> boolList;
-
-  final List<AnEnum> enumList;
-
-  final List<Object> objectList;
-
-  final List<List<Object?>> listList;
-
-  final List<Map<Object?, Object?>> mapList;
-
-  final Map<Object?, Object?> map;
-
-  final Map<String, String> stringMap;
-
-  final Map<int, int> intMap;
-
-  final Map<AnEnum, AnEnum> enumMap;
-
-  final Map<Object, Object> objectMap;
-
-  final Map<int, List<Object?>> listMap;
-
-  final Map<int, Map<Object?, Object?>> mapMap;
-
-  List<Object?> _toList() {
-    return <Object?>[
-      aBool,
-      anInt,
-      anInt64,
-      aDouble,
-      anEnum,
-      anotherEnum,
-      aString,
-      anObject,
-      list,
-      stringList,
-      intList,
-      doubleList,
-      boolList,
-      enumList,
-      objectList,
-      listList,
-      mapList,
-      map,
-      stringMap,
-      intMap,
-      enumMap,
-      objectMap,
-      listMap,
-      mapMap,
-    ];
-  }
-
-  Object encode() {
-    return _toList();
-  }
-
-  static ImmutableAllTypes decode(Object result) {
-    result as List<Object?>;
-    return ImmutableAllTypes(
-      aBool: result[0]! as bool,
-      anInt: result[1]! as int,
-      anInt64: result[2]! as int,
-      aDouble: result[3]! as double,
-      anEnum: result[4]! as AnEnum,
-      anotherEnum: result[5]! as AnotherEnum,
-      aString: result[6]! as String,
-      anObject: result[7]!,
-      list: result[8]! as List<Object?>,
-      stringList: (result[9] as List<Object?>?)!.cast<String>(),
-      intList: (result[10] as List<Object?>?)!.cast<int>(),
-      doubleList: (result[11] as List<Object?>?)!.cast<double>(),
-      boolList: (result[12] as List<Object?>?)!.cast<bool>(),
-      enumList: (result[13] as List<Object?>?)!.cast<AnEnum>(),
-      objectList: (result[14] as List<Object?>?)!.cast<Object>(),
-      listList: (result[15] as List<Object?>?)!.cast<List<Object?>>(),
-      mapList: (result[16] as List<Object?>?)!.cast<Map<Object?, Object?>>(),
-      map: result[17]! as Map<Object?, Object?>,
-      stringMap: (result[18] as Map<Object?, Object?>?)!.cast<String, String>(),
-      intMap: (result[19] as Map<Object?, Object?>?)!.cast<int, int>(),
-      enumMap: (result[20] as Map<Object?, Object?>?)!.cast<AnEnum, AnEnum>(),
-      objectMap: (result[21] as Map<Object?, Object?>?)!.cast<Object, Object>(),
-      listMap:
-          (result[22] as Map<Object?, Object?>?)!.cast<int, List<Object?>>(),
-      mapMap:
-          (result[23] as Map<Object?, Object?>?)!
-              .cast<int, Map<Object?, Object?>>(),
-    );
-  }
-
-  @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
-  bool operator ==(Object other) {
-    if (other is! ImmutableAllTypes || other.runtimeType != runtimeType) {
-      return false;
-    }
-    if (identical(this, other)) {
-      return true;
-    }
-    return _deepEquals(encode(), other.encode());
-  }
-
-  @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
-  int get hashCode => Object.hashAll(_toList());
-}
-
 /// A data class containing a List, used in unit tests.
 class TestMessage {
   TestMessage({
@@ -1710,10 +1710,10 @@ class _PigeonCodec extends StandardMessageCodec {
     } else if (value is AllClassesWrapper) {
       buffer.putUint8(135);
       writeValue(buffer, value.encode());
-    } else if (value is AllTypesWithDefaults) {
+    } else if (value is ImmutableAllTypes) {
       buffer.putUint8(136);
       writeValue(buffer, value.encode());
-    } else if (value is ImmutableAllTypes) {
+    } else if (value is AllTypesWithDefaults) {
       buffer.putUint8(137);
       writeValue(buffer, value.encode());
     } else if (value is TestMessage) {
@@ -1744,9 +1744,9 @@ class _PigeonCodec extends StandardMessageCodec {
       case 135:
         return AllClassesWrapper.decode(readValue(buffer)!);
       case 136:
-        return AllTypesWithDefaults.decode(readValue(buffer)!);
-      case 137:
         return ImmutableAllTypes.decode(readValue(buffer)!);
+      case 137:
+        return AllTypesWithDefaults.decode(readValue(buffer)!);
       case 138:
         return TestMessage.decode(readValue(buffer)!);
       default:

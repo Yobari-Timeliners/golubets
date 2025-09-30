@@ -2079,6 +2079,249 @@ AllClassesWrapper AllClassesWrapper::FromEncodableList(
   return decoded;
 }
 
+// ImmutableAllTypes
+
+ImmutableAllTypes::ImmutableAllTypes(
+    bool a_bool, int64_t an_int, int64_t an_int64, double a_double,
+    const AnEnum& an_enum, const AnotherEnum& another_enum,
+    const std::string& a_string, const EncodableValue& an_object,
+    const EncodableList& list, const EncodableList& string_list,
+    const EncodableList& int_list, const EncodableList& double_list,
+    const EncodableList& bool_list, const EncodableList& enum_list,
+    const EncodableList& object_list, const EncodableList& list_list,
+    const EncodableList& map_list, const EncodableMap& map,
+    const EncodableMap& string_map, const EncodableMap& int_map,
+    const EncodableMap& enum_map, const EncodableMap& object_map,
+    const EncodableMap& list_map, const EncodableMap& map_map)
+    : a_bool_(a_bool),
+      an_int_(an_int),
+      an_int64_(an_int64),
+      a_double_(a_double),
+      an_enum_(an_enum),
+      another_enum_(another_enum),
+      a_string_(a_string),
+      an_object_(an_object),
+      list_(list),
+      string_list_(string_list),
+      int_list_(int_list),
+      double_list_(double_list),
+      bool_list_(bool_list),
+      enum_list_(enum_list),
+      object_list_(object_list),
+      list_list_(list_list),
+      map_list_(map_list),
+      map_(map),
+      string_map_(string_map),
+      int_map_(int_map),
+      enum_map_(enum_map),
+      object_map_(object_map),
+      list_map_(list_map),
+      map_map_(map_map) {}
+
+bool ImmutableAllTypes::a_bool() const { return a_bool_; }
+
+void ImmutableAllTypes::set_a_bool(bool value_arg) { a_bool_ = value_arg; }
+
+int64_t ImmutableAllTypes::an_int() const { return an_int_; }
+
+void ImmutableAllTypes::set_an_int(int64_t value_arg) { an_int_ = value_arg; }
+
+int64_t ImmutableAllTypes::an_int64() const { return an_int64_; }
+
+void ImmutableAllTypes::set_an_int64(int64_t value_arg) {
+  an_int64_ = value_arg;
+}
+
+double ImmutableAllTypes::a_double() const { return a_double_; }
+
+void ImmutableAllTypes::set_a_double(double value_arg) {
+  a_double_ = value_arg;
+}
+
+const AnEnum& ImmutableAllTypes::an_enum() const { return an_enum_; }
+
+void ImmutableAllTypes::set_an_enum(const AnEnum& value_arg) {
+  an_enum_ = value_arg;
+}
+
+const AnotherEnum& ImmutableAllTypes::another_enum() const {
+  return another_enum_;
+}
+
+void ImmutableAllTypes::set_another_enum(const AnotherEnum& value_arg) {
+  another_enum_ = value_arg;
+}
+
+const std::string& ImmutableAllTypes::a_string() const { return a_string_; }
+
+void ImmutableAllTypes::set_a_string(std::string_view value_arg) {
+  a_string_ = value_arg;
+}
+
+const EncodableValue& ImmutableAllTypes::an_object() const {
+  return an_object_;
+}
+
+void ImmutableAllTypes::set_an_object(const EncodableValue& value_arg) {
+  an_object_ = value_arg;
+}
+
+const EncodableList& ImmutableAllTypes::list() const { return list_; }
+
+void ImmutableAllTypes::set_list(const EncodableList& value_arg) {
+  list_ = value_arg;
+}
+
+const EncodableList& ImmutableAllTypes::string_list() const {
+  return string_list_;
+}
+
+void ImmutableAllTypes::set_string_list(const EncodableList& value_arg) {
+  string_list_ = value_arg;
+}
+
+const EncodableList& ImmutableAllTypes::int_list() const { return int_list_; }
+
+void ImmutableAllTypes::set_int_list(const EncodableList& value_arg) {
+  int_list_ = value_arg;
+}
+
+const EncodableList& ImmutableAllTypes::double_list() const {
+  return double_list_;
+}
+
+void ImmutableAllTypes::set_double_list(const EncodableList& value_arg) {
+  double_list_ = value_arg;
+}
+
+const EncodableList& ImmutableAllTypes::bool_list() const { return bool_list_; }
+
+void ImmutableAllTypes::set_bool_list(const EncodableList& value_arg) {
+  bool_list_ = value_arg;
+}
+
+const EncodableList& ImmutableAllTypes::enum_list() const { return enum_list_; }
+
+void ImmutableAllTypes::set_enum_list(const EncodableList& value_arg) {
+  enum_list_ = value_arg;
+}
+
+const EncodableList& ImmutableAllTypes::object_list() const {
+  return object_list_;
+}
+
+void ImmutableAllTypes::set_object_list(const EncodableList& value_arg) {
+  object_list_ = value_arg;
+}
+
+const EncodableList& ImmutableAllTypes::list_list() const { return list_list_; }
+
+void ImmutableAllTypes::set_list_list(const EncodableList& value_arg) {
+  list_list_ = value_arg;
+}
+
+const EncodableList& ImmutableAllTypes::map_list() const { return map_list_; }
+
+void ImmutableAllTypes::set_map_list(const EncodableList& value_arg) {
+  map_list_ = value_arg;
+}
+
+const EncodableMap& ImmutableAllTypes::map() const { return map_; }
+
+void ImmutableAllTypes::set_map(const EncodableMap& value_arg) {
+  map_ = value_arg;
+}
+
+const EncodableMap& ImmutableAllTypes::string_map() const {
+  return string_map_;
+}
+
+void ImmutableAllTypes::set_string_map(const EncodableMap& value_arg) {
+  string_map_ = value_arg;
+}
+
+const EncodableMap& ImmutableAllTypes::int_map() const { return int_map_; }
+
+void ImmutableAllTypes::set_int_map(const EncodableMap& value_arg) {
+  int_map_ = value_arg;
+}
+
+const EncodableMap& ImmutableAllTypes::enum_map() const { return enum_map_; }
+
+void ImmutableAllTypes::set_enum_map(const EncodableMap& value_arg) {
+  enum_map_ = value_arg;
+}
+
+const EncodableMap& ImmutableAllTypes::object_map() const {
+  return object_map_;
+}
+
+void ImmutableAllTypes::set_object_map(const EncodableMap& value_arg) {
+  object_map_ = value_arg;
+}
+
+const EncodableMap& ImmutableAllTypes::list_map() const { return list_map_; }
+
+void ImmutableAllTypes::set_list_map(const EncodableMap& value_arg) {
+  list_map_ = value_arg;
+}
+
+const EncodableMap& ImmutableAllTypes::map_map() const { return map_map_; }
+
+void ImmutableAllTypes::set_map_map(const EncodableMap& value_arg) {
+  map_map_ = value_arg;
+}
+
+EncodableList ImmutableAllTypes::ToEncodableList() const {
+  EncodableList list;
+  list.reserve(24);
+  list.push_back(EncodableValue(a_bool_));
+  list.push_back(EncodableValue(an_int_));
+  list.push_back(EncodableValue(an_int64_));
+  list.push_back(EncodableValue(a_double_));
+  list.push_back(CustomEncodableValue(an_enum_));
+  list.push_back(CustomEncodableValue(another_enum_));
+  list.push_back(EncodableValue(a_string_));
+  list.push_back(an_object_);
+  list.push_back(EncodableValue(list_));
+  list.push_back(EncodableValue(string_list_));
+  list.push_back(EncodableValue(int_list_));
+  list.push_back(EncodableValue(double_list_));
+  list.push_back(EncodableValue(bool_list_));
+  list.push_back(EncodableValue(enum_list_));
+  list.push_back(EncodableValue(object_list_));
+  list.push_back(EncodableValue(list_list_));
+  list.push_back(EncodableValue(map_list_));
+  list.push_back(EncodableValue(map_));
+  list.push_back(EncodableValue(string_map_));
+  list.push_back(EncodableValue(int_map_));
+  list.push_back(EncodableValue(enum_map_));
+  list.push_back(EncodableValue(object_map_));
+  list.push_back(EncodableValue(list_map_));
+  list.push_back(EncodableValue(map_map_));
+  return list;
+}
+
+ImmutableAllTypes ImmutableAllTypes::FromEncodableList(
+    const EncodableList& list) {
+  ImmutableAllTypes decoded(
+      std::get<bool>(list[0]), std::get<int64_t>(list[1]),
+      std::get<int64_t>(list[2]), std::get<double>(list[3]),
+      std::any_cast<const AnEnum&>(std::get<CustomEncodableValue>(list[4])),
+      std::any_cast<const AnotherEnum&>(
+          std::get<CustomEncodableValue>(list[5])),
+      std::get<std::string>(list[6]), list[7], std::get<EncodableList>(list[8]),
+      std::get<EncodableList>(list[9]), std::get<EncodableList>(list[10]),
+      std::get<EncodableList>(list[11]), std::get<EncodableList>(list[12]),
+      std::get<EncodableList>(list[13]), std::get<EncodableList>(list[14]),
+      std::get<EncodableList>(list[15]), std::get<EncodableList>(list[16]),
+      std::get<EncodableMap>(list[17]), std::get<EncodableMap>(list[18]),
+      std::get<EncodableMap>(list[19]), std::get<EncodableMap>(list[20]),
+      std::get<EncodableMap>(list[21]), std::get<EncodableMap>(list[22]),
+      std::get<EncodableMap>(list[23]));
+  return decoded;
+}
+
 // AllTypesWithDefaults
 
 AllTypesWithDefaults::AllTypesWithDefaults(
@@ -2404,249 +2647,6 @@ AllTypesWithDefaults AllTypesWithDefaults::FromEncodableList(
   return decoded;
 }
 
-// ImmutableAllTypes
-
-ImmutableAllTypes::ImmutableAllTypes(
-    bool a_bool, int64_t an_int, int64_t an_int64, double a_double,
-    const AnEnum& an_enum, const AnotherEnum& another_enum,
-    const std::string& a_string, const EncodableValue& an_object,
-    const EncodableList& list, const EncodableList& string_list,
-    const EncodableList& int_list, const EncodableList& double_list,
-    const EncodableList& bool_list, const EncodableList& enum_list,
-    const EncodableList& object_list, const EncodableList& list_list,
-    const EncodableList& map_list, const EncodableMap& map,
-    const EncodableMap& string_map, const EncodableMap& int_map,
-    const EncodableMap& enum_map, const EncodableMap& object_map,
-    const EncodableMap& list_map, const EncodableMap& map_map)
-    : a_bool_(a_bool),
-      an_int_(an_int),
-      an_int64_(an_int64),
-      a_double_(a_double),
-      an_enum_(an_enum),
-      another_enum_(another_enum),
-      a_string_(a_string),
-      an_object_(an_object),
-      list_(list),
-      string_list_(string_list),
-      int_list_(int_list),
-      double_list_(double_list),
-      bool_list_(bool_list),
-      enum_list_(enum_list),
-      object_list_(object_list),
-      list_list_(list_list),
-      map_list_(map_list),
-      map_(map),
-      string_map_(string_map),
-      int_map_(int_map),
-      enum_map_(enum_map),
-      object_map_(object_map),
-      list_map_(list_map),
-      map_map_(map_map) {}
-
-bool ImmutableAllTypes::a_bool() const { return a_bool_; }
-
-void ImmutableAllTypes::set_a_bool(bool value_arg) { a_bool_ = value_arg; }
-
-int64_t ImmutableAllTypes::an_int() const { return an_int_; }
-
-void ImmutableAllTypes::set_an_int(int64_t value_arg) { an_int_ = value_arg; }
-
-int64_t ImmutableAllTypes::an_int64() const { return an_int64_; }
-
-void ImmutableAllTypes::set_an_int64(int64_t value_arg) {
-  an_int64_ = value_arg;
-}
-
-double ImmutableAllTypes::a_double() const { return a_double_; }
-
-void ImmutableAllTypes::set_a_double(double value_arg) {
-  a_double_ = value_arg;
-}
-
-const AnEnum& ImmutableAllTypes::an_enum() const { return an_enum_; }
-
-void ImmutableAllTypes::set_an_enum(const AnEnum& value_arg) {
-  an_enum_ = value_arg;
-}
-
-const AnotherEnum& ImmutableAllTypes::another_enum() const {
-  return another_enum_;
-}
-
-void ImmutableAllTypes::set_another_enum(const AnotherEnum& value_arg) {
-  another_enum_ = value_arg;
-}
-
-const std::string& ImmutableAllTypes::a_string() const { return a_string_; }
-
-void ImmutableAllTypes::set_a_string(std::string_view value_arg) {
-  a_string_ = value_arg;
-}
-
-const EncodableValue& ImmutableAllTypes::an_object() const {
-  return an_object_;
-}
-
-void ImmutableAllTypes::set_an_object(const EncodableValue& value_arg) {
-  an_object_ = value_arg;
-}
-
-const EncodableList& ImmutableAllTypes::list() const { return list_; }
-
-void ImmutableAllTypes::set_list(const EncodableList& value_arg) {
-  list_ = value_arg;
-}
-
-const EncodableList& ImmutableAllTypes::string_list() const {
-  return string_list_;
-}
-
-void ImmutableAllTypes::set_string_list(const EncodableList& value_arg) {
-  string_list_ = value_arg;
-}
-
-const EncodableList& ImmutableAllTypes::int_list() const { return int_list_; }
-
-void ImmutableAllTypes::set_int_list(const EncodableList& value_arg) {
-  int_list_ = value_arg;
-}
-
-const EncodableList& ImmutableAllTypes::double_list() const {
-  return double_list_;
-}
-
-void ImmutableAllTypes::set_double_list(const EncodableList& value_arg) {
-  double_list_ = value_arg;
-}
-
-const EncodableList& ImmutableAllTypes::bool_list() const { return bool_list_; }
-
-void ImmutableAllTypes::set_bool_list(const EncodableList& value_arg) {
-  bool_list_ = value_arg;
-}
-
-const EncodableList& ImmutableAllTypes::enum_list() const { return enum_list_; }
-
-void ImmutableAllTypes::set_enum_list(const EncodableList& value_arg) {
-  enum_list_ = value_arg;
-}
-
-const EncodableList& ImmutableAllTypes::object_list() const {
-  return object_list_;
-}
-
-void ImmutableAllTypes::set_object_list(const EncodableList& value_arg) {
-  object_list_ = value_arg;
-}
-
-const EncodableList& ImmutableAllTypes::list_list() const { return list_list_; }
-
-void ImmutableAllTypes::set_list_list(const EncodableList& value_arg) {
-  list_list_ = value_arg;
-}
-
-const EncodableList& ImmutableAllTypes::map_list() const { return map_list_; }
-
-void ImmutableAllTypes::set_map_list(const EncodableList& value_arg) {
-  map_list_ = value_arg;
-}
-
-const EncodableMap& ImmutableAllTypes::map() const { return map_; }
-
-void ImmutableAllTypes::set_map(const EncodableMap& value_arg) {
-  map_ = value_arg;
-}
-
-const EncodableMap& ImmutableAllTypes::string_map() const {
-  return string_map_;
-}
-
-void ImmutableAllTypes::set_string_map(const EncodableMap& value_arg) {
-  string_map_ = value_arg;
-}
-
-const EncodableMap& ImmutableAllTypes::int_map() const { return int_map_; }
-
-void ImmutableAllTypes::set_int_map(const EncodableMap& value_arg) {
-  int_map_ = value_arg;
-}
-
-const EncodableMap& ImmutableAllTypes::enum_map() const { return enum_map_; }
-
-void ImmutableAllTypes::set_enum_map(const EncodableMap& value_arg) {
-  enum_map_ = value_arg;
-}
-
-const EncodableMap& ImmutableAllTypes::object_map() const {
-  return object_map_;
-}
-
-void ImmutableAllTypes::set_object_map(const EncodableMap& value_arg) {
-  object_map_ = value_arg;
-}
-
-const EncodableMap& ImmutableAllTypes::list_map() const { return list_map_; }
-
-void ImmutableAllTypes::set_list_map(const EncodableMap& value_arg) {
-  list_map_ = value_arg;
-}
-
-const EncodableMap& ImmutableAllTypes::map_map() const { return map_map_; }
-
-void ImmutableAllTypes::set_map_map(const EncodableMap& value_arg) {
-  map_map_ = value_arg;
-}
-
-EncodableList ImmutableAllTypes::ToEncodableList() const {
-  EncodableList list;
-  list.reserve(24);
-  list.push_back(EncodableValue(a_bool_));
-  list.push_back(EncodableValue(an_int_));
-  list.push_back(EncodableValue(an_int64_));
-  list.push_back(EncodableValue(a_double_));
-  list.push_back(CustomEncodableValue(an_enum_));
-  list.push_back(CustomEncodableValue(another_enum_));
-  list.push_back(EncodableValue(a_string_));
-  list.push_back(an_object_);
-  list.push_back(EncodableValue(list_));
-  list.push_back(EncodableValue(string_list_));
-  list.push_back(EncodableValue(int_list_));
-  list.push_back(EncodableValue(double_list_));
-  list.push_back(EncodableValue(bool_list_));
-  list.push_back(EncodableValue(enum_list_));
-  list.push_back(EncodableValue(object_list_));
-  list.push_back(EncodableValue(list_list_));
-  list.push_back(EncodableValue(map_list_));
-  list.push_back(EncodableValue(map_));
-  list.push_back(EncodableValue(string_map_));
-  list.push_back(EncodableValue(int_map_));
-  list.push_back(EncodableValue(enum_map_));
-  list.push_back(EncodableValue(object_map_));
-  list.push_back(EncodableValue(list_map_));
-  list.push_back(EncodableValue(map_map_));
-  return list;
-}
-
-ImmutableAllTypes ImmutableAllTypes::FromEncodableList(
-    const EncodableList& list) {
-  ImmutableAllTypes decoded(
-      std::get<bool>(list[0]), std::get<int64_t>(list[1]),
-      std::get<int64_t>(list[2]), std::get<double>(list[3]),
-      std::any_cast<const AnEnum&>(std::get<CustomEncodableValue>(list[4])),
-      std::any_cast<const AnotherEnum&>(
-          std::get<CustomEncodableValue>(list[5])),
-      std::get<std::string>(list[6]), list[7], std::get<EncodableList>(list[8]),
-      std::get<EncodableList>(list[9]), std::get<EncodableList>(list[10]),
-      std::get<EncodableList>(list[11]), std::get<EncodableList>(list[12]),
-      std::get<EncodableList>(list[13]), std::get<EncodableList>(list[14]),
-      std::get<EncodableList>(list[15]), std::get<EncodableList>(list[16]),
-      std::get<EncodableMap>(list[17]), std::get<EncodableMap>(list[18]),
-      std::get<EncodableMap>(list[19]), std::get<EncodableMap>(list[20]),
-      std::get<EncodableMap>(list[21]), std::get<EncodableMap>(list[22]),
-      std::get<EncodableMap>(list[23]));
-  return decoded;
-}
-
 // TestMessage
 
 TestMessage::TestMessage() {}
@@ -2728,11 +2728,11 @@ EncodableValue PigeonInternalCodecSerializer::ReadValueOfType(
           std::get<EncodableList>(ReadValue(stream))));
     }
     case 136: {
-      return CustomEncodableValue(AllTypesWithDefaults::FromEncodableList(
+      return CustomEncodableValue(ImmutableAllTypes::FromEncodableList(
           std::get<EncodableList>(ReadValue(stream))));
     }
     case 137: {
-      return CustomEncodableValue(ImmutableAllTypes::FromEncodableList(
+      return CustomEncodableValue(AllTypesWithDefaults::FromEncodableList(
           std::get<EncodableList>(ReadValue(stream))));
     }
     case 138: {
@@ -2800,19 +2800,19 @@ void PigeonInternalCodecSerializer::WriteValue(
                  stream);
       return;
     }
-    if (custom_value->type() == typeid(AllTypesWithDefaults)) {
+    if (custom_value->type() == typeid(ImmutableAllTypes)) {
       stream->WriteByte(136);
+      WriteValue(EncodableValue(std::any_cast<ImmutableAllTypes>(*custom_value)
+                                    .ToEncodableList()),
+                 stream);
+      return;
+    }
+    if (custom_value->type() == typeid(AllTypesWithDefaults)) {
+      stream->WriteByte(137);
       WriteValue(
           EncodableValue(std::any_cast<AllTypesWithDefaults>(*custom_value)
                              .ToEncodableList()),
           stream);
-      return;
-    }
-    if (custom_value->type() == typeid(ImmutableAllTypes)) {
-      stream->WriteByte(137);
-      WriteValue(EncodableValue(std::any_cast<ImmutableAllTypes>(*custom_value)
-                                    .ToEncodableList()),
-                 stream);
       return;
     }
     if (custom_value->type() == typeid(TestMessage)) {

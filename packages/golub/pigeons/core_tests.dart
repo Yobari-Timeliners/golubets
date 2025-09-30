@@ -275,6 +275,73 @@ class AllClassesWrapper {
   Map<int?, AllNullableTypesWithoutRecursion?>? nullableClassMap;
 }
 
+/// A class containing all supported types but immutable.
+class ImmutableAllTypes {
+  const ImmutableAllTypes({
+    required this.aBool,
+    required this.anInt,
+    required this.anInt64,
+    required this.aDouble,
+    required this.anEnum,
+    required this.anotherEnum,
+    required this.aString,
+    required this.anObject,
+
+    // Lists
+    // This name is in a different format than the others to ensure that name
+    // collision with the word 'list' doesn't occur in the generated files.
+    required this.list,
+    required this.stringList,
+    required this.intList,
+    required this.doubleList,
+    required this.boolList,
+    required this.enumList,
+    required this.objectList,
+    required this.listList,
+    required this.mapList,
+
+    // Maps
+    required this.map,
+    required this.stringMap,
+    required this.intMap,
+    required this.enumMap,
+    required this.objectMap,
+    required this.listMap,
+    required this.mapMap,
+  });
+
+  final bool aBool;
+  final int anInt;
+  final int anInt64;
+  final double aDouble;
+  final AnEnum anEnum;
+  final AnotherEnum anotherEnum;
+  final String aString;
+  final Object anObject;
+
+  // Lists
+  // ignore: strict_raw_type, always_specify_types
+  final List list;
+  final List<String> stringList;
+  final List<int> intList;
+  final List<double> doubleList;
+  final List<bool> boolList;
+  final List<AnEnum> enumList;
+  final List<Object> objectList;
+  final List<List<Object?>> listList;
+  final List<Map<Object?, Object?>> mapList;
+
+  // Maps
+  // ignore: strict_raw_type, always_specify_types
+  final Map map;
+  final Map<String, String> stringMap;
+  final Map<int, int> intMap;
+  final Map<AnEnum, AnEnum> enumMap;
+  final Map<Object, Object> objectMap;
+  final Map<int, List<Object?>> listMap;
+  final Map<int, Map<Object?, Object?>> mapMap;
+}
+
 /// A class containing all supported types but with default values.
 class AllTypesWithDefaults {
   AllTypesWithDefaults({
@@ -683,73 +750,6 @@ class AllTypesWithDefaults {
   Map<int, List<Object?>> listMap;
   Map<int, Map<Object?, Object?>> mapMap;
   final ImmutableAllTypes allTypes;
-}
-
-/// A class containing all supported types but immutable.
-class ImmutableAllTypes {
-  const ImmutableAllTypes({
-    required this.aBool,
-    required this.anInt,
-    required this.anInt64,
-    required this.aDouble,
-    required this.anEnum,
-    required this.anotherEnum,
-    required this.aString,
-    required this.anObject,
-
-    // Lists
-    // This name is in a different format than the others to ensure that name
-    // collision with the word 'list' doesn't occur in the generated files.
-    required this.list,
-    required this.stringList,
-    required this.intList,
-    required this.doubleList,
-    required this.boolList,
-    required this.enumList,
-    required this.objectList,
-    required this.listList,
-    required this.mapList,
-
-    // Maps
-    required this.map,
-    required this.stringMap,
-    required this.intMap,
-    required this.enumMap,
-    required this.objectMap,
-    required this.listMap,
-    required this.mapMap,
-  });
-
-  final bool aBool;
-  final int anInt;
-  final int anInt64;
-  final double aDouble;
-  final AnEnum anEnum;
-  final AnotherEnum anotherEnum;
-  final String aString;
-  final Object anObject;
-
-  // Lists
-  // ignore: strict_raw_type, always_specify_types
-  final List list;
-  final List<String> stringList;
-  final List<int> intList;
-  final List<double> doubleList;
-  final List<bool> boolList;
-  final List<AnEnum> enumList;
-  final List<Object> objectList;
-  final List<List<Object?>> listList;
-  final List<Map<Object?, Object?>> mapList;
-
-  // Maps
-  // ignore: strict_raw_type, always_specify_types
-  final Map map;
-  final Map<String, String> stringMap;
-  final Map<int, int> intMap;
-  final Map<AnEnum, AnEnum> enumMap;
-  final Map<Object, Object> objectMap;
-  final Map<int, List<Object?>> listMap;
-  final Map<int, Map<Object?, Object?>> mapMap;
 }
 
 /// The core interface that each host language plugin must implement in

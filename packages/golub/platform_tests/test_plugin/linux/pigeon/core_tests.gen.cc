@@ -2347,6 +2347,379 @@ core_tests_pigeon_test_all_classes_wrapper_new_from_list(FlValue* values) {
       class_list, nullable_class_list, class_map, nullable_class_map);
 }
 
+struct _CoreTestsPigeonTestImmutableAllTypes {
+  GObject parent_instance;
+
+  gboolean a_bool;
+  int64_t an_int;
+  int64_t an_int64;
+  double a_double;
+  CoreTestsPigeonTestAnEnum an_enum;
+  CoreTestsPigeonTestAnotherEnum another_enum;
+  gchar* a_string;
+  FlValue* an_object;
+  FlValue* list;
+  FlValue* string_list;
+  FlValue* int_list;
+  FlValue* double_list;
+  FlValue* bool_list;
+  FlValue* enum_list;
+  FlValue* object_list;
+  FlValue* list_list;
+  FlValue* map_list;
+  FlValue* map;
+  FlValue* string_map;
+  FlValue* int_map;
+  FlValue* enum_map;
+  FlValue* object_map;
+  FlValue* list_map;
+  FlValue* map_map;
+};
+
+G_DEFINE_TYPE(CoreTestsPigeonTestImmutableAllTypes,
+              core_tests_pigeon_test_immutable_all_types, G_TYPE_OBJECT)
+
+static void core_tests_pigeon_test_immutable_all_types_dispose(
+    GObject* object) {
+  CoreTestsPigeonTestImmutableAllTypes* self =
+      CORE_TESTS_PIGEON_TEST_IMMUTABLE_ALL_TYPES(object);
+  g_clear_pointer(&self->a_string, g_free);
+  g_clear_pointer(&self->an_object, fl_value_unref);
+  g_clear_pointer(&self->list, fl_value_unref);
+  g_clear_pointer(&self->string_list, fl_value_unref);
+  g_clear_pointer(&self->int_list, fl_value_unref);
+  g_clear_pointer(&self->double_list, fl_value_unref);
+  g_clear_pointer(&self->bool_list, fl_value_unref);
+  g_clear_pointer(&self->enum_list, fl_value_unref);
+  g_clear_pointer(&self->object_list, fl_value_unref);
+  g_clear_pointer(&self->list_list, fl_value_unref);
+  g_clear_pointer(&self->map_list, fl_value_unref);
+  g_clear_pointer(&self->map, fl_value_unref);
+  g_clear_pointer(&self->string_map, fl_value_unref);
+  g_clear_pointer(&self->int_map, fl_value_unref);
+  g_clear_pointer(&self->enum_map, fl_value_unref);
+  g_clear_pointer(&self->object_map, fl_value_unref);
+  g_clear_pointer(&self->list_map, fl_value_unref);
+  g_clear_pointer(&self->map_map, fl_value_unref);
+  G_OBJECT_CLASS(core_tests_pigeon_test_immutable_all_types_parent_class)
+      ->dispose(object);
+}
+
+static void core_tests_pigeon_test_immutable_all_types_init(
+    CoreTestsPigeonTestImmutableAllTypes* self) {}
+
+static void core_tests_pigeon_test_immutable_all_types_class_init(
+    CoreTestsPigeonTestImmutableAllTypesClass* klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_pigeon_test_immutable_all_types_dispose;
+}
+
+CoreTestsPigeonTestImmutableAllTypes*
+core_tests_pigeon_test_immutable_all_types_new(
+    gboolean a_bool, int64_t an_int, int64_t an_int64, double a_double,
+    CoreTestsPigeonTestAnEnum an_enum,
+    CoreTestsPigeonTestAnotherEnum another_enum, const gchar* a_string,
+    FlValue* an_object, FlValue* list, FlValue* string_list, FlValue* int_list,
+    FlValue* double_list, FlValue* bool_list, FlValue* enum_list,
+    FlValue* object_list, FlValue* list_list, FlValue* map_list, FlValue* map,
+    FlValue* string_map, FlValue* int_map, FlValue* enum_map,
+    FlValue* object_map, FlValue* list_map, FlValue* map_map) {
+  CoreTestsPigeonTestImmutableAllTypes* self =
+      CORE_TESTS_PIGEON_TEST_IMMUTABLE_ALL_TYPES(g_object_new(
+          core_tests_pigeon_test_immutable_all_types_get_type(), nullptr));
+  self->a_bool = a_bool;
+  self->an_int = an_int;
+  self->an_int64 = an_int64;
+  self->a_double = a_double;
+  self->an_enum = an_enum;
+  self->another_enum = another_enum;
+  self->a_string = g_strdup(a_string);
+  self->an_object = fl_value_ref(an_object);
+  self->list = fl_value_ref(list);
+  self->string_list = fl_value_ref(string_list);
+  self->int_list = fl_value_ref(int_list);
+  self->double_list = fl_value_ref(double_list);
+  self->bool_list = fl_value_ref(bool_list);
+  self->enum_list = fl_value_ref(enum_list);
+  self->object_list = fl_value_ref(object_list);
+  self->list_list = fl_value_ref(list_list);
+  self->map_list = fl_value_ref(map_list);
+  self->map = fl_value_ref(map);
+  self->string_map = fl_value_ref(string_map);
+  self->int_map = fl_value_ref(int_map);
+  self->enum_map = fl_value_ref(enum_map);
+  self->object_map = fl_value_ref(object_map);
+  self->list_map = fl_value_ref(list_map);
+  self->map_map = fl_value_ref(map_map);
+  return self;
+}
+
+gboolean core_tests_pigeon_test_immutable_all_types_get_a_bool(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       FALSE);
+  return self->a_bool;
+}
+
+int64_t core_tests_pigeon_test_immutable_all_types_get_an_int(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self), 0);
+  return self->an_int;
+}
+
+int64_t core_tests_pigeon_test_immutable_all_types_get_an_int64(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self), 0);
+  return self->an_int64;
+}
+
+double core_tests_pigeon_test_immutable_all_types_get_a_double(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       0.0);
+  return self->a_double;
+}
+
+CoreTestsPigeonTestAnEnum
+core_tests_pigeon_test_immutable_all_types_get_an_enum(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       static_cast<CoreTestsPigeonTestAnEnum>(0));
+  return self->an_enum;
+}
+
+CoreTestsPigeonTestAnotherEnum
+core_tests_pigeon_test_immutable_all_types_get_another_enum(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       static_cast<CoreTestsPigeonTestAnotherEnum>(0));
+  return self->another_enum;
+}
+
+const gchar* core_tests_pigeon_test_immutable_all_types_get_a_string(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->a_string;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_an_object(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->an_object;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_list(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->list;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_string_list(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->string_list;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_int_list(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->int_list;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_double_list(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->double_list;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_bool_list(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->bool_list;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_enum_list(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->enum_list;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_object_list(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->object_list;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_list_list(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->list_list;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_map_list(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->map_list;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_map(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->map;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_string_map(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->string_map;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_int_map(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->int_map;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_enum_map(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->enum_map;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_object_map(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->object_map;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_list_map(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->list_map;
+}
+
+FlValue* core_tests_pigeon_test_immutable_all_types_get_map_map(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
+                       nullptr);
+  return self->map_map;
+}
+
+static FlValue* core_tests_pigeon_test_immutable_all_types_to_list(
+    CoreTestsPigeonTestImmutableAllTypes* self) {
+  FlValue* values = fl_value_new_list();
+  fl_value_append_take(values, fl_value_new_bool(self->a_bool));
+  fl_value_append_take(values, fl_value_new_int(self->an_int));
+  fl_value_append_take(values, fl_value_new_int(self->an_int64));
+  fl_value_append_take(values, fl_value_new_float(self->a_double));
+  fl_value_append_take(
+      values, fl_value_new_custom(core_tests_pigeon_test_an_enum_type_id,
+                                  fl_value_new_int(self->an_enum),
+                                  (GDestroyNotify)fl_value_unref));
+  fl_value_append_take(
+      values, fl_value_new_custom(core_tests_pigeon_test_another_enum_type_id,
+                                  fl_value_new_int(self->another_enum),
+                                  (GDestroyNotify)fl_value_unref));
+  fl_value_append_take(values, fl_value_new_string(self->a_string));
+  fl_value_append_take(values, fl_value_ref(self->an_object));
+  fl_value_append_take(values, fl_value_ref(self->list));
+  fl_value_append_take(values, fl_value_ref(self->string_list));
+  fl_value_append_take(values, fl_value_ref(self->int_list));
+  fl_value_append_take(values, fl_value_ref(self->double_list));
+  fl_value_append_take(values, fl_value_ref(self->bool_list));
+  fl_value_append_take(values, fl_value_ref(self->enum_list));
+  fl_value_append_take(values, fl_value_ref(self->object_list));
+  fl_value_append_take(values, fl_value_ref(self->list_list));
+  fl_value_append_take(values, fl_value_ref(self->map_list));
+  fl_value_append_take(values, fl_value_ref(self->map));
+  fl_value_append_take(values, fl_value_ref(self->string_map));
+  fl_value_append_take(values, fl_value_ref(self->int_map));
+  fl_value_append_take(values, fl_value_ref(self->enum_map));
+  fl_value_append_take(values, fl_value_ref(self->object_map));
+  fl_value_append_take(values, fl_value_ref(self->list_map));
+  fl_value_append_take(values, fl_value_ref(self->map_map));
+  return values;
+}
+
+static CoreTestsPigeonTestImmutableAllTypes*
+core_tests_pigeon_test_immutable_all_types_new_from_list(FlValue* values) {
+  FlValue* value0 = fl_value_get_list_value(values, 0);
+  gboolean a_bool = fl_value_get_bool(value0);
+  FlValue* value1 = fl_value_get_list_value(values, 1);
+  int64_t an_int = fl_value_get_int(value1);
+  FlValue* value2 = fl_value_get_list_value(values, 2);
+  int64_t an_int64 = fl_value_get_int(value2);
+  FlValue* value3 = fl_value_get_list_value(values, 3);
+  double a_double = fl_value_get_float(value3);
+  FlValue* value4 = fl_value_get_list_value(values, 4);
+  CoreTestsPigeonTestAnEnum an_enum = static_cast<CoreTestsPigeonTestAnEnum>(
+      fl_value_get_int(reinterpret_cast<FlValue*>(
+          const_cast<gpointer>(fl_value_get_custom_value(value4)))));
+  FlValue* value5 = fl_value_get_list_value(values, 5);
+  CoreTestsPigeonTestAnotherEnum another_enum =
+      static_cast<CoreTestsPigeonTestAnotherEnum>(
+          fl_value_get_int(reinterpret_cast<FlValue*>(
+              const_cast<gpointer>(fl_value_get_custom_value(value5)))));
+  FlValue* value6 = fl_value_get_list_value(values, 6);
+  const gchar* a_string = fl_value_get_string(value6);
+  FlValue* value7 = fl_value_get_list_value(values, 7);
+  FlValue* an_object = value7;
+  FlValue* value8 = fl_value_get_list_value(values, 8);
+  FlValue* list = value8;
+  FlValue* value9 = fl_value_get_list_value(values, 9);
+  FlValue* string_list = value9;
+  FlValue* value10 = fl_value_get_list_value(values, 10);
+  FlValue* int_list = value10;
+  FlValue* value11 = fl_value_get_list_value(values, 11);
+  FlValue* double_list = value11;
+  FlValue* value12 = fl_value_get_list_value(values, 12);
+  FlValue* bool_list = value12;
+  FlValue* value13 = fl_value_get_list_value(values, 13);
+  FlValue* enum_list = value13;
+  FlValue* value14 = fl_value_get_list_value(values, 14);
+  FlValue* object_list = value14;
+  FlValue* value15 = fl_value_get_list_value(values, 15);
+  FlValue* list_list = value15;
+  FlValue* value16 = fl_value_get_list_value(values, 16);
+  FlValue* map_list = value16;
+  FlValue* value17 = fl_value_get_list_value(values, 17);
+  FlValue* map = value17;
+  FlValue* value18 = fl_value_get_list_value(values, 18);
+  FlValue* string_map = value18;
+  FlValue* value19 = fl_value_get_list_value(values, 19);
+  FlValue* int_map = value19;
+  FlValue* value20 = fl_value_get_list_value(values, 20);
+  FlValue* enum_map = value20;
+  FlValue* value21 = fl_value_get_list_value(values, 21);
+  FlValue* object_map = value21;
+  FlValue* value22 = fl_value_get_list_value(values, 22);
+  FlValue* list_map = value22;
+  FlValue* value23 = fl_value_get_list_value(values, 23);
+  FlValue* map_map = value23;
+  return core_tests_pigeon_test_immutable_all_types_new(
+      a_bool, an_int, an_int64, a_double, an_enum, another_enum, a_string,
+      an_object, list, string_list, int_list, double_list, bool_list, enum_list,
+      object_list, list_list, map_list, map, string_map, int_map, enum_map,
+      object_map, list_map, map_map);
+}
+
 struct _CoreTestsPigeonTestAllTypesWithDefaults {
   GObject parent_instance;
 
@@ -2743,379 +3116,6 @@ core_tests_pigeon_test_all_types_with_defaults_new_from_list(FlValue* values) {
       object_map, list_map, map_map, all_types);
 }
 
-struct _CoreTestsPigeonTestImmutableAllTypes {
-  GObject parent_instance;
-
-  gboolean a_bool;
-  int64_t an_int;
-  int64_t an_int64;
-  double a_double;
-  CoreTestsPigeonTestAnEnum an_enum;
-  CoreTestsPigeonTestAnotherEnum another_enum;
-  gchar* a_string;
-  FlValue* an_object;
-  FlValue* list;
-  FlValue* string_list;
-  FlValue* int_list;
-  FlValue* double_list;
-  FlValue* bool_list;
-  FlValue* enum_list;
-  FlValue* object_list;
-  FlValue* list_list;
-  FlValue* map_list;
-  FlValue* map;
-  FlValue* string_map;
-  FlValue* int_map;
-  FlValue* enum_map;
-  FlValue* object_map;
-  FlValue* list_map;
-  FlValue* map_map;
-};
-
-G_DEFINE_TYPE(CoreTestsPigeonTestImmutableAllTypes,
-              core_tests_pigeon_test_immutable_all_types, G_TYPE_OBJECT)
-
-static void core_tests_pigeon_test_immutable_all_types_dispose(
-    GObject* object) {
-  CoreTestsPigeonTestImmutableAllTypes* self =
-      CORE_TESTS_PIGEON_TEST_IMMUTABLE_ALL_TYPES(object);
-  g_clear_pointer(&self->a_string, g_free);
-  g_clear_pointer(&self->an_object, fl_value_unref);
-  g_clear_pointer(&self->list, fl_value_unref);
-  g_clear_pointer(&self->string_list, fl_value_unref);
-  g_clear_pointer(&self->int_list, fl_value_unref);
-  g_clear_pointer(&self->double_list, fl_value_unref);
-  g_clear_pointer(&self->bool_list, fl_value_unref);
-  g_clear_pointer(&self->enum_list, fl_value_unref);
-  g_clear_pointer(&self->object_list, fl_value_unref);
-  g_clear_pointer(&self->list_list, fl_value_unref);
-  g_clear_pointer(&self->map_list, fl_value_unref);
-  g_clear_pointer(&self->map, fl_value_unref);
-  g_clear_pointer(&self->string_map, fl_value_unref);
-  g_clear_pointer(&self->int_map, fl_value_unref);
-  g_clear_pointer(&self->enum_map, fl_value_unref);
-  g_clear_pointer(&self->object_map, fl_value_unref);
-  g_clear_pointer(&self->list_map, fl_value_unref);
-  g_clear_pointer(&self->map_map, fl_value_unref);
-  G_OBJECT_CLASS(core_tests_pigeon_test_immutable_all_types_parent_class)
-      ->dispose(object);
-}
-
-static void core_tests_pigeon_test_immutable_all_types_init(
-    CoreTestsPigeonTestImmutableAllTypes* self) {}
-
-static void core_tests_pigeon_test_immutable_all_types_class_init(
-    CoreTestsPigeonTestImmutableAllTypesClass* klass) {
-  G_OBJECT_CLASS(klass)->dispose =
-      core_tests_pigeon_test_immutable_all_types_dispose;
-}
-
-CoreTestsPigeonTestImmutableAllTypes*
-core_tests_pigeon_test_immutable_all_types_new(
-    gboolean a_bool, int64_t an_int, int64_t an_int64, double a_double,
-    CoreTestsPigeonTestAnEnum an_enum,
-    CoreTestsPigeonTestAnotherEnum another_enum, const gchar* a_string,
-    FlValue* an_object, FlValue* list, FlValue* string_list, FlValue* int_list,
-    FlValue* double_list, FlValue* bool_list, FlValue* enum_list,
-    FlValue* object_list, FlValue* list_list, FlValue* map_list, FlValue* map,
-    FlValue* string_map, FlValue* int_map, FlValue* enum_map,
-    FlValue* object_map, FlValue* list_map, FlValue* map_map) {
-  CoreTestsPigeonTestImmutableAllTypes* self =
-      CORE_TESTS_PIGEON_TEST_IMMUTABLE_ALL_TYPES(g_object_new(
-          core_tests_pigeon_test_immutable_all_types_get_type(), nullptr));
-  self->a_bool = a_bool;
-  self->an_int = an_int;
-  self->an_int64 = an_int64;
-  self->a_double = a_double;
-  self->an_enum = an_enum;
-  self->another_enum = another_enum;
-  self->a_string = g_strdup(a_string);
-  self->an_object = fl_value_ref(an_object);
-  self->list = fl_value_ref(list);
-  self->string_list = fl_value_ref(string_list);
-  self->int_list = fl_value_ref(int_list);
-  self->double_list = fl_value_ref(double_list);
-  self->bool_list = fl_value_ref(bool_list);
-  self->enum_list = fl_value_ref(enum_list);
-  self->object_list = fl_value_ref(object_list);
-  self->list_list = fl_value_ref(list_list);
-  self->map_list = fl_value_ref(map_list);
-  self->map = fl_value_ref(map);
-  self->string_map = fl_value_ref(string_map);
-  self->int_map = fl_value_ref(int_map);
-  self->enum_map = fl_value_ref(enum_map);
-  self->object_map = fl_value_ref(object_map);
-  self->list_map = fl_value_ref(list_map);
-  self->map_map = fl_value_ref(map_map);
-  return self;
-}
-
-gboolean core_tests_pigeon_test_immutable_all_types_get_a_bool(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       FALSE);
-  return self->a_bool;
-}
-
-int64_t core_tests_pigeon_test_immutable_all_types_get_an_int(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self), 0);
-  return self->an_int;
-}
-
-int64_t core_tests_pigeon_test_immutable_all_types_get_an_int64(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self), 0);
-  return self->an_int64;
-}
-
-double core_tests_pigeon_test_immutable_all_types_get_a_double(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       0.0);
-  return self->a_double;
-}
-
-CoreTestsPigeonTestAnEnum
-core_tests_pigeon_test_immutable_all_types_get_an_enum(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       static_cast<CoreTestsPigeonTestAnEnum>(0));
-  return self->an_enum;
-}
-
-CoreTestsPigeonTestAnotherEnum
-core_tests_pigeon_test_immutable_all_types_get_another_enum(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       static_cast<CoreTestsPigeonTestAnotherEnum>(0));
-  return self->another_enum;
-}
-
-const gchar* core_tests_pigeon_test_immutable_all_types_get_a_string(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->a_string;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_an_object(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->an_object;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_list(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->list;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_string_list(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->string_list;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_int_list(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->int_list;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_double_list(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->double_list;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_bool_list(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->bool_list;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_enum_list(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->enum_list;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_object_list(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->object_list;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_list_list(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->list_list;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_map_list(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->map_list;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_map(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->map;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_string_map(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->string_map;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_int_map(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->int_map;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_enum_map(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->enum_map;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_object_map(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->object_map;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_list_map(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->list_map;
-}
-
-FlValue* core_tests_pigeon_test_immutable_all_types_get_map_map(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  g_return_val_if_fail(CORE_TESTS_PIGEON_TEST_IS_IMMUTABLE_ALL_TYPES(self),
-                       nullptr);
-  return self->map_map;
-}
-
-static FlValue* core_tests_pigeon_test_immutable_all_types_to_list(
-    CoreTestsPigeonTestImmutableAllTypes* self) {
-  FlValue* values = fl_value_new_list();
-  fl_value_append_take(values, fl_value_new_bool(self->a_bool));
-  fl_value_append_take(values, fl_value_new_int(self->an_int));
-  fl_value_append_take(values, fl_value_new_int(self->an_int64));
-  fl_value_append_take(values, fl_value_new_float(self->a_double));
-  fl_value_append_take(
-      values, fl_value_new_custom(core_tests_pigeon_test_an_enum_type_id,
-                                  fl_value_new_int(self->an_enum),
-                                  (GDestroyNotify)fl_value_unref));
-  fl_value_append_take(
-      values, fl_value_new_custom(core_tests_pigeon_test_another_enum_type_id,
-                                  fl_value_new_int(self->another_enum),
-                                  (GDestroyNotify)fl_value_unref));
-  fl_value_append_take(values, fl_value_new_string(self->a_string));
-  fl_value_append_take(values, fl_value_ref(self->an_object));
-  fl_value_append_take(values, fl_value_ref(self->list));
-  fl_value_append_take(values, fl_value_ref(self->string_list));
-  fl_value_append_take(values, fl_value_ref(self->int_list));
-  fl_value_append_take(values, fl_value_ref(self->double_list));
-  fl_value_append_take(values, fl_value_ref(self->bool_list));
-  fl_value_append_take(values, fl_value_ref(self->enum_list));
-  fl_value_append_take(values, fl_value_ref(self->object_list));
-  fl_value_append_take(values, fl_value_ref(self->list_list));
-  fl_value_append_take(values, fl_value_ref(self->map_list));
-  fl_value_append_take(values, fl_value_ref(self->map));
-  fl_value_append_take(values, fl_value_ref(self->string_map));
-  fl_value_append_take(values, fl_value_ref(self->int_map));
-  fl_value_append_take(values, fl_value_ref(self->enum_map));
-  fl_value_append_take(values, fl_value_ref(self->object_map));
-  fl_value_append_take(values, fl_value_ref(self->list_map));
-  fl_value_append_take(values, fl_value_ref(self->map_map));
-  return values;
-}
-
-static CoreTestsPigeonTestImmutableAllTypes*
-core_tests_pigeon_test_immutable_all_types_new_from_list(FlValue* values) {
-  FlValue* value0 = fl_value_get_list_value(values, 0);
-  gboolean a_bool = fl_value_get_bool(value0);
-  FlValue* value1 = fl_value_get_list_value(values, 1);
-  int64_t an_int = fl_value_get_int(value1);
-  FlValue* value2 = fl_value_get_list_value(values, 2);
-  int64_t an_int64 = fl_value_get_int(value2);
-  FlValue* value3 = fl_value_get_list_value(values, 3);
-  double a_double = fl_value_get_float(value3);
-  FlValue* value4 = fl_value_get_list_value(values, 4);
-  CoreTestsPigeonTestAnEnum an_enum = static_cast<CoreTestsPigeonTestAnEnum>(
-      fl_value_get_int(reinterpret_cast<FlValue*>(
-          const_cast<gpointer>(fl_value_get_custom_value(value4)))));
-  FlValue* value5 = fl_value_get_list_value(values, 5);
-  CoreTestsPigeonTestAnotherEnum another_enum =
-      static_cast<CoreTestsPigeonTestAnotherEnum>(
-          fl_value_get_int(reinterpret_cast<FlValue*>(
-              const_cast<gpointer>(fl_value_get_custom_value(value5)))));
-  FlValue* value6 = fl_value_get_list_value(values, 6);
-  const gchar* a_string = fl_value_get_string(value6);
-  FlValue* value7 = fl_value_get_list_value(values, 7);
-  FlValue* an_object = value7;
-  FlValue* value8 = fl_value_get_list_value(values, 8);
-  FlValue* list = value8;
-  FlValue* value9 = fl_value_get_list_value(values, 9);
-  FlValue* string_list = value9;
-  FlValue* value10 = fl_value_get_list_value(values, 10);
-  FlValue* int_list = value10;
-  FlValue* value11 = fl_value_get_list_value(values, 11);
-  FlValue* double_list = value11;
-  FlValue* value12 = fl_value_get_list_value(values, 12);
-  FlValue* bool_list = value12;
-  FlValue* value13 = fl_value_get_list_value(values, 13);
-  FlValue* enum_list = value13;
-  FlValue* value14 = fl_value_get_list_value(values, 14);
-  FlValue* object_list = value14;
-  FlValue* value15 = fl_value_get_list_value(values, 15);
-  FlValue* list_list = value15;
-  FlValue* value16 = fl_value_get_list_value(values, 16);
-  FlValue* map_list = value16;
-  FlValue* value17 = fl_value_get_list_value(values, 17);
-  FlValue* map = value17;
-  FlValue* value18 = fl_value_get_list_value(values, 18);
-  FlValue* string_map = value18;
-  FlValue* value19 = fl_value_get_list_value(values, 19);
-  FlValue* int_map = value19;
-  FlValue* value20 = fl_value_get_list_value(values, 20);
-  FlValue* enum_map = value20;
-  FlValue* value21 = fl_value_get_list_value(values, 21);
-  FlValue* object_map = value21;
-  FlValue* value22 = fl_value_get_list_value(values, 22);
-  FlValue* list_map = value22;
-  FlValue* value23 = fl_value_get_list_value(values, 23);
-  FlValue* map_map = value23;
-  return core_tests_pigeon_test_immutable_all_types_new(
-      a_bool, an_int, an_int64, a_double, an_enum, another_enum, a_string,
-      an_object, list, string_list, int_list, double_list, bool_list, enum_list,
-      object_list, list_list, map_list, map, string_map, int_map, enum_map,
-      object_map, list_map, map_map);
-}
-
 struct _CoreTestsPigeonTestTestMessage {
   GObject parent_instance;
 
@@ -3194,8 +3194,8 @@ const int core_tests_pigeon_test_all_nullable_types_type_id = 133;
 const int core_tests_pigeon_test_all_nullable_types_without_recursion_type_id =
     134;
 const int core_tests_pigeon_test_all_classes_wrapper_type_id = 135;
-const int core_tests_pigeon_test_all_types_with_defaults_type_id = 136;
-const int core_tests_pigeon_test_immutable_all_types_type_id = 137;
+const int core_tests_pigeon_test_immutable_all_types_type_id = 136;
+const int core_tests_pigeon_test_all_types_with_defaults_type_id = 137;
 const int core_tests_pigeon_test_test_message_type_id = 138;
 
 static gboolean
@@ -3274,17 +3274,6 @@ core_tests_pigeon_test_message_codec_write_core_tests_pigeon_test_all_classes_wr
 }
 
 static gboolean
-core_tests_pigeon_test_message_codec_write_core_tests_pigeon_test_all_types_with_defaults(
-    FlStandardMessageCodec* codec, GByteArray* buffer,
-    CoreTestsPigeonTestAllTypesWithDefaults* value, GError** error) {
-  uint8_t type = core_tests_pigeon_test_all_types_with_defaults_type_id;
-  g_byte_array_append(buffer, &type, sizeof(uint8_t));
-  g_autoptr(FlValue) values =
-      core_tests_pigeon_test_all_types_with_defaults_to_list(value);
-  return fl_standard_message_codec_write_value(codec, buffer, values, error);
-}
-
-static gboolean
 core_tests_pigeon_test_message_codec_write_core_tests_pigeon_test_immutable_all_types(
     FlStandardMessageCodec* codec, GByteArray* buffer,
     CoreTestsPigeonTestImmutableAllTypes* value, GError** error) {
@@ -3292,6 +3281,17 @@ core_tests_pigeon_test_message_codec_write_core_tests_pigeon_test_immutable_all_
   g_byte_array_append(buffer, &type, sizeof(uint8_t));
   g_autoptr(FlValue) values =
       core_tests_pigeon_test_immutable_all_types_to_list(value);
+  return fl_standard_message_codec_write_value(codec, buffer, values, error);
+}
+
+static gboolean
+core_tests_pigeon_test_message_codec_write_core_tests_pigeon_test_all_types_with_defaults(
+    FlStandardMessageCodec* codec, GByteArray* buffer,
+    CoreTestsPigeonTestAllTypesWithDefaults* value, GError** error) {
+  uint8_t type = core_tests_pigeon_test_all_types_with_defaults_type_id;
+  g_byte_array_append(buffer, &type, sizeof(uint8_t));
+  g_autoptr(FlValue) values =
+      core_tests_pigeon_test_all_types_with_defaults_to_list(value);
   return fl_standard_message_codec_write_value(codec, buffer, values, error);
 }
 
@@ -3353,16 +3353,16 @@ static gboolean core_tests_pigeon_test_message_codec_write_value(
             CORE_TESTS_PIGEON_TEST_ALL_CLASSES_WRAPPER(
                 fl_value_get_custom_value_object(value)),
             error);
-      case core_tests_pigeon_test_all_types_with_defaults_type_id:
-        return core_tests_pigeon_test_message_codec_write_core_tests_pigeon_test_all_types_with_defaults(
-            codec, buffer,
-            CORE_TESTS_PIGEON_TEST_ALL_TYPES_WITH_DEFAULTS(
-                fl_value_get_custom_value_object(value)),
-            error);
       case core_tests_pigeon_test_immutable_all_types_type_id:
         return core_tests_pigeon_test_message_codec_write_core_tests_pigeon_test_immutable_all_types(
             codec, buffer,
             CORE_TESTS_PIGEON_TEST_IMMUTABLE_ALL_TYPES(
+                fl_value_get_custom_value_object(value)),
+            error);
+      case core_tests_pigeon_test_all_types_with_defaults_type_id:
+        return core_tests_pigeon_test_message_codec_write_core_tests_pigeon_test_all_types_with_defaults(
+            codec, buffer,
+            CORE_TESTS_PIGEON_TEST_ALL_TYPES_WITH_DEFAULTS(
                 fl_value_get_custom_value_object(value)),
             error);
       case core_tests_pigeon_test_test_message_type_id:
@@ -3512,28 +3512,6 @@ core_tests_pigeon_test_message_codec_read_core_tests_pigeon_test_all_classes_wra
 }
 
 static FlValue*
-core_tests_pigeon_test_message_codec_read_core_tests_pigeon_test_all_types_with_defaults(
-    FlStandardMessageCodec* codec, GBytes* buffer, size_t* offset,
-    GError** error) {
-  g_autoptr(FlValue) values =
-      fl_standard_message_codec_read_value(codec, buffer, offset, error);
-  if (values == nullptr) {
-    return nullptr;
-  }
-
-  g_autoptr(CoreTestsPigeonTestAllTypesWithDefaults) value =
-      core_tests_pigeon_test_all_types_with_defaults_new_from_list(values);
-  if (value == nullptr) {
-    g_set_error(error, FL_MESSAGE_CODEC_ERROR, FL_MESSAGE_CODEC_ERROR_FAILED,
-                "Invalid data received for MessageData");
-    return nullptr;
-  }
-
-  return fl_value_new_custom_object(
-      core_tests_pigeon_test_all_types_with_defaults_type_id, G_OBJECT(value));
-}
-
-static FlValue*
 core_tests_pigeon_test_message_codec_read_core_tests_pigeon_test_immutable_all_types(
     FlStandardMessageCodec* codec, GBytes* buffer, size_t* offset,
     GError** error) {
@@ -3553,6 +3531,28 @@ core_tests_pigeon_test_message_codec_read_core_tests_pigeon_test_immutable_all_t
 
   return fl_value_new_custom_object(
       core_tests_pigeon_test_immutable_all_types_type_id, G_OBJECT(value));
+}
+
+static FlValue*
+core_tests_pigeon_test_message_codec_read_core_tests_pigeon_test_all_types_with_defaults(
+    FlStandardMessageCodec* codec, GBytes* buffer, size_t* offset,
+    GError** error) {
+  g_autoptr(FlValue) values =
+      fl_standard_message_codec_read_value(codec, buffer, offset, error);
+  if (values == nullptr) {
+    return nullptr;
+  }
+
+  g_autoptr(CoreTestsPigeonTestAllTypesWithDefaults) value =
+      core_tests_pigeon_test_all_types_with_defaults_new_from_list(values);
+  if (value == nullptr) {
+    g_set_error(error, FL_MESSAGE_CODEC_ERROR, FL_MESSAGE_CODEC_ERROR_FAILED,
+                "Invalid data received for MessageData");
+    return nullptr;
+  }
+
+  return fl_value_new_custom_object(
+      core_tests_pigeon_test_all_types_with_defaults_type_id, G_OBJECT(value));
 }
 
 static FlValue*
@@ -3602,11 +3602,11 @@ static FlValue* core_tests_pigeon_test_message_codec_read_value_of_type(
     case core_tests_pigeon_test_all_classes_wrapper_type_id:
       return core_tests_pigeon_test_message_codec_read_core_tests_pigeon_test_all_classes_wrapper(
           codec, buffer, offset, error);
-    case core_tests_pigeon_test_all_types_with_defaults_type_id:
-      return core_tests_pigeon_test_message_codec_read_core_tests_pigeon_test_all_types_with_defaults(
-          codec, buffer, offset, error);
     case core_tests_pigeon_test_immutable_all_types_type_id:
       return core_tests_pigeon_test_message_codec_read_core_tests_pigeon_test_immutable_all_types(
+          codec, buffer, offset, error);
+    case core_tests_pigeon_test_all_types_with_defaults_type_id:
+      return core_tests_pigeon_test_message_codec_read_core_tests_pigeon_test_all_types_with_defaults(
           codec, buffer, offset, error);
     case core_tests_pigeon_test_test_message_type_id:
       return core_tests_pigeon_test_message_codec_read_core_tests_pigeon_test_test_message(

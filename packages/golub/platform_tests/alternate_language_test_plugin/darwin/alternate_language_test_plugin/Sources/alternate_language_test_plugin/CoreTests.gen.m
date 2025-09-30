@@ -90,15 +90,15 @@ static id GetNullableObjectAtIndex(NSArray<id> *array, NSInteger key) {
 - (NSArray<id> *)toList;
 @end
 
-@interface FLTAllTypesWithDefaults ()
-+ (FLTAllTypesWithDefaults *)fromList:(NSArray<id> *)list;
-+ (nullable FLTAllTypesWithDefaults *)nullableFromList:(NSArray<id> *)list;
-- (NSArray<id> *)toList;
-@end
-
 @interface FLTImmutableAllTypes ()
 + (FLTImmutableAllTypes *)fromList:(NSArray<id> *)list;
 + (nullable FLTImmutableAllTypes *)nullableFromList:(NSArray<id> *)list;
+- (NSArray<id> *)toList;
+@end
+
+@interface FLTAllTypesWithDefaults ()
++ (FLTAllTypesWithDefaults *)fromList:(NSArray<id> *)list;
++ (nullable FLTAllTypesWithDefaults *)nullableFromList:(NSArray<id> *)list;
 - (NSArray<id> *)toList;
 @end
 
@@ -585,6 +585,121 @@ static id GetNullableObjectAtIndex(NSArray<id> *array, NSInteger key) {
 }
 @end
 
+@implementation FLTImmutableAllTypes
++ (instancetype)makeWithABool:(BOOL)aBool
+                        anInt:(NSInteger)anInt
+                      anInt64:(NSInteger)anInt64
+                      aDouble:(double)aDouble
+                       anEnum:(FLTAnEnum)anEnum
+                  anotherEnum:(FLTAnotherEnum)anotherEnum
+                      aString:(NSString *)aString
+                     anObject:(id)anObject
+                         list:(NSArray<id> *)list
+                   stringList:(NSArray<NSString *> *)stringList
+                      intList:(NSArray<NSNumber *> *)intList
+                   doubleList:(NSArray<NSNumber *> *)doubleList
+                     boolList:(NSArray<NSNumber *> *)boolList
+                     enumList:(NSArray<FLTAnEnumBox *> *)enumList
+                   objectList:(NSArray<id> *)objectList
+                     listList:(NSArray<NSArray<id> *> *)listList
+                      mapList:(NSArray<NSDictionary<id, id> *> *)mapList
+                          map:(NSDictionary *)map
+                    stringMap:(NSDictionary<NSString *, NSString *> *)stringMap
+                       intMap:(NSDictionary<NSNumber *, NSNumber *> *)intMap
+                      enumMap:(NSDictionary<FLTAnEnumBox *, FLTAnEnumBox *> *)enumMap
+                    objectMap:(NSDictionary<id, id> *)objectMap
+                      listMap:(NSDictionary<NSNumber *, NSArray<id> *> *)listMap
+                       mapMap:(NSDictionary<NSNumber *, NSDictionary<id, id> *> *)mapMap {
+  FLTImmutableAllTypes *pigeonResult = [[FLTImmutableAllTypes alloc] init];
+  pigeonResult.aBool = aBool;
+  pigeonResult.anInt = anInt;
+  pigeonResult.anInt64 = anInt64;
+  pigeonResult.aDouble = aDouble;
+  pigeonResult.anEnum = anEnum;
+  pigeonResult.anotherEnum = anotherEnum;
+  pigeonResult.aString = aString;
+  pigeonResult.anObject = anObject;
+  pigeonResult.list = list;
+  pigeonResult.stringList = stringList;
+  pigeonResult.intList = intList;
+  pigeonResult.doubleList = doubleList;
+  pigeonResult.boolList = boolList;
+  pigeonResult.enumList = enumList;
+  pigeonResult.objectList = objectList;
+  pigeonResult.listList = listList;
+  pigeonResult.mapList = mapList;
+  pigeonResult.map = map;
+  pigeonResult.stringMap = stringMap;
+  pigeonResult.intMap = intMap;
+  pigeonResult.enumMap = enumMap;
+  pigeonResult.objectMap = objectMap;
+  pigeonResult.listMap = listMap;
+  pigeonResult.mapMap = mapMap;
+  return pigeonResult;
+}
++ (FLTImmutableAllTypes *)fromList:(NSArray<id> *)list {
+  FLTImmutableAllTypes *pigeonResult = [[FLTImmutableAllTypes alloc] init];
+  pigeonResult.aBool = [GetNullableObjectAtIndex(list, 0) boolValue];
+  pigeonResult.anInt = [GetNullableObjectAtIndex(list, 1) integerValue];
+  pigeonResult.anInt64 = [GetNullableObjectAtIndex(list, 2) integerValue];
+  pigeonResult.aDouble = [GetNullableObjectAtIndex(list, 3) doubleValue];
+  FLTAnEnumBox *boxedFLTAnEnum = GetNullableObjectAtIndex(list, 4);
+  pigeonResult.anEnum = boxedFLTAnEnum.value;
+  FLTAnotherEnumBox *boxedFLTAnotherEnum = GetNullableObjectAtIndex(list, 5);
+  pigeonResult.anotherEnum = boxedFLTAnotherEnum.value;
+  pigeonResult.aString = GetNullableObjectAtIndex(list, 6);
+  pigeonResult.anObject = GetNullableObjectAtIndex(list, 7);
+  pigeonResult.list = GetNullableObjectAtIndex(list, 8);
+  pigeonResult.stringList = GetNullableObjectAtIndex(list, 9);
+  pigeonResult.intList = GetNullableObjectAtIndex(list, 10);
+  pigeonResult.doubleList = GetNullableObjectAtIndex(list, 11);
+  pigeonResult.boolList = GetNullableObjectAtIndex(list, 12);
+  pigeonResult.enumList = GetNullableObjectAtIndex(list, 13);
+  pigeonResult.objectList = GetNullableObjectAtIndex(list, 14);
+  pigeonResult.listList = GetNullableObjectAtIndex(list, 15);
+  pigeonResult.mapList = GetNullableObjectAtIndex(list, 16);
+  pigeonResult.map = GetNullableObjectAtIndex(list, 17);
+  pigeonResult.stringMap = GetNullableObjectAtIndex(list, 18);
+  pigeonResult.intMap = GetNullableObjectAtIndex(list, 19);
+  pigeonResult.enumMap = GetNullableObjectAtIndex(list, 20);
+  pigeonResult.objectMap = GetNullableObjectAtIndex(list, 21);
+  pigeonResult.listMap = GetNullableObjectAtIndex(list, 22);
+  pigeonResult.mapMap = GetNullableObjectAtIndex(list, 23);
+  return pigeonResult;
+}
++ (nullable FLTImmutableAllTypes *)nullableFromList:(NSArray<id> *)list {
+  return (list) ? [FLTImmutableAllTypes fromList:list] : nil;
+}
+- (NSArray<id> *)toList {
+  return @[
+    @(self.aBool),
+    @(self.anInt),
+    @(self.anInt64),
+    @(self.aDouble),
+    [[FLTAnEnumBox alloc] initWithValue:self.anEnum],
+    [[FLTAnotherEnumBox alloc] initWithValue:self.anotherEnum],
+    self.aString ?: [NSNull null],
+    self.anObject ?: [NSNull null],
+    self.list ?: [NSNull null],
+    self.stringList ?: [NSNull null],
+    self.intList ?: [NSNull null],
+    self.doubleList ?: [NSNull null],
+    self.boolList ?: [NSNull null],
+    self.enumList ?: [NSNull null],
+    self.objectList ?: [NSNull null],
+    self.listList ?: [NSNull null],
+    self.mapList ?: [NSNull null],
+    self.map ?: [NSNull null],
+    self.stringMap ?: [NSNull null],
+    self.intMap ?: [NSNull null],
+    self.enumMap ?: [NSNull null],
+    self.objectMap ?: [NSNull null],
+    self.listMap ?: [NSNull null],
+    self.mapMap ?: [NSNull null],
+  ];
+}
+@end
+
 @implementation FLTAllTypesWithDefaults
 + (instancetype)makeWithABool:(BOOL)aBool
                         anInt:(NSInteger)anInt
@@ -704,121 +819,6 @@ static id GetNullableObjectAtIndex(NSArray<id> *array, NSInteger key) {
 }
 @end
 
-@implementation FLTImmutableAllTypes
-+ (instancetype)makeWithABool:(BOOL)aBool
-                        anInt:(NSInteger)anInt
-                      anInt64:(NSInteger)anInt64
-                      aDouble:(double)aDouble
-                       anEnum:(FLTAnEnum)anEnum
-                  anotherEnum:(FLTAnotherEnum)anotherEnum
-                      aString:(NSString *)aString
-                     anObject:(id)anObject
-                         list:(NSArray<id> *)list
-                   stringList:(NSArray<NSString *> *)stringList
-                      intList:(NSArray<NSNumber *> *)intList
-                   doubleList:(NSArray<NSNumber *> *)doubleList
-                     boolList:(NSArray<NSNumber *> *)boolList
-                     enumList:(NSArray<FLTAnEnumBox *> *)enumList
-                   objectList:(NSArray<id> *)objectList
-                     listList:(NSArray<NSArray<id> *> *)listList
-                      mapList:(NSArray<NSDictionary<id, id> *> *)mapList
-                          map:(NSDictionary *)map
-                    stringMap:(NSDictionary<NSString *, NSString *> *)stringMap
-                       intMap:(NSDictionary<NSNumber *, NSNumber *> *)intMap
-                      enumMap:(NSDictionary<FLTAnEnumBox *, FLTAnEnumBox *> *)enumMap
-                    objectMap:(NSDictionary<id, id> *)objectMap
-                      listMap:(NSDictionary<NSNumber *, NSArray<id> *> *)listMap
-                       mapMap:(NSDictionary<NSNumber *, NSDictionary<id, id> *> *)mapMap {
-  FLTImmutableAllTypes *pigeonResult = [[FLTImmutableAllTypes alloc] init];
-  pigeonResult.aBool = aBool;
-  pigeonResult.anInt = anInt;
-  pigeonResult.anInt64 = anInt64;
-  pigeonResult.aDouble = aDouble;
-  pigeonResult.anEnum = anEnum;
-  pigeonResult.anotherEnum = anotherEnum;
-  pigeonResult.aString = aString;
-  pigeonResult.anObject = anObject;
-  pigeonResult.list = list;
-  pigeonResult.stringList = stringList;
-  pigeonResult.intList = intList;
-  pigeonResult.doubleList = doubleList;
-  pigeonResult.boolList = boolList;
-  pigeonResult.enumList = enumList;
-  pigeonResult.objectList = objectList;
-  pigeonResult.listList = listList;
-  pigeonResult.mapList = mapList;
-  pigeonResult.map = map;
-  pigeonResult.stringMap = stringMap;
-  pigeonResult.intMap = intMap;
-  pigeonResult.enumMap = enumMap;
-  pigeonResult.objectMap = objectMap;
-  pigeonResult.listMap = listMap;
-  pigeonResult.mapMap = mapMap;
-  return pigeonResult;
-}
-+ (FLTImmutableAllTypes *)fromList:(NSArray<id> *)list {
-  FLTImmutableAllTypes *pigeonResult = [[FLTImmutableAllTypes alloc] init];
-  pigeonResult.aBool = [GetNullableObjectAtIndex(list, 0) boolValue];
-  pigeonResult.anInt = [GetNullableObjectAtIndex(list, 1) integerValue];
-  pigeonResult.anInt64 = [GetNullableObjectAtIndex(list, 2) integerValue];
-  pigeonResult.aDouble = [GetNullableObjectAtIndex(list, 3) doubleValue];
-  FLTAnEnumBox *boxedFLTAnEnum = GetNullableObjectAtIndex(list, 4);
-  pigeonResult.anEnum = boxedFLTAnEnum.value;
-  FLTAnotherEnumBox *boxedFLTAnotherEnum = GetNullableObjectAtIndex(list, 5);
-  pigeonResult.anotherEnum = boxedFLTAnotherEnum.value;
-  pigeonResult.aString = GetNullableObjectAtIndex(list, 6);
-  pigeonResult.anObject = GetNullableObjectAtIndex(list, 7);
-  pigeonResult.list = GetNullableObjectAtIndex(list, 8);
-  pigeonResult.stringList = GetNullableObjectAtIndex(list, 9);
-  pigeonResult.intList = GetNullableObjectAtIndex(list, 10);
-  pigeonResult.doubleList = GetNullableObjectAtIndex(list, 11);
-  pigeonResult.boolList = GetNullableObjectAtIndex(list, 12);
-  pigeonResult.enumList = GetNullableObjectAtIndex(list, 13);
-  pigeonResult.objectList = GetNullableObjectAtIndex(list, 14);
-  pigeonResult.listList = GetNullableObjectAtIndex(list, 15);
-  pigeonResult.mapList = GetNullableObjectAtIndex(list, 16);
-  pigeonResult.map = GetNullableObjectAtIndex(list, 17);
-  pigeonResult.stringMap = GetNullableObjectAtIndex(list, 18);
-  pigeonResult.intMap = GetNullableObjectAtIndex(list, 19);
-  pigeonResult.enumMap = GetNullableObjectAtIndex(list, 20);
-  pigeonResult.objectMap = GetNullableObjectAtIndex(list, 21);
-  pigeonResult.listMap = GetNullableObjectAtIndex(list, 22);
-  pigeonResult.mapMap = GetNullableObjectAtIndex(list, 23);
-  return pigeonResult;
-}
-+ (nullable FLTImmutableAllTypes *)nullableFromList:(NSArray<id> *)list {
-  return (list) ? [FLTImmutableAllTypes fromList:list] : nil;
-}
-- (NSArray<id> *)toList {
-  return @[
-    @(self.aBool),
-    @(self.anInt),
-    @(self.anInt64),
-    @(self.aDouble),
-    [[FLTAnEnumBox alloc] initWithValue:self.anEnum],
-    [[FLTAnotherEnumBox alloc] initWithValue:self.anotherEnum],
-    self.aString ?: [NSNull null],
-    self.anObject ?: [NSNull null],
-    self.list ?: [NSNull null],
-    self.stringList ?: [NSNull null],
-    self.intList ?: [NSNull null],
-    self.doubleList ?: [NSNull null],
-    self.boolList ?: [NSNull null],
-    self.enumList ?: [NSNull null],
-    self.objectList ?: [NSNull null],
-    self.listList ?: [NSNull null],
-    self.mapList ?: [NSNull null],
-    self.map ?: [NSNull null],
-    self.stringMap ?: [NSNull null],
-    self.intMap ?: [NSNull null],
-    self.enumMap ?: [NSNull null],
-    self.objectMap ?: [NSNull null],
-    self.listMap ?: [NSNull null],
-    self.mapMap ?: [NSNull null],
-  ];
-}
-@end
-
 @implementation FLTTestMessage
 + (instancetype)makeWithTestList:(nullable NSArray<id> *)testList {
   FLTTestMessage *pigeonResult = [[FLTTestMessage alloc] init];
@@ -867,9 +867,9 @@ static id GetNullableObjectAtIndex(NSArray<id> *array, NSInteger key) {
     case 135:
       return [FLTAllClassesWrapper fromList:[self readValue]];
     case 136:
-      return [FLTAllTypesWithDefaults fromList:[self readValue]];
-    case 137:
       return [FLTImmutableAllTypes fromList:[self readValue]];
+    case 137:
+      return [FLTAllTypesWithDefaults fromList:[self readValue]];
     case 138:
       return [FLTTestMessage fromList:[self readValue]];
     default:
@@ -905,10 +905,10 @@ static id GetNullableObjectAtIndex(NSArray<id> *array, NSInteger key) {
   } else if ([value isKindOfClass:[FLTAllClassesWrapper class]]) {
     [self writeByte:135];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[FLTAllTypesWithDefaults class]]) {
+  } else if ([value isKindOfClass:[FLTImmutableAllTypes class]]) {
     [self writeByte:136];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[FLTImmutableAllTypes class]]) {
+  } else if ([value isKindOfClass:[FLTAllTypesWithDefaults class]]) {
     [self writeByte:137];
     [self writeValue:[value toList]];
   } else if ([value isKindOfClass:[FLTTestMessage class]]) {

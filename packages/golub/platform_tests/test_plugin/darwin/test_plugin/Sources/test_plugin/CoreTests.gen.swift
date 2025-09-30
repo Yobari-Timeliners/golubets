@@ -859,6 +859,176 @@ public struct AllClassesWrapper: Hashable {
   }
 }
 
+/// A class containing all supported types but immutable.
+///
+/// Generated class from Pigeon that represents data sent in messages.
+public struct ImmutableAllTypes: Hashable {
+  public init(
+    aBool: Bool,
+    anInt: Int64,
+    anInt64: Int64,
+    aDouble: Double,
+    anEnum: AnEnum,
+    anotherEnum: AnotherEnum,
+    aString: String,
+    anObject: Any,
+    list: [Any?],
+    stringList: [String],
+    intList: [Int64],
+    doubleList: [Double],
+    boolList: [Bool],
+    enumList: [AnEnum],
+    objectList: [Any],
+    listList: [[Any?]],
+    mapList: [[AnyHashable?: Any?]],
+    map: [AnyHashable?: Any?],
+    stringMap: [String: String],
+    intMap: [Int64: Int64],
+    enumMap: [AnEnum: AnEnum],
+    objectMap: [AnyHashable: Any],
+    listMap: [Int64: [Any?]],
+    mapMap: [Int64: [AnyHashable?: Any?]]
+  ) {
+    self.aBool = aBool
+    self.anInt = anInt
+    self.anInt64 = anInt64
+    self.aDouble = aDouble
+    self.anEnum = anEnum
+    self.anotherEnum = anotherEnum
+    self.aString = aString
+    self.anObject = anObject
+    self.list = list
+    self.stringList = stringList
+    self.intList = intList
+    self.doubleList = doubleList
+    self.boolList = boolList
+    self.enumList = enumList
+    self.objectList = objectList
+    self.listList = listList
+    self.mapList = mapList
+    self.map = map
+    self.stringMap = stringMap
+    self.intMap = intMap
+    self.enumMap = enumMap
+    self.objectMap = objectMap
+    self.listMap = listMap
+    self.mapMap = mapMap
+  }
+  let aBool: Bool
+  let anInt: Int64
+  let anInt64: Int64
+  let aDouble: Double
+  let anEnum: AnEnum
+  let anotherEnum: AnotherEnum
+  let aString: String
+  let anObject: Any
+  let list: [Any?]
+  let stringList: [String]
+  let intList: [Int64]
+  let doubleList: [Double]
+  let boolList: [Bool]
+  let enumList: [AnEnum]
+  let objectList: [Any]
+  let listList: [[Any?]]
+  let mapList: [[AnyHashable?: Any?]]
+  let map: [AnyHashable?: Any?]
+  let stringMap: [String: String]
+  let intMap: [Int64: Int64]
+  let enumMap: [AnEnum: AnEnum]
+  let objectMap: [AnyHashable: Any]
+  let listMap: [Int64: [Any?]]
+  let mapMap: [Int64: [AnyHashable?: Any?]]
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> ImmutableAllTypes? {
+    let aBool = pigeonVar_list[0] as! Bool
+    let anInt = pigeonVar_list[1] as! Int64
+    let anInt64 = pigeonVar_list[2] as! Int64
+    let aDouble = pigeonVar_list[3] as! Double
+    let anEnum = pigeonVar_list[4] as! AnEnum
+    let anotherEnum = pigeonVar_list[5] as! AnotherEnum
+    let aString = pigeonVar_list[6] as! String
+    let anObject = pigeonVar_list[7]!
+    let list = pigeonVar_list[8] as! [Any?]
+    let stringList = pigeonVar_list[9] as! [String]
+    let intList = pigeonVar_list[10] as! [Int64]
+    let doubleList = pigeonVar_list[11] as! [Double]
+    let boolList = pigeonVar_list[12] as! [Bool]
+    let enumList = pigeonVar_list[13] as! [AnEnum]
+    let objectList = pigeonVar_list[14] as! [Any]
+    let listList = pigeonVar_list[15] as! [[Any?]]
+    let mapList = pigeonVar_list[16] as! [[AnyHashable?: Any?]]
+    let map = pigeonVar_list[17] as! [AnyHashable?: Any?]
+    let stringMap = pigeonVar_list[18] as! [String: String]
+    let intMap = pigeonVar_list[19] as! [Int64: Int64]
+    let enumMap = pigeonVar_list[20] as? [AnEnum: AnEnum]
+    let objectMap = pigeonVar_list[21] as! [AnyHashable: Any]
+    let listMap = pigeonVar_list[22] as! [Int64: [Any?]]
+    let mapMap = pigeonVar_list[23] as! [Int64: [AnyHashable?: Any?]]
+
+    return ImmutableAllTypes(
+      aBool: aBool,
+      anInt: anInt,
+      anInt64: anInt64,
+      aDouble: aDouble,
+      anEnum: anEnum,
+      anotherEnum: anotherEnum,
+      aString: aString,
+      anObject: anObject,
+      list: list,
+      stringList: stringList,
+      intList: intList,
+      doubleList: doubleList,
+      boolList: boolList,
+      enumList: enumList,
+      objectList: objectList,
+      listList: listList,
+      mapList: mapList,
+      map: map,
+      stringMap: stringMap,
+      intMap: intMap,
+      enumMap: enumMap!,
+      objectMap: objectMap,
+      listMap: listMap,
+      mapMap: mapMap
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      aBool,
+      anInt,
+      anInt64,
+      aDouble,
+      anEnum,
+      anotherEnum,
+      aString,
+      anObject,
+      list,
+      stringList,
+      intList,
+      doubleList,
+      boolList,
+      enumList,
+      objectList,
+      listList,
+      mapList,
+      map,
+      stringMap,
+      intMap,
+      enumMap,
+      objectMap,
+      listMap,
+      mapMap,
+    ]
+  }
+  public static func == (lhs: ImmutableAllTypes, rhs: ImmutableAllTypes) -> Bool {
+    return deepEqualsCoreTests(lhs.toList(), rhs.toList())
+  }
+  public func hash(into hasher: inout Hasher) {
+    deepHashCoreTests(value: toList(), hasher: &hasher)
+  }
+}
+
 /// A class containing all supported types but with default values.
 ///
 /// Generated class from Pigeon that represents data sent in messages.
@@ -1600,176 +1770,6 @@ public struct AllTypesWithDefaults: Hashable {
   }
 }
 
-/// A class containing all supported types but immutable.
-///
-/// Generated class from Pigeon that represents data sent in messages.
-public struct ImmutableAllTypes: Hashable {
-  public init(
-    aBool: Bool,
-    anInt: Int64,
-    anInt64: Int64,
-    aDouble: Double,
-    anEnum: AnEnum,
-    anotherEnum: AnotherEnum,
-    aString: String,
-    anObject: Any,
-    list: [Any?],
-    stringList: [String],
-    intList: [Int64],
-    doubleList: [Double],
-    boolList: [Bool],
-    enumList: [AnEnum],
-    objectList: [Any],
-    listList: [[Any?]],
-    mapList: [[AnyHashable?: Any?]],
-    map: [AnyHashable?: Any?],
-    stringMap: [String: String],
-    intMap: [Int64: Int64],
-    enumMap: [AnEnum: AnEnum],
-    objectMap: [AnyHashable: Any],
-    listMap: [Int64: [Any?]],
-    mapMap: [Int64: [AnyHashable?: Any?]]
-  ) {
-    self.aBool = aBool
-    self.anInt = anInt
-    self.anInt64 = anInt64
-    self.aDouble = aDouble
-    self.anEnum = anEnum
-    self.anotherEnum = anotherEnum
-    self.aString = aString
-    self.anObject = anObject
-    self.list = list
-    self.stringList = stringList
-    self.intList = intList
-    self.doubleList = doubleList
-    self.boolList = boolList
-    self.enumList = enumList
-    self.objectList = objectList
-    self.listList = listList
-    self.mapList = mapList
-    self.map = map
-    self.stringMap = stringMap
-    self.intMap = intMap
-    self.enumMap = enumMap
-    self.objectMap = objectMap
-    self.listMap = listMap
-    self.mapMap = mapMap
-  }
-  let aBool: Bool
-  let anInt: Int64
-  let anInt64: Int64
-  let aDouble: Double
-  let anEnum: AnEnum
-  let anotherEnum: AnotherEnum
-  let aString: String
-  let anObject: Any
-  let list: [Any?]
-  let stringList: [String]
-  let intList: [Int64]
-  let doubleList: [Double]
-  let boolList: [Bool]
-  let enumList: [AnEnum]
-  let objectList: [Any]
-  let listList: [[Any?]]
-  let mapList: [[AnyHashable?: Any?]]
-  let map: [AnyHashable?: Any?]
-  let stringMap: [String: String]
-  let intMap: [Int64: Int64]
-  let enumMap: [AnEnum: AnEnum]
-  let objectMap: [AnyHashable: Any]
-  let listMap: [Int64: [Any?]]
-  let mapMap: [Int64: [AnyHashable?: Any?]]
-
-  // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> ImmutableAllTypes? {
-    let aBool = pigeonVar_list[0] as! Bool
-    let anInt = pigeonVar_list[1] as! Int64
-    let anInt64 = pigeonVar_list[2] as! Int64
-    let aDouble = pigeonVar_list[3] as! Double
-    let anEnum = pigeonVar_list[4] as! AnEnum
-    let anotherEnum = pigeonVar_list[5] as! AnotherEnum
-    let aString = pigeonVar_list[6] as! String
-    let anObject = pigeonVar_list[7]!
-    let list = pigeonVar_list[8] as! [Any?]
-    let stringList = pigeonVar_list[9] as! [String]
-    let intList = pigeonVar_list[10] as! [Int64]
-    let doubleList = pigeonVar_list[11] as! [Double]
-    let boolList = pigeonVar_list[12] as! [Bool]
-    let enumList = pigeonVar_list[13] as! [AnEnum]
-    let objectList = pigeonVar_list[14] as! [Any]
-    let listList = pigeonVar_list[15] as! [[Any?]]
-    let mapList = pigeonVar_list[16] as! [[AnyHashable?: Any?]]
-    let map = pigeonVar_list[17] as! [AnyHashable?: Any?]
-    let stringMap = pigeonVar_list[18] as! [String: String]
-    let intMap = pigeonVar_list[19] as! [Int64: Int64]
-    let enumMap = pigeonVar_list[20] as? [AnEnum: AnEnum]
-    let objectMap = pigeonVar_list[21] as! [AnyHashable: Any]
-    let listMap = pigeonVar_list[22] as! [Int64: [Any?]]
-    let mapMap = pigeonVar_list[23] as! [Int64: [AnyHashable?: Any?]]
-
-    return ImmutableAllTypes(
-      aBool: aBool,
-      anInt: anInt,
-      anInt64: anInt64,
-      aDouble: aDouble,
-      anEnum: anEnum,
-      anotherEnum: anotherEnum,
-      aString: aString,
-      anObject: anObject,
-      list: list,
-      stringList: stringList,
-      intList: intList,
-      doubleList: doubleList,
-      boolList: boolList,
-      enumList: enumList,
-      objectList: objectList,
-      listList: listList,
-      mapList: mapList,
-      map: map,
-      stringMap: stringMap,
-      intMap: intMap,
-      enumMap: enumMap!,
-      objectMap: objectMap,
-      listMap: listMap,
-      mapMap: mapMap
-    )
-  }
-  func toList() -> [Any?] {
-    return [
-      aBool,
-      anInt,
-      anInt64,
-      aDouble,
-      anEnum,
-      anotherEnum,
-      aString,
-      anObject,
-      list,
-      stringList,
-      intList,
-      doubleList,
-      boolList,
-      enumList,
-      objectList,
-      listList,
-      mapList,
-      map,
-      stringMap,
-      intMap,
-      enumMap,
-      objectMap,
-      listMap,
-      mapMap,
-    ]
-  }
-  public static func == (lhs: ImmutableAllTypes, rhs: ImmutableAllTypes) -> Bool {
-    return deepEqualsCoreTests(lhs.toList(), rhs.toList())
-  }
-  public func hash(into hasher: inout Hasher) {
-    deepHashCoreTests(value: toList(), hasher: &hasher)
-  }
-}
-
 /// A data class containing a List, used in unit tests.
 ///
 /// Generated class from Pigeon that represents data sent in messages.
@@ -1828,9 +1828,9 @@ private class CoreTestsPigeonCodecReader: FlutterStandardReader {
     case 135:
       return AllClassesWrapper.fromList(self.readValue() as! [Any?])
     case 136:
-      return AllTypesWithDefaults.fromList(self.readValue() as! [Any?])
-    case 137:
       return ImmutableAllTypes.fromList(self.readValue() as! [Any?])
+    case 137:
+      return AllTypesWithDefaults.fromList(self.readValue() as! [Any?])
     case 138:
       return TestMessage.fromList(self.readValue() as! [Any?])
     default:
@@ -1862,10 +1862,10 @@ private class CoreTestsPigeonCodecWriter: FlutterStandardWriter {
     } else if let value = value as? AllClassesWrapper {
       super.writeByte(135)
       super.writeValue(value.toList())
-    } else if let value = value as? AllTypesWithDefaults {
+    } else if let value = value as? ImmutableAllTypes {
       super.writeByte(136)
       super.writeValue(value.toList())
-    } else if let value = value as? ImmutableAllTypes {
+    } else if let value = value as? AllTypesWithDefaults {
       super.writeByte(137)
       super.writeValue(value.toList())
     } else if let value = value as? TestMessage {

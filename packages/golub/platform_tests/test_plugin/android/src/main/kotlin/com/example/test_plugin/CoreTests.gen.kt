@@ -638,6 +638,133 @@ data class AllClassesWrapper(
 }
 
 /**
+ * A class containing all supported types but immutable.
+ *
+ * Generated class from Pigeon that represents data sent in messages.
+ */
+data class ImmutableAllTypes(
+    val aBool: Boolean,
+    val anInt: Long,
+    val anInt64: Long,
+    val aDouble: Double,
+    val anEnum: AnEnum,
+    val anotherEnum: AnotherEnum,
+    val aString: String,
+    val anObject: Any,
+    val list: List<Any?>,
+    val stringList: List<String>,
+    val intList: List<Long>,
+    val doubleList: List<Double>,
+    val boolList: List<Boolean>,
+    val enumList: List<AnEnum>,
+    val objectList: List<Any>,
+    val listList: List<List<Any?>>,
+    val mapList: List<Map<Any?, Any?>>,
+    val map: Map<Any, Any?>,
+    val stringMap: Map<String, String>,
+    val intMap: Map<Long, Long>,
+    val enumMap: Map<AnEnum, AnEnum>,
+    val objectMap: Map<Any, Any>,
+    val listMap: Map<Long, List<Any?>>,
+    val mapMap: Map<Long, Map<Any?, Any?>>
+) {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): ImmutableAllTypes {
+      val aBool = pigeonVar_list[0] as Boolean
+      val anInt = pigeonVar_list[1] as Long
+      val anInt64 = pigeonVar_list[2] as Long
+      val aDouble = pigeonVar_list[3] as Double
+      val anEnum = pigeonVar_list[4] as AnEnum
+      val anotherEnum = pigeonVar_list[5] as AnotherEnum
+      val aString = pigeonVar_list[6] as String
+      val anObject = pigeonVar_list[7] as Any
+      val list = pigeonVar_list[8] as List<Any?>
+      val stringList = pigeonVar_list[9] as List<String>
+      val intList = pigeonVar_list[10] as List<Long>
+      val doubleList = pigeonVar_list[11] as List<Double>
+      val boolList = pigeonVar_list[12] as List<Boolean>
+      val enumList = pigeonVar_list[13] as List<AnEnum>
+      val objectList = pigeonVar_list[14] as List<Any>
+      val listList = pigeonVar_list[15] as List<List<Any?>>
+      val mapList = pigeonVar_list[16] as List<Map<Any?, Any?>>
+      val map = pigeonVar_list[17] as Map<Any, Any?>
+      val stringMap = pigeonVar_list[18] as Map<String, String>
+      val intMap = pigeonVar_list[19] as Map<Long, Long>
+      val enumMap = pigeonVar_list[20] as Map<AnEnum, AnEnum>
+      val objectMap = pigeonVar_list[21] as Map<Any, Any>
+      val listMap = pigeonVar_list[22] as Map<Long, List<Any?>>
+      val mapMap = pigeonVar_list[23] as Map<Long, Map<Any?, Any?>>
+      return ImmutableAllTypes(
+          aBool,
+          anInt,
+          anInt64,
+          aDouble,
+          anEnum,
+          anotherEnum,
+          aString,
+          anObject,
+          list,
+          stringList,
+          intList,
+          doubleList,
+          boolList,
+          enumList,
+          objectList,
+          listList,
+          mapList,
+          map,
+          stringMap,
+          intMap,
+          enumMap,
+          objectMap,
+          listMap,
+          mapMap)
+    }
+  }
+
+  fun toList(): List<Any?> {
+    return listOf(
+        aBool,
+        anInt,
+        anInt64,
+        aDouble,
+        anEnum,
+        anotherEnum,
+        aString,
+        anObject,
+        list,
+        stringList,
+        intList,
+        doubleList,
+        boolList,
+        enumList,
+        objectList,
+        listList,
+        mapList,
+        map,
+        stringMap,
+        intMap,
+        enumMap,
+        objectMap,
+        listMap,
+        mapMap,
+    )
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (other !is ImmutableAllTypes) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    return CoreTestsPigeonUtils.deepEquals(toList(), other.toList())
+  }
+
+  override fun hashCode(): Int = toList().hashCode()
+}
+
+/**
  * A class containing all supported types but with default values.
  *
  * Generated class from Pigeon that represents data sent in messages.
@@ -1176,133 +1303,6 @@ data class AllTypesWithDefaults(
 }
 
 /**
- * A class containing all supported types but immutable.
- *
- * Generated class from Pigeon that represents data sent in messages.
- */
-data class ImmutableAllTypes(
-    val aBool: Boolean,
-    val anInt: Long,
-    val anInt64: Long,
-    val aDouble: Double,
-    val anEnum: AnEnum,
-    val anotherEnum: AnotherEnum,
-    val aString: String,
-    val anObject: Any,
-    val list: List<Any?>,
-    val stringList: List<String>,
-    val intList: List<Long>,
-    val doubleList: List<Double>,
-    val boolList: List<Boolean>,
-    val enumList: List<AnEnum>,
-    val objectList: List<Any>,
-    val listList: List<List<Any?>>,
-    val mapList: List<Map<Any?, Any?>>,
-    val map: Map<Any, Any?>,
-    val stringMap: Map<String, String>,
-    val intMap: Map<Long, Long>,
-    val enumMap: Map<AnEnum, AnEnum>,
-    val objectMap: Map<Any, Any>,
-    val listMap: Map<Long, List<Any?>>,
-    val mapMap: Map<Long, Map<Any?, Any?>>
-) {
-  companion object {
-    fun fromList(pigeonVar_list: List<Any?>): ImmutableAllTypes {
-      val aBool = pigeonVar_list[0] as Boolean
-      val anInt = pigeonVar_list[1] as Long
-      val anInt64 = pigeonVar_list[2] as Long
-      val aDouble = pigeonVar_list[3] as Double
-      val anEnum = pigeonVar_list[4] as AnEnum
-      val anotherEnum = pigeonVar_list[5] as AnotherEnum
-      val aString = pigeonVar_list[6] as String
-      val anObject = pigeonVar_list[7] as Any
-      val list = pigeonVar_list[8] as List<Any?>
-      val stringList = pigeonVar_list[9] as List<String>
-      val intList = pigeonVar_list[10] as List<Long>
-      val doubleList = pigeonVar_list[11] as List<Double>
-      val boolList = pigeonVar_list[12] as List<Boolean>
-      val enumList = pigeonVar_list[13] as List<AnEnum>
-      val objectList = pigeonVar_list[14] as List<Any>
-      val listList = pigeonVar_list[15] as List<List<Any?>>
-      val mapList = pigeonVar_list[16] as List<Map<Any?, Any?>>
-      val map = pigeonVar_list[17] as Map<Any, Any?>
-      val stringMap = pigeonVar_list[18] as Map<String, String>
-      val intMap = pigeonVar_list[19] as Map<Long, Long>
-      val enumMap = pigeonVar_list[20] as Map<AnEnum, AnEnum>
-      val objectMap = pigeonVar_list[21] as Map<Any, Any>
-      val listMap = pigeonVar_list[22] as Map<Long, List<Any?>>
-      val mapMap = pigeonVar_list[23] as Map<Long, Map<Any?, Any?>>
-      return ImmutableAllTypes(
-          aBool,
-          anInt,
-          anInt64,
-          aDouble,
-          anEnum,
-          anotherEnum,
-          aString,
-          anObject,
-          list,
-          stringList,
-          intList,
-          doubleList,
-          boolList,
-          enumList,
-          objectList,
-          listList,
-          mapList,
-          map,
-          stringMap,
-          intMap,
-          enumMap,
-          objectMap,
-          listMap,
-          mapMap)
-    }
-  }
-
-  fun toList(): List<Any?> {
-    return listOf(
-        aBool,
-        anInt,
-        anInt64,
-        aDouble,
-        anEnum,
-        anotherEnum,
-        aString,
-        anObject,
-        list,
-        stringList,
-        intList,
-        doubleList,
-        boolList,
-        enumList,
-        objectList,
-        listList,
-        mapList,
-        map,
-        stringMap,
-        intMap,
-        enumMap,
-        objectMap,
-        listMap,
-        mapMap,
-    )
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (other !is ImmutableAllTypes) {
-      return false
-    }
-    if (this === other) {
-      return true
-    }
-    return CoreTestsPigeonUtils.deepEquals(toList(), other.toList())
-  }
-
-  override fun hashCode(): Int = toList().hashCode()
-}
-
-/**
  * A data class containing a List, used in unit tests.
  *
  * Generated class from Pigeon that represents data sent in messages.
@@ -1361,10 +1361,10 @@ private open class CoreTestsPigeonCodec : StandardMessageCodec() {
         return (readValue(buffer) as? List<Any?>)?.let { AllClassesWrapper.fromList(it) }
       }
       136.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let { AllTypesWithDefaults.fromList(it) }
+        return (readValue(buffer) as? List<Any?>)?.let { ImmutableAllTypes.fromList(it) }
       }
       137.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let { ImmutableAllTypes.fromList(it) }
+        return (readValue(buffer) as? List<Any?>)?.let { AllTypesWithDefaults.fromList(it) }
       }
       138.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let { TestMessage.fromList(it) }
@@ -1403,11 +1403,11 @@ private open class CoreTestsPigeonCodec : StandardMessageCodec() {
         stream.write(135)
         writeValue(stream, value.toList())
       }
-      is AllTypesWithDefaults -> {
+      is ImmutableAllTypes -> {
         stream.write(136)
         writeValue(stream, value.toList())
       }
-      is ImmutableAllTypes -> {
+      is AllTypesWithDefaults -> {
         stream.write(137)
         writeValue(stream, value.toList())
       }
