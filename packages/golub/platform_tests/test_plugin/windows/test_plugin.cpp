@@ -226,8 +226,9 @@ ErrorOr<double> TestPlugin::EchoOptionalDefaultDouble(double a_double) {
 }
 
 ErrorOr<AllTypesWithDefaults> TestPlugin::CreateAllTypesWithDefaults() {
-  return FlutterError("NotImplemented", 
-                      "CreateAllTypesWithDefaults is not implemented - test will never be executed");
+  return FlutterError("NotImplemented",
+                      "CreateAllTypesWithDefaults is not implemented - test "
+                      "will never be executed");
 }
 
 ErrorOr<AllTypesWithDefaults> TestPlugin::EchoAllTypesWithDefaults(

@@ -249,14 +249,15 @@ echo_required_int(int64_t an_int, gpointer user_data) {
 static CoreTestsPigeonTestHostIntegrationCoreApiCreateAllTypesWithDefaultsResponse*
 create_all_types_with_defaults(gpointer user_data) {
   return core_tests_pigeon_test_host_integration_core_api_create_all_types_with_defaults_response_new_error(
-      "NotImplemented", 
-      "createAllTypesWithDefaults is not implemented - test will never be executed", 
+      "NotImplemented",
+      "createAllTypesWithDefaults is not implemented - test will never be "
+      "executed",
       nullptr);
 }
 
 static CoreTestsPigeonTestHostIntegrationCoreApiEchoAllTypesWithDefaultsResponse*
 echo_all_types_with_defaults(CoreTestsPigeonTestAllTypesWithDefaults* all_types,
-                            gpointer user_data) {
+                             gpointer user_data) {
   return core_tests_pigeon_test_host_integration_core_api_echo_all_types_with_defaults_response_new(
       all_types);
 }

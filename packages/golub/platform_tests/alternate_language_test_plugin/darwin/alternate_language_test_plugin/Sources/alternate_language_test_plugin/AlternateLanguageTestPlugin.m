@@ -52,9 +52,10 @@
 
 - (nullable FLTAllTypesWithDefaults *)createAllTypesWithDefaults:
     (FlutterError *_Nullable *_Nonnull)error {
-  *error = [FlutterError errorWithCode:@"NotImplemented" 
-                               message:@"createAllTypesWithDefaults is not implemented - test will never be executed" 
-                               details:nil];
+  *error = [FlutterError
+      errorWithCode:@"NotImplemented"
+            message:@"createAllTypesWithDefaults is not implemented - test will never be executed"
+            details:nil];
   return nil;
 }
 
