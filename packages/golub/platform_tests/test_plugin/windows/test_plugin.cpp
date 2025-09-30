@@ -21,6 +21,7 @@ using core_tests_pigeontest::AllClassesWrapper;
 using core_tests_pigeontest::AllNullableTypes;
 using core_tests_pigeontest::AllNullableTypesWithoutRecursion;
 using core_tests_pigeontest::AllTypes;
+using core_tests_pigeontest::AllTypesWithDefaults;
 using core_tests_pigeontest::AnEnum;
 using core_tests_pigeontest::AnotherEnum;
 using core_tests_pigeontest::ErrorOr;
