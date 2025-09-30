@@ -339,7 +339,8 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       indent,
       classDefinition,
       classLookup: <String, Class>{
-        for (final Class clazz in root.classes) clazz.name: clazz,
+        for (final Class classDefinition in root.classes)
+          classDefinition.name: classDefinition,
       },
     );
     if (classDefinition.isSealed) {
@@ -726,7 +727,8 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       overflowClass,
       private: true,
       classLookup: <String, Class>{
-        for (final Class clazz in root.classes) clazz.name: clazz,
+        for (final Class classDefinition in root.classes)
+          classDefinition.name: classDefinition,
       },
     );
     indent.addScoped(' {', '}', () {
