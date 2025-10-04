@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:mirrors';
 
+import 'package:collection/equality.dart' show ListEquality;
 import 'package:yaml/yaml.dart' as yaml;
 
 import 'ast.dart';
@@ -446,6 +448,7 @@ class EnumeratedType {
     this.type, {
     this.associatedClass,
     this.associatedEnum,
+    this.typeArguments = const <TypeDeclaration>[],
   });
 
   /// The name of the type.
@@ -463,8 +466,14 @@ class EnumeratedType {
   /// The associated Enum that is represented by the [EnumeratedType].
   final Enum? associatedEnum;
 
+  /// The type arguments for generic types.
+  final List<TypeDeclaration> typeArguments;
+
   /// Returns the offset of the enumeration.
   int offset(int offset) => enumeration - offset;
+
+  /// Returns true if this is a generic type instantiation.
+  bool get isGeneric => typeArguments.isNotEmpty && associatedClass != null;
 }
 
 /// Supported basic datatypes.
@@ -644,6 +653,221 @@ enum CustomTypes {
   customEnum,
 }
 
+/// Represents a concrete type argument combination for a generic class.
+typedef TypeArgumentCombination = List<TypeDeclaration>;
+
+/// Substitutes type parameters in a type with their concrete counterparts
+TypeDeclaration _substituteTypeParameters(
+  TypeDeclaration type,
+  Map<String, TypeDeclaration> typeParameterMap,
+) {
+  final TypeDeclaration? substitution = typeParameterMap[type.baseName];
+  if (substitution != null) {
+    // This is a type parameter that should be substituted
+    return substitution;
+  }
+
+  if (type.typeArguments.isEmpty) {
+    // No type arguments to process
+    return type;
+  }
+
+  // Recursively substitute type parameters in type arguments
+  final List<TypeDeclaration> substitutedArgs =
+      type.typeArguments
+          .map(
+            (TypeDeclaration arg) =>
+                _substituteTypeParameters(arg, typeParameterMap),
+          )
+          .toList();
+
+  return TypeDeclaration(
+    baseName: type.baseName,
+    isNullable: type.isNullable,
+    typeArguments: substitutedArgs,
+  );
+}
+
+/// Collects nested generic types within a concrete generic instantiation
+void _collectNestedGenericTypes(
+  List<Class> classes,
+  TypeDeclaration concreteType,
+  Map<String, Set<TypeArgumentCombination>> classToTypeArgs,
+  void Function(TypeDeclaration) collectFromType,
+) {
+  // Find the class definition for this generic type
+  final Class? target =
+      classes
+          .where((Class cls) => cls.name == concreteType.baseName)
+          .firstOrNull;
+
+  if (target == null || target.typeArguments.isEmpty) {
+    return;
+  }
+
+  // Create a mapping from type parameter names to concrete types
+  final Map<String, TypeDeclaration> typeParameterMap =
+      <String, TypeDeclaration>{};
+  for (
+    int i = 0;
+    i < target.typeArguments.length && i < concreteType.typeArguments.length;
+    i++
+  ) {
+    typeParameterMap[target.typeArguments[i].baseName] =
+        concreteType.typeArguments[i];
+  }
+
+  // Process each field in the class and substitute type parameters
+  for (final NamedType field in target.fields) {
+    final TypeDeclaration substitutedType = _substituteTypeParameters(
+      field.type,
+      typeParameterMap,
+    );
+    if (substitutedType.typeArguments.isNotEmpty) {
+      collectFromType(substitutedType);
+    }
+  }
+}
+
+/// Collects all concrete generic type instantiations from APIs.
+Map<String, Set<TypeArgumentCombination>> collectGenericTypeUsage({
+  required List<Class> classes,
+  required List<Api> apis,
+}) {
+  final Map<String, Set<TypeArgumentCombination>> classToTypeArgs =
+      <String, Set<TypeArgumentCombination>>{};
+
+  // Pre-compute sealed class to subclasses mapping for efficiency
+  final Map<String, List<String>> sealedSubclasses = <String, List<String>>{};
+  for (final Class cls in classes) {
+    final Class? superClass = cls.superClass;
+
+    if (superClass != null && superClass.isSealed) {
+      sealedSubclasses
+          .putIfAbsent(superClass.name, () => <String>[])
+          .add(cls.name);
+    }
+  }
+
+  // Also build sealed class mapping by name for cases where superClass reference isn't set
+  final Map<String, Class> classByName = <String, Class>{};
+  for (final Class cls in classes) {
+    classByName[cls.name] = cls;
+  }
+
+  // Build additional sealed subclass mapping using superClassName
+  for (final Class cls in classes) {
+    if (cls.superClassName != null && cls.superClassName!.isNotEmpty) {
+      final Class? potentialSuperClass = classByName[cls.superClassName!];
+      if (potentialSuperClass != null && potentialSuperClass.isSealed) {
+        sealedSubclasses
+            .putIfAbsent(cls.superClassName!, () => <String>[])
+            .add(cls.name);
+      }
+    }
+  }
+
+  void collectFromType(TypeDeclaration type) {
+    if (type.typeArguments.isEmpty) {
+      return;
+    }
+
+    final String className = type.baseName;
+    final TypeArgumentCombination combination = type.typeArguments;
+
+    classToTypeArgs
+        .putIfAbsent(
+          className,
+          () => HashSet<TypeArgumentCombination>(
+            equals: const ListEquality<TypeDeclaration>().equals,
+            hashCode: const ListEquality<TypeDeclaration>().hash,
+          ),
+        )
+        .add(combination);
+
+    // If this is a sealed class, also collect usage for its subclasses
+    final List<String>? subclassNames = sealedSubclasses[className];
+    if (subclassNames != null) {
+      for (final String subclassName in subclassNames) {
+        classToTypeArgs
+            .putIfAbsent(
+              subclassName,
+              () => HashSet<TypeArgumentCombination>(
+                equals: const ListEquality<TypeDeclaration>().equals,
+                hashCode: const ListEquality<TypeDeclaration>().hash,
+              ),
+            )
+            .add(combination);
+
+        // Also recursively collect nested generic types for the subclass
+        final Class? subclass = classByName[subclassName];
+        if (subclass != null && subclass.typeArguments.isNotEmpty) {
+          final TypeDeclaration subclassType = TypeDeclaration(
+            baseName: subclassName,
+            isNullable: false,
+            typeArguments: combination,
+          );
+          _collectNestedGenericTypes(
+            classes,
+            subclassType,
+            classToTypeArgs,
+            collectFromType,
+          );
+        }
+      }
+    }
+
+    // Recursively collect from type arguments
+    type.typeArguments.forEach(collectFromType);
+
+    // Also collect nested generic types with substituted type parameters
+    _collectNestedGenericTypes(
+      classes,
+      type,
+      classToTypeArgs,
+      collectFromType,
+    );
+  }
+
+  // Collect from all APIs
+  for (final Api api in apis) {
+    for (final Method method in api.methods) {
+      // Collect from return type
+      collectFromType(method.returnType);
+
+      // Collect from parameters
+      for (final Parameter param in method.parameters) {
+        collectFromType(param.type);
+      }
+    }
+
+    // Collect from ProxyAPI fields and constructors
+    if (api is AstProxyApi) {
+      for (final Constructor constructor in api.constructors) {
+        for (final NamedType parameter in constructor.parameters) {
+          collectFromType(parameter.type);
+        }
+      }
+      for (final ApiField field in api.fields) {
+        collectFromType(field.type);
+      }
+    }
+  }
+
+  // Collect from class fields, but only for non-generic classes
+  // Generic classes will have their types collected when they are instantiated concretely
+  for (final Class cls in classes) {
+    if (cls.typeArguments.isEmpty) {
+      // Only collect from non-generic classes to avoid type parameters
+      for (final NamedType field in cls.fields) {
+        collectFromType(field.type);
+      }
+    }
+  }
+
+  return classToTypeArgs;
+}
+
 /// Return the enumerated types that must exist in the codec
 /// where the enumeration should be the key used in the buffer.
 Iterable<EnumeratedType> getEnumeratedTypes(
@@ -662,8 +886,43 @@ Iterable<EnumeratedType> getEnumeratedTypes(
     index += 1;
   }
 
+  // Collect concrete generic type usage
+  final Map<String, Set<TypeArgumentCombination>> genericUsage =
+      root.genericUsage;
+
   for (final Class customClass in root.classes) {
-    if (!excludeSealedClasses || !customClass.isSealed) {
+    if (excludeSealedClasses &&
+        customClass.isSealed &&
+        customClass.superClass == null) {
+      // Exclude sealed classes that are the root/parent (no superclass)
+      // but allow sealed subclasses to be generated
+      continue;
+    }
+
+    final String className = customClass.name;
+
+    final Set<TypeArgumentCombination>? typeArgCombinations =
+        genericUsage[className];
+
+    if (customClass.typeArguments.isNotEmpty) {
+      // This is a generic class template
+      if (typeArgCombinations != null && typeArgCombinations.isNotEmpty) {
+        // Generate separate EnumeratedType for each concrete instantiation
+        for (final TypeArgumentCombination combination in typeArgCombinations) {
+          yield EnumeratedType(
+            className,
+            index + minimumCodecFieldKey,
+            CustomTypes.customClass,
+            associatedClass: customClass,
+            typeArguments: combination,
+          );
+          index += 1;
+        }
+      }
+      // We don't generate an EnumeratedType for the generic template itself
+      // as it can't be serialized without concrete type arguments
+    } else {
+      // Regular non-generic class
       yield EnumeratedType(
         customClass.name,
         index + minimumCodecFieldKey,

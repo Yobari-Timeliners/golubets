@@ -255,8 +255,11 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     )) {
       indent.writeln('import kotlinx.coroutines.launch');
       indent.writeln('import kotlinx.coroutines.CoroutineScope');
-      indent.writeln('import kotlinx.coroutines.Dispatchers');
-      indent.writeln('import kotlinx.coroutines.withContext');
+    }
+
+    if (root.genericTypeNames.isNotEmpty) {
+      indent.writeln('import kotlin.reflect.typeOf');
+      indent.writeln('import kotlin.reflect.KType');
     }
   }
 
@@ -342,6 +345,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         for (final Class classDefinition in root.classes)
           classDefinition.name: classDefinition,
       },
+      generatorOptions: generatorOptions,
     );
     if (classDefinition.isSealed) {
       if (generatorOptions.nestSealedClasses) {
@@ -399,10 +403,18 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     Class classDefinition, {
     required String dartPackageName,
   }) {
+    final String typeArguments =
+        classDefinition.typeArguments.isEmpty
+            ? ''
+            : '<${classDefinition.typeArguments.map((_) => '*').join(', ')}>';
     indent.writeScoped('override fun equals(other: Any?): Boolean {', '}', () {
-      indent.writeScoped('if (other !is ${classDefinition.name}) {', '}', () {
-        indent.writeln('return false');
-      });
+      indent.writeScoped(
+        'if (other !is ${classDefinition.name}$typeArguments) {',
+        '}',
+        () {
+          indent.writeln('return false');
+        },
+      );
       indent.writeScoped('if (this === other) {', '}', () {
         indent.writeln('return true');
       });
@@ -420,7 +432,12 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     Class classDefinition, {
     bool private = false,
     required Map<String, Class> classLookup,
+    required InternalKotlinOptions generatorOptions,
   }) {
+    final String typeArguments =
+        classDefinition.typeArguments.isEmpty
+            ? ''
+            : '<${_flattenTypeArguments(classDefinition.typeArguments)}>';
     final String privateString = private ? 'private ' : '';
     final String classType =
         classDefinition.isSealed
@@ -428,24 +445,45 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
             : classDefinition.fields.isNotEmpty
             ? 'data'
             : '';
+    final String superClassTypeArguments =
+        classDefinition.superClass?.typeArguments.isNotEmpty ?? false
+            ? '<${_flattenTypeArguments(classDefinition.superClass!.typeArguments)}>'
+            : '';
     final String inheritance =
         classDefinition.superClass != null
-            ? ' : ${classDefinition.superClassName}()'
+            ? ' : ${classDefinition.superClassName}$superClassTypeArguments()'
             : '';
-    indent.write('$privateString$classType class ${classDefinition.name} ');
+    final String internalConstructor =
+        classDefinition.typeArguments.isNotEmpty
+            ? ' @PublishedApi internal constructor'
+            : '';
+    indent.write(
+      '$privateString$classType class ${classDefinition.name}$typeArguments ',
+    );
     if (classDefinition.isSealed) {
       return;
     }
-    indent.addScoped('(', ')$inheritance', () {
+    indent.addScoped('$internalConstructor(', ')$inheritance', () {
       for (final NamedType element in getFieldsInSerializationOrder(
         classDefinition,
       )) {
-        _writeClassField(indent, element, classLookup: classLookup);
+        _writeClassField(
+          indent,
+          element,
+          classLookup: classLookup,
+          generatorOptions: generatorOptions,
+        );
         if (getFieldsInSerializationOrder(classDefinition).last != element) {
           indent.addln(',');
         } else {
-          indent.newln();
+          typeArguments.isEmpty ? indent.newln() : indent.addln(',');
         }
+      }
+
+      for (final TypeDeclaration type in classDefinition.typeArguments) {
+        indent.writeln(
+          'internal val ${type.baseName.toLowFirstLetter()}Type: KType,',
+        );
       }
     });
   }
@@ -482,14 +520,25 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
   }) {
     final String className = classDefinition.name;
 
+    final String returnTypeArguments =
+        classDefinition.typeArguments.isEmpty
+            ? ''
+            : '<${_flattenTypeArguments(classDefinition.typeArguments)}>';
+    final String captureTypeArguments =
+        classDefinition.typeArguments.isEmpty
+            ? ''
+            : '<${classDefinition.typeArguments.map((TypeDeclaration e) => 'reified ${_nullSafeKotlinTypeForDartType(e)}').join(', ')}> ';
+
     indent.write('companion object ');
     indent.addScoped('{', '}', () {
       if (getFieldsInSerializationOrder(classDefinition).isEmpty) {
         indent.writeln('@Suppress("UNUSED_PARAMETER")');
       }
 
+      // For generic classes, companion object methods don't need inline/reified
+      // since they can access the class type parameters directly
       indent.write(
-        'fun fromList(${varNamePrefix}list: List<Any?>): $className ',
+        'fun fromList(${varNamePrefix}list: List<Any?>): $className$returnTypeArguments ',
       );
 
       indent.addScoped('{', '}', () {
@@ -508,13 +557,88 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
           classDefinition,
         )) {
           final String comma =
-              getFieldsInSerializationOrder(classDefinition).last == field
+              getFieldsInSerializationOrder(classDefinition).last == field &&
+                      classDefinition.typeArguments.isEmpty
                   ? ''
                   : ', ';
           indent.add('${field.name}$comma');
         }
+
+        for (final TypeDeclaration type in classDefinition.typeArguments) {
+          final String comma =
+              classDefinition.typeArguments.last == type ? '' : ', ';
+          indent.add(
+            'typeOf<${type.baseName}>()$comma',
+          );
+        }
+
         indent.addln(')');
       });
+
+      if (classDefinition.typeArguments.isNotEmpty) {
+        final Map<String, Class> classLookup = <String, Class>{
+          for (final Class classDefinition in root.classes)
+            classDefinition.name: classDefinition,
+        };
+        indent.newln();
+        indent.writeScoped(
+          'inline operator fun $captureTypeArguments invoke(',
+          ')',
+          () {
+            for (final NamedType field in getFieldsInSerializationOrder(
+              classDefinition,
+            )) {
+              indent.write(
+                '${field.name}: ${_nullSafeKotlinTypeForDartType(field.type)}',
+              );
+              final DefaultValue? defaultValue = field.defaultValue;
+              if (defaultValue != null) {
+                indent.add(' = ');
+                defaultValue.write(
+                  indent,
+                  prefix: '',
+                  expectedType: field.type,
+                  classLookup: classLookup,
+                  generatorOptions: generatorOptions,
+                );
+              } else {
+                final String defaultNil =
+                    field.type.isNullable ? ' = null' : '';
+                indent.add(defaultNil);
+              }
+
+              final String comma =
+                  getFieldsInSerializationOrder(classDefinition).last == field
+                      ? ''
+                      : ', ';
+              indent.addln(comma);
+            }
+          },
+        );
+
+        indent.writeScoped(
+          ' : $className$returnTypeArguments {',
+          '}',
+          () {
+            indent.writeScoped('return $className (', ')', () {
+              for (final NamedType field in getFieldsInSerializationOrder(
+                classDefinition,
+              )) {
+                indent.writeln('${field.name},');
+              }
+
+              for (final TypeDeclaration type
+                  in classDefinition.typeArguments) {
+                final String comma =
+                    classDefinition.typeArguments.last == type ? '' : ', ';
+                indent.writeln(
+                  'typeOf<${type.baseName}>()$comma',
+                );
+              }
+            });
+          },
+        );
+      }
     });
   }
 
@@ -522,6 +646,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     Indent indent,
     NamedType field, {
     required Map<String, Class> classLookup,
+    required InternalKotlinOptions generatorOptions,
   }) {
     addDocumentationComments(
       indent,
@@ -539,6 +664,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         prefix: '',
         expectedType: field.type,
         classLookup: classLookup,
+        generatorOptions: generatorOptions,
       );
     } else {
       final String defaultNil = field.type.isNullable ? ' = null' : '';
@@ -575,8 +701,13 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     Indent indent, {
     required String dartPackageName,
   }) {
+    final Map<String, Class> classLookup = <String, Class>{
+      for (final Class classDefinition in root.classes)
+        classDefinition.name: classDefinition,
+    };
     final List<EnumeratedType> enumeratedTypes =
         getEnumeratedTypes(root, excludeSealedClasses: true).toList();
+    final String value = root.genericTypeNames.isNotEmpty ? 'value ' : '';
 
     void writeEncodeLogic(EnumeratedType customType) {
       final String encodeString =
@@ -596,15 +727,42 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
           sealedSuperClassName != null && generatorOptions.nestSealedClasses
               ? '$sealedSuperClassName.'
               : '';
-      indent.writeScoped('is $nestedClassPrefix${customType.name} -> {', '}', () {
-        if (customType.enumeration >= maximumCodecFieldKey) {
-          indent.writeln(
-            'val wrap = ${generatorOptions.fileSpecificClassNameComponent}$_overflowClassName(type = ${customType.enumeration - maximumCodecFieldKey}, wrapped = value.$encodeString)',
-          );
-        }
-        indent.writeln('stream.write($enumeration)');
-        indent.writeln('writeValue(stream, $valueString)');
-      });
+      final String typeArguments =
+          customType.typeArguments.isEmpty
+              ? ''
+              : '<${customType.typeArguments.map((_) => '*').join(', ')}>';
+      final List<String>? originalTypeArguments =
+          classLookup[customType.name]?.typeArguments
+              .map((TypeDeclaration e) => e.baseName)
+              .toList();
+      final String typeArgsCheck =
+          typeArguments.isEmpty
+              ? ''
+              : customType.typeArguments.indexed.map(
+                ((int, TypeDeclaration) e) {
+                  final (int index, TypeDeclaration type) = e;
+                  final String typeName = _nullSafeKotlinTypeForDartType(
+                    type,
+                  );
+                  final String typeFieldName =
+                      '${originalTypeArguments![index].toLowFirstLetter()}Type';
+
+                  return ' && value.$typeFieldName == typeOf<$typeName>()';
+                },
+              ).join();
+      indent.writeScoped(
+        '${value}is $nestedClassPrefix${customType.name}$typeArguments$typeArgsCheck -> {',
+        '}',
+        () {
+          if (customType.enumeration >= maximumCodecFieldKey) {
+            indent.writeln(
+              'val wrap = ${generatorOptions.fileSpecificClassNameComponent}$_overflowClassName(type = ${customType.enumeration - maximumCodecFieldKey}, wrapped = value.$encodeString)',
+            );
+          }
+          indent.writeln('stream.write($enumeration)');
+          indent.writeln('writeValue(stream, $valueString)');
+        },
+      );
     }
 
     void writeDecodeLogic(EnumeratedType customType) {
@@ -617,9 +775,15 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       indent.write('${customType.enumeration}.toByte() -> ');
       indent.addScoped('{', '}', () {
         if (customType.type == CustomTypes.customClass) {
+          final String typeArguments =
+              customType.typeArguments.isEmpty
+                  ? ''
+                  : '<${_flattenTypeArguments(customType.typeArguments)}>';
           indent.write('return (readValue(buffer) as? List<Any?>)?.let ');
           indent.addScoped('{', '}', () {
-            indent.writeln('$nestedClassPrefix${customType.name}.fromList(it)');
+            indent.writeln(
+              '$nestedClassPrefix${customType.name}.fromList$typeArguments(it)',
+            );
           });
         } else if (customType.type == CustomTypes.customEnum) {
           indent.write('return (readValue(buffer) as Long?)?.let ');
@@ -678,7 +842,9 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       );
       indent.writeScoped('{', '}', () {
         if (root.classes.isNotEmpty || root.enums.isNotEmpty) {
-          indent.write('when (value) ');
+          final String typeCatch =
+              root.genericTypeNames.isEmpty ? ' (value) ' : ' ';
+          indent.write('when$typeCatch');
           indent.addScoped('{', '}', () {
             enumeratedTypes.forEach(writeEncodeLogic);
             indent.writeln('else -> super.writeValue(stream, value)');
@@ -730,6 +896,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         for (final Class classDefinition in root.classes)
           classDefinition.name: classDefinition,
       },
+      generatorOptions: generatorOptions,
     );
     indent.addScoped(' {', '}', () {
       writeClassEncode(
@@ -1490,6 +1657,28 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
         }
       },
     );
+
+    // if (root.customTypeNames.isNotEmpty) {
+    //   indent.writeln('@PublishedApi');
+    //   indent.writeScoped(
+    //     'internal abstract class TypeToken<T> {',
+    //     '}',
+    //     () {
+    //       indent.writeln(
+    //         'val type: Type = (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0]',
+    //       );
+    //     },
+    //   );
+    //   indent.newln();
+    //   indent.writeln('@PublishedApi');
+    //   indent.writeScoped(
+    //     'internal inline fun <reified T> typeToken(): Type {',
+    //     '}',
+    //     () {
+    //       indent.writeln('return object : TypeToken<T>() {}.type');
+    //     },
+    //   );
+    // }
 
     if (generatorOptions.includeErrorClass) {
       _writeErrorClass(generatorOptions, indent);
@@ -2463,7 +2652,7 @@ String _castForceUnwrap(String value, TypeDeclaration type, Indent indent) {
 /// Converts a [List] of [TypeDeclaration]s to a comma separated [String] to be
 /// used in Kotlin code.
 String _flattenTypeArguments(List<TypeDeclaration> args) {
-  return args.map(_kotlinTypeForDartType).join(', ');
+  return args.map(_nullSafeKotlinTypeForDartType).join(', ');
 }
 
 String _kotlinTypeForBuiltinGenericDartType(TypeDeclaration type) {
@@ -2523,7 +2712,9 @@ String? _kotlinTypeForProxyApiType(TypeDeclaration type) {
 String _kotlinTypeForDartType(TypeDeclaration type) {
   return _kotlinTypeForBuiltinDartType(type) ??
       _kotlinTypeForProxyApiType(type) ??
-      type.baseName;
+      (type.typeArguments.isEmpty
+          ? type.baseName
+          : '${type.baseName}<${_flattenTypeArguments(type.typeArguments)}>');
 }
 
 String _nullSafeKotlinTypeForDartType(TypeDeclaration type) {
@@ -2551,6 +2742,7 @@ extension on DefaultValue {
     String? prefix,
     TypeDeclaration? expectedType,
     required Map<String, Class> classLookup,
+    required InternalKotlinOptions generatorOptions,
   }) {
     prefix ??= indent.str();
 
@@ -2592,6 +2784,7 @@ extension on DefaultValue {
                   indent,
                   classLookup: classLookup,
                   expectedType: elementType,
+                  generatorOptions: generatorOptions,
                 );
                 _addCommaOrNewline(indent, element == elements.last);
               }
@@ -2622,6 +2815,7 @@ extension on DefaultValue {
                   indent,
                   expectedType: keyType,
                   classLookup: classLookup,
+                  generatorOptions: generatorOptions,
                 );
                 indent.add(' to ');
                 entry.value.write(
@@ -2629,6 +2823,7 @@ extension on DefaultValue {
                   prefix: '',
                   expectedType: valueType,
                   classLookup: classLookup,
+                  generatorOptions: generatorOptions,
                 );
                 _addCommaOrNewline(indent, entry == entries.entries.last);
               }
@@ -2644,7 +2839,14 @@ extension on DefaultValue {
         :final TypeDeclaration type,
         :final List<DefaultValue> arguments,
       ):
-        indent.add('$prefix${type.baseName}');
+        final Class? sealedSuperClass = classLookup[type.baseName]?.superClass;
+        final String superScope =
+            sealedSuperClass != null &&
+                    sealedSuperClass.isSealed &&
+                    generatorOptions.nestSealedClasses
+                ? '${sealedSuperClass.name}.'
+                : '';
+        indent.add('$prefix$superScope${type.baseName}');
         if (arguments.isEmpty) {
           indent.add('()');
           return;
@@ -2656,6 +2858,7 @@ extension on DefaultValue {
               indent,
               expectedType: type, // Pass the object type, not the field type
               classLookup: classLookup,
+              generatorOptions: generatorOptions,
             );
             _addCommaOrNewline(indent, i == arguments.length - 1);
           }
@@ -2676,6 +2879,7 @@ extension on DefaultValue {
           prefix: '',
           expectedType: parameterType,
           classLookup: classLookup,
+          generatorOptions: generatorOptions,
         );
     }
   }

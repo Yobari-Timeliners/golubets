@@ -1358,6 +1358,274 @@ void main() {
     expect(code, contains('completion(.success(result))'));
   });
 
+  test('generic class with single type parameter', () {
+    final Class classDefinition = Class(
+      name: 'Wrapper',
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'T', isNullable: false),
+      ],
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'T', isNullable: false),
+          name: 'value',
+        ),
+      ],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[classDefinition],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      swiftOut: '',
+    );
+    const SwiftGenerator generator = SwiftGenerator();
+    generator.generate(
+      swiftOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('struct Wrapper<T>'));
+    expect(code, contains('var value: T'));
+    expect(code, contains('static func fromList(_ pigeonVar_list: [Any?]) -> Wrapper?'));
+    expect(code, contains('return Wrapper('));
+  });
+
+  test('generic class with multiple type parameters', () {
+    final Class classDefinition = Class(
+      name: 'Pair',
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'T', isNullable: false),
+        const TypeDeclaration(baseName: 'U', isNullable: false),
+      ],
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'T', isNullable: false),
+          name: 'first',
+        ),
+        NamedType(
+          type: const TypeDeclaration(baseName: 'U', isNullable: true),
+          name: 'second',
+        ),
+      ],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[classDefinition],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      swiftOut: '',
+    );
+    const SwiftGenerator generator = SwiftGenerator();
+    generator.generate(
+      swiftOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('struct Pair<T, U>'));
+    expect(code, contains('var first: T'));
+    expect(code, contains('var second: U? = nil'));
+    expect(code, contains('static func fromList(_ pigeonVar_list: [Any?]) -> Pair?'));
+    expect(code, contains('return Pair('));
+  });
+
+  test('generic class with nested generic field types', () {
+    final Class classDefinition = Class(
+      name: 'Container',
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'T', isNullable: false),
+      ],
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(
+            baseName: 'List',
+            isNullable: false,
+            typeArguments: <TypeDeclaration>[
+              TypeDeclaration(
+                baseName: 'Map',
+                isNullable: false,
+                typeArguments: <TypeDeclaration>[
+                  TypeDeclaration(baseName: 'String', isNullable: false),
+                  TypeDeclaration(baseName: 'T', isNullable: true),
+                ],
+              ),
+            ],
+          ),
+          name: 'data',
+        ),
+      ],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[classDefinition],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      swiftOut: '',
+    );
+    const SwiftGenerator generator = SwiftGenerator();
+    generator.generate(
+      swiftOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('struct Container<T>'));
+    expect(code, contains('var data: [[String: T?]]'));
+    expect(code, contains('static func fromList(_ pigeonVar_list: [Any?]) -> Container?'));
+    expect(code, contains('return Container('));
+  });
+
+  test('generic class with generic superclass', () {
+    final Class superClass = Class(
+      name: 'BaseContainer',
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'T', isNullable: false),
+      ],
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'T', isNullable: false),
+          name: 'item',
+        ),
+      ],
+    );
+    final Class classDefinition = Class(
+      name: 'SpecialList',
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'T', isNullable: false),
+      ],
+      superClassName: superClass.name,
+      superClass: superClass,
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'int', isNullable: false),
+          name: 'capacity',
+        ),
+      ],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[superClass, classDefinition],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      swiftOut: '',
+    );
+    const SwiftGenerator generator = SwiftGenerator();
+    generator.generate(
+      swiftOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('struct BaseContainer<T>'));
+    expect(code, contains('struct SpecialList<T>'));
+    expect(code, contains('var capacity: Int64'));
+    expect(code, contains('static func fromList(_ pigeonVar_list: [Any?]) -> SpecialList?'));
+  });
+
+  test('generic class serialization methods', () {
+    final Class classDefinition = Class(
+      name: 'Result',
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'T', isNullable: false),
+        const TypeDeclaration(baseName: 'E', isNullable: false),
+      ],
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'T', isNullable: true),
+          name: 'success',
+        ),
+        NamedType(
+          type: const TypeDeclaration(baseName: 'E', isNullable: true),
+          name: 'error',
+        ),
+      ],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[classDefinition],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      swiftOut: '',
+    );
+    const SwiftGenerator generator = SwiftGenerator();
+    generator.generate(
+      swiftOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('struct Result<T, E>'));
+    expect(code, contains('var success: T? = nil'));
+    expect(code, contains('var error: E? = nil'));
+    expect(code, contains('static func fromList(_ pigeonVar_list: [Any?]) -> Result?'));
+    expect(code, contains('return Result('));
+    expect(code, contains('success: success'));
+    expect(code, contains('error: error'));
+    expect(code, contains('func toList() -> [Any?]'));
+    expect(code, contains('success,'));
+    expect(code, contains('error,'));
+  });
+
+  test('generic class with Hashable constraints for Map keys', () {
+    final Class classDefinition = Class(
+      name: 'KeyValueStore',
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'K', isNullable: false),
+        const TypeDeclaration(baseName: 'V', isNullable: false),
+      ],
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(
+            baseName: 'Map',
+            isNullable: false,
+            typeArguments: <TypeDeclaration>[
+              TypeDeclaration(baseName: 'K', isNullable: false),
+              TypeDeclaration(baseName: 'V', isNullable: false),
+            ],
+          ),
+          name: 'store',
+        ),
+      ],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[classDefinition],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      swiftOut: '',
+    );
+    const SwiftGenerator generator = SwiftGenerator();
+    generator.generate(
+      swiftOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('struct KeyValueStore<K: Hashable, V>'));
+    expect(code, contains('var store: [K: V]'));
+    expect(code, contains('static func fromList(_ pigeonVar_list: [Any?]) -> KeyValueStore?'));
+    expect(code, contains('return KeyValueStore('));
+  });
+
   test('host multiple args', () {
     final Root root = Root(
       apis: <Api>[
@@ -2112,6 +2380,331 @@ void main() {
       code,
       contains('internal static func fromListClassEvent'),
     );
+  });
+
+  test('sealed class with single generic type parameter', () {
+    final Class superClass = Class(
+      name: 'Result',
+      isSealed: true,
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'T', isNullable: false),
+      ],
+      fields: const <NamedType>[],
+    );
+    final List<Class> children = <Class>[
+      Class(
+        name: 'Success',
+        superClass: superClass,
+        superClassName: superClass.name,
+        typeArguments: <TypeDeclaration>[
+          const TypeDeclaration(baseName: 'T', isNullable: false),
+        ],
+        fields: <NamedType>[
+          NamedType(
+            type: const TypeDeclaration(
+              baseName: 'T',
+              isNullable: false,
+            ),
+            name: 'value',
+          ),
+        ],
+      ),
+      Class(
+        name: 'Failure',
+        superClass: superClass,
+        superClassName: superClass.name,
+        typeArguments: <TypeDeclaration>[
+          const TypeDeclaration(baseName: 'T', isNullable: false),
+        ],
+        fields: <NamedType>[
+          NamedType(
+            type: const TypeDeclaration(
+              baseName: 'String',
+              isNullable: false,
+            ),
+            name: 'error',
+          ),
+        ],
+      ),
+    ];
+    superClass.children = children;
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[
+        superClass,
+        ...children,
+      ],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const SwiftGenerator generator = SwiftGenerator();
+    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      swiftOut: '',
+    );
+    generator.generate(
+      swiftOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('public enum Result<T>'));
+    expect(code, contains('case success'));
+    expect(code, contains('case failure'));
+    expect(code, contains('internal static func fromListSuccess'));
+    expect(code, contains('internal static func fromListFailure'));
+    expect(code, contains('value: T'));
+    expect(code, contains('error: String'));
+  });
+
+  test('sealed class with multiple generic type parameters', () {
+    final Class superClass = Class(
+      name: 'Either',
+      isSealed: true,
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'L', isNullable: false),
+        const TypeDeclaration(baseName: 'R', isNullable: false),
+      ],
+      fields: const <NamedType>[],
+    );
+    final List<Class> children = <Class>[
+      Class(
+        name: 'Left',
+        superClass: superClass,
+        superClassName: superClass.name,
+        typeArguments: <TypeDeclaration>[
+          const TypeDeclaration(baseName: 'L', isNullable: false),
+          const TypeDeclaration(baseName: 'R', isNullable: false),
+        ],
+        fields: <NamedType>[
+          NamedType(
+            type: const TypeDeclaration(
+              baseName: 'L',
+              isNullable: false,
+            ),
+            name: 'value',
+          ),
+        ],
+      ),
+      Class(
+        name: 'Right',
+        superClass: superClass,
+        superClassName: superClass.name,
+        typeArguments: <TypeDeclaration>[
+          const TypeDeclaration(baseName: 'L', isNullable: false),
+          const TypeDeclaration(baseName: 'R', isNullable: false),
+        ],
+        fields: <NamedType>[
+          NamedType(
+            type: const TypeDeclaration(
+              baseName: 'R',
+              isNullable: false,
+            ),
+            name: 'value',
+          ),
+        ],
+      ),
+    ];
+    superClass.children = children;
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[
+        superClass,
+        ...children,
+      ],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const SwiftGenerator generator = SwiftGenerator();
+    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      swiftOut: '',
+    );
+    generator.generate(
+      swiftOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('public enum Either<L, R>'));
+    expect(code, contains('case left'));
+    expect(code, contains('case right'));
+    expect(code, contains('internal static func fromListLeft'));
+    expect(code, contains('internal static func fromListRight'));
+  });
+
+  test('sealed class with generic constraints for Map keys', () {
+    final Class superClass = Class(
+      name: 'Container',
+      isSealed: true,
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'K', isNullable: false),
+        const TypeDeclaration(baseName: 'V', isNullable: false),
+      ],
+      fields: const <NamedType>[],
+    );
+    final List<Class> children = <Class>[
+      Class(
+        name: 'MapContainer',
+        superClass: superClass,
+        superClassName: superClass.name,
+        typeArguments: <TypeDeclaration>[
+          const TypeDeclaration(baseName: 'K', isNullable: false),
+          const TypeDeclaration(baseName: 'V', isNullable: false),
+        ],
+        fields: <NamedType>[
+          NamedType(
+            type: const TypeDeclaration(
+              baseName: 'Map',
+              isNullable: false,
+              typeArguments: <TypeDeclaration>[
+                TypeDeclaration(baseName: 'K', isNullable: false),
+                TypeDeclaration(baseName: 'V', isNullable: false),
+              ],
+            ),
+            name: 'data',
+          ),
+        ],
+      ),
+      Class(
+        name: 'ListContainer',
+        superClass: superClass,
+        superClassName: superClass.name,
+        typeArguments: <TypeDeclaration>[
+          const TypeDeclaration(baseName: 'K', isNullable: false),
+          const TypeDeclaration(baseName: 'V', isNullable: false),
+        ],
+        fields: <NamedType>[
+          NamedType(
+            type: const TypeDeclaration(
+              baseName: 'List',
+              isNullable: false,
+              typeArguments: <TypeDeclaration>[
+                TypeDeclaration(baseName: 'V', isNullable: false),
+              ],
+            ),
+            name: 'items',
+          ),
+        ],
+      ),
+    ];
+    superClass.children = children;
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[
+        superClass,
+        ...children,
+      ],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const SwiftGenerator generator = SwiftGenerator();
+    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      swiftOut: '',
+    );
+    generator.generate(
+      swiftOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('public enum Container<K, V>'));
+    expect(code, contains('case mapContainer'));
+    expect(code, contains('case listContainer'));
+    expect(code, contains('data: [K: V]'));
+    expect(code, contains('items: [V]'));
+  });
+
+  test('sealed class with nested generic types', () {
+    final Class superClass = Class(
+      name: 'Response',
+      isSealed: true,
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'T', isNullable: false),
+      ],
+      fields: const <NamedType>[],
+    );
+    final List<Class> children = <Class>[
+      Class(
+        name: 'DataResponse',
+        superClass: superClass,
+        superClassName: superClass.name,
+        typeArguments: <TypeDeclaration>[
+          const TypeDeclaration(baseName: 'T', isNullable: false),
+        ],
+        fields: <NamedType>[
+          NamedType(
+            type: const TypeDeclaration(
+              baseName: 'List',
+              isNullable: false,
+              typeArguments: <TypeDeclaration>[
+                TypeDeclaration(
+                  baseName: 'Map',
+                  isNullable: false,
+                  typeArguments: <TypeDeclaration>[
+                    TypeDeclaration(baseName: 'String', isNullable: false),
+                    TypeDeclaration(baseName: 'T', isNullable: true),
+                  ],
+                ),
+              ],
+            ),
+            name: 'items',
+          ),
+        ],
+      ),
+      Class(
+        name: 'ErrorResponse',
+        superClass: superClass,
+        superClassName: superClass.name,
+        typeArguments: <TypeDeclaration>[
+          const TypeDeclaration(baseName: 'T', isNullable: false),
+        ],
+        fields: <NamedType>[
+          NamedType(
+            type: const TypeDeclaration(
+              baseName: 'int',
+              isNullable: false,
+            ),
+            name: 'code',
+          ),
+          NamedType(
+            type: const TypeDeclaration(
+              baseName: 'String',
+              isNullable: false,
+            ),
+            name: 'message',
+          ),
+        ],
+      ),
+    ];
+    superClass.children = children;
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[
+        superClass,
+        ...children,
+      ],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const SwiftGenerator generator = SwiftGenerator();
+    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      swiftOut: '',
+    );
+    generator.generate(
+      swiftOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('public enum Response<T>'));
+    expect(code, contains('case dataResponse'));
+    expect(code, contains('case errorResponse'));
+    expect(code, contains('items: [[String: T?]]'));
+    expect(code, contains('code: Int64'));
+    expect(code, contains('message: String'));
   });
 
   group('default values', () {

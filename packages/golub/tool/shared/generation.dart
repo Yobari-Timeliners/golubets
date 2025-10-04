@@ -42,6 +42,12 @@ const Map<String, Set<GeneratorLanguage>> _unsupportedFiles =
         GeneratorLanguage.objc,
         GeneratorLanguage.swift,
       },
+      'generics_tests': <GeneratorLanguage>{
+        GeneratorLanguage.cpp,
+        GeneratorLanguage.gobject,
+        GeneratorLanguage.java,
+        GeneratorLanguage.objc,
+      },
     };
 
 String _snakeToPascalCase(String snake) {
@@ -102,6 +108,7 @@ Future<int> generateTestPigeons({
     'primitive',
     'proxy_api_tests',
     'kotlin_nested_sealed_tests',
+    'generics_tests',
   };
 
   const String testPluginName = 'test_plugin';
@@ -155,7 +162,8 @@ Future<int> generateTestPigeons({
       kotlinPackage: 'com.example.test_plugin',
       kotlinErrorClassName: kotlinErrorName,
       kotlinIncludeErrorClass: input != 'primitive',
-      kotlinNestSealedClasses: input == 'kotlin_nested_sealed_tests',
+      kotlinNestSealedClasses:
+          input == 'kotlin_nested_sealed_tests' || input == 'generics_tests',
       // iOS/macOS
       swiftOut:
           skipLanguages.contains(GeneratorLanguage.swift)
@@ -296,7 +304,7 @@ Future<int> runPigeon({
   final int result = await Pigeon.runWithOptions(
     PigeonOptions(
       input: input,
-      copyrightHeader: copyrightHeader,
+      // copyrightHeader: copyrightHeader,
       dartOut: dartOut,
       dartTestOut: dartTestOut,
       dartOptions: const DartOptions(),

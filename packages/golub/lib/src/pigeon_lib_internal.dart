@@ -785,6 +785,7 @@ List<Error> _validateAst(Root root, String source) {
   final List<String> customClasses =
       root.classes.map((Class x) => x.name).toList();
   final Iterable<String> customEnums = root.enums.map((Enum x) => x.name);
+  final Set<String> genericTypeNames = root.genericTypeNames;
   for (final Enum enumDefinition in root.enums) {
     final String? matchingPrefix = _findMatchingPrefixOrNull(
       enumDefinition.name,
@@ -844,7 +845,8 @@ List<Error> _validateAst(Root root, String source) {
       }
       if (!(validTypes.contains(field.type.baseName) ||
           customClasses.contains(field.type.baseName) ||
-          customEnums.contains(field.type.baseName))) {
+          customEnums.contains(field.type.baseName) ||
+          genericTypeNames.contains(field.type.baseName))) {
         result.add(
           Error(
             message:
@@ -1338,6 +1340,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
   final List<Enum> _enums = <Enum>[];
   final List<Class> _classes = <Class>[];
   final List<Error> _errors = <Error>[];
+  final Set<String> _genericTypeNames = <String>{};
 
   /// Input file location.
   final String source;
@@ -1410,6 +1413,14 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       containsFlutterApi: containsFlutterApi,
       containsProxyApi: containsProxyApi,
       containsEventChannel: containsEventChannel,
+      genericTypeNames: _genericTypeNames,
+      genericUsage:
+          _genericTypeNames.isEmpty
+              ? const <String, Set<TypeArgumentCombination>>{}
+              : collectGenericTypeUsage(
+                classes: _classes,
+                apis: _apis,
+              ),
     );
 
     final List<Error> totalErrors = List<Error>.from(_errors);
@@ -1428,7 +1439,8 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
           !element.key.isVoid &&
           element.key.baseName != 'dynamic' &&
           element.key.baseName != 'Object' &&
-          element.key.baseName.isNotEmpty) {
+          element.key.baseName.isNotEmpty &&
+          !_genericTypeNames.contains(element.key.baseName)) {
         final int? lineNumber =
             element.value.isEmpty
                 ? null
@@ -1480,7 +1492,13 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       root:
           totalErrors.isEmpty
               ? completeRoot
-              : Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]),
+              : Root(
+                apis: <Api>[],
+                classes: <Class>[],
+                enums: <Enum>[],
+                genericTypeNames: <String>{},
+                genericUsage: <String, Set<TypeArgumentCombination>>{},
+              ),
       errors: totalErrors,
       pigeonOptions: _pigeonOptions,
     );
@@ -1846,6 +1864,21 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         );
       }
     } else {
+      final List<TypeDeclaration> typeArguments =
+          node.typeParameters?.typeParameters
+              .map(
+                (dart_ast.TypeParameter e) => TypeDeclaration(
+                  baseName: e.name.lexeme,
+                  isNullable: e.bound?.question != null,
+                ),
+              )
+              .toList() ??
+          const <TypeDeclaration>[];
+
+      for (final TypeDeclaration typeArg in typeArguments) {
+        _genericTypeNames.add(typeArg.baseName);
+      }
+
       _currentClass = Class(
         name: node.name.lexeme,
         fields: <NamedType>[],
@@ -1857,10 +1890,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         documentationComments: _documentationCommentsParser(
           node.documentationComment?.tokens,
         ),
-        isImmutable: node.members
-            .whereType<dart_ast.ConstructorDeclaration>()
-            .where((dart_ast.ConstructorDeclaration c) => c.name == null)
-            .any((dart_ast.ConstructorDeclaration c) => c.constKeyword != null),
+        typeArguments: typeArguments,
       );
     }
 
@@ -2004,6 +2034,16 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         TaskQueueType.serial;
 
     if (_currentApi != null) {
+      if (node.typeParameters != null) {
+        _errors.add(
+          Error(
+            message:
+                'Generic methods aren\'t supported in Pigeon ("${node.name.lexeme}").',
+            lineNumber: calculateLineNumber(source, node.offset),
+          ),
+        );
+      }
+
       // Methods without named return types aren't supported.
       final dart_ast.TypeAnnotation returnType = node.returnType!;
       returnType as dart_ast.NamedType;
@@ -2207,6 +2247,10 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
           ),
         );
       } else {
+        if (node.name == null) {
+          _currentClass!.isImmutable = node.constKeyword != null;
+        }
+
         for (final dart_ast.FormalParameter param
             in node.parameters.parameters) {
           if (param is dart_ast.DefaultFormalParameter) {
@@ -2215,6 +2259,17 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
             final dart_ast.Expression? defaultValue = param.defaultValue;
 
             if (name == null || defaultValue == null) {
+              continue;
+            }
+
+            if (_currentClass!.typeArguments.isNotEmpty) {
+              _errors.add(
+                Error(
+                  message:
+                      'Default values aren\'t supported in generic classes ("${_currentClass!.name}").',
+                  lineNumber: calculateLineNumber(source, node.offset),
+                ),
+              );
               continue;
             }
 
@@ -2517,7 +2572,13 @@ class _DefaultValueVisitor
   ) {
     final List<DefaultValue> args =
         node.argumentList.arguments
-            .map((dart_ast.Expression e) => e.accept(this))
+            .map(
+              (dart_ast.Expression e) =>
+                  e is! dart_ast.NamedExpression
+                      // https://github.com/Yobari-Timeliners/golub/issues/8
+                      ? throw Exception('NamedExpression expected')
+                      : e.accept(this),
+            )
             .whereNotNull()
             .toList();
     final TypeDeclaration type = TypeDeclaration(
@@ -2554,10 +2615,15 @@ class _DefaultValueVisitor
   DefaultValue? visitMethodInvocation(dart_ast.MethodInvocation node) {
     final List<DefaultValue> args =
         node.argumentList.arguments
-            .map((dart_ast.Expression e) => e.accept(this))
+            .map(
+              (dart_ast.Expression e) =>
+                  e is! dart_ast.NamedExpression
+                      // https://github.com/Yobari-Timeliners/golub/issues/8
+                      ? throw Exception('NamedExpression expected')
+                      : e.accept(this),
+            )
             .whereNotNull()
             .toList();
-
     final TypeDeclaration type = TypeDeclaration(
       baseName: node.methodName.name,
       isNullable: false,
