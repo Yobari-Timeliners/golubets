@@ -4559,335 +4559,346 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     },
   );
 
-  group('FlutterGenericApi tests', () {
-    setUp(() {
-      FlutterGenericApi.setUp(_FlutterGenericApiTestImplementation());
-    });
+  group(
+    'FlutterGenericApi tests',
+    skip: !targetSupportsGenerics.contains(targetGenerator),
+    () {
+      setUp(() {
+        FlutterGenericApi.setUp(_FlutterGenericApiTestImplementation());
+      });
 
-    testWidgets('generic containers serialize and deserialize correctly', (
-      WidgetTester _,
-    ) async {
-      final HostGenericApi api = HostGenericApi();
-
-      const GenericContainer<int> sentContainer = GenericContainer<int>(
-        value: 42,
-        values: <int>[1, 2, 3],
-      );
-      final GenericContainer<int> echoContainer = await api
-          .callFlutterEchoGenericInt(sentContainer);
-      expect(echoContainer.value, sentContainer.value);
-      expect(echoContainer.values, sentContainer.values);
-    });
-
-    testWidgets(
-      'generic string containers serialize and deserialize correctly',
-      (
+      testWidgets('generic containers serialize and deserialize correctly', (
         WidgetTester _,
       ) async {
         final HostGenericApi api = HostGenericApi();
 
-        const GenericContainer<String> sentContainer = GenericContainer<String>(
-          value: 'test',
-          values: <String>['a', 'b', 'c'],
+        const GenericContainer<int> sentContainer = GenericContainer<int>(
+          value: 42,
+          values: <int>[1, 2, 3],
         );
-        final GenericContainer<String> echoContainer = await api
-            .callFlutterEchoGenericString(sentContainer);
+        final GenericContainer<int> echoContainer = await api
+            .callFlutterEchoGenericInt(sentContainer);
         expect(echoContainer.value, sentContainer.value);
         expect(echoContainer.values, sentContainer.values);
-      },
-    );
+      });
 
-    testWidgets('generic pairs serialize and deserialize correctly', (
-      WidgetTester _,
-    ) async {
-      final HostGenericApi api = HostGenericApi();
+      testWidgets(
+        'generic string containers serialize and deserialize correctly',
+        (
+          WidgetTester _,
+        ) async {
+          final HostGenericApi api = HostGenericApi();
 
-      const GenericPair<String, int> sentPair = GenericPair<String, int>(
-        first: 'hello',
-        second: 42,
-        map: <String, int>{'key1': 1, 'key2': 2},
+          const GenericContainer<String> sentContainer =
+              GenericContainer<String>(
+                value: 'test',
+                values: <String>['a', 'b', 'c'],
+              );
+          final GenericContainer<String> echoContainer = await api
+              .callFlutterEchoGenericString(sentContainer);
+          expect(echoContainer.value, sentContainer.value);
+          expect(echoContainer.values, sentContainer.values);
+        },
       );
-      final GenericPair<String, int> echoPair = await api
-          .callFlutterEchoGenericPairStringInt(sentPair);
-      expect(echoPair.first, sentPair.first);
-      expect(echoPair.second, sentPair.second);
-      expect(echoPair.map, sentPair.map);
-    });
 
-    testWidgets('generic defaults serialize and deserialize correctly', (
-      WidgetTester _,
-    ) async {
-      final HostGenericApi api = HostGenericApi();
+      testWidgets('generic pairs serialize and deserialize correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
 
-      final GenericDefaults sentDefaults = GenericDefaults();
-      final GenericDefaults echoDefaults = await api
-          .callFlutterEchoGenericDefaults(sentDefaults);
-      expect(echoDefaults.genericInt.value, sentDefaults.genericInt.value);
-      expect(echoDefaults.genericInt.values, sentDefaults.genericInt.values);
-      expect(
-        echoDefaults.genericString.value,
-        sentDefaults.genericString.value,
-      );
-      expect(
-        echoDefaults.genericString.values,
-        sentDefaults.genericString.values,
-      );
-    });
+        const GenericPair<String, int> sentPair = GenericPair<String, int>(
+          first: 'hello',
+          second: 42,
+          map: <String, int>{'key1': 1, 'key2': 2},
+        );
+        final GenericPair<String, int> echoPair = await api
+            .callFlutterEchoGenericPairStringInt(sentPair);
+        expect(echoPair.first, sentPair.first);
+        expect(echoPair.second, sentPair.second);
+        expect(echoPair.map, sentPair.map);
+      });
 
-    testWidgets('generic defaults int extraction works correctly', (
-      WidgetTester _,
-    ) async {
-      final HostGenericApi api = HostGenericApi();
+      testWidgets('generic defaults serialize and deserialize correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
 
-      final GenericDefaults sentDefaults = GenericDefaults();
-      final GenericContainer<int> echoContainer = await api
-          .callFlutterEchoGenericDefaultsInt(sentDefaults);
-      expect(echoContainer.value, sentDefaults.genericInt.value);
-      expect(echoContainer.values, sentDefaults.genericInt.values);
-    });
+        final GenericDefaults sentDefaults = GenericDefaults();
+        final GenericDefaults echoDefaults = await api
+            .callFlutterEchoGenericDefaults(sentDefaults);
+        expect(echoDefaults.genericInt.value, sentDefaults.genericInt.value);
+        expect(echoDefaults.genericInt.values, sentDefaults.genericInt.values);
+        expect(
+          echoDefaults.genericString.value,
+          sentDefaults.genericString.value,
+        );
+        expect(
+          echoDefaults.genericString.values,
+          sentDefaults.genericString.values,
+        );
+      });
 
-    testWidgets('nested generics serialize and deserialize correctly', (
-      WidgetTester _,
-    ) async {
-      final HostGenericApi api = HostGenericApi();
+      testWidgets('generic defaults int extraction works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
 
-      final GenericDefaults sentDefaults = GenericDefaults();
-      final NestedGeneric<String, int, double> echoNested = await api
-          .callFlutterEchoGenericDefaultsNested(sentDefaults);
-      expect(
-        echoNested.container.value,
-        sentDefaults.nestedGenericDefault.container.value,
-      );
-      expect(
-        echoNested.container.values,
-        sentDefaults.nestedGenericDefault.container.values,
-      );
-      expect(
-        echoNested.pairs.length,
-        sentDefaults.nestedGenericDefault.pairs.length,
-      );
-    });
+        final GenericDefaults sentDefaults = GenericDefaults();
+        final GenericContainer<int> echoContainer = await api
+            .callFlutterEchoGenericDefaultsInt(sentDefaults);
+        expect(echoContainer.value, sentDefaults.genericInt.value);
+        expect(echoContainer.values, sentDefaults.genericInt.values);
+      });
 
-    testWidgets('generic pair either extraction works correctly', (
-      WidgetTester _,
-    ) async {
-      final HostGenericApi api = HostGenericApi();
+      testWidgets('nested generics serialize and deserialize correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
 
-      final GenericDefaults sentDefaults = GenericDefaults();
-      final GenericPair<int, Either<String, int>> echoPair = await api
-          .callFlutterEchoGenericDefaultsPairEither(sentDefaults);
-      expect(echoPair.first, sentDefaults.genericPairEither.first);
-      expect(echoPair.second, sentDefaults.genericPairEither.second);
-    });
+        final GenericDefaults sentDefaults = GenericDefaults();
+        final NestedGeneric<String, int, double> echoNested = await api
+            .callFlutterEchoGenericDefaultsNested(sentDefaults);
+        expect(
+          echoNested.container.value,
+          sentDefaults.nestedGenericDefault.container.value,
+        );
+        expect(
+          echoNested.container.values,
+          sentDefaults.nestedGenericDefault.container.values,
+        );
+        expect(
+          echoNested.pairs.length,
+          sentDefaults.nestedGenericDefault.pairs.length,
+        );
+      });
 
-    testWidgets('typed nullables serialize and deserialize correctly', (
-      WidgetTester _,
-    ) async {
-      final HostGenericApi api = HostGenericApi();
+      testWidgets('generic pair either extraction works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
 
-      final GenericsAllNullableTypesTyped<String, int, double> sentTyped =
-          GenericsAllNullableTypesTyped<String, int, double>(
-            aNullableString: 'test',
-            aNullableInt: 42,
-            aNullableDouble: 3.14,
-          );
-      final GenericsAllNullableTypesTyped<String, int, double> echoTyped =
-          await api.callFlutterEchoTypedNullableStringIntDouble(sentTyped);
-      expect(echoTyped.aNullableString, sentTyped.aNullableString);
-      expect(echoTyped.aNullableInt, sentTyped.aNullableInt);
-      expect(echoTyped.aNullableDouble, sentTyped.aNullableDouble);
-    });
+        final GenericDefaults sentDefaults = GenericDefaults();
+        final GenericPair<int, Either<String, int>> echoPair = await api
+            .callFlutterEchoGenericDefaultsPairEither(sentDefaults);
+        expect(echoPair.first, sentDefaults.genericPairEither.first);
+        expect(echoPair.second, sentDefaults.genericPairEither.second);
+      });
 
-    testWidgets('typed nullables with different type params work correctly', (
-      WidgetTester _,
-    ) async {
-      final HostGenericApi api = HostGenericApi();
+      testWidgets('typed nullables serialize and deserialize correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
 
-      final GenericsAllNullableTypesTyped<int, String, bool> sentTyped =
-          GenericsAllNullableTypesTyped<int, String, bool>(
-            aNullableString: 'typed-test',
-            aNullableInt: 99,
-            aNullableDouble: 2.71,
-          );
-      final GenericsAllNullableTypesTyped<int, String, bool> echoTyped =
-          await api.callFlutterEchoTypedNullableIntStringBool(sentTyped);
-      expect(echoTyped.aNullableString, sentTyped.aNullableString);
-      expect(echoTyped.aNullableInt, sentTyped.aNullableInt);
-      expect(echoTyped.aNullableDouble, sentTyped.aNullableDouble);
-    });
+        final GenericsAllNullableTypesTyped<String, int, double> sentTyped =
+            GenericsAllNullableTypesTyped<String, int, double>(
+              aNullableString: 'test',
+              aNullableInt: 42,
+              aNullableDouble: 3.14,
+            );
+        final GenericsAllNullableTypesTyped<String, int, double> echoTyped =
+            await api.callFlutterEchoTypedNullableStringIntDouble(sentTyped);
+        expect(echoTyped.aNullableString, sentTyped.aNullableString);
+        expect(echoTyped.aNullableInt, sentTyped.aNullableInt);
+        expect(echoTyped.aNullableDouble, sentTyped.aNullableDouble);
+      });
 
-    testWidgets('nested generics with specific types work correctly', (
-      WidgetTester _,
-    ) async {
-      final HostGenericApi api = HostGenericApi();
+      testWidgets('typed nullables with different type params work correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
 
-      const NestedGeneric<String, int, double> sentNested =
-          NestedGeneric<String, int, double>(
-            container: GenericContainer<String>(
-              value: 'nested',
-              values: <String>['x', 'y', 'z'],
-            ),
-            pairs: <GenericPair<int, double>>[
-              GenericPair<int, double>(
-                first: 1,
-                second: 1.1,
-                map: <int, double>{1: 1.1, 2: 2.2},
-              ),
-            ],
-            nestedMap: <String, GenericContainer<int>>{
-              'key': GenericContainer<int>(value: 99, values: <int>[9, 8, 7]),
-            },
-            listOfMaps: <Map<int, double>>[
-              <int, double>{1: 1.0, 2: 2.0},
-            ],
-          );
-      final NestedGeneric<String, int, double> echoNested = await api
-          .callFlutterEchoNestedGenericStringIntDouble(sentNested);
-      expect(echoNested.container.value, sentNested.container.value);
-      expect(echoNested.pairs.length, sentNested.pairs.length);
-      expect(echoNested.nestedMap.keys, sentNested.nestedMap.keys);
-    });
-
-    testWidgets('generic container typed nullable works correctly', (
-      WidgetTester _,
-    ) async {
-      final HostGenericApi api = HostGenericApi();
-
-      final GenericContainer<GenericsAllNullableTypesTyped<String, int, double>>
-      sentContainer =
-          GenericContainer<GenericsAllNullableTypesTyped<String, int, double>>(
-            value: GenericsAllNullableTypesTyped<String, int, double>(
-              aNullableString: 'container',
-              aNullableInt: 100,
+        final GenericsAllNullableTypesTyped<int, String, bool> sentTyped =
+            GenericsAllNullableTypesTyped<int, String, bool>(
+              aNullableString: 'typed-test',
+              aNullableInt: 99,
               aNullableDouble: 2.71,
-            ),
-            values: <GenericsAllNullableTypesTyped<String, int, double>>[],
-          );
-      final GenericContainer<GenericsAllNullableTypesTyped<String, int, double>>
-      echoContainer = await api.callFlutterEchoGenericContainerTypedNullable(
-        sentContainer,
-      );
-      expect(
-        echoContainer.value?.aNullableString,
-        sentContainer.value?.aNullableString,
-      );
-      expect(
-        echoContainer.value?.aNullableInt,
-        sentContainer.value?.aNullableInt,
-      );
-      expect(echoContainer.values.length, sentContainer.values.length);
-    });
+            );
+        final GenericsAllNullableTypesTyped<int, String, bool> echoTyped =
+            await api.callFlutterEchoTypedNullableIntStringBool(sentTyped);
+        expect(echoTyped.aNullableString, sentTyped.aNullableString);
+        expect(echoTyped.aNullableInt, sentTyped.aNullableInt);
+        expect(echoTyped.aNullableDouble, sentTyped.aNullableDouble);
+      });
 
-    testWidgets('list of generic containers works correctly', (
-      WidgetTester _,
-    ) async {
-      final HostGenericApi api = HostGenericApi();
+      testWidgets('nested generics with specific types work correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
 
-      const List<GenericContainer<int>> sentList = <GenericContainer<int>>[
-        GenericContainer<int>(value: 1, values: <int>[1, 2]),
-        GenericContainer<int>(value: 2, values: <int>[3, 4]),
-      ];
-      final List<GenericContainer<int>> echoList = await api
-          .callFlutterEchoListGenericContainer(sentList);
-      expect(echoList.length, sentList.length);
-      expect(echoList[0].value, sentList[0].value);
-      expect(echoList[1].values, sentList[1].values);
-    });
+        const NestedGeneric<String, int, double> sentNested =
+            NestedGeneric<String, int, double>(
+              container: GenericContainer<String>(
+                value: 'nested',
+                values: <String>['x', 'y', 'z'],
+              ),
+              pairs: <GenericPair<int, double>>[
+                GenericPair<int, double>(
+                  first: 1,
+                  second: 1.1,
+                  map: <int, double>{1: 1.1, 2: 2.2},
+                ),
+              ],
+              nestedMap: <String, GenericContainer<int>>{
+                'key': GenericContainer<int>(value: 99, values: <int>[9, 8, 7]),
+              },
+              listOfMaps: <Map<int, double>>[
+                <int, double>{1: 1.0, 2: 2.0},
+              ],
+            );
+        final NestedGeneric<String, int, double> echoNested = await api
+            .callFlutterEchoNestedGenericStringIntDouble(sentNested);
+        expect(echoNested.container.value, sentNested.container.value);
+        expect(echoNested.pairs.length, sentNested.pairs.length);
+        expect(echoNested.nestedMap.keys, sentNested.nestedMap.keys);
+      });
 
-    testWidgets('list of typed nullables works correctly', (
-      WidgetTester _,
-    ) async {
-      final HostGenericApi api = HostGenericApi();
+      testWidgets('generic container typed nullable works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
 
-      final List<GenericsAllNullableTypesTyped<String, int, double>> sentList =
-          <GenericsAllNullableTypesTyped<String, int, double>>[
-            GenericsAllNullableTypesTyped<String, int, double>(
-              aNullableString: 'first',
-              aNullableInt: 1,
-              aNullableDouble: 1.0,
-            ),
-            GenericsAllNullableTypesTyped<String, int, double>(
-              aNullableString: 'second',
-              aNullableInt: 2,
-              aNullableDouble: 2.0,
-            ),
-          ];
-      final List<GenericsAllNullableTypesTyped<String, int, double>> echoList =
-          await api.callFlutterEchoListTypedNullable(sentList);
-      expect(echoList.length, sentList.length);
-      expect(echoList[0].aNullableString, sentList[0].aNullableString);
-      expect(echoList[1].aNullableInt, sentList[1].aNullableInt);
-    });
+        final GenericContainer<
+          GenericsAllNullableTypesTyped<String, int, double>
+        >
+        sentContainer = GenericContainer<
+          GenericsAllNullableTypesTyped<String, int, double>
+        >(
+          value: GenericsAllNullableTypesTyped<String, int, double>(
+            aNullableString: 'container',
+            aNullableInt: 100,
+            aNullableDouble: 2.71,
+          ),
+          values: <GenericsAllNullableTypesTyped<String, int, double>>[],
+        );
+        final GenericContainer<
+          GenericsAllNullableTypesTyped<String, int, double>
+        >
+        echoContainer = await api.callFlutterEchoGenericContainerTypedNullable(
+          sentContainer,
+        );
+        expect(
+          echoContainer.value?.aNullableString,
+          sentContainer.value?.aNullableString,
+        );
+        expect(
+          echoContainer.value?.aNullableInt,
+          sentContainer.value?.aNullableInt,
+        );
+        expect(echoContainer.values.length, sentContainer.values.length);
+      });
 
-    testWidgets('map of generic containers works correctly', (
-      WidgetTester _,
-    ) async {
-      final HostGenericApi api = HostGenericApi();
+      testWidgets('list of generic containers works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
 
-      const Map<String, GenericContainer<int>> sentMap =
-          <String, GenericContainer<int>>{
-            'key1': GenericContainer<int>(value: 1, values: <int>[1, 2]),
-            'key2': GenericContainer<int>(value: 2, values: <int>[3, 4]),
-          };
-      final Map<String, GenericContainer<int>> echoMap = await api
-          .callFlutterEchoMapGenericContainer(sentMap);
-      expect(echoMap.length, sentMap.length);
-      expect(echoMap['key1']?.value, sentMap['key1']?.value);
-      expect(echoMap['key2']?.values, sentMap['key2']?.values);
-    });
+        const List<GenericContainer<int>> sentList = <GenericContainer<int>>[
+          GenericContainer<int>(value: 1, values: <int>[1, 2]),
+          GenericContainer<int>(value: 2, values: <int>[3, 4]),
+        ];
+        final List<GenericContainer<int>> echoList = await api
+            .callFlutterEchoListGenericContainer(sentList);
+        expect(echoList.length, sentList.length);
+        expect(echoList[0].value, sentList[0].value);
+        expect(echoList[1].values, sentList[1].values);
+      });
 
-    testWidgets('map of typed nullables works correctly', (
-      WidgetTester _,
-    ) async {
-      final HostGenericApi api = HostGenericApi();
+      testWidgets('list of typed nullables works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
 
-      final Map<String, GenericsAllNullableTypesTyped<int, String, double>>
-      sentMap = <String, GenericsAllNullableTypesTyped<int, String, double>>{
-        'key1': GenericsAllNullableTypesTyped<int, String, double>(
-          aNullableString: 'first-value',
-          aNullableInt: 1,
-          aNullableDouble: 1.0,
-        ),
-        'key2': GenericsAllNullableTypesTyped<int, String, double>(
-          aNullableString: 'second-value',
-          aNullableInt: 2,
-          aNullableDouble: 2.0,
-        ),
-      };
-      final Map<String, GenericsAllNullableTypesTyped<int, String, double>>
-      echoMap = await api.callFlutterEchoMapTypedNullable(sentMap);
-      expect(echoMap.length, sentMap.length);
-      expect(
-        echoMap['key1']?.aNullableString,
-        sentMap['key1']?.aNullableString,
-      );
-      expect(echoMap['key2']?.aNullableInt, sentMap['key2']?.aNullableInt);
-    });
+        final List<GenericsAllNullableTypesTyped<String, int, double>>
+        sentList = <GenericsAllNullableTypesTyped<String, int, double>>[
+          GenericsAllNullableTypesTyped<String, int, double>(
+            aNullableString: 'first',
+            aNullableInt: 1,
+            aNullableDouble: 1.0,
+          ),
+          GenericsAllNullableTypesTyped<String, int, double>(
+            aNullableString: 'second',
+            aNullableInt: 2,
+            aNullableDouble: 2.0,
+          ),
+        ];
+        final List<GenericsAllNullableTypesTyped<String, int, double>>
+        echoList = await api.callFlutterEchoListTypedNullable(sentList);
+        expect(echoList.length, sentList.length);
+        expect(echoList[0].aNullableString, sentList[0].aNullableString);
+        expect(echoList[1].aNullableInt, sentList[1].aNullableInt);
+      });
 
-    testWidgets('return generic defaults either left works correctly', (
-      WidgetTester _,
-    ) async {
-      final HostGenericApi api = HostGenericApi();
+      testWidgets('map of generic containers works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
 
-      final GenericContainer<Either<String, int>> result =
-          await api.callFlutterReturnGenericDefaultsEitherLeft();
-      expect(result.value, isA<Left<String, int>>());
-      expect((result.value as Left<String, int>).value, 'default-left');
-      expect(result.values.length, 2);
-    });
+        const Map<String, GenericContainer<int>> sentMap =
+            <String, GenericContainer<int>>{
+              'key1': GenericContainer<int>(value: 1, values: <int>[1, 2]),
+              'key2': GenericContainer<int>(value: 2, values: <int>[3, 4]),
+            };
+        final Map<String, GenericContainer<int>> echoMap = await api
+            .callFlutterEchoMapGenericContainer(sentMap);
+        expect(echoMap.length, sentMap.length);
+        expect(echoMap['key1']?.value, sentMap['key1']?.value);
+        expect(echoMap['key2']?.values, sentMap['key2']?.values);
+      });
 
-    testWidgets('return generic defaults either right works correctly', (
-      WidgetTester _,
-    ) async {
-      final HostGenericApi api = HostGenericApi();
+      testWidgets('map of typed nullables works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
 
-      final GenericContainer<Either<String, int>> result =
-          await api.callFlutterReturnGenericDefaultsEitherRight();
-      expect(result.value, isA<Right<String, int>>());
-      expect((result.value as Right<String, int>).value, 2);
-      expect(result.values.length, 2);
-    });
-  });
+        final Map<String, GenericsAllNullableTypesTyped<int, String, double>>
+        sentMap = <String, GenericsAllNullableTypesTyped<int, String, double>>{
+          'key1': GenericsAllNullableTypesTyped<int, String, double>(
+            aNullableString: 'first-value',
+            aNullableInt: 1,
+            aNullableDouble: 1.0,
+          ),
+          'key2': GenericsAllNullableTypesTyped<int, String, double>(
+            aNullableString: 'second-value',
+            aNullableInt: 2,
+            aNullableDouble: 2.0,
+          ),
+        };
+        final Map<String, GenericsAllNullableTypesTyped<int, String, double>>
+        echoMap = await api.callFlutterEchoMapTypedNullable(sentMap);
+        expect(echoMap.length, sentMap.length);
+        expect(
+          echoMap['key1']?.aNullableString,
+          sentMap['key1']?.aNullableString,
+        );
+        expect(echoMap['key2']?.aNullableInt, sentMap['key2']?.aNullableInt);
+      });
+
+      testWidgets('return generic defaults either left works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        final GenericContainer<Either<String, int>> result =
+            await api.callFlutterReturnGenericDefaultsEitherLeft();
+        expect(
+          result.value,
+          predicate((Left<String, int> v) => v.value == 'default-left'),
+        );
+        expect(result.values.length, 2);
+      });
+
+      testWidgets('return generic defaults either right works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        final GenericContainer<Either<String, int>> result =
+            await api.callFlutterReturnGenericDefaultsEitherRight();
+        expect(result.value, predicate((Right<String, int> v) => v.value == 2));
+        expect(result.values.length, 2);
+      });
+    },
+  );
 }
 
 class _FlutterApiTestImplementation implements FlutterIntegrationCoreApi {
@@ -5276,8 +5287,6 @@ class _FlutterGenericApiTestImplementation implements FlutterGenericApi {
 
   @override
   GenericDefaults echoGenericDefaults(GenericDefaults defaults) {
-    print('jopa: CALLED!');
-
     return defaults;
   }
 
