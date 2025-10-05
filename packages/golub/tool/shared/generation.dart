@@ -79,11 +79,13 @@ Future<int> generateExamplePigeons() async {
     input: './example/app/pigeons/messages.dart',
     basePath: './example/app',
     suppressVersion: true,
+    copyrightHeader: '../../copyright_header.txt',
   );
   success += await runPigeon(
     input: './example/app/pigeons/event_channel_messages.dart',
     basePath: './example/app',
     suppressVersion: true,
+    copyrightHeader: '../../copyright_header.txt',
   );
   return success;
 }
@@ -304,7 +306,7 @@ Future<int> runPigeon({
   final int result = await Pigeon.runWithOptions(
     PigeonOptions(
       input: input,
-      // copyrightHeader: copyrightHeader,
+      copyrightHeader: copyrightHeader,
       dartOut: dartOut,
       dartTestOut: dartTestOut,
       dartOptions: const DartOptions(),
