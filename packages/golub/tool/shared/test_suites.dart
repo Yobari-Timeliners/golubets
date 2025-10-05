@@ -499,7 +499,7 @@ Future<int> _runCommandLineTests({bool ciMode = false}) async {
   final List<List<String>> testArguments = <List<String>>[
     // Test with no arguments.
     <String>[],
-    // Test dartOut in ConfigurePigeon overrides output.
+    // Test dartOut in ConfigureGolub overrides output.
     <String>['--input', 'pigeons/configure_pigeon_dart_out.dart'],
     // Make sure AST generation exits correctly.
     <String>['--input', 'pigeons/message.dart', '--ast_out', tempOutput],

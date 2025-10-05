@@ -314,7 +314,7 @@ public class Messages {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.getHostLanguage"
+                "dev.flutter.pigeon.golub_example_package.ExampleHostApi.getHostLanguage"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -337,7 +337,7 @@ public class Messages {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.add"
+                "dev.flutter.pigeon.golub_example_package.ExampleHostApi.add"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -363,7 +363,7 @@ public class Messages {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessage"
+                "dev.flutter.pigeon.golub_example_package.ExampleHostApi.sendMessage"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -395,7 +395,7 @@ public class Messages {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsync"
+                "dev.flutter.pigeon.golub_example_package.ExampleHostApi.sendMessageModernAsync"
                     + messageChannelSuffix,
                 getCodec(),
                 taskQueue);
@@ -428,7 +428,7 @@ public class Messages {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsyncThrows"
+                "dev.flutter.pigeon.golub_example_package.ExampleHostApi.sendMessageModernAsyncThrows"
                     + messageChannelSuffix,
                 getCodec(),
                 taskQueue);
@@ -481,7 +481,7 @@ public class Messages {
 
     public void flutterMethod(@Nullable String aStringArg, @NonNull Result<String> result) {
       final String channelName =
-          "dev.flutter.pigeon.pigeon_example_package.MessageFlutterApi.flutterMethod"
+          "dev.flutter.pigeon.golub_example_package.MessageFlutterApi.flutterMethod"
               + messageChannelSuffix;
       BasicMessageChannel<Object> channel =
           new BasicMessageChannel<>(binaryMessenger, channelName, getCodec());

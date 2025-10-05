@@ -1,5 +1,5 @@
 <?code-excerpt path-base="app"?>
-# Pigeon Examples
+# Golub Examples
 
 The examples here will cover basic usage. For a more thorough set of examples,
 check the [core_tests pigeon file](../pigeons/core_tests.dart) and 
@@ -7,52 +7,51 @@ check the [core_tests pigeon file](../pigeons/core_tests.dart) and
 
 ## Invocation
 
-Begin by configuring pigeon at the top of the `.dart` input file.
+Begin by configuring golub at the top of the `.dart` input file.
 In actual use, you would include only the languages
 needed for your project.
 
 <?code-excerpt "pigeons/messages.dart (config)"?>
 ```dart
-@ConfigurePigeon(
-  PigeonOptions(
+@ConfigureGolub(
+  GolubOptions(
     dartOut: 'lib/src/messages.g.dart',
     dartOptions: DartOptions(),
-    cppOptions: CppOptions(namespace: 'pigeon_example'),
-    cppHeaderOut: 'windows/runner/messages.g.h',
-    cppSourceOut: 'windows/runner/messages.g.cpp',
-    gobjectHeaderOut: 'linux/messages.g.h',
-    gobjectSourceOut: 'linux/messages.g.cc',
-    gobjectOptions: GObjectOptions(),
+    // cppOptions: CppOptions(namespace: 'golub_example'),
+    // cppHeaderOut: 'windows/runner/messages.g.h',
+    // cppSourceOut: 'windows/runner/messages.g.cpp',
+    // gobjectHeaderOut: 'linux/messages.g.h',
+    // gobjectSourceOut: 'linux/messages.g.cc',
+    // gobjectOptions: GObjectOptions(),
     kotlinOut:
-        'android/app/src/main/kotlin/dev/flutter/pigeon_example_app/Messages.g.kt',
+        'android/app/src/main/kotlin/dev/flutter/golub_example_app/Messages.g.kt',
     kotlinOptions: KotlinOptions(),
-    javaOut: 'android/app/src/main/java/io/flutter/plugins/Messages.java',
-    javaOptions: JavaOptions(),
+    // javaOut: 'android/app/src/main/java/io/flutter/plugins/Messages.java',
+    // javaOptions: JavaOptions(),
     swiftOut: 'ios/Runner/Messages.g.swift',
     swiftOptions: SwiftOptions(),
-    objcHeaderOut: 'macos/Runner/messages.g.h',
-    objcSourceOut: 'macos/Runner/messages.g.m',
-    // Set this to a unique prefix for your plugin or application, per Objective-C naming conventions.
-    objcOptions: ObjcOptions(prefix: 'PGN'),
-    copyrightHeader: 'pigeons/copyright.txt',
-    dartPackageName: 'pigeon_example_package',
+    // objcHeaderOut: 'macos/Runner/messages.g.h',
+    // objcSourceOut: 'macos/Runner/messages.g.m',
+    // // Set this to a unique prefix for your plugin or application, per Objective-C naming conventions.
+    // objcOptions: ObjcOptions(prefix: 'PGN'),
+    // copyrightHeader: 'pigeons/copyright.txt',
+    dartPackageName: 'golub_example_package',
   ),
 )
 ```
-Then make a simple call to run pigeon on the Dart file containing your definitions.
+Then make a simple call to run golub on the Dart file containing your definitions.
 
 ```sh
-dart run pigeon --input path/to/input.dart
+dart run golub --input path/to/input.dart
 ```
 
-## HostApi Example
+## Calling into iOS/Android from Flutter
 
-This example gives an overview of how to use Pigeon to call into the
-host platform from Flutter.
+This example gives an overview of how to use Golub to call into the
 
 ### Dart input
 
-This is the Pigeon file that describes the interface that will be used to call
+This is the Golub file that describes the interface that will be used to call
 from Flutter to the host-platform.
 
 <?code-excerpt "pigeons/messages.dart (host-definitions)"?>
@@ -60,7 +59,17 @@ from Flutter to the host-platform.
 enum Code { one, two }
 
 class MessageData {
-  MessageData({required this.code, required this.data});
+  MessageData({
+    this.code = Code.one,
+    this.data = const <String, String>{
+      'hello': 'world',
+      'lorem': 'ipsum',
+      'golub': 'rocks',
+    },
+    this.name = 'Golub',
+    this.description = 'Example description',
+  });
+
   String? name;
   String? description;
   Code code;
@@ -116,7 +125,6 @@ Future<int> add(int a, int b) async {
 /// and api `sendMessage` method.
 Future<bool> sendMessage(String messageText) {
   final MessageData message = MessageData(
-    code: Code.one,
     data: <String, String>{'header': 'this is a header'},
     description: 'uri text',
   );
@@ -481,19 +489,19 @@ class EventListener: StreamEventsStreamHandler {
 
   func onIntEvent(event: Int64) {
     if let eventSink = eventSink {
-      eventSink.success(IntEvent(data: event))
+      eventSink.success(.intEvent(data: event))
     }
   }
 
   func onStringEvent(event: String) {
     if let eventSink = eventSink {
-      eventSink.success(StringEvent(data: event))
+      eventSink.success(.stringEvent(data: event))
     }
   }
 
   func onEmptyEvent() {
     if let eventSink = eventSink {
-      eventSink.success(EmptyEvent())
+      eventSink.success(.emptyEvent)
     }
   }
 

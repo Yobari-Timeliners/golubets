@@ -1,19 +1,47 @@
-# Pigeon
+## Golub: A Community-Driven Fork of [Pigeon](https://pub.dev/packages/pigeon)
 
-Pigeon is a code generator tool to make communication between Flutter and the
-host platform type-safe, easier, and faster.
-
-Pigeon removes the necessity to manage strings across multiple platforms and languages.
-It also improves efficiency over common method channel patterns. Most importantly though,
-it removes the need to write custom platform channel code, since pigeon generates it for you.
+Welcome to Golub, a fork of the Pigeon Flutter library. Our mission is to be a better, more open, and community-focused alternative—or at least give it a damn good try!
 
 For usage examples, see the [Example README](./example/README.md).
+
+## Why Golub Exists
+
+Pigeon is a great tool, but it’s got some baggage. The community’s voice often goes unheard, with a backlog of valuable issues left to gather dust. Features that make sense—logical, solid additions—are sometimes dismissed because they don’t align with the maintainers’ vision. That’s not how open source should roll.
+
+Contributing to Pigeon can feel like running into a buzzsaw. Expect endless code review cycles, nitpicky comments, and a vibe that’s occasionally toxic. We’ve been there: maintainers forgetting their own codebase, clashing with each other, or demanding changes that don’t hold up under scrutiny (only to later ask you to undo them). It’s a frustrating loop of “do this, no wait, undo it, now do this instead.” The result? A single pull request for a simple feature can spiral into an infinite, soul-crushing saga.
+
+Golub is here to change that. We’re building a fork that’s welcoming, collaborative, and free from the gatekeeping and “maintainer == god” mentality. No toxic reviews. No air-shaking nonsense. Just a focus on great ideas and clean code.
+
+## Our Goals
+
+- Community First: We listen to your issues, feature requests, and ideas. If it makes sense, we’ll work together to make it happen.
+
+- Sane Contribution Process: Pull requests should be a conversation, not a battle. We aim for clear, constructive feedback without the endless back-and-forth.
+
+- Innovation Welcome: Got a bold idea for improving Golub? Bring it on! We’re open to fresh perspectives and new features.
+
+- Transparency: No hidden agendas. We’ll document decisions and keep the community in the loop.
+
+## Contributing
+
+We’re thrilled to have you on board! Whether you’re fixing bugs, adding features, or improving docs, your contributions matter. Here’s how to get started:
+
+Check out our Contributing Guidelines for the nitty-gritty.
+
+Browse open issues or submit your own.
+
+Submit a pull request with clear descriptions and tests (where applicable).
+
+Expect respectful, constructive feedback—no toxicity, no nonsense.
+
+Got a spicy idea or a feature that could make Golub soar? Open an issue or ping us in discussions. We’re all ears!
+
 
 ## Features
 
 ### Supported Platforms
 
-Currently pigeon supports generating:
+Currently golub supports generating:
 * Kotlin and Java code for Android
 * Swift and Objective-C code for iOS and macOS
 * C++ code for Windows
@@ -37,8 +65,8 @@ as a Swift class instead.
 
 ### Synchronous and Asynchronous methods
 
-While all calls across platform channel APIs (such as pigeon methods) are asynchronous,
-pigeon methods can be written on the native side as synchronous methods,
+While all calls across platform channel APIs (such as golub methods) are asynchronous,
+golub methods can be written on the native side as synchronous methods,
 to make it simpler to always reply exactly once.
 
 If asynchronous methods are needed, the `@async` annotation can be used. This will require
@@ -84,13 +112,35 @@ the threading model for handling HostApi methods can be selected with the
 Host and Flutter APIs now support the ability to provide a unique message channel suffix string
 to the api to allow for multiple instances to be created and operate in parallel.
 
+### Default values
+
+Default values are supported in class constructors for Swift and Kotlin platforms. This feature allows you to specify default parameter values that will be automatically generated in the native platform code, making your APIs more convenient to use.
+
+[Example](./example/README.md#Dart_input)
+
+**How it works:**
+- Define default values directly in Dart class constructors using named parameters with default values
+- Golub generates native code that respects these defaults on Swift and Kotlin platforms
+- Supported for all basic types (bool, int, double, String), enums, objects, and collections
+
+### Generics
+
+Generic types are fully supported for Swift and Kotlin platforms, allowing you to create type-safe collections and complex data structures. Golub automatically translates Dart's generic syntax to the appropriate platform-specific equivalent.
+
+**Supported generic types:**
+- `List<T>` - Arrays/Lists with typed elements
+- `Map<K, V>` - Dictionaries/Maps with typed keys and values  
+- Nested generics like `List<Map<String, int>>` or `Map<String, List<User>>`
+- Nullable generic types like `List<String?>` or `Map<String?, User?>`
+
+
 ## Usage
 
-1) Add pigeon as a `dev_dependency`.
+1) Add golub as a `dev_dependency`.
 1) Make a ".dart" file outside of your "lib" directory for defining the
    communication interface.
-1) Run pigeon on your ".dart" file to generate the required Dart and
-   host-language code: `flutter pub get` then `dart run pigeon`
+1) Run golub on your ".dart" file to generate the required Dart and
+   host-language code: `flutter pub get` then `dart run golub`
    with suitable arguments. [Example](./example/README.md#Invocation).
 1) Add the generated Dart code to `./lib` for compilation.
 1) Implement the host-language code and add it to your build (see below).

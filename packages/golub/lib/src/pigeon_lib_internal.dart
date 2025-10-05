@@ -29,9 +29,9 @@ import 'pigeon_lib.dart';
 import 'swift/swift_generator.dart';
 
 /// Options used when running the code generator.
-class InternalPigeonOptions {
-  /// Creates a instance of InternalPigeonOptions
-  const InternalPigeonOptions({
+class InternalGolubOptions {
+  /// Creates a instance of InternalGolubOptions
+  const InternalGolubOptions({
     required this.input,
     required this.objcOptions,
     required this.javaOptions,
@@ -47,8 +47,8 @@ class InternalPigeonOptions {
     required this.dartPackageName,
   });
 
-  InternalPigeonOptions._fromPigeonOptionsWithHeader(
-    PigeonOptions options,
+  InternalGolubOptions._fromGolubOptionsWithHeader(
+    GolubOptions options,
     Iterable<String>? copyrightHeader,
   ) : input = options.input,
       objcOptions =
@@ -133,8 +133,8 @@ class InternalPigeonOptions {
       basePath = options.basePath,
       dartPackageName = options.getPackageName();
 
-  /// Creates a instance of InternalPigeonOptions from PigeonOptions.
-  static InternalPigeonOptions fromPigeonOptions(PigeonOptions options) {
+  /// Creates a instance of InternalGolubOptions from GolubOptions.
+  static InternalGolubOptions fromGolubOptions(GolubOptions options) {
     final Iterable<String>? copyrightHeader =
         options.copyrightHeader != null
             ? _lineReader(
@@ -142,7 +142,7 @@ class InternalPigeonOptions {
             )
             : null;
 
-    return InternalPigeonOptions._fromPigeonOptionsWithHeader(
+    return InternalGolubOptions._fromGolubOptionsWithHeader(
       options,
       copyrightHeader,
     );
@@ -214,7 +214,7 @@ IOSink? _openSink(String? output, {String basePath = ''}) {
 }
 
 /// An adapter that will call a generator to write code to a sink
-/// based on the contents of [InternalPigeonOptions].
+/// based on the contents of [InternalGolubOptions].
 abstract class GeneratorAdapter {
   /// Constructor for [GeneratorAdapter]
   GeneratorAdapter(this.fileTypeList);
@@ -226,12 +226,12 @@ abstract class GeneratorAdapter {
   /// if the [GeneratorAdapter] should generate.
   ///
   /// If it returns `null`, the [GeneratorAdapter] will be skipped.
-  IOSink? shouldGenerate(InternalPigeonOptions options, FileType fileType);
+  IOSink? shouldGenerate(InternalGolubOptions options, FileType fileType);
 
   /// Write the generated code described in [root] to [sink] using the [options].
   void generate(
     StringSink sink,
-    InternalPigeonOptions options,
+    InternalGolubOptions options,
     Root root,
     FileType fileType,
   );
@@ -239,7 +239,7 @@ abstract class GeneratorAdapter {
   /// Generates errors that would only be appropriate for this [GeneratorAdapter].
   ///
   /// For example, if a certain feature isn't implemented in a [GeneratorAdapter] yet.
-  List<Error> validate(InternalPigeonOptions options, Root root);
+  List<Error> validate(InternalGolubOptions options, Root root);
 }
 
 void _errorOnEventChannelApi(List<Error> errors, String generator, Root root) {
@@ -273,7 +273,7 @@ class AstGeneratorAdapter implements GeneratorAdapter {
   @override
   void generate(
     StringSink sink,
-    InternalPigeonOptions options,
+    InternalGolubOptions options,
     Root root,
     FileType fileType,
   ) {
@@ -281,11 +281,11 @@ class AstGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  IOSink? shouldGenerate(InternalPigeonOptions options, FileType _) =>
+  IOSink? shouldGenerate(InternalGolubOptions options, FileType _) =>
       _openSink(options.astOut, basePath: options.basePath ?? '');
 
   @override
-  List<Error> validate(InternalPigeonOptions options, Root root) => <Error>[];
+  List<Error> validate(InternalGolubOptions options, Root root) => <Error>[];
 }
 
 /// A [GeneratorAdapter] that generates Dart source code.
@@ -302,7 +302,7 @@ class DartGeneratorAdapter implements GeneratorAdapter {
   @override
   void generate(
     StringSink sink,
-    InternalPigeonOptions options,
+    InternalGolubOptions options,
     Root root,
     FileType fileType,
   ) {
@@ -320,11 +320,11 @@ class DartGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  IOSink? shouldGenerate(InternalPigeonOptions options, FileType _) =>
+  IOSink? shouldGenerate(InternalGolubOptions options, FileType _) =>
       _openSink(options.dartOptions?.dartOut, basePath: options.basePath ?? '');
 
   @override
-  List<Error> validate(InternalPigeonOptions options, Root root) => <Error>[];
+  List<Error> validate(InternalGolubOptions options, Root root) => <Error>[];
 }
 
 /// A [GeneratorAdapter] that generates Dart test source code.
@@ -338,7 +338,7 @@ class DartTestGeneratorAdapter implements GeneratorAdapter {
   @override
   void generate(
     StringSink sink,
-    InternalPigeonOptions options,
+    InternalGolubOptions options,
     Root root,
     FileType fileType,
   ) {
@@ -361,7 +361,7 @@ class DartTestGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  IOSink? shouldGenerate(InternalPigeonOptions options, FileType _) {
+  IOSink? shouldGenerate(InternalGolubOptions options, FileType _) {
     if (options.dartOptions?.testOut != null) {
       return _openSink(
         options.dartOptions?.testOut,
@@ -372,7 +372,7 @@ class DartTestGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  List<Error> validate(InternalPigeonOptions options, Root root) => <Error>[];
+  List<Error> validate(InternalGolubOptions options, Root root) => <Error>[];
 }
 
 /// A [GeneratorAdapter] that generates Objective-C code.
@@ -391,7 +391,7 @@ class ObjcGeneratorAdapter implements GeneratorAdapter {
   @override
   void generate(
     StringSink sink,
-    InternalPigeonOptions options,
+    InternalGolubOptions options,
     Root root,
     FileType fileType,
   ) {
@@ -413,7 +413,7 @@ class ObjcGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  IOSink? shouldGenerate(InternalPigeonOptions options, FileType fileType) {
+  IOSink? shouldGenerate(InternalGolubOptions options, FileType fileType) {
     if (fileType == FileType.source) {
       return _openSink(
         options.objcOptions?.objcSourceOut,
@@ -428,7 +428,7 @@ class ObjcGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  List<Error> validate(InternalPigeonOptions options, Root root) {
+  List<Error> validate(InternalGolubOptions options, Root root) {
     final List<Error> errors = <Error>[];
     _errorOnEventChannelApi(errors, languageString, root);
     _errorOnSealedClass(errors, languageString, root);
@@ -451,7 +451,7 @@ class JavaGeneratorAdapter implements GeneratorAdapter {
   @override
   void generate(
     StringSink sink,
-    InternalPigeonOptions options,
+    InternalGolubOptions options,
     Root root,
     FileType fileType,
   ) {
@@ -468,11 +468,11 @@ class JavaGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  IOSink? shouldGenerate(InternalPigeonOptions options, FileType _) =>
+  IOSink? shouldGenerate(InternalGolubOptions options, FileType _) =>
       _openSink(options.javaOptions?.javaOut, basePath: options.basePath ?? '');
 
   @override
-  List<Error> validate(InternalPigeonOptions options, Root root) {
+  List<Error> validate(InternalGolubOptions options, Root root) {
     final List<Error> errors = <Error>[];
     _errorOnEventChannelApi(errors, languageString, root);
     _errorOnSealedClass(errors, languageString, root);
@@ -495,7 +495,7 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
   @override
   void generate(
     StringSink sink,
-    InternalPigeonOptions options,
+    InternalGolubOptions options,
     Root root,
     FileType fileType,
   ) {
@@ -512,14 +512,13 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  IOSink? shouldGenerate(InternalPigeonOptions options, FileType _) =>
-      _openSink(
-        options.swiftOptions?.swiftOut,
-        basePath: options.basePath ?? '',
-      );
+  IOSink? shouldGenerate(InternalGolubOptions options, FileType _) => _openSink(
+    options.swiftOptions?.swiftOut,
+    basePath: options.basePath ?? '',
+  );
 
   @override
-  List<Error> validate(InternalPigeonOptions options, Root root) {
+  List<Error> validate(InternalGolubOptions options, Root root) {
     final List<Error> result = <Error>[];
 
     for (final Class classDefinition in root.classes) {
@@ -601,7 +600,7 @@ class CppGeneratorAdapter implements GeneratorAdapter {
   @override
   void generate(
     StringSink sink,
-    InternalPigeonOptions options,
+    InternalGolubOptions options,
     Root root,
     FileType fileType,
   ) {
@@ -623,7 +622,7 @@ class CppGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  IOSink? shouldGenerate(InternalPigeonOptions options, FileType fileType) {
+  IOSink? shouldGenerate(InternalGolubOptions options, FileType fileType) {
     if (fileType == FileType.source) {
       return _openSink(
         options.cppOptions?.cppSourceOut,
@@ -638,7 +637,7 @@ class CppGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  List<Error> validate(InternalPigeonOptions options, Root root) {
+  List<Error> validate(InternalGolubOptions options, Root root) {
     final List<Error> errors = <Error>[];
     _errorOnEventChannelApi(errors, languageString, root);
     _errorOnSealedClass(errors, languageString, root);
@@ -663,7 +662,7 @@ class GObjectGeneratorAdapter implements GeneratorAdapter {
   @override
   void generate(
     StringSink sink,
-    InternalPigeonOptions options,
+    InternalGolubOptions options,
     Root root,
     FileType fileType,
   ) {
@@ -685,7 +684,7 @@ class GObjectGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  IOSink? shouldGenerate(InternalPigeonOptions options, FileType fileType) {
+  IOSink? shouldGenerate(InternalGolubOptions options, FileType fileType) {
     if (fileType == FileType.source) {
       return _openSink(
         options.gobjectOptions?.gobjectSourceOut,
@@ -700,7 +699,7 @@ class GObjectGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  List<Error> validate(InternalPigeonOptions options, Root root) {
+  List<Error> validate(InternalGolubOptions options, Root root) {
     final List<Error> errors = <Error>[];
     // TODO(tarrinneal): Remove once overflow class is added to gobject generator.
     // https://github.com/flutter/flutter/issues/152916
@@ -731,7 +730,7 @@ class KotlinGeneratorAdapter implements GeneratorAdapter {
   @override
   void generate(
     StringSink sink,
-    InternalPigeonOptions options,
+    InternalGolubOptions options,
     Root root,
     FileType fileType,
   ) {
@@ -748,14 +747,13 @@ class KotlinGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  IOSink? shouldGenerate(InternalPigeonOptions options, FileType _) =>
-      _openSink(
-        options.kotlinOptions?.kotlinOut,
-        basePath: options.basePath ?? '',
-      );
+  IOSink? shouldGenerate(InternalGolubOptions options, FileType _) => _openSink(
+    options.kotlinOptions?.kotlinOut,
+    basePath: options.basePath ?? '',
+  );
 
   @override
-  List<Error> validate(InternalPigeonOptions options, Root root) => <Error>[];
+  List<Error> validate(InternalGolubOptions options, Root root) => <Error>[];
 }
 
 dart_ast.Annotation? _findMetadata(
@@ -1346,7 +1344,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
   Map<String, DefaultValue?> _currentClassDefaultValues =
       <String, DefaultValue?>{};
   Api? _currentApi;
-  Map<String, Object>? _pigeonOptions;
+  Map<String, Object>? _golubOptions;
 
   void _storeCurrentApi() {
     if (_currentApi != null) {
@@ -1482,7 +1480,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
               ? completeRoot
               : Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]),
       errors: totalErrors,
-      pigeonOptions: _pigeonOptions,
+      golubOptions: _golubOptions,
     );
   }
 
@@ -1611,11 +1609,11 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
 
   @override
   Object? visitImportDirective(dart_ast.ImportDirective node) {
-    if (node.uri.stringValue != 'package:pigeon/pigeon.dart') {
+    if (node.uri.stringValue != 'package:golub/golub.dart') {
       _errors.add(
         Error(
           message:
-              "Unsupported import ${node.uri}, only imports of 'package:pigeon/pigeon.dart' are supported.",
+              "Unsupported import ${node.uri}, only imports of 'package:golub/golub.dart' are supported.",
           lineNumber: calculateLineNumber(source, node.offset),
         ),
       );
@@ -1625,19 +1623,19 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
 
   @override
   Object? visitAnnotation(dart_ast.Annotation node) {
-    if (node.name.name == 'ConfigurePigeon') {
+    if (node.name.name == 'ConfigureGolub') {
       if (node.arguments == null) {
         _errors.add(
           Error(
-            message: 'ConfigurePigeon expects a PigeonOptions() call.',
+            message: 'ConfigureGolub expects a GolubOptions() call.',
             lineNumber: calculateLineNumber(source, node.offset),
           ),
         );
       }
-      final Map<String, Object> pigeonOptionsMap =
+      final Map<String, Object> golubOptionsMap =
           _expressionToMap(node.arguments!.arguments.first)
               as Map<String, Object>;
-      _pigeonOptions = pigeonOptionsMap;
+      _golubOptions = golubOptionsMap;
     }
     node.visitChildren(this);
     return null;
@@ -1651,7 +1649,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     if (node.abstractKeyword != null) {
       if (node.metadata.length > 2 ||
           (node.metadata.length > 1 &&
-              !_hasMetadata(node.metadata, 'ConfigurePigeon'))) {
+              !_hasMetadata(node.metadata, 'ConfigureGolub'))) {
         _errors.add(
           Error(
             message:

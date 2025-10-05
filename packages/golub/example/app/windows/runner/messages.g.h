@@ -15,7 +15,7 @@
 #include <optional>
 #include <string>
 
-namespace pigeon_example {
+namespace golub_example {
 
 // Generated class from Pigeon.
 
@@ -163,5 +163,5 @@ class MessageFlutterApi {
   std::string message_channel_suffix_;
 };
 
-}  // namespace pigeon_example
+}  // namespace golub_example
 #endif  // PIGEON_MESSAGES_G_H_

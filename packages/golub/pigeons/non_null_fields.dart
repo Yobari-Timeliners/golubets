@@ -5,7 +5,9 @@
 // This file is an example pigeon file that is used in compilation, unit, mock
 // handler, and e2e tests.
 
-import 'package:pigeon/pigeon.dart';
+// found in the LICENSE file.
+
+import 'package:golub/golub.dart';
 
 class NonNullFieldSearchRequest {
   NonNullFieldSearchRequest({required this.query});

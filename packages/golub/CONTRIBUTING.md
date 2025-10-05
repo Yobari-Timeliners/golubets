@@ -1,4 +1,4 @@
-# Pigeon Contributor's Guide
+# Golub is a code generation tool that adds type safety to Flutter's Platformub Contributor's Guide
 
 ## Description
 
@@ -66,7 +66,7 @@ looks like (see [State Diagram](#state-diagram)):
 import 'path/to/supplied/pigeon/file.dart';
 import 'dart:io';
 import 'dart:isolate';
-import 'package:pigeon/pigeon_lib.dart';
+import 'package:golub/pigeon_lib.dart';
 void main(List<String> args, SendPort sendPort) async {
   sendPort.send(await Pigeon.run(args));
 }

@@ -4,10 +4,10 @@
 
 import 'dart:io' show Directory, File;
 
+import 'package:golub/src/ast.dart';
+import 'package:golub/src/dart/dart_generator.dart';
+import 'package:golub/src/generator_tools.dart';
 import 'package:path/path.dart' as path;
-import 'package:pigeon/src/ast.dart';
-import 'package:pigeon/src/dart/dart_generator.dart';
-import 'package:pigeon/src/generator_tools.dart';
 import 'package:test/test.dart';
 
 const String DEFAULT_PACKAGE_NAME = 'test_package';

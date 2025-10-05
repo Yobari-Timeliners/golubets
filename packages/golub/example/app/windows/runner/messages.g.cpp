@@ -17,7 +17,7 @@
 #include <optional>
 #include <string>
 
-namespace pigeon_example {
+namespace golub_example {
 using flutter::BasicMessageChannel;
 using flutter::CustomEncodableValue;
 using flutter::EncodableList;
@@ -169,7 +169,7 @@ void ExampleHostApi::SetUp(flutter::BinaryMessenger* binary_messenger,
           : "";
   {
     BasicMessageChannel<> channel(binary_messenger,
-                                  "dev.flutter.pigeon.pigeon_example_package."
+                                  "dev.flutter.pigeon.golub_example_package."
                                   "ExampleHostApi.getHostLanguage" +
                                       prepended_suffix,
                                   &GetCodec());
@@ -197,7 +197,7 @@ void ExampleHostApi::SetUp(flutter::BinaryMessenger* binary_messenger,
   {
     BasicMessageChannel<> channel(
         binary_messenger,
-        "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.add" +
+        "dev.flutter.pigeon.golub_example_package.ExampleHostApi.add" +
             prepended_suffix,
         &GetCodec());
     if (api != nullptr) {
@@ -237,7 +237,7 @@ void ExampleHostApi::SetUp(flutter::BinaryMessenger* binary_messenger,
   {
     BasicMessageChannel<> channel(
         binary_messenger,
-        "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessage" +
+        "dev.flutter.pigeon.golub_example_package.ExampleHostApi.sendMessage" +
             prepended_suffix,
         &GetCodec());
     if (api != nullptr) {
@@ -273,7 +273,7 @@ void ExampleHostApi::SetUp(flutter::BinaryMessenger* binary_messenger,
   }
   {
     BasicMessageChannel<> channel(binary_messenger,
-                                  "dev.flutter.pigeon.pigeon_example_package."
+                                  "dev.flutter.pigeon.golub_example_package."
                                   "ExampleHostApi.sendMessageModernAsync" +
                                       prepended_suffix,
                                   &GetCodec());
@@ -312,7 +312,7 @@ void ExampleHostApi::SetUp(flutter::BinaryMessenger* binary_messenger,
   {
     BasicMessageChannel<> channel(
         binary_messenger,
-        "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi."
+        "dev.flutter.pigeon.golub_example_package.ExampleHostApi."
         "sendMessageModernAsyncThrows" +
             prepended_suffix,
         &GetCodec());
@@ -384,7 +384,7 @@ void MessageFlutterApi::FlutterMethod(
     std::function<void(const std::string&)>&& on_success,
     std::function<void(const FlutterError&)>&& on_error) {
   const std::string channel_name =
-      "dev.flutter.pigeon.pigeon_example_package.MessageFlutterApi."
+      "dev.flutter.pigeon.golub_example_package.MessageFlutterApi."
       "flutterMethod" +
       message_channel_suffix_;
   BasicMessageChannel<> channel(binary_messenger_, channel_name, &GetCodec());
@@ -417,4 +417,4 @@ void MessageFlutterApi::FlutterMethod(
       });
 }
 
-}  // namespace pigeon_example
+}  // namespace golub_example

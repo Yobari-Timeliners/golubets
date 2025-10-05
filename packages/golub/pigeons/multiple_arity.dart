@@ -5,7 +5,7 @@
 // This file is an example pigeon file that is used in compilation, unit, mock
 // handler, and e2e tests.
 
-import 'package:pigeon/pigeon.dart';
+import 'package:golub/golub.dart';
 
 @HostApi()
 abstract class MultipleArityHostApi {

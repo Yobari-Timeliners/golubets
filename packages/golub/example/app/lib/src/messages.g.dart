@@ -165,7 +165,7 @@ class ExampleHostApi {
 
   Future<String> getHostLanguage() async {
     final String pigeonVar_channelName =
-        'dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.getHostLanguage$pigeonVar_messageChannelSuffix';
+        'dev.flutter.pigeon.golub_example_package.ExampleHostApi.getHostLanguage$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel =
         BasicMessageChannel<Object?>(
           pigeonVar_channelName,
@@ -195,7 +195,7 @@ class ExampleHostApi {
 
   Future<int> add(int a, int b) async {
     final String pigeonVar_channelName =
-        'dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.add$pigeonVar_messageChannelSuffix';
+        'dev.flutter.pigeon.golub_example_package.ExampleHostApi.add$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel =
         BasicMessageChannel<Object?>(
           pigeonVar_channelName,
@@ -227,7 +227,7 @@ class ExampleHostApi {
 
   Future<bool> sendMessage(MessageData message) async {
     final String pigeonVar_channelName =
-        'dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessage$pigeonVar_messageChannelSuffix';
+        'dev.flutter.pigeon.golub_example_package.ExampleHostApi.sendMessage$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel =
         BasicMessageChannel<Object?>(
           pigeonVar_channelName,
@@ -259,7 +259,7 @@ class ExampleHostApi {
 
   Future<bool> sendMessageModernAsync(MessageData message) async {
     final String pigeonVar_channelName =
-        'dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsync$pigeonVar_messageChannelSuffix';
+        'dev.flutter.pigeon.golub_example_package.ExampleHostApi.sendMessageModernAsync$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel =
         BasicMessageChannel<Object?>(
           pigeonVar_channelName,
@@ -291,7 +291,7 @@ class ExampleHostApi {
 
   Future<bool> sendMessageModernAsyncThrows(MessageData message) async {
     final String pigeonVar_channelName =
-        'dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsyncThrows$pigeonVar_messageChannelSuffix';
+        'dev.flutter.pigeon.golub_example_package.ExampleHostApi.sendMessageModernAsyncThrows$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel =
         BasicMessageChannel<Object?>(
           pigeonVar_channelName,
@@ -337,7 +337,7 @@ abstract class MessageFlutterApi {
     {
       final BasicMessageChannel<Object?>
       pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.pigeon_example_package.MessageFlutterApi.flutterMethod$messageChannelSuffix',
+        'dev.flutter.pigeon.golub_example_package.MessageFlutterApi.flutterMethod$messageChannelSuffix',
         pigeonChannelCodec,
         binaryMessenger: binaryMessenger,
       );
@@ -347,7 +347,7 @@ abstract class MessageFlutterApi {
         pigeonVar_channel.setMessageHandler((Object? message) async {
           assert(
             message != null,
-            'Argument for dev.flutter.pigeon.pigeon_example_package.MessageFlutterApi.flutterMethod was null.',
+            'Argument for dev.flutter.pigeon.golub_example_package.MessageFlutterApi.flutterMethod was null.',
           );
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_aString = (args[0] as String?);

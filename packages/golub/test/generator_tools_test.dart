@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:pigeon/src/ast.dart';
-import 'package:pigeon/src/generator_tools.dart';
+import 'package:golub/src/ast.dart';
+import 'package:golub/src/generator_tools.dart';
 import 'package:test/test.dart';
 
 bool _equalSet<T>(Set<T> x, Set<T> y) {
@@ -278,7 +278,7 @@ void main() {
       './pigeons/core_tests.dart',
     );
 
-    expect(dartPackageName, 'pigeon');
+    expect(dartPackageName, 'golub');
   });
 
   test('recursiveGetSuperClassApisChain', () {

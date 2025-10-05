@@ -4,10 +4,10 @@
 
 import 'dart:io' show Platform;
 
+import 'package:golub/golub.dart';
+import 'package:golub/src/ast.dart';
+import 'package:golub/src/generator_tools.dart';
 import 'package:path/path.dart' as p;
-import 'package:pigeon/pigeon.dart';
-import 'package:pigeon/src/ast.dart';
-import 'package:pigeon/src/generator_tools.dart';
 
 import 'process_utils.dart';
 
@@ -72,11 +72,13 @@ Future<int> generateExamplePigeons() async {
   success = await runPigeon(
     input: './example/app/pigeons/messages.dart',
     basePath: './example/app',
+    copyrightHeader: '../../copyright_header.txt',
     suppressVersion: true,
   );
   success += await runPigeon(
     input: './example/app/pigeons/event_channel_messages.dart',
     basePath: './example/app',
+    copyrightHeader: '../../copyright_header.txt',
     suppressVersion: true,
   );
   return success;
@@ -294,7 +296,7 @@ Future<int> runPigeon({
   }
 
   final int result = await Pigeon.runWithOptions(
-    PigeonOptions(
+    GolubOptions(
       input: input,
       copyrightHeader: copyrightHeader,
       dartOut: dartOut,

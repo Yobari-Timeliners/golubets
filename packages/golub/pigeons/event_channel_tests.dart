@@ -4,7 +4,7 @@
 //
 //! Exists because of the sealed classes and event channels are not supported for C++ and GObjects.
 
-import 'package:pigeon/pigeon.dart';
+import 'package:golub/golub.dart';
 
 enum EventEnum { one, two, three, fortyTwo, fourHundredTwentyTwo }
 

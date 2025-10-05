@@ -2,20 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:pigeon/pigeon.dart';
+import 'package:golub/golub.dart';
 
-@ConfigurePigeon(
-  PigeonOptions(
+@ConfigureGolub(
+  GolubOptions(
     dartOut: 'lib/src/event_channel_messages.g.dart',
     dartOptions: DartOptions(),
-    cppOptions: CppOptions(namespace: 'pigeon_example'),
+    cppOptions: CppOptions(namespace: 'golub_example'),
     kotlinOut:
-        'android/app/src/main/kotlin/dev/flutter/pigeon_example_app/EventChannelMessages.g.kt',
+        'android/app/src/main/kotlin/dev/flutter/golub_example_app/EventChannelMessages.g.kt',
     kotlinOptions: KotlinOptions(includeErrorClass: false),
     swiftOut: 'ios/Runner/EventChannelMessages.g.swift',
     swiftOptions: SwiftOptions(includeErrorClass: false),
     copyrightHeader: 'pigeons/copyright.txt',
-    dartPackageName: 'pigeon_example_package',
+    dartPackageName: 'golub_example_package',
   ),
 )
 // #docregion sealed-definitions

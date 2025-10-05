@@ -4,21 +4,21 @@
 
 import 'dart:io';
 
-import 'package:pigeon/src/generator_tools.dart';
+import 'package:golub/src/generator_tools.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('pigeon version matches pubspec', () {
+  test('golub version matches pubspec', () {
     final String pubspecPath = '${Directory.current.path}/pubspec.yaml';
     final String pubspec = File(pubspecPath).readAsStringSync();
     final RegExp regex = RegExp(r'version:\s*(.*?) #');
     final RegExpMatch? match = regex.firstMatch(pubspec);
     expect(match, isNotNull);
     expect(
-      pigeonVersion,
+      golubVersion,
       match?.group(1)?.trim(),
       reason:
-          'Update lib/src/generator_tools.dart pigeonVersion to the value in the pubspec',
+          'Update lib/src/generator_tools.dart golubVersion to the value in the pubspec',
     );
   });
 }

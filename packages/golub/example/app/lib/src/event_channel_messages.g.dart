@@ -188,7 +188,7 @@ Stream<PlatformEvent> streamEvents({String instanceName = ''}) {
     instanceName = '.$instanceName';
   }
   final EventChannel streamEventsChannel = EventChannel(
-    'dev.flutter.pigeon.pigeon_example_package.EventChannelMethods.streamEvents$instanceName',
+    'dev.flutter.pigeon.golub_example_package.EventChannelMethods.streamEvents$instanceName',
     pigeonMethodCodec,
   );
   return streamEventsChannel.receiveBroadcastStream().map((dynamic event) {

@@ -1,4 +1,4 @@
-import 'package:pigeon/pigeon.dart';
+import 'package:golub/golub.dart';
 
 sealed class SomeState {}
 

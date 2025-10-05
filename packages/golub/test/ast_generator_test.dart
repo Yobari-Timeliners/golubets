@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:pigeon/src/ast.dart';
-import 'package:pigeon/src/ast_generator.dart';
+import 'package:golub/src/ast.dart';
+import 'package:golub/src/ast_generator.dart';
 import 'package:test/test.dart';
 
 void main() {

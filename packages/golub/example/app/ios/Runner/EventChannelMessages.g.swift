@@ -248,7 +248,7 @@ class StreamEventsStreamHandler: PigeonEventChannelWrapper<PlatformEvent> {
     instanceName: String = "",
     streamHandler: StreamEventsStreamHandler
   ) {
-    var channelName = "dev.flutter.pigeon.pigeon_example_package.EventChannelMethods.streamEvents"
+    var channelName = "dev.flutter.pigeon.golub_example_package.EventChannelMethods.streamEvents"
     if !instanceName.isEmpty {
       channelName += ".\(instanceName)"
     }

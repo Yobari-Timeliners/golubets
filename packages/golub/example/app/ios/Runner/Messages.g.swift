@@ -261,7 +261,7 @@ public class ExampleHostApiSetup {
     #endif
     let getHostLanguageChannel = FlutterBasicMessageChannel(
       name:
-        "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.getHostLanguage\(channelSuffix)",
+        "dev.flutter.pigeon.golub_example_package.ExampleHostApi.getHostLanguage\(channelSuffix)",
       binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       getHostLanguageChannel.setMessageHandler { _, reply in
@@ -276,7 +276,7 @@ public class ExampleHostApiSetup {
       getHostLanguageChannel.setMessageHandler(nil)
     }
     let addChannel = FlutterBasicMessageChannel(
-      name: "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.add\(channelSuffix)",
+      name: "dev.flutter.pigeon.golub_example_package.ExampleHostApi.add\(channelSuffix)",
       binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       addChannel.setMessageHandler { message, reply in
@@ -294,7 +294,7 @@ public class ExampleHostApiSetup {
       addChannel.setMessageHandler(nil)
     }
     let sendMessageChannel = FlutterBasicMessageChannel(
-      name: "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessage\(channelSuffix)",
+      name: "dev.flutter.pigeon.golub_example_package.ExampleHostApi.sendMessage\(channelSuffix)",
       binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       sendMessageChannel.setMessageHandler { message, reply in
@@ -316,11 +316,11 @@ public class ExampleHostApiSetup {
       taskQueue == nil
       ? FlutterBasicMessageChannel(
         name:
-          "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsync\(channelSuffix)",
+          "dev.flutter.pigeon.golub_example_package.ExampleHostApi.sendMessageModernAsync\(channelSuffix)",
         binaryMessenger: binaryMessenger, codec: codec)
       : FlutterBasicMessageChannel(
         name:
-          "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsync\(channelSuffix)",
+          "dev.flutter.pigeon.golub_example_package.ExampleHostApi.sendMessageModernAsync\(channelSuffix)",
         binaryMessenger: binaryMessenger, codec: codec, taskQueue: taskQueue)
     if let api = api {
       sendMessageModernAsyncChannel.setMessageHandler { message, reply in
@@ -338,11 +338,11 @@ public class ExampleHostApiSetup {
       taskQueue == nil
       ? FlutterBasicMessageChannel(
         name:
-          "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsyncThrows\(channelSuffix)",
+          "dev.flutter.pigeon.golub_example_package.ExampleHostApi.sendMessageModernAsyncThrows\(channelSuffix)",
         binaryMessenger: binaryMessenger, codec: codec)
       : FlutterBasicMessageChannel(
         name:
-          "dev.flutter.pigeon.pigeon_example_package.ExampleHostApi.sendMessageModernAsyncThrows\(channelSuffix)",
+          "dev.flutter.pigeon.golub_example_package.ExampleHostApi.sendMessageModernAsyncThrows\(channelSuffix)",
         binaryMessenger: binaryMessenger, codec: codec, taskQueue: taskQueue)
     if let api = api {
       sendMessageModernAsyncThrowsChannel.setMessageHandler { message, reply in
@@ -381,7 +381,7 @@ public class MessageFlutterApi: MessageFlutterApiProtocol {
     aString aStringArg: String?, completion: @escaping (Result<String, PigeonError>) -> Void
   ) {
     let channelName: String =
-      "dev.flutter.pigeon.pigeon_example_package.MessageFlutterApi.flutterMethod\(messageChannelSuffix)"
+      "dev.flutter.pigeon.golub_example_package.MessageFlutterApi.flutterMethod\(messageChannelSuffix)"
     let channel = FlutterBasicMessageChannel(
       name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([aStringArg] as [Any?]) { response in

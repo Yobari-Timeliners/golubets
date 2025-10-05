@@ -4,7 +4,7 @@
 
 import 'dart:io' show exit;
 
-import 'package:pigeon/src/pigeon_cl.dart';
+import 'package:golub/src/pigeon_cl.dart';
 
 Future<void> main(List<String> args) async {
   exit(await runCommandLine(args));

@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:pigeon/pigeon.dart';
+import 'package:golub/golub.dart';
 
-@ConfigurePigeon(
-  PigeonOptions(
+@ConfigureGolub(
+  GolubOptions(
     dartOut: 'stdout',
     javaOut: 'stdout',
     dartOptions: DartOptions(),
   ),
 )
 @HostApi()
-abstract class ConfigurePigeonApi {
+abstract class ConfigureGolubApi {
   void ping();
 }

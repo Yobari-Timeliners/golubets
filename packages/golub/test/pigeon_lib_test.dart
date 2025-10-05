@@ -5,10 +5,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:pigeon/src/ast.dart';
-import 'package:pigeon/src/generator_tools.dart';
-import 'package:pigeon/src/pigeon_lib.dart';
-import 'package:pigeon/src/pigeon_lib_internal.dart';
+import 'package:golub/src/ast.dart';
+import 'package:golub/src/generator_tools.dart';
+import 'package:golub/src/pigeon_lib.dart';
+import 'package:golub/src/pigeon_lib_internal.dart';
 import 'package:test/test.dart';
 
 class _ValidatorGeneratorAdapter implements GeneratorAdapter {
@@ -24,16 +24,16 @@ class _ValidatorGeneratorAdapter implements GeneratorAdapter {
   @override
   void generate(
     StringSink sink,
-    InternalPigeonOptions options,
+    InternalGolubOptions options,
     Root root,
     FileType fileType,
   ) {}
 
   @override
-  IOSink? shouldGenerate(InternalPigeonOptions options, FileType _) => sink;
+  IOSink? shouldGenerate(InternalGolubOptions options, FileType _) => sink;
 
   @override
-  List<Error> validate(InternalPigeonOptions options, Root root) {
+  List<Error> validate(InternalGolubOptions options, Root root) {
     didCallValidate = true;
     return <Error>[Error(message: '_ValidatorGenerator')];
   }
@@ -66,7 +66,7 @@ void main() {
   }
 
   test('parse args - input', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Pigeon.parseArgs(<String>[
       '--input',
       'foo.dart',
     ]);
@@ -74,7 +74,7 @@ void main() {
   });
 
   test('parse args - dart_out', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Pigeon.parseArgs(<String>[
       '--dart_out',
       'foo.dart',
     ]);
@@ -82,7 +82,7 @@ void main() {
   });
 
   test('parse args - java_package', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Pigeon.parseArgs(<String>[
       '--java_package',
       'com.google.foo',
     ]);
@@ -90,7 +90,7 @@ void main() {
   });
 
   test('parse args - input', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Pigeon.parseArgs(<String>[
       '--java_out',
       'foo.java',
     ]);
@@ -98,7 +98,7 @@ void main() {
   });
 
   test('parse args - objc_header_out', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Pigeon.parseArgs(<String>[
       '--objc_header_out',
       'foo.h',
     ]);
@@ -106,7 +106,7 @@ void main() {
   });
 
   test('parse args - objc_source_out', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Pigeon.parseArgs(<String>[
       '--objc_source_out',
       'foo.m',
     ]);
@@ -114,7 +114,7 @@ void main() {
   });
 
   test('parse args - swift_out', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Pigeon.parseArgs(<String>[
       '--swift_out',
       'Foo.swift',
     ]);
@@ -122,7 +122,7 @@ void main() {
   });
 
   test('parse args - kotlin_out', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Pigeon.parseArgs(<String>[
       '--kotlin_out',
       'Foo.kt',
     ]);
@@ -130,7 +130,7 @@ void main() {
   });
 
   test('parse args - kotlin_package', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Pigeon.parseArgs(<String>[
       '--kotlin_package',
       'com.google.foo',
     ]);
@@ -138,7 +138,7 @@ void main() {
   });
 
   test('parse args - cpp_header_out', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Pigeon.parseArgs(<String>[
       '--cpp_header_out',
       'foo.h',
     ]);
@@ -146,14 +146,14 @@ void main() {
   });
 
   test('parse args - java_use_generated_annotation', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Pigeon.parseArgs(<String>[
       '--java_use_generated_annotation',
     ]);
     expect(opts.javaOptions!.useGeneratedAnnotation, isTrue);
   });
 
   test('parse args - cpp_source_out', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Pigeon.parseArgs(<String>[
       '--cpp_source_out',
       'foo.cpp',
     ]);
@@ -161,7 +161,7 @@ void main() {
   });
 
   test('parse args - ast_out', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Pigeon.parseArgs(<String>[
       '--ast_out',
       'stdout',
     ]);
@@ -169,7 +169,7 @@ void main() {
   });
 
   test('parse args - base_path', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Pigeon.parseArgs(<String>[
       '--base_path',
       './foo/',
     ]);
@@ -277,9 +277,9 @@ abstract class Api {
     );
   });
 
-  test('Only allow one api annotation plus @ConfigurePigeon', () {
+  test('Only allow one api annotation plus @ConfigureGolub', () {
     const String source = '''
-@ConfigurePigeon(InternalPigeonOptions(
+@ConfigureGolub(InternalGolubOptions(
   dartOut: 'stdout',
   javaOut: 'stdout',
   dartOptions: DartOptions(),
@@ -480,7 +480,7 @@ abstract class NestorApi {
   });
 
   test('copyright flag', () {
-    final PigeonOptions results = Pigeon.parseArgs(<String>[
+    final GolubOptions results = Pigeon.parseArgs(<String>[
       '--copyright_header',
       'foobar.txt',
     ]);
@@ -489,7 +489,7 @@ abstract class NestorApi {
 
   test('Dart generator copyright flag', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const PigeonOptions options = PigeonOptions(
+    const GolubOptions options = GolubOptions(
       copyrightHeader: './copyright_header.txt',
       dartOut: '',
     );
@@ -497,7 +497,7 @@ abstract class NestorApi {
     final StringBuffer buffer = StringBuffer();
     dartGeneratorAdapter.generate(
       buffer,
-      InternalPigeonOptions.fromPigeonOptions(options),
+      InternalGolubOptions.fromGolubOptions(options),
       root,
       FileType.na,
     );
@@ -506,7 +506,7 @@ abstract class NestorApi {
 
   test('Java generator copyright flag', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const PigeonOptions options = PigeonOptions(
+    const GolubOptions options = GolubOptions(
       javaOut: 'Foo.java',
       copyrightHeader: './copyright_header.txt',
     );
@@ -514,7 +514,7 @@ abstract class NestorApi {
     final StringBuffer buffer = StringBuffer();
     javaGeneratorAdapter.generate(
       buffer,
-      InternalPigeonOptions.fromPigeonOptions(options),
+      InternalGolubOptions.fromGolubOptions(options),
       root,
       FileType.na,
     );
@@ -523,7 +523,7 @@ abstract class NestorApi {
 
   test('Objc header generator copyright flag', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const PigeonOptions options = PigeonOptions(
+    const GolubOptions options = GolubOptions(
       copyrightHeader: './copyright_header.txt',
       objcHeaderOut: '',
       objcSourceOut: '',
@@ -533,7 +533,7 @@ abstract class NestorApi {
     final StringBuffer buffer = StringBuffer();
     objcHeaderGeneratorAdapter.generate(
       buffer,
-      InternalPigeonOptions.fromPigeonOptions(options),
+      InternalGolubOptions.fromGolubOptions(options),
       root,
       FileType.header,
     );
@@ -542,7 +542,7 @@ abstract class NestorApi {
 
   test('Objc source generator copyright flag', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const PigeonOptions options = PigeonOptions(
+    const GolubOptions options = GolubOptions(
       copyrightHeader: './copyright_header.txt',
       objcHeaderOut: '',
       objcSourceOut: '',
@@ -552,7 +552,7 @@ abstract class NestorApi {
     final StringBuffer buffer = StringBuffer();
     objcSourceGeneratorAdapter.generate(
       buffer,
-      InternalPigeonOptions.fromPigeonOptions(options),
+      InternalGolubOptions.fromGolubOptions(options),
       root,
       FileType.source,
     );
@@ -561,7 +561,7 @@ abstract class NestorApi {
 
   test('Swift generator copyright flag', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const PigeonOptions options = PigeonOptions(
+    const GolubOptions options = GolubOptions(
       swiftOut: 'Foo.swift',
       copyrightHeader: './copyright_header.txt',
     );
@@ -569,7 +569,7 @@ abstract class NestorApi {
     final StringBuffer buffer = StringBuffer();
     swiftGeneratorAdapter.generate(
       buffer,
-      InternalPigeonOptions.fromPigeonOptions(options),
+      InternalGolubOptions.fromGolubOptions(options),
       root,
       FileType.na,
     );
@@ -578,7 +578,7 @@ abstract class NestorApi {
 
   test('C++ header generator copyright flag', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const PigeonOptions options = PigeonOptions(
+    const GolubOptions options = GolubOptions(
       cppSourceOut: '',
       cppHeaderOut: 'Foo.h',
       copyrightHeader: './copyright_header.txt',
@@ -587,7 +587,7 @@ abstract class NestorApi {
     final StringBuffer buffer = StringBuffer();
     cppHeaderGeneratorAdapter.generate(
       buffer,
-      InternalPigeonOptions.fromPigeonOptions(options),
+      InternalGolubOptions.fromGolubOptions(options),
       root,
       FileType.header,
     );
@@ -596,7 +596,7 @@ abstract class NestorApi {
 
   test('C++ source generator copyright flag', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const PigeonOptions options = PigeonOptions(
+    const GolubOptions options = GolubOptions(
       copyrightHeader: './copyright_header.txt',
       cppHeaderOut: '',
       cppSourceOut: '',
@@ -607,7 +607,7 @@ abstract class NestorApi {
     final StringBuffer buffer = StringBuffer();
     cppSourceGeneratorAdapter.generate(
       buffer,
-      InternalPigeonOptions.fromPigeonOptions(options),
+      InternalGolubOptions.fromGolubOptions(options),
       root,
       FileType.source,
     );
@@ -806,7 +806,7 @@ abstract class Api {
   });
 
   test('test valid import', () {
-    const String code = "import 'package:pigeon/pigeon.dart';\n";
+    const String code = "import 'package:golub/golub.dart';\n";
     final ParseResults parseResults = parseSource(code);
     expect(parseResults.errors.length, 0);
   });
@@ -1170,7 +1170,7 @@ abstract class Api {
 
   test('dart test has copyright', () {
     final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const PigeonOptions options = PigeonOptions(
+    const GolubOptions options = GolubOptions(
       copyrightHeader: './copyright_header.txt',
       dartTestOut: 'stdout',
       dartOut: 'stdout',
@@ -1180,7 +1180,7 @@ abstract class Api {
     final StringBuffer buffer = StringBuffer();
     dartTestGeneratorAdapter.generate(
       buffer,
-      InternalPigeonOptions.fromPigeonOptions(options),
+      InternalGolubOptions.fromGolubOptions(options),
       root,
       FileType.source,
     );
@@ -1301,9 +1301,9 @@ abstract class HostApiBridge {
     expect(results.root.enums[0].name, 'MessageKey');
   });
 
-  test('@ConfigurePigeon JavaOptions.copyrightHeader', () {
+  test('@ConfigureGolub JavaOptions.copyrightHeader', () {
     const String code = '''
-@ConfigurePigeon(InternalPigeonOptions(
+@ConfigureGolub(InternalGolubOptions(
   javaOptions: JavaOptions(copyrightHeader: <String>['A', 'Header']),
 ))
 class Message {
@@ -1312,13 +1312,13 @@ class Message {
 ''';
 
     final ParseResults results = parseSource(code);
-    final PigeonOptions options = PigeonOptions.fromMap(results.pigeonOptions!);
+    final GolubOptions options = GolubOptions.fromMap(results.golubOptions!);
     expect(options.javaOptions!.copyrightHeader, <String>['A', 'Header']);
   });
 
-  test('@ConfigurePigeon DartOptions.copyrightHeader', () {
+  test('@ConfigureGolub DartOptions.copyrightHeader', () {
     const String code = '''
-@ConfigurePigeon(PigeonOptions(
+@ConfigureGolub(GolubOptions(
   dartOptions: DartOptions(copyrightHeader: <String>['A', 'Header']),
 ))
 class Message {
@@ -1327,13 +1327,13 @@ class Message {
 ''';
 
     final ParseResults results = parseSource(code);
-    final PigeonOptions options = PigeonOptions.fromMap(results.pigeonOptions!);
+    final GolubOptions options = GolubOptions.fromMap(results.golubOptions!);
     expect(options.dartOptions!.copyrightHeader, <String>['A', 'Header']);
   });
 
-  test('@ConfigurePigeon ObjcOptions.copyrightHeader', () {
+  test('@ConfigureGolub ObjcOptions.copyrightHeader', () {
     const String code = '''
-@ConfigurePigeon(PigeonOptions(
+@ConfigureGolub(GolubOptions(
   objcOptions: ObjcOptions(copyrightHeader: <String>['A', 'Header']),
 ))
 class Message {
@@ -1342,13 +1342,13 @@ class Message {
 ''';
 
     final ParseResults results = parseSource(code);
-    final PigeonOptions options = PigeonOptions.fromMap(results.pigeonOptions!);
+    final GolubOptions options = GolubOptions.fromMap(results.golubOptions!);
     expect(options.objcOptions!.copyrightHeader, <String>['A', 'Header']);
   });
 
-  test('@ConfigurePigeon ObjcOptions.headerIncludePath', () {
+  test('@ConfigureGolub ObjcOptions.headerIncludePath', () {
     const String code = '''
-@ConfigurePigeon(PigeonOptions(
+@ConfigureGolub(GolubOptions(
   objcOptions: ObjcOptions(headerIncludePath: 'Header.path'),
 ))
 class Message {
@@ -1357,13 +1357,13 @@ class Message {
 ''';
 
     final ParseResults results = parseSource(code);
-    final PigeonOptions options = PigeonOptions.fromMap(results.pigeonOptions!);
+    final GolubOptions options = GolubOptions.fromMap(results.golubOptions!);
     expect(options.objcOptions?.headerIncludePath, 'Header.path');
   });
 
-  test('@ConfigurePigeon CppOptions.headerIncludePath', () {
+  test('@ConfigureGolub CppOptions.headerIncludePath', () {
     const String code = '''
-@ConfigurePigeon(PigeonOptions(
+@ConfigureGolub(GolubOptions(
   cppOptions: CppOptions(headerIncludePath: 'Header.path'),
 ))
 class Message {
@@ -1372,7 +1372,7 @@ class Message {
 ''';
 
     final ParseResults results = parseSource(code);
-    final PigeonOptions options = PigeonOptions.fromMap(results.pigeonOptions!);
+    final GolubOptions options = GolubOptions.fromMap(results.golubOptions!);
     expect(options.cppOptions?.headerIncludePath, 'Header.path');
   });
 
@@ -1488,14 +1488,14 @@ abstract class Api {
     await completer.future;
   });
 
-  test('run with PigeonOptions', () async {
+  test('run with GolubOptions', () async {
     final Completer<void> completer = Completer<void>();
     withTempFile('foo.dart', (File input) async {
       final _ValidatorGeneratorAdapter generator = _ValidatorGeneratorAdapter(
         null,
       );
       final int result = await Pigeon.runWithOptions(
-        PigeonOptions(input: input.path, dartOut: 'foo.dart'),
+        GolubOptions(input: input.path, dartOut: 'foo.dart'),
         adapters: <GeneratorAdapter>[generator],
       );
       expect(generator.didCallValidate, isFalse);

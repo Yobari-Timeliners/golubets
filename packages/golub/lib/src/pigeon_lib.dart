@@ -22,8 +22,8 @@ import 'package:path/path.dart' as path;
 import 'ast.dart';
 import 'cpp/cpp_generator.dart';
 import 'dart/dart_generator.dart';
-import 'generator_tools.dart';
 import 'generator_tools.dart' as generator_tools;
+import 'generator_tools.dart';
 import 'gobject/gobject_generator.dart';
 import 'java/java_generator.dart';
 import 'kotlin/kotlin_generator.dart';
@@ -158,12 +158,12 @@ const Object attached = _Attached();
 const Object static = _Static();
 
 /// Metadata annotation used to configure how Pigeon will generate code.
-class ConfigurePigeon {
-  /// Constructor for ConfigurePigeon.
-  const ConfigurePigeon(this.options);
+class ConfigureGolub {
+  /// Constructor for ConfigureGolub.
+  const ConfigureGolub(this.options);
 
-  /// The [PigeonOptions] that will be merged into the command line options.
-  final PigeonOptions options;
+  /// The [GolubOptions] that will be merged into the command line options.
+  final GolubOptions options;
 }
 
 /// Metadata to annotate a Pigeon API implemented by the host-platform.
@@ -310,10 +310,10 @@ class TaskQueue {
   final TaskQueueType type;
 }
 
-/// Options used when configuring Pigeon.
-class PigeonOptions {
-  /// Creates a instance of PigeonOptions
-  const PigeonOptions({
+/// Options used when configuring Golub.
+class GolubOptions {
+  /// Creates a instance of GolubOptions
+  const GolubOptions({
     this.input,
     this.dartOut,
     this.dartTestOut,
@@ -412,10 +412,10 @@ class PigeonOptions {
   /// The name of the package the pigeon files will be used in.
   final String? _dartPackageName;
 
-  /// Creates a [PigeonOptions] from a Map representation where:
-  /// `x = PigeonOptions.fromMap(x.toMap())`.
-  static PigeonOptions fromMap(Map<String, Object> map) {
-    return PigeonOptions(
+  /// Creates a [GolubOptions] from a Map representation where:
+  /// `x = GolubOptions.fromMap(x.toMap())`.
+  static GolubOptions fromMap(Map<String, Object> map) {
+    return GolubOptions(
       input: map['input'] as String?,
       dartOut: map['dartOut'] as String?,
       dartTestOut: map['dartTestOut'] as String?,
@@ -470,8 +470,8 @@ class PigeonOptions {
     );
   }
 
-  /// Converts a [PigeonOptions] to a Map representation where:
-  /// `x = PigeonOptions.fromMap(x.toMap())`.
+  /// Converts a [GolubOptions] to a Map representation where:
+  /// `x = GolubOptions.fromMap(x.toMap())`.
   Map<String, Object> toMap() {
     final Map<String, Object> result = <String, Object>{
       if (input != null) 'input': input!,
@@ -503,9 +503,9 @@ class PigeonOptions {
   }
 
   /// Overrides any non-null parameters from [options] into this to make a new
-  /// [PigeonOptions].
-  PigeonOptions merge(PigeonOptions options) {
-    return PigeonOptions.fromMap(mergeMaps(toMap(), options.toMap()));
+  /// [GolubOptions].
+  GolubOptions merge(GolubOptions options) {
+    return GolubOptions.fromMap(mergeMaps(toMap(), options.toMap()));
   }
 
   /// Returns provided or deduced package name, throws `Exception` if none found.
@@ -514,7 +514,7 @@ class PigeonOptions {
     if (name == null) {
       throw Exception(
         'Unable to deduce package name, and no package name supplied.\n'
-        'Add a `dartPackageName` property to your `PigeonOptions` config,\n'
+        'Add a `dartPackageName` property to your `GolubOptions` config,\n'
         'or add --package_name={name_of_package} to your command line pigeon call.',
       );
     }
@@ -577,7 +577,7 @@ class Pigeon {
       return ParseResults(
         root: Root.makeEmpty(),
         errors: compilationErrors,
-        pigeonOptions: null,
+        golubOptions: null,
       );
     }
   }
@@ -585,10 +585,10 @@ class Pigeon {
   /// String that describes how the tool is used.
   static String get usage {
     return '''
-Pigeon is a tool for generating type-safe communication code between Flutter
+Golub is a tool for generating type-safe communication code between Flutter
 and the host platform.
 
-usage: pigeon --input <pigeon path> --dart_out <dart path> [option]*
+usage: golub --input <golub path> --dart_out <dart path> [option]*
 
 options:
 ${_argParser.usage}''';
@@ -596,7 +596,7 @@ ${_argParser.usage}''';
 
   static final ArgParser _argParser =
       ArgParser()
-        ..addOption('input', help: 'REQUIRED: Path to pigeon file.')
+        ..addOption('input', help: 'REQUIRED: Path to golub file.')
         ..addOption(
           'dart_out',
           help:
@@ -704,15 +704,15 @@ ${_argParser.usage}''';
           help: 'The package that generated code will be in.',
         );
 
-  /// Convert command-line arguments to [PigeonOptions].
-  static PigeonOptions parseArgs(List<String> args) {
+  /// Convert command-line arguments to [GolubOptions].
+  static GolubOptions parseArgs(List<String> args) {
     // Note: This function shouldn't perform any logic, just translate the args
-    // to PigeonOptions.  Synthesized values inside of the PigeonOption should
+    // to GolubOptions.  Synthesized values inside of the GolubOptions should
     // get set in the `run` function to accommodate users that are using the
-    // `configurePigeon` function.
+    // `configureGolub` function.
     final ArgResults results = _argParser.parse(args);
 
-    final PigeonOptions opts = PigeonOptions(
+    final GolubOptions opts = GolubOptions(
       input: results['input'] as String?,
       dartOut: results['dart_out'] as String?,
       dartTestOut: results['dart_test_out'] as String?,
@@ -747,19 +747,19 @@ ${_argParser.usage}''';
     return opts;
   }
 
-  /// Crawls through the reflection system looking for a configurePigeon method and
+  /// Crawls through the reflection system looking for a configureGolub method and
   /// executing it.
-  static void _executeConfigurePigeon(PigeonOptions options) {
+  static void _executeConfigureGolub(GolubOptions options) {
     for (final LibraryMirror library
         in currentMirrorSystem().libraries.values) {
       for (final DeclarationMirror declaration in library.declarations.values) {
         if (declaration is MethodMirror &&
-            MirrorSystem.getName(declaration.simpleName) == 'configurePigeon') {
+            MirrorSystem.getName(declaration.simpleName) == 'configureGolub') {
           if (declaration.parameters.length == 1 &&
-              declaration.parameters[0].type == reflectClass(PigeonOptions)) {
+              declaration.parameters[0].type == reflectClass(GolubOptions)) {
             library.invoke(declaration.simpleName, <dynamic>[options]);
           } else {
-            print("warning: invalid 'configurePigeon' method defined.");
+            print("warning: invalid 'configureGolub' method defined.");
           }
         }
       }
@@ -775,7 +775,7 @@ ${_argParser.usage}''';
     List<GeneratorAdapter>? adapters,
     String? sdkPath,
   }) {
-    final PigeonOptions options = Pigeon.parseArgs(args);
+    final GolubOptions options = Pigeon.parseArgs(args);
     return runWithOptions(options, adapters: adapters, sdkPath: sdkPath);
   }
 
@@ -784,7 +784,7 @@ ${_argParser.usage}''';
   /// customize the generators that pigeon will use. The optional parameter
   /// [sdkPath] allows you to specify the Dart SDK path.
   static Future<int> runWithOptions(
-    PigeonOptions options, {
+    GolubOptions options, {
     List<GeneratorAdapter>? adapters,
     String? sdkPath,
     bool mergeDefinitionFileOptions = true,
@@ -807,7 +807,7 @@ ${_argParser.usage}''';
           ObjcGeneratorAdapter(),
           AstGeneratorAdapter(),
         ];
-    _executeConfigurePigeon(options);
+    _executeConfigureGolub(options);
 
     if (options.input == null) {
       print(usage);
@@ -827,14 +827,14 @@ ${_argParser.usage}''';
       }
     }
 
-    if (parseResults.pigeonOptions != null && mergeDefinitionFileOptions) {
-      options = PigeonOptions.fromMap(
-        mergeMaps(options.toMap(), parseResults.pigeonOptions!),
+    if (parseResults.golubOptions != null && mergeDefinitionFileOptions) {
+      options = GolubOptions.fromMap(
+        mergeMaps(options.toMap(), parseResults.golubOptions!),
       );
     }
 
-    final InternalPigeonOptions internalOptions =
-        InternalPigeonOptions.fromPigeonOptions(options);
+    final InternalGolubOptions internalOptions =
+        InternalGolubOptions.fromGolubOptions(options);
 
     for (final GeneratorAdapter adapter in safeGeneratorAdapters) {
       final IOSink? sink = adapter.shouldGenerate(
@@ -924,7 +924,7 @@ class ParseResults {
   ParseResults({
     required this.root,
     required this.errors,
-    required this.pigeonOptions,
+    required this.golubOptions,
   });
 
   /// The resulting AST.
@@ -933,7 +933,7 @@ class ParseResults {
   /// Errors generated while parsing input.
   final List<Error> errors;
 
-  /// The Map representation of any [PigeonOptions] specified with
-  /// [ConfigurePigeon] during parsing.
-  final Map<String, Object>? pigeonOptions;
+  /// The Map representation of any [GolubOptions] specified with
+  /// [ConfigureGolub] during parsing.
+  final Map<String, Object>? golubOptions;
 }

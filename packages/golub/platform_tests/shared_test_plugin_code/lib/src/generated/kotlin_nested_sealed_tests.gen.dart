@@ -18,26 +18,23 @@ PlatformException _createConnectionError(String channelName) {
     message: 'Unable to establish connection on channel: "$channelName".',
   );
 }
-
 bool _deepEquals(Object? a, Object? b) {
   if (a is List && b is List) {
     return a.length == b.length &&
-        a.indexed.every(
-          ((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]),
-        );
+        a.indexed
+        .every(((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]));
   }
   if (a is Map && b is Map) {
-    return a.length == b.length &&
-        a.entries.every(
-          (MapEntry<Object?, Object?> entry) =>
-              (b as Map<Object?, Object?>).containsKey(entry.key) &&
-              _deepEquals(entry.value, b[entry.key]),
-        );
+    return a.length == b.length && a.entries.every((MapEntry<Object?, Object?> entry) =>
+        (b as Map<Object?, Object?>).containsKey(entry.key) &&
+        _deepEquals(entry.value, b[entry.key]));
   }
   return a == b;
 }
 
-sealed class SomeState {}
+
+sealed class SomeState {
+}
 
 class Loading extends SomeState {
   Loading({
@@ -53,8 +50,7 @@ class Loading extends SomeState {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static Loading decode(Object result) {
     result as List<Object?>;
@@ -77,7 +73,8 @@ class Loading extends SomeState {
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
-  int get hashCode => Object.hashAll(_toList());
+  int get hashCode => Object.hashAll(_toList())
+;
 }
 
 class Success extends SomeState {
@@ -94,8 +91,7 @@ class Success extends SomeState {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static Success decode(Object result) {
     result as List<Object?>;
@@ -118,7 +114,8 @@ class Success extends SomeState {
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
-  int get hashCode => Object.hashAll(_toList());
+  int get hashCode => Object.hashAll(_toList())
+;
 }
 
 class Error extends SomeState {
@@ -135,8 +132,7 @@ class Error extends SomeState {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static Error decode(Object result) {
     result as List<Object?>;
@@ -159,8 +155,10 @@ class Error extends SomeState {
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
-  int get hashCode => Object.hashAll(_toList());
+  int get hashCode => Object.hashAll(_toList())
+;
 }
+
 
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
@@ -169,13 +167,13 @@ class _PigeonCodec extends StandardMessageCodec {
     if (value is int) {
       buffer.putUint8(4);
       buffer.putInt64(value);
-    } else if (value is Loading) {
+    }    else if (value is Loading) {
       buffer.putUint8(129);
       writeValue(buffer, value.encode());
-    } else if (value is Success) {
+    }    else if (value is Success) {
       buffer.putUint8(130);
       writeValue(buffer, value.encode());
-    } else if (value is Error) {
+    }    else if (value is Error) {
       buffer.putUint8(131);
       writeValue(buffer, value.encode());
     } else {
@@ -186,11 +184,11 @@ class _PigeonCodec extends StandardMessageCodec {
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 129:
+      case 129: 
         return Loading.decode(readValue(buffer)!);
-      case 130:
+      case 130: 
         return Success.decode(readValue(buffer)!);
-      case 131:
+      case 131: 
         return Error.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -202,12 +200,9 @@ class KotlinNestedSealedApi {
   /// Constructor for [KotlinNestedSealedApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  KotlinNestedSealedApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : pigeonVar_binaryMessenger = binaryMessenger,
-       pigeonVar_messageChannelSuffix =
-           messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+  KotlinNestedSealedApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
+      : pigeonVar_binaryMessenger = binaryMessenger,
+        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
   final BinaryMessenger? pigeonVar_binaryMessenger;
 
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
@@ -215,17 +210,13 @@ class KotlinNestedSealedApi {
   final String pigeonVar_messageChannelSuffix;
 
   Future<SomeState> echo(SomeState state) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.pigeon_integration_tests.KotlinNestedSealedApi.echo$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
-          pigeonVar_channelName,
-          pigeonChannelCodec,
-          binaryMessenger: pigeonVar_binaryMessenger,
-        );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[state],
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.pigeon_integration_tests.KotlinNestedSealedApi.echo$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
     );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[state]);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {

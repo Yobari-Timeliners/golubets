@@ -1,5 +1,5 @@
-name: pigeon_example_app
-description: An example of using Pigeon in an application.
+name: golub_example_app
+description: An example of using Golub in an application.
 publish_to: 'none'
 version: 1.0.0
 
@@ -14,6 +14,8 @@ dev_dependencies:
   build_runner: ^2.1.10
   flutter_test:
     sdk: flutter
+  golub:
+    path: ../../
   integration_test:
     sdk: flutter
     # When depending on this package from a real application you should use:
@@ -21,8 +23,6 @@ dev_dependencies:
     # See https://dart.dev/tools/pub/dependencies#version-constraints
     # The example app is bundled with the plugin so we use a path dependency on
     # the parent directory to use the current plugin's version.
-  pigeon:
-    path: ../../
 
 flutter:
   uses-material-design: true

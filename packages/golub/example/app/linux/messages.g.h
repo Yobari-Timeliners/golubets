@@ -12,27 +12,27 @@
 G_BEGIN_DECLS
 
 /**
- * PigeonExamplePackageCode:
- * PIGEON_EXAMPLE_PACKAGE_CODE_ONE:
- * PIGEON_EXAMPLE_PACKAGE_CODE_TWO:
+ * GolubExamplePackageCode:
+ * GOLUB_EXAMPLE_PACKAGE_CODE_ONE:
+ * GOLUB_EXAMPLE_PACKAGE_CODE_TWO:
  *
  */
 typedef enum {
-  PIGEON_EXAMPLE_PACKAGE_CODE_ONE = 0,
-  PIGEON_EXAMPLE_PACKAGE_CODE_TWO = 1
-} PigeonExamplePackageCode;
+  GOLUB_EXAMPLE_PACKAGE_CODE_ONE = 0,
+  GOLUB_EXAMPLE_PACKAGE_CODE_TWO = 1
+} GolubExamplePackageCode;
 
 /**
- * PigeonExamplePackageMessageData:
+ * GolubExamplePackageMessageData:
  *
  */
 
-G_DECLARE_FINAL_TYPE(PigeonExamplePackageMessageData,
-                     pigeon_example_package_message_data,
-                     PIGEON_EXAMPLE_PACKAGE, MESSAGE_DATA, GObject)
+G_DECLARE_FINAL_TYPE(GolubExamplePackageMessageData,
+                     golub_example_package_message_data, GOLUB_EXAMPLE_PACKAGE,
+                     MESSAGE_DATA, GObject)
 
 /**
- * pigeon_example_package_message_data_new:
+ * golub_example_package_message_data_new:
  * name: field in this object.
  * description: field in this object.
  * code: field in this object.
@@ -40,60 +40,59 @@ G_DECLARE_FINAL_TYPE(PigeonExamplePackageMessageData,
  *
  * Creates a new #MessageData object.
  *
- * Returns: a new #PigeonExamplePackageMessageData
+ * Returns: a new #GolubExamplePackageMessageData
  */
-PigeonExamplePackageMessageData* pigeon_example_package_message_data_new(
-    const gchar* name, const gchar* description, PigeonExamplePackageCode code,
+GolubExamplePackageMessageData* golub_example_package_message_data_new(
+    const gchar* name, const gchar* description, GolubExamplePackageCode code,
     FlValue* data);
 
 /**
- * pigeon_example_package_message_data_get_name
- * @object: a #PigeonExamplePackageMessageData.
+ * golub_example_package_message_data_get_name
+ * @object: a #GolubExamplePackageMessageData.
  *
  * Gets the value of the name field of @object.
  *
  * Returns: the field value.
  */
-const gchar* pigeon_example_package_message_data_get_name(
-    PigeonExamplePackageMessageData* object);
+const gchar* golub_example_package_message_data_get_name(
+    GolubExamplePackageMessageData* object);
 
 /**
- * pigeon_example_package_message_data_get_description
- * @object: a #PigeonExamplePackageMessageData.
+ * golub_example_package_message_data_get_description
+ * @object: a #GolubExamplePackageMessageData.
  *
  * Gets the value of the description field of @object.
  *
  * Returns: the field value.
  */
-const gchar* pigeon_example_package_message_data_get_description(
-    PigeonExamplePackageMessageData* object);
+const gchar* golub_example_package_message_data_get_description(
+    GolubExamplePackageMessageData* object);
 
 /**
- * pigeon_example_package_message_data_get_code
- * @object: a #PigeonExamplePackageMessageData.
+ * golub_example_package_message_data_get_code
+ * @object: a #GolubExamplePackageMessageData.
  *
  * Gets the value of the code field of @object.
  *
  * Returns: the field value.
  */
-PigeonExamplePackageCode pigeon_example_package_message_data_get_code(
-    PigeonExamplePackageMessageData* object);
+GolubExamplePackageCode golub_example_package_message_data_get_code(
+    GolubExamplePackageMessageData* object);
 
 /**
- * pigeon_example_package_message_data_get_data
- * @object: a #PigeonExamplePackageMessageData.
+ * golub_example_package_message_data_get_data
+ * @object: a #GolubExamplePackageMessageData.
  *
  * Gets the value of the data field of @object.
  *
  * Returns: the field value.
  */
-FlValue* pigeon_example_package_message_data_get_data(
-    PigeonExamplePackageMessageData* object);
+FlValue* golub_example_package_message_data_get_data(
+    GolubExamplePackageMessageData* object);
 
-G_DECLARE_FINAL_TYPE(PigeonExamplePackageMessageCodec,
-                     pigeon_example_package_message_codec,
-                     PIGEON_EXAMPLE_PACKAGE, MESSAGE_CODEC,
-                     FlStandardMessageCodec)
+G_DECLARE_FINAL_TYPE(GolubExamplePackageMessageCodec,
+                     golub_example_package_message_codec, GOLUB_EXAMPLE_PACKAGE,
+                     MESSAGE_CODEC, FlStandardMessageCodec)
 
 /**
  * Custom type ID constants:
@@ -102,105 +101,104 @@ G_DECLARE_FINAL_TYPE(PigeonExamplePackageMessageCodec,
  * They are used in the codec to encode and decode custom types.
  * They may be used in custom object creation functions to identify the type.
  */
-extern const int pigeon_example_package_code_type_id;
-extern const int pigeon_example_package_message_data_type_id;
+extern const int golub_example_package_code_type_id;
+extern const int golub_example_package_message_data_type_id;
 
-G_DECLARE_FINAL_TYPE(PigeonExamplePackageExampleHostApi,
-                     pigeon_example_package_example_host_api,
-                     PIGEON_EXAMPLE_PACKAGE, EXAMPLE_HOST_API, GObject)
+G_DECLARE_FINAL_TYPE(GolubExamplePackageExampleHostApi,
+                     golub_example_package_example_host_api,
+                     GOLUB_EXAMPLE_PACKAGE, EXAMPLE_HOST_API, GObject)
 
-G_DECLARE_FINAL_TYPE(PigeonExamplePackageExampleHostApiResponseHandle,
-                     pigeon_example_package_example_host_api_response_handle,
-                     PIGEON_EXAMPLE_PACKAGE, EXAMPLE_HOST_API_RESPONSE_HANDLE,
+G_DECLARE_FINAL_TYPE(GolubExamplePackageExampleHostApiResponseHandle,
+                     golub_example_package_example_host_api_response_handle,
+                     GOLUB_EXAMPLE_PACKAGE, EXAMPLE_HOST_API_RESPONSE_HANDLE,
                      GObject)
 
 G_DECLARE_FINAL_TYPE(
-    PigeonExamplePackageExampleHostApiGetHostLanguageResponse,
-    pigeon_example_package_example_host_api_get_host_language_response,
-    PIGEON_EXAMPLE_PACKAGE, EXAMPLE_HOST_API_GET_HOST_LANGUAGE_RESPONSE,
-    GObject)
+    GolubExamplePackageExampleHostApiGetHostLanguageResponse,
+    golub_example_package_example_host_api_get_host_language_response,
+    GOLUB_EXAMPLE_PACKAGE, EXAMPLE_HOST_API_GET_HOST_LANGUAGE_RESPONSE, GObject)
 
 /**
- * pigeon_example_package_example_host_api_get_host_language_response_new:
+ * golub_example_package_example_host_api_get_host_language_response_new:
  *
  * Creates a new response to ExampleHostApi.getHostLanguage.
  *
- * Returns: a new #PigeonExamplePackageExampleHostApiGetHostLanguageResponse
+ * Returns: a new #GolubExamplePackageExampleHostApiGetHostLanguageResponse
  */
-PigeonExamplePackageExampleHostApiGetHostLanguageResponse*
-pigeon_example_package_example_host_api_get_host_language_response_new(
+GolubExamplePackageExampleHostApiGetHostLanguageResponse*
+golub_example_package_example_host_api_get_host_language_response_new(
     const gchar* return_value);
 
 /**
- * pigeon_example_package_example_host_api_get_host_language_response_new_error:
+ * golub_example_package_example_host_api_get_host_language_response_new_error:
  * @code: error code.
  * @message: error message.
  * @details: (allow-none): error details or %NULL.
  *
  * Creates a new error response to ExampleHostApi.getHostLanguage.
  *
- * Returns: a new #PigeonExamplePackageExampleHostApiGetHostLanguageResponse
+ * Returns: a new #GolubExamplePackageExampleHostApiGetHostLanguageResponse
  */
-PigeonExamplePackageExampleHostApiGetHostLanguageResponse*
-pigeon_example_package_example_host_api_get_host_language_response_new_error(
+GolubExamplePackageExampleHostApiGetHostLanguageResponse*
+golub_example_package_example_host_api_get_host_language_response_new_error(
     const gchar* code, const gchar* message, FlValue* details);
 
-G_DECLARE_FINAL_TYPE(PigeonExamplePackageExampleHostApiAddResponse,
-                     pigeon_example_package_example_host_api_add_response,
-                     PIGEON_EXAMPLE_PACKAGE, EXAMPLE_HOST_API_ADD_RESPONSE,
+G_DECLARE_FINAL_TYPE(GolubExamplePackageExampleHostApiAddResponse,
+                     golub_example_package_example_host_api_add_response,
+                     GOLUB_EXAMPLE_PACKAGE, EXAMPLE_HOST_API_ADD_RESPONSE,
                      GObject)
 
 /**
- * pigeon_example_package_example_host_api_add_response_new:
+ * golub_example_package_example_host_api_add_response_new:
  *
  * Creates a new response to ExampleHostApi.add.
  *
- * Returns: a new #PigeonExamplePackageExampleHostApiAddResponse
+ * Returns: a new #GolubExamplePackageExampleHostApiAddResponse
  */
-PigeonExamplePackageExampleHostApiAddResponse*
-pigeon_example_package_example_host_api_add_response_new(int64_t return_value);
+GolubExamplePackageExampleHostApiAddResponse*
+golub_example_package_example_host_api_add_response_new(int64_t return_value);
 
 /**
- * pigeon_example_package_example_host_api_add_response_new_error:
+ * golub_example_package_example_host_api_add_response_new_error:
  * @code: error code.
  * @message: error message.
  * @details: (allow-none): error details or %NULL.
  *
  * Creates a new error response to ExampleHostApi.add.
  *
- * Returns: a new #PigeonExamplePackageExampleHostApiAddResponse
+ * Returns: a new #GolubExamplePackageExampleHostApiAddResponse
  */
-PigeonExamplePackageExampleHostApiAddResponse*
-pigeon_example_package_example_host_api_add_response_new_error(
+GolubExamplePackageExampleHostApiAddResponse*
+golub_example_package_example_host_api_add_response_new_error(
     const gchar* code, const gchar* message, FlValue* details);
 
 /**
- * PigeonExamplePackageExampleHostApiVTable:
+ * GolubExamplePackageExampleHostApiVTable:
  *
  * Table of functions exposed by ExampleHostApi to be implemented by the API
  * provider.
  */
 typedef struct {
-  PigeonExamplePackageExampleHostApiGetHostLanguageResponse* (
+  GolubExamplePackageExampleHostApiGetHostLanguageResponse* (
       *get_host_language)(gpointer user_data);
-  PigeonExamplePackageExampleHostApiAddResponse* (*add)(int64_t a, int64_t b,
-                                                        gpointer user_data);
+  GolubExamplePackageExampleHostApiAddResponse* (*add)(int64_t a, int64_t b,
+                                                       gpointer user_data);
   void (*send_message)(
-      PigeonExamplePackageMessageData* message,
-      PigeonExamplePackageExampleHostApiResponseHandle* response_handle,
+      GolubExamplePackageMessageData* message,
+      GolubExamplePackageExampleHostApiResponseHandle* response_handle,
       gpointer user_data);
   void (*send_message_modern_async)(
-      PigeonExamplePackageMessageData* message,
-      PigeonExamplePackageExampleHostApiResponseHandle* response_handle,
+      GolubExamplePackageMessageData* message,
+      GolubExamplePackageExampleHostApiResponseHandle* response_handle,
       gpointer user_data);
   void (*send_message_modern_async_throws)(
-      PigeonExamplePackageMessageData* message,
-      PigeonExamplePackageExampleHostApiResponseHandle* response_handle,
+      GolubExamplePackageMessageData* message,
+      GolubExamplePackageExampleHostApiResponseHandle* response_handle,
       gpointer user_data);
-} PigeonExamplePackageExampleHostApiVTable;
+} GolubExamplePackageExampleHostApiVTable;
 
 /**
- * pigeon_example_package_example_host_api_set_method_handlers:
+ * golub_example_package_example_host_api_set_method_handlers:
  *
  * @messenger: an #FlBinaryMessenger.
  * @suffix: (allow-none): a suffix to add to the API or %NULL for none.
@@ -211,185 +209,184 @@ typedef struct {
  *
  * Connects the method handlers in the ExampleHostApi API.
  */
-void pigeon_example_package_example_host_api_set_method_handlers(
+void golub_example_package_example_host_api_set_method_handlers(
     FlBinaryMessenger* messenger, const gchar* suffix,
-    const PigeonExamplePackageExampleHostApiVTable* vtable, gpointer user_data,
+    const GolubExamplePackageExampleHostApiVTable* vtable, gpointer user_data,
     GDestroyNotify user_data_free_func);
 
 /**
- * pigeon_example_package_example_host_api_clear_method_handlers:
+ * golub_example_package_example_host_api_clear_method_handlers:
  *
  * @messenger: an #FlBinaryMessenger.
  * @suffix: (allow-none): a suffix to add to the API or %NULL for none.
  *
  * Clears the method handlers in the ExampleHostApi API.
  */
-void pigeon_example_package_example_host_api_clear_method_handlers(
+void golub_example_package_example_host_api_clear_method_handlers(
     FlBinaryMessenger* messenger, const gchar* suffix);
 
 /**
- * pigeon_example_package_example_host_api_respond_send_message:
- * @response_handle: a #PigeonExamplePackageExampleHostApiResponseHandle.
+ * golub_example_package_example_host_api_respond_send_message:
+ * @response_handle: a #GolubExamplePackageExampleHostApiResponseHandle.
  * @return_value: location to write the value returned by this method.
  *
  * Responds to ExampleHostApi.sendMessage.
  */
-void pigeon_example_package_example_host_api_respond_send_message(
-    PigeonExamplePackageExampleHostApiResponseHandle* response_handle,
+void golub_example_package_example_host_api_respond_send_message(
+    GolubExamplePackageExampleHostApiResponseHandle* response_handle,
     gboolean return_value);
 
 /**
- * pigeon_example_package_example_host_api_respond_error_send_message:
- * @response_handle: a #PigeonExamplePackageExampleHostApiResponseHandle.
+ * golub_example_package_example_host_api_respond_error_send_message:
+ * @response_handle: a #GolubExamplePackageExampleHostApiResponseHandle.
  * @code: error code.
  * @message: error message.
  * @details: (allow-none): error details or %NULL.
  *
  * Responds with an error to ExampleHostApi.sendMessage.
  */
-void pigeon_example_package_example_host_api_respond_error_send_message(
-    PigeonExamplePackageExampleHostApiResponseHandle* response_handle,
+void golub_example_package_example_host_api_respond_error_send_message(
+    GolubExamplePackageExampleHostApiResponseHandle* response_handle,
     const gchar* code, const gchar* message, FlValue* details);
 
 /**
- * pigeon_example_package_example_host_api_respond_send_message_modern_async:
- * @response_handle: a #PigeonExamplePackageExampleHostApiResponseHandle.
+ * golub_example_package_example_host_api_respond_send_message_modern_async:
+ * @response_handle: a #GolubExamplePackageExampleHostApiResponseHandle.
  * @return_value: location to write the value returned by this method.
  *
  * Responds to ExampleHostApi.sendMessageModernAsync.
  */
-void pigeon_example_package_example_host_api_respond_send_message_modern_async(
-    PigeonExamplePackageExampleHostApiResponseHandle* response_handle,
+void golub_example_package_example_host_api_respond_send_message_modern_async(
+    GolubExamplePackageExampleHostApiResponseHandle* response_handle,
     gboolean return_value);
 
 /**
- * pigeon_example_package_example_host_api_respond_error_send_message_modern_async:
- * @response_handle: a #PigeonExamplePackageExampleHostApiResponseHandle.
+ * golub_example_package_example_host_api_respond_error_send_message_modern_async:
+ * @response_handle: a #GolubExamplePackageExampleHostApiResponseHandle.
  * @code: error code.
  * @message: error message.
  * @details: (allow-none): error details or %NULL.
  *
  * Responds with an error to ExampleHostApi.sendMessageModernAsync.
  */
-void pigeon_example_package_example_host_api_respond_error_send_message_modern_async(
-    PigeonExamplePackageExampleHostApiResponseHandle* response_handle,
+void golub_example_package_example_host_api_respond_error_send_message_modern_async(
+    GolubExamplePackageExampleHostApiResponseHandle* response_handle,
     const gchar* code, const gchar* message, FlValue* details);
 
 /**
- * pigeon_example_package_example_host_api_respond_send_message_modern_async_throws:
- * @response_handle: a #PigeonExamplePackageExampleHostApiResponseHandle.
+ * golub_example_package_example_host_api_respond_send_message_modern_async_throws:
+ * @response_handle: a #GolubExamplePackageExampleHostApiResponseHandle.
  * @return_value: location to write the value returned by this method.
  *
  * Responds to ExampleHostApi.sendMessageModernAsyncThrows.
  */
-void pigeon_example_package_example_host_api_respond_send_message_modern_async_throws(
-    PigeonExamplePackageExampleHostApiResponseHandle* response_handle,
+void golub_example_package_example_host_api_respond_send_message_modern_async_throws(
+    GolubExamplePackageExampleHostApiResponseHandle* response_handle,
     gboolean return_value);
 
 /**
- * pigeon_example_package_example_host_api_respond_error_send_message_modern_async_throws:
- * @response_handle: a #PigeonExamplePackageExampleHostApiResponseHandle.
+ * golub_example_package_example_host_api_respond_error_send_message_modern_async_throws:
+ * @response_handle: a #GolubExamplePackageExampleHostApiResponseHandle.
  * @code: error code.
  * @message: error message.
  * @details: (allow-none): error details or %NULL.
  *
  * Responds with an error to ExampleHostApi.sendMessageModernAsyncThrows.
  */
-void pigeon_example_package_example_host_api_respond_error_send_message_modern_async_throws(
-    PigeonExamplePackageExampleHostApiResponseHandle* response_handle,
+void golub_example_package_example_host_api_respond_error_send_message_modern_async_throws(
+    GolubExamplePackageExampleHostApiResponseHandle* response_handle,
     const gchar* code, const gchar* message, FlValue* details);
 
 G_DECLARE_FINAL_TYPE(
-    PigeonExamplePackageMessageFlutterApiFlutterMethodResponse,
-    pigeon_example_package_message_flutter_api_flutter_method_response,
-    PIGEON_EXAMPLE_PACKAGE, MESSAGE_FLUTTER_API_FLUTTER_METHOD_RESPONSE,
-    GObject)
+    GolubExamplePackageMessageFlutterApiFlutterMethodResponse,
+    golub_example_package_message_flutter_api_flutter_method_response,
+    GOLUB_EXAMPLE_PACKAGE, MESSAGE_FLUTTER_API_FLUTTER_METHOD_RESPONSE, GObject)
 
 /**
- * pigeon_example_package_message_flutter_api_flutter_method_response_is_error:
- * @response: a #PigeonExamplePackageMessageFlutterApiFlutterMethodResponse.
+ * golub_example_package_message_flutter_api_flutter_method_response_is_error:
+ * @response: a #GolubExamplePackageMessageFlutterApiFlutterMethodResponse.
  *
  * Checks if a response to MessageFlutterApi.flutterMethod is an error.
  *
  * Returns: a %TRUE if this response is an error.
  */
 gboolean
-pigeon_example_package_message_flutter_api_flutter_method_response_is_error(
-    PigeonExamplePackageMessageFlutterApiFlutterMethodResponse* response);
+golub_example_package_message_flutter_api_flutter_method_response_is_error(
+    GolubExamplePackageMessageFlutterApiFlutterMethodResponse* response);
 
 /**
- * pigeon_example_package_message_flutter_api_flutter_method_response_get_error_code:
- * @response: a #PigeonExamplePackageMessageFlutterApiFlutterMethodResponse.
+ * golub_example_package_message_flutter_api_flutter_method_response_get_error_code:
+ * @response: a #GolubExamplePackageMessageFlutterApiFlutterMethodResponse.
  *
  * Get the error code for this response.
  *
  * Returns: an error code or %NULL if not an error.
  */
 const gchar*
-pigeon_example_package_message_flutter_api_flutter_method_response_get_error_code(
-    PigeonExamplePackageMessageFlutterApiFlutterMethodResponse* response);
+golub_example_package_message_flutter_api_flutter_method_response_get_error_code(
+    GolubExamplePackageMessageFlutterApiFlutterMethodResponse* response);
 
 /**
- * pigeon_example_package_message_flutter_api_flutter_method_response_get_error_message:
- * @response: a #PigeonExamplePackageMessageFlutterApiFlutterMethodResponse.
+ * golub_example_package_message_flutter_api_flutter_method_response_get_error_message:
+ * @response: a #GolubExamplePackageMessageFlutterApiFlutterMethodResponse.
  *
  * Get the error message for this response.
  *
  * Returns: an error message.
  */
 const gchar*
-pigeon_example_package_message_flutter_api_flutter_method_response_get_error_message(
-    PigeonExamplePackageMessageFlutterApiFlutterMethodResponse* response);
+golub_example_package_message_flutter_api_flutter_method_response_get_error_message(
+    GolubExamplePackageMessageFlutterApiFlutterMethodResponse* response);
 
 /**
- * pigeon_example_package_message_flutter_api_flutter_method_response_get_error_details:
- * @response: a #PigeonExamplePackageMessageFlutterApiFlutterMethodResponse.
+ * golub_example_package_message_flutter_api_flutter_method_response_get_error_details:
+ * @response: a #GolubExamplePackageMessageFlutterApiFlutterMethodResponse.
  *
  * Get the error details for this response.
  *
  * Returns: (allow-none): an error details or %NULL.
  */
 FlValue*
-pigeon_example_package_message_flutter_api_flutter_method_response_get_error_details(
-    PigeonExamplePackageMessageFlutterApiFlutterMethodResponse* response);
+golub_example_package_message_flutter_api_flutter_method_response_get_error_details(
+    GolubExamplePackageMessageFlutterApiFlutterMethodResponse* response);
 
 /**
- * pigeon_example_package_message_flutter_api_flutter_method_response_get_return_value:
- * @response: a #PigeonExamplePackageMessageFlutterApiFlutterMethodResponse.
+ * golub_example_package_message_flutter_api_flutter_method_response_get_return_value:
+ * @response: a #GolubExamplePackageMessageFlutterApiFlutterMethodResponse.
  *
  * Get the return value for this response.
  *
  * Returns: a return value.
  */
 const gchar*
-pigeon_example_package_message_flutter_api_flutter_method_response_get_return_value(
-    PigeonExamplePackageMessageFlutterApiFlutterMethodResponse* response);
+golub_example_package_message_flutter_api_flutter_method_response_get_return_value(
+    GolubExamplePackageMessageFlutterApiFlutterMethodResponse* response);
 
 /**
- * PigeonExamplePackageMessageFlutterApi:
+ * GolubExamplePackageMessageFlutterApi:
  *
  */
 
-G_DECLARE_FINAL_TYPE(PigeonExamplePackageMessageFlutterApi,
-                     pigeon_example_package_message_flutter_api,
-                     PIGEON_EXAMPLE_PACKAGE, MESSAGE_FLUTTER_API, GObject)
+G_DECLARE_FINAL_TYPE(GolubExamplePackageMessageFlutterApi,
+                     golub_example_package_message_flutter_api,
+                     GOLUB_EXAMPLE_PACKAGE, MESSAGE_FLUTTER_API, GObject)
 
 /**
- * pigeon_example_package_message_flutter_api_new:
+ * golub_example_package_message_flutter_api_new:
  * @messenger: an #FlBinaryMessenger.
  * @suffix: (allow-none): a suffix to add to the API or %NULL for none.
  *
  * Creates a new object to access the MessageFlutterApi API.
  *
- * Returns: a new #PigeonExamplePackageMessageFlutterApi
+ * Returns: a new #GolubExamplePackageMessageFlutterApi
  */
-PigeonExamplePackageMessageFlutterApi*
-pigeon_example_package_message_flutter_api_new(FlBinaryMessenger* messenger,
-                                               const gchar* suffix);
+GolubExamplePackageMessageFlutterApi*
+golub_example_package_message_flutter_api_new(FlBinaryMessenger* messenger,
+                                              const gchar* suffix);
 
 /**
- * pigeon_example_package_message_flutter_api_flutter_method:
- * @api: a #PigeonExamplePackageMessageFlutterApi.
+ * golub_example_package_message_flutter_api_flutter_method:
+ * @api: a #GolubExamplePackageMessageFlutterApi.
  * @a_string: (allow-none): parameter for this method.
  * @cancellable: (allow-none): a #GCancellable or %NULL.
  * @callback: (scope async): (allow-none): a #GAsyncReadyCallback to call when
@@ -397,26 +394,26 @@ pigeon_example_package_message_flutter_api_new(FlBinaryMessenger* messenger,
  * @user_data: (closure): user data to pass to @callback.
  *
  */
-void pigeon_example_package_message_flutter_api_flutter_method(
-    PigeonExamplePackageMessageFlutterApi* api, const gchar* a_string,
+void golub_example_package_message_flutter_api_flutter_method(
+    GolubExamplePackageMessageFlutterApi* api, const gchar* a_string,
     GCancellable* cancellable, GAsyncReadyCallback callback,
     gpointer user_data);
 
 /**
- * pigeon_example_package_message_flutter_api_flutter_method_finish:
- * @api: a #PigeonExamplePackageMessageFlutterApi.
+ * golub_example_package_message_flutter_api_flutter_method_finish:
+ * @api: a #GolubExamplePackageMessageFlutterApi.
  * @result: a #GAsyncResult.
  * @error: (allow-none): #GError location to store the error occurring, or %NULL
  * to ignore.
  *
- * Completes a pigeon_example_package_message_flutter_api_flutter_method() call.
+ * Completes a golub_example_package_message_flutter_api_flutter_method() call.
  *
- * Returns: a #PigeonExamplePackageMessageFlutterApiFlutterMethodResponse or
+ * Returns: a #GolubExamplePackageMessageFlutterApiFlutterMethodResponse or
  * %NULL on error.
  */
-PigeonExamplePackageMessageFlutterApiFlutterMethodResponse*
-pigeon_example_package_message_flutter_api_flutter_method_finish(
-    PigeonExamplePackageMessageFlutterApi* api, GAsyncResult* result,
+GolubExamplePackageMessageFlutterApiFlutterMethodResponse*
+golub_example_package_message_flutter_api_flutter_method_finish(
+    GolubExamplePackageMessageFlutterApi* api, GAsyncResult* result,
     GError** error);
 
 G_END_DECLS

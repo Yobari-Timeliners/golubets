@@ -5,10 +5,10 @@
 // This file is an example pigeon file that is used in compilation, unit, mock
 // handler, and e2e tests.
 
-import 'package:pigeon/pigeon.dart';
+import 'package:golub/golub.dart';
 
-@ConfigurePigeon(
-  PigeonOptions(
+@ConfigureGolub(
+  GolubOptions(
     javaOptions: JavaOptions(
       className: 'MessagePigeon',
       package: 'dev.flutter.aaclarke.pigeon',
