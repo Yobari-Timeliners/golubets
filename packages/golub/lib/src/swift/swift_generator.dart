@@ -1579,14 +1579,14 @@ if (wrapped == nil) {
     indent.write('private func wrapError(_ error: Any) -> [Any?] ');
     indent.addScoped('{', '}', () {
       indent.write(
-        'if let pigeonError = error as? ${_getErrorClassName(generatorOptions)} ',
+        'if let golubError = error as? ${_getErrorClassName(generatorOptions)} ',
       );
       indent.addScoped('{', '}', () {
         indent.write('return ');
         indent.addScoped('[', ']', () {
-          indent.writeln('pigeonError.code,');
-          indent.writeln('pigeonError.message,');
-          indent.writeln('pigeonError.details,');
+          indent.writeln('golubError.code,');
+          indent.writeln('golubError.message,');
+          indent.writeln('golubError.details,');
         });
       });
       indent.write('if let flutterError = error as? FlutterError ');

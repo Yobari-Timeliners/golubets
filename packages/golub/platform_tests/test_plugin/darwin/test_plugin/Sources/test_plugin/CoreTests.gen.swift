@@ -38,11 +38,11 @@ private func wrapResult(_ result: Any?) -> [Any?] {
 }
 
 private func wrapError(_ error: Any) -> [Any?] {
-  if let pigeonError = error as? GolubError {
+  if let golubError = error as? GolubError {
     return [
-      pigeonError.code,
-      pigeonError.message,
-      pigeonError.details,
+      golubError.code,
+      golubError.message,
+      golubError.details,
     ]
   }
   if let flutterError = error as? FlutterError {

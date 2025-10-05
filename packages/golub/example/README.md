@@ -160,7 +160,7 @@ Future<bool> sendMessageModernAsyncAndThrow(String messageText) {
 ### Swift
 
 This is the code that will use the generated Swift code to receive calls from Flutter.
-Unlike other languages, when throwing an error, use `PigeonError` instead of `FlutterError`, as `FlutterError` does not conform to `Swift.Error`.
+Unlike other languages, when throwing an error, use `GolubError` instead of `FlutterError`, as `FlutterError` does not conform to `Swift.Error`.
 <?code-excerpt "ios/Runner/AppDelegate.swift (swift-class)"?>
 ```swift
 private class GolubApiImplementation: ExampleHostApi {
