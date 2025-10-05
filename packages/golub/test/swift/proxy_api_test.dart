@@ -137,7 +137,7 @@ void main() {
       expect(
         collapsedCode,
         contains(
-          r'func pigeonNewInstance(pigeonInstance: MyLibraryApi, completion: @escaping (Result<Void, PigeonError>) -> Void) ',
+          r'func pigeonNewInstance(pigeonInstance: MyLibraryApi, completion: @escaping (Result<Void, GolubError>) -> Void) ',
         ),
       );
 
@@ -167,7 +167,7 @@ void main() {
       expect(
         code,
         contains(
-          'func doSomethingElse(pigeonInstance pigeonInstanceArg: MyLibraryApi, input inputArg: Input, completion: @escaping (Result<String, PigeonError>) -> Void)',
+          'func doSomethingElse(pigeonInstance pigeonInstanceArg: MyLibraryApi, input inputArg: Input, completion: @escaping (Result<String, GolubError>) -> Void)',
         ),
       );
     });
@@ -1152,7 +1152,7 @@ void main() {
             'func doSomething(pigeonInstance pigeonInstanceArg: Api, validType validTypeArg: Int64, enumType '
             'enumTypeArg: AnEnum, proxyApiType proxyApiTypeArg: Api2, nullableValidType nullableValidTypeArg: Int64?, nullableEnumType '
             'nullableEnumTypeArg: AnEnum?, nullableProxyApiType nullableProxyApiTypeArg: Api2?, '
-            'completion: @escaping (Result<Void, PigeonError>) -> Void)',
+            'completion: @escaping (Result<Void, GolubError>) -> Void)',
           ),
         );
         expect(

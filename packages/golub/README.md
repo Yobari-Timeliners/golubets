@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="art/golub.jpg" alt="golub" width="400">
+</div>
+
 ## Golub: A Community-Driven Fork of [Pigeon](https://pub.dev/packages/pigeon)
 
 Welcome to Golub, a fork of the Pigeon Flutter library. Our mission is to be a better, more open, and community-focused alternative—or at least give it a damn good try!

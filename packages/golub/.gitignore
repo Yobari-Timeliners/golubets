@@ -9,5 +9,5 @@ gradlew
 gradlew.bat
 local.properties
 gradle-wrapper.jar
-bin/pigeon.dart.dill
+bin/golub.dart.dill
 **/subdirectory/does/not/exist/**

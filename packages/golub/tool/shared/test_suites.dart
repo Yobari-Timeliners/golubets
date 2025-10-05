@@ -482,7 +482,7 @@ Future<int> _runWindowsIntegrationTests({bool ciMode = false}) async {
 Future<int> _runCommandLineTests({bool ciMode = false}) async {
   final Directory tempDir = Directory.systemTemp.createTempSync('pigeon');
   final String tempOutput = p.join(tempDir.path, 'pigeon_output');
-  const String pigeonScript = 'bin/pigeon.dart';
+  const String pigeonScript = 'bin/golub.dart';
   final String snapshot = p.join(tempDir.path, 'pigeon.dart.dill');
 
   // Precompile to make the repeated calls faster.
