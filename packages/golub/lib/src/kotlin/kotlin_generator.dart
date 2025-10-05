@@ -1661,28 +1661,6 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
       },
     );
 
-    // if (root.customTypeNames.isNotEmpty) {
-    //   indent.writeln('@PublishedApi');
-    //   indent.writeScoped(
-    //     'internal abstract class TypeToken<T> {',
-    //     '}',
-    //     () {
-    //       indent.writeln(
-    //         'val type: Type = (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0]',
-    //       );
-    //     },
-    //   );
-    //   indent.newln();
-    //   indent.writeln('@PublishedApi');
-    //   indent.writeScoped(
-    //     'internal inline fun <reified T> typeToken(): Type {',
-    //     '}',
-    //     () {
-    //       indent.writeln('return object : TypeToken<T>() {}.type');
-    //     },
-    //   );
-    // }
-
     if (generatorOptions.includeErrorClass) {
       _writeErrorClass(generatorOptions, indent);
     }
