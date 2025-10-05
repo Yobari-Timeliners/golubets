@@ -139,7 +139,7 @@
         errorLine1="          (b as Map&lt;Any?, Any?>).containsKey(it.key) &amp;&amp;"
         errorLine2="          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/kotlin/com/example/test_plugin/CoreTests.gen.kt"
+            file="src/main/kotlin/com/example/test_plugin/KotlinNestedSealedTests.gen.kt"
             line="64"
             column="11"/>
     </issue>
