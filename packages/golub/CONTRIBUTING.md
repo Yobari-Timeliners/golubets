@@ -1,4 +1,4 @@
-# Golub is a code generation tool that adds type safety to Flutter's Platformub Contributor's Guide
+# Golub Contributor's Guide
 
 ## Description
 
