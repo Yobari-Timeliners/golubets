@@ -1378,9 +1378,12 @@ void main() {
     final String code = sink.toString();
     expect(code, contains('data class Wrapper<T>'));
     expect(code, contains('val value: T'));
+    expect(code, contains('internal val tType: KType'));
     expect(
       code,
-      contains('fun fromList(pigeonVar_list: List<Any?>): Wrapper<T>'),
+      contains(
+        'inline fun <reified T> fromList(pigeonVar_list: List<Any?>): Wrapper<T>',
+      ),
     );
     expect(code, contains('fun toList(): List<Any?>'));
   });
@@ -1429,9 +1432,13 @@ void main() {
     expect(code, contains('data class Pair<T, U>'));
     expect(code, contains('val first: T'));
     expect(code, contains('val second: U? = null'));
+    expect(code, contains('internal val tType: KType'));
+    expect(code, contains('internal val uType: KType'));
     expect(
       code,
-      contains('fun fromList(pigeonVar_list: List<Any?>): Pair<T, U>'),
+      contains(
+        'fun <reified T, reified U> fromList(pigeonVar_list: List<Any?>): Pair<T, U>',
+      ),
     );
     expect(code, contains('fun toList(): List<Any?>'));
   });
@@ -1481,9 +1488,12 @@ void main() {
     final String code = sink.toString();
     expect(code, contains('data class Container<T>'));
     expect(code, contains('val data: List<Map<String, T?>>'));
+    expect(code, contains('internal val tType: KType'));
     expect(
       code,
-      contains('fun fromList(pigeonVar_list: List<Any?>): Container<T>'),
+      contains(
+        'fun <reified T> fromList(pigeonVar_list: List<Any?>): Container<T>',
+      ),
     );
     expect(code, contains('fun toList(): List<Any?>'));
   });
@@ -1541,9 +1551,12 @@ void main() {
     expect(code, contains('data class BaseContainer<T>'));
     expect(code, contains('data class SpecialList<T>'));
     expect(code, contains('val capacity: Long'));
+    expect(code, contains('internal val tType: KType'));
     expect(
       code,
-      contains('fun fromList(pigeonVar_list: List<Any?>): SpecialList<T>'),
+      contains(
+        'fun <reified T> fromList(pigeonVar_list: List<Any?>): SpecialList<T>',
+      ),
     );
   });
 
@@ -1591,9 +1604,13 @@ void main() {
     expect(code, contains('data class Result<T, E>'));
     expect(code, contains('val success: T? = null'));
     expect(code, contains('val error: E? = null'));
+    expect(code, contains('internal val tType: KType'));
+    expect(code, contains('internal val eType: KType'));
     expect(
       code,
-      contains('fun fromList(pigeonVar_list: List<Any?>): Result<T, E>'),
+      contains(
+        'fun <reified T, reified E> fromList(pigeonVar_list: List<Any?>): Result<T, E>',
+      ),
     );
     expect(code, contains('fun toList(): List<Any?>'));
   });
@@ -1638,9 +1655,13 @@ void main() {
     final String code = sink.toString();
     expect(code, contains('data class KeyValueStore<K, V>'));
     expect(code, contains('val store: Map<K, V>'));
+    expect(code, contains('internal val kType: KType'));
+    expect(code, contains('internal val vType: KType'));
     expect(
       code,
-      contains('fun fromList(pigeonVar_list: List<Any?>): KeyValueStore<K, V>'),
+      contains(
+        'fun <reified K, reified V> fromList(pigeonVar_list: List<Any?>): KeyValueStore<K, V>',
+      ),
     );
     expect(code, contains('fun toList(): List<Any?>'));
   });

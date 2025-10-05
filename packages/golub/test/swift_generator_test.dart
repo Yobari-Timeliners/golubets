@@ -1390,7 +1390,10 @@ void main() {
     final String code = sink.toString();
     expect(code, contains('struct Wrapper<T>'));
     expect(code, contains('var value: T'));
-    expect(code, contains('static func fromList(_ pigeonVar_list: [Any?]) -> Wrapper?'));
+    expect(
+      code,
+      contains('static func fromList(_ pigeonVar_list: [Any?]) -> Wrapper?'),
+    );
     expect(code, contains('return Wrapper('));
   });
 
@@ -1432,7 +1435,10 @@ void main() {
     expect(code, contains('struct Pair<T, U>'));
     expect(code, contains('var first: T'));
     expect(code, contains('var second: U? = nil'));
-    expect(code, contains('static func fromList(_ pigeonVar_list: [Any?]) -> Pair?'));
+    expect(
+      code,
+      contains('static func fromList(_ pigeonVar_list: [Any?]) -> Pair?'),
+    );
     expect(code, contains('return Pair('));
   });
 
@@ -1481,7 +1487,10 @@ void main() {
     final String code = sink.toString();
     expect(code, contains('struct Container<T>'));
     expect(code, contains('var data: [[String: T?]]'));
-    expect(code, contains('static func fromList(_ pigeonVar_list: [Any?]) -> Container?'));
+    expect(
+      code,
+      contains('static func fromList(_ pigeonVar_list: [Any?]) -> Container?'),
+    );
     expect(code, contains('return Container('));
   });
 
@@ -1532,7 +1541,12 @@ void main() {
     expect(code, contains('struct BaseContainer<T>'));
     expect(code, contains('struct SpecialList<T>'));
     expect(code, contains('var capacity: Int64'));
-    expect(code, contains('static func fromList(_ pigeonVar_list: [Any?]) -> SpecialList?'));
+    expect(
+      code,
+      contains(
+        'static func fromList(_ pigeonVar_list: [Any?]) -> SpecialList?',
+      ),
+    );
   });
 
   test('generic class serialization methods', () {
@@ -1573,7 +1587,10 @@ void main() {
     expect(code, contains('struct Result<T, E>'));
     expect(code, contains('var success: T? = nil'));
     expect(code, contains('var error: E? = nil'));
-    expect(code, contains('static func fromList(_ pigeonVar_list: [Any?]) -> Result?'));
+    expect(
+      code,
+      contains('static func fromList(_ pigeonVar_list: [Any?]) -> Result?'),
+    );
     expect(code, contains('return Result('));
     expect(code, contains('success: success'));
     expect(code, contains('error: error'));
@@ -1622,7 +1639,12 @@ void main() {
     final String code = sink.toString();
     expect(code, contains('struct KeyValueStore<K: Hashable, V>'));
     expect(code, contains('var store: [K: V]'));
-    expect(code, contains('static func fromList(_ pigeonVar_list: [Any?]) -> KeyValueStore?'));
+    expect(
+      code,
+      contains(
+        'static func fromList(_ pigeonVar_list: [Any?]) -> KeyValueStore?',
+      ),
+    );
     expect(code, contains('return KeyValueStore('));
   });
 

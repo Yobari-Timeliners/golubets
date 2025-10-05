@@ -457,6 +457,9 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         classDefinition.typeArguments.isNotEmpty
             ? ' @PublishedApi internal constructor'
             : '';
+    if (classDefinition.typeArguments.isNotEmpty && !classDefinition.isSealed) {
+      indent.writeln('@ConsistentCopyVisibility');
+    }
     indent.write(
       '$privateString$classType class ${classDefinition.name}$typeArguments ',
     );
@@ -527,7 +530,9 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     final String captureTypeArguments =
         classDefinition.typeArguments.isEmpty
             ? ''
-            : '<${classDefinition.typeArguments.map((TypeDeclaration e) => 'reified ${_nullSafeKotlinTypeForDartType(e)}').join(', ')}> ';
+            : ' <${classDefinition.typeArguments.map((TypeDeclaration e) => 'reified ${_nullSafeKotlinTypeForDartType(e)}').join(', ')}>';
+    final String inline =
+        classDefinition.typeArguments.isEmpty ? '' : 'inline ';
 
     indent.write('companion object ');
     indent.addScoped('{', '}', () {
@@ -535,10 +540,8 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         indent.writeln('@Suppress("UNUSED_PARAMETER")');
       }
 
-      // For generic classes, companion object methods don't need inline/reified
-      // since they can access the class type parameters directly
       indent.write(
-        'fun fromList(${varNamePrefix}list: List<Any?>): $className$returnTypeArguments ',
+        '${inline}fun$captureTypeArguments fromList(${varNamePrefix}list: List<Any?>): $className$returnTypeArguments ',
       );
 
       indent.addScoped('{', '}', () {
