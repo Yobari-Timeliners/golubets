@@ -6,21 +6,21 @@ import Flutter
 import UIKit
 
 // #docregion swift-class
-private class PigeonApiImplementation: ExampleHostApi {
+private class GolubApiImplementation: ExampleHostApi {
   func getHostLanguage() throws -> String {
     return "Swift"
   }
 
   func add(_ a: Int64, to b: Int64) throws -> Int64 {
     if a < 0 || b < 0 {
-      throw PigeonError(code: "code", message: "message", details: "details")
+      throw GolubError(code: "code", message: "message", details: "details")
     }
     return a + b
   }
 
   func sendMessage(message: MessageData, completion: @escaping (Result<Bool, Error>) -> Void) {
     if message.code == Code.one {
-      completion(.failure(PigeonError(code: "code", message: "message", details: "details")))
+      completion(.failure(GolubError(code: "code", message: "message", details: "details")))
       return
     }
     completion(.success(true))
@@ -37,14 +37,14 @@ private class PigeonApiImplementation: ExampleHostApi {
       return !Thread.isMainThread
     }
 
-    throw PigeonError(code: "code", message: "message", details: "details")
+    throw GolubError(code: "code", message: "message", details: "details")
   }
 }
 
 // #enddocregion swift-class
 
 // #docregion swift-class-flutter
-private class PigeonFlutterApi {
+private class GolubFlutterApi {
   var flutterAPI: MessageFlutterApi
 
   init(binaryMessenger: FlutterBinaryMessenger) {
@@ -52,7 +52,7 @@ private class PigeonFlutterApi {
   }
 
   func callFlutterMethod(
-    aString aStringArg: String?, completion: @escaping (Result<String, PigeonError>) -> Void
+    aString aStringArg: String?, completion: @escaping (Result<String, GolubError>) -> Void
   ) {
     flutterAPI.flutterMethod(aString: aStringArg) {
       completion($0)
@@ -64,9 +64,9 @@ private class PigeonFlutterApi {
 
 // #docregion swift-class-event
 class EventListener: StreamEventsStreamHandler {
-  var eventSink: PigeonEventSink<PlatformEvent>?
+  var eventSink: GolubEventSink<PlatformEvent>?
 
-  override func onListen(withArguments arguments: Any?, sink: PigeonEventSink<PlatformEvent>) {
+  override func onListen(withArguments arguments: Any?, sink: GolubEventSink<PlatformEvent>) {
     eventSink = sink
   }
 
@@ -137,7 +137,7 @@ func sendEvents(_ eventListener: EventListener) {
   override func awakeFromNib() {
     super.awakeFromNib()
 
-    let api = PigeonApiImplementation()
+    let api = GolubApiImplementation()
     ExampleHostApiSetup.setUp(binaryMessenger: binaryMessenger, api: api)
     let controller = self
     // #docregion swift-init-event

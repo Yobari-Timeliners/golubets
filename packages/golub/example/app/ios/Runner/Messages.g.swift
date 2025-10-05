@@ -15,7 +15,7 @@ import Foundation
 #endif
 
 /// Error class for passing custom error details to Dart side.
-public final class PigeonError: Error {
+public final class GolubError: Error {
   let code: String
   let message: String?
   let details: Sendable?
@@ -28,7 +28,7 @@ public final class PigeonError: Error {
 
   var localizedDescription: String {
     return
-      "PigeonError(code: \(code), message: \(message ?? "<nil>"), details: \(details ?? "<nil>")"
+      "GolubError(code: \(code), message: \(message ?? "<nil>"), details: \(details ?? "<nil>")"
   }
 }
 
@@ -37,7 +37,7 @@ private func wrapResult(_ result: Any?) -> [Any?] {
 }
 
 private func wrapError(_ error: Any) -> [Any?] {
-  if let pigeonError = error as? PigeonError {
+  if let pigeonError = error as? GolubError {
     return [
       pigeonError.code,
       pigeonError.message,
@@ -58,8 +58,8 @@ private func wrapError(_ error: Any) -> [Any?] {
   ]
 }
 
-private func createConnectionError(withChannelName channelName: String) -> PigeonError {
-  return PigeonError(
+private func createConnectionError(withChannelName channelName: String) -> GolubError {
+  return GolubError(
     code: "channel-error", message: "Unable to establish connection on channel: '\(channelName)'.",
     details: "")
 }
@@ -365,7 +365,7 @@ public class ExampleHostApiSetup {
 /// Generated protocol from Pigeon that represents Flutter messages that can be called from Swift.
 public protocol MessageFlutterApiProtocol {
   func flutterMethod(
-    aString aStringArg: String?, completion: @escaping (Result<String, PigeonError>) -> Void)
+    aString aStringArg: String?, completion: @escaping (Result<String, GolubError>) -> Void)
 }
 public class MessageFlutterApi: MessageFlutterApiProtocol {
   private let binaryMessenger: FlutterBinaryMessenger
@@ -378,7 +378,7 @@ public class MessageFlutterApi: MessageFlutterApiProtocol {
     return MessagesPigeonCodec.shared
   }
   public func flutterMethod(
-    aString aStringArg: String?, completion: @escaping (Result<String, PigeonError>) -> Void
+    aString aStringArg: String?, completion: @escaping (Result<String, GolubError>) -> Void
   ) {
     let channelName: String =
       "dev.flutter.pigeon.golub_example_package.MessageFlutterApi.flutterMethod\(messageChannelSuffix)"
@@ -393,11 +393,11 @@ public class MessageFlutterApi: MessageFlutterApiProtocol {
         let code: String = listResponse[0] as! String
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
-        completion(.failure(PigeonError(code: code, message: message, details: details)))
+        completion(.failure(GolubError(code: code, message: message, details: details)))
       } else if listResponse[0] == nil {
         completion(
           .failure(
-            PigeonError(
+            GolubError(
               code: "null-error",
               message: "Flutter api returned null value for non-null return value.", details: "")))
       } else {

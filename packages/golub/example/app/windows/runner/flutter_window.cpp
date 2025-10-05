@@ -13,18 +13,18 @@
 #include "messages.g.h"
 
 namespace {
-using pigeon_example::Code;
-using pigeon_example::ErrorOr;
-using pigeon_example::ExampleHostApi;
-using pigeon_example::FlutterError;
-using pigeon_example::MessageData;
-using pigeon_example::MessageFlutterApi;
+using golub_example::Code;
+using golub_example::ErrorOr;
+using golub_example::ExampleHostApi;
+using golub_example::FlutterError;
+using golub_example::MessageData;
+using golub_example::MessageFlutterApi;
 
 // #docregion cpp-class
-class PigeonApiImplementation : public ExampleHostApi {
+class GolubApiImplementation : public ExampleHostApi {
  public:
-  PigeonApiImplementation() {}
-  virtual ~PigeonApiImplementation() {}
+  GolubApiImplementation() {}
+  virtual ~GolubApiImplementation() {}
 
   ErrorOr<std::string> GetHostLanguage() override { return "C++"; }
   ErrorOr<int64_t> Add(int64_t a, int64_t b) {
@@ -64,9 +64,9 @@ class PigeonApiImplementation : public ExampleHostApi {
 };
 
 // #docregion cpp-method-flutter
-class PigeonFlutterApi {
+class GolubFlutterApi {
  public:
-  PigeonFlutterApi(flutter::BinaryMessenger* messenger)
+  GolubFlutterApi(flutter::BinaryMessenger* messenger)
       : flutterApi_(std::make_unique<MessageFlutterApi>(messenger)) {}
 
   void CallFlutterMethod(
@@ -107,7 +107,7 @@ bool FlutterWindow::OnCreate() {
   RegisterPlugins(flutter_controller_->engine());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
-  pigeonHostApi_ = std::make_unique<PigeonApiImplementation>();
+  pigeonHostApi_ = std::make_unique<GolubApiImplementation>();
   ExampleHostApi::SetUp(flutter_controller_->engine()->messenger(),
                         pigeonHostApi_.get());
 

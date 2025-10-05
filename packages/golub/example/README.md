@@ -17,24 +17,24 @@ needed for your project.
   GolubOptions(
     dartOut: 'lib/src/messages.g.dart',
     dartOptions: DartOptions(),
-    // cppOptions: CppOptions(namespace: 'golub_example'),
-    // cppHeaderOut: 'windows/runner/messages.g.h',
-    // cppSourceOut: 'windows/runner/messages.g.cpp',
-    // gobjectHeaderOut: 'linux/messages.g.h',
-    // gobjectSourceOut: 'linux/messages.g.cc',
-    // gobjectOptions: GObjectOptions(),
+    cppOptions: CppOptions(namespace: 'golub_example'),
+    cppHeaderOut: 'windows/runner/messages.g.h',
+    cppSourceOut: 'windows/runner/messages.g.cpp',
+    gobjectHeaderOut: 'linux/messages.g.h',
+    gobjectSourceOut: 'linux/messages.g.cc',
+    gobjectOptions: GObjectOptions(),
     kotlinOut:
         'android/app/src/main/kotlin/dev/flutter/golub_example_app/Messages.g.kt',
     kotlinOptions: KotlinOptions(),
-    // javaOut: 'android/app/src/main/java/io/flutter/plugins/Messages.java',
-    // javaOptions: JavaOptions(),
+    javaOut: 'android/app/src/main/java/io/flutter/plugins/Messages.java',
+    javaOptions: JavaOptions(),
     swiftOut: 'ios/Runner/Messages.g.swift',
     swiftOptions: SwiftOptions(),
-    // objcHeaderOut: 'macos/Runner/messages.g.h',
-    // objcSourceOut: 'macos/Runner/messages.g.m',
-    // // Set this to a unique prefix for your plugin or application, per Objective-C naming conventions.
-    // objcOptions: ObjcOptions(prefix: 'PGN'),
-    // copyrightHeader: 'pigeons/copyright.txt',
+    objcHeaderOut: 'macos/Runner/messages.g.h',
+    objcSourceOut: 'macos/Runner/messages.g.m',
+    // Set this to a unique prefix for your plugin or application, per Objective-C naming conventions.
+    objcOptions: ObjcOptions(prefix: 'PGN'),
+    copyrightHeader: 'pigeons/copyright.txt',
     dartPackageName: 'golub_example_package',
   ),
 )
@@ -163,21 +163,21 @@ This is the code that will use the generated Swift code to receive calls from Fl
 Unlike other languages, when throwing an error, use `PigeonError` instead of `FlutterError`, as `FlutterError` does not conform to `Swift.Error`.
 <?code-excerpt "ios/Runner/AppDelegate.swift (swift-class)"?>
 ```swift
-private class PigeonApiImplementation: ExampleHostApi {
+private class GolubApiImplementation: ExampleHostApi {
   func getHostLanguage() throws -> String {
     return "Swift"
   }
 
   func add(_ a: Int64, to b: Int64) throws -> Int64 {
     if a < 0 || b < 0 {
-      throw PigeonError(code: "code", message: "message", details: "details")
+      throw GolubError(code: "code", message: "message", details: "details")
     }
     return a + b
   }
 
   func sendMessage(message: MessageData, completion: @escaping (Result<Bool, Error>) -> Void) {
     if message.code == Code.one {
-      completion(.failure(PigeonError(code: "code", message: "message", details: "details")))
+      completion(.failure(GolubError(code: "code", message: "message", details: "details")))
       return
     }
     completion(.success(true))
@@ -194,7 +194,7 @@ private class PigeonApiImplementation: ExampleHostApi {
       return !Thread.isMainThread
     }
 
-    throw PigeonError(code: "code", message: "message", details: "details")
+    throw GolubError(code: "code", message: "message", details: "details")
   }
 }
 
@@ -244,10 +244,10 @@ private class PigeonApiImplementation : ExampleHostApi {
 ### C++
 <?code-excerpt "windows/runner/flutter_window.cpp (cpp-class)"?>
 ```c++
-class PigeonApiImplementation : public ExampleHostApi {
+class GolubApiImplementation : public ExampleHostApi {
  public:
-  PigeonApiImplementation() {}
-  virtual ~PigeonApiImplementation() {}
+  GolubApiImplementation() {}
+  virtual ~GolubApiImplementation() {}
 
   ErrorOr<std::string> GetHostLanguage() override { return "C++"; }
   ErrorOr<int64_t> Add(int64_t a, int64_t b) {
@@ -269,41 +269,41 @@ class PigeonApiImplementation : public ExampleHostApi {
 ### GObject
 <?code-excerpt "linux/my_application.cc (vtable)"?>
 ```c++
-static PigeonExamplePackageExampleHostApiGetHostLanguageResponse*
+static GolubExamplePackageExampleHostApiGetHostLanguageResponse*
 handle_get_host_language(gpointer user_data) {
-  return pigeon_example_package_example_host_api_get_host_language_response_new(
+  return golub_example_package_example_host_api_get_host_language_response_new(
       "C++");
 }
 
-static PigeonExamplePackageExampleHostApiAddResponse* handle_add(
+static GolubExamplePackageExampleHostApiAddResponse* handle_add(
     int64_t a, int64_t b, gpointer user_data) {
   if (a < 0 || b < 0) {
     g_autoptr(FlValue) details = fl_value_new_string("details");
-    return pigeon_example_package_example_host_api_add_response_new_error(
+    return golub_example_package_example_host_api_add_response_new_error(
         "code", "message", details);
   }
 
-  return pigeon_example_package_example_host_api_add_response_new(a + b);
+  return golub_example_package_example_host_api_add_response_new(a + b);
 }
 
 static void handle_send_message(
-    PigeonExamplePackageMessageData* message,
-    PigeonExamplePackageExampleHostApiResponseHandle* response_handle,
+    GolubExamplePackageMessageData* message,
+    GolubExamplePackageExampleHostApiResponseHandle* response_handle,
     gpointer user_data) {
-  PigeonExamplePackageCode code =
-      pigeon_example_package_message_data_get_code(message);
-  if (code == PIGEON_EXAMPLE_PACKAGE_CODE_ONE) {
+  GolubExamplePackageCode code =
+      golub_example_package_message_data_get_code(message);
+  if (code == GOLUB_EXAMPLE_PACKAGE_CODE_ONE) {
     g_autoptr(FlValue) details = fl_value_new_string("details");
-    pigeon_example_package_example_host_api_respond_error_send_message(
+    golub_example_package_example_host_api_respond_error_send_message(
         response_handle, "code", "message", details);
     return;
   }
 
-  pigeon_example_package_example_host_api_respond_send_message(response_handle,
-                                                               TRUE);
+  golub_example_package_example_host_api_respond_send_message(response_handle,
+                                                              TRUE);
 }
 // ···
-static PigeonExamplePackageExampleHostApiVTable example_host_api_vtable = {
+static GolubExamplePackageExampleHostApiVTable example_host_api_vtable = {
     .get_host_language = handle_get_host_language,
     .add = handle_add,
     .send_message = handle_send_message,
@@ -348,7 +348,7 @@ class _ExampleFlutterApi implements MessageFlutterApi {
 
 <?code-excerpt "ios/Runner/AppDelegate.swift (swift-class-flutter)"?>
 ```swift
-private class PigeonFlutterApi {
+private class GolubFlutterApi {
   var flutterAPI: MessageFlutterApi
 
   init(binaryMessenger: FlutterBinaryMessenger) {
@@ -356,7 +356,7 @@ private class PigeonFlutterApi {
   }
 
   func callFlutterMethod(
-    aString aStringArg: String?, completion: @escaping (Result<String, PigeonError>) -> Void
+    aString aStringArg: String?, completion: @escaping (Result<String, GolubError>) -> Void
   ) {
     flutterAPI.flutterMethod(aString: aStringArg) {
       completion($0)
@@ -387,9 +387,9 @@ private class PigeonFlutterApi(binding: FlutterPlugin.FlutterPluginBinding) {
 
 <?code-excerpt "windows/runner/flutter_window.cpp (cpp-method-flutter)"?>
 ```c++
-class PigeonFlutterApi {
+class GolubFlutterApi {
  public:
-  PigeonFlutterApi(flutter::BinaryMessenger* messenger)
+  GolubFlutterApi(flutter::BinaryMessenger* messenger)
       : flutterApi_(std::make_unique<MessageFlutterApi>(messenger)) {}
 
   void CallFlutterMethod(
@@ -413,9 +413,9 @@ static void flutter_method_cb(GObject* object, GAsyncResult* result,
                               gpointer user_data) {
   g_autoptr(GError) error = nullptr;
   g_autoptr(
-      PigeonExamplePackageMessageFlutterApiFlutterMethodResponse) response =
-      pigeon_example_package_message_flutter_api_flutter_method_finish(
-          PIGEON_EXAMPLE_PACKAGE_MESSAGE_FLUTTER_API(object), result, &error);
+      GolubExamplePackageMessageFlutterApiFlutterMethodResponse) response =
+      golub_example_package_message_flutter_api_flutter_method_finish(
+          GOLUB_EXAMPLE_PACKAGE_MESSAGE_FLUTTER_API(object), result, &error);
   if (response == nullptr) {
     g_warning("Failed to call Flutter method: %s", error->message);
     return;
@@ -423,7 +423,7 @@ static void flutter_method_cb(GObject* object, GAsyncResult* result,
 
   g_printerr(
       "Got result from Flutter method: %s\n",
-      pigeon_example_package_message_flutter_api_flutter_method_response_get_return_value(
+      golub_example_package_message_flutter_api_flutter_method_response_get_return_value(
           response));
 }
 ```
@@ -431,8 +431,8 @@ static void flutter_method_cb(GObject* object, GAsyncResult* result,
 <?code-excerpt "linux/my_application.cc (flutter-method)"?>
 ```c++
 self->flutter_api =
-    pigeon_example_package_message_flutter_api_new(messenger, nullptr);
-pigeon_example_package_message_flutter_api_flutter_method(
+    golub_example_package_message_flutter_api_new(messenger, nullptr);
+golub_example_package_message_flutter_api_flutter_method(
     self->flutter_api, "hello", nullptr, flutter_method_cb, self);
 ```
 
@@ -481,9 +481,9 @@ Define the stream handler class that will handle the events.
 <?code-excerpt "ios/Runner/AppDelegate.swift (swift-class-event)"?>
 ```swift
 class EventListener: StreamEventsStreamHandler {
-  var eventSink: PigeonEventSink<PlatformEvent>?
+  var eventSink: GolubEventSink<PlatformEvent>?
 
-  override func onListen(withArguments arguments: Any?, sink: PigeonEventSink<PlatformEvent>) {
+  override func onListen(withArguments arguments: Any?, sink: GolubEventSink<PlatformEvent>) {
     eventSink = sink
   }
 

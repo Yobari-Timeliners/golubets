@@ -85,7 +85,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
   }
 
   public func echoModernAsyncAllTypesAndThrow(_ everything: AllTypes) async throws -> AllTypes {
-    throw PigeonError(code: "code", message: "message", details: "details")
+    throw GolubError(code: "code", message: "message", details: "details")
   }
 
   public func echoModernAsyncNullableAllNullableTypes(_ everything: AllNullableTypes?) async
@@ -95,15 +95,15 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
   }
 
   public func throwError() throws -> Any? {
-    throw PigeonError(code: "code", message: "message", details: "details")
+    throw GolubError(code: "code", message: "message", details: "details")
   }
 
   public func throwErrorFromVoid() throws {
-    throw PigeonError(code: "code", message: "message", details: "details")
+    throw GolubError(code: "code", message: "message", details: "details")
   }
 
   public func throwFlutterError() throws -> Any? {
-    throw PigeonError(code: "code", message: "message", details: "details")
+    throw GolubError(code: "code", message: "message", details: "details")
   }
 
   public func echo(_ anInt: Int64) -> Int64 {
@@ -351,15 +351,15 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
   }
 
   public func throwAsyncError(completion: @escaping (Result<Any?, Error>) -> Void) {
-    completion(.failure(PigeonError(code: "code", message: "message", details: "details")))
+    completion(.failure(GolubError(code: "code", message: "message", details: "details")))
   }
 
   public func throwAsyncErrorFromVoid(completion: @escaping (Result<Void, Error>) -> Void) {
-    completion(.failure(PigeonError(code: "code", message: "message", details: "details")))
+    completion(.failure(GolubError(code: "code", message: "message", details: "details")))
   }
 
   public func throwAsyncFlutterError(completion: @escaping (Result<Any?, Error>) -> Void) {
-    completion(.failure(PigeonError(code: "code", message: "message", details: "details")))
+    completion(.failure(GolubError(code: "code", message: "message", details: "details")))
   }
 
   public func echoAsync(
@@ -1255,7 +1255,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
             } else {
               completion(
                 .failure(
-                  PigeonError(
+                  GolubError(
                     code: "",
                     message: "Multi-instance responses were not matching: \(resOne), \(resTwo)",
                     details: nil)))

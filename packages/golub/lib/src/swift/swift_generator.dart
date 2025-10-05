@@ -3205,7 +3205,7 @@ String _getMethodCodecVarName(InternalSwiftOptions options) {
 }
 
 String _getErrorClassName(InternalSwiftOptions generatorOptions) {
-  return generatorOptions.errorClassName ?? 'PigeonError';
+  return generatorOptions.errorClassName ?? 'GolubError';
 }
 
 String _getArgumentName(int count, NamedType argument) {

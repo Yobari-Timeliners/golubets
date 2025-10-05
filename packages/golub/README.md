@@ -86,7 +86,7 @@ should be returned via the provided callback.
 To pass custom details into `PlatformException` for error handling,
 use `FlutterError` in your Host API. [Example](./example/README.md#HostApi_Example).
 
-For swift, use `PigeonError` instead of `FlutterError` when throwing an error. See [Example#Swift](./example/README.md#Swift) for more details.
+For swift, use `GolubError` instead of `FlutterError` when throwing an error. See [Example#Swift](./example/README.md#Swift) for more details.
 
 #### Objective-C and C++
 

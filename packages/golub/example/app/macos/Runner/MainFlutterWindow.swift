@@ -5,21 +5,21 @@
 import Cocoa
 import FlutterMacOS
 
-private class PigeonApiImplementation: ExampleHostApi {
+private class GolubApiImplementation: ExampleHostApi {
   func getHostLanguage() throws -> String {
     return "Swift"
   }
 
   func add(_ a: Int64, to b: Int64) throws -> Int64 {
     if a < 0 || b < 0 {
-      throw PigeonError(code: "code", message: "message", details: "details")
+      throw GolubError(code: "code", message: "message", details: "details")
     }
     return a + b
   }
 
   func sendMessage(message: MessageData, completion: @escaping (Result<Bool, Error>) -> Void) {
     if message.code == Code.one {
-      completion(.failure(PigeonError(code: "code", message: "message", details: "details")))
+      completion(.failure(GolubError(code: "code", message: "message", details: "details")))
       return
     }
     completion(.success(true))
@@ -36,7 +36,7 @@ private class PigeonApiImplementation: ExampleHostApi {
       return true
     }
 
-    throw PigeonError(code: "code", message: "message", details: "details")
+    throw GolubError(code: "code", message: "message", details: "details")
   }
 }
 
@@ -49,7 +49,7 @@ class MainFlutterWindow: NSWindow {
 
     RegisterGeneratedPlugins(registry: flutterViewController)
 
-    let hostApi = PigeonApiImplementation()
+    let hostApi = GolubApiImplementation()
     ExampleHostApiSetup.setUp(
       binaryMessenger: flutterViewController.engine.binaryMessenger, api: hostApi)
 

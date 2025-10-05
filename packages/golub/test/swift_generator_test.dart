@@ -215,7 +215,7 @@ void main() {
     expect(code, contains('doSomethingChannel.setMessageHandler'));
     expect(code, isNot(contains('if (')));
     expect(code, contains('public class Api'));
-    expect(code, contains('public final class PigeonError'));
+    expect(code, contains('public final class GolubError'));
     expect(code, contains('public struct Output'));
     expect(code, contains('public struct Input'));
     expect(
@@ -320,7 +320,7 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('class PigeonError: Error'));
+    expect(code, contains('class GolubError: Error'));
     expect(code, contains('let code: String'));
     expect(code, contains('let message: String?'));
     expect(code, contains('let details: Sendable?'));
@@ -403,7 +403,7 @@ void main() {
     expect(code, isNot(contains('if (')));
     expect(code, isNot(matches(RegExp(r';$', multiLine: true))));
     expect(code, contains('public protocol Api'));
-    expect(code, contains('public final class PigeonError'));
+    expect(code, contains('public final class GolubError'));
     expect(code, contains('public struct Input'));
     expect(code, contains('public struct Output'));
   });
@@ -513,7 +513,7 @@ void main() {
     final String code = sink.toString();
     expect(
       code,
-      contains('completion: @escaping (Result<Void, PigeonError>) -> Void'),
+      contains('completion: @escaping (Result<Void, GolubError>) -> Void'),
     );
     expect(code, contains('completion(.success(()))'));
     expect(code, isNot(contains('if (')));
@@ -616,7 +616,7 @@ void main() {
     expect(
       code,
       contains(
-        'func doSomething(completion: @escaping (Result<Output, PigeonError>) -> Void)',
+        'func doSomething(completion: @escaping (Result<Output, GolubError>) -> Void)',
       ),
     );
     expect(code, contains('channel.sendMessage(nil'));
@@ -1351,7 +1351,7 @@ void main() {
     expect(
       code,
       contains(
-        'func doit(completion: @escaping (Result<[Int64?], PigeonError>) -> Void)',
+        'func doit(completion: @escaping (Result<[Int64?], GolubError>) -> Void)',
       ),
     );
     expect(code, contains('let result = listResponse[0] as! [Int64?]'));
@@ -1468,7 +1468,7 @@ void main() {
     expect(
       code,
       contains(
-        'func add(x xArg: Int64, y yArg: Int64, completion: @escaping (Result<Int64, PigeonError>) -> Void)',
+        'func add(x xArg: Int64, y yArg: Int64, completion: @escaping (Result<Int64, GolubError>) -> Void)',
       ),
     );
     expect(
@@ -1637,7 +1637,7 @@ void main() {
     expect(
       code,
       contains(
-        'func doit(foo fooArg: Int64?, completion: @escaping (Result<Void, PigeonError>) -> Void)',
+        'func doit(foo fooArg: Int64?, completion: @escaping (Result<Void, GolubError>) -> Void)',
       ),
     );
   });
@@ -2029,7 +2029,7 @@ void main() {
     expect(
       code,
       contains(
-        'return PigeonError(code: "channel-error", message: "Unable to establish connection on channel: \'\\(channelName)\'.", details: "")',
+        'return GolubError(code: "channel-error", message: "Unable to establish connection on channel: \'\\(channelName)\'.", details: "")',
       ),
     );
   });
