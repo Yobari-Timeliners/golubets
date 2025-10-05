@@ -133,4 +133,15 @@
             column="14"/>
     </issue>
 
+    <issue
+        id="MemberExtensionConflict"
+        message="`containsKey` is defined both as a member in class `kotlin.collections.Map` and an extension in package `kotlin.collections`. The defined behavior for this is to use the member, but since the extension is explicitly imported into this file, there&apos;s a chance that this was not expected. (One common way this happens is for members to be added to a class after code was already written to use an extension)."
+        errorLine1="          (b as Map&lt;Any?, Any?>).containsKey(it.key) &amp;&amp;"
+        errorLine2="          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/com/example/test_plugin/CoreTests.gen.kt"
+            line="64"
+            column="11"/>
+    </issue>
+
 </issues>
