@@ -9,7 +9,7 @@
 #include "pigeon/nullable_returns.gen.h"
 #include "test/utils/fake_host_messenger.h"
 
-namespace nullable_returns_pigeontest {
+namespace nullable_returns_golubets_test {
 
 namespace {
 using flutter::EncodableList;
@@ -114,4 +114,4 @@ TEST(NullableReturns, HostNullableReturnNonNull) {
 
 // TODO(stuartmorgan): Add FlutterApi versions of the tests.
 
-}  // namespace nullable_returns_pigeontest
+}  // namespace nullable_returns_golubets_test

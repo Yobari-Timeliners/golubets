@@ -7,7 +7,7 @@
 
 #include "pigeon/null_fields.gen.h"
 
-namespace null_fields_pigeontest {
+namespace null_fields_golubets_test {
 
 namespace {
 
@@ -211,4 +211,4 @@ TEST_F(NullFieldsTest, ReplyToListWithNulls) {
   }
 }
 
-}  // namespace null_fields_pigeontest
+}  // namespace null_fields_golubets_test

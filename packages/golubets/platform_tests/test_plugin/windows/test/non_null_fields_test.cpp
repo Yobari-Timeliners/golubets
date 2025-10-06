@@ -6,7 +6,7 @@
 
 #include "pigeon/non_null_fields.gen.h"
 
-namespace non_null_fields_pigeontest {
+namespace non_null_fields_golubets_test {
 
 TEST(NonNullFields, Build) {
   NonNullFieldSearchRequest request("hello");
@@ -14,4 +14,4 @@ TEST(NonNullFields, Build) {
   EXPECT_EQ(request.query(), "hello");
 }
 
-}  // namespace non_null_fields_pigeontest
+}  // namespace non_null_fields_golubets_test
