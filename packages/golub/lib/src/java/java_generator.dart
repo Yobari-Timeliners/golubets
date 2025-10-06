@@ -28,9 +28,9 @@ const DocumentCommentSpecification _docCommentSpec =
     );
 
 /// The standard codec for Flutter, used for any non custom codecs and extended for custom codecs.
-const String _codecName = 'PigeonCodec';
+const String _codecName = 'GolubCodec';
 
-const String _overflowClassName = '${classNamePrefix}CodecOverflow';
+const String _overflowClassName = 'GolubCodecOverflow';
 
 /// Options that control how Java code will be generated.
 class JavaOptions {
@@ -197,13 +197,13 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
     required String dartPackageName,
   }) {
     indent.writeln(
-      '$_docCommentPrefix Generated class from Pigeon.$_docCommentSuffix',
+      '$_docCommentPrefix Generated class from Golub.$_docCommentSuffix',
     );
     indent.writeln(
       '@SuppressWarnings({"unused", "unchecked", "CodeBlock2Expr", "RedundantSuppression", "serial"})',
     );
     if (generatorOptions.useGeneratedAnnotation ?? false) {
-      indent.writeln('@javax.annotation.Generated("dev.flutter.pigeon")');
+      indent.writeln('@javax.annotation.Generated("dev.bayori.golub")');
     }
     indent.writeln('public class ${generatorOptions.className!} {');
     indent.inc();
@@ -264,7 +264,7 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
     required String dartPackageName,
   }) {
     const List<String> generatedMessages = <String>[
-      ' Generated class from Pigeon that represents data sent in messages.',
+      ' Generated class from Golub that represents data sent in messages.',
     ];
     indent.newln();
     addDocumentationComments(
@@ -464,7 +464,7 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
       indent.newln();
       indent.write('public @NonNull ${classDefinition.name} build() ');
       indent.addScoped('{', '}', () {
-        const String returnVal = 'pigeonReturn';
+        const String returnVal = 'golubReturn';
         indent.writeln(
           '${classDefinition.name} $returnVal = new ${classDefinition.name}();',
         );
@@ -515,7 +515,7 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
       'static @NonNull ${classDefinition.name} fromList(@NonNull ArrayList<Object> ${varNamePrefix}list) ',
     );
     indent.addScoped('{', '}', () {
-      const String result = 'pigeonResult';
+      const String result = 'golubResult';
       indent.writeln(
         '${classDefinition.name} $result = new ${classDefinition.name}();',
       );
@@ -754,7 +754,7 @@ if (wrapped == null) {
     }
 
     const List<String> generatedMessages = <String>[
-      ' Generated class from Pigeon that represents Flutter messages that can be called from Java.',
+      ' Generated class from Golub that represents Flutter messages that can be called from Java.',
     ];
     addDocumentationComments(
       indent,
@@ -951,7 +951,7 @@ if (wrapped == null) {
     required String dartPackageName,
   }) {
     const List<String> generatedMessages = <String>[
-      ' Generated interface from Pigeon that represents a handler of messages from Flutter.',
+      ' Generated interface from Golub that represents a handler of messages from Flutter.',
     ];
     addDocumentationComments(
       indent,
@@ -1291,7 +1291,7 @@ protected static ArrayList<Object> wrapError(@NonNull Throwable exception) {
   }
 
   // We are emitting our own definition of [@CanIgnoreReturnValue] to support
-  // clients who use CheckReturnValue, without having to force Pigeon clients
+  // clients who use CheckReturnValue, without having to force Golub clients
   // to take a new dependency on error_prone_annotations.
   void _writeCanIgnoreReturnValueAnnotation(
     InternalJavaOptions opt,

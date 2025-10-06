@@ -24,19 +24,19 @@ const String _suffixVarName = '${varNamePrefix}messageChannelSuffix';
 const String instanceManagerVarName = '${classMemberNamePrefix}instanceManager';
 
 /// Name of field used for host API codec.
-const String pigeonChannelCodec = 'pigeonChannelCodec';
+const String golubChannelCodec = 'golubChannelCodec';
 
 /// Documentation comment spec.
 const DocumentCommentSpecification docCommentSpec =
     DocumentCommentSpecification(_docCommentPrefix);
 
-/// The custom codec used for all pigeon APIs.
-const String _pigeonMessageCodec = '_PigeonCodec';
+/// The custom codec used for all golub APIs.
+const String _golubMessageCodec = '_GolubCodec';
 
 /// Name of field used for host API codec.
-const String _pigeonMethodChannelCodec = 'pigeonMethodCodec';
+const String _golubMethodChannelCodec = 'golubMethodCodec';
 
-const String _overflowClassName = '_PigeonCodecOverflow';
+const String _overflowClassName = '_GolubCodecOverflow';
 
 /// Name of the overrides class for overriding constructors and static members
 /// of Dart proxy classes.
@@ -472,9 +472,9 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       _writeCodecOverflowUtilities(indent, enumeratedTypes);
     }
     indent.newln();
-    indent.write('class $_pigeonMessageCodec extends StandardMessageCodec');
+    indent.write('class $_golubMessageCodec extends StandardMessageCodec');
     indent.addScoped(' {', '}', () {
-      indent.writeln('const $_pigeonMessageCodec();');
+      indent.writeln('const $_golubMessageCodec();');
       indent.writeln('@override');
       indent.write('void writeValue(WriteBuffer buffer, Object? value) ');
       indent.addScoped('{', '}', () {
@@ -525,7 +525,7 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     if (root.containsEventChannel) {
       indent.newln();
       indent.writeln(
-        'const StandardMethodCodec $_pigeonMethodChannelCodec = StandardMethodCodec($_pigeonMessageCodec());',
+        'const StandardMethodCodec $_golubMethodChannelCodec = StandardMethodCodec($_golubMessageCodec());',
       );
     }
   }
@@ -560,7 +560,7 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
         );
       }
       indent.writeln(
-        'static const MessageCodec<Object?> $pigeonChannelCodec = $_pigeonMessageCodec();',
+        'static const MessageCodec<Object?> $golubChannelCodec = $_golubMessageCodec();',
       );
       indent.newln();
       for (final Method func in api.methods) {
@@ -649,7 +649,7 @@ final BinaryMessenger? ${varNamePrefix}binaryMessenger;
 ''');
 
       indent.writeln(
-        'static const MessageCodec<Object?> $pigeonChannelCodec = $_pigeonMessageCodec();',
+        'static const MessageCodec<Object?> $golubChannelCodec = $_golubMessageCodec();',
       );
       indent.newln();
       indent.writeln('final String $_suffixVarName;');
@@ -690,7 +690,7 @@ final BinaryMessenger? ${varNamePrefix}binaryMessenger;
           instanceName = '.\$instanceName';
         }
         final EventChannel ${func.name}Channel =
-            EventChannel('${makeChannelName(api, func, dartPackageName)}\$instanceName', $_pigeonMethodChannelCodec);
+            EventChannel('${makeChannelName(api, func, dartPackageName)}\$instanceName', $_golubMethodChannelCodec);
         return ${func.name}Channel.receiveBroadcastStream().map((dynamic event) {
           return event as ${func.returnType.baseName};
         });
@@ -765,11 +765,11 @@ final BinaryMessenger? ${varNamePrefix}binaryMessenger;
               binaryMessengerField,
               cb.Field((cb.FieldBuilder builder) {
                 builder
-                  ..name = pigeonChannelCodec
+                  ..name = golubChannelCodec
                   ..type = cb.refer('MessageCodec<Object?>')
                   ..static = true
                   ..modifier = cb.FieldModifier.constant
-                  ..assignment = const cb.Code('$_pigeonMessageCodec()');
+                  ..assignment = const cb.Code('$_golubMessageCodec()');
               }),
             ])
             ..methods.add(
@@ -1328,7 +1328,7 @@ if (wrapped == null) {
       ');',
       () {
         indent.writeln('${varNamePrefix}channelName,');
-        indent.writeln('$pigeonChannelCodec,');
+        indent.writeln('$golubChannelCodec,');
         indent.writeln('binaryMessenger: ${varNamePrefix}binaryMessenger,');
       },
     );
@@ -1421,7 +1421,7 @@ if (${varNamePrefix}replyList == null) {
       indent.nest(2, () {
         final String channelSuffix =
             addSuffixVariable ? r'$messageChannelSuffix' : '';
-        indent.writeln("'$channelName$channelSuffix', $pigeonChannelCodec,");
+        indent.writeln("'$channelName$channelSuffix', $golubChannelCodec,");
         indent.writeln('binaryMessenger: binaryMessenger);');
       });
       final String messageHandlerSetterWithOpeningParentheses =

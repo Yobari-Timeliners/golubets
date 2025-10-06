@@ -117,7 +117,7 @@ class $dartInstanceManagerClassName {
         WeakReference<$proxyApiBaseClassName>(instance);
     _finalizer.attach(instance, identifier, detach: instance);
 
-    final $proxyApiBaseClassName copy = instance.pigeon_copy();
+    final $proxyApiBaseClassName copy = instance.golub_copy();
     _identifiers[copy] = identifier;
     _strongInstances[identifier] = copy;
     return identifier;
@@ -278,7 +278,7 @@ abstract class $proxyApiBaseClassName {
 /// codec adds support to convert instances to their corresponding identifier
 /// from an `InstanceManager` and vice versa.
 const String proxyApiBaseCodec = '''
-class $_proxyApiCodecName extends _PigeonCodec {
+class $_proxyApiCodecName extends _GolubCodec {
  const $_proxyApiCodecName(this.instanceManager);
  final $dartInstanceManagerClassName instanceManager;
  @override

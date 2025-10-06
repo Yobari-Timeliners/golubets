@@ -7,27 +7,27 @@ import 'package:shared_test_plugin_code/src/generated/proxy_api_tests.gen.dart';
 
 void main() {
   test('can override ProxyApi constructors', () {
-    PigeonOverrides.pigeon_reset();
+    GolubOverrides.golub_reset();
 
-    final ProxyApiSuperClass instance = ProxyApiSuperClass.pigeon_detached();
-    PigeonOverrides.proxyApiSuperClass_new = () => instance;
+    final ProxyApiSuperClass instance = ProxyApiSuperClass.golub_detached();
+    GolubOverrides.proxyApiSuperClass_new = () => instance;
 
     expect(ProxyApiSuperClass(), instance);
   });
 
   test('can override ProxyApi static attached fields', () {
-    PigeonOverrides.pigeon_reset();
+    GolubOverrides.golub_reset();
 
-    final ProxyApiSuperClass instance = ProxyApiSuperClass.pigeon_detached();
-    PigeonOverrides.proxyApiTestClass_staticAttachedField = instance;
+    final ProxyApiSuperClass instance = ProxyApiSuperClass.golub_detached();
+    GolubOverrides.proxyApiTestClass_staticAttachedField = instance;
 
     expect(ProxyApiTestClass.staticAttachedField, instance);
   });
 
   test('can override ProxyApi static methods', () async {
-    PigeonOverrides.pigeon_reset();
+    GolubOverrides.golub_reset();
 
-    PigeonOverrides.proxyApiTestClass_echoStaticString = (String value) async {
+    GolubOverrides.proxyApiTestClass_echoStaticString = (String value) async {
       return value;
     };
 
@@ -35,28 +35,28 @@ void main() {
     expect(await ProxyApiTestClass.echoStaticString(value), value);
   });
 
-  test('pigeon_reset sets constructor overrides to null', () {
-    PigeonOverrides.proxyApiSuperClass_new =
-        () => ProxyApiSuperClass.pigeon_detached();
+  test('golub_reset sets constructor overrides to null', () {
+    GolubOverrides.proxyApiSuperClass_new =
+        () => ProxyApiSuperClass.golub_detached();
 
-    PigeonOverrides.pigeon_reset();
-    expect(PigeonOverrides.proxyApiSuperClass_new, isNull);
+    GolubOverrides.golub_reset();
+    expect(GolubOverrides.proxyApiSuperClass_new, isNull);
   });
 
-  test('pigeon_reset sets attached field overrides to null', () {
-    PigeonOverrides.proxyApiTestClass_staticAttachedField =
-        ProxyApiSuperClass.pigeon_detached();
+  test('golub_reset sets attached field overrides to null', () {
+    GolubOverrides.proxyApiTestClass_staticAttachedField =
+        ProxyApiSuperClass.golub_detached();
 
-    PigeonOverrides.pigeon_reset();
-    expect(PigeonOverrides.proxyApiTestClass_staticAttachedField, isNull);
+    GolubOverrides.golub_reset();
+    expect(GolubOverrides.proxyApiTestClass_staticAttachedField, isNull);
   });
 
-  test('pigeon_reset sets static method overrides to null', () {
-    PigeonOverrides.proxyApiTestClass_echoStaticString = (String value) async {
+  test('golub_reset sets static method overrides to null', () {
+    GolubOverrides.proxyApiTestClass_echoStaticString = (String value) async {
       return value;
     };
 
-    PigeonOverrides.pigeon_reset();
-    expect(PigeonOverrides.proxyApiTestClass_echoStaticString, isNull);
+    GolubOverrides.golub_reset();
+    expect(GolubOverrides.proxyApiTestClass_echoStaticString, isNull);
   });
 }

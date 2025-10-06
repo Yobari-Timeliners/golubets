@@ -25,7 +25,7 @@ enum ApiLocation {
   flutter,
 }
 
-/// {@macro pigeon_lib.async_type}
+/// {@macro golub_lib.async_type}
 sealed class AsynchronousType {
   /// Constructor for [AsynchronousType].
   const AsynchronousType();
@@ -46,7 +46,7 @@ sealed class AsynchronousType {
   bool get isNone => this is NoAsynchronous;
 }
 
-/// {@macro pigeon_lib.callback_async_type}
+/// {@macro golub_lib.callback_async_type}
 class CallbackAsynchronous extends AsynchronousType {
   /// Constructor for [CallbackAsynchronous].
   const CallbackAsynchronous();

@@ -29,12 +29,12 @@ const DocumentCommentSpecification _docCommentSpec =
       blockContinuationToken: _docCommentContinuation,
     );
 
-const String _codecName = 'PigeonCodec';
+const String _codecName = 'GolubCodec';
 
 /// Name of field used for host API codec.
-const String _pigeonMethodChannelCodec = 'PigeonMethodCodec';
+const String _golubMethodChannelCodec = 'GolubMethodCodec';
 
-const String _overflowClassName = '${classNamePrefix}CodecOverflow';
+const String _overflowClassName = 'GolubCodecOverflow';
 
 /// Options that control how Kotlin code will be generated.
 class KotlinOptions {
@@ -321,7 +321,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     }
 
     final List<String> generatedMessages = <String>[
-      ' Generated class from Pigeon that represents data sent in messages.',
+      ' Generated class from Golub that represents data sent in messages.',
     ];
     if (classDefinition.isSealed) {
       generatedMessages.add(
@@ -691,7 +691,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     indent.newln();
     if (root.containsEventChannel) {
       indent.writeln(
-        'val ${generatorOptions.fileSpecificClassNameComponent}$_pigeonMethodChannelCodec = StandardMethodCodec(${generatorOptions.fileSpecificClassNameComponent}$_codecName())',
+        'val ${generatorOptions.fileSpecificClassNameComponent}$_golubMethodChannelCodec = StandardMethodCodec(${generatorOptions.fileSpecificClassNameComponent}$_codecName())',
       );
       indent.newln();
     }
@@ -792,7 +792,7 @@ if (wrapped == null) {
     required String dartPackageName,
   }) {
     const List<String> generatedMessages = <String>[
-      ' Generated class from Pigeon that represents Flutter messages that can be called from Kotlin.',
+      ' Generated class from Golub that represents Flutter messages that can be called from Kotlin.',
     ];
     addDocumentationComments(
       indent,
@@ -872,7 +872,7 @@ if (wrapped == null) {
     final String apiName = api.name;
 
     const List<String> generatedMessages = <String>[
-      ' Generated interface from Pigeon that represents a handler of messages from Flutter.',
+      ' Generated interface from Golub that represents a handler of messages from Flutter.',
     ];
     addDocumentationComments(
       indent,
@@ -1212,7 +1212,7 @@ if (wrapped == null) {
     final String classModifier =
         api.hasMethodsRequiringImplementation() ? 'abstract' : 'open';
     indent.writeScoped(
-      '$classModifier class $kotlinApiName(open val pigeonRegistrar: ${proxyApiRegistrarName(generatorOptions)}) {',
+      '$classModifier class $kotlinApiName(open val golubRegistrar: ${proxyApiRegistrarName(generatorOptions)}) {',
       '}',
       () {
         final String fullKotlinClassName =
@@ -1299,24 +1299,24 @@ if (wrapped == null) {
   }) {
     indent.newln();
     indent.format('''
-        private class ${generatorOptions.fileSpecificClassNameComponent}PigeonStreamHandler<T>(
-            val wrapper: ${generatorOptions.fileSpecificClassNameComponent}PigeonEventChannelWrapper<T>
+        private class ${generatorOptions.fileSpecificClassNameComponent}GolubStreamHandler<T>(
+            val wrapper: ${generatorOptions.fileSpecificClassNameComponent}GolubEventChannelWrapper<T>
         ) : EventChannel.StreamHandler {
-          var pigeonSink: PigeonEventSink<T>? = null
+          var golubSink: GolubEventSink<T>? = null
 
           override fun onListen(p0: Any?, sink: EventChannel.EventSink) {
-            pigeonSink = PigeonEventSink<T>(sink)
-            wrapper.onListen(p0, pigeonSink!!)
+            golubSink = GolubEventSink<T>(sink)
+            wrapper.onListen(p0, golubSink!!)
           }
 
           override fun onCancel(p0: Any?) {
-            pigeonSink = null
+            golubSink = null
             wrapper.onCancel(p0)
           }
         }
 
-        interface ${generatorOptions.fileSpecificClassNameComponent}PigeonEventChannelWrapper<T> {
-          open fun onListen(p0: Any?, sink: PigeonEventSink<T>) {}
+        interface ${generatorOptions.fileSpecificClassNameComponent}GolubEventChannelWrapper<T> {
+          open fun onListen(p0: Any?, sink: GolubEventSink<T>) {}
 
           open fun onCancel(p0: Any?) {}
         }
@@ -1324,7 +1324,7 @@ if (wrapped == null) {
 
     if (api.kotlinOptions?.includeSharedClasses ?? true) {
       indent.format('''
-        class PigeonEventSink<T>(private val sink: EventChannel.EventSink) {
+        class GolubEventSink<T>(private val sink: EventChannel.EventSink) {
           fun success(value: T) {
             sink.success(value)
           }
@@ -1346,15 +1346,15 @@ if (wrapped == null) {
     );
     for (final Method func in api.methods) {
       indent.format('''
-        abstract class ${toUpperCamelCase(func.name)}StreamHandler : ${generatorOptions.fileSpecificClassNameComponent}PigeonEventChannelWrapper<${_kotlinTypeForDartType(func.returnType)}> {
+        abstract class ${toUpperCamelCase(func.name)}StreamHandler : ${generatorOptions.fileSpecificClassNameComponent}GolubEventChannelWrapper<${_kotlinTypeForDartType(func.returnType)}> {
           companion object {
             fun register(messenger: BinaryMessenger, streamHandler: ${toUpperCamelCase(func.name)}StreamHandler, instanceName: String = "") {
               var channelName: String = "${makeChannelName(api, func, dartPackageName)}"
               if (instanceName.isNotEmpty()) {
                 channelName += ".\$instanceName"
               }
-              val internalStreamHandler = ${generatorOptions.fileSpecificClassNameComponent}PigeonStreamHandler<${_kotlinTypeForDartType(func.returnType)}>(streamHandler)
-              EventChannel(messenger, channelName, ${generatorOptions.fileSpecificClassNameComponent}$_pigeonMethodChannelCodec).setStreamHandler(internalStreamHandler)
+              val internalStreamHandler = ${generatorOptions.fileSpecificClassNameComponent}GolubStreamHandler<${_kotlinTypeForDartType(func.returnType)}>(streamHandler)
+              EventChannel(messenger, channelName, ${generatorOptions.fileSpecificClassNameComponent}$_golubMethodChannelCodec).setStreamHandler(internalStreamHandler)
             }
           }
         }
@@ -1804,7 +1804,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
           init {
             val api = $instanceManagerApiName(binaryMessenger)
             instanceManager = $instanceManagerName.create(
-              object : $instanceManagerName.PigeonFinalizationListener {
+              object : $instanceManagerName.GolubFinalizationListener {
                 override fun onFinalize(identifier: Long) {
                   api.removeStrongReference(identifier) {
                     if (it.isFailure) {
@@ -2025,7 +2025,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
       '}',
       () {
         indent.writeln(
-          'val codec = api?.pigeonRegistrar?.codec ?: ${generatorOptions.fileSpecificClassNameComponent}$_codecName()',
+          'val codec = api?.golubRegistrar?.codec ?: ${generatorOptions.fileSpecificClassNameComponent}$_codecName()',
         );
         void writeWithApiCheckIfNecessary(
           List<TypeDeclaration> types, {
@@ -2100,7 +2100,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
                   List<String> methodParameters, {
                   required String apiVarName,
                 }) {
-                  return '$apiVarName.pigeonRegistrar.instanceManager.addDartCreatedInstance('
+                  return '$apiVarName.golubRegistrar.instanceManager.addDartCreatedInstance('
                       '$apiVarName.$name(${methodParameters.skip(1).join(',')}), ${methodParameters.first})';
                 },
                 parameters: <Parameter>[
@@ -2144,7 +2144,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
                 }) {
                   final String param =
                       methodParameters.length > 1 ? methodParameters.first : '';
-                  return '$apiVarName.pigeonRegistrar.instanceManager.addDartCreatedInstance('
+                  return '$apiVarName.golubRegistrar.instanceManager.addDartCreatedInstance('
                       '$apiVarName.${field.name}($param), ${methodParameters.last})';
                 },
                 parameters: <Parameter>[
@@ -2255,7 +2255,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
         required String channelName,
         required String errorClassName,
       }) {
-        indent.writeScoped('if (pigeonRegistrar.ignoreCallsToDart) {', '}', () {
+        indent.writeScoped('if (golubRegistrar.ignoreCallsToDart) {', '}', () {
           indent.format(
             '''
               callback(
@@ -2264,7 +2264,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
           );
         }, addTrailingNewline: false);
         indent.writeScoped(
-          ' else if (pigeonRegistrar.instanceManager.containsInstance(${classMemberNamePrefix}instanceArg)) {',
+          ' else if (golubRegistrar.instanceManager.containsInstance(${classMemberNamePrefix}instanceArg)) {',
           '}',
           () {
             indent.writeln('callback(Result.success(Unit))');
@@ -2274,7 +2274,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
         indent.writeScoped(' else {', '}', () {
           if (api.hasCallbackConstructor()) {
             indent.writeln(
-              'val ${classMemberNamePrefix}identifierArg = pigeonRegistrar.instanceManager.addHostCreatedInstance(${classMemberNamePrefix}instanceArg)',
+              'val ${classMemberNamePrefix}identifierArg = golubRegistrar.instanceManager.addHostCreatedInstance(${classMemberNamePrefix}instanceArg)',
             );
             enumerate(api.unattachedFields, (int index, ApiField field) {
               final String argName = _getSafeArgumentName(index, field);
@@ -2284,9 +2284,9 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
             });
 
             indent.writeln(
-              'val binaryMessenger = pigeonRegistrar.binaryMessenger',
+              'val binaryMessenger = golubRegistrar.binaryMessenger',
             );
-            indent.writeln('val codec = pigeonRegistrar.codec');
+            indent.writeln('val codec = golubRegistrar.codec');
             _writeFlutterMethodMessageCall(
               indent,
               generatorOptions: generatorOptions,
@@ -2363,7 +2363,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
           required String errorClassName,
         }) {
           indent.writeScoped(
-            'if (pigeonRegistrar.ignoreCallsToDart) {',
+            'if (golubRegistrar.ignoreCallsToDart) {',
             '}',
             () {
               indent.format('''
@@ -2374,9 +2374,9 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
             },
           );
           indent.writeln(
-            'val binaryMessenger = pigeonRegistrar.binaryMessenger',
+            'val binaryMessenger = golubRegistrar.binaryMessenger',
           );
-          indent.writeln('val codec = pigeonRegistrar.codec');
+          indent.writeln('val codec = golubRegistrar.codec');
           _writeFlutterMethodMessageCall(
             indent,
             generatorOptions: generatorOptions,
@@ -2413,7 +2413,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
       );
 
       indent.writeScoped('{', '}', () {
-        indent.writeln('return pigeonRegistrar.get$apiName()');
+        indent.writeln('return golubRegistrar.get$apiName()');
       });
       indent.newln();
     }
@@ -2439,7 +2439,7 @@ String _getErrorClassName(InternalKotlinOptions generatorOptions) =>
 /// the file.
 String _getUtilsClassName(InternalKotlinOptions options) {
   return toUpperCamelCase(
-    '${options.fileSpecificClassNameComponent ?? ''}PigeonUtils',
+    '${options.fileSpecificClassNameComponent ?? ''}GolubUtils',
   );
 }
 

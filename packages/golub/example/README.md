@@ -2,7 +2,7 @@
 # Golub Examples
 
 The examples here will cover basic usage. For a more thorough set of examples,
-check the [core_tests pigeon file](../pigeons/core_tests.dart) and 
+check the [core_tests golub file](../pigeons/core_tests.dart) and 
 [platform test folder](../platform_tests/) ([shared_test_plugin_code](../platform_tests/shared_test_plugin_code/) and [alternate_language_test_plugin](../platform_tests/alternate_language_test_plugin/) especially).
 
 ## Invocation
@@ -34,7 +34,7 @@ needed for your project.
     objcSourceOut: 'macos/Runner/messages.g.m',
     // Set this to a unique prefix for your plugin or application, per Objective-C naming conventions.
     objcOptions: ObjcOptions(prefix: 'PGN'),
-    copyrightHeader: 'pigeons/copyright.txt',
+    copyrightHeader: 'golubs/copyright.txt',
     dartPackageName: 'golub_example_package',
   ),
 )
@@ -313,7 +313,7 @@ static GolubExamplePackageExampleHostApiVTable example_host_api_vtable = {
 
 ## FlutterApi Example
 
-This example gives an overview of how to use Pigeon to call into the Flutter
+This example gives an overview of how to use Golub to call into the Flutter
 app from the host platform.
 
 ### Dart input
@@ -565,13 +565,13 @@ StreamEventsStreamHandler.register(flutterEngine.dartExecutor.binaryMessenger, e
 
 ## Swift / Kotlin Plugin Example
 
-A downloadable example of using Pigeon to create a Flutter Plugin with Swift and
+A downloadable example of using Golub to create a Flutter Plugin with Swift and
 Kotlin can be found at
 [gaaclarke/flutter_plugin_example](https://github.com/gaaclarke/pigeon_plugin_example).
 
 ## Swift / Kotlin Add-to-app Example
 
-A full example of using Pigeon for add-to-app with Swift on iOS can be found at
+A full example of using Golub for add-to-app with Swift on iOS can be found at
 [samples/add_to_app/books](https://github.com/flutter/samples/tree/master/add_to_app/books).
 
 ## Video player plugin

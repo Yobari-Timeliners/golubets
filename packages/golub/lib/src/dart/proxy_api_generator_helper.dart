@@ -227,7 +227,7 @@ Iterable<cb.Field> overridesClassStaticMethods(
   }
 }
 
-/// Creates the reset method for the `PigeonOverrides` class that sets all
+/// Creates the reset method for the `GolubOverrides` class that sets all
 /// overrideable methods to null.
 cb.Method overridesClassResetMethod(Iterable<AstProxyApi> proxyApis) {
   return cb.Method.returnsVoid((cb.MethodBuilder builder) {
@@ -283,7 +283,7 @@ cb.FunctionType methodAsFunctionType(Method method, {required String apiName}) {
   );
 }
 
-/// Converts static attached Fields from the pigeon AST to `code_builder`
+/// Converts static attached Fields from the golub AST to `code_builder`
 /// Method.
 ///
 /// Static attached fields return an overrideable test value or returns the
@@ -292,7 +292,7 @@ cb.FunctionType methodAsFunctionType(Method method, {required String apiName}) {
 /// Example Output:
 ///
 /// ```dart
-/// static MyClass get instance => PigeonMyClassOverrides.instance ?? _instance;
+/// static MyClass get instance => GolubMyClassOverrides.instance ?? _instance;
 /// ```
 Iterable<cb.Method> staticAttachedFieldsGetters(
   Iterable<ApiField> fields, {
@@ -320,7 +320,7 @@ Iterable<cb.Method> staticAttachedFieldsGetters(
   }
 }
 
-/// Write the `PigeonOverrides` class that provides overrides for constructors
+/// Write the `GolubOverrides` class that provides overrides for constructors
 /// and static members of each generated Dart proxy class.
 void writeProxyApiPigeonOverrides(
   Indent indent, {
@@ -511,7 +511,7 @@ Iterable<cb.Constructor> constructors(
               'final int ${varNamePrefix}instanceIdentifier = $instanceManagerVarName.addDartCreatedInstance(this);',
             ),
             cb.Code(
-              'final $codecName $pigeonChannelCodec =\n'
+              'final $codecName $golubChannelCodec =\n'
               '    $codecInstanceName;',
             ),
             cb.Code(
@@ -584,7 +584,7 @@ cb.Field codecInstanceField({
   );
 }
 
-/// Converts unattached fields from the pigeon AST to `code_builder`
+/// Converts unattached fields from the golub AST to `code_builder`
 /// Fields.
 Iterable<cb.Field> unattachedFields(Iterable<ApiField> fields) sync* {
   for (final ApiField field in fields) {
@@ -704,7 +704,7 @@ Iterable<cb.Field> interfaceApiFields(
   }
 }
 
-/// Converts attached Fields from the pigeon AST to `code_builder` Field.
+/// Converts attached Fields from the golub AST to `code_builder` Field.
 ///
 /// Attached fields are set lazily by calling a private method that returns
 /// it.
@@ -712,7 +712,7 @@ Iterable<cb.Field> interfaceApiFields(
 /// Example Output:
 ///
 /// ```dart
-/// final MyOtherProxyApiClass value = _pigeon_value();
+/// final MyOtherProxyApiClass value = _golub_value();
 /// ```
 Iterable<cb.Field> attachedFields(Iterable<ApiField> fields) sync* {
   for (final ApiField field in fields) {
@@ -837,7 +837,7 @@ cb.Method setUpMessageHandlerMethod({
           ..body = cb.Block.of(<cb.Code>[
             if (hasAnyMessageHandlers) ...<cb.Code>[
               cb.Code(
-                'final $codecName $pigeonChannelCodec = $codecName($instanceManagerVarName ?? $dartInstanceManagerClassName.instance);',
+                'final $codecName $golubChannelCodec = $codecName($instanceManagerVarName ?? $dartInstanceManagerClassName.instance);',
               ),
               const cb.Code(
                 'final BinaryMessenger? binaryMessenger = ${classMemberNamePrefix}binaryMessenger;',
@@ -948,7 +948,7 @@ cb.Method setUpMessageHandlerMethod({
   );
 }
 
-/// Converts attached fields from the pigeon AST to `code_builder` Methods.
+/// Converts attached fields from the golub AST to `code_builder` Methods.
 ///
 /// These private methods are used to lazily instantiate attached fields. The
 /// instance is created and returned synchronously while the native instance
@@ -1002,7 +1002,7 @@ Iterable<cb.Method> attachedFieldMethods(
                 ');',
               ),
               cb.Code(
-                'final $codecName $pigeonChannelCodec =\n'
+                'final $codecName $golubChannelCodec =\n'
                 '    $codecInstanceName;',
               ),
               const cb.Code(
@@ -1016,7 +1016,7 @@ Iterable<cb.Method> attachedFieldMethods(
                 'final $type $instanceName = $type.${classMemberNamePrefix}detached();',
               ),
               cb.Code(
-                'final $codecName $pigeonChannelCodec = $codecName($dartInstanceManagerClassName.instance);',
+                'final $codecName $golubChannelCodec = $codecName($dartInstanceManagerClassName.instance);',
               ),
               const cb.Code(
                 'final BinaryMessenger ${varNamePrefix}binaryMessenger = ServicesBinding.instance.defaultBinaryMessenger;',
@@ -1131,12 +1131,12 @@ Iterable<cb.Method> hostMethods(
                 ],
                 if (!method.isStatic)
                   cb.Code(
-                    'final $codecName $pigeonChannelCodec =\n'
+                    'final $codecName $golubChannelCodec =\n'
                     '    $codecInstanceName;',
                   )
                 else
                   cb.Code(
-                    'final $codecName $pigeonChannelCodec = $codecName($instanceManagerVarName ?? $dartInstanceManagerClassName.instance);',
+                    'final $codecName $golubChannelCodec = $codecName($instanceManagerVarName ?? $dartInstanceManagerClassName.instance);',
                   ),
                 const cb.Code(
                   'final BinaryMessenger? ${varNamePrefix}binaryMessenger = ${classMemberNamePrefix}binaryMessenger;',

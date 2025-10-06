@@ -4,24 +4,24 @@
 # found in the LICENSE file.
 
 ###############################################################################
-# A tool that helps you check the Pigeon output for a given file across
-# different versions of Pigeon.
+# A tool that helps you check the Golub output for a given file across
+# different versions of Golub.
 #
 # The comparison will be made between the currently checked out sha and the one
 # provided as an argument.
 #
-# usage: ./diff_tool.sh <sha for commit to test against> <path to pigeon file>
+# usage: ./diff_tool.sh <sha for commit to test against> <path to golub file>
 ###############################################################################
 
 xHash=$1
-pigeonPath=$2
+golubPath=$2
 diffTool="diff -ru"
 gitTool="git -c advice.detachedHead=false"
 
 generate_everything() {
   local inputPath=$1
   local outputDir=$2
-  pub run pigeon \
+  pub run golub \
     --input "$inputPath" \
     --dart_out "$outputDir/dart.dart" \
     --java_out "$outputDir/java.dart" \
@@ -33,7 +33,7 @@ yHash=$(git rev-parse HEAD)
 xDir=$(mktemp -d -t $xHash)
 yDir=$(mktemp -d -t $yHash)
 inputPath=$yDir/input.dart
-cp "$pigeonPath" "$inputPath"
+cp "$golubPath" "$inputPath"
 $gitTool checkout $xHash 1> /dev/null
 generate_everything $inputPath $xDir
 $gitTool checkout $yHash 1> /dev/null

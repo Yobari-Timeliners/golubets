@@ -133,7 +133,7 @@ Future<void> _validateGeneratedFiles(
   filteredFiles.map((String line) => '  $line').forEach(print);
 
   print(
-    '\nTo fix run "dart run tool/generate.dart --format" from the pigeon/ '
+    '\nTo fix run "dart run tool/generate.dart --format" from the golub/ '
     'directory, or apply the diff with the command below.\n',
   );
 

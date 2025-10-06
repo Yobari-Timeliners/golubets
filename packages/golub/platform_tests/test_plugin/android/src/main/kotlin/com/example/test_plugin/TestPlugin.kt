@@ -927,7 +927,7 @@ class TestPluginWithSuffix : HostSmallApi {
 object SendInts : StreamIntsStreamHandler() {
   val handler = Handler(Looper.getMainLooper())
 
-  override fun onListen(p0: Any?, sink: PigeonEventSink<Long>) {
+  override fun onListen(p0: Any?, sink: GolubEventSink<Long>) {
     var count: Long = 0
     val r: Runnable =
         object : Runnable {
@@ -960,7 +960,7 @@ object SendClass : StreamEventsStreamHandler() {
           ClassEvent(EventAllNullableTypes(aNullableInt = 0)),
           EmptyEvent())
 
-  override fun onListen(p0: Any?, sink: PigeonEventSink<PlatformEvent>) {
+  override fun onListen(p0: Any?, sink: GolubEventSink<PlatformEvent>) {
     var count: Int = 0
     val r: Runnable =
         object : Runnable {
@@ -984,7 +984,7 @@ class SendConsistentNumbers(private val numberToSend: Long) :
     StreamConsistentNumbersStreamHandler() {
   private val handler = Handler(Looper.getMainLooper())
 
-  override fun onListen(p0: Any?, sink: PigeonEventSink<Long>) {
+  override fun onListen(p0: Any?, sink: GolubEventSink<Long>) {
     var count: Int = 0
     val r: Runnable =
         object : Runnable {

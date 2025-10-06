@@ -69,13 +69,13 @@ String _javaFilenameForName(String inputName) {
 
 Future<int> generateExamplePigeons() async {
   int success = 0;
-  success = await runPigeon(
+  success = await runGolub(
     input: './example/app/pigeons/messages.dart',
     basePath: './example/app',
     copyrightHeader: '../../copyright_header.txt',
     suppressVersion: true,
   );
-  success += await runPigeon(
+  success += await runGolub(
     input: './example/app/pigeons/event_channel_messages.dart',
     basePath: './example/app',
     copyrightHeader: '../../copyright_header.txt',
@@ -140,14 +140,14 @@ Future<int> generateTestPigeons({
         swiftErrorUseDefaultErrorName ? null : '${pascalCaseName}Error';
 
     // Generate the default language test plugin output.
-    int generateCode = await runPigeon(
+    int generateCode = await runGolub(
       input: './pigeons/$input.dart',
       dartOut: '$sharedDartOutputBase/lib/src/generated/$input.gen.dart',
       dartTestOut:
           input == 'message'
               ? '$sharedDartOutputBase/test/test_message.gen.dart'
               : null,
-      dartPackageName: 'pigeon_integration_tests',
+      dartPackageName: 'golub_integration_tests',
       suppressVersion: true,
       // Android
       kotlinOut:
@@ -174,7 +174,7 @@ Future<int> generateTestPigeons({
           skipLanguages.contains(GeneratorLanguage.gobject)
               ? null
               : '$outputBase/linux/pigeon/$input.gen.cc',
-      gobjectModule: '${pascalCaseName}PigeonTest',
+      gobjectModule: '${pascalCaseName}GolubTest',
       // Windows
       cppHeaderOut:
           skipLanguages.contains(GeneratorLanguage.cpp)
@@ -184,7 +184,7 @@ Future<int> generateTestPigeons({
           skipLanguages.contains(GeneratorLanguage.cpp)
               ? null
               : '$outputBase/windows/pigeon/$input.gen.cpp',
-      cppNamespace: '${input}_pigeontest',
+      cppNamespace: '${input}_golub_test',
       injectOverflowTypes: includeOverflow && input == 'core_tests',
     );
     if (generateCode != 0) {
@@ -196,7 +196,7 @@ Future<int> generateTestPigeons({
         '$alternateOutputBase/darwin/$alternateTestPluginName/Sources/$alternateTestPluginName/';
     final String objcBaseRelativeHeaderPath =
         'include/$alternateTestPluginName/$pascalCaseName.gen.h';
-    generateCode = await runPigeon(
+    generateCode = await runGolub(
       input: './pigeons/$input.dart',
       // Android
       // This doesn't use the '.gen' suffix since Java has strict file naming
@@ -224,7 +224,7 @@ Future<int> generateTestPigeons({
               ? 'PGN'
               : '',
       suppressVersion: true,
-      dartPackageName: 'pigeon_integration_tests',
+      dartPackageName: 'golub_integration_tests',
       injectOverflowTypes: includeOverflow && input == 'core_tests',
       mergeDefinitionFileOptions: input != 'enum',
     );
@@ -235,7 +235,7 @@ Future<int> generateTestPigeons({
   return 0;
 }
 
-Future<int> runPigeon({
+Future<int> runGolub({
   required String input,
   String? kotlinOut,
   String? kotlinPackage,
@@ -273,14 +273,14 @@ Future<int> runPigeon({
   // having the version in these files isn't useful.
   // TODO(stuartmorgan): Remove the option and do this unconditionally once
   // all the checked in files are being validated; currently only
-  // generatePigeons is being checked in CI.
+  // generateGolubs is being checked in CI.
   final bool originalWarningSetting = includeVersionInGeneratedWarning;
   if (suppressVersion) {
     includeVersionInGeneratedWarning = false;
   }
 
   // parse results in advance when overflow is included to avoid exposing as public option
-  final ParseResults parseResults = Pigeon().parseFile(input);
+  final ParseResults parseResults = Golub().parseFile(input);
   if (injectOverflowTypes) {
     final List<Enum> addedEnums = List<Enum>.generate(
       totalCustomCodecKeysAllowed - 1,
@@ -295,7 +295,7 @@ Future<int> runPigeon({
     parseResults.root.enums = addedEnums;
   }
 
-  final int result = await Pigeon.runWithOptions(
+  final int result = await Golub.runWithOptions(
     GolubOptions(
       input: input,
       copyrightHeader: copyrightHeader,

@@ -52,7 +52,7 @@ void main() {
     final FlutterSearchReply reply = FlutterSearchReply()..result = 'ho';
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
     final Completer<ByteData?> completer = Completer<ByteData?>();
-    completer.complete(Api.pigeonChannelCodec.encodeMessage(<Object>[reply]));
+    completer.complete(Api.golubChannelCodec.encodeMessage(<Object>[reply]));
     final Future<ByteData?> sendResult = completer.future;
     when(
       mockMessenger.send(
@@ -74,7 +74,7 @@ void main() {
     echoOneArgument(
       mockMessenger,
       'dev.flutter.pigeon.pigeon_integration_tests.Api.echo',
-      Api.pigeonChannelCodec,
+      Api.golubChannelCodec,
     );
     final Api api = Api(binaryMessenger: mockMessenger);
     final FlutterSearchRequests echo = await api.echo(requests);
@@ -87,7 +87,7 @@ void main() {
     echoOneArgument(
       mockMessenger,
       'dev.flutter.pigeon.pigeon_integration_tests.Api.anInt',
-      Api.pigeonChannelCodec,
+      Api.golubChannelCodec,
     );
     final Api api = Api(binaryMessenger: mockMessenger);
     final int result = await api.anInt(1);
@@ -101,7 +101,7 @@ void main() {
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
-      return Api.pigeonChannelCodec.encodeMessage(<Object?>[null]);
+      return Api.golubChannelCodec.encodeMessage(<Object?>[null]);
     });
     final Api api = Api(binaryMessenger: mockMessenger);
     expect(
@@ -117,7 +117,7 @@ void main() {
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
-      return Api.pigeonChannelCodec.encodeMessage(<Object?>[123]);
+      return Api.golubChannelCodec.encodeMessage(<Object?>[123]);
     });
     final NullableArgHostApi api = NullableArgHostApi(
       binaryMessenger: mockMessenger,
@@ -132,7 +132,7 @@ void main() {
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
-      return Api.pigeonChannelCodec.encodeMessage(<Object?>[
+      return Api.golubChannelCodec.encodeMessage(<Object?>[
         <String?>['123'],
       ]);
     });
@@ -152,10 +152,10 @@ void main() {
     final Completer<int> resultCompleter = Completer<int>();
     binding.defaultBinaryMessenger.handlePlatformMessage(
       'dev.flutter.pigeon.pigeon_integration_tests.NullableArgFlutterApi.doit',
-      NullableArgFlutterApi.pigeonChannelCodec.encodeMessage(<Object?>[null]),
+      NullableArgFlutterApi.golubChannelCodec.encodeMessage(<Object?>[null]),
       (ByteData? data) {
         resultCompleter.complete(
-          (NullableArgFlutterApi.pigeonChannelCodec.decodeMessage(data)!
+          (NullableArgFlutterApi.golubChannelCodec.decodeMessage(data)!
                       as List<Object?>)
                   .first!
               as int,
@@ -179,12 +179,12 @@ void main() {
     final Completer<List<String?>> resultCompleter = Completer<List<String?>>();
     binding.defaultBinaryMessenger.handlePlatformMessage(
       'dev.flutter.pigeon.pigeon_integration_tests.NullableCollectionArgFlutterApi.doit',
-      NullableCollectionArgFlutterApi.pigeonChannelCodec.encodeMessage(
+      NullableCollectionArgFlutterApi.golubChannelCodec.encodeMessage(
         <Object?>[null],
       ),
       (ByteData? data) {
         resultCompleter.complete(
-          ((NullableCollectionArgFlutterApi.pigeonChannelCodec.decodeMessage(
+          ((NullableCollectionArgFlutterApi.golubChannelCodec.decodeMessage(
                             data,
                           )!
                           as List<Object?>)
@@ -208,7 +208,7 @@ void main() {
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
-      return NullableReturnHostApi.pigeonChannelCodec.encodeMessage(<Object?>[
+      return NullableReturnHostApi.golubChannelCodec.encodeMessage(<Object?>[
         null,
       ]);
     });
@@ -225,7 +225,7 @@ void main() {
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
-      return NullableCollectionReturnHostApi.pigeonChannelCodec.encodeMessage(
+      return NullableCollectionReturnHostApi.golubChannelCodec.encodeMessage(
         <Object?>[null],
       );
     });
@@ -246,7 +246,7 @@ void main() {
     unawaited(
       binding.defaultBinaryMessenger.handlePlatformMessage(
         'dev.flutter.pigeon.pigeon_integration_tests.NullableReturnFlutterApi.doit',
-        NullableReturnFlutterApi.pigeonChannelCodec.encodeMessage(<Object?>[]),
+        NullableReturnFlutterApi.golubChannelCodec.encodeMessage(<Object?>[]),
         (ByteData? data) {
           resultCompleter.complete(null);
         },
@@ -271,7 +271,7 @@ void main() {
     unawaited(
       binding.defaultBinaryMessenger.handlePlatformMessage(
         'dev.flutter.pigeon.pigeon_integration_tests.NullableCollectionReturnFlutterApi.doit',
-        NullableCollectionReturnFlutterApi.pigeonChannelCodec.encodeMessage(
+        NullableCollectionReturnFlutterApi.golubChannelCodec.encodeMessage(
           <Object?>[],
         ),
         (ByteData? data) {

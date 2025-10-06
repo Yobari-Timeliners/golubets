@@ -10,7 +10,7 @@ import 'package:golub/golub.dart';
     dartOptions: DartOptions(),
     cppOptions: CppOptions(namespace: 'golub_example'),
     kotlinOut:
-        'android/app/src/main/kotlin/dev/flutter/golub_example_app/EventChannelMessages.g.kt',
+        'android/app/src/main/kotlin/dev/flutter/pigeon_example_app/EventChannelMessages.g.kt',
     kotlinOptions: KotlinOptions(includeErrorClass: false),
     swiftOut: 'ios/Runner/EventChannelMessages.g.swift',
     swiftOptions: SwiftOptions(includeErrorClass: false),

@@ -4,7 +4,7 @@
 
 // ignore_for_file: avoid_print
 
-// Generates the pigeon output files needed for platform_test tests.
+// Generates the golub output files needed for platform_test tests.
 //
 // Eventually this may get more options to control which files are generated,
 // but for now it always generates everything needed for the platform unit
@@ -53,7 +53,7 @@ Future<void> main(List<String> args) async {
           _overflowFiller,
           abbr: 'o',
           help:
-              'Injects 120 Enums into the pigeon ast, used for testing overflow utilities.',
+              'Injects 120 Enums into the golub ast, used for testing overflow utilities.',
           hide: true,
         )
         ..addMultiOption(

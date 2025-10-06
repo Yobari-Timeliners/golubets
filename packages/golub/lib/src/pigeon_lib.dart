@@ -523,10 +523,10 @@ class GolubOptions {
 }
 
 /// Tool for generating code to facilitate platform channels usage.
-class Pigeon {
-  /// Create and setup a [Pigeon] instance.
-  static Pigeon setup() {
-    return Pigeon();
+class Golub {
+  /// Create and setup a [Golub] instance.
+  static Golub setup() {
+    return Golub();
   }
 
   /// Reads the file located at [path] and generates [ParseResults] by parsing
@@ -775,7 +775,7 @@ ${_argParser.usage}''';
     List<GeneratorAdapter>? adapters,
     String? sdkPath,
   }) {
-    final GolubOptions options = Pigeon.parseArgs(args);
+    final GolubOptions options = Golub.parseArgs(args);
     return runWithOptions(options, adapters: adapters, sdkPath: sdkPath);
   }
 
@@ -790,7 +790,7 @@ ${_argParser.usage}''';
     bool mergeDefinitionFileOptions = true,
     @visibleForTesting ParseResults? parseResults,
   }) async {
-    final Pigeon pigeon = Pigeon.setup();
+    final Golub pigeon = Golub.setup();
     if (options.debugGenerators ?? false) {
       generator_tools.debugGenerators = true;
     }

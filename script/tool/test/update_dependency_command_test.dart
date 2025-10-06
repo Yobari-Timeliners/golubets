@@ -368,15 +368,15 @@ dev_dependencies:
     test('regenerates all pigeon files when updating pigeon', () async {
       final RepositoryPackage package =
           createFakePackage('a_package', packagesDir, extraFiles: <String>[
-        'pigeons/foo.dart',
-        'pigeons/bar.dart',
+        'golubs/foo.dart',
+        'golubs/bar.dart',
       ]);
-      addDependency(package, 'pigeon', version: '1.0.0');
+      addDependency(package, 'golub', version: '1.0.0');
 
       await runCapturingPrint(runner, <String>[
         'update-dependency',
         '--pub-package',
-        'pigeon',
+        'golub',
         '--version',
         '1.5.0',
       ]);
@@ -391,28 +391,28 @@ dev_dependencies:
           ),
           ProcessCall(
             'dart',
-            const <String>['run', 'pigeon', '--input', 'pigeons/foo.dart'],
+            const <String>['run', 'golub', '--input', 'golubs/foo.dart'],
             package.path,
           ),
           ProcessCall(
             'dart',
-            const <String>['run', 'pigeon', '--input', 'pigeons/bar.dart'],
+            const <String>['run', 'golub', '--input', 'golubs/bar.dart'],
             package.path,
           ),
         ]),
       );
     });
 
-    test('warns when regenerating pigeon if there are no pigeon files',
+    test('warns when regenerating golub if there are no golub files',
         () async {
       final RepositoryPackage package =
           createFakePackage('a_package', packagesDir);
-      addDependency(package, 'pigeon', version: '1.0.0');
+      addDependency(package, 'golub', version: '1.0.0');
 
       final List<String> output = await runCapturingPrint(runner, <String>[
         'update-dependency',
         '--pub-package',
-        'pigeon',
+        'golub',
         '--version',
         '1.5.0',
       ]);
@@ -420,16 +420,16 @@ dev_dependencies:
       expect(
         output,
         containsAllInOrder(<Matcher>[
-          contains('No pigeon input files found'),
+          contains('No golub input files found'),
         ]),
       );
     });
 
-    test('updating pigeon fails if pub get fails', () async {
+    test('updating golub fails if pub get fails', () async {
       final RepositoryPackage package = createFakePackage(
           'a_package', packagesDir,
-          extraFiles: <String>['pigeons/foo.dart']);
-      addDependency(package, 'pigeon', version: '1.0.0');
+          extraFiles: <String>['golubs/foo.dart']);
+      addDependency(package, 'golub', version: '1.0.0');
 
       processRunner.mockProcessesForExecutable['dart'] = <FakeProcessInfo>[
         FakeProcessInfo(MockProcess(exitCode: 1), <String>['pub', 'get'])
@@ -439,7 +439,7 @@ dev_dependencies:
       final List<String> output = await runCapturingPrint(runner, <String>[
         'update-dependency',
         '--pub-package',
-        'pigeon',
+        'golub',
         '--version',
         '1.5.0',
       ], errorHandler: (Error e) {
@@ -451,27 +451,27 @@ dev_dependencies:
         output,
         containsAllInOrder(<Matcher>[
           contains('Fetching dependencies failed'),
-          contains('Failed to update pigeon files'),
+          contains('Failed to update golub files'),
         ]),
       );
     });
 
-    test('updating pigeon fails if running pigeon fails', () async {
+    test('updating golub fails if running golub fails', () async {
       final RepositoryPackage package = createFakePackage(
           'a_package', packagesDir,
-          extraFiles: <String>['pigeons/foo.dart']);
-      addDependency(package, 'pigeon', version: '1.0.0');
+          extraFiles: <String>['golubs/foo.dart']);
+      addDependency(package, 'golub', version: '1.0.0');
 
       processRunner.mockProcessesForExecutable['dart'] = <FakeProcessInfo>[
         FakeProcessInfo(MockProcess(), <String>['pub', 'get']),
-        FakeProcessInfo(MockProcess(exitCode: 1), <String>['run', 'pigeon']),
+        FakeProcessInfo(MockProcess(exitCode: 1), <String>['run', 'golub']),
       ];
 
       Error? commandError;
       final List<String> output = await runCapturingPrint(runner, <String>[
         'update-dependency',
         '--pub-package',
-        'pigeon',
+        'golub',
         '--version',
         '1.5.0',
       ], errorHandler: (Error e) {
@@ -482,8 +482,8 @@ dev_dependencies:
       expect(
         output,
         containsAllInOrder(<Matcher>[
-          contains('dart run pigeon failed'),
-          contains('Failed to update pigeon files'),
+          contains('dart run golub failed'),
+          contains('Failed to update golub files'),
         ]),
       );
     });

@@ -18,7 +18,7 @@ void main() {
     echoOneArgument(
       mockMessenger,
       'dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.anInt',
-      PrimitiveHostApi.pigeonChannelCodec,
+      PrimitiveHostApi.golubChannelCodec,
     );
     final PrimitiveHostApi api = PrimitiveHostApi(
       binaryMessenger: mockMessenger,
@@ -32,7 +32,7 @@ void main() {
     echoOneArgument(
       mockMessenger,
       'dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aBoolList',
-      PrimitiveHostApi.pigeonChannelCodec,
+      PrimitiveHostApi.golubChannelCodec,
     );
     final PrimitiveHostApi api = PrimitiveHostApi(
       binaryMessenger: mockMessenger,
@@ -54,7 +54,7 @@ void main() {
       final MessageHandler? handler =
           realInvocation.positionalArguments[1] as MessageHandler?;
       handler!(
-        PrimitiveFlutterApi.pigeonChannelCodec.encodeMessage(<Object?>[
+        PrimitiveFlutterApi.golubChannelCodec.encodeMessage(<Object?>[
           <Object?>[true, false],
         ]),
       );
@@ -68,7 +68,7 @@ void main() {
     echoOneArgument(
       mockMessenger,
       'dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aStringIntMap',
-      PrimitiveHostApi.pigeonChannelCodec,
+      PrimitiveHostApi.golubChannelCodec,
     );
     final PrimitiveHostApi api = PrimitiveHostApi(
       binaryMessenger: mockMessenger,

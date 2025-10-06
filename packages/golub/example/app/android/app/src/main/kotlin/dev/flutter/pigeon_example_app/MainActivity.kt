@@ -7,10 +7,10 @@ package dev.flutter.pigeon_example_app
 import EmptyEvent
 import ExampleHostApi
 import FlutterError
+import GolubEventSink
 import IntEvent
 import MessageData
 import MessageFlutterApi
-import PigeonEventSink
 import PlatformEvent
 import StreamEventsStreamHandler
 import StringEvent
@@ -78,9 +78,9 @@ private class PigeonFlutterApi(binding: FlutterPlugin.FlutterPluginBinding) {
 
 // #docregion kotlin-class-event
 class EventListener : StreamEventsStreamHandler() {
-  private var eventSink: PigeonEventSink<PlatformEvent>? = null
+  private var eventSink: GolubEventSink<PlatformEvent>? = null
 
-  override fun onListen(p0: Any?, sink: PigeonEventSink<PlatformEvent>) {
+  override fun onListen(p0: Any?, sink: GolubEventSink<PlatformEvent>) {
     eventSink = sink
   }
 

@@ -16,7 +16,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
   var flutterAPI: FlutterIntegrationCoreApi
   var flutterSmallApiOne: FlutterSmallApi
   var flutterSmallApiTwo: FlutterSmallApi
-  var proxyApiRegistrar: ProxyApiTestsPigeonProxyApiRegistrar?
+  var proxyApiRegistrar: ProxyApiTestsGolubProxyApiRegistrar?
 
   public static func register(with registrar: FlutterPluginRegistrar) {
     // Workaround for https://github.com/flutter/flutter/issues/118103.
@@ -48,7 +48,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     StreamConsistentNumbersStreamHandler.register(
       with: binaryMessenger, instanceName: "2",
       streamHandler: SendConsistentNumbers(numberToSend: 2))
-    proxyApiRegistrar = ProxyApiTestsPigeonProxyApiRegistrar(
+    proxyApiRegistrar = ProxyApiTestsGolubProxyApiRegistrar(
       binaryMessenger: binaryMessenger, apiDelegate: ProxyApiDelegate())
     proxyApiRegistrar!.setUp()
   }
@@ -1303,7 +1303,7 @@ class SendInts: StreamIntsStreamHandler {
   var timerActive = false
   var timer: Timer?
 
-  override public func onListen(withArguments arguments: Any?, sink: PigeonEventSink<Int64>) {
+  override public func onListen(withArguments arguments: Any?, sink: GolubEventSink<Int64>) {
     var count: Int64 = 0
     if !timerActive {
       timerActive = true
@@ -1336,7 +1336,7 @@ class SendEvents: StreamEventsStreamHandler {
       .emptyEvent,
     ]
 
-  override public func onListen(withArguments arguments: Any?, sink: PigeonEventSink<PlatformEvent>)
+  override public func onListen(withArguments arguments: Any?, sink: GolubEventSink<PlatformEvent>)
   {
     var count = 0
     if !timerActive {
@@ -1365,7 +1365,7 @@ class SendConsistentNumbers: StreamConsistentNumbersStreamHandler {
   var timerActive = false
   var timer: Timer?
 
-  override public func onListen(withArguments arguments: Any?, sink: PigeonEventSink<Int64>) {
+  override public func onListen(withArguments arguments: Any?, sink: GolubEventSink<Int64>) {
     let numberThatWillBeSent: Int64 = numberToSend
     var count: Int64 = 0
     if !timerActive {
@@ -1384,13 +1384,13 @@ class SendConsistentNumbers: StreamConsistentNumbersStreamHandler {
   }
 }
 
-class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
-  public func pigeonApiProxyApiTestClass(_ registrar: ProxyApiTestsPigeonProxyApiRegistrar)
-    -> PigeonApiProxyApiTestClass
+class ProxyApiDelegate: ProxyApiTestsGolubProxyApiDelegate {
+  public func golubApiProxyApiTestClass(_ registrar: ProxyApiTestsGolubProxyApiRegistrar)
+    -> GolubApiProxyApiTestClass
   {
-    class ProxyApiTestClassDelegate: PigeonApiDelegateProxyApiTestClass {
-      public func pigeonDefaultConstructor(
-        pigeonApi: PigeonApiProxyApiTestClass, aBool: Bool, anInt: Int64, aDouble: Double,
+    class ProxyApiTestClassDelegate: GolubApiDelegateProxyApiTestClass {
+      public func golubDefaultConstructor(
+        golubApi: GolubApiProxyApiTestClass, aBool: Bool, anInt: Int64, aDouble: Double,
         aString: String, aUint8List: FlutterStandardTypedData, aList: [Any?], aMap: [String?: Any?],
         anEnum: ProxyApiTestEnum, aProxyApi: ProxyApiSuperClass, aNullableBool: Bool?,
         aNullableInt: Int64?, aNullableDouble: Double?, aNullableString: String?,
@@ -1409,7 +1409,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func namedConstructor(
-        pigeonApi: PigeonApiProxyApiTestClass, aBool: Bool, anInt: Int64, aDouble: Double,
+        golubApi: GolubApiProxyApiTestClass, aBool: Bool, anInt: Int64, aDouble: Double,
         aString: String, aUint8List: FlutterStandardTypedData, aList: [Any?], aMap: [String?: Any?],
         anEnum: ProxyApiTestEnum, aProxyApi: ProxyApiSuperClass, aNullableBool: Bool?,
         aNullableInt: Int64?, aNullableDouble: Double?, aNullableString: String?,
@@ -1421,41 +1421,41 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func attachedField(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass
       )
         throws -> ProxyApiSuperClass
       {
         return ProxyApiSuperClass()
       }
 
-      public func staticAttachedField(pigeonApi: PigeonApiProxyApiTestClass) throws
+      public func staticAttachedField(golubApi: GolubApiProxyApiTestClass) throws
         -> ProxyApiSuperClass
       {
         return ProxyApiSuperClass()
       }
 
-      public func aBool(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func aBool(golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass)
         throws
         -> Bool
       {
         return true
       }
 
-      public func anInt(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func anInt(golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass)
         throws
         -> Int64
       {
         return 0
       }
 
-      public func aDouble(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func aDouble(golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass)
         throws
         -> Double
       {
         return 0.0
       }
 
-      public func aString(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func aString(golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass)
         throws
         -> String
       {
@@ -1463,28 +1463,28 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func aUint8List(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass
       )
         throws -> FlutterStandardTypedData
       {
         return FlutterStandardTypedData(bytes: Data())
       }
 
-      public func aList(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func aList(golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass)
         throws
         -> [Any?]
       {
         return []
       }
 
-      public func aMap(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func aMap(golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass)
         throws
         -> [String?: Any?]
       {
         return [:]
       }
 
-      public func anEnum(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func anEnum(golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass)
         throws
         -> ProxyApiTestEnum
       {
@@ -1492,7 +1492,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func aProxyApi(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass
       )
         throws -> ProxyApiSuperClass
       {
@@ -1500,7 +1500,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func aNullableBool(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass
       )
         throws -> Bool?
       {
@@ -1508,7 +1508,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func aNullableInt(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass
       )
         throws -> Int64?
       {
@@ -1516,7 +1516,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func aNullableDouble(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass
       )
         throws -> Double?
       {
@@ -1524,7 +1524,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func aNullableString(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass
       )
         throws -> String?
       {
@@ -1532,13 +1532,13 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func aNullableUint8List(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass
       ) throws -> FlutterStandardTypedData? {
         return nil
       }
 
       public func aNullableList(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass
       )
         throws -> [Any?]?
       {
@@ -1546,7 +1546,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func aNullableMap(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass
       )
         throws -> [String?: Any?]?
       {
@@ -1554,7 +1554,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func aNullableEnum(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass
       )
         throws -> ProxyApiTestEnum?
       {
@@ -1562,17 +1562,17 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func aNullableProxyApi(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass
       ) throws -> ProxyApiSuperClass? {
         return nil
       }
 
-      public func noop(pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass)
+      public func noop(golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass)
         throws
       {}
 
       public func throwError(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass
       )
         throws -> Any?
       {
@@ -1580,202 +1580,202 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func throwErrorFromVoid(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass
       ) throws {
         throw ProxyApiTestsError(code: "code", message: "message", details: "details")
       }
 
       public func throwFlutterError(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass
       ) throws -> Any? {
         throw ProxyApiTestsError(code: "code", message: "message", details: "details")
       }
 
       public func echoInt(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, anInt: Int64
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, anInt: Int64
       ) throws -> Int64 {
         return anInt
       }
 
       public func echoDouble(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aDouble: Double
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aDouble: Double
       ) throws -> Double {
         return aDouble
       }
 
       public func echoBool(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aBool: Bool
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aBool: Bool
       ) throws -> Bool {
         return aBool
       }
 
       public func echoString(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aString: String
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aString: String
       ) throws -> String {
         return aString
       }
 
       public func echoUint8List(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aUint8List: FlutterStandardTypedData
       ) throws -> FlutterStandardTypedData {
         return aUint8List
       }
 
       public func echoObject(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, anObject: Any
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, anObject: Any
       ) throws -> Any {
         return anObject
       }
 
       public func echoList(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aList: [Any?]
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aList: [Any?]
       ) throws -> [Any?] {
         return aList
       }
 
       public func echoProxyApiList(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aList: [ProxyApiTestClass]
       ) throws -> [ProxyApiTestClass] {
         return aList
       }
 
       public func echoMap(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aMap: [String?: Any?]
       ) throws -> [String?: Any?] {
         return aMap
       }
 
       public func echoProxyApiMap(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aMap: [String: ProxyApiTestClass]
       ) throws -> [String: ProxyApiTestClass] {
         return aMap
       }
 
       public func echoEnum(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         anEnum: ProxyApiTestEnum
       ) throws -> ProxyApiTestEnum {
         return anEnum
       }
 
       public func echoProxyApi(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aProxyApi: ProxyApiSuperClass
       ) throws -> ProxyApiSuperClass {
         return aProxyApi
       }
 
       public func echoNullableInt(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aNullableInt: Int64?
       ) throws -> Int64? {
         return aNullableInt
       }
 
       public func echoNullableDouble(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aNullableDouble: Double?
       ) throws -> Double? {
         return aNullableDouble
       }
 
       public func echoNullableBool(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aNullableBool: Bool?
       ) throws -> Bool? {
         return aNullableBool
       }
 
       public func echoNullableString(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aNullableString: String?
       ) throws -> String? {
         return aNullableString
       }
 
       public func echoNullableUint8List(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aNullableUint8List: FlutterStandardTypedData?
       ) throws -> FlutterStandardTypedData? {
         return aNullableUint8List
       }
 
       public func echoNullableObject(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aNullableObject: Any?
       ) throws -> Any? {
         return aNullableObject
       }
 
       public func echoNullableList(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aNullableList: [Any?]?
       ) throws -> [Any?]? {
         return aNullableList
       }
 
       public func echoNullableMap(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aNullableMap: [String?: Any?]?
       ) throws -> [String?: Any?]? {
         return aNullableMap
       }
 
       public func echoNullableEnum(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aNullableEnum: ProxyApiTestEnum?
       ) throws -> ProxyApiTestEnum? {
         return aNullableEnum
       }
 
       public func echoNullableProxyApi(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aNullableProxyApi: ProxyApiSuperClass?
       ) throws -> ProxyApiSuperClass? {
         return aNullableProxyApi
       }
 
       public func noopAsync(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         completion: @escaping (Result<Void, Error>) -> Void
       ) {
         completion(.success(()))
       }
 
       public func echoAsyncInt(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, anInt: Int64,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, anInt: Int64,
         completion: @escaping (Result<Int64, Error>) -> Void
       ) {
         completion(.success(anInt))
       }
 
       public func echoAsyncDouble(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aDouble: Double,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aDouble: Double,
         completion: @escaping (Result<Double, Error>) -> Void
       ) {
         completion(.success(aDouble))
       }
 
       public func echoAsyncBool(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aBool: Bool,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aBool: Bool,
         completion: @escaping (Result<Bool, Error>) -> Void
       ) {
         completion(.success(aBool))
       }
 
       public func echoAsyncString(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aString: String,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aString: String,
         completion: @escaping (Result<String, Error>) -> Void
       ) {
         completion(.success(aString))
       }
 
       public func echoAsyncUint8List(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aUint8List: FlutterStandardTypedData,
         completion: @escaping (Result<FlutterStandardTypedData, Error>) -> Void
       ) {
@@ -1783,35 +1783,35 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func echoAsyncObject(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, anObject: Any,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, anObject: Any,
         completion: @escaping (Result<Any, Error>) -> Void
       ) {
         completion(.success(anObject))
       }
 
       public func echoAsyncList(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aList: [Any?],
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aList: [Any?],
         completion: @escaping (Result<[Any?], Error>) -> Void
       ) {
         completion(.success(aList))
       }
 
       public func echoAsyncMap(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aMap: [String?: Any?], completion: @escaping (Result<[String?: Any?], Error>) -> Void
       ) {
         completion(.success(aMap))
       }
 
       public func echoAsyncEnum(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         anEnum: ProxyApiTestEnum, completion: @escaping (Result<ProxyApiTestEnum, Error>) -> Void
       ) {
         completion(.success(anEnum))
       }
 
       public func throwAsyncError(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         completion: @escaping (Result<Any?, Error>) -> Void
       ) {
         completion(
@@ -1819,7 +1819,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func throwAsyncErrorFromVoid(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         completion: @escaping (Result<Void, Error>) -> Void
       ) {
         completion(
@@ -1827,7 +1827,7 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func throwAsyncFlutterError(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         completion: @escaping (Result<Any?, Error>) -> Void
       ) {
         completion(
@@ -1835,35 +1835,35 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func echoAsyncNullableInt(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, anInt: Int64?,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, anInt: Int64?,
         completion: @escaping (Result<Int64?, Error>) -> Void
       ) {
         completion(.success(anInt))
       }
 
       public func echoAsyncNullableDouble(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aDouble: Double?,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aDouble: Double?,
         completion: @escaping (Result<Double?, Error>) -> Void
       ) {
         completion(.success(aDouble))
       }
 
       public func echoAsyncNullableBool(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aBool: Bool?,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aBool: Bool?,
         completion: @escaping (Result<Bool?, Error>) -> Void
       ) {
         completion(.success(aBool))
       }
 
       public func echoAsyncNullableString(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aString: String?,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aString: String?,
         completion: @escaping (Result<String?, Error>) -> Void
       ) {
         completion(.success(aString))
       }
 
       public func echoAsyncNullableUint8List(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aUint8List: FlutterStandardTypedData?,
         completion: @escaping (Result<FlutterStandardTypedData?, Error>) -> Void
       ) {
@@ -1871,52 +1871,52 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func echoAsyncNullableObject(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, anObject: Any?,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, anObject: Any?,
         completion: @escaping (Result<Any?, Error>) -> Void
       ) {
         completion(.success(anObject))
       }
 
       public func echoAsyncNullableList(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aList: [Any?]?,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aList: [Any?]?,
         completion: @escaping (Result<[Any?]?, Error>) -> Void
       ) {
         completion(.success(aList))
       }
 
       public func echoAsyncNullableMap(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aMap: [String?: Any?]?, completion: @escaping (Result<[String?: Any?]?, Error>) -> Void
       ) {
         completion(.success(aMap))
       }
 
       public func echoAsyncNullableEnum(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         anEnum: ProxyApiTestEnum?, completion: @escaping (Result<ProxyApiTestEnum?, Error>) -> Void
       ) {
         completion(.success(anEnum))
       }
 
-      public func staticNoop(pigeonApi: PigeonApiProxyApiTestClass) throws {}
+      public func staticNoop(golubApi: GolubApiProxyApiTestClass) throws {}
 
-      public func echoStaticString(pigeonApi: PigeonApiProxyApiTestClass, aString: String) throws
+      public func echoStaticString(golubApi: GolubApiProxyApiTestClass, aString: String) throws
         -> String
       {
         return aString
       }
 
       public func staticAsyncNoop(
-        pigeonApi: PigeonApiProxyApiTestClass, completion: @escaping (Result<Void, Error>) -> Void
+        golubApi: GolubApiProxyApiTestClass, completion: @escaping (Result<Void, Error>) -> Void
       ) {
         completion(.success(()))
       }
 
       public func callFlutterNoop(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         completion: @escaping (Result<Void, Error>) -> Void
       ) {
-        pigeonApi.flutterNoop(pigeonInstance: pigeonInstance) { response in
+        golubApi.flutterNoop(golubInstance: golubInstance) { response in
           switch response {
           case .success(let res):
             completion(.success(res))
@@ -1927,10 +1927,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterThrowError(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         completion: @escaping (Result<Any?, Error>) -> Void
       ) {
-        pigeonApi.flutterThrowError(pigeonInstance: pigeonInstance) { response in
+        golubApi.flutterThrowError(golubInstance: golubInstance) { response in
           switch response {
           case .success(let res):
             completion(.success(res))
@@ -1941,10 +1941,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterThrowErrorFromVoid(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         completion: @escaping (Result<Void, Error>) -> Void
       ) {
-        pigeonApi.flutterThrowErrorFromVoid(pigeonInstance: pigeonInstance) { response in
+        golubApi.flutterThrowErrorFromVoid(golubInstance: golubInstance) { response in
           switch response {
           case .success(let res):
             completion(.success(res))
@@ -1955,10 +1955,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoBool(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aBool: Bool,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aBool: Bool,
         completion: @escaping (Result<Bool, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoBool(pigeonInstance: pigeonInstance, aBool: aBool) { response in
+        golubApi.flutterEchoBool(golubInstance: golubInstance, aBool: aBool) { response in
           switch response {
           case .success(let res):
             completion(.success(res))
@@ -1969,10 +1969,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoInt(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, anInt: Int64,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, anInt: Int64,
         completion: @escaping (Result<Int64, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoInt(pigeonInstance: pigeonInstance, anInt: anInt) { response in
+        golubApi.flutterEchoInt(golubInstance: golubInstance, anInt: anInt) { response in
           switch response {
           case .success(let res):
             completion(.success(res))
@@ -1983,10 +1983,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoDouble(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aDouble: Double,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aDouble: Double,
         completion: @escaping (Result<Double, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoDouble(pigeonInstance: pigeonInstance, aDouble: aDouble) { response in
+        golubApi.flutterEchoDouble(golubInstance: golubInstance, aDouble: aDouble) { response in
           switch response {
           case .success(let res):
             completion(.success(res))
@@ -1997,10 +1997,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoString(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aString: String,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aString: String,
         completion: @escaping (Result<String, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoString(pigeonInstance: pigeonInstance, aString: aString) { response in
+        golubApi.flutterEchoString(golubInstance: golubInstance, aString: aString) { response in
           switch response {
           case .success(let res):
             completion(.success(res))
@@ -2011,11 +2011,11 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoUint8List(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aUint8List: FlutterStandardTypedData,
         completion: @escaping (Result<FlutterStandardTypedData, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoUint8List(pigeonInstance: pigeonInstance, aList: aUint8List) {
+        golubApi.flutterEchoUint8List(golubInstance: golubInstance, aList: aUint8List) {
           response in
           switch response {
           case .success(let res):
@@ -2027,10 +2027,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoList(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aList: [Any?],
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aList: [Any?],
         completion: @escaping (Result<[Any?], Error>) -> Void
       ) {
-        pigeonApi.flutterEchoList(pigeonInstance: pigeonInstance, aList: aList) { response in
+        golubApi.flutterEchoList(golubInstance: golubInstance, aList: aList) { response in
           switch response {
           case .success(let res):
             completion(.success(res))
@@ -2041,11 +2041,11 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoProxyApiList(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aList: [ProxyApiTestClass?],
         completion: @escaping (Result<[ProxyApiTestClass?], Error>) -> Void
       ) {
-        pigeonApi.flutterEchoProxyApiList(pigeonInstance: pigeonInstance, aList: aList) {
+        golubApi.flutterEchoProxyApiList(golubInstance: golubInstance, aList: aList) {
           response in
           switch response {
           case .success(let res):
@@ -2057,10 +2057,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoMap(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aMap: [String?: Any?], completion: @escaping (Result<[String?: Any?], Error>) -> Void
       ) {
-        pigeonApi.flutterEchoMap(pigeonInstance: pigeonInstance, aMap: aMap) { response in
+        golubApi.flutterEchoMap(golubInstance: golubInstance, aMap: aMap) { response in
           switch response {
           case .success(let res):
             completion(.success(res))
@@ -2071,11 +2071,11 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoProxyApiMap(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aMap: [String?: ProxyApiTestClass?],
         completion: @escaping (Result<[String?: ProxyApiTestClass?], Error>) -> Void
       ) {
-        pigeonApi.flutterEchoProxyApiMap(pigeonInstance: pigeonInstance, aMap: aMap) { response in
+        golubApi.flutterEchoProxyApiMap(golubInstance: golubInstance, aMap: aMap) { response in
           switch response {
           case .success(let res):
             completion(.success(res))
@@ -2086,10 +2086,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoEnum(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         anEnum: ProxyApiTestEnum, completion: @escaping (Result<ProxyApiTestEnum, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoEnum(pigeonInstance: pigeonInstance, anEnum: anEnum) { response in
+        golubApi.flutterEchoEnum(golubInstance: golubInstance, anEnum: anEnum) { response in
           switch response {
           case .success(let res):
             completion(.success(res))
@@ -2100,11 +2100,11 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoProxyApi(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aProxyApi: ProxyApiSuperClass,
         completion: @escaping (Result<ProxyApiSuperClass, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoProxyApi(pigeonInstance: pigeonInstance, aProxyApi: aProxyApi) {
+        golubApi.flutterEchoProxyApi(golubInstance: golubInstance, aProxyApi: aProxyApi) {
           response in
           switch response {
           case .success(let res):
@@ -2116,10 +2116,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoNullableBool(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aBool: Bool?,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aBool: Bool?,
         completion: @escaping (Result<Bool?, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoNullableBool(pigeonInstance: pigeonInstance, aBool: aBool) {
+        golubApi.flutterEchoNullableBool(golubInstance: golubInstance, aBool: aBool) {
           response in
           switch response {
           case .success(let res):
@@ -2131,10 +2131,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoNullableInt(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, anInt: Int64?,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, anInt: Int64?,
         completion: @escaping (Result<Int64?, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoNullableInt(pigeonInstance: pigeonInstance, anInt: anInt) { response in
+        golubApi.flutterEchoNullableInt(golubInstance: golubInstance, anInt: anInt) { response in
           switch response {
           case .success(let res):
             completion(.success(res))
@@ -2145,10 +2145,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoNullableDouble(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aDouble: Double?,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aDouble: Double?,
         completion: @escaping (Result<Double?, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoNullableDouble(pigeonInstance: pigeonInstance, aDouble: aDouble) {
+        golubApi.flutterEchoNullableDouble(golubInstance: golubInstance, aDouble: aDouble) {
           response in
           switch response {
           case .success(let res):
@@ -2160,10 +2160,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoNullableString(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aString: String?,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aString: String?,
         completion: @escaping (Result<String?, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoNullableString(pigeonInstance: pigeonInstance, aString: aString) {
+        golubApi.flutterEchoNullableString(golubInstance: golubInstance, aString: aString) {
           response in
           switch response {
           case .success(let res):
@@ -2175,11 +2175,11 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoNullableUint8List(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aUint8List: FlutterStandardTypedData?,
         completion: @escaping (Result<FlutterStandardTypedData?, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoNullableUint8List(pigeonInstance: pigeonInstance, aList: aUint8List) {
+        golubApi.flutterEchoNullableUint8List(golubInstance: golubInstance, aList: aUint8List) {
           response in
           switch response {
           case .success(let res):
@@ -2191,10 +2191,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoNullableList(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aList: [Any?]?,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aList: [Any?]?,
         completion: @escaping (Result<[Any?]?, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoNullableList(pigeonInstance: pigeonInstance, aList: aList) {
+        golubApi.flutterEchoNullableList(golubInstance: golubInstance, aList: aList) {
           response in
           switch response {
           case .success(let res):
@@ -2206,10 +2206,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoNullableMap(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aMap: [String?: Any?]?, completion: @escaping (Result<[String?: Any?]?, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoNullableMap(pigeonInstance: pigeonInstance, aMap: aMap) { response in
+        golubApi.flutterEchoNullableMap(golubInstance: golubInstance, aMap: aMap) { response in
           switch response {
           case .success(let res):
             completion(.success(res))
@@ -2220,10 +2220,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoNullableEnum(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         anEnum: ProxyApiTestEnum?, completion: @escaping (Result<ProxyApiTestEnum?, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoNullableEnum(pigeonInstance: pigeonInstance, anEnum: anEnum) {
+        golubApi.flutterEchoNullableEnum(golubInstance: golubInstance, anEnum: anEnum) {
           response in
           switch response {
           case .success(let res):
@@ -2235,12 +2235,12 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoNullableProxyApi(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         aProxyApi: ProxyApiSuperClass?,
         completion: @escaping (Result<ProxyApiSuperClass?, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoNullableProxyApi(pigeonInstance: pigeonInstance, aProxyApi: aProxyApi)
-        { response in
+        golubApi.flutterEchoNullableProxyApi(golubInstance: golubInstance, aProxyApi: aProxyApi) {
+          response in
           switch response {
           case .success(let res):
             completion(.success(res))
@@ -2251,10 +2251,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterNoopAsync(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass,
         completion: @escaping (Result<Void, Error>) -> Void
       ) {
-        pigeonApi.flutterNoopAsync(pigeonInstance: pigeonInstance) { response in
+        golubApi.flutterNoopAsync(golubInstance: golubInstance) { response in
           switch response {
           case .success(let res):
             completion(.success(res))
@@ -2265,10 +2265,10 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
       }
 
       public func callFlutterEchoAsyncString(
-        pigeonApi: PigeonApiProxyApiTestClass, pigeonInstance: ProxyApiTestClass, aString: String,
+        golubApi: GolubApiProxyApiTestClass, golubInstance: ProxyApiTestClass, aString: String,
         completion: @escaping (Result<String, Error>) -> Void
       ) {
-        pigeonApi.flutterEchoAsyncString(pigeonInstance: pigeonInstance, aString: aString) {
+        golubApi.flutterEchoAsyncString(golubInstance: golubInstance, aString: aString) {
           response in
           switch response {
           case .success(let res):
@@ -2279,44 +2279,44 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
         }
       }
     }
-    return PigeonApiProxyApiTestClass(
-      pigeonRegistrar: registrar, delegate: ProxyApiTestClassDelegate())
+    return GolubApiProxyApiTestClass(
+      golubRegistrar: registrar, delegate: ProxyApiTestClassDelegate())
   }
 
-  public func pigeonApiProxyApiSuperClass(_ registrar: ProxyApiTestsPigeonProxyApiRegistrar)
-    -> PigeonApiProxyApiSuperClass
+  public func golubApiProxyApiSuperClass(_ registrar: ProxyApiTestsGolubProxyApiRegistrar)
+    -> GolubApiProxyApiSuperClass
   {
-    class ProxyApiSuperClassDelegate: PigeonApiDelegateProxyApiSuperClass {
-      public func pigeonDefaultConstructor(pigeonApi: PigeonApiProxyApiSuperClass) throws
+    class ProxyApiSuperClassDelegate: GolubApiDelegateProxyApiSuperClass {
+      public func golubDefaultConstructor(golubApi: GolubApiProxyApiSuperClass) throws
         -> ProxyApiSuperClass
       {
         return ProxyApiSuperClass()
       }
 
       public func aSuperMethod(
-        pigeonApi: PigeonApiProxyApiSuperClass, pigeonInstance: ProxyApiSuperClass
+        golubApi: GolubApiProxyApiSuperClass, golubInstance: ProxyApiSuperClass
       )
         throws
       {}
     }
-    return PigeonApiProxyApiSuperClass(
-      pigeonRegistrar: registrar, delegate: ProxyApiSuperClassDelegate())
+    return GolubApiProxyApiSuperClass(
+      golubRegistrar: registrar, delegate: ProxyApiSuperClassDelegate())
   }
 
-  public func pigeonApiProxyApiInterface(_ registrar: ProxyApiTestsPigeonProxyApiRegistrar)
-    -> PigeonApiProxyApiInterface
+  public func golubApiProxyApiInterface(_ registrar: ProxyApiTestsGolubProxyApiRegistrar)
+    -> GolubApiProxyApiInterface
   {
-    class ProxyApiInterfaceDelegate: PigeonApiDelegateProxyApiInterface {}
-    return PigeonApiProxyApiInterface(
-      pigeonRegistrar: registrar, delegate: ProxyApiInterfaceDelegate())
+    class ProxyApiInterfaceDelegate: GolubApiDelegateProxyApiInterface {}
+    return GolubApiProxyApiInterface(
+      golubRegistrar: registrar, delegate: ProxyApiInterfaceDelegate())
   }
 
-  public func pigeonApiClassWithApiRequirement(_ registrar: ProxyApiTestsPigeonProxyApiRegistrar)
-    -> PigeonApiClassWithApiRequirement
+  public func golubApiClassWithApiRequirement(_ registrar: ProxyApiTestsGolubProxyApiRegistrar)
+    -> GolubApiClassWithApiRequirement
   {
-    class ClassWithApiRequirementDelegate: PigeonApiDelegateClassWithApiRequirement {
+    class ClassWithApiRequirementDelegate: GolubApiDelegateClassWithApiRequirement {
       @available(iOS 15, macOS 10, *)
-      public func pigeonDefaultConstructor(pigeonApi: PigeonApiClassWithApiRequirement) throws
+      public func golubDefaultConstructor(golubApi: GolubApiClassWithApiRequirement) throws
         -> ClassWithApiRequirement
       {
         return ClassWithApiRequirement()
@@ -2324,11 +2324,11 @@ class ProxyApiDelegate: ProxyApiTestsPigeonProxyApiDelegate {
 
       @available(iOS 15, macOS 10, *)
       public func aMethod(
-        pigeonApi: PigeonApiClassWithApiRequirement, pigeonInstance: ClassWithApiRequirement
+        golubApi: GolubApiClassWithApiRequirement, golubInstance: ClassWithApiRequirement
       ) throws {}
     }
 
-    return PigeonApiClassWithApiRequirement(
-      pigeonRegistrar: registrar, delegate: ClassWithApiRequirementDelegate())
+    return GolubApiClassWithApiRequirement(
+      golubRegistrar: registrar, delegate: ClassWithApiRequirementDelegate())
   }
 }

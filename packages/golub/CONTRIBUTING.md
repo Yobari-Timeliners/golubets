@@ -2,19 +2,19 @@
 
 ## Description
 
-Pigeon is a code generation tool that adds type safety to Flutter’s Platform
+Golub is a code generation tool that adds type safety to Flutter’s Platform
 Channels.  This document serves as an overview of how it functions to help
 people who would like to contribute to the project.
 
 ## State Diagram
 
-Pigeon generates a temporary file in its _LaunchIsolate_, the isolate that is
-spawned to run `main()`, then launches another isolate, _PigeonIsolate_, that
+Golub generates a temporary file in its _LaunchIsolate_, the isolate that is
+spawned to run `main()`, then launches another isolate, _GolubIsolate_, that
 uses `dart:mirrors` to parse the generated file, creating an
 [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree), then running code
 generators with that AST.
 
-![State Diagram](./doc/pigeon_state.png)
+![State Diagram](./doc/golub_state.png)
 
 ## Source Index
 
@@ -37,7 +37,7 @@ generators with that AST.
 
 ## Testing Overview
 
-Pigeon has 3 types of tests, you'll find them all in
+Golub has 3 types of tests, you'll find them all in
 [test.dart](./tool/test.dart).
 
 * Unit tests - These are the fastest tests that are just typical unit tests,
@@ -59,20 +59,20 @@ relevant tests. Pass `-l` to get a list of available tests for the `-t` flag.
 
 ## Generated Source Code Example
 
-This is what the temporary generated code that the _PigeonIsolate_ executes
+This is what the temporary generated code that the _GolubIsolate_ executes
 looks like (see [State Diagram](#state-diagram)):
 
 ```dart
-import 'path/to/supplied/pigeon/file.dart';
+import 'path/to/supplied/golub/file.dart';
 import 'dart:io';
 import 'dart:isolate';
-import 'package:golub/pigeon_lib.dart';
+import 'package:golub/golub_lib.dart';
 void main(List<String> args, SendPort sendPort) async {
-  sendPort.send(await Pigeon.run(args));
+  sendPort.send(await Golub.run(args));
 }
 ```
 
-This is how `dart:mirrors` gets access to the supplied Pigeon file.
+This is how `dart:mirrors` gets access to the supplied Golub file.
 
 ## Imminent Plans
 

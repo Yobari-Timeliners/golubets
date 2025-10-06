@@ -137,7 +137,7 @@ const Map<String, TestInfo> testSuites = <String, TestInfo>{
   ),
   commandLineTests: TestInfo(
     function: _runCommandLineTests,
-    description: 'Tests running pigeon with various command-line options.',
+    description: 'Tests running golub with various command-line options.',
   ),
 };
 
@@ -246,7 +246,7 @@ Future<int> _runDartUnitTests({bool ciMode = false}) async {
 Future<int> _analyzeFlutterUnitTests(String flutterUnitTestsPath) async {
   final String messagePath = '$flutterUnitTestsPath/lib/message.gen.dart';
   final String messageTestPath = '$flutterUnitTestsPath/test/message_test.dart';
-  final int generateTestCode = await runPigeon(
+  final int generateTestCode = await runGolub(
     input: 'pigeons/message.dart',
     dartOut: messagePath,
     dartTestOut: messageTestPath,
@@ -480,19 +480,19 @@ Future<int> _runWindowsIntegrationTests({bool ciMode = false}) async {
 }
 
 Future<int> _runCommandLineTests({bool ciMode = false}) async {
-  final Directory tempDir = Directory.systemTemp.createTempSync('pigeon');
-  final String tempOutput = p.join(tempDir.path, 'pigeon_output');
-  const String pigeonScript = 'bin/golub.dart';
-  final String snapshot = p.join(tempDir.path, 'pigeon.dart.dill');
+  final Directory tempDir = Directory.systemTemp.createTempSync('golub');
+  final String tempOutput = p.join(tempDir.path, 'golub_output');
+  const String golubScript = 'bin/golub.dart';
+  final String snapshot = p.join(tempDir.path, 'golub.dart.dill');
 
   // Precompile to make the repeated calls faster.
   if (await runProcess('dart', <String>[
         '--snapshot-kind=kernel',
         '--snapshot=$snapshot',
-        pigeonScript,
+        golubScript,
       ]) !=
       0) {
-    print('Unable to generate $snapshot from $pigeonScript');
+    print('Unable to generate $snapshot from $golubScript');
     return 1;
   }
 
@@ -515,7 +515,7 @@ Future<int> _runCommandLineTests({bool ciMode = false}) async {
 
   int exitCode = 0;
   for (final List<String> arguments in testArguments) {
-    print('Testing dart $pigeonScript ${arguments.join(', ')}');
+    print('Testing dart $golubScript ${arguments.join(', ')}');
     exitCode = await runProcess(
       'dart',
       <String>[snapshot, ...arguments],

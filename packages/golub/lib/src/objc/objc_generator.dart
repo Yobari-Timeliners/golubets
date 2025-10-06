@@ -657,7 +657,7 @@ class ObjcSourceGenerator extends StructuredGenerator<InternalObjcOptions> {
     );
     indent.write('+ ($className *)fromList:(NSArray<id> *)list ');
     indent.addScoped('{', '}', () {
-      const String resultName = 'pigeonResult';
+      const String resultName = 'golubResult';
       indent.writeln('$className *$resultName = [[$className alloc] init];');
       enumerate(getFieldsInSerializationOrder(classDefinition), (
         int index,
@@ -809,7 +809,7 @@ if (self.wrapped == nil) {
     Indent indent, {
     required String dartPackageName,
   }) {
-    const String codecName = 'PigeonCodec';
+    const String codecName = 'GolubCodec';
     final List<EnumeratedType> enumeratedTypes =
         getEnumeratedTypes(root, excludeSealedClasses: true).toList();
     final String readerWriterName =
@@ -1361,7 +1361,7 @@ taskQueue:$taskQueue
       languageOptions.prefix,
     );
     indent.writeScoped(' {', '}', () {
-      const String result = 'pigeonResult';
+      const String result = 'golubResult';
       indent.writeln('$className* $result = [[$className alloc] init];');
       for (final NamedType field in getFieldsInSerializationOrder(
         classDefinition,
@@ -1798,7 +1798,7 @@ Iterable<String> _getSelectorComponents(
 /// since [func] may be asynchronous.  The function requires you specify a
 /// [lastArgType] and [lastArgName] for arguments that aren't represented in
 /// [func].  This is typically used for passing in 'error' or 'completion'
-/// arguments that don't exist in the pigeon file but are required in the objc
+/// arguments that don't exist in the golub file but are required in the objc
 /// output.  [argNameFunc] is the function used to generate the argument name
 /// [func.parameters].
 String _makeObjcSignature({

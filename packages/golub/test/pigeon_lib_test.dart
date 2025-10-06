@@ -56,7 +56,7 @@ void main() {
   }
 
   ParseResults parseSource(String source) {
-    final Pigeon dartle = Pigeon.setup();
+    final Golub dartle = Golub.setup();
     ParseResults? results;
     withTempFile('source.dart', (File file) {
       file.writeAsStringSync(source);
@@ -66,7 +66,7 @@ void main() {
   }
 
   test('parse args - input', () {
-    final GolubOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Golub.parseArgs(<String>[
       '--input',
       'foo.dart',
     ]);
@@ -74,7 +74,7 @@ void main() {
   });
 
   test('parse args - dart_out', () {
-    final GolubOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Golub.parseArgs(<String>[
       '--dart_out',
       'foo.dart',
     ]);
@@ -82,7 +82,7 @@ void main() {
   });
 
   test('parse args - java_package', () {
-    final GolubOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Golub.parseArgs(<String>[
       '--java_package',
       'com.google.foo',
     ]);
@@ -90,7 +90,7 @@ void main() {
   });
 
   test('parse args - input', () {
-    final GolubOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Golub.parseArgs(<String>[
       '--java_out',
       'foo.java',
     ]);
@@ -98,7 +98,7 @@ void main() {
   });
 
   test('parse args - objc_header_out', () {
-    final GolubOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Golub.parseArgs(<String>[
       '--objc_header_out',
       'foo.h',
     ]);
@@ -106,7 +106,7 @@ void main() {
   });
 
   test('parse args - objc_source_out', () {
-    final GolubOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Golub.parseArgs(<String>[
       '--objc_source_out',
       'foo.m',
     ]);
@@ -114,7 +114,7 @@ void main() {
   });
 
   test('parse args - swift_out', () {
-    final GolubOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Golub.parseArgs(<String>[
       '--swift_out',
       'Foo.swift',
     ]);
@@ -122,7 +122,7 @@ void main() {
   });
 
   test('parse args - kotlin_out', () {
-    final GolubOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Golub.parseArgs(<String>[
       '--kotlin_out',
       'Foo.kt',
     ]);
@@ -130,7 +130,7 @@ void main() {
   });
 
   test('parse args - kotlin_package', () {
-    final GolubOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Golub.parseArgs(<String>[
       '--kotlin_package',
       'com.google.foo',
     ]);
@@ -138,7 +138,7 @@ void main() {
   });
 
   test('parse args - cpp_header_out', () {
-    final GolubOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Golub.parseArgs(<String>[
       '--cpp_header_out',
       'foo.h',
     ]);
@@ -146,14 +146,14 @@ void main() {
   });
 
   test('parse args - java_use_generated_annotation', () {
-    final GolubOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Golub.parseArgs(<String>[
       '--java_use_generated_annotation',
     ]);
     expect(opts.javaOptions!.useGeneratedAnnotation, isTrue);
   });
 
   test('parse args - cpp_source_out', () {
-    final GolubOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Golub.parseArgs(<String>[
       '--cpp_source_out',
       'foo.cpp',
     ]);
@@ -161,7 +161,7 @@ void main() {
   });
 
   test('parse args - ast_out', () {
-    final GolubOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Golub.parseArgs(<String>[
       '--ast_out',
       'stdout',
     ]);
@@ -169,7 +169,7 @@ void main() {
   });
 
   test('parse args - base_path', () {
-    final GolubOptions opts = Pigeon.parseArgs(<String>[
+    final GolubOptions opts = Golub.parseArgs(<String>[
       '--base_path',
       './foo/',
     ]);
@@ -480,7 +480,7 @@ abstract class NestorApi {
   });
 
   test('copyright flag', () {
-    final GolubOptions results = Pigeon.parseArgs(<String>[
+    final GolubOptions results = Golub.parseArgs(<String>[
       '--copyright_header',
       'foobar.txt',
     ]);
@@ -1460,7 +1460,7 @@ abstract class Api {
       final _ValidatorGeneratorAdapter generator = _ValidatorGeneratorAdapter(
         stdout,
       );
-      final int result = await Pigeon.run(
+      final int result = await Golub.run(
         <String>['--input', input.path],
         adapters: <GeneratorAdapter>[generator],
       );
@@ -1477,7 +1477,7 @@ abstract class Api {
       final _ValidatorGeneratorAdapter generator = _ValidatorGeneratorAdapter(
         null,
       );
-      final int result = await Pigeon.run(
+      final int result = await Golub.run(
         <String>['--input', input.path, '--dart_out', 'foo.dart'],
         adapters: <GeneratorAdapter>[generator],
       );
@@ -1494,7 +1494,7 @@ abstract class Api {
       final _ValidatorGeneratorAdapter generator = _ValidatorGeneratorAdapter(
         null,
       );
-      final int result = await Pigeon.runWithOptions(
+      final int result = await Golub.runWithOptions(
         GolubOptions(input: input.path, dartOut: 'foo.dart'),
         adapters: <GeneratorAdapter>[generator],
       );

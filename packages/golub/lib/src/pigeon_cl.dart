@@ -14,5 +14,5 @@ Future<int> runCommandLine(
   Uri? packageConfig,
   String? sdkPath,
 }) async {
-  return Pigeon.run(args, sdkPath: sdkPath);
+  return Golub.run(args, sdkPath: sdkPath);
 }

@@ -197,10 +197,10 @@ void main() {
     expect(
       code,
       contains(
-        'pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[x, y])',
+        'golubVar_sendFuture = golubVar_channel.send(<Object?>[x, y])',
       ),
     );
-    expect(code, contains('await pigeonVar_sendFuture'));
+    expect(code, contains('await golubVar_sendFuture'));
   });
 
   test('flutter multiple args', () {
@@ -677,9 +677,9 @@ void main() {
     expect(code, contains('Future<void> bar(Foo? foo) async'));
     expect(
       code,
-      contains('pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[foo])'),
+      contains('golubVar_sendFuture = golubVar_channel.send(<Object?>[foo])'),
     );
-    expect(code, contains('await pigeonVar_sendFuture'));
+    expect(code, contains('await golubVar_sendFuture'));
   });
 
   test('flutter non-nullable enum argument with enum class', () {
@@ -792,7 +792,7 @@ void main() {
     final String code = sink.toString();
     expect(
       code,
-      matches('pigeonVar_sendFuture = pigeonVar_channel.send[(]null[)]'),
+      matches('golubVar_sendFuture = golubVar_channel.send[(]null[)]'),
     );
   });
 
@@ -1131,7 +1131,7 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, matches('pigeonVar_channel.send[(]null[)]'));
+    expect(code, matches('golubVar_channel.send[(]null[)]'));
   });
 
   Iterable<String> makeIterable(String string) sync* {
@@ -1341,7 +1341,7 @@ void main() {
     expect(
       code,
       contains(
-        'return (pigeonVar_replyList[0] as List<Object?>?)!.cast<int?>();',
+        'return (golubVar_replyList[0] as List<Object?>?)!.cast<int?>();',
       ),
     );
   });
@@ -1431,7 +1431,7 @@ void main() {
     );
     final String code = sink.toString();
     expect(code, contains('Future<int?> doit()'));
-    expect(code, contains('return (pigeonVar_replyList[0] as int?);'));
+    expect(code, contains('return (golubVar_replyList[0] as int?);'));
   });
 
   test('return nullable collection host', () {
@@ -1471,7 +1471,7 @@ void main() {
     expect(
       code,
       contains(
-        'return (pigeonVar_replyList[0] as List<Object?>?)?.cast<int?>();',
+        'return (golubVar_replyList[0] as List<Object?>?)?.cast<int?>();',
       ),
     );
   });
@@ -1508,7 +1508,7 @@ void main() {
     );
     final String code = sink.toString();
     expect(code, contains('Future<int?> doit()'));
-    expect(code, contains('return (pigeonVar_replyList[0] as int?);'));
+    expect(code, contains('return (golubVar_replyList[0] as int?);'));
   });
 
   test('return nullable flutter', () {
@@ -1737,7 +1737,7 @@ void main() {
     const String overriddenPackageName = 'custom_name';
     const String outputPackageName = 'some_output_package';
     assert(outputPackageName != DEFAULT_PACKAGE_NAME);
-    final Directory tempDir = Directory.systemTemp.createTempSync('pigeon');
+    final Directory tempDir = Directory.systemTemp.createTempSync('golub');
     try {
       final Directory foo = Directory(path.join(tempDir.path, 'lib', 'foo'));
       foo.createSync(recursive: true);
@@ -2014,7 +2014,7 @@ name: foobar
     final String code = sink.toString();
     expect(
       code,
-      contains('throw _createConnectionError(pigeonVar_channelName);'),
+      contains('throw _createConnectionError(golubVar_channelName);'),
     );
     expect(
       code,

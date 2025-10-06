@@ -17,7 +17,7 @@ const DocumentCommentSpecification _docCommentSpec =
     );
 
 /// Name for codec class.
-const String _codecBaseName = 'MessageCodec';
+const String _codecBaseName = 'GolubMessageCodec';
 
 /// Name of the standard codec from the Flutter SDK.
 const String _standardCodecName = 'FlStandardMessageCodec';

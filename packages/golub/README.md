@@ -2,17 +2,17 @@
   <img src="art/golub.jpg" alt="golub" width="400">
 </div>
 
-## Golub: A Community-Driven Fork of [Pigeon](https://pub.dev/packages/pigeon)
+## Golub: A Community-Driven Fork of [Golub](https://pub.dev/packages/pigeon)
 
-Welcome to Golub, a fork of the Pigeon Flutter library. Our mission is to be a better, more open, and community-focused alternative—or at least give it a damn good try!
+Welcome to Golub, a fork of the Golub Flutter library. Our mission is to be a better, more open, and community-focused alternative—or at least give it a damn good try!
 
 For usage examples, see the [Example README](./example/README.md).
 
 ## Why Golub Exists
 
-Pigeon is a great tool, but it’s got some baggage. The community’s voice often goes unheard, with a backlog of valuable issues left to gather dust. Features that make sense—logical, solid additions—are sometimes dismissed because they don’t align with the maintainers’ vision. That’s not how open source should roll.
+Golub is a great tool, but it’s got some baggage. The community’s voice often goes unheard, with a backlog of valuable issues left to gather dust. Features that make sense—logical, solid additions—are sometimes dismissed because they don’t align with the maintainers’ vision. That’s not how open source should roll.
 
-Contributing to Pigeon can feel like running into a buzzsaw. Expect endless code review cycles, nitpicky comments, and a vibe that’s occasionally toxic. We’ve been there: maintainers forgetting their own codebase, clashing with each other, or demanding changes that don’t hold up under scrutiny (only to later ask you to undo them). It’s a frustrating loop of “do this, no wait, undo it, now do this instead.” The result? A single pull request for a simple feature can spiral into an infinite, soul-crushing saga.
+Contributing to Golub can feel like running into a buzzsaw. Expect endless code review cycles, nitpicky comments, and a vibe that’s occasionally toxic. We’ve been there: maintainers forgetting their own codebase, clashing with each other, or demanding changes that don’t hold up under scrutiny (only to later ask you to undo them). It’s a frustrating loop of “do this, no wait, undo it, now do this instead.” The result? A single pull request for a simple feature can spiral into an infinite, soul-crushing saga.
 
 Golub is here to change that. We’re building a fork that’s welcoming, collaborative, and free from the gatekeeping and “maintainer == god” mentality. No toxic reviews. No air-shaking nonsense. Just a focus on great ideas and clean code.
 
@@ -53,7 +53,7 @@ Currently golub supports generating:
 
 ### Supported Datatypes
 
-Pigeon uses the `StandardMessageCodec` so it supports
+Golub uses the `StandardMessageCodec` so it supports
 [any datatype platform channels support](https://flutter.dev/to/platform-channels-codec).
 
 Custom classes, nested datatypes, and enums are also supported.
@@ -205,40 +205,35 @@ Generic types are fully supported for Swift and Kotlin platforms, allowing you t
 
 ### Calling into Flutter from the host platform
 
-Pigeon also supports calling in the opposite direction. The steps are similar
+Golub also supports calling in the opposite direction. The steps are similar
 but reversed.  For more information look at the annotation `@FlutterApi()` which
 denotes APIs that live in Flutter but are invoked from the host platform.
 [Example](./example/README.md#FlutterApi_Example).
 
 ## Stability of generated code
 
-Pigeon is intended to replace direct use of method channels in the internal
-implementation of plugins and applications. Because the expected use of Pigeon
+Golub is intended to replace direct use of method channels in the internal
+implementation of plugins and applications. Because the expected use of Golub
 is as an internal implementation detail, its development strongly favors
 improvements to generated code over consistency with previous generated code,
 so breaking changes in generated code are common.
 
-As a result, using Pigeon-generated code in public APIs is
+As a result, using Golub-generated code in public APIs is
 **strongy discouraged**, as doing so will likely create situations where you are
-unable to update to a new version of Pigeon without causing breaking changes
+unable to update to a new version of Golub without causing breaking changes
 for your clients.
 
 ### Inter-version compatibility
 
-The generated message channel code used for Pigeon communication is an
-internal implementation detail of Pigeon that is subject to change without
+The generated message channel code used for Golub communication is an
+internal implementation detail of Golub that is subject to change without
 warning, and changes to the communication are *not* considered breaking changes.
 Both sides of the communication (the Dart code and the host-language code)
-must be generated with the **same version** of Pigeon. Using code generated with
+must be generated with the **same version** of Golub. Using code generated with
 different versions has undefined behavior, including potentially crashing the
 application.
 
-This means that Pigeon-generated code **should not** be split across packages.
+This means that Golub-generated code **should not** be split across packages.
 For example, putting the generated Dart code in a platform interface package
 and the generated host-language code in a platform implementation package is
 very likely to cause crashes for some plugin clients after updates.
-
-## Feedback
-
-File an issue in [flutter/flutter](https://github.com/flutter/flutter) with
-"[pigeon]" at the start of the title.

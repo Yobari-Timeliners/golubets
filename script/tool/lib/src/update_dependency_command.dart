@@ -231,9 +231,9 @@ ${response.httpResponse.body}
     package.pubspecFile.writeAsStringSync(editablePubspec.toString());
 
     // Do any dependency-specific extra processing.
-    if (dependency == 'pigeon') {
+    if (dependency == 'golub') {
       if (!await _regeneratePigeonFiles(package)) {
-        return PackageResult.fail(<String>['Failed to update pigeon files']);
+        return PackageResult.fail(<String>['Failed to update golub files']);
       }
     } else if (dependency == 'mockito') {
       if (!await _regenerateMocks(package)) {
@@ -403,7 +403,7 @@ ${response.httpResponse.body}
   }
 
   /// Returns all of the files in [package] that are, according to repository
-  /// convention, Pigeon input files.
+  /// convention, Golub input files.
   Iterable<File> _getPigeonInputFiles(RepositoryPackage package) {
     // Repo convention is that the Pigeon input files are the Dart files in a
     // top-level "pigeons" directory.
@@ -426,7 +426,7 @@ ${response.httpResponse.body}
   Future<bool> _regeneratePigeonFiles(RepositoryPackage package) async {
     final Iterable<File> inputs = _getPigeonInputFiles(package);
     if (inputs.isEmpty) {
-      logWarning('No pigeon input files found.');
+      logWarning('No golub input files found.');
       return true;
     }
 
@@ -437,15 +437,15 @@ ${response.httpResponse.body}
       return false;
     }
 
-    print('${indentation}Updating Pigeon files...');
+    print('${indentation}Updating Golub files...');
     for (final File input in inputs) {
       final String relativePath =
           getRelativePosixPath(input, from: package.directory);
       final io.ProcessResult pigeonResult = await processRunner.run(
-          'dart', <String>['run', 'pigeon', '--input', relativePath],
+          'dart', <String>['run', 'golub', '--input', relativePath],
           workingDir: package.directory);
       if (pigeonResult.exitCode != 0) {
-        printError('dart run pigeon failed (${pigeonResult.exitCode}):\n'
+        printError('dart run golub failed (${pigeonResult.exitCode}):\n'
             '${pigeonResult.stdout}\n${pigeonResult.stderr}\n');
         return false;
       }

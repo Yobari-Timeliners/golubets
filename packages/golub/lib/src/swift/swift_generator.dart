@@ -19,7 +19,7 @@ const String _docCommentPrefix = '///';
 const DocumentCommentSpecification _docCommentSpec =
     DocumentCommentSpecification(_docCommentPrefix);
 
-const String _overflowClassName = '${classNamePrefix}CodecOverflow';
+const String _overflowClassName = 'GolubCodecOverflow';
 
 /// Options that control how Swift code will be generated.
 class SwiftOptions {
@@ -137,7 +137,7 @@ class SwiftProxyApiOptions {
   /// The name of the Swift class.
   ///
   /// By default, generated code will use the same name as the class in the Dart
-  /// pigeon file.
+  /// golub file.
   final String? name;
 
   /// The name of the module that needs to be imported to access the class.
@@ -607,7 +607,7 @@ if (wrapped == nil) {
     }
 
     final List<String> generatedComments = <String>[
-      ' Generated class from Pigeon that represents data sent in messages.',
+      ' Generated class from Golub that represents data sent in messages.',
     ];
     indent.newln();
     addDocumentationComments(
@@ -921,7 +921,7 @@ if (wrapped == nil) {
     required String dartPackageName,
   }) {
     const List<String> generatedComments = <String>[
-      ' Generated protocol from Pigeon that represents Flutter messages that can be called from Swift.',
+      ' Generated protocol from Golub that represents Flutter messages that can be called from Swift.',
     ];
     addDocumentationComments(
       indent,
@@ -1007,7 +1007,7 @@ if (wrapped == nil) {
     final String apiName = api.name;
 
     const List<String> generatedComments = <String>[
-      ' Generated protocol from Pigeon that represents a handler of messages from Flutter.',
+      ' Generated protocol from Golub that represents a handler of messages from Flutter.',
     ];
     addDocumentationComments(
       indent,
@@ -1040,7 +1040,7 @@ if (wrapped == nil) {
 
     indent.newln();
     indent.writeln(
-      '$_docCommentPrefix Generated setup class from Pigeon to handle messages through the `binaryMessenger`.',
+      '$_docCommentPrefix Generated setup class from Golub to handle messages through the `binaryMessenger`.',
     );
     indent.write('public class ${apiName}Setup ');
     indent.addScoped('{', '}', () {
@@ -1238,21 +1238,21 @@ if (wrapped == nil) {
       'private class ${proxyApiReaderWriterName(generatorOptions)}: FlutterStandardReaderWriter {',
       '}',
       () {
-        indent.writeln('unowned let pigeonRegistrar: $registrarName');
+        indent.writeln('unowned let golubRegistrar: $registrarName');
         indent.newln();
 
         indent.writeScoped(
           'private class $filePrefix${classNamePrefix}ProxyApiCodecReader: ${_getMessageCodecName(generatorOptions)}Reader {',
           '}',
           () {
-            indent.writeln('unowned let pigeonRegistrar: $registrarName');
+            indent.writeln('unowned let golubRegistrar: $registrarName');
             indent.newln();
 
             indent.writeScoped(
-              'init(data: Data, pigeonRegistrar: $registrarName) {',
+              'init(data: Data, golubRegistrar: $registrarName) {',
               '}',
               () {
-                indent.writeln('self.pigeonRegistrar = pigeonRegistrar');
+                indent.writeln('self.golubRegistrar = golubRegistrar');
                 indent.writeln('super.init(data: data)');
               },
             );
@@ -1266,7 +1266,7 @@ if (wrapped == nil) {
                   switch type {
                   case $proxyApiCodecInstanceManagerKey:
                     let identifier = self.readValue()
-                    let instance: AnyObject? = pigeonRegistrar.instanceManager.instance(
+                    let instance: AnyObject? = golubRegistrar.instanceManager.instance(
                       forIdentifier: identifier is Int64 ? identifier as! Int64 : Int64(identifier as! Int32))
                     if instance == nil {
                       print("Failed to find instance with identifier: \\(identifier!)")
@@ -1285,14 +1285,14 @@ if (wrapped == nil) {
           'private class $filePrefix${classNamePrefix}ProxyApiCodecWriter: ${_getMessageCodecName(generatorOptions)}Writer {',
           '}',
           () {
-            indent.writeln('unowned let pigeonRegistrar: $registrarName');
+            indent.writeln('unowned let golubRegistrar: $registrarName');
             indent.newln();
 
             indent.writeScoped(
-              'init(data: NSMutableData, pigeonRegistrar: $registrarName) {',
+              'init(data: NSMutableData, golubRegistrar: $registrarName) {',
               '}',
               () {
-                indent.writeln('self.pigeonRegistrar = pigeonRegistrar');
+                indent.writeln('self.golubRegistrar = golubRegistrar');
                 indent.writeln('super.init(data: data)');
               },
             );
@@ -1367,12 +1367,12 @@ if (wrapped == nil) {
                 indent.format('''
                       ${unsupportedPlatforms != null ? '#if $unsupportedPlatforms' : ''}
                       if ${availability != null ? '#$availability, ' : ''}let instance = value as? $className {
-                        pigeonRegistrar.apiDelegate.pigeonApi${api.name}(pigeonRegistrar).pigeonNewInstance(
-                          pigeonInstance: instance
+                        golubRegistrar.apiDelegate.golubApi${api.name}(golubRegistrar).golubNewInstance(
+                          golubInstance: instance
                         ) { _ in }
                         super.writeByte($proxyApiCodecInstanceManagerKey)
                         super.writeValue(
-                          pigeonRegistrar.instanceManager.identifierWithStrongReference(forInstance: instance as AnyObject)!)
+                          golubRegistrar.instanceManager.identifierWithStrongReference(forInstance: instance as AnyObject)!)
                         return
                       }
                       ${unsupportedPlatforms != null ? '#endif' : ''}''');
@@ -1380,11 +1380,11 @@ if (wrapped == nil) {
               indent.newln();
 
               indent.format('''
-                  if let instance = value as AnyObject?, pigeonRegistrar.instanceManager.containsInstance(instance)
+                  if let instance = value as AnyObject?, golubRegistrar.instanceManager.containsInstance(instance)
                   {
                     super.writeByte($proxyApiCodecInstanceManagerKey)
                     super.writeValue(
-                      pigeonRegistrar.instanceManager.identifierWithStrongReference(forInstance: instance)!)
+                      golubRegistrar.instanceManager.identifierWithStrongReference(forInstance: instance)!)
                   } else {
                     print("Unsupported value: \\(value) of \\(type(of: value))")
                     assert(false, "Unsupported value for $filePrefix${classNamePrefix}ProxyApiCodecWriter")
@@ -1396,20 +1396,20 @@ if (wrapped == nil) {
         indent.newln();
 
         indent.format('''
-          init(pigeonRegistrar: $registrarName) {
-            self.pigeonRegistrar = pigeonRegistrar
+          init(golubRegistrar: $registrarName) {
+            self.golubRegistrar = golubRegistrar
           }''');
         indent.newln();
 
         indent.format('''
           override func reader(with data: Data) -> FlutterStandardReader {
-            return $filePrefix${classNamePrefix}ProxyApiCodecReader(data: data, pigeonRegistrar: pigeonRegistrar)
+            return $filePrefix${classNamePrefix}ProxyApiCodecReader(data: data, golubRegistrar: golubRegistrar)
           }''');
         indent.newln();
 
         indent.format('''
           override func writer(with data: NSMutableData) -> FlutterStandardWriter {
-            return $filePrefix${classNamePrefix}ProxyApiCodecWriter(data: data, pigeonRegistrar: pigeonRegistrar)
+            return $filePrefix${classNamePrefix}ProxyApiCodecWriter(data: data, golubRegistrar: golubRegistrar)
           }''');
       },
     );
@@ -1479,18 +1479,18 @@ if (wrapped == nil) {
       '}',
       () {
         indent.writeln(
-          'unowned let pigeonRegistrar: ${proxyApiRegistrarName(generatorOptions)}',
+          'unowned let golubRegistrar: ${proxyApiRegistrarName(generatorOptions)}',
         );
-        indent.writeln('let pigeonDelegate: $swiftApiDelegateName');
+        indent.writeln('let golubDelegate: $swiftApiDelegateName');
 
         _writeProxyApiInheritedApiMethods(indent, api);
 
         indent.writeScoped(
-          'init(pigeonRegistrar: ${proxyApiRegistrarName(generatorOptions)}, delegate: $swiftApiDelegateName) {',
+          'init(golubRegistrar: ${proxyApiRegistrarName(generatorOptions)}, delegate: $swiftApiDelegateName) {',
           '}',
           () {
-            indent.writeln('self.pigeonRegistrar = pigeonRegistrar');
-            indent.writeln('self.pigeonDelegate = delegate');
+            indent.writeln('self.golubRegistrar = golubRegistrar');
+            indent.writeln('self.golubDelegate = delegate');
           },
         );
 
@@ -1671,7 +1671,7 @@ func deepEquals${generatorOptions.fileSpecificClassNameComponent}(_ lhs: Any?, _
     return true
 
   default:
-    // Any other type shouldn't be able to be used with pigeon. File an issue if you find this to be untrue.
+    // Any other type shouldn't be able to be used with golub. File an issue if you find this to be untrue.
     return false
   }
 }
@@ -1736,24 +1736,24 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
   }) {
     indent.newln();
     indent.format('''
-      private class PigeonStreamHandler<ReturnType>: NSObject, FlutterStreamHandler {
-        private let wrapper: PigeonEventChannelWrapper<ReturnType>
-        private var pigeonSink: PigeonEventSink<ReturnType>? = nil
+      private class GolubStreamHandler<ReturnType>: NSObject, FlutterStreamHandler {
+        private let wrapper: GolubEventChannelWrapper<ReturnType>
+        private var golubSink: GolubEventSink<ReturnType>? = nil
 
-        init(wrapper: PigeonEventChannelWrapper<ReturnType>) {
+        init(wrapper: GolubEventChannelWrapper<ReturnType>) {
           self.wrapper = wrapper
         }
 
         func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink)
           -> FlutterError?
         {
-          pigeonSink = PigeonEventSink<ReturnType>(events)
-          wrapper.onListen(withArguments: arguments, sink: pigeonSink!)
+          golubSink = GolubEventSink<ReturnType>(events)
+          wrapper.onListen(withArguments: arguments, sink: golubSink!)
           return nil
         }
 
         func onCancel(withArguments arguments: Any?) -> FlutterError? {
-          pigeonSink = nil
+          golubSink = nil
           wrapper.onCancel(withArguments: arguments)
           return nil
         }
@@ -1761,12 +1761,12 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     if (api.swiftOptions?.includeSharedClasses ?? true) {
       indent.format('''
 
-      class PigeonEventChannelWrapper<ReturnType> {
-        func onListen(withArguments arguments: Any?, sink: PigeonEventSink<ReturnType>) {}
+      class GolubEventChannelWrapper<ReturnType> {
+        func onListen(withArguments arguments: Any?, sink: GolubEventSink<ReturnType>) {}
         func onCancel(withArguments arguments: Any?) {}
       }
 
-      class PigeonEventSink<ReturnType> {
+      class GolubEventSink<ReturnType> {
         private let sink: FlutterEventSink
 
         init(_ sink: @escaping FlutterEventSink) {
@@ -1795,7 +1795,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     );
     for (final Method func in api.methods) {
       indent.format('''
-        class ${toUpperCamelCase(func.name)}StreamHandler: PigeonEventChannelWrapper<${_swiftTypeForDartType(func.returnType)}> {
+        class ${toUpperCamelCase(func.name)}StreamHandler: GolubEventChannelWrapper<${_swiftTypeForDartType(func.returnType)}> {
           static func register(with messenger: FlutterBinaryMessenger,
                               instanceName: String = "",
                               streamHandler: ${toUpperCamelCase(func.name)}StreamHandler) {
@@ -1803,7 +1803,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
             if !instanceName.isEmpty {
               channelName += ".\\(instanceName)"
             }
-            let internalStreamHandler = PigeonStreamHandler<${_swiftTypeForDartType(func.returnType)}>(wrapper: streamHandler)
+            let internalStreamHandler = GolubStreamHandler<${_swiftTypeForDartType(func.returnType)}>(wrapper: streamHandler)
             let channel = FlutterEventChannel(name: channelName, binaryMessenger: messenger, codec: ${_getMethodCodecVarName(generatorOptions)})
             channel.setStreamHandler(internalStreamHandler)
           }
@@ -2113,14 +2113,14 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           ' `${api.name}` to the Dart `InstanceManager` and make calls to Dart.',
         ], _docCommentSpec);
         indent.writeln(
-          'func pigeonApi${api.name}(_ registrar: ${proxyApiRegistrarName(generatorOptions)}) -> $hostApiName',
+          'func golubApi${api.name}(_ registrar: ${proxyApiRegistrarName(generatorOptions)}) -> $hostApiName',
         );
       }
     });
     indent.newln();
 
     // Some APIs don't have any methods to implement,
-    // so this creates an extension of the PigeonProxyApiDelegate that adds
+    // so this creates an extension of the GolubProxyApiDelegate that adds
     // default implementations for these APIs.
     final Iterable<AstProxyApi> apisThatCanHaveADefaultImpl = allProxyApis
         .where((AstProxyApi api) => !api.hasMethodsRequiringImplementation());
@@ -2131,8 +2131,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           final String swiftApiDelegateName =
               '${hostProxyApiPrefix}Delegate${api.name}';
           indent.format('''
-            func pigeonApi${api.name}(_ registrar: ${proxyApiRegistrarName(generatorOptions)}) -> $hostApiName {
-              return $hostApiName(pigeonRegistrar: registrar, delegate: $swiftApiDelegateName())
+            func golubApi${api.name}(_ registrar: ${proxyApiRegistrarName(generatorOptions)}) -> $hostApiName {
+              return $hostApiName(golubRegistrar: registrar, delegate: $swiftApiDelegateName())
             }''');
         }
       });
@@ -2162,7 +2162,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         var codec: FlutterStandardMessageCodec {
           if _codec == nil {
             _codec = FlutterStandardMessageCodec(
-              readerWriter: ${proxyApiReaderWriterName(generatorOptions)}(pigeonRegistrar: self))
+              readerWriter: ${proxyApiReaderWriterName(generatorOptions)}(golubRegistrar: self))
           }
           return _codec!
         }''');
@@ -2201,7 +2201,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           for (final AstProxyApi api in allProxyApis) {
             if (api.hasAnyHostMessageCalls()) {
               indent.writeln(
-                '$hostProxyApiPrefix${api.name}.setUpMessageHandlers(binaryMessenger: binaryMessenger, api: apiDelegate.pigeonApi${api.name}(self))',
+                '$hostProxyApiPrefix${api.name}.setUpMessageHandlers(binaryMessenger: binaryMessenger, api: apiDelegate.golubApi${api.name}(self))',
               );
             }
           }
@@ -2261,10 +2261,10 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         name:
             constructor.name.isNotEmpty
                 ? constructor.name
-                : 'pigeonDefaultConstructor',
+                : 'golubDefaultConstructor',
         parameters: <Parameter>[
           Parameter(
-            name: 'pigeonApi',
+            name: 'golubApi',
             type: TypeDeclaration(
               baseName: '$hostProxyApiPrefix${api.name}',
               isNullable: false,
@@ -2323,14 +2323,14 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         name: field.name,
         parameters: <Parameter>[
           Parameter(
-            name: 'pigeonApi',
+            name: 'golubApi',
             type: TypeDeclaration(
               baseName: '$hostProxyApiPrefix${api.name}',
               isNullable: false,
             ),
           ),
           if (!field.isStatic)
-            Parameter(name: 'pigeonInstance', type: apiAsTypeDeclaration),
+            Parameter(name: 'golubInstance', type: apiAsTypeDeclaration),
         ],
         returnType: field.type,
         errorTypeName: '',
@@ -2380,13 +2380,13 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         name: field.name,
         parameters: <Parameter>[
           Parameter(
-            name: 'pigeonApi',
+            name: 'golubApi',
             type: TypeDeclaration(
               baseName: '$hostProxyApiPrefix${api.name}',
               isNullable: false,
             ),
           ),
-          Parameter(name: 'pigeonInstance', type: apiAsTypeDeclaration),
+          Parameter(name: 'golubInstance', type: apiAsTypeDeclaration),
         ],
         returnType: field.type,
         errorTypeName: '',
@@ -2438,14 +2438,14 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         name: method.name,
         parameters: <Parameter>[
           Parameter(
-            name: 'pigeonApi',
+            name: 'golubApi',
             type: TypeDeclaration(
               baseName: '$hostProxyApiPrefix${api.name}',
               isNullable: false,
             ),
           ),
           if (!method.isStatic)
-            Parameter(name: 'pigeonInstance', type: apiAsTypeDeclaration),
+            Parameter(name: 'golubInstance', type: apiAsTypeDeclaration),
           ...method.parameters,
         ],
         returnType: method.returnType,
@@ -2474,11 +2474,11 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         'An implementation of [$name] used to access callback methods',
       ], _docCommentSpec);
       indent.writeScoped(
-        'var pigeonApi$name: $hostProxyApiPrefix$name {',
+        'var golubApi$name: $hostProxyApiPrefix$name {',
         '}',
         () {
           indent.writeln(
-            'return pigeonRegistrar.apiDelegate.pigeonApi$name(pigeonRegistrar)',
+            'return golubRegistrar.apiDelegate.golubApi$name(golubRegistrar)',
           );
         },
       );
@@ -2504,7 +2504,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           let codec: FlutterStandardMessageCodec =
             api != nil
             ? FlutterStandardMessageCodec(
-              readerWriter: ${proxyApiReaderWriterName(generatorOptions)}(pigeonRegistrar: api!.pigeonRegistrar))
+              readerWriter: ${proxyApiReaderWriterName(generatorOptions)}(golubRegistrar: api!.golubRegistrar))
             : FlutterStandardMessageCodec.sharedInstance()''');
         void writeWithApiCheckIfNecessary(
           List<TypeDeclaration> types, {
@@ -2536,7 +2536,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                   binaryMessenger: binaryMessenger, codec: codec)
                 if api != nil {
                   $varChannelName.setMessageHandler { message, reply in
-                    reply(wrapError(FlutterError(code: "PigeonUnsupportedOperationError",
+                    reply(wrapError(FlutterError(code: "GolubUnsupportedOperationError",
                                                  message: "Call to $methodName requires @$availableAnnotation.",
                                                  details: nil
                                                 )))
@@ -2558,7 +2558,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           final String name =
               constructor.name.isNotEmpty
                   ? constructor.name
-                  : 'pigeonDefaultConstructor';
+                  : 'golubDefaultConstructor';
           final String channelName = makeChannelNameWithStrings(
             apiName: api.name,
             methodName:
@@ -2587,17 +2587,17 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                   required String apiVarName,
                 }) {
                   final List<String> parameters = <String>[
-                    'pigeonApi: $apiVarName',
+                    'golubApi: $apiVarName',
                     // Skip the identifier used by the InstanceManager.
                     ...methodParameters.skip(1),
                   ];
-                  return '$apiVarName.pigeonRegistrar.instanceManager.addDartCreatedInstance(\n'
-                      'try $apiVarName.pigeonDelegate.$name(${parameters.join(', ')}),\n'
-                      'withIdentifier: pigeonIdentifierArg)';
+                  return '$apiVarName.golubRegistrar.instanceManager.addDartCreatedInstance(\n'
+                      'try $apiVarName.golubDelegate.$name(${parameters.join(', ')}),\n'
+                      'withIdentifier: golubIdentifierArg)';
                 },
                 parameters: <Parameter>[
                   Parameter(
-                    name: 'pigeonIdentifier',
+                    name: 'golubIdentifier',
                     type: const TypeDeclaration(
                       baseName: 'int',
                       isNullable: false,
@@ -2635,21 +2635,19 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                   required String apiVarName,
                 }) {
                   final String instanceArg =
-                      field.isStatic
-                          ? ''
-                          : ', pigeonInstance: pigeonInstanceArg';
-                  return '$apiVarName.pigeonRegistrar.instanceManager.addDartCreatedInstance('
-                      'try $apiVarName.pigeonDelegate.${field.name}(pigeonApi: api$instanceArg), '
-                      'withIdentifier: pigeonIdentifierArg)';
+                      field.isStatic ? '' : ', golubInstance: golubInstanceArg';
+                  return '$apiVarName.golubRegistrar.instanceManager.addDartCreatedInstance('
+                      'try $apiVarName.golubDelegate.${field.name}(golubApi: api$instanceArg), '
+                      'withIdentifier: golubIdentifierArg)';
                 },
                 parameters: <Parameter>[
                   if (!field.isStatic)
                     Parameter(
-                      name: 'pigeonInstance',
+                      name: 'golubInstance',
                       type: apiAsTypeDeclaration,
                     ),
                   Parameter(
-                    name: 'pigeonIdentifier',
+                    name: 'golubIdentifier',
                     type: const TypeDeclaration(
                       baseName: 'int',
                       isNullable: false,
@@ -2690,17 +2688,17 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                   final String tryStatement =
                       method.asynchronousType.isCallback ? '' : 'try ';
                   final List<String> parameters = <String>[
-                    'pigeonApi: $apiVarName',
+                    'golubApi: $apiVarName',
                     // Skip the identifier used by the InstanceManager.
                     ...methodParameters,
                   ];
 
-                  return '$tryStatement$apiVarName.pigeonDelegate.${method.name}(${parameters.join(', ')})';
+                  return '$tryStatement$apiVarName.golubDelegate.${method.name}(${parameters.join(', ')})';
                 },
                 parameters: <Parameter>[
                   if (!method.isStatic)
                     Parameter(
-                      name: 'pigeonInstance',
+                      name: 'golubInstance',
                       type: apiAsTypeDeclaration,
                     ),
                   ...method.parameters,
@@ -2735,7 +2733,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     }
 
     addDocumentationComments(indent, <String>[
-      'Creates a Dart instance of ${api.name} and attaches it to [pigeonInstance].',
+      'Creates a Dart instance of ${api.name} and attaches it to [golubInstance].',
     ], _docCommentSpec);
 
     final String? availableAnnotation = _tryGetAvailabilityAnnotation(
@@ -2746,9 +2744,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     }
 
     final String methodSignature = _getMethodSignature(
-      name: 'pigeonNewInstance',
+      name: 'golubNewInstance',
       parameters: <Parameter>[
-        Parameter(name: 'pigeonInstance', type: apiAsTypeDeclaration),
+        Parameter(name: 'golubInstance', type: apiAsTypeDeclaration),
       ],
       returnType: const TypeDeclaration.voidDeclaration(),
       errorTypeName: _getErrorClassName(generatorOptions),
@@ -2756,7 +2754,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       isPublic: true,
     );
     indent.writeScoped('$methodSignature {', '}', () {
-      indent.writeScoped('if pigeonRegistrar.ignoreCallsToDart {', '}', () {
+      indent.writeScoped('if golubRegistrar.ignoreCallsToDart {', '}', () {
         indent.format(
           '''
             completion(
@@ -2768,7 +2766,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       }, addTrailingNewline: false);
 
       indent.writeScoped(
-        ' else if pigeonRegistrar.instanceManager.containsInstance(pigeonInstance as AnyObject) {',
+        ' else if golubRegistrar.instanceManager.containsInstance(golubInstance as AnyObject) {',
         '}',
         () {
           indent.writeln('completion(.success(()))');
@@ -2778,24 +2776,24 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       indent.writeScoped(' else {', '}', () {
         if (api.hasCallbackConstructor()) {
           indent.writeln(
-            'let pigeonIdentifierArg = pigeonRegistrar.instanceManager.addHostCreatedInstance(pigeonInstance as AnyObject)',
+            'let golubIdentifierArg = golubRegistrar.instanceManager.addHostCreatedInstance(golubInstance as AnyObject)',
           );
           enumerate(api.unattachedFields, (int index, ApiField field) {
             final String argName = _getSafeArgumentName(index, field);
             indent.writeln(
-              'let $argName = try! pigeonDelegate.${field.name}(pigeonApi: self, pigeonInstance: pigeonInstance)',
+              'let $argName = try! golubDelegate.${field.name}(golubApi: self, golubInstance: golubInstance)',
             );
           });
           indent.writeln(
-            'let binaryMessenger = pigeonRegistrar.binaryMessenger',
+            'let binaryMessenger = golubRegistrar.binaryMessenger',
           );
-          indent.writeln('let codec = pigeonRegistrar.codec');
+          indent.writeln('let codec = golubRegistrar.codec');
           _writeFlutterMethodMessageCall(
             indent,
             generatorOptions: generatorOptions,
             parameters: <Parameter>[
               Parameter(
-                name: 'pigeonIdentifier',
+                name: 'golubIdentifier',
                 type: const TypeDeclaration(baseName: 'int', isNullable: false),
               ),
               ...api.unattachedFields.map((ApiField field) {
@@ -2867,7 +2865,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       final String methodSignature = _getMethodSignature(
         name: method.name,
         parameters: <Parameter>[
-          Parameter(name: 'pigeonInstance', type: apiAsTypeDeclaration),
+          Parameter(name: 'golubInstance', type: apiAsTypeDeclaration),
           ...method.parameters,
         ],
         returnType: method.returnType,
@@ -2880,7 +2878,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       indent.write(methodSignature);
       if (writeBody) {
         indent.writeScoped(' {', '}', () {
-          indent.writeScoped('if pigeonRegistrar.ignoreCallsToDart {', '}', () {
+          indent.writeScoped('if golubRegistrar.ignoreCallsToDart {', '}', () {
             indent.format('''
                 completion(
                   .failure(
@@ -2890,15 +2888,15 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                 return''');
           });
           indent.writeln(
-            'let binaryMessenger = pigeonRegistrar.binaryMessenger',
+            'let binaryMessenger = golubRegistrar.binaryMessenger',
           );
-          indent.writeln('let codec = pigeonRegistrar.codec');
+          indent.writeln('let codec = golubRegistrar.codec');
 
           _writeFlutterMethodMessageCall(
             indent,
             generatorOptions: generatorOptions,
             parameters: <Parameter>[
-              Parameter(name: 'pigeonInstance', type: apiAsTypeDeclaration),
+              Parameter(name: 'golubInstance', type: apiAsTypeDeclaration),
               ...method.parameters,
             ],
             returnType: method.returnType,
@@ -3195,13 +3193,13 @@ String? _tryGetUnsupportedPlatformsCondition(Iterable<TypeDeclaration> types) {
 /// Calculates the name of the codec that will be generated for [api].
 String _getMessageCodecName(InternalSwiftOptions options) {
   return toUpperCamelCase(
-    '${options.fileSpecificClassNameComponent}PigeonCodec',
+    '${options.fileSpecificClassNameComponent}GolubCodec',
   );
 }
 
 /// Calculates the name of the codec that will be generated for [api].
 String _getMethodCodecVarName(InternalSwiftOptions options) {
-  return '${toLowerCamelCase(options.fileSpecificClassNameComponent ?? '')}PigeonMethodCodec';
+  return '${toLowerCamelCase(options.fileSpecificClassNameComponent ?? '')}GolubMethodCodec';
 }
 
 String _getErrorClassName(InternalSwiftOptions generatorOptions) {

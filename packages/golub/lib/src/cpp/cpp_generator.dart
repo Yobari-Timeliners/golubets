@@ -23,9 +23,9 @@ const DocumentCommentSpecification _docCommentSpec =
 const String _standardCodecSerializer = 'flutter::StandardCodecSerializer';
 
 /// The name of the codec serializer.
-const String _codecSerializerName = '${classNamePrefix}CodecSerializer';
+const String _codecSerializerName = 'GolubCodecSerializer';
 
-const String _overflowClassName = '${classNamePrefix}CodecOverflow';
+const String _overflowClassName = 'GolubCodecOverflow';
 
 final NamedType _overflowType = NamedType(
   name: 'type',
@@ -231,13 +231,13 @@ class CppHeaderGenerator extends StructuredGenerator<InternalCppOptions> {
       indent.writeln('namespace ${generatorOptions.namespace} {');
     }
     indent.newln();
-    if (generatorOptions.namespace?.endsWith('_pigeontest') ?? false) {
+    if (generatorOptions.namespace?.endsWith('_golubtest') ?? false) {
       final String testFixtureClass =
-          '${_pascalCaseFromSnakeCase(generatorOptions.namespace!.replaceAll('_pigeontest', ''))}Test';
+          '${_pascalCaseFromSnakeCase(generatorOptions.namespace!.replaceAll('_golubtest', ''))}Test';
       indent.writeln('class $testFixtureClass;');
     }
     indent.newln();
-    indent.writeln('$_commentPrefix Generated class from Pigeon.');
+    indent.writeln('$_commentPrefix Generated class from Golub.');
   }
 
   @override
@@ -323,18 +323,18 @@ class CppHeaderGenerator extends StructuredGenerator<InternalCppOptions> {
     required String dartPackageName,
     bool isOverflowClass = false,
   }) {
-    // When generating for a Pigeon unit test, add a test fixture friend class to
+    // When generating for a Golub unit test, add a test fixture friend class to
     // allow unit testing private methods, since testing serialization via public
     // methods is essentially an end-to-end test.
     String? testFixtureClass;
-    if (generatorOptions.namespace?.endsWith('_pigeontest') ?? false) {
+    if (generatorOptions.namespace?.endsWith('_golubtest') ?? false) {
       testFixtureClass =
-          '${_pascalCaseFromSnakeCase(generatorOptions.namespace!.replaceAll('_pigeontest', ''))}Test';
+          '${_pascalCaseFromSnakeCase(generatorOptions.namespace!.replaceAll('_golubtest', ''))}Test';
     }
     indent.newln();
 
     const List<String> generatedMessages = <String>[
-      ' Generated class from Pigeon that represents data sent in messages.',
+      ' Generated class from Golub that represents data sent in messages.',
     ];
 
     addDocumentationComments(
@@ -590,7 +590,7 @@ class CppHeaderGenerator extends StructuredGenerator<InternalCppOptions> {
     required String dartPackageName,
   }) {
     const List<String> generatedMessages = <String>[
-      ' Generated class from Pigeon that represents Flutter messages that can be called from C++.',
+      ' Generated class from Golub that represents Flutter messages that can be called from C++.',
     ];
     addDocumentationComments(
       indent,
@@ -673,7 +673,7 @@ class CppHeaderGenerator extends StructuredGenerator<InternalCppOptions> {
     required String dartPackageName,
   }) {
     const List<String> generatedMessages = <String>[
-      ' Generated interface from Pigeon that represents a handler of messages from Flutter.',
+      ' Generated interface from Golub that represents a handler of messages from Flutter.',
     ];
     addDocumentationComments(
       indent,
@@ -1384,7 +1384,7 @@ EncodableValue $_overflowClassName::FromEncodableList(
     required String dartPackageName,
   }) {
     indent.writeln(
-      '$_commentPrefix Generated class from Pigeon that represents Flutter messages that can be called from C++.',
+      '$_commentPrefix Generated class from Golub that represents Flutter messages that can be called from C++.',
     );
     _writeFunctionDefinition(
       indent,

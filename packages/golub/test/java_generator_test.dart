@@ -5,6 +5,7 @@
 import 'package:golub/golub.dart';
 import 'package:golub/src/ast.dart';
 import 'package:golub/src/java/java_generator.dart';
+import 'package:golub/src/pigeon_lib.dart';
 import 'package:test/test.dart';
 
 const String DEFAULT_PACKAGE_NAME = 'test_package';
