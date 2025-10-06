@@ -7,13 +7,13 @@
 #include "pigeon/multiple_arity.gen.h"
 #include "test/utils/fake_host_messenger.h"
 
-static MultipleArityPigeonTestMultipleArityHostApiSubtractResponse* subtract(
+static MultipleArityGolubetsTestMultipleArityHostApiSubtractResponse* subtract(
     int64_t x, int64_t y, gpointer user_data) {
-  return multiple_arity_pigeon_test_multiple_arity_host_api_subtract_response_new(
+  return multiple_arity_golubets_test_multiple_arity_host_api_subtract_response_new(
       x - y);
 }
 
-static MultipleArityPigeonTestMultipleArityHostApiVTable vtable = {
+static MultipleArityGolubetsTestMultipleArityHostApiVTable vtable = {
     .subtract = subtract};
 
 static void subtract_reply_cb(FlValue* reply, gpointer user_data) {
@@ -25,7 +25,7 @@ TEST(MultipleArity, HostSimple) {
   g_autoptr(FlStandardMessageCodec) codec = fl_standard_message_codec_new();
   g_autoptr(FakeHostMessenger) messenger =
       fake_host_messenger_new(FL_MESSAGE_CODEC(codec));
-  multiple_arity_pigeon_test_multiple_arity_host_api_set_method_handlers(
+  multiple_arity_golubets_test_multiple_arity_host_api_set_method_handlers(
       FL_BINARY_MESSENGER(messenger), nullptr, &vtable, nullptr, nullptr);
 
   int64_t result = 0;

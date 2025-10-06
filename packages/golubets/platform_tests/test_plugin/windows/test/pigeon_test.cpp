@@ -79,7 +79,7 @@ class Writer : public flutter::ByteStreamWriter {
 };
 }  // namespace
 
-TEST(PigeonTests, CallInitialize) {
+TEST(GolubetsTests, CallInitialize) {
   MockBinaryMessenger mock_messenger;
   MockApi mock_api;
   flutter::BinaryMessageHandler handler;
@@ -106,7 +106,7 @@ TEST(PigeonTests, CallInitialize) {
   EXPECT_TRUE(did_call_reply);
 }
 
-TEST(PigeonTests, CallSearch) {
+TEST(GolubetsTests, CallSearch) {
   MockBinaryMessenger mock_messenger;
   MockApi mock_api;
   flutter::BinaryMessageHandler handler;
@@ -135,7 +135,7 @@ TEST(PigeonTests, CallSearch) {
   Writer writer;
   flutter::EncodableList args;
   args.push_back(flutter::CustomEncodableValue(request));
-  PigeonInternalCodecSerializer::GetInstance().WriteValue(args, &writer);
+  GolubetsCodecSerializer::GetInstance().WriteValue(args, &writer);
   handler(writer.data_.data(), writer.data_.size(), reply);
   EXPECT_TRUE(did_call_reply);
 }

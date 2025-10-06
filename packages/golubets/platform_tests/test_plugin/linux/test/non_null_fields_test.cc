@@ -7,11 +7,11 @@
 #include "pigeon/non_null_fields.gen.h"
 
 TEST(NonNullFields, Build) {
-  g_autoptr(NonNullFieldsPigeonTestNonNullFieldSearchRequest) request =
-      non_null_fields_pigeon_test_non_null_field_search_request_new("hello");
+  g_autoptr(NonNullFieldsGolubetsTestNonNullFieldSearchRequest) request =
+      non_null_fields_golubets_test_non_null_field_search_request_new("hello");
 
   EXPECT_STREQ(
-      non_null_fields_pigeon_test_non_null_field_search_request_get_query(
+      non_null_fields_golubets_test_non_null_field_search_request_get_query(
           request),
       "hello");
 }

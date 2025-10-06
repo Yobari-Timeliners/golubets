@@ -7,13 +7,13 @@
 #include "pigeon/nullable_returns.gen.h"
 #include "test/utils/fake_host_messenger.h"
 
-static NullableReturnsPigeonTestNullableArgHostApiDoitResponse* arg_doit(
+static NullableReturnsGolubetsTestNullableArgHostApiDoitResponse* arg_doit(
     int64_t* x, gpointer user_data) {
-  return nullable_returns_pigeon_test_nullable_arg_host_api_doit_response_new(
+  return nullable_returns_golubets_test_nullable_arg_host_api_doit_response_new(
       x == nullptr ? 42 : *x);
 }
 
-static NullableReturnsPigeonTestNullableArgHostApiVTable arg_vtable = {
+static NullableReturnsGolubetsTestNullableArgHostApiVTable arg_vtable = {
     .doit = arg_doit};
 
 static void arg_doit_reply_cb(FlValue* reply, gpointer user_data) {
@@ -25,7 +25,7 @@ TEST(NullableReturns, HostNullableArgNull) {
   g_autoptr(FlStandardMessageCodec) codec = fl_standard_message_codec_new();
   g_autoptr(FakeHostMessenger) messenger =
       fake_host_messenger_new(FL_MESSAGE_CODEC(codec));
-  nullable_returns_pigeon_test_nullable_arg_host_api_set_method_handlers(
+  nullable_returns_golubets_test_nullable_arg_host_api_set_method_handlers(
       FL_BINARY_MESSENGER(messenger), nullptr, &arg_vtable, nullptr, nullptr);
 
   int64_t result = 0;
@@ -43,7 +43,7 @@ TEST(NullableReturns, HostNullableArgNonNull) {
   g_autoptr(FlStandardMessageCodec) codec = fl_standard_message_codec_new();
   g_autoptr(FakeHostMessenger) messenger =
       fake_host_messenger_new(FL_MESSAGE_CODEC(codec));
-  nullable_returns_pigeon_test_nullable_arg_host_api_set_method_handlers(
+  nullable_returns_golubets_test_nullable_arg_host_api_set_method_handlers(
       FL_BINARY_MESSENGER(messenger), nullptr, &arg_vtable, nullptr, nullptr);
 
   int64_t result = 0;
@@ -57,23 +57,23 @@ TEST(NullableReturns, HostNullableArgNonNull) {
   EXPECT_EQ(result, 7);
 }
 
-static NullableReturnsPigeonTestNullableReturnHostApiDoitResponse*
+static NullableReturnsGolubetsTestNullableReturnHostApiDoitResponse*
 return_null_doit(gpointer user_data) {
-  return nullable_returns_pigeon_test_nullable_return_host_api_doit_response_new(
+  return nullable_returns_golubets_test_nullable_return_host_api_doit_response_new(
       nullptr);
 }
 
-static NullableReturnsPigeonTestNullableReturnHostApiVTable return_null_vtable =
-    {.doit = return_null_doit};
+static NullableReturnsGolubetsTestNullableReturnHostApiVTable
+    return_null_vtable = {.doit = return_null_doit};
 
-static NullableReturnsPigeonTestNullableReturnHostApiDoitResponse*
+static NullableReturnsGolubetsTestNullableReturnHostApiDoitResponse*
 return_nonnull_doit(gpointer user_data) {
   int64_t return_value = 42;
-  return nullable_returns_pigeon_test_nullable_return_host_api_doit_response_new(
+  return nullable_returns_golubets_test_nullable_return_host_api_doit_response_new(
       &return_value);
 }
 
-static NullableReturnsPigeonTestNullableReturnHostApiVTable
+static NullableReturnsGolubetsTestNullableReturnHostApiVTable
     return_nonnull_vtable = {.doit = return_nonnull_doit};
 
 static void return_doit_reply_cb(FlValue* reply, gpointer user_data) {
@@ -91,7 +91,7 @@ TEST(NullableReturns, HostNullableReturnNull) {
   g_autoptr(FlStandardMessageCodec) codec = fl_standard_message_codec_new();
   g_autoptr(FakeHostMessenger) messenger =
       fake_host_messenger_new(FL_MESSAGE_CODEC(codec));
-  nullable_returns_pigeon_test_nullable_return_host_api_set_method_handlers(
+  nullable_returns_golubets_test_nullable_return_host_api_set_method_handlers(
       FL_BINARY_MESSENGER(messenger), nullptr, &return_null_vtable, nullptr,
       nullptr);
 
@@ -114,7 +114,7 @@ TEST(NullableReturns, HostNullableReturnNonNull) {
   g_autoptr(FlStandardMessageCodec) codec = fl_standard_message_codec_new();
   g_autoptr(FakeHostMessenger) messenger =
       fake_host_messenger_new(FL_MESSAGE_CODEC(codec));
-  nullable_returns_pigeon_test_nullable_return_host_api_set_method_handlers(
+  nullable_returns_golubets_test_nullable_return_host_api_set_method_handlers(
       FL_BINARY_MESSENGER(messenger), nullptr, &return_nonnull_vtable, nullptr,
       nullptr);
 

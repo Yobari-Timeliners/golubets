@@ -7,55 +7,57 @@
 #include "pigeon/primitive.gen.h"
 #include "test/utils/fake_host_messenger.h"
 
-static PrimitivePigeonTestPrimitiveHostApiAnIntResponse* an_int(
+static PrimitiveGolubetsTestPrimitiveHostApiAnIntResponse* an_int(
     int64_t value, gpointer user_data) {
-  return primitive_pigeon_test_primitive_host_api_an_int_response_new(value);
+  return primitive_golubets_test_primitive_host_api_an_int_response_new(value);
 }
 
-static PrimitivePigeonTestPrimitiveHostApiABoolResponse* a_bool(
+static PrimitiveGolubetsTestPrimitiveHostApiABoolResponse* a_bool(
     gboolean value, gpointer user_data) {
-  return primitive_pigeon_test_primitive_host_api_a_bool_response_new(value);
+  return primitive_golubets_test_primitive_host_api_a_bool_response_new(value);
 }
 
-static PrimitivePigeonTestPrimitiveHostApiAStringResponse* a_string(
+static PrimitiveGolubetsTestPrimitiveHostApiAStringResponse* a_string(
     const gchar* value, gpointer user_data) {
-  return primitive_pigeon_test_primitive_host_api_a_string_response_new(value);
+  return primitive_golubets_test_primitive_host_api_a_string_response_new(
+      value);
 }
 
-static PrimitivePigeonTestPrimitiveHostApiADoubleResponse* a_double(
+static PrimitiveGolubetsTestPrimitiveHostApiADoubleResponse* a_double(
     double value, gpointer user_data) {
-  return primitive_pigeon_test_primitive_host_api_a_double_response_new(value);
+  return primitive_golubets_test_primitive_host_api_a_double_response_new(
+      value);
 }
 
-static PrimitivePigeonTestPrimitiveHostApiAMapResponse* a_map(
+static PrimitiveGolubetsTestPrimitiveHostApiAMapResponse* a_map(
     FlValue* value, gpointer user_data) {
-  return primitive_pigeon_test_primitive_host_api_a_map_response_new(value);
+  return primitive_golubets_test_primitive_host_api_a_map_response_new(value);
 }
 
-static PrimitivePigeonTestPrimitiveHostApiAListResponse* a_list(
+static PrimitiveGolubetsTestPrimitiveHostApiAListResponse* a_list(
     FlValue* value, gpointer user_data) {
-  return primitive_pigeon_test_primitive_host_api_a_list_response_new(value);
+  return primitive_golubets_test_primitive_host_api_a_list_response_new(value);
 }
 
-static PrimitivePigeonTestPrimitiveHostApiAnInt32ListResponse* an_int32_list(
+static PrimitiveGolubetsTestPrimitiveHostApiAnInt32ListResponse* an_int32_list(
     const int32_t* value, size_t value_length, gpointer user_data) {
-  return primitive_pigeon_test_primitive_host_api_an_int32_list_response_new(
+  return primitive_golubets_test_primitive_host_api_an_int32_list_response_new(
       value, value_length);
 }
 
-static PrimitivePigeonTestPrimitiveHostApiABoolListResponse* a_bool_list(
+static PrimitiveGolubetsTestPrimitiveHostApiABoolListResponse* a_bool_list(
     FlValue* value, gpointer user_data) {
-  return primitive_pigeon_test_primitive_host_api_a_bool_list_response_new(
+  return primitive_golubets_test_primitive_host_api_a_bool_list_response_new(
       value);
 }
 
-static PrimitivePigeonTestPrimitiveHostApiAStringIntMapResponse*
+static PrimitiveGolubetsTestPrimitiveHostApiAStringIntMapResponse*
 a_string_int_map(FlValue* value, gpointer user_data) {
-  return primitive_pigeon_test_primitive_host_api_a_string_int_map_response_new(
+  return primitive_golubets_test_primitive_host_api_a_string_int_map_response_new(
       value);
 }
 
-static PrimitivePigeonTestPrimitiveHostApiVTable vtable = {
+static PrimitiveGolubetsTestPrimitiveHostApiVTable vtable = {
     .an_int = an_int,
     .a_bool = a_bool,
     .a_string = a_string,
@@ -75,7 +77,7 @@ TEST(Primitive, HostInt) {
   g_autoptr(FlStandardMessageCodec) codec = fl_standard_message_codec_new();
   g_autoptr(FakeHostMessenger) messenger =
       fake_host_messenger_new(FL_MESSAGE_CODEC(codec));
-  primitive_pigeon_test_primitive_host_api_set_method_handlers(
+  primitive_golubets_test_primitive_host_api_set_method_handlers(
       FL_BINARY_MESSENGER(messenger), nullptr, &vtable, nullptr, nullptr);
 
   int64_t result = 0;
@@ -98,7 +100,7 @@ TEST(Primitive, HostBool) {
   g_autoptr(FlStandardMessageCodec) codec = fl_standard_message_codec_new();
   g_autoptr(FakeHostMessenger) messenger =
       fake_host_messenger_new(FL_MESSAGE_CODEC(codec));
-  primitive_pigeon_test_primitive_host_api_set_method_handlers(
+  primitive_golubets_test_primitive_host_api_set_method_handlers(
       FL_BINARY_MESSENGER(messenger), nullptr, &vtable, nullptr, nullptr);
 
   gboolean result = false;
@@ -121,7 +123,7 @@ TEST(Primitive, HostDouble) {
   g_autoptr(FlStandardMessageCodec) codec = fl_standard_message_codec_new();
   g_autoptr(FakeHostMessenger) messenger =
       fake_host_messenger_new(FL_MESSAGE_CODEC(codec));
-  primitive_pigeon_test_primitive_host_api_set_method_handlers(
+  primitive_golubets_test_primitive_host_api_set_method_handlers(
       FL_BINARY_MESSENGER(messenger), nullptr, &vtable, nullptr, nullptr);
 
   double result = 0.0;
@@ -144,7 +146,7 @@ TEST(Primitive, HostString) {
   g_autoptr(FlStandardMessageCodec) codec = fl_standard_message_codec_new();
   g_autoptr(FakeHostMessenger) messenger =
       fake_host_messenger_new(FL_MESSAGE_CODEC(codec));
-  primitive_pigeon_test_primitive_host_api_set_method_handlers(
+  primitive_golubets_test_primitive_host_api_set_method_handlers(
       FL_BINARY_MESSENGER(messenger), nullptr, &vtable, nullptr, nullptr);
 
   g_autofree gchar* result = nullptr;
@@ -167,7 +169,7 @@ TEST(Primitive, HostList) {
   g_autoptr(FlStandardMessageCodec) codec = fl_standard_message_codec_new();
   g_autoptr(FakeHostMessenger) messenger =
       fake_host_messenger_new(FL_MESSAGE_CODEC(codec));
-  primitive_pigeon_test_primitive_host_api_set_method_handlers(
+  primitive_golubets_test_primitive_host_api_set_method_handlers(
       FL_BINARY_MESSENGER(messenger), nullptr, &vtable, nullptr, nullptr);
 
   g_autoptr(FlValue) result = nullptr;
@@ -195,7 +197,7 @@ TEST(Primitive, HostMap) {
   g_autoptr(FlStandardMessageCodec) codec = fl_standard_message_codec_new();
   g_autoptr(FakeHostMessenger) messenger =
       fake_host_messenger_new(FL_MESSAGE_CODEC(codec));
-  primitive_pigeon_test_primitive_host_api_set_method_handlers(
+  primitive_golubets_test_primitive_host_api_set_method_handlers(
       FL_BINARY_MESSENGER(messenger), nullptr, &vtable, nullptr, nullptr);
 
   g_autoptr(FlValue) result = nullptr;
