@@ -1962,7 +1962,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
           ' Whether APIs should ignore calling to Dart.',
         ], _docCommentSpec);
         indent.writeln('public var ignoreCallsToDart = false');
-        final String tag = '${proxyApiClassNamePrefix}ProxyApiRegistrar';
+        const String tag = '${proxyApiClassNamePrefix}ProxyApiRegistrar';
         indent.format('''
           val instanceManager: $instanceManagerName
           private var _codec: MessageCodec<Any?>? = null
