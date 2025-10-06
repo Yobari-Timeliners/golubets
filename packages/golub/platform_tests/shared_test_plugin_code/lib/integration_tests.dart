@@ -13,6 +13,7 @@ import 'package:integration_test/integration_test.dart';
 
 import 'event_test_types.dart';
 import 'generated.dart';
+import 'src/generated/generics_tests.gen.dart';
 import 'src/generated/kotlin_nested_sealed_tests.gen.dart';
 import 'test_types.dart';
 
@@ -3686,6 +3687,1218 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     },
     skip: targetGenerator != TargetGenerator.kotlin,
   );
+
+  const List<TargetGenerator> targetSupportsGenerics = <TargetGenerator>[
+    TargetGenerator.kotlin,
+    TargetGenerator.swift,
+  ];
+
+  // Generic API tests
+  group(
+    'Host Generic API tests',
+    skip: !targetSupportsGenerics.contains(targetGenerator),
+    () {
+      final HostGenericApi api = HostGenericApi();
+
+      testWidgets('generic container int echo works', (WidgetTester _) async {
+        const GenericContainer<int> input = GenericContainer<int>(
+          value: 42,
+          values: <int>[1, 2, 3],
+        );
+
+        final GenericContainer<int> result = await api.echoGenericInt(input);
+        expect(result.value, equals(input.value));
+        expect(result.values, equals(input.values));
+      });
+
+      testWidgets('generic container string echo works', (
+        WidgetTester _,
+      ) async {
+        const GenericContainer<String> input = GenericContainer<String>(
+          value: 'test',
+          values: <String>['a', 'b', 'c'],
+        );
+        final GenericContainer<String> result = await api.echoGenericString(
+          input,
+        );
+        expect(result.value, equals(input.value));
+        expect(result.values, equals(input.values));
+      });
+
+      testWidgets('generic container double echo works', (
+        WidgetTester _,
+      ) async {
+        const GenericContainer<double> input = GenericContainer<double>(
+          value: 3.14,
+          values: <double>[1.0, 2.0, 3.0],
+        );
+        final GenericContainer<double> result = await api.echoGenericDouble(
+          input,
+        );
+        expect(result.value, equals(input.value));
+        expect(result.values, equals(input.values));
+      });
+
+      testWidgets('generic container bool echo works', (WidgetTester _) async {
+        const GenericContainer<bool> input = GenericContainer<bool>(
+          value: true,
+          values: <bool>[true, false, true],
+        );
+        final GenericContainer<bool> result = await api.echoGenericBool(input);
+        expect(result.value, equals(input.value));
+        expect(result.values, equals(input.values));
+      });
+
+      testWidgets('generic container enum echo works', (WidgetTester _) async {
+        const GenericContainer<GenericsAnEnum> input =
+            GenericContainer<GenericsAnEnum>(
+              value: GenericsAnEnum.fortyTwo,
+              values: <GenericsAnEnum>[
+                GenericsAnEnum.one,
+                GenericsAnEnum.two,
+                GenericsAnEnum.three,
+              ],
+            );
+        final GenericContainer<GenericsAnEnum> result = await api
+            .echoGenericEnum(
+              input,
+            );
+        expect(result.value, equals(input.value));
+        expect(result.values, equals(input.values));
+      });
+
+      testWidgets('generic container nullable int echo works', (
+        WidgetTester _,
+      ) async {
+        const GenericContainer<int?> input = GenericContainer<int?>(
+          value: 42,
+          values: <int?>[1, null, 3],
+        );
+        final GenericContainer<int?> result = await api.echoGenericNullableInt(
+          input,
+        );
+        expect(result.value, equals(input.value));
+        expect(result.values, equals(input.values));
+      });
+
+      testWidgets('generic container nullable string echo works', (
+        WidgetTester _,
+      ) async {
+        const GenericContainer<String?> input = GenericContainer<String?>(
+          value: 'test',
+          values: <String?>['a', null, 'c'],
+        );
+        final GenericContainer<String?> result = await api
+            .echoGenericNullableString(input);
+        expect(result.value, equals(input.value));
+        expect(result.values, equals(input.values));
+      });
+
+      testWidgets('generic pair string-int echo works', (WidgetTester _) async {
+        const GenericPair<String, int> input = GenericPair<String, int>(
+          first: 'hello',
+          second: 42,
+          map: <String, int>{'key1': 1, 'key2': 2},
+        );
+        final GenericPair<String, int> result = await api
+            .echoGenericPairStringInt(input);
+        expect(result.first, equals(input.first));
+        expect(result.second, equals(input.second));
+        expect(result.map, equals(input.map));
+      });
+
+      testWidgets('generic pair int-string echo works', (WidgetTester _) async {
+        const GenericPair<int, String> input = GenericPair<int, String>(
+          first: 42,
+          second: 'hello',
+          map: <int, String>{1: 'one', 2: 'two'},
+        );
+        final GenericPair<int, String> result = await api
+            .echoGenericPairIntString(input);
+        expect(result.first, equals(input.first));
+        expect(result.second, equals(input.second));
+        expect(result.map, equals(input.map));
+      });
+
+      testWidgets('generic pair double-bool echo works', (
+        WidgetTester _,
+      ) async {
+        final GenericPair<double, bool> input = GenericPair<double, bool>(
+          first: 3.14,
+          second: true,
+          map: <double, bool>{1.0: true, 2.0: false},
+        );
+        final GenericPair<double, bool> result = await api
+            .echoGenericPairDoubleBool(input);
+        expect(result.first, equals(input.first));
+        expect(result.second, equals(input.second));
+        expect(result.map, equals(input.map));
+      });
+
+      testWidgets('nested generic string-int-double echo works', (
+        WidgetTester _,
+      ) async {
+        const NestedGeneric<String, int, double> input =
+            NestedGeneric<String, int, double>(
+              container: GenericContainer<String>(
+                value: 'test',
+                values: <String>['a', 'b'],
+              ),
+              pairs: <GenericPair<int, double>>[
+                GenericPair<int, double>(
+                  first: 1,
+                  second: 1.0,
+                  map: <int, double>{1: 1.0, 2: 2.0},
+                ),
+              ],
+              nestedMap: <String, GenericContainer<int>>{
+                'key': GenericContainer<int>(
+                  value: 42,
+                  values: <int>[1, 2, 3],
+                ),
+              },
+              listOfMaps: <Map<int, double>>[
+                <int, double>{1: 1.0, 2: 2.0},
+              ],
+            );
+        final NestedGeneric<String, int, double> result = await api
+            .echoNestedGenericStringIntDouble(input);
+        expect(result.container.value, equals(input.container.value));
+        expect(result.container.values, equals(input.container.values));
+        expect(result.pairs.length, equals(input.pairs.length));
+        expect(result.nestedMap.length, equals(input.nestedMap.length));
+        expect(result.listOfMaps.length, equals(input.listOfMaps.length));
+      });
+
+      testWidgets('generic list container echo works', (WidgetTester _) async {
+        final List<GenericContainer<int>> input = <GenericContainer<int>>[
+          const GenericContainer<int>(value: 1, values: <int>[1, 2]),
+          const GenericContainer<int>(value: 2, values: <int>[3, 4]),
+        ];
+        final List<GenericContainer<int>> result = await api
+            .echoListGenericContainer(input);
+        expect(result.length, equals(input.length));
+        for (int i = 0; i < result.length; i++) {
+          expect(result[i].value, equals(input[i].value));
+          expect(result[i].values, equals(input[i].values));
+        }
+      });
+
+      testWidgets('generic list pair echo works', (WidgetTester _) async {
+        final List<GenericPair<String, int>> input = <GenericPair<String, int>>[
+          const GenericPair<String, int>(
+            first: 'a',
+            second: 1,
+            map: <String, int>{'x': 1},
+          ),
+          const GenericPair<String, int>(
+            first: 'b',
+            second: 2,
+            map: <String, int>{'y': 2},
+          ),
+        ];
+        final List<GenericPair<String, int>> result = await api
+            .echoListGenericPair(input);
+        expect(result.length, equals(input.length));
+        for (int i = 0; i < result.length; i++) {
+          expect(result[i].first, equals(input[i].first));
+          expect(result[i].second, equals(input[i].second));
+          expect(result[i].map, equals(input[i].map));
+        }
+      });
+
+      testWidgets('generic map container echo works', (WidgetTester _) async {
+        final Map<String, GenericContainer<int>>
+        input = <String, GenericContainer<int>>{
+          'key1': const GenericContainer<int>(value: 1, values: <int>[1, 2]),
+          'key2': const GenericContainer<int>(value: 2, values: <int>[3, 4]),
+        };
+        final Map<String, GenericContainer<int>> result = await api
+            .echoMapGenericContainer(input);
+        expect(result.length, equals(input.length));
+        for (final String key in input.keys) {
+          expect(result[key]?.value, equals(input[key]?.value));
+          expect(result[key]?.values, equals(input[key]?.values));
+        }
+      });
+
+      testWidgets('generic map pair echo works', (WidgetTester _) async {
+        final Map<int, GenericPair<String, double>> input =
+            <int, GenericPair<String, double>>{
+              1: const GenericPair<String, double>(
+                first: 'a',
+                second: 1.0,
+                map: <String, double>{'x': 1.0},
+              ),
+              2: const GenericPair<String, double>(
+                first: 'b',
+                second: 2.0,
+                map: <String, double>{'y': 2.0},
+              ),
+            };
+        final Map<int, GenericPair<String, double>> result = await api
+            .echoMapGenericPair(input);
+        expect(result.length, equals(input.length));
+        for (final int key in input.keys) {
+          expect(result[key]?.first, equals(input[key]?.first));
+          expect(result[key]?.second, equals(input[key]?.second));
+          expect(result[key]?.map, equals(input[key]?.map));
+        }
+      });
+
+      testWidgets('async generic int echo works', (WidgetTester _) async {
+        const GenericContainer<int> input = GenericContainer<int>(
+          value: 42,
+          values: <int>[1, 2, 3],
+        );
+        final GenericContainer<int> result = await api.echoAsyncGenericInt(
+          input,
+        );
+        expect(result.value, equals(input.value));
+        expect(result.values, equals(input.values));
+      });
+
+      testWidgets('async nested generic echo works', (WidgetTester _) async {
+        const NestedGeneric<String, int, double> input =
+            NestedGeneric<String, int, double>(
+              container: GenericContainer<String>(
+                value: 'test',
+                values: <String>['a'],
+              ),
+              pairs: <GenericPair<int, double>>[
+                GenericPair<int, double>(
+                  first: 1,
+                  second: 1.0,
+                  map: <int, double>{1: 1.0},
+                ),
+              ],
+              nestedMap: <String, GenericContainer<int>>{
+                'key': GenericContainer<int>(value: 42, values: <int>[1]),
+              },
+              listOfMaps: <Map<int, double>>[
+                <int, double>{1: 1.0},
+              ],
+            );
+        final NestedGeneric<String, int, double> result = await api
+            .echoAsyncNestedGeneric(input);
+        expect(result.container.value, equals(input.container.value));
+      });
+
+      testWidgets('either generic container echo works', (
+        WidgetTester _,
+      ) async {
+        const Either<GenericContainer<int>, GenericContainer<String>> input =
+            Left<GenericContainer<int>, GenericContainer<String>>(
+              value: GenericContainer<int>(value: 42, values: <int>[1, 2, 3]),
+            );
+        final Either<GenericContainer<int>, GenericContainer<String>> result =
+            await api.echoEitherGenericIntOrString(input);
+        expect(
+          result,
+          isA<Left<GenericContainer<int>, GenericContainer<String>>>(),
+        );
+        final Left<GenericContainer<int>, GenericContainer<String>> leftResult =
+            result as Left<GenericContainer<int>, GenericContainer<String>>;
+        expect(leftResult.value.value, equals(42));
+        expect(leftResult.value.values, equals(<int>[1, 2, 3]));
+      });
+
+      testWidgets('either generic pair echo works', (WidgetTester _) async {
+        const Either<GenericPair<String, int>, GenericPair<int, String>> input =
+            Right<GenericPair<String, int>, GenericPair<int, String>>(
+              value: GenericPair<int, String>(
+                first: 42,
+                second: 'test',
+                map: <int, String>{1: 'one'},
+              ),
+            );
+        final Either<GenericPair<String, int>, GenericPair<int, String>>
+        result = await api.echoEitherGenericPairStringIntOrIntString(input);
+        expect(
+          result,
+          isA<Right<GenericPair<String, int>, GenericPair<int, String>>>(),
+        );
+        final Right<GenericPair<String, int>, GenericPair<int, String>>
+        rightResult =
+            result as Right<GenericPair<String, int>, GenericPair<int, String>>;
+        expect(rightResult.value.first, equals(42));
+        expect(rightResult.value.second, equals('test'));
+      });
+
+      // GenericsAllNullableTypesTyped tests
+      testWidgets('typed nullable string-int-double echo works', (
+        WidgetTester _,
+      ) async {
+        final GenericsAllNullableTypesTyped<String, int, double> input =
+            GenericsAllNullableTypesTyped<String, int, double>(
+              aNullableInt: 42,
+              aNullableInt64: 64,
+              aNullableDouble: 3.14,
+              aNullableByteArray: Uint8List.fromList(<int>[
+                1,
+                2,
+                3,
+              ]),
+              aNullable4ByteArray: Int32List.fromList(<int>[
+                4,
+                5,
+                6,
+              ]),
+              aNullable8ByteArray: Int64List.fromList(<int>[
+                7,
+                8,
+                9,
+              ]),
+              aNullableFloatArray: Float64List.fromList(<double>[
+                1.1,
+                2.2,
+                3.3,
+              ]),
+              aNullableEnum: GenericsAnEnum.fortyTwo,
+              anotherNullableEnum: GenericsAnotherEnum.justInCase,
+              aNullableString: 'test',
+              aNullableObject: 'object',
+              stringList: <String?>['a', null, 'c'],
+              intList: <double?>[1.0, null, 3.0],
+              doubleList: <int?>[1, null, 3],
+              boolList: <String?>[null, 'b'],
+              enumList: <double?>[4.0, 5.0],
+              objectList: <int?>[6, 7],
+              listList: <List<int?>?>[
+                <int?>[1, 2],
+              ],
+              mapList: <Map<String?, double?>?>[
+                <String?, double?>{'k': 1.0},
+              ],
+              recursiveClassList: <GenericsAllNullableTypes?>[
+                null,
+              ],
+              map: <String?, String?>{'key': 'value'},
+              stringMap: <String?, String?>{'s1': 's2'},
+              intMap: <double?, int?>{1.0: 10},
+              enumMap: <GenericsAnEnum?, GenericsAnEnum?>{
+                GenericsAnEnum.one: GenericsAnEnum.two,
+              },
+              objectMap: <Object?, Object?>{'obj': 'val'},
+              listMap: <int?, List<int?>?>{
+                1: <int?>[1, 2],
+              },
+              mapMap: <int?, Map<int?, int?>?>{
+                1: <int?, int?>{2: 3},
+              },
+              recursiveClassMap: <int?, GenericsAllNullableTypes?>{
+                1: null,
+              },
+            );
+        final GenericsAllNullableTypesTyped<String, int, double> result =
+            await api.echoTypedNullableStringIntDouble(input);
+        expect(result.aNullableBool, equals(input.aNullableBool));
+        expect(result.aNullableString, equals(input.aNullableString));
+        expect(result.aNullableInt, equals(input.aNullableInt));
+        expect(result.aNullableDouble, equals(input.aNullableDouble));
+      });
+
+      testWidgets('typed nullable int-string-bool echo works', (
+        WidgetTester _,
+      ) async {
+        final GenericsAllNullableTypesTyped<int, String, bool> input =
+            GenericsAllNullableTypesTyped<int, String, bool>();
+        final GenericsAllNullableTypesTyped<int, String, bool> result =
+            await api.echoTypedNullableIntStringBool(input);
+        expect(result.aNullableBool, isNull);
+        expect(result.aNullableString, isNull);
+        expect(result.aNullableInt, isNull);
+        expect(result.aNullableDouble, isNull);
+      });
+
+      testWidgets('typed nullable enum-double-string echo works', (
+        WidgetTester _,
+      ) async {
+        final GenericsAllNullableTypesTyped<GenericsAnEnum, double, String>
+        input = GenericsAllNullableTypesTyped<GenericsAnEnum, double, String>(
+          aNullableBool: false,
+          aNullableInt: 100,
+          aNullableInt64: 200,
+          aNullableDouble: 2.71,
+          aNullableByteArray: Uint8List.fromList(<int>[
+            9,
+            8,
+            7,
+          ]),
+          aNullable4ByteArray: Int32List.fromList(<int>[
+            6,
+            5,
+            4,
+          ]),
+          aNullable8ByteArray: Int64List.fromList(<int>[
+            3,
+            2,
+            1,
+          ]),
+          aNullableFloatArray: Float64List.fromList(<double>[
+            4.4,
+            5.5,
+          ]),
+          aNullableEnum: GenericsAnEnum.three,
+          anotherNullableEnum: GenericsAnotherEnum.justInCase,
+          aNullableString: 'enum-test',
+          aNullableObject: 42,
+          list: <GenericsAnEnum?>[GenericsAnEnum.one],
+          intList: <String?>[null, 'test'],
+          doubleList: <double?>[9.9, 8.8],
+          boolList: <GenericsAnEnum?>[GenericsAnEnum.two],
+          enumList: <String?>['x', 'y'],
+          objectList: <double?>[7.7],
+          listList: <List<double?>?>[
+            <double?>[1.1],
+          ],
+          mapList: <Map<GenericsAnEnum?, String?>?>[
+            <GenericsAnEnum?, String?>{GenericsAnEnum.one: 'test'},
+          ],
+          recursiveClassList: <GenericsAllNullableTypes?>[
+            null,
+          ],
+          map: <GenericsAnEnum?, GenericsAnEnum?>{
+            GenericsAnEnum.one: GenericsAnEnum.two,
+          },
+          stringMap: <GenericsAnEnum?, GenericsAnEnum?>{
+            GenericsAnEnum.three: GenericsAnEnum.fortyTwo,
+          },
+          intMap: <String?, double?>{'pi': 3.14},
+          enumMap: <GenericsAnEnum?, GenericsAnEnum?>{
+            GenericsAnEnum.one: GenericsAnEnum.two,
+          },
+          objectMap: <Object?, Object?>{'key': 123},
+          listMap: <int?, List<double?>?>{
+            2: <double?>[2.2, 3.3],
+          },
+          mapMap: <int?, Map<double?, double?>?>{
+            3: <double?, double?>{1.1: 2.2},
+          },
+          recursiveClassMap: <int?, GenericsAllNullableTypes?>{
+            2: null,
+          },
+        );
+        final GenericsAllNullableTypesTyped<GenericsAnEnum, double, String>
+        result = await api.echoTypedNullableEnumDoubleString(input);
+        expect(result.aNullableBool, equals(input.aNullableBool));
+        expect(result.aNullableString, equals(input.aNullableString));
+        expect(result.aNullableEnum, equals(input.aNullableEnum));
+      });
+
+      testWidgets('generic container with typed nullable echo works', (
+        WidgetTester _,
+      ) async {
+        final GenericsAllNullableTypesTyped<String, int, double> typedInput =
+            GenericsAllNullableTypesTyped<String, int, double>(
+              aNullableBool: true,
+              aNullableInt: 42,
+              aNullableInt64: 64,
+              aNullableDouble: 3.14,
+              aNullableByteArray: Uint8List.fromList(<int>[1]),
+              aNullable4ByteArray: Int32List.fromList(<int>[2]),
+              aNullable8ByteArray: Int64List.fromList(<int>[3]),
+              aNullableFloatArray: Float64List.fromList(<double>[4.0]),
+              aNullableEnum: GenericsAnEnum.one,
+              anotherNullableEnum: GenericsAnotherEnum.justInCase,
+              aNullableString: 'container-test',
+              aNullableObject: 'obj',
+              stringList: <String?>['test'],
+              intList: <double?>[1.0],
+              doubleList: <int?>[2],
+              boolList: <String?>[null],
+              enumList: <double?>[3.0],
+              objectList: <int?>[4],
+              stringMap: <String?, String?>{'k': 'v'},
+              enumMap: <GenericsAnEnum?, GenericsAnEnum?>{},
+            );
+        final GenericContainer<
+          GenericsAllNullableTypesTyped<String, int, double>
+        >
+        input = GenericContainer<
+          GenericsAllNullableTypesTyped<String, int, double>
+        >(
+          value: typedInput,
+          values: <GenericsAllNullableTypesTyped<String, int, double>>[
+            typedInput,
+          ],
+        );
+        final GenericContainer<
+          GenericsAllNullableTypesTyped<String, int, double>
+        >
+        result = await api.echoGenericContainerTypedNullable(input);
+        expect(
+          result.value?.aNullableString,
+          equals(typedInput.aNullableString),
+        );
+        expect(result.values.length, equals(input.values.length));
+      });
+
+      testWidgets('list of typed nullable echo works', (WidgetTester _) async {
+        final GenericsAllNullableTypesTyped<String, int, double> typed1 =
+            GenericsAllNullableTypesTyped<String, int, double>(
+              aNullableBool: true,
+              aNullableInt: 1,
+              aNullableInt64: 2,
+              aNullableDouble: 1.0,
+              aNullableByteArray: Uint8List.fromList(<int>[1]),
+              aNullable4ByteArray: Int32List.fromList(<int>[1]),
+              aNullable8ByteArray: Int64List.fromList(<int>[1]),
+              aNullableFloatArray: Float64List.fromList(<double>[1.0]),
+              aNullableEnum: GenericsAnEnum.one,
+              anotherNullableEnum: GenericsAnotherEnum.justInCase,
+              aNullableString: 'list-test-1',
+              aNullableObject: 'obj1',
+              stringList: <String?>['a'],
+              intList: <double?>[1.0],
+              doubleList: <int?>[1],
+              boolList: <String?>['x'],
+              enumList: <double?>[1.0],
+              objectList: <int?>[1],
+              stringMap: <String?, String?>{'a': 'b'},
+            );
+        final GenericsAllNullableTypesTyped<String, int, double> typed2 =
+            GenericsAllNullableTypesTyped<String, int, double>(
+              aNullableBool: false,
+              aNullableInt: 2,
+              aNullableInt64: 3,
+              aNullableDouble: 2.0,
+              aNullableByteArray: Uint8List.fromList(<int>[2]),
+              aNullable4ByteArray: Int32List.fromList(<int>[2]),
+              aNullable8ByteArray: Int64List.fromList(<int>[2]),
+              aNullableFloatArray: Float64List.fromList(<double>[2.0]),
+              aNullableEnum: GenericsAnEnum.two,
+              anotherNullableEnum: GenericsAnotherEnum.justInCase,
+              aNullableString: 'list-test-2',
+              aNullableObject: 'obj2',
+              stringList: <String?>['b'],
+              intList: <double?>[2.0],
+              doubleList: <int?>[2],
+              boolList: <String?>['y'],
+              enumList: <double?>[2.0],
+              objectList: <int?>[2],
+              stringMap: <String?, String?>{'c': 'd'},
+            );
+        final List<GenericsAllNullableTypesTyped<String, int, double>> input =
+            <GenericsAllNullableTypesTyped<String, int, double>>[
+              typed1,
+              typed2,
+            ];
+        final List<GenericsAllNullableTypesTyped<String, int, double>> result =
+            await api.echoListTypedNullable(input);
+        expect(result.length, equals(2));
+        expect(result[0].aNullableString, equals('list-test-1'));
+        expect(result[1].aNullableString, equals('list-test-2'));
+      });
+
+      testWidgets('map with typed nullable echo works', (WidgetTester _) async {
+        final GenericsAllNullableTypesTyped<int, String, double> typedValue =
+            GenericsAllNullableTypesTyped<int, String, double>(
+              aNullableInt: 99,
+              aNullableInt64: 100,
+              aNullableDouble: 9.99,
+              aNullableEnum: GenericsAnEnum.fortyTwo,
+              aNullableString: 'map-test',
+              aNullableObject: 'map-obj',
+              stringList: <int?>[99],
+              intList: <double?>[9.99],
+              doubleList: <String?>[null],
+              boolList: <int?>[99],
+              enumList: <double?>[9.99],
+              objectList: <String?>['map'],
+              stringMap: <int?, int?>{99: 100},
+            );
+        final Map<String, GenericsAllNullableTypesTyped<int, String, double>>
+        input = <String, GenericsAllNullableTypesTyped<int, String, double>>{
+          'key1': typedValue,
+        };
+        final Map<String, GenericsAllNullableTypesTyped<int, String, double>>
+        result = await api.echoMapTypedNullable(input);
+        expect(result.containsKey('key1'), isTrue);
+        expect(result['key1']?.aNullableString, equals('map-test'));
+      });
+
+      testWidgets('async typed nullable string-int-double echo works', (
+        WidgetTester _,
+      ) async {
+        final GenericsAllNullableTypesTyped<String, int, double> input =
+            GenericsAllNullableTypesTyped<String, int, double>(
+              aNullableBool: true,
+              aNullableInt: 42,
+              aNullableInt64: 64,
+              aNullableDouble: 3.14,
+              aNullableByteArray: Uint8List.fromList(<int>[1, 2, 3]),
+              aNullable4ByteArray: Int32List.fromList(<int>[4, 5, 6]),
+              aNullable8ByteArray: Int64List.fromList(<int>[7, 8, 9]),
+              aNullableFloatArray: Float64List.fromList(<double>[
+                1.1,
+                2.2,
+                3.3,
+              ]),
+              aNullableEnum: GenericsAnEnum.fortyTwo,
+              anotherNullableEnum: GenericsAnotherEnum.justInCase,
+              aNullableString: 'async-test',
+              aNullableObject: 'async-object',
+              stringList: <String?>['async'],
+              intList: <double?>[1.0],
+              doubleList: <int?>[1],
+              boolList: <String?>['x'],
+              enumList: <double?>[2.0],
+              objectList: <int?>[2],
+              stringMap: <String?, String?>{'async': 'test'},
+            );
+        final GenericsAllNullableTypesTyped<String, int, double> result =
+            await api.echoAsyncTypedNullableStringIntDouble(input);
+        expect(result.aNullableBool, equals(input.aNullableBool));
+        expect(result.aNullableString, equals(input.aNullableString));
+      });
+
+      testWidgets('async generic container typed nullable echo works', (
+        WidgetTester _,
+      ) async {
+        final GenericsAllNullableTypesTyped<String, int, double> typedInput =
+            GenericsAllNullableTypesTyped<String, int, double>(
+              aNullableBool: false,
+              aNullableInt: 123,
+              aNullableInt64: 456,
+              aNullableDouble: 7.89,
+              aNullableString: 'async-container',
+              aNullableObject: 'container-obj',
+            );
+        final GenericContainer<
+          GenericsAllNullableTypesTyped<String, int, double>
+        >
+        input = GenericContainer<
+          GenericsAllNullableTypesTyped<String, int, double>
+        >(
+          value: typedInput,
+          values: <GenericsAllNullableTypesTyped<String, int, double>>[
+            typedInput,
+          ],
+        );
+        final GenericContainer<
+          GenericsAllNullableTypesTyped<String, int, double>
+        >
+        result = await api.echoAsyncGenericContainerTypedNullable(input);
+        expect(result.value?.aNullableString, equals('async-container'));
+        expect(result.values.length, equals(1));
+      });
+
+      testWidgets('GenericDefaults echo works', (WidgetTester _) async {
+        final HostGenericApi api = HostGenericApi();
+
+        final GenericDefaults input = GenericDefaults(
+          genericInt: const GenericContainer<int>(
+            value: 100,
+            values: <int>[10, 20, 30],
+          ),
+          genericString: const GenericContainer<String>(
+            value: 'test',
+            values: <String>['x', 'y', 'z'],
+          ),
+          genericDouble: const GenericContainer<double>(
+            value: 2.5,
+            values: <double>[1.1, 2.2, 3.3],
+          ),
+          genericBool: const GenericContainer<bool>(
+            value: false,
+            values: <bool>[false, true, false],
+          ),
+          genericPairStringInt: const GenericPair<String, int>(
+            first: 'test-key',
+            second: 999,
+            map: <String, int>{'test': 123, 'another': 456},
+          ),
+          genericPairIntString: const GenericPair<int, String>(
+            first: 777,
+            second: 'test-value',
+            map: <int, String>{100: 'hundred', 200: 'two-hundred'},
+          ),
+          nestedGenericDefault: const NestedGeneric<String, int, double>(
+            container: GenericContainer<String>(
+              value: 'nested-test',
+              values: <String>['a', 'b', 'c'],
+            ),
+            pairs: <GenericPair<int, double>>[
+              GenericPair<int, double>(
+                first: 5,
+                second: 5.5,
+                map: <int, double>{5: 5.5, 6: 6.6},
+              ),
+            ],
+            nestedMap: <String, GenericContainer<int>>{
+              'test-nested': GenericContainer<int>(
+                value: 55,
+                values: <int>[50, 60, 70],
+              ),
+            },
+            listOfMaps: <Map<int, double>>[
+              <int, double>{100: 100.0, 200: 200.0},
+            ],
+          ),
+          genericPairEither: const GenericPair<int, Either<String, int>>(
+            first: 0,
+            second: Right<String, int>(value: 84),
+            map: <int, Either<String, int>>{
+              1: Right<String, int>(
+                value: 2,
+              ),
+              2: Left<String, int>(value: 'result'),
+            },
+          ),
+        );
+
+        final GenericDefaults result = await api.echoGenericDefaults(input);
+
+        // Verify GenericContainer<int>
+        expect(result.genericInt.value, equals(input.genericInt.value));
+        expect(result.genericInt.values, equals(input.genericInt.values));
+
+        // Verify GenericContainer<String>
+        expect(result.genericString.value, equals(input.genericString.value));
+        expect(result.genericString.values, equals(input.genericString.values));
+
+        // Verify GenericContainer<double>
+        expect(result.genericDouble.value, equals(input.genericDouble.value));
+        expect(result.genericDouble.values, equals(input.genericDouble.values));
+
+        // Verify GenericContainer<bool>
+        expect(result.genericBool.value, equals(input.genericBool.value));
+        expect(result.genericBool.values, equals(input.genericBool.values));
+
+        // Verify GenericPair<String, int>
+        expect(
+          result.genericPairStringInt.first,
+          equals(input.genericPairStringInt.first),
+        );
+        expect(
+          result.genericPairStringInt.second,
+          equals(input.genericPairStringInt.second),
+        );
+        expect(
+          result.genericPairStringInt.map,
+          equals(input.genericPairStringInt.map),
+        );
+
+        expect(
+          result.genericPairIntString.first,
+          equals(input.genericPairIntString.first),
+        );
+        expect(
+          result.genericPairIntString.second,
+          equals(input.genericPairIntString.second),
+        );
+        expect(
+          result.genericPairIntString.map,
+          equals(input.genericPairIntString.map),
+        );
+
+        expect(
+          result.nestedGenericDefault.container.value,
+          equals(input.nestedGenericDefault.container.value),
+        );
+        expect(
+          result.nestedGenericDefault.pairs.length,
+          equals(input.nestedGenericDefault.pairs.length),
+        );
+        expect(
+          result.nestedGenericDefault.pairs[0].first,
+          equals(input.nestedGenericDefault.pairs[0].first),
+        );
+      });
+
+      testWidgets('GenericDefaults returnGenericDefaults works', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        final GenericDefaults result = await api.returnGenericDefaults();
+
+        // Verify default values are returned correctly
+        expect(result.genericInt.value, equals(42));
+        expect(result.genericInt.values, equals(<int>[1, 2, 3]));
+
+        expect(result.genericString.value, equals('default'));
+        expect(result.genericString.values, equals(<String>['a', 'b', 'c']));
+
+        expect(result.genericDouble.value, equals(3.14));
+        expect(result.genericDouble.values, equals(<double>[1.0, 2.0, 3.0]));
+
+        expect(result.genericBool.value, equals(true));
+        expect(result.genericBool.values, equals(<bool>[true, false, true]));
+
+        expect(result.genericPairStringInt.first, equals('default'));
+        expect(result.genericPairStringInt.second, equals(42));
+        expect(result.genericPairStringInt.map['key1'], equals(1));
+        expect(result.genericPairStringInt.map['key2'], equals(2));
+
+        expect(result.genericPairIntString.first, equals(100));
+        expect(result.genericPairIntString.second, equals('value'));
+
+        expect(result.nestedGenericDefault.container.value, equals('nested'));
+        expect(
+          result.nestedGenericDefault.container.values,
+          equals(<String>['x', 'y', 'z']),
+        );
+      });
+
+      testWidgets('GenericDefaults async echo works', (WidgetTester _) async {
+        final HostGenericApi api = HostGenericApi();
+
+        final GenericDefaults input = GenericDefaults();
+        final GenericDefaults result = await api.echoAsyncGenericDefaults(
+          input,
+        );
+
+        // Verify async echo returns the same values
+        expect(result.genericInt.value, equals(input.genericInt.value));
+        expect(result.genericString.value, equals(input.genericString.value));
+        expect(result.genericDouble.value, equals(input.genericDouble.value));
+        expect(result.genericBool.value, equals(input.genericBool.value));
+      });
+    },
+  );
+
+  group(
+    'FlutterGenericApi tests',
+    skip: !targetSupportsGenerics.contains(targetGenerator),
+    () {
+      setUp(() {
+        FlutterGenericApi.setUp(_FlutterGenericApiTestImplementation());
+      });
+
+      testWidgets('generic containers serialize and deserialize correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        const GenericContainer<int> sentContainer = GenericContainer<int>(
+          value: 42,
+          values: <int>[1, 2, 3],
+        );
+        final GenericContainer<int> echoContainer = await api
+            .callFlutterEchoGenericInt(sentContainer);
+        expect(echoContainer.value, sentContainer.value);
+        expect(echoContainer.values, sentContainer.values);
+      });
+
+      testWidgets(
+        'generic string containers serialize and deserialize correctly',
+        (
+          WidgetTester _,
+        ) async {
+          final HostGenericApi api = HostGenericApi();
+
+          const GenericContainer<String> sentContainer =
+              GenericContainer<String>(
+                value: 'test',
+                values: <String>['a', 'b', 'c'],
+              );
+          final GenericContainer<String> echoContainer = await api
+              .callFlutterEchoGenericString(sentContainer);
+          expect(echoContainer.value, sentContainer.value);
+          expect(echoContainer.values, sentContainer.values);
+        },
+      );
+
+      testWidgets('generic pairs serialize and deserialize correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        const GenericPair<String, int> sentPair = GenericPair<String, int>(
+          first: 'hello',
+          second: 42,
+          map: <String, int>{'key1': 1, 'key2': 2},
+        );
+        final GenericPair<String, int> echoPair = await api
+            .callFlutterEchoGenericPairStringInt(sentPair);
+        expect(echoPair.first, sentPair.first);
+        expect(echoPair.second, sentPair.second);
+        expect(echoPair.map, sentPair.map);
+      });
+
+      testWidgets('generic defaults serialize and deserialize correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        final GenericDefaults sentDefaults = GenericDefaults();
+        final GenericDefaults echoDefaults = await api
+            .callFlutterEchoGenericDefaults(sentDefaults);
+        expect(echoDefaults.genericInt.value, sentDefaults.genericInt.value);
+        expect(echoDefaults.genericInt.values, sentDefaults.genericInt.values);
+        expect(
+          echoDefaults.genericString.value,
+          sentDefaults.genericString.value,
+        );
+        expect(
+          echoDefaults.genericString.values,
+          sentDefaults.genericString.values,
+        );
+      });
+
+      testWidgets('generic defaults int extraction works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        final GenericDefaults sentDefaults = GenericDefaults();
+        final GenericContainer<int> echoContainer = await api
+            .callFlutterEchoGenericDefaultsInt(sentDefaults);
+        expect(echoContainer.value, sentDefaults.genericInt.value);
+        expect(echoContainer.values, sentDefaults.genericInt.values);
+      });
+
+      testWidgets('nested generics serialize and deserialize correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        final GenericDefaults sentDefaults = GenericDefaults();
+        final NestedGeneric<String, int, double> echoNested = await api
+            .callFlutterEchoGenericDefaultsNested(sentDefaults);
+        expect(
+          echoNested.container.value,
+          sentDefaults.nestedGenericDefault.container.value,
+        );
+        expect(
+          echoNested.container.values,
+          sentDefaults.nestedGenericDefault.container.values,
+        );
+        expect(
+          echoNested.pairs.length,
+          sentDefaults.nestedGenericDefault.pairs.length,
+        );
+      });
+
+      testWidgets('generic pair either extraction works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        final GenericDefaults sentDefaults = GenericDefaults();
+        final GenericPair<int, Either<String, int>> echoPair = await api
+            .callFlutterEchoGenericDefaultsPairEither(sentDefaults);
+        expect(echoPair.first, sentDefaults.genericPairEither.first);
+        expect(echoPair.second, sentDefaults.genericPairEither.second);
+      });
+
+      testWidgets('typed nullables serialize and deserialize correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        final GenericsAllNullableTypesTyped<String, int, double> sentTyped =
+            GenericsAllNullableTypesTyped<String, int, double>(
+              aNullableString: 'test',
+              aNullableInt: 42,
+              aNullableDouble: 3.14,
+            );
+        final GenericsAllNullableTypesTyped<String, int, double> echoTyped =
+            await api.callFlutterEchoTypedNullableStringIntDouble(sentTyped);
+        expect(echoTyped.aNullableString, sentTyped.aNullableString);
+        expect(echoTyped.aNullableInt, sentTyped.aNullableInt);
+        expect(echoTyped.aNullableDouble, sentTyped.aNullableDouble);
+      });
+
+      testWidgets('typed nullables with different type params work correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        final GenericsAllNullableTypesTyped<int, String, bool> sentTyped =
+            GenericsAllNullableTypesTyped<int, String, bool>(
+              aNullableString: 'typed-test',
+              aNullableInt: 99,
+              aNullableDouble: 2.71,
+            );
+        final GenericsAllNullableTypesTyped<int, String, bool> echoTyped =
+            await api.callFlutterEchoTypedNullableIntStringBool(sentTyped);
+        expect(echoTyped.aNullableString, sentTyped.aNullableString);
+        expect(echoTyped.aNullableInt, sentTyped.aNullableInt);
+        expect(echoTyped.aNullableDouble, sentTyped.aNullableDouble);
+      });
+
+      testWidgets('nested generics with specific types work correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        const NestedGeneric<String, int, double> sentNested =
+            NestedGeneric<String, int, double>(
+              container: GenericContainer<String>(
+                value: 'nested',
+                values: <String>['x', 'y', 'z'],
+              ),
+              pairs: <GenericPair<int, double>>[
+                GenericPair<int, double>(
+                  first: 1,
+                  second: 1.1,
+                  map: <int, double>{1: 1.1, 2: 2.2},
+                ),
+              ],
+              nestedMap: <String, GenericContainer<int>>{
+                'key': GenericContainer<int>(value: 99, values: <int>[9, 8, 7]),
+              },
+              listOfMaps: <Map<int, double>>[
+                <int, double>{1: 1.0, 2: 2.0},
+              ],
+            );
+        final NestedGeneric<String, int, double> echoNested = await api
+            .callFlutterEchoNestedGenericStringIntDouble(sentNested);
+        expect(echoNested.container.value, sentNested.container.value);
+        expect(echoNested.pairs.length, sentNested.pairs.length);
+        expect(echoNested.nestedMap.keys, sentNested.nestedMap.keys);
+      });
+
+      testWidgets('generic container typed nullable works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        final GenericContainer<
+          GenericsAllNullableTypesTyped<String, int, double>
+        >
+        sentContainer = GenericContainer<
+          GenericsAllNullableTypesTyped<String, int, double>
+        >(
+          value: GenericsAllNullableTypesTyped<String, int, double>(
+            aNullableString: 'container',
+            aNullableInt: 100,
+            aNullableDouble: 2.71,
+          ),
+          values: <GenericsAllNullableTypesTyped<String, int, double>>[],
+        );
+        final GenericContainer<
+          GenericsAllNullableTypesTyped<String, int, double>
+        >
+        echoContainer = await api.callFlutterEchoGenericContainerTypedNullable(
+          sentContainer,
+        );
+        expect(
+          echoContainer.value?.aNullableString,
+          sentContainer.value?.aNullableString,
+        );
+        expect(
+          echoContainer.value?.aNullableInt,
+          sentContainer.value?.aNullableInt,
+        );
+        expect(echoContainer.values.length, sentContainer.values.length);
+      });
+
+      testWidgets('list of generic containers works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        const List<GenericContainer<int>> sentList = <GenericContainer<int>>[
+          GenericContainer<int>(value: 1, values: <int>[1, 2]),
+          GenericContainer<int>(value: 2, values: <int>[3, 4]),
+        ];
+        final List<GenericContainer<int>> echoList = await api
+            .callFlutterEchoListGenericContainer(sentList);
+        expect(echoList.length, sentList.length);
+        expect(echoList[0].value, sentList[0].value);
+        expect(echoList[1].values, sentList[1].values);
+      });
+
+      testWidgets('list of typed nullables works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        final List<GenericsAllNullableTypesTyped<String, int, double>>
+        sentList = <GenericsAllNullableTypesTyped<String, int, double>>[
+          GenericsAllNullableTypesTyped<String, int, double>(
+            aNullableString: 'first',
+            aNullableInt: 1,
+            aNullableDouble: 1.0,
+          ),
+          GenericsAllNullableTypesTyped<String, int, double>(
+            aNullableString: 'second',
+            aNullableInt: 2,
+            aNullableDouble: 2.0,
+          ),
+        ];
+        final List<GenericsAllNullableTypesTyped<String, int, double>>
+        echoList = await api.callFlutterEchoListTypedNullable(sentList);
+        expect(echoList.length, sentList.length);
+        expect(echoList[0].aNullableString, sentList[0].aNullableString);
+        expect(echoList[1].aNullableInt, sentList[1].aNullableInt);
+      });
+
+      testWidgets('map of generic containers works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        const Map<String, GenericContainer<int>> sentMap =
+            <String, GenericContainer<int>>{
+              'key1': GenericContainer<int>(value: 1, values: <int>[1, 2]),
+              'key2': GenericContainer<int>(value: 2, values: <int>[3, 4]),
+            };
+        final Map<String, GenericContainer<int>> echoMap = await api
+            .callFlutterEchoMapGenericContainer(sentMap);
+        expect(echoMap.length, sentMap.length);
+        expect(echoMap['key1']?.value, sentMap['key1']?.value);
+        expect(echoMap['key2']?.values, sentMap['key2']?.values);
+      });
+
+      testWidgets('map of typed nullables works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        final Map<String, GenericsAllNullableTypesTyped<int, String, double>>
+        sentMap = <String, GenericsAllNullableTypesTyped<int, String, double>>{
+          'key1': GenericsAllNullableTypesTyped<int, String, double>(
+            aNullableString: 'first-value',
+            aNullableInt: 1,
+            aNullableDouble: 1.0,
+          ),
+          'key2': GenericsAllNullableTypesTyped<int, String, double>(
+            aNullableString: 'second-value',
+            aNullableInt: 2,
+            aNullableDouble: 2.0,
+          ),
+        };
+        final Map<String, GenericsAllNullableTypesTyped<int, String, double>>
+        echoMap = await api.callFlutterEchoMapTypedNullable(sentMap);
+        expect(echoMap.length, sentMap.length);
+        expect(
+          echoMap['key1']?.aNullableString,
+          sentMap['key1']?.aNullableString,
+        );
+        expect(echoMap['key2']?.aNullableInt, sentMap['key2']?.aNullableInt);
+      });
+
+      testWidgets('return generic defaults either left works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        final GenericContainer<Either<String, int>> result =
+            await api.callFlutterReturnGenericDefaultsEitherLeft();
+        expect(
+          result.value,
+          predicate((Left<String, int> v) => v.value == 'default-left'),
+        );
+        expect(result.values.length, 2);
+      });
+
+      testWidgets('return generic defaults either right works correctly', (
+        WidgetTester _,
+      ) async {
+        final HostGenericApi api = HostGenericApi();
+
+        final GenericContainer<Either<String, int>> result =
+            await api.callFlutterReturnGenericDefaultsEitherRight();
+        expect(result.value, predicate((Right<String, int> v) => v.value == 2));
+        expect(result.values.length, 2);
+      });
+    },
+  );
 }
 
 class _FlutterApiTestImplementation implements FlutterIntegrationCoreApi {
@@ -4060,4 +5273,133 @@ ProxyApiTestClass _createGenericProxyApiTestClass({
     flutterEchoProxyApiMap:
         flutterEchoProxyApiMap ?? (_, __) => <String?, ProxyApiTestClass?>{},
   );
+}
+
+class _FlutterGenericApiTestImplementation implements FlutterGenericApi {
+  @override
+  GenericContainer<GenericsAllNullableTypesTyped<String, int, double>>
+  echoGenericContainerTypedNullable(
+    GenericContainer<GenericsAllNullableTypesTyped<String, int, double>>
+    container,
+  ) {
+    return container;
+  }
+
+  @override
+  GenericDefaults echoGenericDefaults(GenericDefaults defaults) {
+    return defaults;
+  }
+
+  @override
+  GenericContainer<int> echoGenericDefaultsInt(GenericDefaults defaults) {
+    return defaults.genericInt;
+  }
+
+  @override
+  NestedGeneric<String, int, double> echoGenericDefaultsNested(
+    GenericDefaults defaults,
+  ) {
+    return defaults.nestedGenericDefault;
+  }
+
+  @override
+  GenericPair<int, Either<String, int>> echoGenericDefaultsPairEither(
+    GenericDefaults defaults,
+  ) {
+    return defaults.genericPairEither;
+  }
+
+  @override
+  GenericContainer<int> echoGenericInt(GenericContainer<int> container) {
+    return container;
+  }
+
+  @override
+  GenericPair<String, int> echoGenericPairStringInt(
+    GenericPair<String, int> pair,
+  ) {
+    return pair;
+  }
+
+  @override
+  GenericContainer<String> echoGenericString(
+    GenericContainer<String> container,
+  ) {
+    return container;
+  }
+
+  @override
+  List<GenericContainer<int>> echoListGenericContainer(
+    List<GenericContainer<int>> list,
+  ) {
+    return list;
+  }
+
+  @override
+  List<GenericsAllNullableTypesTyped<String, int, double>>
+  echoListTypedNullable(
+    List<GenericsAllNullableTypesTyped<String, int, double>> list,
+  ) {
+    return list;
+  }
+
+  @override
+  Map<String, GenericContainer<int>> echoMapGenericContainer(
+    Map<String, GenericContainer<int>> map,
+  ) {
+    return map;
+  }
+
+  @override
+  Map<String, GenericsAllNullableTypesTyped<int, String, double>>
+  echoMapTypedNullable(
+    Map<String, GenericsAllNullableTypesTyped<int, String, double>> map,
+  ) {
+    return map;
+  }
+
+  @override
+  NestedGeneric<String, int, double> echoNestedGenericStringIntDouble(
+    NestedGeneric<String, int, double> nested,
+  ) {
+    return nested;
+  }
+
+  @override
+  GenericsAllNullableTypesTyped<int, String, bool>
+  echoTypedNullableIntStringBool(
+    GenericsAllNullableTypesTyped<int, String, bool> typed,
+  ) {
+    return typed;
+  }
+
+  @override
+  GenericsAllNullableTypesTyped<String, int, double>
+  echoTypedNullableStringIntDouble(
+    GenericsAllNullableTypesTyped<String, int, double> typed,
+  ) {
+    return typed;
+  }
+
+  @override
+  GenericContainer<Either<String, int>> returnGenericDefaultsEitherLeft() {
+    return const GenericContainer<Either<String, int>>(
+      value: Left<String, int>(value: 'default-left'),
+      values: <Either<String, int>>[
+        Left<String, int>(value: 'left1'),
+        Right<String, int>(value: 2),
+      ],
+    );
+  }
+
+  @override
+  GenericContainer<Either<String, int>> returnGenericDefaultsEitherRight() {
+    return const GenericContainer<Either<String, int>>(
+      value: Right<String, int>(value: 2),
+      values: <Either<String, int>>[
+        Left<String, int>(value: 'left1'),
+        Right<String, int>(value: 2),
+      ],
+    );
+  }
 }

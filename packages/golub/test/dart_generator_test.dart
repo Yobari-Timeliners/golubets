@@ -1400,6 +1400,330 @@ void main() {
     expect(code, contains('final List<int?> output = api.doit(arg_foo!)'));
   });
 
+  test('generic class with single type parameter', () {
+    final Class classDefinition = Class(
+      name: 'Wrapper',
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'T', isNullable: false),
+      ],
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'T', isNullable: false),
+          name: 'value',
+        ),
+      ],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[classDefinition],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const DartGenerator generator = DartGenerator();
+    generator.generate(
+      const InternalDartOptions(),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('class Wrapper<T>'));
+    expect(code, contains('T value;'));
+    expect(code, contains('Wrapper({'));
+    expect(code, contains('static Wrapper<T> decode<T>(Object result)'));
+  });
+
+  test('generic class with multiple type parameters', () {
+    final Class classDefinition = Class(
+      name: 'Pair',
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'T', isNullable: false),
+        const TypeDeclaration(baseName: 'U', isNullable: false),
+      ],
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'T', isNullable: false),
+          name: 'first',
+        ),
+        NamedType(
+          type: const TypeDeclaration(baseName: 'U', isNullable: true),
+          name: 'second',
+        ),
+      ],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[classDefinition],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const DartGenerator generator = DartGenerator();
+    generator.generate(
+      const InternalDartOptions(),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('class Pair<T, U>'));
+    expect(code, contains('T first;'));
+    expect(code, contains('U? second;'));
+    expect(code, contains('Pair({'));
+    expect(code, contains('static Pair<T, U> decode<T, U>(Object result)'));
+  });
+
+  test('generic class with nested generic field types', () {
+    final Class classDefinition = Class(
+      name: 'Container',
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'T', isNullable: false),
+      ],
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(
+            baseName: 'List',
+            isNullable: false,
+            typeArguments: <TypeDeclaration>[
+              TypeDeclaration(
+                baseName: 'Map',
+                isNullable: false,
+                typeArguments: <TypeDeclaration>[
+                  TypeDeclaration(baseName: 'String', isNullable: false),
+                  TypeDeclaration(baseName: 'T', isNullable: true),
+                ],
+              ),
+            ],
+          ),
+          name: 'data',
+        ),
+      ],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[classDefinition],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const DartGenerator generator = DartGenerator();
+    generator.generate(
+      const InternalDartOptions(),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('class Container<T>'));
+    expect(code, contains('List<Map<String, T?>> data;'));
+    expect(code, contains('Container({'));
+    expect(code, contains('static Container<T> decode<T>(Object result)'));
+  });
+
+  test('generic class with generic superclass', () {
+    final Class superClass = Class(
+      name: 'BaseContainer',
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'T', isNullable: false),
+      ],
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'T', isNullable: false),
+          name: 'item',
+        ),
+      ],
+    );
+    final Class classDefinition = Class(
+      name: 'SpecialList',
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'T', isNullable: false),
+      ],
+      superClassName: superClass.name,
+      superClass: superClass,
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'int', isNullable: false),
+          name: 'capacity',
+        ),
+      ],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[superClass, classDefinition],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const DartGenerator generator = DartGenerator();
+    generator.generate(
+      const InternalDartOptions(),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('class SpecialList<T> extends BaseContainer'));
+    expect(code, contains('int capacity;'));
+    expect(code, contains('SpecialList({'));
+    expect(code, contains('static SpecialList<T> decode<T>(Object result)'));
+    expect(code, contains('class BaseContainer<T>'));
+  });
+
+  test('generic class serialization methods', () {
+    final Class classDefinition = Class(
+      name: 'Result',
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'T', isNullable: false),
+        const TypeDeclaration(baseName: 'E', isNullable: false),
+      ],
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'T', isNullable: true),
+          name: 'success',
+        ),
+        NamedType(
+          type: const TypeDeclaration(baseName: 'E', isNullable: true),
+          name: 'error',
+        ),
+      ],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[classDefinition],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const DartGenerator generator = DartGenerator();
+    generator.generate(
+      const InternalDartOptions(),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('class Result<T, E>'));
+    expect(code, contains('T? success;'));
+    expect(code, contains('E? error;'));
+    expect(code, contains('static Result<T, E> decode<T, E>(Object result)'));
+    expect(code, contains('return Result<T, E>('));
+    expect(code, contains('success: result[0] as T?,'));
+    expect(code, contains('error: result[1] as E?,'));
+    expect(code, contains('Object encode()'));
+    expect(code, contains('return _toList();'));
+    expect(code, contains('List<Object?> _toList()'));
+    expect(code, contains('success,'));
+    expect(code, contains('error,'));
+  });
+
+  test('generic class with nullable type parameters', () {
+    final Class classDefinition = Class(
+      name: 'Optional',
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'T', isNullable: true),
+      ],
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'T', isNullable: true),
+          name: 'value',
+        ),
+        NamedType(
+          type: const TypeDeclaration(baseName: 'bool', isNullable: false),
+          name: 'hasValue',
+        ),
+      ],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[classDefinition],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const DartGenerator generator = DartGenerator();
+    generator.generate(
+      const InternalDartOptions(),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('class Optional<T?>'));
+    expect(code, contains('T? value;'));
+    expect(code, contains('bool hasValue;'));
+    expect(code, contains('static Optional<T?> decode<T?>(Object result)'));
+    expect(code, contains('return Optional<T?>('));
+    expect(code, contains('value: result[0] as T?,'));
+  });
+
+  test('complex generic class with mixed type constraints', () {
+    final Class classDefinition = Class(
+      name: 'ApiResponse',
+      typeArguments: <TypeDeclaration>[
+        const TypeDeclaration(baseName: 'TData', isNullable: false),
+        const TypeDeclaration(baseName: 'TError', isNullable: true),
+      ],
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(
+            baseName: 'Map',
+            isNullable: false,
+            typeArguments: <TypeDeclaration>[
+              TypeDeclaration(baseName: 'String', isNullable: false),
+              TypeDeclaration(baseName: 'TData', isNullable: true),
+            ],
+          ),
+          name: 'data',
+        ),
+        NamedType(
+          type: const TypeDeclaration(
+            baseName: 'List',
+            isNullable: true,
+            typeArguments: <TypeDeclaration>[
+              TypeDeclaration(baseName: 'TError', isNullable: true),
+            ],
+          ),
+          name: 'errors',
+        ),
+        NamedType(
+          type: const TypeDeclaration(baseName: 'int', isNullable: false),
+          name: 'statusCode',
+        ),
+      ],
+    );
+    final Root root = Root(
+      apis: <Api>[],
+      classes: <Class>[classDefinition],
+      enums: <Enum>[],
+    );
+    final StringBuffer sink = StringBuffer();
+    const DartGenerator generator = DartGenerator();
+    generator.generate(
+      const InternalDartOptions(),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final String code = sink.toString();
+    expect(code, contains('class ApiResponse<TData, TError?>'));
+    expect(code, contains('Map<String, TData?> data;'));
+    expect(code, contains('List<TError?>? errors;'));
+    expect(code, contains('int statusCode;'));
+    expect(
+      code,
+      contains(
+        'static ApiResponse<TData, TError?> decode<TData, TError?>(Object result)',
+      ),
+    );
+    expect(code, contains('return ApiResponse<TData, TError?>('));
+    expect(
+      code,
+      contains(
+        'data: (result[0] as Map<Object?, Object?>?)!.cast<String, TData?>()',
+      ),
+    );
+    expect(
+      code,
+      contains('errors: (result[1] as List<Object?>?)?.cast<TError?>()'),
+    );
+    expect(code, contains('statusCode: result[2]! as int'));
+  });
+
   test('return nullable host', () {
     final Root root = Root(
       apis: <Api>[
