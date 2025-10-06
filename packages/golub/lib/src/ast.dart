@@ -805,6 +805,7 @@ class Class extends Node {
     this.isSwiftClass = false,
     this.documentationComments = const <String>[],
     this.isImmutable = false,
+    this.typeArguments = const <TypeDeclaration>[],
   });
 
   /// The name of the class.
@@ -845,6 +846,9 @@ class Class extends Node {
 
   /// Whether the class is immutable.
   bool isImmutable;
+
+  /// The type arguments to the entity (ex 'Bar' to 'Foo<Bar>?').
+  List<TypeDeclaration> typeArguments;
 
   @override
   String toString() {
@@ -915,11 +919,19 @@ class Root extends Node {
     this.containsFlutterApi = false,
     this.containsProxyApi = false,
     this.containsEventChannel = false,
+    this.genericTypeNames = const <String>{},
+    this.genericUsage = const <String, Set<TypeArgumentCombination>>{},
   });
 
   /// Factory function for generating an empty root, usually used when early errors are encountered.
   factory Root.makeEmpty() {
-    return Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
+    return Root(
+      apis: <Api>[],
+      classes: <Class>[],
+      enums: <Enum>[],
+      genericTypeNames: <String>{},
+      genericUsage: <String, Set<TypeArgumentCombination>>{},
+    );
   }
 
   /// All the classes contained in the AST.
@@ -942,6 +954,13 @@ class Root extends Node {
 
   /// Whether the root has any event channel definitions.
   bool containsEventChannel;
+
+  /// All of the custom type names contained in the AST.
+  Set<String> genericTypeNames;
+
+  /// Names of classes and corresponding generic type argument combinations
+  /// used in the APIs.
+  Map<String, Set<TypeArgumentCombination>> genericUsage;
 
   /// Returns true if the number of custom types would exceed the available enumerations
   /// on the standard codec.

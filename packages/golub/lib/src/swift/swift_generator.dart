@@ -269,6 +269,10 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     void writeDecodeLogic(EnumeratedType customType) {
       final ({Class child, Class superClass})? sealedHierarchy =
           customType.findSealedHierarchy();
+      final String typeArguments =
+          customType.isGeneric
+              ? '<${_flattenTypeArguments(customType.typeArguments)}>'
+              : '';
 
       indent.writeln('case ${customType.enumeration}:');
       indent.nest(1, () {
@@ -291,11 +295,11 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
               sealedHierarchy;
 
           indent.writeln(
-            'return ${superClass.name}.fromList${child.name}(self.readValue() as! [Any?])',
+            'return ${superClass.name}$typeArguments.fromList${child.name}(self.readValue() as! [Any?])',
           );
         } else {
           indent.writeln(
-            'return ${customType.name}.fromList(self.readValue() as! [Any?])',
+            'return ${customType.name}$typeArguments.fromList(self.readValue() as! [Any?])',
           );
         }
       });
@@ -359,16 +363,23 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
 
             final String value = isSealedChild ? 'childValue' : 'value';
 
+            final String typeArguments =
+                customType.isGeneric
+                    ? '<${_flattenTypeArguments(customType.typeArguments)}>'
+                    : '';
+
             if (isSealedChild) {
               final (child: Class child, superClass: Class superClass) =
                   sealedHierarchy;
               final String caseName = child.name.toLowFirstLetter();
 
               indent.add(
-                'if let $value = value as? ${superClass.name}, case .$caseName = $value ',
+                'if let $value = value as? ${superClass.name}$typeArguments, case .$caseName = $value ',
               );
             } else {
-              indent.add('if let $value = value as? ${customType.name} ');
+              indent.add(
+                'if let $value = value as? ${customType.name}$typeArguments ',
+              );
             }
 
             indent.addScoped('{', '} else ', () {
@@ -445,19 +456,34 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     Class classDefinition, {
     bool private = false,
     bool hashable = true,
+    required Root root,
   }) {
+    final Map<String, Class> classLookup = <String, Class>{
+      for (final Class classDefinition in root.classes)
+        classDefinition.name: classDefinition,
+    };
     if (classDefinition.isSealed) {
       _writeSealedClassSignature(
         indent,
         classDefinition,
         private: private,
         hashable: hashable,
+        classLookup: classLookup,
+        root: root,
       );
 
       return;
     }
 
+    final Set<String> hashableTypeParams = _getTypeParametersRequiringHashable(
+      classDefinition,
+      classLookup: classLookup,
+    );
     final String privateString = private ? 'private ' : 'public ';
+    final String typeArguments =
+        classDefinition.typeArguments.isEmpty
+            ? ''
+            : '<${_flattenTypeArgumentsWithSelectiveHashableConstraints(classDefinition.typeArguments, hashableTypeParams)}>';
     final String extendsString =
         classDefinition.superClass != null
             ? ': ${classDefinition.superClass!.name}'
@@ -466,13 +492,13 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
             : '';
     if (classDefinition.isSwiftClass) {
       indent.write(
-        '${privateString}class ${classDefinition.name}$extendsString ',
+        '${privateString}class ${classDefinition.name}$typeArguments$extendsString ',
       );
     } else if (classDefinition.isSealed) {
       indent.write('${privateString}protocol ${classDefinition.name} ');
     } else {
       indent.write(
-        '${privateString}struct ${classDefinition.name}$extendsString ',
+        '${privateString}struct ${classDefinition.name}$typeArguments$extendsString ',
       );
     }
 
@@ -480,9 +506,13 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       final Iterable<NamedType> fields = getFieldsInSerializationOrder(
         classDefinition,
       );
+      final Map<String, Class> classLookup = <String, Class>{
+        for (final Class classDefinition in root.classes)
+          classDefinition.name: classDefinition,
+      };
 
       if (!classDefinition.isSealed) {
-        _writeClassInit(indent, fields.toList());
+        _writeClassInit(indent, fields.toList(), classLookup: classLookup);
       }
 
       for (final NamedType field in fields) {
@@ -500,6 +530,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
               !classDefinition.isSwiftClass &&
               field.defaultValue == null &&
               !classDefinition.isImmutable,
+          classLookup: classLookup,
         );
         indent.newln();
       }
@@ -535,6 +566,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       overflowClass,
       private: true,
       hashable: false,
+      root: root,
     );
     indent.addScoped('', '}', () {
       writeClassEncode(
@@ -616,7 +648,11 @@ if (wrapped == nil) {
       _docCommentSpec,
       generatorComments: generatedComments,
     );
-    _writeDataClassSignature(indent, classDefinition);
+    _writeDataClassSignature(
+      indent,
+      classDefinition,
+      root: root,
+    );
     indent.writeScoped('', '}', () {
       indent.newln();
       writeClassDecode(
@@ -643,11 +679,20 @@ if (wrapped == nil) {
     });
   }
 
-  void _writeClassInit(Indent indent, List<NamedType> fields) {
+  void _writeClassInit(
+    Indent indent,
+    List<NamedType> fields, {
+    required Map<String, Class> classLookup,
+  }) {
     indent.writeScoped('public init(', ')', () {
       for (int i = 0; i < fields.length; i++) {
         indent.write('');
-        _writeClassField(indent, fields[i], addDefault: true);
+        _writeClassField(
+          indent,
+          fields[i],
+          addDefault: true,
+          classLookup: classLookup,
+        );
         if (i == fields.length - 1) {
           indent.newln();
         } else {
@@ -667,12 +712,13 @@ if (wrapped == nil) {
     NamedType field, {
     bool addNil = true,
     bool addDefault = false,
+    required Map<String, Class> classLookup,
   }) {
     final DefaultValue? defaultValue = field.defaultValue;
     indent.add('${field.name}: ${_nullSafeSwiftTypeForDartType(field.type)}');
     if (defaultValue != null && addDefault) {
       indent.add(' = ');
-      defaultValue.write(indent, prefix: '');
+      defaultValue.write(indent, prefix: '', classLookup: classLookup);
     } else {
       final String defaultNil = field.type.isNullable && addNil ? ' = nil' : '';
       indent.add(defaultNil);
@@ -3034,6 +3080,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     Class classDefinition, {
     bool private = false,
     bool hashable = true,
+    required Map<String, Class> classLookup,
+    required Root root,
   }) {
     final List<Class> children = classDefinition.children;
 
@@ -3043,11 +3091,18 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       );
     }
     final String privateString = private ? 'private' : 'public';
-
+    final Set<String> hashableTypeParams = _getTypeParametersRequiringHashable(
+      classDefinition,
+      classLookup: classLookup,
+    );
     final String extendsString = hashable ? ': Hashable' : '';
+    final String typeArguments =
+        classDefinition.typeArguments.isEmpty
+            ? ''
+            : '<${_flattenTypeArgumentsWithSelectiveHashableConstraints(classDefinition.typeArguments, hashableTypeParams)}>';
 
     indent.write(
-      '$privateString enum ${classDefinition.name}$extendsString',
+      '$privateString enum ${classDefinition.name}$typeArguments$extendsString',
     );
 
     indent.writeScoped(' {', '', () {
@@ -3083,7 +3138,11 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
 
                 if (defaultValue != null) {
                   indent.add(' = ');
-                  defaultValue.write(indent, prefix: '');
+                  defaultValue.write(
+                    indent,
+                    prefix: '',
+                    classLookup: classLookup,
+                  );
                 }
 
                 childFields.last != field ? indent.addln(',') : indent.newln();
@@ -3226,7 +3285,156 @@ String _camelCase(String text) {
 /// Converts a [List] of [TypeDeclaration]s to a comma separated [String] to be
 /// used in Swift code.
 String _flattenTypeArguments(List<TypeDeclaration> args) {
-  return args.map((TypeDeclaration e) => _swiftTypeForDartType(e)).join(', ');
+  return args
+      .map((TypeDeclaration e) => _nullSafeSwiftTypeForDartType(e))
+      .join(', ');
+}
+
+/// Analyzes class fields to determine which type parameters need Hashable constraints.
+/// Returns a Set of type parameter names that need to be Hashable.
+Set<String> _getTypeParametersRequiringHashable(
+  Class classDefinition, {
+  required Map<String, Class> classLookup,
+  Set<String>? visitedClasses,
+}) {
+  final Set<String> visited = visitedClasses ?? <String>{};
+
+  // Prevent infinite recursion
+  if (visited.contains(classDefinition.name)) {
+    return <String>{};
+  }
+  visited.add(classDefinition.name);
+
+  final Set<String> hashableTypeParams = <String>{};
+  final Set<String> classTypeParamNames =
+      classDefinition.typeArguments
+          .map((TypeDeclaration e) => e.baseName)
+          .toSet();
+
+  // Analyze each field to see if any type parameters need Hashable constraints
+  for (final NamedType field in classDefinition.fields) {
+    _collectHashableTypeParameters(
+      field.type,
+      hashableTypeParams,
+      classTypeParamNames,
+      classLookup,
+      visited,
+      isMapKey: false,
+    );
+  }
+
+  return hashableTypeParams;
+}
+
+/// Recursively collects type parameters that need Hashable constraints.
+void _collectHashableTypeParameters(
+  TypeDeclaration type,
+  Set<String> hashableTypeParams,
+  Set<String> classTypeParamNames,
+  Map<String, Class> classLookup,
+
+  Set<String> visitedClasses, {
+  required bool isMapKey,
+}) {
+  // If this is a type parameter (generic) and it's used as a Map key, it needs Hashable
+  if (classTypeParamNames.contains(type.baseName) && isMapKey) {
+    hashableTypeParams.add(type.baseName);
+  }
+
+  // If this is a Map, the key type parameter needs to be Hashable
+  if (type.baseName == 'Map' && type.typeArguments.isNotEmpty) {
+    _collectHashableTypeParameters(
+      type.typeArguments[0],
+      hashableTypeParams,
+      classTypeParamNames,
+      classLookup,
+      visitedClasses,
+      isMapKey: true,
+    );
+    // Value type doesn't need to be Hashable
+    if (type.typeArguments.length > 1) {
+      _collectHashableTypeParameters(
+        type.typeArguments[1],
+        hashableTypeParams,
+        classTypeParamNames,
+        classLookup,
+        visitedClasses,
+        isMapKey: false,
+      );
+    }
+  } else {
+    // Check if this is a custom class that might have Hashable requirements
+    final Class? customClass = classLookup[type.baseName];
+    if (customClass != null && type.typeArguments.isNotEmpty) {
+      // Get the Hashable requirements for this custom class
+      final Set<String> customClassHashableParams =
+          _getTypeParametersRequiringHashable(
+            customClass,
+            classLookup: classLookup,
+            visitedClasses: visitedClasses,
+          );
+
+      // Map the custom class's type parameter requirements to our context
+      for (
+        int i = 0;
+        i < type.typeArguments.length && i < customClass.typeArguments.length;
+        i++
+      ) {
+        final TypeDeclaration currentTypeArg = type.typeArguments[i];
+        final String customClassTypeParam =
+            customClass.typeArguments[i].baseName;
+
+        // If the custom class's type parameter needs Hashable, then our type argument needs it too
+        if (customClassHashableParams.contains(customClassTypeParam)) {
+          _collectHashableTypeParameters(
+            currentTypeArg,
+            hashableTypeParams,
+            classTypeParamNames,
+            classLookup,
+            visitedClasses,
+            isMapKey: true, // Mark as map key to trigger Hashable requirement
+          );
+        } else {
+          _collectHashableTypeParameters(
+            currentTypeArg,
+            hashableTypeParams,
+            classTypeParamNames,
+            classLookup,
+            visitedClasses,
+            isMapKey: false,
+          );
+        }
+      }
+    } else {
+      // For built-in generic types (List, etc.) or non-generic types, recurse normally
+      for (final TypeDeclaration typeArg in type.typeArguments) {
+        _collectHashableTypeParameters(
+          typeArg,
+          hashableTypeParams,
+          classTypeParamNames,
+          classLookup,
+          visitedClasses,
+          isMapKey: false,
+        );
+      }
+    }
+  }
+}
+
+/// Converts a [List] of [TypeDeclaration]s to a comma separated [String] with
+/// selective Hashable constraints based on actual usage in the class.
+String _flattenTypeArgumentsWithSelectiveHashableConstraints(
+  List<TypeDeclaration> args,
+  Set<String> hashableTypeParams,
+) {
+  return args
+      .map((TypeDeclaration e) {
+        final String typeName = _nullSafeSwiftTypeForDartType(e);
+        return hashableTypeParams.contains(e.baseName)
+            ? '$typeName: Hashable'
+            : typeName;
+      })
+      .join(', ');
 }
 
 String _swiftTypeForBuiltinGenericDartType(TypeDeclaration type) {
@@ -3289,7 +3497,9 @@ String? _swiftTypeForProxyApiType(TypeDeclaration type) {
 String _swiftTypeForDartType(TypeDeclaration type, {bool mapKey = false}) {
   return _swiftTypeForBuiltinDartType(type, mapKey: mapKey) ??
       _swiftTypeForProxyApiType(type) ??
-      type.baseName;
+      (type.typeArguments.isEmpty
+          ? type.baseName
+          : '${type.baseName}<${_flattenTypeArguments(type.typeArguments)}>');
 }
 
 String _nullSafeSwiftTypeForDartType(
@@ -3453,7 +3663,11 @@ class _SwiftFunctionComponents {
 
 extension on DefaultValue {
   /// [prefix] - used for pretty formatting.
-  void write(Indent indent, {String? prefix}) {
+  void write(
+    Indent indent, {
+    String? prefix,
+    required Map<String, Class> classLookup,
+  }) {
     prefix = prefix ?? indent.str();
 
     return switch (this) {
@@ -3469,7 +3683,7 @@ extension on DefaultValue {
               ']',
               () {
                 for (final DefaultValue element in elements) {
-                  element.write(indent);
+                  element.write(indent, classLookup: classLookup);
                   indent.addln(', ');
                 }
               },
@@ -3484,9 +3698,13 @@ extension on DefaultValue {
               () {
                 for (final MapEntry<DefaultValue, DefaultValue> entry
                     in entries.entries) {
-                  entry.key.write(indent);
+                  entry.key.write(indent, classLookup: classLookup);
                   indent.add(': ');
-                  entry.value.write(indent, prefix: '');
+                  entry.value.write(
+                    indent,
+                    prefix: '',
+                    classLookup: classLookup,
+                  );
                   indent.addln(', ');
                 }
               },
@@ -3500,10 +3718,18 @@ extension on DefaultValue {
         :final List<DefaultValue> arguments,
       ) =>
         () {
-          indent.add('$prefix${type.baseName}');
+          final bool isSealedChild =
+              classLookup[type.baseName]?.superClass?.isSealed ?? false;
+
+          final String name =
+              isSealedChild
+                  ? '.${type.baseName.toLowFirstLetter()}'
+                  : type.baseName;
+
+          indent.add('$prefix$name');
 
           if (arguments.isEmpty) {
-            indent.add('()');
+            indent.add(isSealedChild ? '' : '()');
             return;
           }
 
@@ -3512,7 +3738,7 @@ extension on DefaultValue {
             ')',
             () {
               for (final DefaultValue argument in arguments) {
-                argument.write(indent);
+                argument.write(indent, classLookup: classLookup);
                 argument == arguments.last
                     ? indent.newln()
                     : indent.addln(', ');
@@ -3527,7 +3753,7 @@ extension on DefaultValue {
       ) =>
         () {
           indent.add('$prefix$name: ');
-          value.write(indent, prefix: '');
+          value.write(indent, prefix: '', classLookup: classLookup);
         }(),
     };
   }

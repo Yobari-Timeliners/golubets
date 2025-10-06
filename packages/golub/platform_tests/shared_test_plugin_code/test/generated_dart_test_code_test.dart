@@ -261,14 +261,14 @@ void main() {
     TestHostApi.setUp(mock);
     expect(
       await const BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.pigeon_integration_tests.MessageApi.initialize',
+        'dev.bayori.golub.golub_integration_tests.MessageApi.initialize',
         StandardMessageCodec(),
       ).send(<Object?>[null]),
       isEmpty,
     );
     try {
       await const BasicMessageChannel<Object?>(
-            'dev.flutter.pigeon.pigeon_integration_tests.MessageApi.search',
+            'dev.bayori.golub.golub_integration_tests.MessageApi.search',
             StandardMessageCodec(),
           ).send(<Object?>[null])
           as List<Object?>?;
@@ -278,7 +278,7 @@ void main() {
       expect(
         error.toString(),
         contains(
-          'Argument for dev.flutter.pigeon.pigeon_integration_tests.MessageApi.search was null, expected non-null MessageSearchRequest.',
+          'Argument for dev.bayori.golub.golub_integration_tests.MessageApi.search was null, expected non-null MessageSearchRequest.',
         ),
       );
     }

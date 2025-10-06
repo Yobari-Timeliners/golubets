@@ -211,19 +211,27 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       classDefinition.documentationComments,
       docCommentSpec,
     );
+
     final String sealed = classDefinition.isSealed ? 'sealed ' : '';
     final String implements =
         classDefinition.superClassName != null
             ? 'extends ${classDefinition.superClassName} '
             : '';
 
-    indent.write('${sealed}class ${classDefinition.name} $implements');
-    indent.addScoped('{', '}', () {
-      if (classDefinition.isSealed) {
-        return;
-      }
+    indent.write('${sealed}class ${classDefinition.name}');
+    if (classDefinition.typeArguments.isNotEmpty) {
+      indent.add('<${_flattenTypeArguments(classDefinition.typeArguments)}>');
+    }
+    indent.write(' $implements');
 
-      if (classDefinition.fields.isNotEmpty) {
+    final List<TypeDeclaration>? superTypeArguments =
+        classDefinition.superClass?.typeArguments;
+    if (superTypeArguments != null && superTypeArguments.isNotEmpty) {
+      indent.write('<${_flattenTypeArguments(superTypeArguments)}>');
+    }
+
+    indent.addScoped('{', '}', () {
+      if (classDefinition.fields.isNotEmpty || classDefinition.isImmutable) {
         _writeConstructor(indent, classDefinition);
         indent.newln();
         for (final NamedType field in getFieldsInSerializationOrder(
@@ -241,6 +249,11 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
           indent.newln();
         }
       }
+
+      if (classDefinition.isSealed) {
+        return;
+      }
+
       _writeToList(indent, classDefinition);
       indent.newln();
       writeClassEncode(
@@ -273,6 +286,12 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     final String constKeyword = classDefinition.isImmutable ? 'const ' : '';
 
     indent.write('$constKeyword${classDefinition.name}');
+
+    if (classDefinition.fields.isEmpty) {
+      indent.add('();');
+      return;
+    }
+
     indent.addScoped('({', '});', () {
       for (final NamedType field in getFieldsInSerializationOrder(
         classDefinition,
@@ -347,13 +366,19 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
 
     final bool isResultUsed = classDefinition.fields.isNotEmpty;
     final String result = isResultUsed ? 'result' : '_';
+    final String generics =
+        classDefinition.typeArguments.isNotEmpty
+            ? '<${_flattenTypeArguments(classDefinition.typeArguments)}>'
+            : '';
 
-    indent.write('static ${classDefinition.name} decode(Object $result) ');
+    indent.write(
+      'static ${classDefinition.name}$generics decode$generics(Object $result) ',
+    );
     indent.addScoped('{', '}', () {
       if (isResultUsed) {
         indent.writeln('result as List<Object?>;');
       }
-      indent.write('return ${classDefinition.name}');
+      indent.write('return ${classDefinition.name}$generics');
       indent.addScoped('(', ');', () {
         enumerate(getFieldsInSerializationOrder(classDefinition), (
           int index,
@@ -408,28 +433,39 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       EnumeratedType customType,
       int nonSerializedClassCount,
     ) {
-      indent.writeScoped('else if (value is ${customType.name}) {', '}', () {
-        if (customType.offset(nonSerializedClassCount) < maximumCodecFieldKey) {
-          indent.writeln(
-            'buffer.putUint8(${customType.offset(nonSerializedClassCount)});',
-          );
-          if (customType.type == CustomTypes.customClass) {
-            indent.writeln('writeValue(buffer, value.encode());');
-          } else if (customType.type == CustomTypes.customEnum) {
-            indent.writeln('writeValue(buffer, value.index);');
+      final String typeArgumentsCheck =
+          customType.isGeneric
+              ? ' && value.runtimeType == ${customType.name}<${_flattenTypeArguments(customType.typeArguments)}>'
+              : '';
+
+      indent.writeScoped(
+        'else if (value is ${customType.name}$typeArgumentsCheck) {',
+        '}',
+        () {
+          if (customType.offset(nonSerializedClassCount) <
+              maximumCodecFieldKey) {
+            indent.writeln(
+              'buffer.putUint8(${customType.offset(nonSerializedClassCount)});',
+            );
+            if (customType.type == CustomTypes.customClass) {
+              indent.writeln('writeValue(buffer, value.encode());');
+            } else if (customType.type == CustomTypes.customEnum) {
+              indent.writeln('writeValue(buffer, value.index);');
+            }
+          } else {
+            final String encodeString =
+                customType.type == CustomTypes.customClass
+                    ? '.encode()'
+                    : '.index';
+            indent.writeln(
+              'final $_overflowClassName wrap = $_overflowClassName(type: ${customType.offset(nonSerializedClassCount) - maximumCodecFieldKey}, wrapped: value$encodeString);',
+            );
+            indent.writeln('buffer.putUint8($maximumCodecFieldKey);');
+            indent.writeln('writeValue(buffer, wrap.encode());');
           }
-        } else {
-          final String encodeString =
-              customType.type == CustomTypes.customClass
-                  ? '.encode()'
-                  : '.index';
-          indent.writeln(
-            'final $_overflowClassName wrap = $_overflowClassName(type: ${customType.offset(nonSerializedClassCount) - maximumCodecFieldKey}, wrapped: value$encodeString);',
-          );
-          indent.writeln('buffer.putUint8($maximumCodecFieldKey);');
-          indent.writeln('writeValue(buffer, wrap.encode());');
-        }
-      }, addTrailingNewline: false);
+        },
+        addTrailingNewline: false,
+      );
     }
 
     void writeDecodeLogic(
@@ -441,13 +477,20 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
         if (customType.type == CustomTypes.customClass) {
           if (customType.offset(nonSerializedClassCount) ==
               maximumCodecFieldKey) {
+            final String baseName =
+                customType.associatedClass?.name ?? customType.name;
             indent.writeln(
-              'final ${customType.name} wrapper = ${customType.name}.decode(readValue(buffer)!);',
+              'final $baseName wrapper = $baseName.decode(readValue(buffer)!);',
             );
             indent.writeln('return wrapper.unwrap();');
           } else {
+            final String name = customType.name;
+            final String typeArguments =
+                customType.isGeneric
+                    ? '<${_flattenTypeArguments(customType.typeArguments)}>'
+                    : '';
             indent.writeln(
-              'return ${customType.name}.decode(readValue(buffer)!);',
+              'return $name.decode$typeArguments(readValue(buffer)!);',
             );
           }
         } else if (customType.type == CustomTypes.customEnum) {
@@ -1543,7 +1586,7 @@ String _escapeForDartSingleQuotedString(String raw) {
 
 /// Creates a Dart type where all type arguments are [Objects].
 String _makeGenericTypeArguments(TypeDeclaration type) {
-  return type.typeArguments.isNotEmpty
+  return type.typeArguments.isNotEmpty && type.associatedClass == null
       ? '${type.baseName}<${type.typeArguments.map<String>((TypeDeclaration e) => 'Object?').join(', ')}>'
       : _addGenericTypes(type);
 }
@@ -1551,7 +1594,7 @@ String _makeGenericTypeArguments(TypeDeclaration type) {
 /// Creates a `.cast<>` call for an type. Returns an empty string if the
 /// type has no type arguments.
 String _makeGenericCastCall(TypeDeclaration type) {
-  return type.typeArguments.isNotEmpty
+  return type.typeArguments.isNotEmpty && type.associatedClass == null
       ? '.cast<${_flattenTypeArguments(type.typeArguments)}>()'
       : '';
 }
@@ -1664,6 +1707,10 @@ String _addGenericTypes(TypeDeclaration type) {
           ? 'Map<Object?, Object?>'
           : 'Map<${_flattenTypeArguments(typeArguments)}>';
     default:
+      if (type.typeArguments.isNotEmpty) {
+        return '${type.baseName}<${_flattenTypeArguments(type.typeArguments)}>';
+      }
+
       return type.baseName;
   }
 }
@@ -1741,7 +1788,11 @@ extension on DefaultValue {
         :final List<DefaultValue> arguments,
       ) =>
         () {
-          indent.add('${prefix}const ${type.baseName}');
+          final String typeArguments =
+              type.typeArguments.isEmpty
+                  ? ''
+                  : '<${_flattenTypeArguments(type.typeArguments)}>';
+          indent.add('${prefix}const ${type.baseName}$typeArguments');
 
           if (arguments.isEmpty) {
             indent.add('()');

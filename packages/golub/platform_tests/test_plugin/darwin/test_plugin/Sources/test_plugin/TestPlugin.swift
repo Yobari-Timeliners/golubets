@@ -12,11 +12,14 @@ import Foundation
 
 /// This plugin handles the native side of the integration tests in
 /// example/integration_test/.
-public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, SealedClassApi {
+public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, SealedClassApi,
+  HostGenericApi
+{
   var flutterAPI: FlutterIntegrationCoreApi
   var flutterSmallApiOne: FlutterSmallApi
   var flutterSmallApiTwo: FlutterSmallApi
   var proxyApiRegistrar: ProxyApiTestsGolubProxyApiRegistrar?
+  var flutterGenericApi: FlutterGenericApi?
 
   public static func register(with registrar: FlutterPluginRegistrar) {
     // Workaround for https://github.com/flutter/flutter/issues/118103.
@@ -30,6 +33,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     TestPluginWithSuffix.register(with: registrar, suffix: "suffixOne")
     TestPluginWithSuffix.register(with: registrar, suffix: "suffixTwo")
     SealedClassApiSetup.setUp(binaryMessenger: messenger, api: plugin)
+    HostGenericApiSetup.setUp(binaryMessenger: messenger, api: plugin)
     registrar.publish(plugin)
   }
 
@@ -39,6 +43,7 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
       binaryMessenger: binaryMessenger, messageChannelSuffix: "suffixOne")
     flutterSmallApiTwo = FlutterSmallApi(
       binaryMessenger: binaryMessenger, messageChannelSuffix: "suffixTwo")
+    flutterGenericApi = FlutterGenericApi(binaryMessenger: binaryMessenger)
 
     StreamIntsStreamHandler.register(with: binaryMessenger, streamHandler: SendInts())
     StreamEventsStreamHandler.register(with: binaryMessenger, streamHandler: SendEvents())
@@ -1275,6 +1280,533 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
   }
 
   public func echo(event: PlatformEvent) throws -> PlatformEvent { event }
+
+  // MARK: - HostGenericApi implementation
+
+  public func echoGenericInt(container: GenericContainer<Int64>) throws -> GenericContainer<Int64> {
+    return container
+  }
+
+  public func echoGenericString(container: GenericContainer<String>) throws -> GenericContainer<
+    String
+  > {
+    return container
+  }
+
+  public func echoGenericDouble(container: GenericContainer<Double>) throws -> GenericContainer<
+    Double
+  > {
+    return container
+  }
+
+  public func echoGenericBool(container: GenericContainer<Bool>) throws -> GenericContainer<Bool> {
+    return container
+  }
+
+  public func echoGenericEnum(container: GenericContainer<GenericsAnEnum>) throws
+    -> GenericContainer<GenericsAnEnum>
+  {
+    return container
+  }
+
+  public func echoGenericNullableInt(container: GenericContainer<Int64?>) throws
+    -> GenericContainer<Int64?>
+  {
+    return container
+  }
+
+  public func echoGenericNullableString(container: GenericContainer<String?>) throws
+    -> GenericContainer<String?>
+  {
+    return container
+  }
+
+  public func echoGenericPairStringInt(pair: GenericPair<String, Int64>) throws -> GenericPair<
+    String, Int64
+  > {
+    return pair
+  }
+
+  public func echoGenericPairIntString(pair: GenericPair<Int64, String>) throws -> GenericPair<
+    Int64, String
+  > {
+    return pair
+  }
+
+  public func echoGenericPairDoubleBool(pair: GenericPair<Double, Bool>) throws -> GenericPair<
+    Double, Bool
+  > {
+    return pair
+  }
+
+  public func echoGenericContainerAllTypes(container: GenericContainer<GenericsAllTypes>) throws
+    -> GenericContainer<GenericsAllTypes>
+  {
+    return container
+  }
+
+  public func echoGenericPairClasses(pair: GenericPair<GenericsAllTypes, GenericsAllNullableTypes>)
+    throws -> GenericPair<GenericsAllTypes, GenericsAllNullableTypes>
+  {
+    return pair
+  }
+
+  public func echoNestedGenericStringIntDouble(nested: NestedGeneric<String, Int64, Double>) throws
+    -> NestedGeneric<String, Int64, Double>
+  {
+    return nested
+  }
+
+  public func echoNestedGenericWithClasses(nested: NestedGeneric<GenericsAllTypes, String, Int64>)
+    throws -> NestedGeneric<GenericsAllTypes, String, Int64>
+  {
+    return nested
+  }
+
+  public func echoListGenericContainer(list: [GenericContainer<Int64>]) throws -> [GenericContainer<
+    Int64
+  >] {
+    return list
+  }
+
+  public func echoListGenericPair(list: [GenericPair<String, Int64>]) throws -> [GenericPair<
+    String, Int64
+  >] {
+    return list
+  }
+
+  public func echoMapGenericContainer(map: [String: GenericContainer<Int64>]) throws -> [String:
+    GenericContainer<Int64>]
+  {
+    return map
+  }
+
+  public func echoGenericDefaults(defaults: GenericDefaults) throws -> GenericDefaults {
+    return defaults
+  }
+
+  public func echoMapGenericPair(map: [Int64: GenericPair<String, Double>]) throws -> [Int64:
+    GenericPair<String, Double>]
+  {
+    return map
+  }
+
+  public func echoAsyncGenericInt(
+    container: GenericContainer<Int64>,
+    completion: @escaping (Result<GenericContainer<Int64>, Error>) -> Void
+  ) {
+    completion(.success(container))
+  }
+
+  public func echoAsyncNestedGeneric(
+    nested: NestedGeneric<String, Int64, Double>,
+    completion: @escaping (Result<NestedGeneric<String, Int64, Double>, Error>) -> Void
+  ) {
+    completion(.success(nested))
+  }
+
+  public func echoEitherGenericIntOrString(
+    input: Either<GenericContainer<Int64>, GenericContainer<String>>
+  ) throws -> Either<GenericContainer<Int64>, GenericContainer<String>> {
+    return input
+  }
+
+  public func echoEitherGenericPairStringIntOrIntString(
+    input: Either<GenericPair<String, Int64>, GenericPair<Int64, String>>
+  ) throws -> Either<GenericPair<String, Int64>, GenericPair<Int64, String>> {
+    return input
+  }
+
+  public func echoEitherNestedGenericStringIntDoubleOrClasses(
+    input: Either<
+      NestedGeneric<String, Int64, Double>, NestedGeneric<GenericsAllTypes, String, Int64>
+    >
+  ) throws -> Either<
+    NestedGeneric<String, Int64, Double>, NestedGeneric<GenericsAllTypes, String, Int64>
+  > {
+    return input
+  }
+
+  // MARK: GenericsAllNullableTypesTyped echo methods implementation
+
+  public func echoTypedNullableStringIntDouble(
+    typed: GenericsAllNullableTypesTyped<String, Int64, Double>
+  ) throws -> GenericsAllNullableTypesTyped<String, Int64, Double> {
+    return typed
+  }
+
+  public func echoTypedNullableIntStringBool(
+    typed: GenericsAllNullableTypesTyped<Int64, String, Bool>
+  ) throws -> GenericsAllNullableTypesTyped<Int64, String, Bool> {
+    return typed
+  }
+
+  public func echoTypedNullableEnumDoubleString(
+    typed: GenericsAllNullableTypesTyped<GenericsAnEnum, Double, String>
+  ) throws -> GenericsAllNullableTypesTyped<GenericsAnEnum, Double, String> {
+    return typed
+  }
+
+  public func echoGenericContainerTypedNullable(
+    container: GenericContainer<GenericsAllNullableTypesTyped<String, Int64, Double>>
+  ) throws -> GenericContainer<GenericsAllNullableTypesTyped<String, Int64, Double>> {
+    return container
+  }
+
+  public func echoGenericPairTypedNullable(
+    pair: GenericPair<
+      GenericsAllNullableTypesTyped<String, Int64, Double>,
+      GenericsAllNullableTypesTyped<Int64, String, Bool>
+    >
+  ) throws -> GenericPair<
+    GenericsAllNullableTypesTyped<String, Int64, Double>,
+    GenericsAllNullableTypesTyped<Int64, String, Bool>
+  > {
+    return pair
+  }
+
+  public func echoListTypedNullable(
+    list: [GenericsAllNullableTypesTyped<String, Int64, Double>]
+  ) throws -> [GenericsAllNullableTypesTyped<String, Int64, Double>] {
+    return list
+  }
+
+  public func echoMapTypedNullable(
+    map: [String: GenericsAllNullableTypesTyped<Int64, String, Double>]
+  ) throws -> [String: GenericsAllNullableTypesTyped<Int64, String, Double>] {
+    return map
+  }
+
+  public func echoAsyncTypedNullableStringIntDouble(
+    typed: GenericsAllNullableTypesTyped<String, Int64, Double>,
+    completion: @escaping (Result<GenericsAllNullableTypesTyped<String, Int64, Double>, any Error>)
+      -> Void
+  ) {
+    completion(.success(typed))
+  }
+
+  public func echoAsyncGenericContainerTypedNullable(
+    container: GenericContainer<GenericsAllNullableTypesTyped<String, Int64, Double>>,
+    completion: @escaping (
+      Result<GenericContainer<GenericsAllNullableTypesTyped<String, Int64, Double>>, any Error>
+    ) -> Void
+  ) {
+    completion(.success(container))
+  }
+
+  public func echoAsyncGenericDefaults(
+    defaults: GenericDefaults, completion: @escaping (Result<GenericDefaults, any Error>) -> Void
+  ) {
+    completion(.success(defaults))
+  }
+
+  public func returnGenericDefaults() throws -> GenericDefaults {
+    return GenericDefaults(
+      genericInt: GenericContainer<Int64>(
+        value: 42,
+        values: [1, 2, 3]
+      ),
+      genericString: GenericContainer<String>(
+        value: "default",
+        values: ["a", "b", "c"]
+      ),
+      genericDouble: GenericContainer<Double>(
+        value: 3.14,
+        values: [1.0, 2.0, 3.0]
+      ),
+      genericBool: GenericContainer<Bool>(
+        value: true,
+        values: [true, false, true]
+      ),
+      genericPairStringInt: GenericPair<String, Int64>(
+        first: "default",
+        second: 42,
+        map: ["key1": 1, "key2": 2]
+      ),
+      genericPairIntString: GenericPair<Int64, String>(
+        first: 100,
+        second: "value",
+        map: [1: "one", 2: "two"]
+      ),
+      nestedGenericDefault: NestedGeneric<String, Int64, Double>(
+        container: GenericContainer<String>(
+          value: "nested",
+          values: ["x", "y", "z"]
+        ),
+        pairs: [
+          GenericPair<Int64, Double>(
+            first: 1,
+            second: 1.1,
+            map: [1: 1.1, 2: 2.2]
+          )
+        ],
+        nestedMap: [
+          "nested": GenericContainer<Int64>(
+            value: 99,
+            values: [9, 8, 7]
+          )
+        ],
+        listOfMaps: [
+          [10: 10.0, 20: 20.0]
+        ]
+      ),
+      genericPairEither: GenericPair<Int64, Either<String, Int64>>(
+        first: 1,
+        second: .right(value: 2),
+        map: [
+          3: .right(value: 4),
+          4: .left(value: "hello"),
+        ]
+      ))
+  }
+
+  public func echoAsyncGenericDefaults(defaults: GenericDefaults) async throws -> GenericDefaults {
+    return defaults
+  }
+
+  public func callFlutterEchoGenericContainerTypedNullable(
+    container: GenericContainer<GenericsAllNullableTypesTyped<String, Int64, Double>>,
+    completion: @escaping (
+      Result<GenericContainer<GenericsAllNullableTypesTyped<String, Int64, Double>>, any Error>
+    ) -> Void
+  ) {
+    flutterGenericApi!.echoGenericContainerTypedNullable(container: container) { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoGenericDefaults(
+    defaults: GenericDefaults, completion: @escaping (Result<GenericDefaults, any Error>) -> Void
+  ) {
+    flutterGenericApi!.echoGenericDefaults(defaults: defaults) { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoGenericDefaultsInt(
+    defaults: GenericDefaults,
+    completion: @escaping (Result<GenericContainer<Int64>, any Error>) -> Void
+  ) {
+    flutterGenericApi!.echoGenericDefaultsInt(defaults: defaults) { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoGenericDefaultsNested(
+    defaults: GenericDefaults,
+    completion: @escaping (Result<NestedGeneric<String, Int64, Double>, any Error>) -> Void
+  ) {
+    flutterGenericApi!.echoGenericDefaultsNested(defaults: defaults) { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoGenericDefaultsPairEither(
+    defaults: GenericDefaults,
+    completion: @escaping (Result<GenericPair<Int64, Either<String, Int64>>, any Error>) -> Void
+  ) {
+    flutterGenericApi!.echoGenericDefaultsPairEither(defaults: defaults) { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoGenericInt(
+    container: GenericContainer<Int64>,
+    completion: @escaping (Result<GenericContainer<Int64>, any Error>) -> Void
+  ) {
+    flutterGenericApi!.echoGenericInt(container: container) { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoGenericPairStringInt(
+    pair: GenericPair<String, Int64>,
+    completion: @escaping (Result<GenericPair<String, Int64>, any Error>) -> Void
+  ) {
+    flutterGenericApi!.echoGenericPairStringInt(pair: pair) { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoGenericString(
+    container: GenericContainer<String>,
+    completion: @escaping (Result<GenericContainer<String>, any Error>) -> Void
+  ) {
+    flutterGenericApi!.echoGenericString(container: container) { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoListGenericContainer(
+    list: [GenericContainer<Int64>],
+    completion: @escaping (Result<[GenericContainer<Int64>], any Error>) -> Void
+  ) {
+    flutterGenericApi!.echoListGenericContainer(list: list) { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoListTypedNullable(
+    list: [GenericsAllNullableTypesTyped<String, Int64, Double>],
+    completion: @escaping (
+      Result<[GenericsAllNullableTypesTyped<String, Int64, Double>], any Error>
+    ) -> Void
+  ) {
+    flutterGenericApi!.echoListTypedNullable(list: list) { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoMapGenericContainer(
+    map: [String: GenericContainer<Int64>],
+    completion: @escaping (Result<[String: GenericContainer<Int64>], any Error>) -> Void
+  ) {
+    flutterGenericApi!.echoMapGenericContainer(map: map) { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoMapTypedNullable(
+    map: [String: GenericsAllNullableTypesTyped<Int64, String, Double>],
+    completion: @escaping (
+      Result<[String: GenericsAllNullableTypesTyped<Int64, String, Double>], any Error>
+    ) -> Void
+  ) {
+    flutterGenericApi!.echoMapTypedNullable(map: map) { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoNestedGenericStringIntDouble(
+    nested: NestedGeneric<String, Int64, Double>,
+    completion: @escaping (Result<NestedGeneric<String, Int64, Double>, any Error>) -> Void
+  ) {
+    flutterGenericApi!.echoNestedGenericStringIntDouble(nested: nested) { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoTypedNullableIntStringBool(
+    typed: GenericsAllNullableTypesTyped<Int64, String, Bool>,
+    completion: @escaping (Result<GenericsAllNullableTypesTyped<Int64, String, Bool>, any Error>) ->
+      Void
+  ) {
+    flutterGenericApi!.echoTypedNullableIntStringBool(typed: typed) { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoTypedNullableStringIntDouble(
+    typed: GenericsAllNullableTypesTyped<String, Int64, Double>,
+    completion: @escaping (Result<GenericsAllNullableTypesTyped<String, Int64, Double>, any Error>)
+      -> Void
+  ) {
+    flutterGenericApi!.echoTypedNullableStringIntDouble(typed: typed) { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterReturnGenericDefaultsEitherLeft(
+    completion: @escaping (Result<GenericContainer<Either<String, Int64>>, any Error>) -> Void
+  ) {
+    flutterGenericApi!.returnGenericDefaultsEitherLeft { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterReturnGenericDefaultsEitherRight(
+    completion: @escaping (Result<GenericContainer<Either<String, Int64>>, any Error>) -> Void
+  ) {
+
+    flutterGenericApi!.returnGenericDefaultsEitherRight { result in
+      switch result {
+      case .success(let value):
+        completion(.success(value))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
 }
 
 public class TestPluginWithSuffix: HostSmallApi {

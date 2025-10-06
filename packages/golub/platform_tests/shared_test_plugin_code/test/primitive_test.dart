@@ -17,7 +17,7 @@ void main() {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
     echoOneArgument(
       mockMessenger,
-      'dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.anInt',
+      'dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.anInt',
       PrimitiveHostApi.golubChannelCodec,
     );
     final PrimitiveHostApi api = PrimitiveHostApi(
@@ -31,7 +31,7 @@ void main() {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
     echoOneArgument(
       mockMessenger,
-      'dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aBoolList',
+      'dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.aBoolList',
       PrimitiveHostApi.golubChannelCodec,
     );
     final PrimitiveHostApi api = PrimitiveHostApi(
@@ -47,7 +47,7 @@ void main() {
     when(api.aBoolList(<bool?>[true, false])).thenReturn(<bool?>[]);
     when(
       mockMessenger.setMessageHandler(
-        'dev.flutter.pigeon.pigeon_integration_tests.PrimitiveFlutterApi.aBoolList',
+        'dev.bayori.golub.golub_integration_tests.PrimitiveFlutterApi.aBoolList',
         any,
       ),
     ).thenAnswer((Invocation realInvocation) {
@@ -67,7 +67,7 @@ void main() {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
     echoOneArgument(
       mockMessenger,
-      'dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aStringIntMap',
+      'dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.aStringIntMap',
       PrimitiveHostApi.golubChannelCodec,
     );
     final PrimitiveHostApi api = PrimitiveHostApi(

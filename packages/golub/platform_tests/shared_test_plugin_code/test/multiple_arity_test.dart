@@ -16,7 +16,7 @@ void main() {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
     when(
       mockMessenger.send(
-        'dev.flutter.pigeon.pigeon_integration_tests.MultipleArityHostApi.subtract',
+        'dev.bayori.golub.golub_integration_tests.MultipleArityHostApi.subtract',
         any,
       ),
     ).thenAnswer((Invocation realInvocation) async {

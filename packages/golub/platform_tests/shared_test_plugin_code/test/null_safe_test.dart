@@ -56,7 +56,7 @@ void main() {
     final Future<ByteData?> sendResult = completer.future;
     when(
       mockMessenger.send(
-        'dev.flutter.pigeon.pigeon_integration_tests.Api.search',
+        'dev.bayori.golub.golub_integration_tests.Api.search',
         any,
       ),
     ).thenAnswer((Invocation realInvocation) => sendResult);
@@ -73,7 +73,7 @@ void main() {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
     echoOneArgument(
       mockMessenger,
-      'dev.flutter.pigeon.pigeon_integration_tests.Api.echo',
+      'dev.bayori.golub.golub_integration_tests.Api.echo',
       Api.golubChannelCodec,
     );
     final Api api = Api(binaryMessenger: mockMessenger);
@@ -86,7 +86,7 @@ void main() {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
     echoOneArgument(
       mockMessenger,
-      'dev.flutter.pigeon.pigeon_integration_tests.Api.anInt',
+      'dev.bayori.golub.golub_integration_tests.Api.anInt',
       Api.golubChannelCodec,
     );
     final Api api = Api(binaryMessenger: mockMessenger);
@@ -96,8 +96,7 @@ void main() {
 
   test('return null to nonnull', () async {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
-    const String channel =
-        'dev.flutter.pigeon.pigeon_integration_tests.Api.anInt';
+    const String channel = 'dev.bayori.golub.golub_integration_tests.Api.anInt';
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
@@ -113,7 +112,7 @@ void main() {
   test('send null parameter', () async {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
     const String channel =
-        'dev.flutter.pigeon.pigeon_integration_tests.NullableArgHostApi.doit';
+        'dev.bayori.golub.golub_integration_tests.NullableArgHostApi.doit';
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
@@ -128,7 +127,7 @@ void main() {
   test('send null collection parameter', () async {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
     const String channel =
-        'dev.flutter.pigeon.pigeon_integration_tests.NullableCollectionArgHostApi.doit';
+        'dev.bayori.golub.golub_integration_tests.NullableCollectionArgHostApi.doit';
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
@@ -151,7 +150,7 @@ void main() {
 
     final Completer<int> resultCompleter = Completer<int>();
     binding.defaultBinaryMessenger.handlePlatformMessage(
-      'dev.flutter.pigeon.pigeon_integration_tests.NullableArgFlutterApi.doit',
+      'dev.bayori.golub.golub_integration_tests.NullableArgFlutterApi.doit',
       NullableArgFlutterApi.golubChannelCodec.encodeMessage(<Object?>[null]),
       (ByteData? data) {
         resultCompleter.complete(
@@ -178,7 +177,7 @@ void main() {
 
     final Completer<List<String?>> resultCompleter = Completer<List<String?>>();
     binding.defaultBinaryMessenger.handlePlatformMessage(
-      'dev.flutter.pigeon.pigeon_integration_tests.NullableCollectionArgFlutterApi.doit',
+      'dev.bayori.golub.golub_integration_tests.NullableCollectionArgFlutterApi.doit',
       NullableCollectionArgFlutterApi.golubChannelCodec.encodeMessage(
         <Object?>[null],
       ),
@@ -204,7 +203,7 @@ void main() {
   test('receive null return', () async {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
     const String channel =
-        'dev.flutter.pigeon.pigeon_integration_tests.NullableReturnHostApi.doit';
+        'dev.bayori.golub.golub_integration_tests.NullableReturnHostApi.doit';
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
@@ -221,7 +220,7 @@ void main() {
   test('receive null collection return', () async {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
     const String channel =
-        'dev.flutter.pigeon.pigeon_integration_tests.NullableCollectionReturnHostApi.doit';
+        'dev.bayori.golub.golub_integration_tests.NullableCollectionReturnHostApi.doit';
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
@@ -245,7 +244,7 @@ void main() {
     final Completer<int?> resultCompleter = Completer<int?>();
     unawaited(
       binding.defaultBinaryMessenger.handlePlatformMessage(
-        'dev.flutter.pigeon.pigeon_integration_tests.NullableReturnFlutterApi.doit',
+        'dev.bayori.golub.golub_integration_tests.NullableReturnFlutterApi.doit',
         NullableReturnFlutterApi.golubChannelCodec.encodeMessage(<Object?>[]),
         (ByteData? data) {
           resultCompleter.complete(null);
@@ -270,7 +269,7 @@ void main() {
         Completer<List<String?>?>();
     unawaited(
       binding.defaultBinaryMessenger.handlePlatformMessage(
-        'dev.flutter.pigeon.pigeon_integration_tests.NullableCollectionReturnFlutterApi.doit',
+        'dev.bayori.golub.golub_integration_tests.NullableCollectionReturnFlutterApi.doit',
         NullableCollectionReturnFlutterApi.golubChannelCodec.encodeMessage(
           <Object?>[],
         ),
