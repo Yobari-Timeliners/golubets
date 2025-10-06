@@ -17,7 +17,7 @@
 
 namespace test_plugin {
 
-class TestSmallApi : public core_tests_golubets_test::HostSmallApi {
+class TestSmallApi : public core_tests_golubetstest::HostSmallApi {
  public:
   TestSmallApi();
   virtual ~TestSmallApi();
