@@ -22,7 +22,7 @@ Golubets is here to change that. We're building a fork that's welcoming, collabo
 
 - Sane Contribution Process: Pull requests should be a conversation, not a battle. We aim for clear, constructive feedback without the endless back-and-forth.
 
-- Innovation Welcome: Got a bold idea for improving Golub? Bring it on! We’re open to fresh perspectives and new features.
+- Innovation Welcome: Got a bold idea for improving Golubets? Bring it on! We’re open to fresh perspectives and new features.
 
 - Transparency: No hidden agendas. We’ll document decisions and keep the community in the loop.
 
@@ -38,7 +38,7 @@ Submit a pull request with clear descriptions and tests (where applicable).
 
 Expect respectful, constructive feedback—no toxicity, no nonsense.
 
-Got a spicy idea or a feature that could make Golub soar? Open an issue or ping us in discussions. We’re all ears!
+Got a spicy idea or a feature that could make Golubets soar? Open an issue or ping us in discussions. We’re all ears!
 
 
 ## Features
