@@ -1,5 +1,5 @@
 <div align="center">
-  <- Innovation WelGot a spicy idea or a feature that could make Golubets soar? Open an issue or ping us in discussions. We're all ears!ome: Got a bold idea for improving Golubets? Bring it on! We're open to fresh perspectives and new features.mg src="art/golubets.jpg" alt="golubets" width="400">
+  <img src="art/golubets.jpg" alt="golubets" width="400">
 </div>
 
 ## Golubets: A Community-Driven Fork of [Pigeon](https://pub.dev/packages/pigeon)
