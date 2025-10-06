@@ -95,14 +95,14 @@ void main() {
       final String collapsedCode = _collapseNewlineAndIndentation(code);
 
       // Instance Manager
-      expect(code, contains(r'class MyFilePigeonInstanceManager'));
-      expect(code, contains(r'class MyFilePigeonInstanceManagerApi'));
+      expect(code, contains(r'class MyFileGolubInstanceManager'));
+      expect(code, contains(r'class MyFileGolubInstanceManagerApi'));
 
       // API registrar
       expect(
         code,
         contains(
-          'abstract class MyFilePigeonProxyApiRegistrar(val binaryMessenger: BinaryMessenger)',
+          'abstract class MyFileGolubProxyApiRegistrar(val binaryMessenger: BinaryMessenger)',
         ),
       );
 
@@ -110,7 +110,7 @@ void main() {
       expect(
         code,
         contains(
-          'private class MyFilePigeonProxyApiBaseCodec(val registrar: MyFilePigeonProxyApiRegistrar) : MyFilePigeonCodec()',
+          'private class MyFileGolubProxyApiBaseCodec(val registrar: MyFileGolubProxyApiRegistrar) : MyFileGolubCodec()',
         ),
       );
 
@@ -118,7 +118,7 @@ void main() {
       expect(
         code,
         contains(
-          r'abstract class PigeonApiApi(open val pigeonRegistrar: MyFilePigeonProxyApiRegistrar)',
+          r'abstract class GolubApiApi(open val golubRegistrar: MyFileGolubProxyApiRegistrar)',
         ),
       );
 
@@ -130,7 +130,7 @@ void main() {
       expect(
         collapsedCode,
         contains(
-          r'fun pigeon_newInstance(pigeon_instanceArg: my.library.Api, callback: (Result<Unit>) -> Unit)',
+          r'fun golub_newInstance(golub_instanceArg: my.library.Api, callback: (Result<Unit>) -> Unit)',
         ),
       );
 
@@ -138,27 +138,27 @@ void main() {
       expect(
         code,
         contains(
-          'abstract fun someField(pigeon_instance: my.library.Api): Long',
+          'abstract fun someField(golub_instance: my.library.Api): Long',
         ),
       );
 
       // Dart -> Host method
       expect(
         collapsedCode,
-        contains('api.doSomething(pigeon_instanceArg, inputArg)'),
+        contains('api.doSomething(golub_instanceArg, inputArg)'),
       );
 
       // Host -> Dart method
       expect(
         code,
         contains(
-          r'fun setUpMessageHandlers(binaryMessenger: BinaryMessenger, api: PigeonApiApi?)',
+          r'fun setUpMessageHandlers(binaryMessenger: BinaryMessenger, api: GolubApiApi?)',
         ),
       );
       expect(
         code,
         contains(
-          'fun doSomethingElse(pigeon_instanceArg: my.library.Api, inputArg: Input, callback: (Result<String>) -> Unit)',
+          'fun doSomethingElse(golub_instanceArg: my.library.Api, inputArg: Input, callback: (Result<String>) -> Unit)',
         ),
       );
     });
@@ -201,7 +201,7 @@ void main() {
         final String collapsedCode = _collapseNewlineAndIndentation(code);
         expect(
           collapsedCode,
-          contains('fun pigeon_getPigeonApiApi2(): PigeonApiApi2'),
+          contains('fun golub_getGolubApiApi2(): GolubApiApi2'),
         );
       });
 
@@ -241,7 +241,7 @@ void main() {
           dartPackageName: DEFAULT_PACKAGE_NAME,
         );
         final String code = sink.toString();
-        expect(code, contains('fun pigeon_getPigeonApiApi2(): PigeonApiApi2'));
+        expect(code, contains('fun golub_getGolubApiApi2(): GolubApiApi2'));
       });
 
       test('implements 2 ProxyApis', () {
@@ -292,8 +292,8 @@ void main() {
           dartPackageName: DEFAULT_PACKAGE_NAME,
         );
         final String code = sink.toString();
-        expect(code, contains('fun pigeon_getPigeonApiApi2(): PigeonApiApi2'));
-        expect(code, contains('fun pigeon_getPigeonApiApi3(): PigeonApiApi3'));
+        expect(code, contains('fun golub_getGolubApiApi2(): GolubApiApi2'));
+        expect(code, contains('fun golub_getGolubApiApi3(): GolubApiApi3'));
       });
     });
 
@@ -326,23 +326,23 @@ void main() {
         expect(
           code,
           contains(
-            'abstract class PigeonApiApi(open val pigeonRegistrar: PigeonProxyApiRegistrar) ',
+            'abstract class GolubApiApi(open val golubRegistrar: GolubProxyApiRegistrar) ',
           ),
         );
         expect(
           collapsedCode,
-          contains('abstract fun pigeon_defaultConstructor(): Api'),
+          contains('abstract fun golub_defaultConstructor(): Api'),
         );
         expect(
           collapsedCode,
           contains(
-            r'val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.test_package.Api.pigeon_defaultConstructor"',
+            r'val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.bayori.golub.test_package.Api.golub_defaultConstructor"',
           ),
         );
         expect(
           collapsedCode,
           contains(
-            r'api.pigeonRegistrar.instanceManager.addDartCreatedInstance(api.pigeon_defaultConstructor(',
+            r'api.golubRegistrar.instanceManager.addDartCreatedInstance(api.golub_defaultConstructor(',
           ),
         );
       });
@@ -433,7 +433,7 @@ void main() {
         expect(
           code,
           contains(
-            'abstract class PigeonApiApi(open val pigeonRegistrar: PigeonProxyApiRegistrar) ',
+            'abstract class GolubApiApi(open val golubRegistrar: GolubProxyApiRegistrar) ',
           ),
         );
         expect(
@@ -447,9 +447,9 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'api.pigeonRegistrar.instanceManager.addDartCreatedInstance(api.name('
+            r'api.golubRegistrar.instanceManager.addDartCreatedInstance(api.name('
             r'validTypeArg,enumTypeArg,proxyApiTypeArg,nullableValidTypeArg,'
-            r'nullableEnumTypeArg,nullableProxyApiTypeArg), pigeon_identifierArg)',
+            r'nullableEnumTypeArg,nullableProxyApiTypeArg), golub_identifierArg)',
           ),
         );
       });
@@ -491,7 +491,7 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            'if (pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) { callback(Result.success(Unit))',
+            'if (golubRegistrar.instanceManager.containsInstance(golub_instanceArg)) { callback(Result.success(Unit))',
           ),
         );
       });
@@ -632,47 +632,47 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'api.pigeonRegistrar.instanceManager.addDartCreatedInstance(api.name('
+            r'api.golubRegistrar.instanceManager.addDartCreatedInstance(api.name('
             r'validTypeArg,enumTypeArg,proxyApiTypeArg,nullableValidTypeArg,'
-            r'nullableEnumTypeArg,nullableProxyApiTypeArg), pigeon_identifierArg)',
+            r'nullableEnumTypeArg,nullableProxyApiTypeArg), golub_identifierArg)',
           ),
         );
         expect(
           collapsedCode,
           contains(
-            'channel.send(listOf(pigeon_identifierArg, validTypeArg, '
+            'channel.send(listOf(golub_identifierArg, validTypeArg, '
             'enumTypeArg, proxyApiTypeArg, nullableValidTypeArg, '
             'nullableEnumTypeArg, nullableProxyApiTypeArg))',
           ),
         );
         expect(
           code,
-          contains(r'abstract fun validType(pigeon_instance: Api): Long'),
+          contains(r'abstract fun validType(golub_instance: Api): Long'),
         );
         expect(
           code,
-          contains(r'abstract fun enumType(pigeon_instance: Api): AnEnum'),
+          contains(r'abstract fun enumType(golub_instance: Api): AnEnum'),
         );
         expect(
           code,
-          contains(r'abstract fun proxyApiType(pigeon_instance: Api): Api2'),
+          contains(r'abstract fun proxyApiType(golub_instance: Api): Api2'),
         );
         expect(
           code,
           contains(
-            r'abstract fun nullableValidType(pigeon_instance: Api): Long?',
+            r'abstract fun nullableValidType(golub_instance: Api): Long?',
           ),
         );
         expect(
           code,
           contains(
-            r'abstract fun nullableEnumType(pigeon_instance: Api): AnEnum?',
+            r'abstract fun nullableEnumType(golub_instance: Api): AnEnum?',
           ),
         );
         expect(
           code,
           contains(
-            r'abstract fun nullableProxyApiType(pigeon_instance: Api): Api2?',
+            r'abstract fun nullableProxyApiType(golub_instance: Api): Api2?',
           ),
         );
       });
@@ -718,12 +718,12 @@ void main() {
         final String code = sink.toString();
         expect(
           code,
-          contains(r'abstract fun aField(pigeon_instance: Api): Api2'),
+          contains(r'abstract fun aField(golub_instance: Api): Api2'),
         );
         expect(
           code,
           contains(
-            r'api.pigeonRegistrar.instanceManager.addDartCreatedInstance(api.aField(pigeon_instanceArg), pigeon_identifierArg)',
+            r'api.golubRegistrar.instanceManager.addDartCreatedInstance(api.aField(golub_instanceArg), golub_identifierArg)',
           ),
         );
       });
@@ -772,7 +772,7 @@ void main() {
         expect(
           code,
           contains(
-            r'api.pigeonRegistrar.instanceManager.addDartCreatedInstance(api.aField(), pigeon_identifierArg)',
+            r'api.golubRegistrar.instanceManager.addDartCreatedInstance(api.aField(), golub_identifierArg)',
           ),
         );
       });
@@ -867,7 +867,7 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            'abstract fun doSomething(pigeon_instance: Api, validType: Long, '
+            'abstract fun doSomething(golub_instance: Api, validType: Long, '
             'enumType: AnEnum, proxyApiType: Api2, nullableValidType: Long?, '
             'nullableEnumType: AnEnum?, nullableProxyApiType: Api2?)',
           ),
@@ -875,7 +875,7 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'api.doSomething(pigeon_instanceArg, validTypeArg, enumTypeArg, '
+            r'api.doSomething(golub_instanceArg, validTypeArg, enumTypeArg, '
             r'proxyApiTypeArg, nullableValidTypeArg, nullableEnumTypeArg, '
             r'nullableProxyApiTypeArg)',
           ),
@@ -1001,7 +1001,7 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            'fun doSomething(pigeon_instanceArg: Api, validTypeArg: Long, '
+            'fun doSomething(golub_instanceArg: Api, validTypeArg: Long, '
             'enumTypeArg: AnEnum, proxyApiTypeArg: Api2, nullableValidTypeArg: Long?, '
             'nullableEnumTypeArg: AnEnum?, nullableProxyApiTypeArg: Api2?, '
             'callback: (Result<Unit>) -> Unit)',
@@ -1010,7 +1010,7 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'channel.send(listOf(pigeon_instanceArg, validTypeArg, enumTypeArg, '
+            r'channel.send(listOf(golub_instanceArg, validTypeArg, enumTypeArg, '
             r'proxyApiTypeArg, nullableValidTypeArg, nullableEnumTypeArg, '
             r'nullableProxyApiTypeArg))',
           ),
