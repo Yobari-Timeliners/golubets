@@ -12,7 +12,7 @@ import '../generator_tools.dart';
 import '../types/task_queue.dart';
 import 'templates.dart';
 
-const _maxLogTagLength = 23;
+const int _maxLogTagLength = 23;
 
 /// Documentation open symbol.
 const String _docCommentPrefix = '/**';
