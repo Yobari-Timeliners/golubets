@@ -14,12 +14,14 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 
 /** This plugin handles the native side of the integration tests in example/integration_test/. */
-class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, SealedClassApi, KotlinNestedSealedApi {
+class TestPlugin :
+    FlutterPlugin, HostIntegrationCoreApi, SealedClassApi, KotlinNestedSealedApi, HostGenericApi {
   private var flutterApi: FlutterIntegrationCoreApi? = null
   private var flutterSmallApiOne: FlutterSmallApi? = null
   private var flutterSmallApiTwo: FlutterSmallApi? = null
   private var proxyApiRegistrar: ProxyApiRegistrar? = null
   private var coroutineScope: CoroutineScope? = null
+  private var flutterGenericApi: FlutterGenericApi? = null
 
   override fun onAttachedToEngine(binding: FlutterPluginBinding) {
     coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -31,6 +33,7 @@ class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, SealedClassApi, Kotlin
     flutterApi = FlutterIntegrationCoreApi(binding.binaryMessenger)
     flutterSmallApiOne = FlutterSmallApi(binding.binaryMessenger, "suffixOne")
     flutterSmallApiTwo = FlutterSmallApi(binding.binaryMessenger, "suffixTwo")
+    flutterGenericApi = FlutterGenericApi(binding.binaryMessenger)
 
     proxyApiRegistrar = ProxyApiRegistrar(binding.binaryMessenger)
     proxyApiRegistrar!!.setUp()
@@ -43,6 +46,7 @@ class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, SealedClassApi, Kotlin
         binding.binaryMessenger, SendConsistentNumbers(2), "2")
     SealedClassApi.setUp(binding.binaryMessenger, this)
     KotlinNestedSealedApi.setUp(binding.binaryMessenger, this)
+    HostGenericApi.setUp(binding.binaryMessenger, this)
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -907,6 +911,364 @@ class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, SealedClassApi, Kotlin
   override fun echo(event: PlatformEvent): PlatformEvent = event
 
   override fun echo(state: SomeState): SomeState = state
+
+  // HostGenericApi implementation
+
+  override fun echoGenericInt(container: GenericContainer<Long>): GenericContainer<Long> {
+    return container
+  }
+
+  override fun echoGenericString(container: GenericContainer<String>): GenericContainer<String> {
+    return container
+  }
+
+  override fun echoGenericDouble(container: GenericContainer<Double>): GenericContainer<Double> {
+    return container
+  }
+
+  override fun echoGenericBool(container: GenericContainer<Boolean>): GenericContainer<Boolean> {
+    return container
+  }
+
+  override fun echoGenericEnum(
+      container: GenericContainer<GenericsAnEnum>
+  ): GenericContainer<GenericsAnEnum> {
+    return container
+  }
+
+  override fun echoGenericNullableInt(container: GenericContainer<Long?>): GenericContainer<Long?> {
+    return container
+  }
+
+  override fun echoGenericNullableString(
+      container: GenericContainer<String?>
+  ): GenericContainer<String?> {
+    return container
+  }
+
+  override fun echoGenericPairStringInt(
+      pair: GenericPair<String, Long>
+  ): GenericPair<String, Long> {
+    return pair
+  }
+
+  override fun echoGenericPairIntString(
+      pair: GenericPair<Long, String>
+  ): GenericPair<Long, String> {
+    return pair
+  }
+
+  override fun echoGenericPairDoubleBool(
+      pair: GenericPair<Double, Boolean>
+  ): GenericPair<Double, Boolean> {
+    return pair
+  }
+
+  override fun echoGenericContainerAllTypes(
+      container: GenericContainer<GenericsAllTypes>
+  ): GenericContainer<GenericsAllTypes> {
+    return container
+  }
+
+  override fun echoGenericPairClasses(
+      pair: GenericPair<GenericsAllTypes, GenericsAllNullableTypes>
+  ): GenericPair<GenericsAllTypes, GenericsAllNullableTypes> {
+    return pair
+  }
+
+  override fun echoNestedGenericStringIntDouble(
+      nested: NestedGeneric<String, Long, Double>
+  ): NestedGeneric<String, Long, Double> {
+    return nested
+  }
+
+  override fun echoNestedGenericWithClasses(
+      nested: NestedGeneric<GenericsAllTypes, String, Long>
+  ): NestedGeneric<GenericsAllTypes, String, Long> {
+    return nested
+  }
+
+  override fun echoListGenericContainer(
+      list: List<GenericContainer<Long>>
+  ): List<GenericContainer<Long>> {
+    return list
+  }
+
+  override fun echoListGenericPair(
+      list: List<GenericPair<String, Long>>
+  ): List<GenericPair<String, Long>> {
+    return list
+  }
+
+  override fun echoMapGenericContainer(
+      map: Map<String, GenericContainer<Long>>
+  ): Map<String, GenericContainer<Long>> {
+    return map
+  }
+
+  override fun echoMapGenericPair(
+      map: Map<Long, GenericPair<String, Double>>
+  ): Map<Long, GenericPair<String, Double>> {
+    return map
+  }
+
+  override fun echoAsyncGenericInt(
+      container: GenericContainer<Long>,
+      callback: (Result<GenericContainer<Long>>) -> Unit
+  ) {
+    callback(Result.success(container))
+  }
+
+  override fun echoAsyncNestedGeneric(
+      nested: NestedGeneric<String, Long, Double>,
+      callback: (Result<NestedGeneric<String, Long, Double>>) -> Unit
+  ) {
+    callback(Result.success(nested))
+  }
+
+  override fun echoEitherGenericIntOrString(
+      input: Either<GenericContainer<Long>, GenericContainer<String>>
+  ): Either<GenericContainer<Long>, GenericContainer<String>> {
+    return input
+  }
+
+  override fun echoEitherGenericPairStringIntOrIntString(
+      input: Either<GenericPair<String, Long>, GenericPair<Long, String>>
+  ): Either<GenericPair<String, Long>, GenericPair<Long, String>> {
+    return input
+  }
+
+  override fun echoEitherNestedGenericStringIntDoubleOrClasses(
+      input:
+          Either<NestedGeneric<String, Long, Double>, NestedGeneric<GenericsAllTypes, String, Long>>
+  ): Either<NestedGeneric<String, Long, Double>, NestedGeneric<GenericsAllTypes, String, Long>> {
+    return input
+  }
+
+  // GenericsAllNullableTypesTyped echo methods implementation
+  override fun echoTypedNullableStringIntDouble(
+      typed: GenericsAllNullableTypesTyped<String, Long, Double>
+  ): GenericsAllNullableTypesTyped<String, Long, Double> {
+    return typed
+  }
+
+  override fun echoTypedNullableIntStringBool(
+      typed: GenericsAllNullableTypesTyped<Long, String, Boolean>
+  ): GenericsAllNullableTypesTyped<Long, String, Boolean> {
+    return typed
+  }
+
+  override fun echoTypedNullableEnumDoubleString(
+      typed: GenericsAllNullableTypesTyped<GenericsAnEnum, Double, String>
+  ): GenericsAllNullableTypesTyped<GenericsAnEnum, Double, String> {
+    return typed
+  }
+
+  override fun echoGenericContainerTypedNullable(
+      container: GenericContainer<GenericsAllNullableTypesTyped<String, Long, Double>>
+  ): GenericContainer<GenericsAllNullableTypesTyped<String, Long, Double>> {
+    return container
+  }
+
+  override fun echoGenericPairTypedNullable(
+      pair:
+          GenericPair<
+              GenericsAllNullableTypesTyped<String, Long, Double>,
+              GenericsAllNullableTypesTyped<Long, String, Boolean>>
+  ): GenericPair<
+      GenericsAllNullableTypesTyped<String, Long, Double>,
+      GenericsAllNullableTypesTyped<Long, String, Boolean>> {
+    return pair
+  }
+
+  override fun echoListTypedNullable(
+      list: List<GenericsAllNullableTypesTyped<String, Long, Double>>
+  ): List<GenericsAllNullableTypesTyped<String, Long, Double>> {
+    return list
+  }
+
+  override fun echoMapTypedNullable(
+      map: Map<String, GenericsAllNullableTypesTyped<Long, String, Double>>
+  ): Map<String, GenericsAllNullableTypesTyped<Long, String, Double>> {
+    return map
+  }
+
+  override fun echoAsyncTypedNullableStringIntDouble(
+      typed: GenericsAllNullableTypesTyped<String, Long, Double>,
+      callback: (Result<GenericsAllNullableTypesTyped<String, Long, Double>>) -> Unit
+  ) {
+    callback(Result.success(typed))
+  }
+
+  override fun echoAsyncGenericContainerTypedNullable(
+      container: GenericContainer<GenericsAllNullableTypesTyped<String, Long, Double>>,
+      callback:
+          (Result<GenericContainer<GenericsAllNullableTypesTyped<String, Long, Double>>>) -> Unit
+  ) {
+    callback(Result.success(container))
+  }
+
+  // GenericDefaults echo methods
+  override fun echoGenericDefaults(defaults: GenericDefaults): GenericDefaults {
+    return defaults
+  }
+
+  override fun returnGenericDefaults(): GenericDefaults {
+    return GenericDefaults(
+        genericInt = GenericContainer(value = 42, values = listOf(1, 2, 3)),
+        genericString = GenericContainer(value = "default", values = listOf("a", "b", "c")),
+        genericDouble = GenericContainer(value = 3.14, values = listOf(1.0, 2.0, 3.0)),
+        genericBool = GenericContainer(value = true, values = listOf(true, false, true)),
+        genericPairStringInt =
+            GenericPair(first = "default", second = 42, map = mapOf("key1" to 1, "key2" to 2)),
+        genericPairIntString =
+            GenericPair(first = 100L, second = "value", map = mapOf(1L to "one", 2L to "two")),
+        nestedGenericDefault =
+            NestedGeneric(
+                container = GenericContainer(value = "nested", values = listOf("x", "y", "z")),
+                pairs =
+                    listOf(
+                        GenericPair(first = 1L, second = 1.1, map = mapOf(1L to 1.1, 2L to 2.2))),
+                nestedMap =
+                    mapOf("nested" to GenericContainer(value = 99, values = listOf(9, 8, 7))),
+                listOfMaps = listOf(mapOf(10L to 10.0, 20L to 20.0))),
+        genericPairEither =
+            GenericPair(
+                first = 1L,
+                second = Either.Right<String, Long>(5L),
+                map =
+                    mapOf(
+                        3L to Either.Right<String, Long>(4L),
+                        4L to Either.Left<String, Long>("hello"))))
+  }
+
+  override fun echoAsyncGenericDefaults(
+      defaults: GenericDefaults,
+      callback: (Result<GenericDefaults>) -> Unit
+  ) {
+    callback(Result.success(defaults))
+  }
+
+  override fun callFlutterEchoGenericContainerTypedNullable(
+      container: GenericContainer<GenericsAllNullableTypesTyped<String, Long, Double>>,
+      callback:
+          (Result<GenericContainer<GenericsAllNullableTypesTyped<String, Long, Double>>>) -> Unit
+  ) {
+    flutterGenericApi!!.echoGenericContainerTypedNullable(container) { echo -> callback(echo) }
+  }
+
+  override fun callFlutterEchoGenericDefaults(
+      defaults: GenericDefaults,
+      callback: (Result<GenericDefaults>) -> Unit
+  ) {
+    flutterGenericApi!!.echoGenericDefaults(defaults) { echo ->
+      println(echo)
+      callback(echo)
+    }
+  }
+
+  override fun callFlutterEchoGenericDefaultsInt(
+      defaults: GenericDefaults,
+      callback: (Result<GenericContainer<Long>>) -> Unit
+  ) {
+    flutterGenericApi!!.echoGenericDefaultsInt(defaults) { echo -> callback(echo) }
+  }
+
+  override fun callFlutterEchoGenericDefaultsNested(
+      defaults: GenericDefaults,
+      callback: (Result<NestedGeneric<String, Long, Double>>) -> Unit
+  ) {
+    flutterGenericApi!!.echoGenericDefaultsNested(defaults) { echo -> callback(echo) }
+  }
+
+  override fun callFlutterEchoGenericDefaultsPairEither(
+      defaults: GenericDefaults,
+      callback: (Result<GenericPair<Long, Either<String, Long>>>) -> Unit
+  ) {
+    flutterGenericApi!!.echoGenericDefaultsPairEither(defaults) { echo -> callback(echo) }
+  }
+
+  override fun callFlutterEchoGenericInt(
+      container: GenericContainer<Long>,
+      callback: (Result<GenericContainer<Long>>) -> Unit
+  ) {
+    flutterGenericApi!!.echoGenericInt(container) { echo -> callback(echo) }
+  }
+
+  override fun callFlutterEchoGenericPairStringInt(
+      pair: GenericPair<String, Long>,
+      callback: (Result<GenericPair<String, Long>>) -> Unit
+  ) {
+    flutterGenericApi!!.echoGenericPairStringInt(pair) { echo -> callback(echo) }
+  }
+
+  override fun callFlutterEchoGenericString(
+      container: GenericContainer<String>,
+      callback: (Result<GenericContainer<String>>) -> Unit
+  ) {
+    flutterGenericApi!!.echoGenericString(container) { echo -> callback(echo) }
+  }
+
+  override fun callFlutterEchoListGenericContainer(
+      list: List<GenericContainer<Long>>,
+      callback: (Result<List<GenericContainer<Long>>>) -> Unit
+  ) {
+    flutterGenericApi!!.echoListGenericContainer(list) { echo -> callback(echo) }
+  }
+
+  override fun callFlutterEchoListTypedNullable(
+      list: List<GenericsAllNullableTypesTyped<String, Long, Double>>,
+      callback: (Result<List<GenericsAllNullableTypesTyped<String, Long, Double>>>) -> Unit
+  ) {
+    flutterGenericApi!!.echoListTypedNullable(list) { echo -> callback(echo) }
+  }
+
+  override fun callFlutterEchoMapGenericContainer(
+      map: Map<String, GenericContainer<Long>>,
+      callback: (Result<Map<String, GenericContainer<Long>>>) -> Unit
+  ) {
+    flutterGenericApi!!.echoMapGenericContainer(map) { echo -> callback(echo) }
+  }
+
+  override fun callFlutterEchoMapTypedNullable(
+      map: Map<String, GenericsAllNullableTypesTyped<Long, String, Double>>,
+      callback: (Result<Map<String, GenericsAllNullableTypesTyped<Long, String, Double>>>) -> Unit
+  ) {
+    flutterGenericApi!!.echoMapTypedNullable(map) { echo -> callback(echo) }
+  }
+
+  override fun callFlutterEchoNestedGenericStringIntDouble(
+      nested: NestedGeneric<String, Long, Double>,
+      callback: (Result<NestedGeneric<String, Long, Double>>) -> Unit
+  ) {
+    flutterGenericApi!!.echoNestedGenericStringIntDouble(nested) { echo -> callback(echo) }
+  }
+
+  override fun callFlutterEchoTypedNullableIntStringBool(
+      typed: GenericsAllNullableTypesTyped<Long, String, Boolean>,
+      callback: (Result<GenericsAllNullableTypesTyped<Long, String, Boolean>>) -> Unit
+  ) {
+    flutterGenericApi!!.echoTypedNullableIntStringBool(typed) { echo -> callback(echo) }
+  }
+
+  override fun callFlutterEchoTypedNullableStringIntDouble(
+      typed: GenericsAllNullableTypesTyped<String, Long, Double>,
+      callback: (Result<GenericsAllNullableTypesTyped<String, Long, Double>>) -> Unit
+  ) {
+    flutterGenericApi!!.echoTypedNullableStringIntDouble(typed) { echo -> callback(echo) }
+  }
+
+  override fun callFlutterReturnGenericDefaultsEitherLeft(
+      callback: (Result<GenericContainer<Either<String, Long>>>) -> Unit
+  ) {
+    flutterGenericApi!!.returnGenericDefaultsEitherLeft { echo -> callback(echo) }
+  }
+
+  override fun callFlutterReturnGenericDefaultsEitherRight(
+      callback: (Result<GenericContainer<Either<String, Long>>>) -> Unit
+  ) {
+    flutterGenericApi!!.returnGenericDefaultsEitherRight { echo -> callback(echo) }
+  }
 }
 
 class TestPluginWithSuffix : HostSmallApi {
