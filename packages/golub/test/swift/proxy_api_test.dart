@@ -99,45 +99,45 @@ void main() {
       expect(code, contains('import MyLibrary'));
 
       // Instance Manager
-      expect(code, contains(r'final class MyFilePigeonInstanceManager'));
-      expect(code, contains(r'private class MyFilePigeonInstanceManagerApi'));
+      expect(code, contains(r'final class MyFileGolubInstanceManager'));
+      expect(code, contains(r'private class MyFileGolubInstanceManagerApi'));
 
       // ProxyApi Delegate
-      expect(code, contains(r'protocol MyFilePigeonProxyApiDelegate'));
+      expect(code, contains(r'protocol MyFileGolubProxyApiDelegate'));
       expect(
         collapsedCode,
         contains(
-          r'func pigeonApiApi(_ registrar: MyFilePigeonProxyApiRegistrar) -> PigeonApiApi',
+          r'func golubApiApi(_ registrar: MyFileGolubProxyApiRegistrar) -> GolubApiApi',
         ),
       );
 
       // API registrar
-      expect(code, contains('open class MyFilePigeonProxyApiRegistrar'));
+      expect(code, contains('open class MyFileGolubProxyApiRegistrar'));
 
       // ReaderWriter
       expect(
         code,
         contains(
-          'private class MyFilePigeonInternalProxyApiCodecReaderWriter: FlutterStandardReaderWriter',
+          'private class MyFileGolubInternalProxyApiCodecReaderWriter: FlutterStandardReaderWriter',
         ),
       );
 
       // Delegate and class
-      expect(code, contains('protocol PigeonApiDelegateApi'));
-      expect(code, contains('protocol PigeonApiProtocolApi'));
-      expect(code, contains(r'class PigeonApiApi: PigeonApiProtocolApi'));
+      expect(code, contains('protocol GolubApiDelegateApi'));
+      expect(code, contains('protocol GolubApiProtocolApi'));
+      expect(code, contains(r'class GolubApiApi: GolubApiProtocolApi'));
 
       // Constructors
       expect(
         collapsedCode,
         contains(
-          r'func name(pigeonApi: PigeonApiApi, someField: Int64, input: Input) throws -> MyLibraryApi',
+          r'func name(golubApi: GolubApiApi, someField: Int64, input: Input) throws -> MyLibraryApi',
         ),
       );
       expect(
         collapsedCode,
         contains(
-          r'func pigeonNewInstance(pigeonInstance: MyLibraryApi, completion: @escaping (Result<Void, GolubError>) -> Void) ',
+          r'func golubNewInstance(golubInstance: MyLibraryApi, completion: @escaping (Result<Void, GolubError>) -> Void) ',
         ),
       );
 
@@ -145,7 +145,7 @@ void main() {
       expect(
         code,
         contains(
-          'func someField(pigeonApi: PigeonApiApi, pigeonInstance: MyLibraryApi) throws -> Int64',
+          'func someField(golubApi: GolubApiApi, golubInstance: MyLibraryApi) throws -> Int64',
         ),
       );
 
@@ -153,7 +153,7 @@ void main() {
       expect(
         collapsedCode,
         contains(
-          'func doSomething(pigeonApi: PigeonApiApi, pigeonInstance: MyLibraryApi, input: Input) throws -> String',
+          'func doSomething(golubApi: GolubApiApi, golubInstance: MyLibraryApi, input: Input) throws -> String',
         ),
       );
 
@@ -161,13 +161,13 @@ void main() {
       expect(
         code,
         contains(
-          r'static func setUpMessageHandlers(binaryMessenger: FlutterBinaryMessenger, api: PigeonApiApi?)',
+          r'static func setUpMessageHandlers(binaryMessenger: FlutterBinaryMessenger, api: GolubApiApi?)',
         ),
       );
       expect(
         code,
         contains(
-          'func doSomethingElse(pigeonInstance pigeonInstanceArg: MyLibraryApi, input inputArg: Input, completion: @escaping (Result<String, GolubError>) -> Void)',
+          'func doSomethingElse(golubInstance golubInstanceArg: MyLibraryApi, input inputArg: Input, completion: @escaping (Result<String, GolubError>) -> Void)',
         ),
       );
     });
@@ -340,7 +340,7 @@ void main() {
           dartPackageName: DEFAULT_PACKAGE_NAME,
         );
         final String code = sink.toString();
-        expect(code, contains('var pigeonApiApi2: PigeonApiApi2'));
+        expect(code, contains('var golubApiApi2: GolubApiApi2'));
       });
 
       test('implements', () {
@@ -379,7 +379,7 @@ void main() {
           dartPackageName: DEFAULT_PACKAGE_NAME,
         );
         final String code = sink.toString();
-        expect(code, contains('var pigeonApiApi2: PigeonApiApi2'));
+        expect(code, contains('var golubApiApi2: GolubApiApi2'));
       });
 
       test('implements 2 ProxyApis', () {
@@ -430,8 +430,8 @@ void main() {
           dartPackageName: DEFAULT_PACKAGE_NAME,
         );
         final String code = sink.toString();
-        expect(code, contains('var pigeonApiApi2: PigeonApiApi2'));
-        expect(code, contains('var pigeonApiApi3: PigeonApiApi3'));
+        expect(code, contains('var golubApiApi2: GolubApiApi2'));
+        expect(code, contains('var golubApiApi3: GolubApiApi3'));
       });
     });
 
@@ -461,23 +461,23 @@ void main() {
         );
         final String code = sink.toString();
         final String collapsedCode = _collapseNewlineAndIndentation(code);
-        expect(code, contains('class PigeonApiApi: PigeonApiProtocolApi '));
+        expect(code, contains('class GolubApiApi: GolubApiProtocolApi '));
         expect(
           collapsedCode,
           contains(
-            'func pigeonDefaultConstructor(pigeonApi: PigeonApiApi) throws -> Api',
+            'func golubDefaultConstructor(golubApi: GolubApiApi) throws -> Api',
           ),
         );
         expect(
           collapsedCode,
           contains(
-            r'let pigeonDefaultConstructorChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.test_package.Api.pigeon_defaultConstructor", binaryMessenger: binaryMessenger, codec: codec)',
+            r'let golubDefaultConstructorChannel = FlutterBasicMessageChannel(name: "dev.bayori.golub.test_package.Api.golub_defaultConstructor", binaryMessenger: binaryMessenger, codec: codec)',
           ),
         );
         expect(
           collapsedCode,
           contains(
-            r'api.pigeonRegistrar.instanceManager.addDartCreatedInstance(',
+            r'api.golubRegistrar.instanceManager.addDartCreatedInstance(',
           ),
         );
       });
@@ -513,13 +513,13 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            'func myConstructorName(pigeonApi: PigeonApiApi) throws -> Api',
+            'func myConstructorName(golubApi: GolubApiApi) throws -> Api',
           ),
         );
         expect(
           collapsedCode,
           contains(
-            r'let myConstructorNameChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.test_package.Api.myConstructorName", binaryMessenger: binaryMessenger, codec: codec)',
+            r'let myConstructorNameChannel = FlutterBasicMessageChannel(name: "dev.bayori.golub.test_package.Api.myConstructorName", binaryMessenger: binaryMessenger, codec: codec)',
           ),
         );
       });
@@ -607,18 +607,18 @@ void main() {
         );
         final String code = sink.toString();
         final String collapsedCode = _collapseNewlineAndIndentation(code);
-        expect(code, contains('class PigeonApiApi: PigeonApiProtocolApi '));
+        expect(code, contains('class GolubApiApi: GolubApiProtocolApi '));
         expect(
           collapsedCode,
           contains(
-            'func name(pigeonApi: PigeonApiApi, validType: Int64, enumType: AnEnum, proxyApiType: Api2, nullableValidType: Int64?, nullableEnumType: AnEnum?, nullableProxyApiType: Api2?) throws -> Api',
+            'func name(golubApi: GolubApiApi, validType: Int64, enumType: AnEnum, proxyApiType: Api2, nullableValidType: Int64?, nullableEnumType: AnEnum?, nullableProxyApiType: Api2?) throws -> Api',
           ),
         );
         expect(
           collapsedCode,
           contains(
-            r'api.pigeonRegistrar.instanceManager.addDartCreatedInstance( '
-            r'try api.pigeonDelegate.name(pigeonApi: api, validType: validTypeArg, enumType: enumTypeArg, proxyApiType: '
+            r'api.golubRegistrar.instanceManager.addDartCreatedInstance( '
+            r'try api.golubDelegate.name(golubApi: api, validType: validTypeArg, enumType: enumTypeArg, proxyApiType: '
             r'proxyApiTypeArg, nullableValidType: nullableValidTypeArg, nullableEnumType: nullableEnumTypeArg, '
             r'nullableProxyApiType: nullableProxyApiTypeArg)',
           ),
@@ -755,15 +755,15 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            'func name(pigeonApi: '
-            'PigeonApiApi, validType: Int64, enumType: AnEnum, proxyApiType: Api2, nullableValidType: Int64?, nullableEnumType: AnEnum?, '
-            'nullableProxyApiType: Api2?) throws -> Api func validType(pigeonApi: PigeonApiApi, pigeonInstance: Api) throws -> Int64 ',
+            'func name(golubApi: '
+            'GolubApiApi, validType: Int64, enumType: AnEnum, proxyApiType: Api2, nullableValidType: Int64?, nullableEnumType: AnEnum?, '
+            'nullableProxyApiType: Api2?) throws -> Api func validType(golubApi: GolubApiApi, golubInstance: Api) throws -> Int64 ',
           ),
         );
         expect(
           collapsedCode,
           contains(
-            r'api.pigeonRegistrar.instanceManager.addDartCreatedInstance( try api.pigeonDelegate.name(pigeonApi: api, '
+            r'api.golubRegistrar.instanceManager.addDartCreatedInstance( try api.golubDelegate.name(golubApi: api, '
             r'validType: validTypeArg, enumType: enumTypeArg, proxyApiType: proxyApiTypeArg, nullableValidType: nullableValidTypeArg, '
             r'nullableEnumType: nullableEnumTypeArg, nullableProxyApiType: nullableProxyApiTypeArg)',
           ),
@@ -771,44 +771,44 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            'channel.sendMessage([pigeonIdentifierArg, validTypeArg, enumTypeArg, '
+            'channel.sendMessage([golubIdentifierArg, validTypeArg, enumTypeArg, '
             'proxyApiTypeArg, nullableValidTypeArg, nullableEnumTypeArg, nullableProxyApiTypeArg] as [Any?])',
           ),
         );
         expect(
           code,
           contains(
-            r'func validType(pigeonApi: PigeonApiApi, pigeonInstance: Api) throws -> Int64',
+            r'func validType(golubApi: GolubApiApi, golubInstance: Api) throws -> Int64',
           ),
         );
         expect(
           code,
           contains(
-            r'func enumType(pigeonApi: PigeonApiApi, pigeonInstance: Api) throws -> AnEnum',
+            r'func enumType(golubApi: GolubApiApi, golubInstance: Api) throws -> AnEnum',
           ),
         );
         expect(
           code,
           contains(
-            r'func proxyApiType(pigeonApi: PigeonApiApi, pigeonInstance: Api) throws -> Api2',
+            r'func proxyApiType(golubApi: GolubApiApi, golubInstance: Api) throws -> Api2',
           ),
         );
         expect(
           code,
           contains(
-            r'func nullableValidType(pigeonApi: PigeonApiApi, pigeonInstance: Api) throws -> Int64?',
+            r'func nullableValidType(golubApi: GolubApiApi, golubInstance: Api) throws -> Int64?',
           ),
         );
         expect(
           code,
           contains(
-            r'func nullableEnumType(pigeonApi: PigeonApiApi, pigeonInstance: Api) throws -> AnEnum?',
+            r'func nullableEnumType(golubApi: GolubApiApi, golubInstance: Api) throws -> AnEnum?',
           ),
         );
         expect(
           code,
           contains(
-            r'func nullableProxyApiType(pigeonApi: PigeonApiApi, pigeonInstance: Api) throws -> Api2?',
+            r'func nullableProxyApiType(golubApi: GolubApiApi, golubInstance: Api) throws -> Api2?',
           ),
         );
       });
@@ -855,13 +855,13 @@ void main() {
         expect(
           code,
           contains(
-            r'func aField(pigeonApi: PigeonApiApi, pigeonInstance: Api) throws -> Api2',
+            r'func aField(golubApi: GolubApiApi, golubInstance: Api) throws -> Api2',
           ),
         );
         expect(
           code,
           contains(
-            r'api.pigeonRegistrar.instanceManager.addDartCreatedInstance(try api.pigeonDelegate.aField(pigeonApi: api, pigeonInstance: pigeonInstanceArg), withIdentifier: pigeonIdentifierArg)',
+            r'api.golubRegistrar.instanceManager.addDartCreatedInstance(try api.golubDelegate.aField(golubApi: api, golubInstance: golubInstanceArg), withIdentifier: golubIdentifierArg)',
           ),
         );
       });
@@ -908,12 +908,12 @@ void main() {
         final String code = sink.toString();
         expect(
           code,
-          contains(r'func aField(pigeonApi: PigeonApiApi) throws -> Api2'),
+          contains(r'func aField(golubApi: GolubApiApi) throws -> Api2'),
         );
         expect(
           code,
           contains(
-            r'api.pigeonRegistrar.instanceManager.addDartCreatedInstance(try api.pigeonDelegate.aField(pigeonApi: api), withIdentifier: pigeonIdentifierArg)',
+            r'api.golubRegistrar.instanceManager.addDartCreatedInstance(try api.golubDelegate.aField(golubApi: api), withIdentifier: golubIdentifierArg)',
           ),
         );
       });
@@ -1008,16 +1008,16 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            'func doSomething(pigeonApi: '
-            'PigeonApiApi, pigeonInstance: Api, validType: Int64, enumType: AnEnum, proxyApiType: Api2, nullableValidType: Int64?, '
+            'func doSomething(golubApi: '
+            'GolubApiApi, golubInstance: Api, validType: Int64, enumType: AnEnum, proxyApiType: Api2, nullableValidType: Int64?, '
             'nullableEnumType: AnEnum?, nullableProxyApiType: Api2?) throws',
           ),
         );
         expect(
           collapsedCode,
           contains(
-            r'try api.pigeonDelegate.doSomething(pigeonApi: '
-            r'api, pigeonInstance: pigeonInstanceArg, validType: validTypeArg, enumType: enumTypeArg, proxyApiType: '
+            r'try api.golubDelegate.doSomething(golubApi: '
+            r'api, golubInstance: golubInstanceArg, validType: validTypeArg, enumType: enumTypeArg, proxyApiType: '
             r'proxyApiTypeArg, nullableValidType: nullableValidTypeArg, nullableEnumType: nullableEnumTypeArg, nullableProxyApiType: '
             r'nullableProxyApiTypeArg)',
           ),
@@ -1057,11 +1057,11 @@ void main() {
         final String collapsedCode = _collapseNewlineAndIndentation(code);
         expect(
           collapsedCode,
-          contains('func doSomething(pigeonApi: PigeonApiApi) throws'),
+          contains('func doSomething(golubApi: GolubApiApi) throws'),
         );
         expect(
           collapsedCode,
-          contains(r'try api.pigeonDelegate.doSomething(pigeonApi: api)'),
+          contains(r'try api.golubDelegate.doSomething(golubApi: api)'),
         );
       });
     });
@@ -1149,7 +1149,7 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            'func doSomething(pigeonInstance pigeonInstanceArg: Api, validType validTypeArg: Int64, enumType '
+            'func doSomething(golubInstance golubInstanceArg: Api, validType validTypeArg: Int64, enumType '
             'enumTypeArg: AnEnum, proxyApiType proxyApiTypeArg: Api2, nullableValidType nullableValidTypeArg: Int64?, nullableEnumType '
             'nullableEnumTypeArg: AnEnum?, nullableProxyApiType nullableProxyApiTypeArg: Api2?, '
             'completion: @escaping (Result<Void, GolubError>) -> Void)',
@@ -1158,7 +1158,7 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'channel.sendMessage([pigeonInstanceArg, validTypeArg, '
+            r'channel.sendMessage([golubInstanceArg, validTypeArg, '
             r'enumTypeArg, proxyApiTypeArg, nullableValidTypeArg, '
             r'nullableEnumTypeArg, nullableProxyApiTypeArg] as [Any?])',
           ),
