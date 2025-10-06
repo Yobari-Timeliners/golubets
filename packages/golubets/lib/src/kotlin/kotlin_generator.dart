@@ -12,6 +12,8 @@ import '../generator_tools.dart';
 import '../types/task_queue.dart';
 import 'templates.dart';
 
+const _maxLogTagLength = 23;
+
 /// Documentation open symbol.
 const String _docCommentPrefix = '/**';
 
@@ -1288,7 +1290,7 @@ if (wrapped == null) {
                 val instance: Any? = registrar.instanceManager.getInstance(identifier)
                 if (instance == null) {
                   Log.e(
-                    "${proxyApiCodecName(const InternalKotlinOptions(kotlinOut: ''))}",
+                    "${proxyApiCodecName(const InternalKotlinOptions(kotlinOut: '')).take(_maxLogTagLength)}",
                     "Failed to find instance with identifier: \$identifier"
                   )
                 }
@@ -1960,6 +1962,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
           ' Whether APIs should ignore calling to Dart.',
         ], _docCommentSpec);
         indent.writeln('public var ignoreCallsToDart = false');
+        final String tag = '${proxyApiClassNamePrefix}ProxyApiRegistrar';
         indent.format('''
           val instanceManager: $instanceManagerName
           private var _codec: MessageCodec<Any?>? = null
@@ -1979,7 +1982,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
                   api.removeStrongReference(identifier) {
                     if (it.isFailure) {
                       Log.e(
-                        "${proxyApiClassNamePrefix}ProxyApiRegistrar",
+                        "${tag.take(_maxLogTagLength)}",
                         "Failed to remove Dart strong reference with identifier: \$identifier"
                       )
                     }
@@ -2869,4 +2872,8 @@ extension on DefaultValue {
         );
     }
   }
+}
+
+extension on String {
+  String take(int count) => length <= count ? this : substring(0, count);
 }

@@ -7,7 +7,7 @@
 #include "pigeon/multiple_arity.gen.h"
 #include "test/utils/fake_host_messenger.h"
 
-namespace multiple_arity_pigeontest {
+namespace multiple_arity_golubets_test {
 
 namespace {
 using flutter::EncodableList;
@@ -51,4 +51,4 @@ TEST(MultipleArity, HostSimple) {
 
 // TODO(stuartmorgan): Add a FlutterApi version of the test.
 
-}  // namespace multiple_arity_pigeontest
+}  // namespace multiple_arity_golubets_test

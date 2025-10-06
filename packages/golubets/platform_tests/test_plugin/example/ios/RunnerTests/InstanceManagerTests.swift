@@ -11,7 +11,7 @@ import XCTest
 final class InstanceManagerTests: XCTestCase {
   func testAddDartCreatedInstance() {
     let finalizerDelegate = EmptyFinalizerDelegate()
-    let instanceManager = ProxyApiTestsPigeonInstanceManager(finalizerDelegate: finalizerDelegate)
+    let instanceManager = ProxyApiTestsGolubetsInstanceManager(finalizerDelegate: finalizerDelegate)
     let object = NSObject()
 
     instanceManager.addDartCreatedInstance(object, withIdentifier: 0)
@@ -21,7 +21,7 @@ final class InstanceManagerTests: XCTestCase {
 
   func testAddHostCreatedInstance() {
     let finalizerDelegate = EmptyFinalizerDelegate()
-    let instanceManager = ProxyApiTestsPigeonInstanceManager(finalizerDelegate: finalizerDelegate)
+    let instanceManager = ProxyApiTestsGolubetsInstanceManager(finalizerDelegate: finalizerDelegate)
     let object = NSObject()
     _ = instanceManager.addHostCreatedInstance(object)
 
@@ -31,7 +31,7 @@ final class InstanceManagerTests: XCTestCase {
 
   func testRemoveInstance() {
     let finalizerDelegate = EmptyFinalizerDelegate()
-    let instanceManager = ProxyApiTestsPigeonInstanceManager(finalizerDelegate: finalizerDelegate)
+    let instanceManager = ProxyApiTestsGolubetsInstanceManager(finalizerDelegate: finalizerDelegate)
     let object = NSObject()
 
     instanceManager.addDartCreatedInstance(object, withIdentifier: 0)
@@ -44,7 +44,7 @@ final class InstanceManagerTests: XCTestCase {
     let finalizerDelegate = TestFinalizerDelegate()
 
     var object: NSObject? = NSObject()
-    ProxyApiTestsPigeonInternalFinalizer.attach(
+    ProxyApiTestsGolubetsInternalFinalizer.attach(
       to: object!, identifier: 0, delegate: finalizerDelegate)
 
     object = nil
@@ -53,7 +53,7 @@ final class InstanceManagerTests: XCTestCase {
 
   func testRemoveAllObjects() {
     let finalizerDelegate = EmptyFinalizerDelegate()
-    let instanceManager = ProxyApiTestsPigeonInstanceManager(finalizerDelegate: finalizerDelegate)
+    let instanceManager = ProxyApiTestsGolubetsInstanceManager(finalizerDelegate: finalizerDelegate)
     let object = NSObject()
 
     instanceManager.addDartCreatedInstance(object, withIdentifier: 0)
@@ -65,7 +65,7 @@ final class InstanceManagerTests: XCTestCase {
 
   func testCanAddSameObjectWithAddDartCreatedInstance() {
     let finalizerDelegate = EmptyFinalizerDelegate()
-    let instanceManager = ProxyApiTestsPigeonInstanceManager(finalizerDelegate: finalizerDelegate)
+    let instanceManager = ProxyApiTestsGolubetsInstanceManager(finalizerDelegate: finalizerDelegate)
     let object = NSObject()
 
     instanceManager.addDartCreatedInstance(object, withIdentifier: 0)
@@ -79,7 +79,7 @@ final class InstanceManagerTests: XCTestCase {
 
   func testObjectsAreStoredWithPointerHashcode() {
     let finalizerDelegate = EmptyFinalizerDelegate()
-    let instanceManager = ProxyApiTestsPigeonInstanceManager(finalizerDelegate: finalizerDelegate)
+    let instanceManager = ProxyApiTestsGolubetsInstanceManager(finalizerDelegate: finalizerDelegate)
 
     class EquatableClass: Equatable {
       static func == (lhs: EquatableClass, rhs: EquatableClass) -> Bool {
@@ -105,26 +105,26 @@ final class InstanceManagerTests: XCTestCase {
     let binaryMessenger = MockBinaryMessenger<String>(
       codec: FlutterStandardMessageCodec.sharedInstance())
 
-    var registrar: ProxyApiTestsPigeonProxyApiRegistrar? = ProxyApiTestsPigeonProxyApiRegistrar(
+    var registrar: ProxyApiTestsGolubetsProxyApiRegistrar? = ProxyApiTestsGolubetsProxyApiRegistrar(
       binaryMessenger: binaryMessenger, apiDelegate: ProxyApiDelegate())
 
     // Add the scenario where the InstanceManager contains an instance that contains a ProxyApi implementation
     class TestClass {
-      let api: PigeonApiProxyApiTestClass
+      let api: GolubetsApiProxyApiTestClass
 
-      init(_ api: PigeonApiProxyApiTestClass) {
+      init(_ api: GolubetsApiProxyApiTestClass) {
         self.api = api
       }
     }
     _ = registrar!.instanceManager.addHostCreatedInstance(
-      TestClass(registrar!.apiDelegate.pigeonApiProxyApiTestClass(registrar!)))
+      TestClass(registrar!.apiDelegate.golubetsApiProxyApiTestClass(registrar!)))
 
     registrar!.setUp()
     registrar!.tearDown()
 
     let finalizerDelegate = TestFinalizerDelegate()
 
-    ProxyApiTestsPigeonInternalFinalizer.attach(
+    ProxyApiTestsGolubetsInternalFinalizer.attach(
       to: registrar!.instanceManager, identifier: 0, delegate: finalizerDelegate)
     registrar = nil
     XCTAssertEqual(finalizerDelegate.lastHandledIdentifier, 0)
@@ -132,28 +132,28 @@ final class InstanceManagerTests: XCTestCase {
 
   func testRemoveAllObjectsRemovesFinalizersFromWeakInstances() {
     let finalizerDelegate = TestFinalizerDelegate()
-    let instanceManager = ProxyApiTestsPigeonInstanceManager(finalizerDelegate: finalizerDelegate)
+    let instanceManager = ProxyApiTestsGolubetsInstanceManager(finalizerDelegate: finalizerDelegate)
 
     let object: NSObject? = NSObject()
     let identifier = instanceManager.addHostCreatedInstance(object!)
     let finalizer =
-      objc_getAssociatedObject(object!, ProxyApiTestsPigeonInternalFinalizer.associatedObjectKey)
-      as! ProxyApiTestsPigeonInternalFinalizer
+      objc_getAssociatedObject(object!, ProxyApiTestsGolubetsInternalFinalizer.associatedObjectKey)
+      as! ProxyApiTestsGolubetsInternalFinalizer
 
     let _: AnyObject? = try! instanceManager.removeInstance(withIdentifier: identifier)
     try? instanceManager.removeAllObjects()
 
     XCTAssertNil(finalizer.delegate)
     XCTAssertNil(
-      objc_getAssociatedObject(object!, ProxyApiTestsPigeonInternalFinalizer.associatedObjectKey))
+      objc_getAssociatedObject(object!, ProxyApiTestsGolubetsInternalFinalizer.associatedObjectKey))
   }
 }
 
-class EmptyFinalizerDelegate: ProxyApiTestsPigeonInternalFinalizerDelegate {
+class EmptyFinalizerDelegate: ProxyApiTestsGolubetsInternalFinalizerDelegate {
   func onDeinit(identifier: Int64) {}
 }
 
-class TestFinalizerDelegate: ProxyApiTestsPigeonInternalFinalizerDelegate {
+class TestFinalizerDelegate: ProxyApiTestsGolubetsInternalFinalizerDelegate {
   var lastHandledIdentifier: Int64?
 
   func onDeinit(identifier: Int64) {

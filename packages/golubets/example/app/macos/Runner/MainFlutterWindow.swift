@@ -12,14 +12,14 @@ private class GolubApiImplementation: ExampleHostApi {
 
   func add(_ a: Int64, to b: Int64) throws -> Int64 {
     if a < 0 || b < 0 {
-      throw GolubError(code: "code", message: "message", details: "details")
+      throw GolubetsError(code: "code", message: "message", details: "details")
     }
     return a + b
   }
 
   func sendMessage(message: MessageData, completion: @escaping (Result<Bool, Error>) -> Void) {
     if message.code == Code.one {
-      completion(.failure(GolubError(code: "code", message: "message", details: "details")))
+      completion(.failure(GolubetsError(code: "code", message: "message", details: "details")))
       return
     }
     completion(.success(true))
@@ -36,7 +36,7 @@ private class GolubApiImplementation: ExampleHostApi {
       return true
     }
 
-    throw GolubError(code: "code", message: "message", details: "details")
+    throw GolubetsError(code: "code", message: "message", details: "details")
   }
 }
 

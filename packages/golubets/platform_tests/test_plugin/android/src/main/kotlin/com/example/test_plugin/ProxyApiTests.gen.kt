@@ -373,7 +373,7 @@ abstract class ProxyApiTestsGolubetsProxyApiRegistrar(val binaryMessenger: Binar
                 api.removeStrongReference(identifier) {
                   if (it.isFailure) {
                     Log.e(
-                        "GolubetsProxyApiRegistrar",
+                        "GolubetsProxyApiRegistr",
                         "Failed to remove Dart strong reference with identifier: $identifier")
                   }
                 }
@@ -433,7 +433,7 @@ private class ProxyApiTestsGolubetsProxyApiBaseCodec(
         val identifier: Long = readValue(buffer) as Long
         val instance: Any? = registrar.instanceManager.getInstance(identifier)
         if (instance == null) {
-          Log.e("GolubetsProxyApiBaseCodec", "Failed to find instance with identifier: $identifier")
+          Log.e("GolubetsProxyApiBaseCod", "Failed to find instance with identifier: $identifier")
         }
         return instance
       }

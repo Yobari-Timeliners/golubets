@@ -64,9 +64,9 @@ class GolubApiImplementation : public ExampleHostApi {
 };
 
 // #docregion cpp-method-flutter
-class GolubFlutterApi {
+class GolubetsFlutterApi {
  public:
-  GolubFlutterApi(flutter::BinaryMessenger* messenger)
+  GolubetsFlutterApi(flutter::BinaryMessenger* messenger)
       : flutterApi_(std::make_unique<MessageFlutterApi>(messenger)) {}
 
   void CallFlutterMethod(

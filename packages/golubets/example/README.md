@@ -163,21 +163,21 @@ This is the code that will use the generated Swift code to receive calls from Fl
 Unlike other languages, when throwing an error, use `GolubetsError` instead of `FlutterError`, as `FlutterError` does not conform to `Swift.Error`.
 <?code-excerpt "ios/Runner/AppDelegate.swift (swift-class)"?>
 ```swift
-private class GolubApiImplementation: ExampleHostApi {
+private class GolubetsApiImplementation: ExampleHostApi {
   func getHostLanguage() throws -> String {
     return "Swift"
   }
 
   func add(_ a: Int64, to b: Int64) throws -> Int64 {
     if a < 0 || b < 0 {
-      throw GolubError(code: "code", message: "message", details: "details")
+      throw GolubetsError(code: "code", message: "message", details: "details")
     }
     return a + b
   }
 
   func sendMessage(message: MessageData, completion: @escaping (Result<Bool, Error>) -> Void) {
     if message.code == Code.one {
-      completion(.failure(GolubError(code: "code", message: "message", details: "details")))
+      completion(.failure(GolubetsError(code: "code", message: "message", details: "details")))
       return
     }
     completion(.success(true))
@@ -194,7 +194,7 @@ private class GolubApiImplementation: ExampleHostApi {
       return !Thread.isMainThread
     }
 
-    throw GolubError(code: "code", message: "message", details: "details")
+    throw GolubetsError(code: "code", message: "message", details: "details")
   }
 }
 
@@ -348,7 +348,7 @@ class _ExampleFlutterApi implements MessageFlutterApi {
 
 <?code-excerpt "ios/Runner/AppDelegate.swift (swift-class-flutter)"?>
 ```swift
-private class GolubFlutterApi {
+private class GolubetsFlutterApi {
   var flutterAPI: MessageFlutterApi
 
   init(binaryMessenger: FlutterBinaryMessenger) {
@@ -356,7 +356,7 @@ private class GolubFlutterApi {
   }
 
   func callFlutterMethod(
-    aString aStringArg: String?, completion: @escaping (Result<String, GolubError>) -> Void
+    aString aStringArg: String?, completion: @escaping (Result<String, GolubetsError>) -> Void
   ) {
     flutterAPI.flutterMethod(aString: aStringArg) {
       completion($0)
@@ -387,9 +387,9 @@ private class PigeonFlutterApi(binding: FlutterPlugin.FlutterPluginBinding) {
 
 <?code-excerpt "windows/runner/flutter_window.cpp (cpp-method-flutter)"?>
 ```c++
-class GolubFlutterApi {
+class GolubetsFlutterApi {
  public:
-  GolubFlutterApi(flutter::BinaryMessenger* messenger)
+  GolubetsFlutterApi(flutter::BinaryMessenger* messenger)
       : flutterApi_(std::make_unique<MessageFlutterApi>(messenger)) {}
 
   void CallFlutterMethod(

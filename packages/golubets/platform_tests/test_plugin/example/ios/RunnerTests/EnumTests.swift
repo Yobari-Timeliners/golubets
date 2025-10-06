@@ -15,7 +15,7 @@ class MockEnumApi2Host: EnumApi2Host {
 class EnumTests: XCTestCase {
 
   func testEchoHost() throws {
-    let binaryMessenger = MockBinaryMessenger<DataWithEnum>(codec: EnumPigeonCodec.shared)
+    let binaryMessenger = MockBinaryMessenger<DataWithEnum>(codec: EnumGolubetsCodec.shared)
     EnumApi2HostSetup.setUp(binaryMessenger: binaryMessenger, api: MockEnumApi2Host())
     let channelName = "dev.bayori.golubets.golubets_integration_tests.EnumApi2Host.echo"
     XCTAssertNotNil(binaryMessenger.handlers[channelName])
@@ -38,7 +38,7 @@ class EnumTests: XCTestCase {
 
   func testEchoFlutter() throws {
     let data = DataWithEnum(state: .error)
-    let binaryMessenger = EchoBinaryMessenger(codec: EnumPigeonCodec.shared)
+    let binaryMessenger = EchoBinaryMessenger(codec: EnumGolubetsCodec.shared)
     let api = EnumApi2Flutter(binaryMessenger: binaryMessenger)
 
     let expectation = XCTestExpectation(description: "callback")

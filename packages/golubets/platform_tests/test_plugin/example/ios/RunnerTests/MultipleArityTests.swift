@@ -16,7 +16,7 @@ class MockMultipleArityHostApi: MultipleArityHostApi {
 class MultipleArityTests: XCTestCase {
   var codec = FlutterStandardMessageCodec.sharedInstance()
   func testSimpleHost() throws {
-    let binaryMessenger = MockBinaryMessenger<Int64>(codec: EnumPigeonCodec.shared)
+    let binaryMessenger = MockBinaryMessenger<Int64>(codec: EnumGolubetsCodec.shared)
     MultipleArityHostApiSetup.setUp(
       binaryMessenger: binaryMessenger, api: MockMultipleArityHostApi())
     let channelName = "dev.bayori.golubets.golubets_integration_tests.MultipleArityHostApi.subtract"

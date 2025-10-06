@@ -7,7 +7,7 @@
 #include "pigeon/primitive.gen.h"
 #include "test/utils/fake_host_messenger.h"
 
-namespace primitive_pigeontest {
+namespace primitive_golubets_test {
 
 namespace {
 using flutter::EncodableList;
@@ -156,4 +156,4 @@ TEST(Primitive, HostMap) {
 
 // TODO(stuartmorgan): Add FlutterApi versions of the tests.
 
-}  // namespace primitive_pigeontest
+}  // namespace primitive_golubets_test

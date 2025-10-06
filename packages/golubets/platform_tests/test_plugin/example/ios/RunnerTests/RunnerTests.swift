@@ -50,14 +50,14 @@ class RunnerTests: XCTestCase {
 class FlutterApiFromProtocol: FlutterSmallApiProtocol {
   func echo(
     string aStringArg: String,
-    completion: @escaping (Result<String, test_plugin.GolubError>) -> Void
+    completion: @escaping (Result<String, test_plugin.GolubetsError>) -> Void
   ) {
     completion(.success(aStringArg))
   }
 
   func echo(
     _ msgArg: test_plugin.TestMessage,
-    completion: @escaping (Result<test_plugin.TestMessage, test_plugin.GolubError>) -> Void
+    completion: @escaping (Result<test_plugin.TestMessage, test_plugin.GolubetsError>) -> Void
   ) {
     completion(.success(msgArg))
   }

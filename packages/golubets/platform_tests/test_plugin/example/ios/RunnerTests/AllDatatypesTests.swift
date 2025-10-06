@@ -11,7 +11,7 @@ class AllDatatypesTests: XCTestCase {
 
   func testAllNull() throws {
     let everything = AllNullableTypes()
-    let binaryMessenger = EchoBinaryMessenger(codec: CoreTestsPigeonCodec.shared)
+    let binaryMessenger = EchoBinaryMessenger(codec: CoreTestsGolubetsCodec.shared)
     let api = FlutterIntegrationCoreApi(binaryMessenger: binaryMessenger)
 
     let expectation = XCTestExpectation(description: "callback")
@@ -56,7 +56,7 @@ class AllDatatypesTests: XCTestCase {
       mapMap: [1234: ["hello": 1234]]
     )
 
-    let binaryMessenger = EchoBinaryMessenger(codec: CoreTestsPigeonCodec.shared)
+    let binaryMessenger = EchoBinaryMessenger(codec: CoreTestsGolubetsCodec.shared)
     let api = FlutterIntegrationCoreApi(binaryMessenger: binaryMessenger)
 
     let expectation = XCTestExpectation(description: "callback")
