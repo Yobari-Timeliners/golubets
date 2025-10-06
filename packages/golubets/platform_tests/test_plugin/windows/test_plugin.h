@@ -30,10 +30,9 @@ class TestSmallApi : public core_tests_golubetstest::HostSmallApi {
       std::function<void(core_tests_golubetstest::ErrorOr<std::string> reply)>
           result) override;
 
-  void VoidVoid(
-      std::function<
-          void(std::optional<core_tests_golubetstest::FlutterError> reply)>
-          result) override;
+  void VoidVoid(std::function<void(
+                    std::optional<core_tests_golubetstest::FlutterError> reply)>
+                    result) override;
 };
 
 // This plugin handles the native side of the integration tests in
@@ -73,8 +72,7 @@ class TestPlugin : public flutter::Plugin,
   core_tests_golubetstest::ErrorOr<std::optional<flutter::EncodableValue>>
   ThrowFlutterError() override;
   core_tests_golubetstest::ErrorOr<int64_t> EchoInt(int64_t an_int) override;
-  core_tests_golubetstest::ErrorOr<double> EchoDouble(
-      double a_double) override;
+  core_tests_golubetstest::ErrorOr<double> EchoDouble(double a_double) override;
   core_tests_golubetstest::ErrorOr<bool> EchoBool(bool a_bool) override;
   core_tests_golubetstest::ErrorOr<std::string> EchoString(
       const std::string& a_string) override;
@@ -90,8 +88,8 @@ class TestPlugin : public flutter::Plugin,
       const flutter::EncodableList& class_list) override;
   core_tests_golubetstest::ErrorOr<flutter::EncodableList> EchoNonNullEnumList(
       const flutter::EncodableList& enum_list) override;
-  core_tests_golubetstest::ErrorOr<flutter::EncodableList>
-  EchoNonNullClassList(const flutter::EncodableList& class_list) override;
+  core_tests_golubetstest::ErrorOr<flutter::EncodableList> EchoNonNullClassList(
+      const flutter::EncodableList& class_list) override;
   core_tests_golubetstest::ErrorOr<flutter::EncodableMap> EchoMap(
       const flutter::EncodableMap& map) override;
   core_tests_golubetstest::ErrorOr<flutter::EncodableMap> EchoStringMap(
@@ -284,8 +282,8 @@ class TestPlugin : public flutter::Plugin,
           result) override;
   void EchoAsyncObject(
       const flutter::EncodableValue& an_object,
-      std::function<void(
-          core_tests_golubetstest::ErrorOr<flutter::EncodableValue> reply)>
+      std::function<
+          void(core_tests_golubetstest::ErrorOr<flutter::EncodableValue> reply)>
           result) override;
   void EchoAsyncList(
       const flutter::EncodableList& a_list,
@@ -329,15 +327,15 @@ class TestPlugin : public flutter::Plugin,
           result) override;
   void EchoAsyncEnum(
       const core_tests_golubetstest::AnEnum& an_enum,
-      std::function<void(
-          core_tests_golubetstest::ErrorOr<core_tests_golubetstest::AnEnum>
-              reply)>
+      std::function<
+          void(core_tests_golubetstest::ErrorOr<core_tests_golubetstest::AnEnum>
+                   reply)>
           result) override;
   void EchoAnotherAsyncEnum(
       const core_tests_golubetstest::AnotherEnum& another_enum,
-      std::function<void(core_tests_golubetstest::ErrorOr<
-                         core_tests_golubetstest::AnotherEnum>
-                             reply)>
+      std::function<void(
+          core_tests_golubetstest::ErrorOr<core_tests_golubetstest::AnotherEnum>
+              reply)>
           result) override;
   void EchoAsyncNullableInt(
       const int64_t* an_int,
@@ -391,33 +389,33 @@ class TestPlugin : public flutter::Plugin,
           result) override;
   void EchoAsyncNullableMap(
       const flutter::EncodableMap* map,
-      std::function<void(core_tests_golubetstest::ErrorOr<
-                         std::optional<flutter::EncodableMap>>
-                             reply)>
+      std::function<void(
+          core_tests_golubetstest::ErrorOr<std::optional<flutter::EncodableMap>>
+              reply)>
           result) override;
   void EchoAsyncNullableStringMap(
       const flutter::EncodableMap* string_map,
-      std::function<void(core_tests_golubetstest::ErrorOr<
-                         std::optional<flutter::EncodableMap>>
-                             reply)>
+      std::function<void(
+          core_tests_golubetstest::ErrorOr<std::optional<flutter::EncodableMap>>
+              reply)>
           result) override;
   void EchoAsyncNullableIntMap(
       const flutter::EncodableMap* int_map,
-      std::function<void(core_tests_golubetstest::ErrorOr<
-                         std::optional<flutter::EncodableMap>>
-                             reply)>
+      std::function<void(
+          core_tests_golubetstest::ErrorOr<std::optional<flutter::EncodableMap>>
+              reply)>
           result) override;
   void EchoAsyncNullableEnumMap(
       const flutter::EncodableMap* enum_map,
-      std::function<void(core_tests_golubetstest::ErrorOr<
-                         std::optional<flutter::EncodableMap>>
-                             reply)>
+      std::function<void(
+          core_tests_golubetstest::ErrorOr<std::optional<flutter::EncodableMap>>
+              reply)>
           result) override;
   void EchoAsyncNullableClassMap(
       const flutter::EncodableMap* class_map,
-      std::function<void(core_tests_golubetstest::ErrorOr<
-                         std::optional<flutter::EncodableMap>>
-                             reply)>
+      std::function<void(
+          core_tests_golubetstest::ErrorOr<std::optional<flutter::EncodableMap>>
+              reply)>
           result) override;
   void EchoAsyncNullableEnum(
       const core_tests_golubetstest::AnEnum* an_enum,
@@ -432,8 +430,7 @@ class TestPlugin : public flutter::Plugin,
                              reply)>
           result) override;
   core_tests_golubetstest::ErrorOr<bool> DefaultIsMainThread() override;
-  core_tests_golubetstest::ErrorOr<bool> TaskQueueIsBackgroundThread()
-      override;
+  core_tests_golubetstest::ErrorOr<bool> TaskQueueIsBackgroundThread() override;
   void CallFlutterNoop(
       std::function<
           void(std::optional<core_tests_golubetstest::FlutterError> reply)>
@@ -575,15 +572,15 @@ class TestPlugin : public flutter::Plugin,
           result) override;
   void CallFlutterEchoEnum(
       const core_tests_golubetstest::AnEnum& an_enum,
-      std::function<void(
-          core_tests_golubetstest::ErrorOr<core_tests_golubetstest::AnEnum>
-              reply)>
+      std::function<
+          void(core_tests_golubetstest::ErrorOr<core_tests_golubetstest::AnEnum>
+                   reply)>
           result) override;
   void CallFlutterEchoAnotherEnum(
       const core_tests_golubetstest::AnotherEnum& another_enum,
-      std::function<void(core_tests_golubetstest::ErrorOr<
-                         core_tests_golubetstest::AnotherEnum>
-                             reply)>
+      std::function<void(
+          core_tests_golubetstest::ErrorOr<core_tests_golubetstest::AnotherEnum>
+              reply)>
           result) override;
   void CallFlutterEchoNullableBool(
       const bool* a_bool,
@@ -643,57 +640,57 @@ class TestPlugin : public flutter::Plugin,
           result) override;
   void CallFlutterEchoNullableMap(
       const flutter::EncodableMap* map,
-      std::function<void(core_tests_golubetstest::ErrorOr<
-                         std::optional<flutter::EncodableMap>>
-                             reply)>
+      std::function<void(
+          core_tests_golubetstest::ErrorOr<std::optional<flutter::EncodableMap>>
+              reply)>
           result) override;
   void CallFlutterEchoNullableStringMap(
       const flutter::EncodableMap* string_map,
-      std::function<void(core_tests_golubetstest::ErrorOr<
-                         std::optional<flutter::EncodableMap>>
-                             reply)>
+      std::function<void(
+          core_tests_golubetstest::ErrorOr<std::optional<flutter::EncodableMap>>
+              reply)>
           result) override;
   void CallFlutterEchoNullableIntMap(
       const flutter::EncodableMap* int_map,
-      std::function<void(core_tests_golubetstest::ErrorOr<
-                         std::optional<flutter::EncodableMap>>
-                             reply)>
+      std::function<void(
+          core_tests_golubetstest::ErrorOr<std::optional<flutter::EncodableMap>>
+              reply)>
           result) override;
   void CallFlutterEchoNullableEnumMap(
       const flutter::EncodableMap* enum_map,
-      std::function<void(core_tests_golubetstest::ErrorOr<
-                         std::optional<flutter::EncodableMap>>
-                             reply)>
+      std::function<void(
+          core_tests_golubetstest::ErrorOr<std::optional<flutter::EncodableMap>>
+              reply)>
           result) override;
   void CallFlutterEchoNullableClassMap(
       const flutter::EncodableMap* class_map,
-      std::function<void(core_tests_golubetstest::ErrorOr<
-                         std::optional<flutter::EncodableMap>>
-                             reply)>
+      std::function<void(
+          core_tests_golubetstest::ErrorOr<std::optional<flutter::EncodableMap>>
+              reply)>
           result) override;
   void CallFlutterEchoNullableNonNullStringMap(
       const flutter::EncodableMap* string_map,
-      std::function<void(core_tests_golubetstest::ErrorOr<
-                         std::optional<flutter::EncodableMap>>
-                             reply)>
+      std::function<void(
+          core_tests_golubetstest::ErrorOr<std::optional<flutter::EncodableMap>>
+              reply)>
           result) override;
   void CallFlutterEchoNullableNonNullIntMap(
       const flutter::EncodableMap* int_map,
-      std::function<void(core_tests_golubetstest::ErrorOr<
-                         std::optional<flutter::EncodableMap>>
-                             reply)>
+      std::function<void(
+          core_tests_golubetstest::ErrorOr<std::optional<flutter::EncodableMap>>
+              reply)>
           result) override;
   void CallFlutterEchoNullableNonNullEnumMap(
       const flutter::EncodableMap* enum_map,
-      std::function<void(core_tests_golubetstest::ErrorOr<
-                         std::optional<flutter::EncodableMap>>
-                             reply)>
+      std::function<void(
+          core_tests_golubetstest::ErrorOr<std::optional<flutter::EncodableMap>>
+              reply)>
           result) override;
   void CallFlutterEchoNullableNonNullClassMap(
       const flutter::EncodableMap* class_map,
-      std::function<void(core_tests_golubetstest::ErrorOr<
-                         std::optional<flutter::EncodableMap>>
-                             reply)>
+      std::function<void(
+          core_tests_golubetstest::ErrorOr<std::optional<flutter::EncodableMap>>
+              reply)>
           result) override;
   void CallFlutterEchoNullableEnum(
       const core_tests_golubetstest::AnEnum* an_enum,
