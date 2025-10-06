@@ -17,19 +17,19 @@
 
 namespace test_plugin {
 
-using core_tests_golubets_test::AllClassesWrapper;
-using core_tests_golubets_test::AllNullableTypes;
-using core_tests_golubets_test::AllNullableTypesWithoutRecursion;
-using core_tests_golubets_test::AllTypes;
-using core_tests_golubets_test::AllTypesWithDefaults;
-using core_tests_golubets_test::AnEnum;
-using core_tests_golubets_test::AnotherEnum;
-using core_tests_golubets_test::ErrorOr;
-using core_tests_golubets_test::FlutterError;
-using core_tests_golubets_test::FlutterIntegrationCoreApi;
-using core_tests_golubets_test::FlutterSmallApi;
-using core_tests_golubets_test::HostIntegrationCoreApi;
-using core_tests_golubets_test::HostSmallApi;
+using core_tests_golubetstest::AllClassesWrapper;
+using core_tests_golubetstest::AllNullableTypes;
+using core_tests_golubetstest::AllNullableTypesWithoutRecursion;
+using core_tests_golubetstest::AllTypes;
+using core_tests_golubetstest::AllTypesWithDefaults;
+using core_tests_golubetstest::AnEnum;
+using core_tests_golubetstest::AnotherEnum;
+using core_tests_golubetstest::ErrorOr;
+using core_tests_golubetstest::FlutterError;
+using core_tests_golubetstest::FlutterIntegrationCoreApi;
+using core_tests_golubetstest::FlutterSmallApi;
+using core_tests_golubetstest::HostIntegrationCoreApi;
+using core_tests_golubetstest::HostSmallApi;
 using flutter::EncodableList;
 using flutter::EncodableMap;
 using flutter::EncodableValue;
@@ -1262,8 +1262,8 @@ void TestPlugin::CallFlutterSmallApiEchoString(
       [result](const FlutterError& error) { result(error); });
 }
 
-core_tests_golubets_test::UnusedClass TestPlugin::TestUnusedClassGenerates() {
-  return core_tests_golubets_test::UnusedClass();
+core_tests_golubetstest::UnusedClass TestPlugin::TestUnusedClassGenerates() {
+  return core_tests_golubetstest::UnusedClass();
 }
 
 }  // namespace test_plugin
