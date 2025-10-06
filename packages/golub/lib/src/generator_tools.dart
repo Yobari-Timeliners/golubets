@@ -8,7 +8,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:mirrors';
 
-import 'package:collection/equality.dart' show ListEquality;
+import 'package:collection/collection.dart';
 import 'package:yaml/yaml.dart' as yaml;
 
 import 'ast.dart';
@@ -696,10 +696,9 @@ void _collectNestedGenericTypes(
   void Function(TypeDeclaration) collectFromType,
 ) {
   // Find the class definition for this generic type
-  final Class? target =
-      classes
-          .where((Class cls) => cls.name == concreteType.baseName)
-          .firstOrNull;
+  final Class? target = classes.firstWhereOrNull(
+    (Class cls) => cls.name == concreteType.baseName,
+  );
 
   if (target == null || target.typeArguments.isEmpty) {
     return;
