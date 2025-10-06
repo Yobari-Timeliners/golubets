@@ -45,15 +45,15 @@ static void handle_send_message(
     gpointer user_data) {
   GolubetsExamplePackageCode code =
       golubets_example_package_message_data_get_code(message);
-  if (code == GOLUB_EXAMPLE_PACKAGE_CODE_ONE) {
+  if (code == GOLUBETS_EXAMPLE_PACKAGE_CODE_ONE) {
     g_autoptr(FlValue) details = fl_value_new_string("details");
     golubets_example_package_example_host_api_respond_error_send_message(
         response_handle, "code", "message", details);
     return;
   }
 
-  golubets_example_package_example_host_api_respond_send_message(response_handle,
-                                                              TRUE);
+  golubets_example_package_example_host_api_respond_send_message(
+      response_handle, TRUE);
 }
 // #enddocregion vtable
 
@@ -63,7 +63,7 @@ static void handle_send_message_modern_async(
     gpointer user_data) {
   GolubetsExamplePackageCode code =
       golubets_example_package_message_data_get_code(message);
-  if (code == GOLUB_EXAMPLE_PACKAGE_CODE_ONE) {
+  if (code == GOLUBETS_EXAMPLE_PACKAGE_CODE_ONE) {
     g_autoptr(FlValue) details = fl_value_new_string("details");
     golubets_example_package_example_host_api_respond_error_send_message_modern_async(
         response_handle, "code", "message", details);
@@ -80,7 +80,7 @@ static void handle_send_message_modern_async_throws(
     gpointer user_data) {
   GolubetsExamplePackageCode code =
       golubets_example_package_message_data_get_code(message);
-  if (code == GOLUB_EXAMPLE_PACKAGE_CODE_ONE) {
+  if (code == GOLUBETS_EXAMPLE_PACKAGE_CODE_ONE) {
     golubets_example_package_example_host_api_respond_send_message_modern_async_throws(
         response_handle, TRUE);
     return;
