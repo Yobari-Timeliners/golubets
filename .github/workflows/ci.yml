@@ -187,7 +187,7 @@ jobs:
           arch: x86_64
           profile: pixel_4a
           script: dart run tool/run_tests.dart
-          working-directory: packages/golub
+          working-directory: packages/golubets
 
 
       - name: MacOS updates pods repo
@@ -206,7 +206,7 @@ jobs:
       - name: Run tests
         if: matrix.platform != 'linux'
         run: dart run tool/run_tests.dart
-        working-directory: packages/golub
+        working-directory: packages/golubets
 
 
 

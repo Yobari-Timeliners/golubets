@@ -1,0 +1,44 @@
+// Copyright 2013 The Flutter Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+import 'package:golubets/golubets.dart';
+
+@ConfigureGolubets(
+  GolubetsOptions(
+    dartOut: 'lib/src/event_channel_messages.g.dart',
+    dartOptions: DartOptions(),
+    cppOptions: CppOptions(namespace: 'golubets_example'),
+    kotlinOut:
+        'android/app/src/main/kotlin/dev/flutter/pigeon_example_app/EventChannelMessages.g.kt',
+    kotlinOptions: KotlinOptions(includeErrorClass: false),
+    swiftOut: 'ios/Runner/EventChannelMessages.g.swift',
+    swiftOptions: SwiftOptions(includeErrorClass: false),
+    copyrightHeader: 'pigeons/copyright.txt',
+    dartPackageName: 'golubets_example_package',
+  ),
+)
+// #docregion sealed-definitions
+sealed class PlatformEvent {}
+
+class IntEvent extends PlatformEvent {
+  IntEvent(this.data);
+  int data;
+}
+
+class StringEvent extends PlatformEvent {
+  StringEvent(this.data);
+  String data;
+}
+
+class EmptyEvent extends PlatformEvent {}
+
+// #enddocregion sealed-definitions
+
+// #docregion event-definitions
+@EventChannelApi()
+abstract class EventChannelMethods {
+  PlatformEvent streamEvents();
+}
+
+// #enddocregion event-definitions
