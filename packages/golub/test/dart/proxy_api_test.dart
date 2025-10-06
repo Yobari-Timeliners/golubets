@@ -89,33 +89,33 @@ void main() {
       final String collapsedCode = _collapseNewlineAndIndentation(code);
 
       // Instance Manager
-      expect(code, contains(r'class PigeonInstanceManager'));
-      expect(code, contains(r'class _PigeonInternalInstanceManagerApi'));
+      expect(code, contains(r'class GolubInstanceManager'));
+      expect(code, contains(r'class _GolubInternalInstanceManagerApi'));
 
       // Base Api class
-      expect(code, contains(r'abstract class PigeonInternalProxyApiBaseClass'));
+      expect(code, contains(r'abstract class GolubInternalProxyApiBaseClass'));
 
       // Codec and class
-      expect(code, contains('class _PigeonInternalProxyApiBaseCodec'));
+      expect(code, contains('class _GolubInternalProxyApiBaseCodec'));
       expect(
         code,
-        contains(r'class Api extends PigeonInternalProxyApiBaseClass'),
+        contains(r'class Api extends GolubInternalProxyApiBaseClass'),
       );
 
       // Constructors
       expect(
         collapsedCode,
         contains(
-          r'factory Api.name({ BinaryMessenger? pigeon_binaryMessenger, PigeonInstanceManager? pigeon_instanceManager, required int someField, String Function( Api pigeon_instance, Input input, )? doSomethingElse, required Input input, })',
+          r'factory Api.name({ BinaryMessenger? golub_binaryMessenger, GolubInstanceManager? golub_instanceManager, required int someField, String Function( Api golub_instance, Input input, )? doSomethingElse, required Input input, })',
         ),
       );
       expect(
         collapsedCode,
         contains(
-          r'Api.pigeon_name({ super.pigeon_binaryMessenger, super.pigeon_instanceManager, required this.someField, this.doSomethingElse, required Input input, })',
+          r'Api.golub_name({ super.golub_binaryMessenger, super.golub_instanceManager, required this.someField, this.doSomethingElse, required Input input, })',
         ),
       );
-      expect(code, contains(r'Api.pigeon_detached'));
+      expect(code, contains(r'Api.golub_detached'));
 
       // Field
       expect(code, contains('final int someField;'));
@@ -124,16 +124,16 @@ void main() {
       expect(code, contains('Future<String> doSomething(Input input)'));
 
       // Host -> Dart method
-      expect(code, contains(r'static void pigeon_setUpMessageHandlers({'));
+      expect(code, contains(r'static void golub_setUpMessageHandlers({'));
       expect(
         collapsedCode,
         contains(
-          'final String Function( Api pigeon_instance, Input input, )? doSomethingElse;',
+          'final String Function( Api golub_instance, Input input, )? doSomethingElse;',
         ),
       );
 
       // Copy method
-      expect(code, contains(r'Api pigeon_copy('));
+      expect(code, contains(r'Api golub_copy('));
     });
 
     test('InstanceManagerApi', () {
@@ -160,7 +160,7 @@ void main() {
       final String code = sink.toString();
       final String collapsedCode = _collapseNewlineAndIndentation(code);
 
-      expect(code, contains(r'class _PigeonInternalInstanceManagerApi'));
+      expect(code, contains(r'class _GolubInternalInstanceManagerApi'));
 
       expect(
         code,
@@ -169,13 +169,13 @@ void main() {
       expect(
         code,
         contains(
-          'dev.flutter.pigeon.$DEFAULT_PACKAGE_NAME.PigeonInternalInstanceManager.removeStrongReference',
+          'dev.bayori.golub.$DEFAULT_PACKAGE_NAME.GolubInternalInstanceManager.removeStrongReference',
         ),
       );
       expect(
         collapsedCode,
         contains(
-          '(instanceManager ?? PigeonInstanceManager.instance) .remove(arg_identifier!);',
+          '(instanceManager ?? GolubInstanceManager.instance) .remove(arg_identifier!);',
         ),
       );
 
@@ -183,7 +183,7 @@ void main() {
       expect(
         code,
         contains(
-          'dev.flutter.pigeon.$DEFAULT_PACKAGE_NAME.PigeonInternalInstanceManager.clear',
+          'dev.bayori.golub.$DEFAULT_PACKAGE_NAME.GolubInternalInstanceManager.clear',
         ),
       );
     });
@@ -214,7 +214,7 @@ void main() {
 
         expect(
           code,
-          contains(r'abstract class PigeonInternalProxyApiBaseClass'),
+          contains(r'abstract class GolubInternalProxyApiBaseClass'),
         );
       });
 
@@ -246,7 +246,7 @@ void main() {
           collapsedCode,
           contains(
             '/// Maintains instances stored to communicate with native language objects. '
-            'final PigeonInstanceManager pigeon_instanceManager;',
+            'final GolubInstanceManager golub_instanceManager;',
           ),
         );
       });
@@ -292,7 +292,7 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'Api.pigeon_detached({ super.pigeon_binaryMessenger, super.pigeon_instanceManager, }) : super.pigeon_detached();',
+            r'Api.golub_detached({ super.golub_binaryMessenger, super.golub_instanceManager, }) : super.golub_detached();',
           ),
         );
       });
@@ -336,7 +336,7 @@ void main() {
         expect(
           code,
           contains(
-            r'class Api extends PigeonInternalProxyApiBaseClass implements Api2',
+            r'class Api extends GolubInternalProxyApiBaseClass implements Api2',
           ),
         );
       });
@@ -392,7 +392,7 @@ void main() {
         expect(
           code,
           contains(
-            r'class Api extends PigeonInternalProxyApiBaseClass implements Api2, Api3',
+            r'class Api extends GolubInternalProxyApiBaseClass implements Api2, Api3',
           ),
         );
       });
@@ -451,14 +451,14 @@ void main() {
         expect(
           code,
           contains(
-            r'class Api extends PigeonInternalProxyApiBaseClass implements Api2',
+            r'class Api extends GolubInternalProxyApiBaseClass implements Api2',
           ),
         );
         expect(
           collapsedCode,
           contains(
-            r'Api.pigeon_detached({ super.pigeon_binaryMessenger, '
-            r'super.pigeon_instanceManager, '
+            r'Api.golub_detached({ super.golub_binaryMessenger, '
+            r'super.golub_instanceManager, '
             r'required this.aFlutterMethod, '
             r'this.aNullableFlutterMethod, })',
           ),
@@ -496,33 +496,33 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'factory Api({ BinaryMessenger? pigeon_binaryMessenger, '
-            r'PigeonInstanceManager? pigeon_instanceManager, })',
+            r'factory Api({ BinaryMessenger? golub_binaryMessenger, '
+            r'GolubInstanceManager? golub_instanceManager, })',
           ),
         );
         expect(
           collapsedCode,
           contains(
-            r'Api.pigeon_new({ super.pigeon_binaryMessenger, '
-            r'super.pigeon_instanceManager, })',
+            r'Api.golub_new({ super.golub_binaryMessenger, '
+            r'super.golub_instanceManager, })',
           ),
         );
         expect(
           collapsedCode,
           contains(
-            r"const String pigeonVar_channelName = 'dev.flutter.pigeon.test_package.Api.pigeon_defaultConstructor';",
+            r"const String golubVar_channelName = 'dev.bayori.golub.test_package.Api.golub_defaultConstructor';",
           ),
         );
         expect(
           collapsedCode,
           contains(
-            'pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[pigeonVar_instanceIdentifier]);',
+            'golubVar_sendFuture = golubVar_channel.send(<Object?>[golubVar_instanceIdentifier]);',
           ),
         );
         expect(
           collapsedCode,
           contains(
-            '() async { final List<Object?>? pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;',
+            '() async { final List<Object?>? golubVar_replyList = await golubVar_sendFuture as List<Object?>?;',
           ),
         );
       });
@@ -614,8 +614,8 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'factory Api.name({ BinaryMessenger? pigeon_binaryMessenger, '
-            r'PigeonInstanceManager? pigeon_instanceManager, '
+            r'factory Api.name({ BinaryMessenger? golub_binaryMessenger, '
+            r'GolubInstanceManager? golub_instanceManager, '
             r'required int validType, '
             r'required AnEnum enumType, '
             r'required Api2 proxyApiType, '
@@ -627,8 +627,8 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'Api.pigeon_name({ super.pigeon_binaryMessenger, '
-            r'super.pigeon_instanceManager, '
+            r'Api.golub_name({ super.golub_binaryMessenger, '
+            r'super.golub_instanceManager, '
             r'required int validType, '
             r'required AnEnum enumType, '
             r'required Api2 proxyApiType, '
@@ -640,8 +640,8 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'pigeonVar_channel.send(<Object?>[ '
-            r'pigeonVar_instanceIdentifier, '
+            r'golubVar_channel.send(<Object?>[ '
+            r'golubVar_instanceIdentifier, '
             r'validType, enumType, proxyApiType, '
             r'nullableValidType, nullableEnumType, nullableProxyApiType ])',
           ),
@@ -734,8 +734,8 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'factory Api.name({ BinaryMessenger? pigeon_binaryMessenger, '
-            r'PigeonInstanceManager? pigeon_instanceManager, '
+            r'factory Api.name({ BinaryMessenger? golub_binaryMessenger, '
+            r'GolubInstanceManager? golub_instanceManager, '
             r'required int validType, '
             r'required AnEnum enumType, '
             r'required Api2 proxyApiType, '
@@ -747,8 +747,8 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'Api.pigeon_name({ super.pigeon_binaryMessenger, '
-            r'super.pigeon_instanceManager, '
+            r'Api.golub_name({ super.golub_binaryMessenger, '
+            r'super.golub_instanceManager, '
             r'required this.validType, '
             r'required this.enumType, '
             r'required this.proxyApiType, '
@@ -760,8 +760,8 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'pigeonVar_channel.send(<Object?>[ '
-            r'pigeonVar_instanceIdentifier, '
+            r'golubVar_channel.send(<Object?>[ '
+            r'golubVar_instanceIdentifier, '
             r'validType, enumType, proxyApiType, '
             r'nullableValidType, nullableEnumType, nullableProxyApiType ])',
           ),
@@ -814,8 +814,8 @@ void main() {
         );
         final String code = sink.toString();
         expect(code, contains('class Api'));
-        expect(code, contains(r'late final Api2 aField = pigeonVar_aField();'));
-        expect(code, contains(r'Api2 pigeonVar_aField()'));
+        expect(code, contains(r'late final Api2 aField = golubVar_aField();'));
+        expect(code, contains(r'Api2 golubVar_aField()'));
       });
 
       test('static attached field', () {
@@ -862,14 +862,14 @@ void main() {
         expect(
           code,
           contains(
-            r'static Api2 get aField => PigeonOverrides.api_aField ?? _aField;',
+            r'static Api2 get aField => GolubOverrides.api_aField ?? _aField;',
           ),
         );
         expect(
           code,
-          contains(r'static final Api2 _aField = pigeonVar_aField();'),
+          contains(r'static final Api2 _aField = golubVar_aField();'),
         );
-        expect(code, contains(r'static Api2 pigeonVar_aField()'));
+        expect(code, contains(r'static Api2 golubVar_aField()'));
       });
     });
 
@@ -971,12 +971,12 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'pigeonVar_channel.send(<Object?>[ this, validType, '
+            r'golubVar_channel.send(<Object?>[ this, validType, '
             r'enumType, proxyApiType, nullableValidType, '
             r'nullableEnumType, nullableProxyApiType ])',
           ),
         );
-        expect(code, contains('await pigeonVar_sendFuture'));
+        expect(code, contains('await golubVar_sendFuture'));
       });
 
       test('static method', () {
@@ -1014,12 +1014,12 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'static Future<void> doSomething({ BinaryMessenger? pigeon_binaryMessenger, '
-            r'PigeonInstanceManager? pigeon_instanceManager, })',
+            r'static Future<void> doSomething({ BinaryMessenger? golub_binaryMessenger, '
+            r'GolubInstanceManager? golub_instanceManager, })',
           ),
         );
-        expect(collapsedCode, contains(r'pigeonVar_channel.send(null)'));
-        expect(code, contains('await pigeonVar_sendFuture'));
+        expect(collapsedCode, contains(r'golubVar_channel.send(null)'));
+        expect(code, contains('await golubVar_sendFuture'));
       });
     });
 
@@ -1108,7 +1108,7 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'final void Function( Api pigeon_instance, int validType, '
+            r'final void Function( Api golub_instance, int validType, '
             r'AnEnum enumType, Api2 proxyApiType, int? nullableValidType, '
             r'AnEnum? nullableEnumType, Api2? nullableProxyApiType, )? '
             r'doSomething;',
@@ -1117,7 +1117,7 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'void Function( Api pigeon_instance, int validType, AnEnum enumType, '
+            r'void Function( Api golub_instance, int validType, AnEnum enumType, '
             r'Api2 proxyApiType, int? nullableValidType, '
             r'AnEnum? nullableEnumType, Api2? nullableProxyApiType, )? '
             r'doSomething',
@@ -1125,7 +1125,7 @@ void main() {
         );
         expect(
           code,
-          contains(r'final Api? arg_pigeon_instance = (args[0] as Api?);'),
+          contains(r'final Api? arg_golub_instance = (args[0] as Api?);'),
         );
         expect(
           code,
@@ -1152,7 +1152,7 @@ void main() {
         expect(
           collapsedCode,
           contains(
-            r'(doSomething ?? arg_pigeon_instance!.doSomething)?.call( arg_pigeon_instance!, '
+            r'(doSomething ?? arg_golub_instance!.doSomething)?.call( arg_golub_instance!, '
             r'arg_validType!, arg_enumType!, arg_proxyApiType!, '
             r'arg_nullableValidType, arg_nullableEnumType, '
             r'arg_nullableProxyApiType);',
