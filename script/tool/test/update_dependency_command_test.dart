@@ -368,8 +368,8 @@ dev_dependencies:
     test('regenerates all pigeon files when updating pigeon', () async {
       final RepositoryPackage package =
           createFakePackage('a_package', packagesDir, extraFiles: <String>[
-        'golubs/foo.dart',
-        'golubs/bar.dart',
+        'pigeons/foo.dart',
+        'pigeons/bar.dart',
       ]);
       addDependency(package, 'golub', version: '1.0.0');
 
@@ -391,20 +391,19 @@ dev_dependencies:
           ),
           ProcessCall(
             'dart',
-            const <String>['run', 'golub', '--input', 'golubs/foo.dart'],
+            const <String>['run', 'golub', '--input', 'pigeons/foo.dart'],
             package.path,
           ),
           ProcessCall(
             'dart',
-            const <String>['run', 'golub', '--input', 'golubs/bar.dart'],
+            const <String>['run', 'golub', '--input', 'pigeons/bar.dart'],
             package.path,
           ),
         ]),
       );
     });
 
-    test('warns when regenerating golub if there are no golub files',
-        () async {
+    test('warns when regenerating golub if there are no golub files', () async {
       final RepositoryPackage package =
           createFakePackage('a_package', packagesDir);
       addDependency(package, 'golub', version: '1.0.0');
@@ -428,7 +427,7 @@ dev_dependencies:
     test('updating golub fails if pub get fails', () async {
       final RepositoryPackage package = createFakePackage(
           'a_package', packagesDir,
-          extraFiles: <String>['golubs/foo.dart']);
+          extraFiles: <String>['pigeons/foo.dart']);
       addDependency(package, 'golub', version: '1.0.0');
 
       processRunner.mockProcessesForExecutable['dart'] = <FakeProcessInfo>[
@@ -459,7 +458,7 @@ dev_dependencies:
     test('updating golub fails if running golub fails', () async {
       final RepositoryPackage package = createFakePackage(
           'a_package', packagesDir,
-          extraFiles: <String>['golubs/foo.dart']);
+          extraFiles: <String>['pigeons/foo.dart']);
       addDependency(package, 'golub', version: '1.0.0');
 
       processRunner.mockProcessesForExecutable['dart'] = <FakeProcessInfo>[
