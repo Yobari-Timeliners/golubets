@@ -34,7 +34,7 @@ TEST(MultipleArity, HostSimple) {
   fl_value_append_take(message, fl_value_new_int(10));
   fake_host_messenger_send_host_message(
       messenger,
-      "dev.flutter.pigeon.pigeon_integration_tests.MultipleArityHostApi."
+      "dev.bayori.golub.golub_integration_tests.MultipleArityHostApi."
       "subtract",
       message, subtract_reply_cb, &result);
 

@@ -86,15 +86,14 @@ TEST(PigeonTests, CallInitialize) {
   EXPECT_CALL(
       mock_messenger,
       SetMessageHandler(
-          "dev.flutter.pigeon.pigeon_integration_tests.MessageApi.initialize",
+          "dev.bayori.golub.golub_integration_tests.MessageApi.initialize",
           testing::_))
       .Times(1)
       .WillOnce(testing::SaveArg<1>(&handler));
-  EXPECT_CALL(
-      mock_messenger,
-      SetMessageHandler(
-          "dev.flutter.pigeon.pigeon_integration_tests.MessageApi.search",
-          testing::_))
+  EXPECT_CALL(mock_messenger,
+              SetMessageHandler(
+                  "dev.bayori.golub.golub_integration_tests.MessageApi.search",
+                  testing::_))
       .Times(1);
   EXPECT_CALL(mock_api, Initialize());
   MessageApi::SetUp(&mock_messenger, &mock_api);
@@ -114,14 +113,13 @@ TEST(PigeonTests, CallSearch) {
   EXPECT_CALL(
       mock_messenger,
       SetMessageHandler(
-          "dev.flutter.pigeon.pigeon_integration_tests.MessageApi.initialize",
+          "dev.bayori.golub.golub_integration_tests.MessageApi.initialize",
           testing::_))
       .Times(1);
-  EXPECT_CALL(
-      mock_messenger,
-      SetMessageHandler(
-          "dev.flutter.pigeon.pigeon_integration_tests.MessageApi.search",
-          testing::_))
+  EXPECT_CALL(mock_messenger,
+              SetMessageHandler(
+                  "dev.bayori.golub.golub_integration_tests.MessageApi.search",
+                  testing::_))
       .Times(1)
       .WillOnce(testing::SaveArg<1>(&handler));
   EXPECT_CALL(mock_api, Search(testing::_))

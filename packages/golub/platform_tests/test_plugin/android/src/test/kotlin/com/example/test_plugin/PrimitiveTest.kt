@@ -23,7 +23,7 @@ class PrimitiveTest {
 
     val input = 1L
 
-    val channelName = "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.anInt"
+    val channelName = "dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.anInt"
     val handlerSlot = slot<BinaryMessenger.BinaryMessageHandler>()
 
     every { binaryMessenger.setMessageHandler(channelName, capture(handlerSlot)) } returns Unit
@@ -68,7 +68,7 @@ class PrimitiveTest {
 
     val input = true
 
-    val channelName = "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aBool"
+    val channelName = "dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.aBool"
     val handlerSlot = slot<BinaryMessenger.BinaryMessageHandler>()
 
     every { binaryMessenger.setMessageHandler(channelName, capture(handlerSlot)) } returns Unit
@@ -113,7 +113,7 @@ class PrimitiveTest {
 
     val input = "Hello"
 
-    val channelName = "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aString"
+    val channelName = "dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.aString"
     val handlerSlot = slot<BinaryMessenger.BinaryMessageHandler>()
 
     every { binaryMessenger.setMessageHandler(channelName, capture(handlerSlot)) } returns Unit
@@ -142,7 +142,7 @@ class PrimitiveTest {
 
     val input = 1.0
 
-    val channelName = "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aDouble"
+    val channelName = "dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.aDouble"
     val handlerSlot = slot<BinaryMessenger.BinaryMessageHandler>()
 
     every { binaryMessenger.setMessageHandler(channelName, capture(handlerSlot)) } returns Unit
@@ -187,7 +187,7 @@ class PrimitiveTest {
 
     val input = mapOf<Any, Any?>("a" to 1, "b" to 2)
 
-    val channelName = "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aMap"
+    val channelName = "dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.aMap"
     val handlerSlot = slot<BinaryMessenger.BinaryMessageHandler>()
 
     every { binaryMessenger.setMessageHandler(channelName, capture(handlerSlot)) } returns Unit
@@ -232,7 +232,7 @@ class PrimitiveTest {
 
     val input = listOf(1, 2, 3)
 
-    val channelName = "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aList"
+    val channelName = "dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.aList"
     val handlerSlot = slot<BinaryMessenger.BinaryMessageHandler>()
 
     every { binaryMessenger.setMessageHandler(channelName, capture(handlerSlot)) } returns Unit
@@ -277,7 +277,7 @@ class PrimitiveTest {
 
     val input = intArrayOf(1, 2, 3)
 
-    val channelName = "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.anInt32List"
+    val channelName = "dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.anInt32List"
     val handlerSlot = slot<BinaryMessenger.BinaryMessageHandler>()
 
     every { binaryMessenger.setMessageHandler(channelName, capture(handlerSlot)) } returns Unit
@@ -322,7 +322,7 @@ class PrimitiveTest {
 
     val input = listOf(true, false, true)
 
-    val channelName = "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aBoolList"
+    val channelName = "dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.aBoolList"
     val handlerSlot = slot<BinaryMessenger.BinaryMessageHandler>()
 
     every { binaryMessenger.setMessageHandler(channelName, capture(handlerSlot)) } returns Unit
@@ -367,7 +367,7 @@ class PrimitiveTest {
 
     val input = mapOf<String?, Long?>("a" to 1, "b" to 2)
 
-    val channelName = "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aStringIntMap"
+    val channelName = "dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.aStringIntMap"
     val handlerSlot = slot<BinaryMessenger.BinaryMessageHandler>()
 
     every { binaryMessenger.setMessageHandler(channelName, capture(handlerSlot)) } returns Unit

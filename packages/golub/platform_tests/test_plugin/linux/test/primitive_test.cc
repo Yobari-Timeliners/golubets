@@ -83,7 +83,7 @@ TEST(Primitive, HostInt) {
   fl_value_append_take(message, fl_value_new_int(7));
   fake_host_messenger_send_host_message(
       messenger,
-      "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.anInt",
+      "dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.anInt",
       message, an_int_reply_cb, &result);
 
   EXPECT_EQ(result, 7);
@@ -106,7 +106,7 @@ TEST(Primitive, HostBool) {
   fl_value_append_take(message, fl_value_new_bool(TRUE));
   fake_host_messenger_send_host_message(
       messenger,
-      "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aBool",
+      "dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.aBool",
       message, a_bool_reply_cb, &result);
 
   EXPECT_EQ(result, true);
@@ -129,7 +129,7 @@ TEST(Primitive, HostDouble) {
   fl_value_append_take(message, fl_value_new_float(3.0));
   fake_host_messenger_send_host_message(
       messenger,
-      "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aDouble",
+      "dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.aDouble",
       message, a_double_reply_cb, &result);
 
   EXPECT_EQ(result, 3.0);
@@ -152,7 +152,7 @@ TEST(Primitive, HostString) {
   fl_value_append_take(message, fl_value_new_string("hello"));
   fake_host_messenger_send_host_message(
       messenger,
-      "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aString",
+      "dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.aString",
       message, a_string_reply_cb, &result);
 
   EXPECT_STREQ(result, "hello");
@@ -179,7 +179,7 @@ TEST(Primitive, HostList) {
   fl_value_append(message, list);
   fake_host_messenger_send_host_message(
       messenger,
-      "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aList",
+      "dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.aList",
       message, a_list_reply_cb, &result);
 
   EXPECT_EQ(fl_value_get_length(result), 3);
@@ -205,8 +205,8 @@ TEST(Primitive, HostMap) {
   fl_value_append(message, map);
   fake_host_messenger_send_host_message(
       messenger,
-      "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aMap",
-      message, a_map_reply_cb, &result);
+      "dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.aMap", message,
+      a_map_reply_cb, &result);
 
   EXPECT_EQ(fl_value_get_length(result), 1);
   EXPECT_STREQ(fl_value_get_string(fl_value_lookup_string(result, "foo")),

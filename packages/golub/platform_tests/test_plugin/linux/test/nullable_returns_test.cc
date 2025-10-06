@@ -33,7 +33,7 @@ TEST(NullableReturns, HostNullableArgNull) {
   fl_value_append_take(message, fl_value_new_null());
   fake_host_messenger_send_host_message(
       messenger,
-      "dev.flutter.pigeon.pigeon_integration_tests.NullableArgHostApi.doit",
+      "dev.bayori.golub.golub_integration_tests.NullableArgHostApi.doit",
       message, arg_doit_reply_cb, &result);
 
   EXPECT_EQ(result, 42);
@@ -51,7 +51,7 @@ TEST(NullableReturns, HostNullableArgNonNull) {
   fl_value_append_take(message, fl_value_new_int(7));
   fake_host_messenger_send_host_message(
       messenger,
-      "dev.flutter.pigeon.pigeon_integration_tests.NullableArgHostApi.doit",
+      "dev.bayori.golub.golub_integration_tests.NullableArgHostApi.doit",
       message, arg_doit_reply_cb, &result);
 
   EXPECT_EQ(result, 7);
@@ -103,7 +103,7 @@ TEST(NullableReturns, HostNullableReturnNull) {
   fl_value_append_take(message, fl_value_new_null());
   fake_host_messenger_send_host_message(
       messenger,
-      "dev.flutter.pigeon.pigeon_integration_tests.NullableReturnHostApi.doit",
+      "dev.bayori.golub.golub_integration_tests.NullableReturnHostApi.doit",
       message, return_doit_reply_cb, &result);
 
   EXPECT_EQ(result, nullptr);
@@ -122,7 +122,7 @@ TEST(NullableReturns, HostNullableReturnNonNull) {
   fl_value_append_take(message, fl_value_new_null());
   fake_host_messenger_send_host_message(
       messenger,
-      "dev.flutter.pigeon.pigeon_integration_tests.NullableReturnHostApi.doit",
+      "dev.bayori.golub.golub_integration_tests.NullableReturnHostApi.doit",
       message, return_doit_reply_cb, &result);
 
   EXPECT_NE(result, nullptr);

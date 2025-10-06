@@ -17,7 +17,7 @@ class EnumTests: XCTestCase {
   func testEchoHost() throws {
     let binaryMessenger = MockBinaryMessenger<DataWithEnum>(codec: EnumPigeonCodec.shared)
     EnumApi2HostSetup.setUp(binaryMessenger: binaryMessenger, api: MockEnumApi2Host())
-    let channelName = "dev.flutter.pigeon.pigeon_integration_tests.EnumApi2Host.echo"
+    let channelName = "dev.bayori.golub.golub_integration_tests.EnumApi2Host.echo"
     XCTAssertNotNil(binaryMessenger.handlers[channelName])
 
     let input = DataWithEnum(state: .success)

@@ -61,7 +61,7 @@
       [[MockBinaryMessenger alloc] initWithCodec:FLTGetCoreTestsCodec()];
   MockHostSmallApi *mockHostSmallApi = [[MockHostSmallApi alloc] init];
   SetUpFLTHostSmallApi(binaryMessenger, mockHostSmallApi);
-  NSString *channelName = @"dev.flutter.pigeon.pigeon_integration_tests.HostSmallApi.voidVoid";
+  NSString *channelName = @"dev.bayori.golub.golub_integration_tests.HostSmallApi.voidVoid";
   XCTAssertNotNil(binaryMessenger.handlers[channelName]);
 
   XCTestExpectation *expectation = [self expectationWithDescription:@"voidvoid callback"];
@@ -81,7 +81,7 @@
                                                        message:@"message"
                                                        details:nil];
   SetUpFLTHostSmallApi(binaryMessenger, mockHostSmallApi);
-  NSString *channelName = @"dev.flutter.pigeon.pigeon_integration_tests.HostSmallApi.voidVoid";
+  NSString *channelName = @"dev.bayori.golub.golub_integration_tests.HostSmallApi.voidVoid";
   XCTAssertNotNil(binaryMessenger.handlers[channelName]);
 
   XCTestExpectation *expectation = [self expectationWithDescription:@"voidvoid callback"];
@@ -101,7 +101,7 @@
   NSString *value = @"Test";
   mockHostSmallApi.output = value;
   SetUpFLTHostSmallApi(binaryMessenger, mockHostSmallApi);
-  NSString *channelName = @"dev.flutter.pigeon.pigeon_integration_tests.HostSmallApi.echo";
+  NSString *channelName = @"dev.bayori.golub.golub_integration_tests.HostSmallApi.echo";
   XCTAssertNotNil(binaryMessenger.handlers[channelName]);
 
   NSData *inputEncoded = [binaryMessenger.codec encode:@[ value ]];
@@ -120,7 +120,7 @@
       [[MockBinaryMessenger alloc] initWithCodec:FLTGetCoreTestsCodec()];
   MockHostSmallApi *mockHostSmallApi = [[MockHostSmallApi alloc] init];
   SetUpFLTHostSmallApi(binaryMessenger, mockHostSmallApi);
-  NSString *channelName = @"dev.flutter.pigeon.pigeon_integration_tests.HostSmallApi.echo";
+  NSString *channelName = @"dev.bayori.golub.golub_integration_tests.HostSmallApi.echo";
   XCTAssertNotNil(binaryMessenger.handlers[channelName]);
 
   NSData *inputEncoded = [binaryMessenger.codec encode:@[ @"Test" ]];

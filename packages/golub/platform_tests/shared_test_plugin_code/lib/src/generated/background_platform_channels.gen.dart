@@ -58,7 +58,7 @@ class BackgroundApi2Host {
 
   Future<int> add(int x, int y) async {
     final String pigeonVar_channelName =
-        'dev.flutter.pigeon.pigeon_integration_tests.BackgroundApi2Host.add$pigeonVar_messageChannelSuffix';
+        'dev.bayori.golub.golub_integration_tests.BackgroundApi2Host.add$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel =
         BasicMessageChannel<Object?>(
           pigeonVar_channelName,

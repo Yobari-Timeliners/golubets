@@ -53,7 +53,7 @@ TEST(NullableReturns, HostNullableArgNull) {
 
   int64_t result = 0;
   messenger.SendHostMessage(
-      "dev.flutter.pigeon.pigeon_integration_tests.NullableArgHostApi.doit",
+      "dev.bayori.golub.golub_integration_tests.NullableArgHostApi.doit",
       EncodableValue(EncodableList({EncodableValue()})),
       [&result](const EncodableValue& reply) {
         result = GetResult(reply).LongValue();
@@ -70,7 +70,7 @@ TEST(NullableReturns, HostNullableArgNonNull) {
   int64_t result = 0;
   int64_t seven = 7;
   messenger.SendHostMessage(
-      "dev.flutter.pigeon.pigeon_integration_tests.NullableArgHostApi.doit",
+      "dev.bayori.golub.golub_integration_tests.NullableArgHostApi.doit",
       EncodableValue(EncodableList({EncodableValue(seven)})),
       [&result](const EncodableValue& reply) {
         result = GetResult(reply).LongValue();
@@ -88,7 +88,7 @@ TEST(NullableReturns, HostNullableReturnNull) {
   // rather than just never set.
   EncodableValue result(true);
   messenger.SendHostMessage(
-      "dev.flutter.pigeon.pigeon_integration_tests.NullableReturnHostApi.doit",
+      "dev.bayori.golub.golub_integration_tests.NullableReturnHostApi.doit",
       EncodableValue(EncodableList({})),
       [&result](const EncodableValue& reply) { result = GetResult(reply); });
 
@@ -102,7 +102,7 @@ TEST(NullableReturns, HostNullableReturnNonNull) {
 
   EncodableValue result;
   messenger.SendHostMessage(
-      "dev.flutter.pigeon.pigeon_integration_tests.NullableReturnHostApi.doit",
+      "dev.bayori.golub.golub_integration_tests.NullableReturnHostApi.doit",
       EncodableValue(EncodableList({})),
       [&result](const EncodableValue& reply) { result = GetResult(reply); });
 

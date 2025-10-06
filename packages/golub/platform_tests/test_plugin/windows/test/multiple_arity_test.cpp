@@ -36,7 +36,7 @@ TEST(MultipleArity, HostSimple) {
 
   int64_t result = 0;
   messenger.SendHostMessage(
-      "dev.flutter.pigeon.pigeon_integration_tests.MultipleArityHostApi."
+      "dev.bayori.golub.golub_integration_tests.MultipleArityHostApi."
       "subtract",
       EncodableValue(EncodableList({
           EncodableValue(30),

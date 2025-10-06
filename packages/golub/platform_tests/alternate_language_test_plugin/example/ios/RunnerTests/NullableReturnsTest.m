@@ -51,7 +51,7 @@
   MockNullableArgHostApi *api = [[MockNullableArgHostApi alloc] init];
   MockBinaryMessenger *binaryMessenger =
       [[MockBinaryMessenger alloc] initWithCodec:GetNullableReturnsCodec()];
-  NSString *channel = @"dev.flutter.pigeon.pigeon_integration_tests.NullableArgHostApi.doit";
+  NSString *channel = @"dev.bayori.golub.golub_integration_tests.NullableArgHostApi.doit";
   SetUpNullableArgHostApi(binaryMessenger, api);
   XCTAssertNotNil(binaryMessenger.handlers[channel]);
   XCTestExpectation *expectation = [self expectationWithDescription:@"callback"];

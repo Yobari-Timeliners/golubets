@@ -19,7 +19,7 @@ class MultipleArityTests: XCTestCase {
     let binaryMessenger = MockBinaryMessenger<Int64>(codec: EnumPigeonCodec.shared)
     MultipleArityHostApiSetup.setUp(
       binaryMessenger: binaryMessenger, api: MockMultipleArityHostApi())
-    let channelName = "dev.flutter.pigeon.pigeon_integration_tests.MultipleArityHostApi.subtract"
+    let channelName = "dev.bayori.golub.golub_integration_tests.MultipleArityHostApi.subtract"
     XCTAssertNotNil(binaryMessenger.handlers[channelName])
 
     let inputX = 10

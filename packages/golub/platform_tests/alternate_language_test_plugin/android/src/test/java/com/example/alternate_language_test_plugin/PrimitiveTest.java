@@ -94,7 +94,7 @@ public class PrimitiveTest {
         ArgumentCaptor.forClass(BinaryMessenger.BinaryMessageHandler.class);
     verify(binaryMessenger)
         .setMessageHandler(
-            eq("dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.anInt"),
+            eq("dev.bayori.golub.golub_integration_tests.PrimitiveHostApi.anInt"),
             handler.capture());
     MessageCodec<Object> codec = PrimitiveHostApi.getCodec();
     @SuppressWarnings("unchecked")

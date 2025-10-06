@@ -24,7 +24,7 @@ needed for your project.
     gobjectSourceOut: 'linux/messages.g.cc',
     gobjectOptions: GObjectOptions(),
     kotlinOut:
-        'android/app/src/main/kotlin/dev/flutter/golub_example_app/Messages.g.kt',
+        'android/app/src/main/kotlin/dev/flutter/pigeon_example_app/Messages.g.kt',
     kotlinOptions: KotlinOptions(),
     javaOut: 'android/app/src/main/java/io/flutter/plugins/Messages.java',
     javaOptions: JavaOptions(),
@@ -34,7 +34,7 @@ needed for your project.
     objcSourceOut: 'macos/Runner/messages.g.m',
     // Set this to a unique prefix for your plugin or application, per Objective-C naming conventions.
     objcOptions: ObjcOptions(prefix: 'PGN'),
-    copyrightHeader: 'golubs/copyright.txt',
+    copyrightHeader: 'pigeons/copyright.txt',
     dartPackageName: 'golub_example_package',
   ),
 )
@@ -529,9 +529,9 @@ Define the stream handler class that will handle the events.
 <?code-excerpt "android/app/src/main/kotlin/dev/flutter/pigeon_example_app/MainActivity.kt (kotlin-class-event)"?>
 ```kotlin
 class EventListener : StreamEventsStreamHandler() {
-  private var eventSink: PigeonEventSink<PlatformEvent>? = null
+  private var eventSink: GolubEventSink<PlatformEvent>? = null
 
-  override fun onListen(p0: Any?, sink: PigeonEventSink<PlatformEvent>) {
+  override fun onListen(p0: Any?, sink: GolubEventSink<PlatformEvent>) {
     eventSink = sink
   }
 
