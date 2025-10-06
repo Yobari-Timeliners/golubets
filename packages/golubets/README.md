@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="art/golubets.jpg" alt="golubets" width="400">
+  <img src="art/golubets.png" alt="golubets" width="400">
 </div>
 
 ## Golubets: A Community-Driven Fork of [Pigeon](https://pub.dev/packages/pigeon)

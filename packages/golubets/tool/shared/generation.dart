@@ -192,7 +192,7 @@ Future<int> generateTestPigeons({
           skipLanguages.contains(GeneratorLanguage.cpp)
               ? null
               : '$outputBase/windows/pigeon/$input.gen.cpp',
-      cppNamespace: '${input}_golubets_test',
+      cppNamespace: '${input}_golubetstest',
       injectOverflowTypes: includeOverflow && input == 'core_tests',
     );
     if (generateCode != 0) {

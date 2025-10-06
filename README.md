@@ -1,1 +1,1 @@
-![golubets](packages/golubets/art/golubets.jpg)
+![golubets](packages/golubets/art/golubets.png)

@@ -24,7 +24,7 @@ using ::testing::DoAll;
 using ::testing::Pointee;
 using ::testing::Return;
 using ::testing::SetArgPointee;
-using namespace message_golubets_test;
+using namespace message_golubetstest;
 
 class MockMethodResult : public flutter::MethodResult<> {
  public:

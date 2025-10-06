@@ -18,7 +18,7 @@
 #include <optional>
 #include <string>
 
-namespace core_tests_golubets_test {
+namespace core_tests_golubetstest {
 using flutter::BasicMessageChannel;
 using flutter::CustomEncodableValue;
 using flutter::EncodableList;
@@ -11260,4 +11260,4 @@ void FlutterSmallApi::EchoString(
       });
 }
 
-}  // namespace core_tests_golubets_test
+}  // namespace core_tests_golubetstest

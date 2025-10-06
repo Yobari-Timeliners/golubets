@@ -5,7 +5,7 @@ issue_tracker: https://github.com/Yobari-Timeliners/golubets/issues
 version: 1.0.0 # This must match the version in lib/src/generator_tools.dart
 screenshots:
   - description: 'Golubets'
-    path: 'art/golubets.jpg'
+    path: 'art/golubets.png'
 
 environment:
   sdk: ^3.7.0
