@@ -715,7 +715,7 @@ void main() {
     expect(code, contains('@implementation Foobar'));
     expect(
       code,
-      contains('pigeonResult.aBool = GetNullableObjectAtIndex(list, 0);'),
+      contains('golubResult.aBool = GetNullableObjectAtIndex(list, 0);'),
     );
   });
 
@@ -821,7 +821,7 @@ void main() {
     final String code = sink.toString();
     expect(
       code,
-      contains('pigeonResult.nested = GetNullableObjectAtIndex(list, 0);'),
+      contains('golubResult.nested = GetNullableObjectAtIndex(list, 0);'),
     );
   });
 

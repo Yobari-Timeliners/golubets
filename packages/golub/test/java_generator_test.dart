@@ -888,7 +888,7 @@ void main() {
     expect(code, contains('      this.index = index;'));
 
     expect(code, contains('toListResult.add(enum1);'));
-    expect(code, contains('pigeonResult.setEnum1((Enum1) enum1);'));
+    expect(code, contains('golubResult.setEnum1((Enum1) enum1);'));
   });
 
   test('primitive enum host', () {
@@ -1706,7 +1706,7 @@ void main() {
       code,
       contains(
         RegExp(
-          r'new BasicMessageChannel<>\(\s*binaryMessenger, "dev.flutter.pigeon.test_package.Api.doit" \+ messageChannelSuffix, getCodec\(\), taskQueue\)',
+          r'new BasicMessageChannel<>\(\s*binaryMessenger, "dev.bayori.golub.test_package.Api.doit" \+ messageChannelSuffix, getCodec\(\), taskQueue\)',
         ),
       ),
     );
@@ -1733,7 +1733,7 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final String code = sink.toString();
-    expect(code, contains('@javax.annotation.Generated("dev.flutter.pigeon")'));
+    expect(code, contains('@javax.annotation.Generated("dev.bayori.golub")'));
   });
 
   test('no generated annotation', () {
@@ -1758,7 +1758,7 @@ void main() {
     final String code = sink.toString();
     expect(
       code,
-      isNot(contains('@javax.annotation.Generated("dev.flutter.pigeon")')),
+      isNot(contains('@javax.annotation.Generated("dev.bayori.golub")')),
     );
   });
 
