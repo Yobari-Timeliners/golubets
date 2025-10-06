@@ -231,9 +231,9 @@ ${response.httpResponse.body}
     package.pubspecFile.writeAsStringSync(editablePubspec.toString());
 
     // Do any dependency-specific extra processing.
-    if (dependency == 'golub') {
+    if (dependency == 'golubets') {
       if (!await _regeneratePigeonFiles(package)) {
-        return PackageResult.fail(<String>['Failed to update golub files']);
+        return PackageResult.fail(<String>['Failed to update golubets files']);
       }
     } else if (dependency == 'mockito') {
       if (!await _regenerateMocks(package)) {
@@ -426,7 +426,7 @@ ${response.httpResponse.body}
   Future<bool> _regeneratePigeonFiles(RepositoryPackage package) async {
     final Iterable<File> inputs = _getPigeonInputFiles(package);
     if (inputs.isEmpty) {
-      logWarning('No golub input files found.');
+      logWarning('No golubets input files found.');
       return true;
     }
 
@@ -442,10 +442,10 @@ ${response.httpResponse.body}
       final String relativePath =
           getRelativePosixPath(input, from: package.directory);
       final io.ProcessResult pigeonResult = await processRunner.run(
-          'dart', <String>['run', 'golub', '--input', relativePath],
+          'dart', <String>['run', 'golubets', '--input', relativePath],
           workingDir: package.directory);
       if (pigeonResult.exitCode != 0) {
-        printError('dart run golub failed (${pigeonResult.exitCode}):\n'
+        printError('dart run golubets failed (${pigeonResult.exitCode}):\n'
             '${pigeonResult.stdout}\n${pigeonResult.stderr}\n');
         return false;
       }

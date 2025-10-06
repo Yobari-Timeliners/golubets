@@ -1,0 +1,13 @@
+build/
+xcuserdata/
+.gradle/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+**/.symlinks/
+gradlew
+gradlew.bat
+local.properties
+gradle-wrapper.jar
+bin/golubets.dart.dill
+**/subdirectory/does/not/exist/**

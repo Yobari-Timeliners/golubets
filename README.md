@@ -1,1 +1,1 @@
-![golub](packages/golub/art/golub.jpg)
+![golubets](packages/golub/art/golubets.jpg)
