@@ -403,7 +403,8 @@ dev_dependencies:
       );
     });
 
-    test('warns when regenerating golubets if there are no golubets files', () async {
+    test('warns when regenerating golubets if there are no golubets files',
+        () async {
       final RepositoryPackage package =
           createFakePackage('a_package', packagesDir);
       addDependency(package, 'golubets', version: '1.0.0');

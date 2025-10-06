@@ -16,83 +16,83 @@ struct _MyApplication {
   GtkApplication parent_instance;
   char** dart_entrypoint_arguments;
 
-  GolubExamplePackageMessageFlutterApi* flutter_api;
+  GolubetsExamplePackageMessageFlutterApi* flutter_api;
 };
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
 
 // #docregion vtable
-static GolubExamplePackageExampleHostApiGetHostLanguageResponse*
+static GolubetsExamplePackageExampleHostApiGetHostLanguageResponse*
 handle_get_host_language(gpointer user_data) {
-  return golub_example_package_example_host_api_get_host_language_response_new(
+  return golubets_example_package_example_host_api_get_host_language_response_new(
       "C++");
 }
 
-static GolubExamplePackageExampleHostApiAddResponse* handle_add(
+static GolubetsExamplePackageExampleHostApiAddResponse* handle_add(
     int64_t a, int64_t b, gpointer user_data) {
   if (a < 0 || b < 0) {
     g_autoptr(FlValue) details = fl_value_new_string("details");
-    return golub_example_package_example_host_api_add_response_new_error(
+    return golubets_example_package_example_host_api_add_response_new_error(
         "code", "message", details);
   }
 
-  return golub_example_package_example_host_api_add_response_new(a + b);
+  return golubets_example_package_example_host_api_add_response_new(a + b);
 }
 
 static void handle_send_message(
-    GolubExamplePackageMessageData* message,
-    GolubExamplePackageExampleHostApiResponseHandle* response_handle,
+    GolubetsExamplePackageMessageData* message,
+    GolubetsExamplePackageExampleHostApiResponseHandle* response_handle,
     gpointer user_data) {
-  GolubExamplePackageCode code =
-      golub_example_package_message_data_get_code(message);
+  GolubetsExamplePackageCode code =
+      golubets_example_package_message_data_get_code(message);
   if (code == GOLUB_EXAMPLE_PACKAGE_CODE_ONE) {
     g_autoptr(FlValue) details = fl_value_new_string("details");
-    golub_example_package_example_host_api_respond_error_send_message(
+    golubets_example_package_example_host_api_respond_error_send_message(
         response_handle, "code", "message", details);
     return;
   }
 
-  golub_example_package_example_host_api_respond_send_message(response_handle,
+  golubets_example_package_example_host_api_respond_send_message(response_handle,
                                                               TRUE);
 }
 // #enddocregion vtable
 
 static void handle_send_message_modern_async(
-    GolubExamplePackageMessageData* message,
-    GolubExamplePackageExampleHostApiResponseHandle* response_handle,
+    GolubetsExamplePackageMessageData* message,
+    GolubetsExamplePackageExampleHostApiResponseHandle* response_handle,
     gpointer user_data) {
-  GolubExamplePackageCode code =
-      golub_example_package_message_data_get_code(message);
+  GolubetsExamplePackageCode code =
+      golubets_example_package_message_data_get_code(message);
   if (code == GOLUB_EXAMPLE_PACKAGE_CODE_ONE) {
     g_autoptr(FlValue) details = fl_value_new_string("details");
-    golub_example_package_example_host_api_respond_error_send_message_modern_async(
+    golubets_example_package_example_host_api_respond_error_send_message_modern_async(
         response_handle, "code", "message", details);
     return;
   }
 
-  golub_example_package_example_host_api_respond_send_message_modern_async(
+  golubets_example_package_example_host_api_respond_send_message_modern_async(
       response_handle, TRUE);
 }
 
 static void handle_send_message_modern_async_throws(
-    GolubExamplePackageMessageData* message,
-    GolubExamplePackageExampleHostApiResponseHandle* response_handle,
+    GolubetsExamplePackageMessageData* message,
+    GolubetsExamplePackageExampleHostApiResponseHandle* response_handle,
     gpointer user_data) {
-  GolubExamplePackageCode code =
-      golub_example_package_message_data_get_code(message);
+  GolubetsExamplePackageCode code =
+      golubets_example_package_message_data_get_code(message);
   if (code == GOLUB_EXAMPLE_PACKAGE_CODE_ONE) {
-    golub_example_package_example_host_api_respond_send_message_modern_async_throws(
+    golubets_example_package_example_host_api_respond_send_message_modern_async_throws(
         response_handle, TRUE);
     return;
   }
 
   g_autoptr(FlValue) details = fl_value_new_string("details");
-  golub_example_package_example_host_api_respond_error_send_message_modern_async_throws(
+  golubets_example_package_example_host_api_respond_error_send_message_modern_async_throws(
       response_handle, "code", "message", details);
 }
 
 // #docregion vtable
-static GolubExamplePackageExampleHostApiVTable example_host_api_vtable = {
+static GolubetsExamplePackageExampleHostApiVTable example_host_api_vtable = {
     .get_host_language = handle_get_host_language,
     .add = handle_add,
     .send_message = handle_send_message,
@@ -108,8 +108,8 @@ static void flutter_method_cb(GObject* object, GAsyncResult* result,
                               gpointer user_data) {
   g_autoptr(GError) error = nullptr;
   g_autoptr(
-      GolubExamplePackageMessageFlutterApiFlutterMethodResponse) response =
-      golub_example_package_message_flutter_api_flutter_method_finish(
+      GolubetsExamplePackageMessageFlutterApiFlutterMethodResponse) response =
+      golubets_example_package_message_flutter_api_flutter_method_finish(
           GOLUB_EXAMPLE_PACKAGE_MESSAGE_FLUTTER_API(object), result, &error);
   if (response == nullptr) {
     g_warning("Failed to call Flutter method: %s", error->message);
@@ -118,7 +118,7 @@ static void flutter_method_cb(GObject* object, GAsyncResult* result,
 
   g_printerr(
       "Got result from Flutter method: %s\n",
-      golub_example_package_message_flutter_api_flutter_method_response_get_return_value(
+      golubets_example_package_message_flutter_api_flutter_method_response_get_return_value(
           response));
 }
 // #enddocregion flutter-method-callback
@@ -169,7 +169,7 @@ static void my_application_activate(GApplication* application) {
 
   FlBinaryMessenger* messenger =
       fl_engine_get_binary_messenger(fl_view_get_engine(view));
-  golub_example_package_example_host_api_set_method_handlers(
+  golubets_example_package_example_host_api_set_method_handlers(
       messenger, nullptr, &example_host_api_vtable, self, nullptr);
 
   fl_register_plugins(FL_PLUGIN_REGISTRY(view));
@@ -178,8 +178,8 @@ static void my_application_activate(GApplication* application) {
 
   // #docregion flutter-method
   self->flutter_api =
-      golub_example_package_message_flutter_api_new(messenger, nullptr);
-  golub_example_package_message_flutter_api_flutter_method(
+      golubets_example_package_message_flutter_api_new(messenger, nullptr);
+  golubets_example_package_message_flutter_api_flutter_method(
       self->flutter_api, "hello", nullptr, flutter_method_cb, self);
   // #enddocregion flutter-method
 }
