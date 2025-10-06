@@ -299,8 +299,8 @@ static void handle_send_message(
     return;
   }
 
-  golubets_example_package_example_host_api_respond_send_message(response_handle,
-                                                              TRUE);
+  golubets_example_package_example_host_api_respond_send_message(
+      response_handle, TRUE);
 }
 // ···
 static GolubetsExamplePackageExampleHostApiVTable example_host_api_vtable = {
@@ -415,7 +415,7 @@ static void flutter_method_cb(GObject* object, GAsyncResult* result,
   g_autoptr(
       GolubetsExamplePackageMessageFlutterApiFlutterMethodResponse) response =
       golubets_example_package_message_flutter_api_flutter_method_finish(
-          GOLUB_EXAMPLE_PACKAGE_MESSAGE_FLUTTER_API(object), result, &error);
+          GOLUBEST_EXAMPLE_PACKAGE_MESSAGE_FLUTTER_API(object), result, &error);
   if (response == nullptr) {
     g_warning("Failed to call Flutter method: %s", error->message);
     return;
