@@ -1,7 +1,5 @@
 <div align="center">
   <img width="400" height="400" alt="Golubets Logo" src="https://github.com/user-attachments/assets/737f08b3-dfc6-4eee-8522-9df449c0e9d1" />
-
-  # 🚀 Golubets
   
   **Enhanced Flutter Platform Communication**
   
