@@ -1,82 +1,156 @@
 <div align="center">
-  <img width="400" height="400" alt="eefdb69f-7b09-4fa7-a7c0-d25d4f22d9cc (1)" src="https://github.com/user-attachments/assets/737f08b3-dfc6-4eee-8522-9df449c0e9d1" />
+  <img width="400" height="400" alt="Golubets Logo" src="https://github.com/user-attachments/assets/737f08b3-dfc6-4eee-8522-9df449c0e9d1" />
+  
+  **Enhanced Flutter Platform Communication**
+  
+  *The modern, feature-rich alternative to [Pigeon](https://pub.dev/packages/pigeon) that just works better.*
+
+  [![Pub Version](https://img.shields.io/pub/v/golubets)](https://pub.dev/packages/golubets)
+  [![License](https://img.shields.io/badge/license-BSD--3--Clause-blue)](LICENSE)
+  [![Contributors Welcome](https://img.shields.io/badge/contributors-welcome-brightgreen)](CONTRIBUTING.md)
+  [![Community](https://img.shields.io/badge/community-friendly-orange)](../../discussions)
+
 </div>
 
-## Golubets: A Community-Driven Fork of [Pigeon](https://pub.dev/packages/pigeon)
+Golubets is a powerful code generator for type-safe communication between Flutter and native platforms. Built as a community-driven fork of [Pigeon](https://pub.dev/packages/pigeon), it delivers the advanced features developers have been asking for, with a smoother development experience.
 
-Welcome to Golubets, a fork of the Pigeon Flutter library. Our mission is to be a better, more open, and community-focused alternative—or at least give it a damn good try!
+## ✨ Why Choose Golubets?
 
-For usage examples, see the [Example README](./example/README.md).
+### 🎯 **Enhanced Features**
+- **Default Parameters** - Cleaner APIs with optional parameters (Swift & Kotlin)
+- **True Async Support** - Modern Swift concurrency & Kotlin coroutines 
+- **Generics** - Type-safe collections like `List<T>`, `Map<K, V>`
+- **Advanced Sealed classes** - Swift enums, Kotlin nested types
+- **Rock Solid** - All the reliability of Pigeon, with bugs fixed
 
-## Why Golubets Exists
+### 🤝 **Developer Experience** 
+- **Community-First** - Your feedback shapes our roadmap
+- **Quick Onboarding** - Get running in minutes, not hours
+- **Clear Documentation** - Examples that actually work
+- **Responsive Support** - Issues get attention, not ignored
 
-Pigeon is a great tool, but it's got some baggage. The community's voice often goes unheard, with a backlog of valuable issues left to gather dust. Features that make sense—logical, solid additions—are sometimes dismissed because they don't align with the maintainers' vision. That's not how open source should roll.
+### 🌟 **Feature Highlights**
 
-Contributing to Pigeon can feel like running into a buzzsaw. Expect endless code review cycles, nitpicky comments, and a vibe that's occasionally toxic. We've been there: maintainers forgetting their own codebase, clashing with each other, or demanding changes that don't hold up under scrutiny (only to later ask you to undo them). It's a frustrating loop of "do this, no wait, undo it, now do this instead." The result? A single pull request for a simple feature can spiral into an infinite, soul-crushing saga.
-
-Golubets is here to change that. We're building a fork that's welcoming, collaborative, and free from the gatekeeping and "maintainer == god" mentality. No toxic reviews. No air-shaking nonsense. Just a focus on great ideas and clean code.
-
-## Our Goals
-
-- Community First: We listen to your issues, feature requests, and ideas. If it makes sense, we’ll work together to make it happen.
-
-- Sane Contribution Process: Pull requests should be a conversation, not a battle. We aim for clear, constructive feedback without the endless back-and-forth.
-
-- Innovation Welcome: Got a bold idea for improving Golubets? Bring it on! We’re open to fresh perspectives and new features.
-
-- Transparency: No hidden agendas. We’ll document decisions and keep the community in the loop.
-
-## Contributing
-
-We’re thrilled to have you on board! Whether you’re fixing bugs, adding features, or improving docs, your contributions matter. Here’s how to get started:
-
-Check out our Contributing Guidelines for the nitty-gritty.
-
-Browse open issues or submit your own.
-
-Submit a pull request with clear descriptions and tests (where applicable).
-
-Expect respectful, constructive feedback—no toxicity, no nonsense.
-
-Got a spicy idea or a feature that could make Golubets soar? Open an issue or ping us in discussions. We’re all ears!
+| Feature | Golubets | Pigeon |
+|---------|----------|---------|
+| Default Parameters | ✅ | ❌ |
+| Swift Async/Await | ✅ | ❌ |
+| Kotlin Coroutines | ✅ | ❌ |
+| Generics Support | ✅ | ❌ |
+| Kotlin Nested Sealed Classes | ✅ | ❌ |
+| Swift enums | ✅ | ❌ |
+| Community Contributions | ✅ Welcome! | 😕 Challenging |
 
 
-## Features
 
-### Supported Platforms
+## 🚀 Quick Start
 
-Currently Golubets supports generating:
-* Kotlin and Java code for Android
-* Swift and Objective-C code for iOS and macOS
-* C++ code for Windows
-* GObject code for Linux
+Get up and running with Golubets in under 5 minutes:
 
-### Supported Datatypes
+```bash
+# 1. Add to your Flutter project
+flutter pub add --dev golubets
 
-Golubets uses the `StandardMessageCodec` so it supports
-[any datatype platform channels support](https://flutter.dev/to/platform-channels-codec).
+# 2. Create your API definition (e.g., golubtsi/api.dart)
+# 3. Generate platform code  
+dart run golubets --input golubtsi/api.dart
 
-Custom classes, nested datatypes, and enums are also supported.
+# 4. Implement the generated interfaces in your native code
+# 5. Start using type-safe platform communication!
+```
 
-Basic inheritance with empty `sealed` parent classes is allowed only in the Swift, Kotlin, and Dart generators.
+👀 **Want to see it in action?** Check out our [complete example](./example/README.md) with working iOS, Android, and desktop implementations.
 
-Nullable enums in Objective-C generated code will be wrapped in a class to allow for nullability.
+## 🌟 The Golubets Difference
 
-By default, custom classes in Swift are defined as structs.
-Structs don't support some features - recursive data, or Objective-C interop.
-Use the @SwiftClass annotation when defining the class to generate the data
-as a Swift class instead.
+While Pigeon pioneered type-safe Flutter platform communication, the ecosystem has evolved. Developers need modern language features, faster iteration cycles, and responsive community support.
 
-### Synchronous and Asynchronous methods
+**Golubets delivers exactly that:**
 
-While all calls across platform channel APIs (such as Golubets methods) are asynchronous,
-Golubets methods can be written on the native side as synchronous methods,
-to make it simpler to always reply exactly once.
+- **Modern Language Support** - Embrace Swift concurrency, Kotlin coroutines, and generics
+- **Faster Development** - Default parameters reduce boilerplate
+- **Community-Driven** - Features are prioritized based on real developer needs
+- **Contributor-Friendly** - Clear guidelines, helpful reviews, and welcoming maintainers
 
-If asynchronous methods are needed, the `@async` annotation can be used. This will require
-results or errors to be returned via a provided callback. [Example](./example/README.md#HostApi_Example). 
+We believe great tools should empower developers, not frustrate them. Golubets is built on the solid foundation of Pigeon while addressing the gaps that matter most to modern Flutter development.
 
-If preferred, Swift concurrency and Kotlin coroutines may be generated instead of callbacks by using `@Async`. Additionally, whether the Swift method can throw an exception can be specified using the `isSwiftThrows` parameter. [Example](./example/README.md#HostApi_Example).
+## 🎯 Our Mission
+
+**Building the Flutter platform communication tool developers actually want to be part of.**
+
+- **🎧 Community First** - Your feedback directly shapes our roadmap. Real issues get real solutions.
+- **⚡ Smooth Contributions** - PRs are collaborative conversations, not battles. Get helpful reviews, not gatekeeping.
+- **🚀 Innovation Welcome** - Bold ideas and fresh perspectives drive us forward. Let's build something amazing together.
+- **📖 Full Transparency** - Open decisions, clear documentation, and honest communication. Always.
+
+## 🤝 Join the Community
+
+Ready to contribute? We'd love to have you aboard! 
+
+#### Quick Contribution Guide
+1. 📋 **Browse [open issues](https://github.com/Yobari-Timeliners/golubets/issues)** or create your own
+2. 💬 **Discuss your approach** - we're here to help plan it out  
+3. 🔨 **Submit your PR** with clear descriptions and tests
+4. ✅ **Get constructive feedback** - we're rooting for your success!
+
+#### Ways to Help
+- 🐛 **Fix bugs** - Every bug squashed makes Golubets better
+- ✨ **Add features** - Implement those [missing pieces](https://github.com/flutter/flutter/issues?q=is%3Aissue+is%3Aopen+label%3A%22p%3A+pigeon%22) developers need
+- 📝 **Improve docs** - Help others discover and use Golubets effectively
+- 🗣️ **Share feedback** - Tell us what's working and what could be better
+
+**Got a game-changing idea?** Don't hesitate to [start a discussion](https://github.com/Yobari-Timeliners/golubets/issues) - we're excited to explore new possibilities!
+
+
+## 🛠️ Comprehensive Platform Support
+
+**One API definition, native code for every platform.**
+
+### 📱 **Mobile & Desktop Ready**
+- **🤖 Android** - Kotlin & Java with modern language features
+- **🍎 iOS/macOS** - Swift & Objective-C with async/await support  
+- **🪟 Windows** - Native C++ integration
+- **🐧 Linux** - GObject bindings
+
+### 🎯 **Rich Type System**
+
+**Express complex data structures with confidence.**
+
+- **🔤 All Standard Types** - Strings, numbers, booleans, lists, maps - [full Flutter codec support](https://flutter.dev/to/platform-channels-codec)
+- **🏗️ Custom Classes** - Define your own data types with automatic serialization
+- **📊 Enums & Sealed Classes** - Type-safe state management (Swift/Kotlin) 
+- **🔗 Generics** - `List<T>`, `Map<K, V>` - fully type-safe collections
+- **❓ Nullability** - Proper null safety across all platforms
+- **🧬 Inheritance** - Sealed parent classes for polymorphic APIs
+
+**Pro Tips:**
+- Use `@SwiftClass` for Objective-C interop when needed
+- Nullable enums automatically wrapped for Objective-C compatibility
+
+### ⚡ **Modern Async Support**
+
+**Choose the concurrency model that fits your platform.**
+
+- **🔄 Synchronous Methods** - Simple, straightforward APIs for immediate responses
+- **📞 Callback-Based** - Traditional async with `@async` annotation  
+- **🚀 Modern Concurrency** - Swift async/await and Kotlin coroutines with `@Async`
+- **⚠️ Error Handling** - Configurable exception throwing with `isSwiftThrows`
+
+```dart
+// Choose your async style
+@HostApi()
+abstract class MyApi {
+  String syncMethod(); // Immediate response
+
+  @async 
+  void callbackMethod(); // Traditional callbacks  
+
+  @Async(type: AsyncType.await(isSwiftThrows: false))
+  Future<String> modernMethod();  // Swift async and Kotlin coroutines
+}
+```
+
+[📖 See complete examples](./example/README.md#HostApi_Example)
 
 ### Error Handling
 
@@ -104,38 +178,117 @@ For async methods:
 * Return a `FlutterError` through the provided callback.
 
 
-### Task Queue
+### ⚙️ **Advanced Features**
 
-When targeting a Flutter version that supports the
-[TaskQueue API](https://docs.flutter.dev/development/platform-integration/platform-channels?tab=type-mappings-kotlin-tab#channels-and-platform-threading)
-the threading model for handling HostApi methods can be selected with the
-`TaskQueue` annotation.
+**Enterprise-grade capabilities for complex applications.**
 
-### Multi-Instance Support
+#### **🧵 Task Queue Support**
+Control threading behavior with the `TaskQueue` annotation for specifying [threading model](https://docs.flutter.dev/platform-integration/platform-channels?tab=type-mappings-kotlin-tab#channels-and-platform-threading):
+```dart
+@HostApi()
+abstract class BackgroundApi {
+  @TaskQueue(type: TaskQueueType.serialBackgroundThread)
+  @Async(type: AsyncType.await())
+  void doStuffAtBackground();
+}
+```
 
-Host and Flutter APIs now support the ability to provide a unique message channel suffix string
-to the api to allow for multiple instances to be created and operate in parallel.
+#### **🔄 Multi-Instance APIs** 
+Create multiple API instances with unique channels for independent operations:
+```dart
+final api1 = MyApi(messageChannelSuffix: 'instance1');
+final api2 = MyApi(messageChannelSuffix: 'instance2');
+// Both operate independently!
+```
 
-### Default values
+### 🎛️ **Default Parameters (Swift & Kotlin)**
 
-Default values are supported in class constructors for Swift and Kotlin platforms. This feature allows you to specify default parameter values that will be automatically generated in the native platform code, making your APIs more convenient to use.
+**Cleaner APIs with sensible defaults - just like native code should be.**
 
-[Example](./example/README.md#Dart_input)
+dart:
+```dart
+class UserPreferences {
+  const UserPreferences({
+    required this.userId,
+    this.theme = 'light', // Generated with default in Swift/Kotlin
+    this.notifications = true, // No more verbose constructors!
+    this.language = 'en',
+  });
 
-**How it works:**
-- Define default values directly in Dart class constructors using named parameters with default values
-- Golubets generates native code that respects these defaults on Swift and Kotlin platforms
-- Supported for all basic types (bool, int, double, String), enums, objects, and collections
+  final String userId;
+  final String theme;
+  final bool notifications;
+  final String language;
+}
+```
 
-### Generics
+swift:
+```swift
+public struct UserPreferences: Hashable {
+  public init(
+    userId: String,
+    theme: String = "light",
+    notifications: Bool = true,
+    language: String = "en"
+  ) {
+    self.userId = userId
+    self.theme = theme
+    self.notifications = notifications
+    self.language = language
+  }
+  let userId: String
+  let theme: String
+  let notifications: Bool
+  let language: String
+}
+```
 
-Generic types are fully supported for Swift and Kotlin platforms, allowing you to create type-safe collections and complex data structures. Golubets automatically translates Dart's generic syntax to the appropriate platform-specific equivalent.
+kotlin:
+```kotlin
+data class UserPreferences (
+  val userId: String,
+  val theme: String = "light",
+  val notifications: Boolean = true,
+  val language: String = "en"
+)
+```
 
-**Supported generic types:**
-- `List<T>` - Arrays/Lists with typed elements
-- `Map<K, V>` - Dictionaries/Maps with typed keys and values  
-- Nested generics like `List<Map<String, int>>` or `Map<String, List<User>>`
-- Nullable generic types like `List<String?>` or `Map<String?, User?>`
+**Benefits:**
+- 📝 **Less Boilerplate** - Fewer required parameters in native calls
+- 🎯 **Better APIs** - More intuitive, optional parameters where they make sense  
+- 🔄 **Full Type Support** - Works with primitives, enums, objects, and collections
+
+[📖 See working example](./example/README.md#Dart_input)
+
+### 🧩 **Generics (Swift & Kotlin)**
+
+**Type-safe collections that actually work across platforms.**
+
+```dart
+sealed class SomeResult<R, E> {
+  const SomeResult();
+}
+
+class Success<R, E> extends Result<R, E> {
+  const Success(this.value);
+  final R value;
+}
+
+class Error<R, E> extends Result<R, E> {
+  const Error(this.error);
+  final E error;
+}
+
+@HostApi()
+abstract class ExampleHostApi {
+  SomeResult<List<int>, String> generateNumbers();
+}
+```
+
+**Supported:**
+- ✅ `List<T>`, `Map<K, V>` - Basic collections
+- ✅ `List<Map<K, V>>` - Complex nested structures  
+- ✅ `Map<K?, List<V?>>` - Nullable generics
 
 
 ## Usage
