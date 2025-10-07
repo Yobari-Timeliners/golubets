@@ -17,7 +17,7 @@ import 'generator.dart';
 /// The current version of golubets.
 ///
 /// This must match the version in pubspec.yaml.
-const String golubetsVersion = '1.0.0+1';
+const String golubetsVersion = '1.0.0+2';
 
 /// Read all the content from [stdin] to a String.
 String readStdin() {
