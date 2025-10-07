@@ -89,13 +89,13 @@ We believe great tools should empower developers, not frustrate them. Golubets i
 
 Ready to contribute? We'd love to have you aboard! 
 
-### Quick Contribution Guide
+#### Quick Contribution Guide
 1. 📋 **Browse [open issues](https://github.com/Yobari-Timeliners/golubets/issues)** or create your own
 2. 💬 **Discuss your approach** - we're here to help plan it out  
 3. 🔨 **Submit your PR** with clear descriptions and tests
 4. ✅ **Get constructive feedback** - we're rooting for your success!
 
-### Ways to Help
+#### Ways to Help
 - 🐛 **Fix bugs** - Every bug squashed makes Golubets better
 - ✨ **Add features** - Implement those [missing pieces](https://github.com/flutter/flutter/issues?q=is%3Aissue+is%3Aopen+label%3A%22p%3A+pigeon%22) developers need
 - 📝 **Improve docs** - Help others discover and use Golubets effectively
