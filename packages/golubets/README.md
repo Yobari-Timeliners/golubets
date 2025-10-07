@@ -269,12 +269,12 @@ sealed class SomeResult<R, E> {
   const SomeResult();
 }
 
-class Success<R, E> extends Result<R, E> {
+class Success<R, E> extends SomeResult<R, E> {
   const Success(this.value);
   final R value;
 }
 
-class Error<R, E> extends Result<R, E> {
+class Error<R, E> extends SomeResult<R, E> {
   const Error(this.error);
   final E error;
 }
