@@ -149,11 +149,6 @@ class InstanceManagerTest {
     assertFalse(finalizerRan)
   }
 
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/android/src/test/kotlin/com/example/test_plugin/InstanceManagerTest.kt
-  private fun createInstanceManager(): ProxyApiTestsGolubetsInstanceManager {
-    return ProxyApiTestsGolubetsInstanceManager.create(
-        object : ProxyApiTestsGolubetsInstanceManager.GolubetsFinalizationListener {
-=======
   @Test
   fun containsInstanceAndGetIdentifierForStrongReferenceUseIdentityComparison() {
     val instanceManager: ProxyApiTestsPigeonInstanceManager = createInstanceManager()
@@ -239,10 +234,9 @@ class InstanceManagerTest {
     assertFalse(reference1 == reference2)
   }
 
-  private fun createInstanceManager(): ProxyApiTestsPigeonInstanceManager {
-    return ProxyApiTestsPigeonInstanceManager.create(
-        object : ProxyApiTestsPigeonInstanceManager.PigeonFinalizationListener {
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/android/src/test/kotlin/com/example/test_plugin/InstanceManagerTest.kt
+  private fun createInstanceManager(): ProxyApiTestsGolubetsInstanceManager {
+    return ProxyApiTestsGolubetsInstanceManager.create(
+        object : ProxyApiTestsGolubetsInstanceManager.GolubetsFinalizationListener {
           override fun onFinalize(identifier: Long) {}
         })
   }

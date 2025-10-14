@@ -492,44 +492,34 @@ private class ProxyApiTestsGolubetsProxyApiBaseCodec(
 
     fun logNewInstanceFailure(apiName: String, value: Any, exception: Throwable?) {
       Log.w(
-          "PigeonProxyApiBaseCodec",
+          "GolubetsProxyApiBaseCodec",
           "Failed to create new Dart proxy instance of $apiName: $value. $exception")
     }
 
     if (value is ProxyApiTestClass) {
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/ProxyApiTests.gen.kt
-      registrar.getGolubetsApiProxyApiTestClass().golubets_newInstance(value) {}
-    } else if (value is com.example.test_plugin.ProxyApiSuperClass) {
-      registrar.getGolubetsApiProxyApiSuperClass().golubets_newInstance(value) {}
-    } else if (value is ProxyApiInterface) {
-      registrar.getGolubetsApiProxyApiInterface().golubets_newInstance(value) {}
-    } else if (android.os.Build.VERSION.SDK_INT >= 25 && value is ClassWithApiRequirement) {
-      registrar.getGolubetsApiClassWithApiRequirement().golubets_newInstance(value) {}
-=======
-      registrar.getPigeonApiProxyApiTestClass().pigeon_newInstance(value) {
+      registrar.getGolubetsApiProxyApiTestClass().golubets_newInstance(value) {
         if (it.isFailure) {
           logNewInstanceFailure("ProxyApiTestClass", value, it.exceptionOrNull())
         }
       }
     } else if (value is com.example.test_plugin.ProxyApiSuperClass) {
-      registrar.getPigeonApiProxyApiSuperClass().pigeon_newInstance(value) {
+      registrar.getGolubetsApiProxyApiSuperClass().golubets_newInstance(value) {
         if (it.isFailure) {
           logNewInstanceFailure("ProxyApiSuperClass", value, it.exceptionOrNull())
         }
       }
     } else if (value is ProxyApiInterface) {
-      registrar.getPigeonApiProxyApiInterface().pigeon_newInstance(value) {
+      registrar.getGolubetsApiProxyApiInterface().golubets_newInstance(value) {
         if (it.isFailure) {
           logNewInstanceFailure("ProxyApiInterface", value, it.exceptionOrNull())
         }
       }
     } else if (android.os.Build.VERSION.SDK_INT >= 25 && value is ClassWithApiRequirement) {
-      registrar.getPigeonApiClassWithApiRequirement().pigeon_newInstance(value) {
+      registrar.getGolubetsApiClassWithApiRequirement().golubets_newInstance(value) {
         if (it.isFailure) {
           logNewInstanceFailure("ClassWithApiRequirement", value, it.exceptionOrNull())
         }
       }
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/ProxyApiTests.gen.kt
     }
 
     when {
