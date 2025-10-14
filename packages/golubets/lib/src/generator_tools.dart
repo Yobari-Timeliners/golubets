@@ -17,7 +17,11 @@ import 'generator.dart';
 /// The current version of golubets.
 ///
 /// This must match the version in pubspec.yaml.
+<<<<<<< HEAD:packages/golubets/lib/src/generator_tools.dart
 const String golubetsVersion = '1.0.0+3';
+=======
+const String pigeonVersion = '26.0.2';
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/generator_tools.dart
 
 /// Read all the content from [stdin] to a String.
 String readStdin() {
