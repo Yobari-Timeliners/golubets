@@ -1336,7 +1336,7 @@ if (wrapped == null) {
             indent.format('''
               fun logNewInstanceFailure(apiName: String, value: Any, exception: Throwable?) {
                 Log.w(
-                  "${proxyApiCodecName(const InternalKotlinOptions(kotlinOut: ''))}",
+                  "${proxyApiCodecName(const InternalKotlinOptions(kotlinOut: '')).take(_maxLogTagLength)}",
                   "Failed to create new Dart proxy instance of \$apiName: \$value. \$exception"
                 )
               }
