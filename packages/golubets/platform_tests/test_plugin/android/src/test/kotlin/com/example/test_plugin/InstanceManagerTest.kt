@@ -151,7 +151,7 @@ class InstanceManagerTest {
 
   @Test
   fun containsInstanceAndGetIdentifierForStrongReferenceUseIdentityComparison() {
-    val instanceManager: ProxyApiTestsPigeonInstanceManager = createInstanceManager()
+    val instanceManager: ProxyApiTestsGolubetsInstanceManager = createInstanceManager()
     instanceManager.stopFinalizationListener()
 
     // Create two objects that are equal.
@@ -173,7 +173,7 @@ class InstanceManagerTest {
 
   @Test
   fun addingTwoDartCreatedInstancesThatAreEqual() {
-    val instanceManager: ProxyApiTestsPigeonInstanceManager = createInstanceManager()
+    val instanceManager: ProxyApiTestsGolubetsInstanceManager = createInstanceManager()
     instanceManager.stopFinalizationListener()
 
     // Create two objects that are equal.
@@ -196,15 +196,15 @@ class InstanceManagerTest {
     val testObject = Any()
 
     assertEquals(
-        ProxyApiTestsPigeonInstanceManager.IdentityWeakReference(testObject),
-        ProxyApiTestsPigeonInstanceManager.IdentityWeakReference(testObject))
+        ProxyApiTestsGolubetsInstanceManager.IdentityWeakReference(testObject),
+        ProxyApiTestsGolubetsInstanceManager.IdentityWeakReference(testObject))
   }
 
   @Test
   fun identityWeakReferenceRemainsEqualAfterGetReturnsNull() {
     var testObject: Any? = Any()
 
-    val reference = ProxyApiTestsPigeonInstanceManager.IdentityWeakReference(testObject!!)
+    val reference = ProxyApiTestsGolubetsInstanceManager.IdentityWeakReference(testObject!!)
 
     // To allow for object to be garbage collected.
     @Suppress("UNUSED_VALUE")
@@ -220,8 +220,8 @@ class InstanceManagerTest {
     var testObject1: Any? = Any()
     var testObject2: Any? = Any()
 
-    val reference1 = ProxyApiTestsPigeonInstanceManager.IdentityWeakReference(testObject1!!)
-    val reference2 = ProxyApiTestsPigeonInstanceManager.IdentityWeakReference(testObject2!!)
+    val reference1 = ProxyApiTestsGolubetsInstanceManager.IdentityWeakReference(testObject1!!)
+    val reference2 = ProxyApiTestsGolubetsInstanceManager.IdentityWeakReference(testObject2!!)
 
     // To allow for object to be garbage collected.
     @Suppress("UNUSED_VALUE")
