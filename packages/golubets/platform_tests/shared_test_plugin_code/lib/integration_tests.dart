@@ -1064,8 +1064,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       (WidgetTester _) async {
         final HostIntegrationCoreApi api = HostIntegrationCoreApi();
 
-        final AllTypesWithDefaults createdObject =
-            await api.createAllTypesWithDefaults();
+        final AllTypesWithDefaults createdObject = await api
+            .createAllTypesWithDefaults();
 
         // Verify basic field defaults
         expect(createdObject.aBool, false);
@@ -1306,8 +1306,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
         final HostIntegrationCoreApi api = HostIntegrationCoreApi();
 
         // Create object with defaults on the platform side
-        final AllTypesWithDefaults platformDefaults =
-            await api.createAllTypesWithDefaults();
+        final AllTypesWithDefaults platformDefaults = await api
+            .createAllTypesWithDefaults();
 
         // Echo it back to ensure serialization works
         final AllTypesWithDefaults echoedDefaults = await api
@@ -3365,8 +3365,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
     testWidgets('callFlutterEchoProxyApiMap', (_) async {
       final ProxyApiTestClass api = _createGenericProxyApiTestClass(
-        flutterEchoProxyApiMap:
-            (_, Map<String?, ProxyApiTestClass?> aMap) => aMap,
+        flutterEchoProxyApiMap: (_, Map<String?, ProxyApiTestClass?> aMap) =>
+            aMap,
       );
 
       final Map<String?, ProxyApiTestClass?> value =
@@ -3469,8 +3469,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
     testWidgets('callFlutterEchoNullableProxyApi', (_) async {
       final ProxyApiTestClass api = _createGenericProxyApiTestClass(
-        flutterEchoNullableProxyApi:
-            (_, ProxyApiSuperClass? aProxyApi) => aProxyApi,
+        flutterEchoNullableProxyApi: (_, ProxyApiSuperClass? aProxyApi) =>
+            aProxyApi,
       );
 
       expect(await api.callFlutterEchoNullableProxyApi(null), null);
@@ -4215,14 +4215,15 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
         final GenericContainer<
           GenericsAllNullableTypesTyped<String, int, double>
         >
-        input = GenericContainer<
-          GenericsAllNullableTypesTyped<String, int, double>
-        >(
-          value: typedInput,
-          values: <GenericsAllNullableTypesTyped<String, int, double>>[
-            typedInput,
-          ],
-        );
+        input =
+            GenericContainer<
+              GenericsAllNullableTypesTyped<String, int, double>
+            >(
+              value: typedInput,
+              values: <GenericsAllNullableTypesTyped<String, int, double>>[
+                typedInput,
+              ],
+            );
         final GenericContainer<
           GenericsAllNullableTypesTyped<String, int, double>
         >
@@ -4368,14 +4369,15 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
         final GenericContainer<
           GenericsAllNullableTypesTyped<String, int, double>
         >
-        input = GenericContainer<
-          GenericsAllNullableTypesTyped<String, int, double>
-        >(
-          value: typedInput,
-          values: <GenericsAllNullableTypesTyped<String, int, double>>[
-            typedInput,
-          ],
-        );
+        input =
+            GenericContainer<
+              GenericsAllNullableTypesTyped<String, int, double>
+            >(
+              value: typedInput,
+              values: <GenericsAllNullableTypesTyped<String, int, double>>[
+                typedInput,
+              ],
+            );
         final GenericContainer<
           GenericsAllNullableTypesTyped<String, int, double>
         >
@@ -4760,16 +4762,17 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
         final GenericContainer<
           GenericsAllNullableTypesTyped<String, int, double>
         >
-        sentContainer = GenericContainer<
-          GenericsAllNullableTypesTyped<String, int, double>
-        >(
-          value: GenericsAllNullableTypesTyped<String, int, double>(
-            aNullableString: 'container',
-            aNullableInt: 100,
-            aNullableDouble: 2.71,
-          ),
-          values: <GenericsAllNullableTypesTyped<String, int, double>>[],
-        );
+        sentContainer =
+            GenericContainer<
+              GenericsAllNullableTypesTyped<String, int, double>
+            >(
+              value: GenericsAllNullableTypesTyped<String, int, double>(
+                aNullableString: 'container',
+                aNullableInt: 100,
+                aNullableDouble: 2.71,
+              ),
+              values: <GenericsAllNullableTypesTyped<String, int, double>>[],
+            );
         final GenericContainer<
           GenericsAllNullableTypesTyped<String, int, double>
         >
@@ -4878,8 +4881,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       ) async {
         final HostGenericApi api = HostGenericApi();
 
-        final GenericContainer<Either<String, int>> result =
-            await api.callFlutterReturnGenericDefaultsEitherLeft();
+        final GenericContainer<Either<String, int>> result = await api
+            .callFlutterReturnGenericDefaultsEitherLeft();
         expect(
           result.value,
           predicate((Left<String, int> v) => v.value == 'default-left'),
@@ -4892,8 +4895,8 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       ) async {
         final HostGenericApi api = HostGenericApi();
 
-        final GenericContainer<Either<String, int>> result =
-            await api.callFlutterReturnGenericDefaultsEitherRight();
+        final GenericContainer<Either<String, int>> result = await api
+            .callFlutterReturnGenericDefaultsEitherRight();
         expect(result.value, predicate((Right<String, int> v) => v.value == 2));
         expect(result.values.length, 2);
       });
