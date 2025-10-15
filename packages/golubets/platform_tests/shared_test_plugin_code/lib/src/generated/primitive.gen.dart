@@ -62,8 +62,9 @@ class PrimitiveHostApi {
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
   }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix =
-           messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+           ? '.$messageChannelSuffix'
+           : '';
   final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
@@ -386,8 +387,9 @@ abstract class PrimitiveFlutterApi {
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
   }) {
-    messageChannelSuffix =
-        messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty
+        ? '.$messageChannelSuffix'
+        : '';
     {
       final BasicMessageChannel<Object?>
       golubetsVar_channel = BasicMessageChannel<Object?>(
@@ -643,8 +645,8 @@ abstract class PrimitiveFlutterApi {
             'Argument for dev.bayori.golubets.golubets_integration_tests.PrimitiveFlutterApi.aBoolList was null.',
           );
           final List<Object?> args = (message as List<Object?>?)!;
-          final List<bool?>? arg_value =
-              (args[0] as List<Object?>?)?.cast<bool?>();
+          final List<bool?>? arg_value = (args[0] as List<Object?>?)
+              ?.cast<bool?>();
           assert(
             arg_value != null,
             'Argument for dev.bayori.golubets.golubets_integration_tests.PrimitiveFlutterApi.aBoolList was null, expected non-null List<bool?>.',

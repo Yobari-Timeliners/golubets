@@ -62,8 +62,9 @@ class NullableReturnHostApi {
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
   }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix =
-           messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+           ? '.$messageChannelSuffix'
+           : '';
   final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
@@ -108,8 +109,9 @@ abstract class NullableReturnFlutterApi {
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
   }) {
-    messageChannelSuffix =
-        messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty
+        ? '.$messageChannelSuffix'
+        : '';
     {
       final BasicMessageChannel<Object?>
       golubetsVar_channel = BasicMessageChannel<Object?>(
@@ -145,8 +147,9 @@ class NullableArgHostApi {
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
   }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix =
-           messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+           ? '.$messageChannelSuffix'
+           : '';
   final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
@@ -196,8 +199,9 @@ abstract class NullableArgFlutterApi {
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
   }) {
-    messageChannelSuffix =
-        messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty
+        ? '.$messageChannelSuffix'
+        : '';
     {
       final BasicMessageChannel<Object?>
       golubetsVar_channel = BasicMessageChannel<Object?>(
@@ -239,8 +243,9 @@ class NullableCollectionReturnHostApi {
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
   }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix =
-           messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+           ? '.$messageChannelSuffix'
+           : '';
   final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
@@ -285,8 +290,9 @@ abstract class NullableCollectionReturnFlutterApi {
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
   }) {
-    messageChannelSuffix =
-        messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty
+        ? '.$messageChannelSuffix'
+        : '';
     {
       final BasicMessageChannel<Object?>
       golubetsVar_channel = BasicMessageChannel<Object?>(
@@ -322,8 +328,9 @@ class NullableCollectionArgHostApi {
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
   }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix =
-           messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+           ? '.$messageChannelSuffix'
+           : '';
   final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
@@ -373,8 +380,9 @@ abstract class NullableCollectionArgFlutterApi {
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
   }) {
-    messageChannelSuffix =
-        messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty
+        ? '.$messageChannelSuffix'
+        : '';
     {
       final BasicMessageChannel<Object?>
       golubetsVar_channel = BasicMessageChannel<Object?>(
@@ -391,8 +399,8 @@ abstract class NullableCollectionArgFlutterApi {
             'Argument for dev.bayori.golubets.golubets_integration_tests.NullableCollectionArgFlutterApi.doit was null.',
           );
           final List<Object?> args = (message as List<Object?>?)!;
-          final List<String?>? arg_x =
-              (args[0] as List<Object?>?)?.cast<String?>();
+          final List<String?>? arg_x = (args[0] as List<Object?>?)
+              ?.cast<String?>();
           try {
             final List<String?> output = api.doit(arg_x);
             return wrapResponse(result: output);

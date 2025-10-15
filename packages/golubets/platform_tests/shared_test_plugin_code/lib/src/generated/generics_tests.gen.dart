@@ -197,8 +197,8 @@ class NestedGeneric<T, K, V> {
     return NestedGeneric<T, K, V>(
       container: (result[0] as GenericContainer<T>?)!,
       pairs: (result[1] as List<Object?>?)!.cast<GenericPair<K, V>>(),
-      nestedMap:
-          (result[2] as Map<Object?, Object?>?)!.cast<T, GenericContainer<K>>(),
+      nestedMap: (result[2] as Map<Object?, Object?>?)!
+          .cast<T, GenericContainer<K>>(),
       listOfMaps: (result[3] as List<Object?>?)!.cast<Map<Object?, Object?>>(),
     );
   }
@@ -373,15 +373,13 @@ class GenericsAllTypes {
       map: result[21]! as Map<Object?, Object?>,
       stringMap: (result[22] as Map<Object?, Object?>?)!.cast<String, String>(),
       intMap: (result[23] as Map<Object?, Object?>?)!.cast<int, int>(),
-      enumMap:
-          (result[24] as Map<Object?, Object?>?)!
-              .cast<GenericsAnEnum, GenericsAnEnum>(),
+      enumMap: (result[24] as Map<Object?, Object?>?)!
+          .cast<GenericsAnEnum, GenericsAnEnum>(),
       objectMap: (result[25] as Map<Object?, Object?>?)!.cast<Object, Object>(),
-      listMap:
-          (result[26] as Map<Object?, Object?>?)!.cast<int, List<Object?>>(),
-      mapMap:
-          (result[27] as Map<Object?, Object?>?)!
-              .cast<int, Map<Object?, Object?>>(),
+      listMap: (result[26] as Map<Object?, Object?>?)!
+          .cast<int, List<Object?>>(),
+      mapMap: (result[27] as Map<Object?, Object?>?)!
+          .cast<int, Map<Object?, Object?>>(),
     );
   }
 
@@ -565,25 +563,22 @@ class GenericsAllNullableTypes {
       objectList: (result[19] as List<Object?>?)?.cast<Object?>(),
       listList: (result[20] as List<Object?>?)?.cast<List<Object?>?>(),
       mapList: (result[21] as List<Object?>?)?.cast<Map<Object?, Object?>?>(),
-      recursiveClassList:
-          (result[22] as List<Object?>?)?.cast<GenericsAllNullableTypes?>(),
+      recursiveClassList: (result[22] as List<Object?>?)
+          ?.cast<GenericsAllNullableTypes?>(),
       map: result[23] as Map<Object?, Object?>?,
-      stringMap:
-          (result[24] as Map<Object?, Object?>?)?.cast<String?, String?>(),
+      stringMap: (result[24] as Map<Object?, Object?>?)
+          ?.cast<String?, String?>(),
       intMap: (result[25] as Map<Object?, Object?>?)?.cast<int?, int?>(),
-      enumMap:
-          (result[26] as Map<Object?, Object?>?)
-              ?.cast<GenericsAnEnum?, GenericsAnEnum?>(),
-      objectMap:
-          (result[27] as Map<Object?, Object?>?)?.cast<Object?, Object?>(),
-      listMap:
-          (result[28] as Map<Object?, Object?>?)?.cast<int?, List<Object?>?>(),
-      mapMap:
-          (result[29] as Map<Object?, Object?>?)
-              ?.cast<int?, Map<Object?, Object?>?>(),
-      recursiveClassMap:
-          (result[30] as Map<Object?, Object?>?)
-              ?.cast<int?, GenericsAllNullableTypes?>(),
+      enumMap: (result[26] as Map<Object?, Object?>?)
+          ?.cast<GenericsAnEnum?, GenericsAnEnum?>(),
+      objectMap: (result[27] as Map<Object?, Object?>?)
+          ?.cast<Object?, Object?>(),
+      listMap: (result[28] as Map<Object?, Object?>?)
+          ?.cast<int?, List<Object?>?>(),
+      mapMap: (result[29] as Map<Object?, Object?>?)
+          ?.cast<int?, Map<Object?, Object?>?>(),
+      recursiveClassMap: (result[30] as Map<Object?, Object?>?)
+          ?.cast<int?, GenericsAllNullableTypes?>(),
     );
   }
 
@@ -768,22 +763,20 @@ class GenericsAllNullableTypesTyped<T, K, V> {
       objectList: (result[19] as List<Object?>?)?.cast<K?>(),
       listList: (result[20] as List<Object?>?)?.cast<List<K?>?>(),
       mapList: (result[21] as List<Object?>?)?.cast<Map<T?, V?>?>(),
-      recursiveClassList:
-          (result[22] as List<Object?>?)?.cast<GenericsAllNullableTypes?>(),
+      recursiveClassList: (result[22] as List<Object?>?)
+          ?.cast<GenericsAllNullableTypes?>(),
       map: result[23] as Map<Object?, Object?>?,
       stringMap: (result[24] as Map<Object?, Object?>?)?.cast<T?, T?>(),
       intMap: (result[25] as Map<Object?, Object?>?)?.cast<V?, K?>(),
-      enumMap:
-          (result[26] as Map<Object?, Object?>?)
-              ?.cast<GenericsAnEnum?, GenericsAnEnum?>(),
-      objectMap:
-          (result[27] as Map<Object?, Object?>?)?.cast<Object?, Object?>(),
+      enumMap: (result[26] as Map<Object?, Object?>?)
+          ?.cast<GenericsAnEnum?, GenericsAnEnum?>(),
+      objectMap: (result[27] as Map<Object?, Object?>?)
+          ?.cast<Object?, Object?>(),
       listMap: (result[28] as Map<Object?, Object?>?)?.cast<int?, List<K?>?>(),
-      mapMap:
-          (result[29] as Map<Object?, Object?>?)?.cast<int?, Map<K?, K?>?>(),
-      recursiveClassMap:
-          (result[30] as Map<Object?, Object?>?)
-              ?.cast<int?, GenericsAllNullableTypes?>(),
+      mapMap: (result[29] as Map<Object?, Object?>?)
+          ?.cast<int?, Map<K?, K?>?>(),
+      recursiveClassMap: (result[30] as Map<Object?, Object?>?)
+          ?.cast<int?, GenericsAllNullableTypes?>(),
     );
   }
 
@@ -1354,8 +1347,9 @@ class HostGenericApi {
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
   }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix =
-           messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+           ? '.$messageChannelSuffix'
+           : '';
   final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
@@ -3278,8 +3272,9 @@ abstract class FlutterGenericApi {
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
   }) {
-    messageChannelSuffix =
-        messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty
+        ? '.$messageChannelSuffix'
+        : '';
     {
       final BasicMessageChannel<Object?>
       golubetsVar_channel = BasicMessageChannel<Object?>(
@@ -3632,9 +3627,8 @@ abstract class FlutterGenericApi {
           );
           final List<Object?> args = (message as List<Object?>?)!;
           final List<GenericsAllNullableTypesTyped<String, int, double>>?
-          arg_list =
-              (args[0] as List<Object?>?)
-                  ?.cast<GenericsAllNullableTypesTyped<String, int, double>>();
+          arg_list = (args[0] as List<Object?>?)
+              ?.cast<GenericsAllNullableTypesTyped<String, int, double>>();
           assert(
             arg_list != null,
             'Argument for dev.bayori.golubets.golubets_integration_tests.FlutterGenericApi.echoListTypedNullable was null, expected non-null List<GenericsAllNullableTypesTyped<String, int, double>>.',
@@ -3670,12 +3664,11 @@ abstract class FlutterGenericApi {
           );
           final List<Object?> args = (message as List<Object?>?)!;
           final Map<String, GenericsAllNullableTypesTyped<int, String, double>>?
-          arg_map =
-              (args[0] as Map<Object?, Object?>?)
-                  ?.cast<
-                    String,
-                    GenericsAllNullableTypesTyped<int, String, double>
-                  >();
+          arg_map = (args[0] as Map<Object?, Object?>?)
+              ?.cast<
+                String,
+                GenericsAllNullableTypesTyped<int, String, double>
+              >();
           assert(
             arg_map != null,
             'Argument for dev.bayori.golubets.golubets_integration_tests.FlutterGenericApi.echoMapTypedNullable was null, expected non-null Map<String, GenericsAllNullableTypesTyped<int, String, double>>.',
@@ -3851,8 +3844,8 @@ abstract class FlutterGenericApi {
       } else {
         golubetsVar_channel.setMessageHandler((Object? message) async {
           try {
-            final GenericContainer<Either<String, int>> output =
-                api.returnGenericDefaultsEitherLeft();
+            final GenericContainer<Either<String, int>> output = api
+                .returnGenericDefaultsEitherLeft();
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
@@ -3876,8 +3869,8 @@ abstract class FlutterGenericApi {
       } else {
         golubetsVar_channel.setMessageHandler((Object? message) async {
           try {
-            final GenericContainer<Either<String, int>> output =
-                api.returnGenericDefaultsEitherRight();
+            final GenericContainer<Either<String, int>> output = api
+                .returnGenericDefaultsEitherRight();
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);

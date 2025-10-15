@@ -20,8 +20,8 @@ void main() {
         any,
       ),
     ).thenAnswer((Invocation realInvocation) async {
-      final Object input =
-          MultipleArityHostApi.golubetsChannelCodec.decodeMessage(
+      final Object input = MultipleArityHostApi.golubetsChannelCodec
+          .decodeMessage(
             realInvocation.positionalArguments[1] as ByteData?,
           )!;
       final List<Object?> args = input as List<Object?>;
