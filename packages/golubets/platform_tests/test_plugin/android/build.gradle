@@ -70,11 +70,6 @@ android {
         testImplementation("io.mockk:mockk:1.14.5")
         // org.jetbrains.kotlin:kotlin-bom artifact purpose is to align kotlin stdlib and related code versions.
         // See: https://youtrack.jetbrains.com/issue/KT-55297/kotlin-stdlib-should-declare-constraints-on-kotlin-stdlib-jdk8-and-kotlin-stdlib-jdk7
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/android/build.gradle
-        implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.2.20"))
-        implementation 'org.jetbrains.kotlin:kotlin-reflect:1.9.20'
-=======
         implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.2.21"))
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/android/build.gradle
     }
 }
