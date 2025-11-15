@@ -273,11 +273,19 @@ class MessageApi {
   MessageApi({
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/message.gen.dart
   }) : golubetsVar_binaryMessenger = binaryMessenger,
        golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
            ? '.$messageChannelSuffix'
            : '';
   final BinaryMessenger? golubetsVar_binaryMessenger;
+=======
+  }) : pigeonVar_binaryMessenger = binaryMessenger,
+       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+           ? '.$messageChannelSuffix'
+           : '';
+  final BinaryMessenger? pigeonVar_binaryMessenger;
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/message.gen.dart
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
@@ -355,11 +363,19 @@ class MessageNestedApi {
   MessageNestedApi({
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/message.gen.dart
   }) : golubetsVar_binaryMessenger = binaryMessenger,
        golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
            ? '.$messageChannelSuffix'
            : '';
   final BinaryMessenger? golubetsVar_binaryMessenger;
+=======
+  }) : pigeonVar_binaryMessenger = binaryMessenger,
+       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+           ? '.$messageChannelSuffix'
+           : '';
+  final BinaryMessenger? pigeonVar_binaryMessenger;
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/message.gen.dart
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 

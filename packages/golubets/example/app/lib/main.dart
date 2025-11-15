@@ -159,10 +159,14 @@ class _MyHomePageState extends State<MyHomePage> {
               StreamBuilder<String>(
                 stream: getEventStream(),
                 builder:
+<<<<<<< HEAD:packages/golubets/example/app/lib/main.dart
                     (
                       BuildContext context,
                       AsyncSnapshot<String> snapshot,
                     ) {
+=======
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+>>>>>>> filtered-upstream/main:packages/pigeon/example/app/lib/main.dart
                       if (snapshot.hasData) {
                         return Text(snapshot.data ?? '');
                       } else {

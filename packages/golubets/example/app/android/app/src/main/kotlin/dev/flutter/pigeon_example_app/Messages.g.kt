@@ -58,7 +58,7 @@ private object MessagesGolubetsUtils {
     }
     if (a is Map<*, *> && b is Map<*, *>) {
       return a.size == b.size &&
-          a.all { (b as Map<Any?, Any?>).containsKey(it.key) && deepEquals(it.value, b[it.key]) }
+          a.all { (b as Map<Any?, Any?>).contains(it.key) && deepEquals(it.value, b[it.key]) }
     }
     return a == b
   }
@@ -149,7 +149,7 @@ private open class MessagesGolubetsCodec : StandardMessageCodec() {
     when (value) {
       is Code -> {
         stream.write(129)
-        writeValue(stream, value.raw)
+        writeValue(stream, value.raw.toLong())
       }
       is MessageData -> {
         stream.write(130)
