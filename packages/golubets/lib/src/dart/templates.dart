@@ -235,7 +235,8 @@ class $dartInstanceManagerClassName {
 /// The base class for all Dart proxy classes.
 ///
 /// All Dart proxy classes generated as a part of a ProxyApi extends this one.
-const String proxyApiBaseClass = '''
+const String proxyApiBaseClass =
+    '''
 /// An immutable object that serves as the base class for all Dart proxy classes
 /// and can provide functional copies of itself.
 ///
@@ -277,8 +278,14 @@ abstract class $proxyApiBaseClassName {
 /// All generated Dart proxy classes should use this codec or extend it. This
 /// codec adds support to convert instances to their corresponding identifier
 /// from an `InstanceManager` and vice versa.
+<<<<<<< HEAD:packages/golubets/lib/src/dart/templates.dart
 const String proxyApiBaseCodec = '''
 class $_proxyApiCodecName extends _GolubetsCodec {
+=======
+const String proxyApiBaseCodec =
+    '''
+class $_proxyApiCodecName extends _PigeonCodec {
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/templates.dart
  const $_proxyApiCodecName(this.instanceManager);
  final $dartInstanceManagerClassName instanceManager;
  @override
