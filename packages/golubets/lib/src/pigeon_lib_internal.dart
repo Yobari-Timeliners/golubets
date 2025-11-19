@@ -53,86 +53,80 @@ class InternalGolubetsOptions {
   ) : input = options.input,
       objcOptions =
           (options.objcHeaderOut == null || options.objcSourceOut == null)
-              ? null
-              : InternalObjcOptions.fromObjcOptions(
-                options.objcOptions ?? const ObjcOptions(),
-                objcHeaderOut: options.objcHeaderOut!,
-                objcSourceOut: options.objcSourceOut!,
-                fileSpecificClassNameComponent:
-                    options.objcSourceOut
-                        ?.split('/')
-                        .lastOrNull
-                        ?.split('.')
-                        .firstOrNull ??
-                    '',
-                copyrightHeader: copyrightHeader,
-              ),
-      javaOptions =
-          options.javaOut == null
-              ? null
-              : InternalJavaOptions.fromJavaOptions(
-                options.javaOptions ?? const JavaOptions(),
-                javaOut: options.javaOut!,
-                copyrightHeader: copyrightHeader,
-              ),
-      swiftOptions =
-          options.swiftOut == null
-              ? null
-              : InternalSwiftOptions.fromSwiftOptions(
-                options.swiftOptions ?? const SwiftOptions(),
-                swiftOut: options.swiftOut!,
-                copyrightHeader: copyrightHeader,
-              ),
-      kotlinOptions =
-          options.kotlinOut == null
-              ? null
-              : InternalKotlinOptions.fromKotlinOptions(
-                options.kotlinOptions ?? const KotlinOptions(),
-                kotlinOut: options.kotlinOut!,
-                copyrightHeader: copyrightHeader,
-              ),
+          ? null
+          : InternalObjcOptions.fromObjcOptions(
+              options.objcOptions ?? const ObjcOptions(),
+              objcHeaderOut: options.objcHeaderOut!,
+              objcSourceOut: options.objcSourceOut!,
+              fileSpecificClassNameComponent:
+                  options.objcSourceOut
+                      ?.split('/')
+                      .lastOrNull
+                      ?.split('.')
+                      .firstOrNull ??
+                  '',
+              copyrightHeader: copyrightHeader,
+            ),
+      javaOptions = options.javaOut == null
+          ? null
+          : InternalJavaOptions.fromJavaOptions(
+              options.javaOptions ?? const JavaOptions(),
+              javaOut: options.javaOut!,
+              copyrightHeader: copyrightHeader,
+            ),
+      swiftOptions = options.swiftOut == null
+          ? null
+          : InternalSwiftOptions.fromSwiftOptions(
+              options.swiftOptions ?? const SwiftOptions(),
+              swiftOut: options.swiftOut!,
+              copyrightHeader: copyrightHeader,
+            ),
+      kotlinOptions = options.kotlinOut == null
+          ? null
+          : InternalKotlinOptions.fromKotlinOptions(
+              options.kotlinOptions ?? const KotlinOptions(),
+              kotlinOut: options.kotlinOut!,
+              copyrightHeader: copyrightHeader,
+            ),
       cppOptions =
           (options.cppHeaderOut == null || options.cppSourceOut == null)
-              ? null
-              : InternalCppOptions.fromCppOptions(
-                options.cppOptions ?? const CppOptions(),
-                cppHeaderOut: options.cppHeaderOut!,
-                cppSourceOut: options.cppSourceOut!,
-                copyrightHeader: copyrightHeader,
-              ),
+          ? null
+          : InternalCppOptions.fromCppOptions(
+              options.cppOptions ?? const CppOptions(),
+              cppHeaderOut: options.cppHeaderOut!,
+              cppSourceOut: options.cppSourceOut!,
+              copyrightHeader: copyrightHeader,
+            ),
       gobjectOptions =
           options.gobjectHeaderOut == null || options.gobjectSourceOut == null
-              ? null
-              : InternalGObjectOptions.fromGObjectOptions(
-                options.gobjectOptions ?? const GObjectOptions(),
-                gobjectHeaderOut: options.gobjectHeaderOut!,
-                gobjectSourceOut: options.gobjectSourceOut!,
-                copyrightHeader: copyrightHeader,
-              ),
+          ? null
+          : InternalGObjectOptions.fromGObjectOptions(
+              options.gobjectOptions ?? const GObjectOptions(),
+              gobjectHeaderOut: options.gobjectHeaderOut!,
+              gobjectSourceOut: options.gobjectSourceOut!,
+              copyrightHeader: copyrightHeader,
+            ),
       dartOptions =
           (options.dartOut == null &&
-                  options.dartOptions?.sourceOutPath == null)
-              ? null
-              : InternalDartOptions.fromDartOptions(
-                options.dartOptions ?? const DartOptions(),
-                dartOut: options.dartOut,
-                testOut: options.dartTestOut,
-                copyrightHeader: copyrightHeader,
-              ),
-      copyrightHeader =
-          options.copyrightHeader != null
-              ? _lineReader(
-                path.posix.join(
-                  options.basePath ?? '',
-                  options.copyrightHeader,
-                ),
-              )
-              : null,
+              options.dartOptions?.sourceOutPath == null)
+          ? null
+          : InternalDartOptions.fromDartOptions(
+              options.dartOptions ?? const DartOptions(),
+              dartOut: options.dartOut,
+              testOut: options.dartTestOut,
+              copyrightHeader: copyrightHeader,
+            ),
+      copyrightHeader = options.copyrightHeader != null
+          ? _lineReader(
+              path.posix.join(options.basePath ?? '', options.copyrightHeader),
+            )
+          : null,
       astOut = options.astOut,
       debugGenerators = options.debugGenerators,
       basePath = options.basePath,
       dartPackageName = options.getPackageName();
 
+<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
   /// Creates a instance of InternalGolubetsOptions from GolubetsOptions.
   static InternalGolubetsOptions fromGolubetsOptions(GolubetsOptions options) {
     final Iterable<String>? copyrightHeader =
@@ -141,6 +135,15 @@ class InternalGolubetsOptions {
               path.posix.join(options.basePath ?? '', options.copyrightHeader),
             )
             : null;
+=======
+  /// Creates a instance of InternalPigeonOptions from PigeonOptions.
+  static InternalPigeonOptions fromPigeonOptions(PigeonOptions options) {
+    final Iterable<String>? copyrightHeader = options.copyrightHeader != null
+        ? _lineReader(
+            path.posix.join(options.basePath ?? '', options.copyrightHeader),
+          )
+        : null;
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
 
     return InternalGolubetsOptions._fromGolubetsOptionsWithHeader(
       options,
@@ -782,8 +785,9 @@ extension _ObjectAs on Object {
 
 List<Error> _validateAst(Root root, String source) {
   final List<Error> result = <Error>[];
-  final List<String> customClasses =
-      root.classes.map((Class x) => x.name).toList();
+  final List<String> customClasses = root.classes
+      .map((Class x) => x.name)
+      .toList();
   final Iterable<String> customEnums = root.enums.map((Enum x) => x.name);
   final Set<String> genericTypeNames = root.genericTypeNames;
   for (final Enum enumDefinition in root.enums) {
@@ -1376,8 +1380,9 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       _apis,
       _classes,
     );
-    final Set<String> referencedTypeNames =
-        referencedTypes.keys.map((TypeDeclaration e) => e.baseName).toSet();
+    final Set<String> referencedTypeNames = referencedTypes.keys
+        .map((TypeDeclaration e) => e.baseName)
+        .toSet();
     final List<Class> nonReferencedTypes = List<Class>.from(_classes);
     nonReferencedTypes.removeWhere(
       (Class x) => referencedTypeNames.contains(x.name),
@@ -1439,12 +1444,19 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
           !element.key.isVoid &&
           element.key.baseName != 'dynamic' &&
           element.key.baseName != 'Object' &&
+<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
           element.key.baseName.isNotEmpty &&
           !_genericTypeNames.contains(element.key.baseName)) {
         final int? lineNumber =
             element.value.isEmpty
                 ? null
                 : calculateLineNumber(source, element.value.first);
+=======
+          element.key.baseName.isNotEmpty) {
+        final int? lineNumber = element.value.isEmpty
+            ? null
+            : calculateLineNumber(source, element.value.first);
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
         totalErrors.add(
           Error(
             message: 'Unknown type: ${element.key.baseName}',
@@ -1489,6 +1501,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     totalErrors.addAll(validateErrors);
 
     return ParseResults(
+<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
       root:
           totalErrors.isEmpty
               ? completeRoot
@@ -1499,6 +1512,11 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
                 genericTypeNames: <String>{},
                 genericUsage: <String, Set<TypeArgumentCombination>>{},
               ),
+=======
+      root: totalErrors.isEmpty
+          ? completeRoot
+          : Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]),
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
       errors: totalErrors,
       golubetsOptions: _golubetsOptions,
     );
@@ -1747,7 +1765,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
           );
         } else if (node.extendsClause != null) {
           superClass = TypeDeclaration(
-            baseName: node.extendsClause!.superclass.name2.lexeme,
+            baseName: node.extendsClause!.superclass.name.lexeme,
             isNullable: false,
           );
         }
@@ -1757,7 +1775,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
           for (final dart_ast.NamedType type
               in node.implementsClause!.interfaces) {
             interfaces.add(
-              TypeDeclaration(baseName: type.name2.lexeme, isNullable: false),
+              TypeDeclaration(baseName: type.name.lexeme, isNullable: false),
             );
           }
         }
@@ -1883,8 +1901,8 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         name: node.name.lexeme,
         fields: <NamedType>[],
         superClassName:
-            node.implementsClause?.interfaces.first.name2.toString() ??
-            node.extendsClause?.superclass.name2.toString(),
+            node.implementsClause?.interfaces.first.name.toString() ??
+            node.extendsClause?.superclass.name.toString(),
         isSealed: node.sealedKeyword != null,
         isSwiftClass: _hasMetadata(node.metadata, 'SwiftClass'),
         documentationComments: _documentationCommentsParser(
@@ -1903,10 +1921,9 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     const String docCommentPrefix = '///';
     return comments
             ?.map(
-              (Token line) =>
-                  line.length > docCommentPrefix.length
-                      ? line.toString().substring(docCommentPrefix.length)
-                      : '',
+              (Token line) => line.length > docCommentPrefix.length
+                  ? line.toString().substring(docCommentPrefix.length)
+                  : '',
             )
             .toList() ??
         <String>[];
@@ -2002,11 +2019,18 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
   @override
   Object? visitMethodDeclaration(dart_ast.MethodDeclaration node) {
     final dart_ast.FormalParameterList parameters = node.parameters!;
+<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
     final List<Parameter> arguments =
         parameters.parameters.map(_formalParameterToPigeonParameter).toList();
     final AsynchronousType asynchronousType = _parseAsynchronousType(
       node.metadata,
     );
+=======
+    final List<Parameter> arguments = parameters.parameters
+        .map(_formalParameterToPigeonParameter)
+        .toList();
+    final bool isAsynchronous = _hasMetadata(node.metadata, 'async');
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
     final bool isStatic = _hasMetadata(node.metadata, 'static');
     final String objcSelector =
         _findMetadata(node.metadata, 'ObjCSelector')?.arguments?.arguments.first
@@ -2021,14 +2045,15 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
             .asNullable<dart_ast.SimpleStringLiteral>()
             ?.value ??
         '';
-    final dart_ast.ArgumentList? taskQueueArguments =
-        _findMetadata(node.metadata, 'TaskQueue')?.arguments;
-    final String? taskQueueTypeName =
-        taskQueueArguments == null
-            ? null
-            : _getFirstChildOfType<dart_ast.NamedExpression>(
-              taskQueueArguments,
-            )?.expression.asNullable<dart_ast.PrefixedIdentifier>()?.name;
+    final dart_ast.ArgumentList? taskQueueArguments = _findMetadata(
+      node.metadata,
+      'TaskQueue',
+    )?.arguments;
+    final String? taskQueueTypeName = taskQueueArguments == null
+        ? null
+        : _getFirstChildOfType<dart_ast.NamedExpression>(
+            taskQueueArguments,
+          )?.expression.asNullable<dart_ast.PrefixedIdentifier>()?.name;
     final TaskQueueType taskQueueType =
         _stringToEnum(TaskQueueType.values, taskQueueTypeName) ??
         TaskQueueType.serial;
@@ -2093,17 +2118,16 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     _enums.add(
       Enum(
         name: node.name.lexeme,
-        members:
-            node.constants
-                .map(
-                  (dart_ast.EnumConstantDeclaration e) => EnumMember(
-                    name: e.name.lexeme,
-                    documentationComments: _documentationCommentsParser(
-                      e.documentationComment?.tokens,
-                    ),
-                  ),
-                )
-                .toList(),
+        members: node.constants
+            .map(
+              (dart_ast.EnumConstantDeclaration e) => EnumMember(
+                name: e.name.lexeme,
+                documentationComments: _documentationCommentsParser(
+                  e.documentationComment?.tokens,
+                ),
+              ),
+            )
+            .toList(),
         documentationComments: _documentationCommentsParser(
           node.documentationComment?.tokens,
         ),
@@ -2200,8 +2224,9 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
   Object? visitConstructorDeclaration(dart_ast.ConstructorDeclaration node) {
     if (_currentApi is AstProxyApi) {
       final dart_ast.FormalParameterList parameters = node.parameters;
-      final List<Parameter> arguments =
-          parameters.parameters.map(_formalParameterToPigeonParameter).toList();
+      final List<Parameter> arguments = parameters.parameters
+          .map(_formalParameterToPigeonParameter)
+          .toList();
       final String swiftFunction =
           _findMetadata(node.metadata, 'SwiftFunction')
               ?.arguments
@@ -2254,6 +2279,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         for (final dart_ast.FormalParameter param
             in node.parameters.parameters) {
           if (param is dart_ast.DefaultFormalParameter) {
+<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
             final Token? name = param.name;
 
             final dart_ast.Expression? defaultValue = param.defaultValue;
@@ -2286,6 +2312,12 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
                   lineNumber: calculateLineNumber(source, node.offset),
                 ),
               );
+=======
+            if (param.name != null && param.defaultValue != null) {
+              _currentClassDefaultValues[param.name!.toString()] = param
+                  .defaultValue!
+                  .toString();
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
             }
           }
         }
@@ -2298,9 +2330,9 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
   static String _getNamedTypeQualifiedName(dart_ast.NamedType node) {
     final dart_ast.ImportPrefixReference? importPrefix = node.importPrefix;
     if (importPrefix != null) {
-      return '${importPrefix.name.lexeme}.${node.name2.lexeme}';
+      return '${importPrefix.name.lexeme}.${node.name.lexeme}';
     }
-    return node.name2.lexeme;
+    return node.name.lexeme;
   }
 
   void _addProxyApiField(
@@ -2309,10 +2341,9 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
   ) {
     final bool isStatic = _hasMetadata(node.metadata, 'static');
     if (type is dart_ast.GenericFunctionType) {
-      final List<Parameter> parameters =
-          type.parameters.parameters
-              .map(_formalParameterToPigeonParameter)
-              .toList();
+      final List<Parameter> parameters = type.parameters.parameters
+          .map(_formalParameterToPigeonParameter)
+          .toList();
       final String swiftFunction =
           _findMetadata(node.metadata, 'SwiftFunction')
               ?.arguments
@@ -2321,14 +2352,15 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
               .asNullable<dart_ast.SimpleStringLiteral>()
               ?.value ??
           '';
-      final dart_ast.ArgumentList? taskQueueArguments =
-          _findMetadata(node.metadata, 'TaskQueue')?.arguments;
-      final String? taskQueueTypeName =
-          taskQueueArguments == null
-              ? null
-              : _getFirstChildOfType<dart_ast.NamedExpression>(
-                taskQueueArguments,
-              )?.expression.asNullable<dart_ast.PrefixedIdentifier>()?.name;
+      final dart_ast.ArgumentList? taskQueueArguments = _findMetadata(
+        node.metadata,
+        'TaskQueue',
+      )?.arguments;
+      final String? taskQueueTypeName = taskQueueArguments == null
+          ? null
+          : _getFirstChildOfType<dart_ast.NamedExpression>(
+              taskQueueArguments,
+            )?.expression.asNullable<dart_ast.PrefixedIdentifier>()?.name;
       final TaskQueueType taskQueueType =
           _stringToEnum(TaskQueueType.values, taskQueueTypeName) ??
           TaskQueueType.serial;

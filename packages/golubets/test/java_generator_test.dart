@@ -66,8 +66,12 @@ void main() {
       name: 'Foobar',
       members: <EnumMember>[
         EnumMember(name: 'one'),
+<<<<<<< HEAD:packages/golubets/test/java_generator_test.dart
         EnumMember(name: 'twoThreeFour'),
         EnumMember(name: 'remoteDB'),
+=======
+        EnumMember(name: 'two'),
+>>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
       ],
     );
     final Root root = Root(
@@ -844,8 +848,12 @@ void main() {
       name: 'Enum1',
       members: <EnumMember>[
         EnumMember(name: 'one'),
+<<<<<<< HEAD:packages/golubets/test/java_generator_test.dart
         EnumMember(name: 'twoThreeFour'),
         EnumMember(name: 'remoteDB'),
+=======
+        EnumMember(name: 'two'),
+>>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
       ],
     );
     final Class classDefinition = Class(

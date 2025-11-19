@@ -1,17 +1,23 @@
 name: golubets
 description: Code generator tool to make communication between Flutter and the host platform type-safe and easier.
+<<<<<<< HEAD:packages/golubets/pubspec.yaml
 repository: https://github.com/Yobari-Timeliners/golubets
 issue_tracker: https://github.com/Yobari-Timeliners/golubets/issues
 version: 1.0.0+3 # This must match the version in lib/src/generator_tools.dart
 screenshots:
   - description: 'Some tasty and yummy golubets'
     path: 'art/golubets.png'
+=======
+repository: https://github.com/flutter/packages/tree/main/packages/pigeon
+issue_tracker: https://github.com/flutter/flutter/issues?q=is%3Aissue+is%3Aopen+label%3A%22p%3A+pigeon%22
+version: 26.1.1 # This must match the version in lib/src/generator_tools.dart
+>>>>>>> filtered-upstream/main:packages/pigeon/pubspec.yaml
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.8.0
 
 dependencies:
-  analyzer: ">=6.0.0 <8.0.0"
+  analyzer: ">=8.0.0 <10.0.0"
   args: ^2.1.0
   code_builder: ^4.10.0
   collection: ^1.15.0
