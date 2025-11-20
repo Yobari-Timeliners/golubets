@@ -159,10 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
               StreamBuilder<String>(
                 stream: getEventStream(),
                 builder:
-                    (
-                      BuildContext context,
-                      AsyncSnapshot<String> snapshot,
-                    ) {
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
                       if (snapshot.hasData) {
                         return Text(snapshot.data ?? '');
                       } else {

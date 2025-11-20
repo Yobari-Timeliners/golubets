@@ -89,7 +89,7 @@ enable_testing()
 include(FetchContent)
 FetchContent_Declare(
   googletest
-  URL https://github.com/google/googletest/archive/release-1.11.0.zip
+  URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip
 )
 # Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -131,5 +131,5 @@ add_custom_command(TARGET ${TEST_RUNNER} POST_BUILD
 target_compile_definitions(${TEST_RUNNER} PRIVATE "_HAS_EXCEPTIONS=1")
 
 include(GoogleTest)
-gtest_discover_tests(${TEST_RUNNER})
+add_test(NAME ${TEST_RUNNER} COMMAND ${TEST_RUNNER})
 endif()

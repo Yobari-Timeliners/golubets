@@ -263,16 +263,17 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     final String readerName = '${codecName}Reader';
     final String writerName = '${codecName}Writer';
 
-    final List<EnumeratedType> enumeratedTypes =
-        getEnumeratedTypes(root, excludeSealedClasses: true).toList();
+    final List<EnumeratedType> enumeratedTypes = getEnumeratedTypes(
+      root,
+      excludeSealedClasses: true,
+    ).toList();
 
     void writeDecodeLogic(EnumeratedType customType) {
-      final ({Class child, Class superClass})? sealedHierarchy =
-          customType.findSealedHierarchy();
-      final String typeArguments =
-          customType.isGeneric
-              ? '<${_flattenTypeArguments(customType.typeArguments)}>'
-              : '';
+      final ({Class child, Class superClass})? sealedHierarchy = customType
+          .findSealedHierarchy();
+      final String typeArguments = customType.isGeneric
+          ? '<${_flattenTypeArguments(customType.typeArguments)}>'
+          : '';
 
       indent.writeln('case ${customType.enumeration}:');
       indent.nest(1, () {
@@ -363,10 +364,9 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
 
             final String value = isSealedChild ? 'childValue' : 'value';
 
-            final String typeArguments =
-                customType.isGeneric
-                    ? '<${_flattenTypeArguments(customType.typeArguments)}>'
-                    : '';
+            final String typeArguments = customType.isGeneric
+                ? '<${_flattenTypeArguments(customType.typeArguments)}>'
+                : '';
 
             if (isSealedChild) {
               final (child: Class child, superClass: Class superClass) =
@@ -385,16 +385,16 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
             indent.addScoped('{', '} else ', () {
               final String encodeString =
                   customType.type == CustomTypes.customClass
-                      ? 'toList()'
-                      : 'rawValue';
+                  ? 'toList()'
+                  : 'rawValue';
               final String valueString =
                   customType.enumeration < maximumCodecFieldKey
-                      ? '$value.$encodeString'
-                      : 'wrap.toList()';
+                  ? '$value.$encodeString'
+                  : 'wrap.toList()';
               final int enumeration =
                   customType.enumeration < maximumCodecFieldKey
-                      ? customType.enumeration
-                      : maximumCodecFieldKey;
+                  ? customType.enumeration
+                  : maximumCodecFieldKey;
               if (customType.enumeration >= maximumCodecFieldKey) {
                 indent.writeln(
                   'let wrap = $_overflowClassName(type: ${customType.enumeration - maximumCodecFieldKey}, wrapped: $value.$encodeString)',
@@ -480,16 +480,14 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       classLookup: classLookup,
     );
     final String privateString = private ? 'private ' : 'public ';
-    final String typeArguments =
-        classDefinition.typeArguments.isEmpty
-            ? ''
-            : '<${_flattenTypeArgumentsWithSelectiveHashableConstraints(classDefinition.typeArguments, hashableTypeParams)}>';
-    final String extendsString =
-        classDefinition.superClass != null
-            ? ': ${classDefinition.superClass!.name}'
-            : hashable
-            ? ': Hashable'
-            : '';
+    final String typeArguments = classDefinition.typeArguments.isEmpty
+        ? ''
+        : '<${_flattenTypeArgumentsWithSelectiveHashableConstraints(classDefinition.typeArguments, hashableTypeParams)}>';
+    final String extendsString = classDefinition.superClass != null
+        ? ': ${classDefinition.superClass!.name}'
+        : hashable
+        ? ': Hashable'
+        : '';
     if (classDefinition.isSwiftClass) {
       indent.write(
         '${privateString}class ${classDefinition.name}$typeArguments$extendsString ',
@@ -860,12 +858,12 @@ if (wrapped == nil) {
                 // It needs soft-casting followed by force unwrapping.
                 final String forceUnwrapMapWithNullableEnums =
                     (field.type.baseName == 'Map' &&
-                            !field.type.isNullable &&
-                            field.type.typeArguments.any(
-                              (TypeDeclaration type) => type.isEnum,
-                            ))
-                        ? '!'
-                        : '';
+                        !field.type.isNullable &&
+                        field.type.typeArguments.any(
+                          (TypeDeclaration type) => type.isEnum,
+                        ))
+                    ? '!'
+                    : '';
                 indent.writeln(
                   '${field.name}: ${field.name}$forceUnwrapMapWithNullableEnums$comma',
                 );
@@ -909,18 +907,18 @@ if (wrapped == nil) {
         )) {
           final String comma =
               getFieldsInSerializationOrder(classDefinition).last == field
-                  ? ''
-                  : ',';
+              ? ''
+              : ',';
           // Force-casting nullable enums in maps doesn't work the same as other types.
           // It needs soft-casting followed by force unwrapping.
           final String forceUnwrapMapWithNullableEnums =
               (field.type.baseName == 'Map' &&
-                      !field.type.isNullable &&
-                      field.type.typeArguments.any(
-                        (TypeDeclaration type) => type.isEnum,
-                      ))
-                  ? '!'
-                  : '';
+                  !field.type.isNullable &&
+                  field.type.typeArguments.any(
+                    (TypeDeclaration type) => type.isEnum,
+                  ))
+              ? '!'
+              : '';
           indent.writeln(
             '${field.name}: ${field.name}$forceUnwrapMapWithNullableEnums$comma',
           );
@@ -1132,8 +1130,8 @@ if (wrapped == nil) {
             documentationComments: method.documentationComments,
             serialBackgroundQueue:
                 method.taskQueueType == TaskQueueType.serialBackgroundThread
-                    ? serialBackgroundQueue
-                    : null,
+                ? serialBackgroundQueue
+                : null,
           );
         }
       });
@@ -1214,12 +1212,13 @@ if (wrapped == nil) {
             returnType: const TypeDeclaration.voidDeclaration(),
             swiftFunction: 'method(withIdentifier:)',
             setHandlerCondition: setHandlerCondition,
-            onCreateCall: (
-              List<String> safeArgNames, {
-              required String apiVarName,
-            }) {
-              return 'let _: AnyObject? = try instanceManager.removeInstance(${safeArgNames.single})';
-            },
+            onCreateCall:
+                (
+                  List<String> safeArgNames, {
+                  required String apiVarName,
+                }) {
+                  return 'let _: AnyObject? = try instanceManager.removeInstance(${safeArgNames.single})';
+                },
           );
           _writeHostMethodMessageHandler(
             indent,
@@ -1229,12 +1228,13 @@ if (wrapped == nil) {
             returnType: const TypeDeclaration.voidDeclaration(),
             setHandlerCondition: setHandlerCondition,
             swiftFunction: null,
-            onCreateCall: (
-              List<String> safeArgNames, {
-              required String apiVarName,
-            }) {
-              return 'try instanceManager.removeAllObjects()';
-            },
+            onCreateCall:
+                (
+                  List<String> safeArgNames, {
+                  required String apiVarName,
+                }) {
+                  return 'try instanceManager.removeAllObjects()';
+                },
           );
         },
       );
@@ -1266,8 +1266,8 @@ if (wrapped == nil) {
     Root root,
     Indent indent,
   ) {
-    final Iterable<AstProxyApi> allProxyApis =
-        root.apis.whereType<AstProxyApi>();
+    final Iterable<AstProxyApi> allProxyApis = root.apis
+        .whereType<AstProxyApi>();
 
     _writeProxyApiRegistrar(
       indent,
@@ -1477,8 +1477,9 @@ if (wrapped == nil) {
 
     final String swiftApiDelegateName =
         '${hostProxyApiPrefix}Delegate${api.name}';
-    final String type =
-        api.hasMethodsRequiringImplementation() ? 'protocol' : 'open class';
+    final String type = api.hasMethodsRequiringImplementation()
+        ? 'protocol'
+        : 'open class';
     indent.writeScoped('$type $swiftApiDelegateName {', '}', () {
       _writeProxyApiConstructorDelegateMethods(
         indent,
@@ -1905,10 +1906,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       (MapEntry<int, NamedType> e) =>
           getEnumSafeArgumentExpression(e.key, e.value),
     );
-    final String sendArgument =
-        parameters.isEmpty
-            ? 'nil'
-            : '[${enumSafeArgNames.join(', ')}] as [Any?]';
+    final String sendArgument = parameters.isEmpty
+        ? 'nil'
+        : '[${enumSafeArgNames.join(', ')}] as [Any?]';
     const String channel = 'channel';
     indent.writeln('let channelName: String = "$channelName"');
     indent.writeln(
@@ -1957,11 +1957,11 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           // There is a swift bug with unwrapping maps of nullable Enums;
           final String enumMapForceUnwrap =
               returnType.baseName == 'Map' &&
-                      returnType.typeArguments.any(
-                        (TypeDeclaration type) => type.isEnum,
-                      )
-                  ? '!'
-                  : '';
+                  returnType.typeArguments.any(
+                    (TypeDeclaration type) => type.isEnum,
+                  )
+              ? '!'
+              : '';
           indent.writeln('completion(.success(result$enumMapForceUnwrap))');
         }
       });
@@ -2034,11 +2034,11 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
             // There is a swift bug with unwrapping maps of nullable Enums;
             final String enumMapForceUnwrap =
                 arg.type.baseName == 'Map' &&
-                        arg.type.typeArguments.any(
-                          (TypeDeclaration type) => type.isEnum,
-                        )
-                    ? '!'
-                    : '';
+                    arg.type.typeArguments.any(
+                      (TypeDeclaration type) => type.isEnum,
+                    )
+                ? '!'
+                : '';
 
             _writeGenericCasting(
               indent: indent,
@@ -2073,8 +2073,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           // argument is a trailing closure.
           final String argumentString =
               methodArgument.isEmpty && asynchronousType.isCallback
-                  ? ''
-                  : '(${methodArgument.join(', ')})';
+              ? ''
+              : '(${methodArgument.join(', ')})';
           call =
               '$tryStatement${awaitKeyword}api.${components.name}$argumentString';
         } else {
@@ -2082,8 +2082,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         }
         if (asynchronousType.isCallback) {
           final String resultName = returnType.isVoid ? 'nil' : 'res';
-          final String successVariableInit =
-              returnType.isVoid ? '' : '(let res)';
+          final String successVariableInit = returnType.isVoid
+              ? ''
+              : '(let res)';
           indent.write('$call ');
 
           indent.addScoped('{ result in', '}', () {
@@ -2304,10 +2305,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       }
 
       final String methodSignature = _getMethodSignature(
-        name:
-            constructor.name.isNotEmpty
-                ? constructor.name
-                : 'golubetsDefaultConstructor',
+        name: constructor.name.isNotEmpty
+            ? constructor.name
+            : 'golubetsDefaultConstructor',
         parameters: <Parameter>[
           Parameter(
             name: 'golubetsApi',
@@ -2601,16 +2601,14 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         }
 
         for (final Constructor constructor in api.constructors) {
-          final String name =
-              constructor.name.isNotEmpty
-                  ? constructor.name
-                  : 'golubetsDefaultConstructor';
+          final String name = constructor.name.isNotEmpty
+              ? constructor.name
+              : 'golubetsDefaultConstructor';
           final String channelName = makeChannelNameWithStrings(
             apiName: api.name,
-            methodName:
-                constructor.name.isNotEmpty
-                    ? constructor.name
-                    : '${classMemberNamePrefix}defaultConstructor',
+            methodName: constructor.name.isNotEmpty
+                ? constructor.name
+                : '${classMemberNamePrefix}defaultConstructor',
             dartPackageName: dartPackageName,
           );
           writeWithApiCheckIfNecessary(
@@ -2628,19 +2626,20 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                 channelName: channelName,
                 returnType: const TypeDeclaration.voidDeclaration(),
                 swiftFunction: null,
-                onCreateCall: (
-                  List<String> methodParameters, {
-                  required String apiVarName,
-                }) {
-                  final List<String> parameters = <String>[
-                    'golubetsApi: $apiVarName',
-                    // Skip the identifier used by the InstanceManager.
-                    ...methodParameters.skip(1),
-                  ];
-                  return '$apiVarName.golubetsRegistrar.instanceManager.addDartCreatedInstance(\n'
-                      'try $apiVarName.golubetsDelegate.$name(${parameters.join(', ')}),\n'
-                      'withIdentifier: golubetsIdentifierArg)';
-                },
+                onCreateCall:
+                    (
+                      List<String> methodParameters, {
+                      required String apiVarName,
+                    }) {
+                      final List<String> parameters = <String>[
+                        'golubetsApi: $apiVarName',
+                        // Skip the identifier used by the InstanceManager.
+                        ...methodParameters.skip(1),
+                      ];
+                      return '$apiVarName.golubetsRegistrar.instanceManager.addDartCreatedInstance(\n'
+                          'try $apiVarName.golubetsDelegate.$name(${parameters.join(', ')}),\n'
+                          'withIdentifier: golubetsIdentifierArg)';
+                    },
                 parameters: <Parameter>[
                   Parameter(
                     name: 'golubetsIdentifier',
@@ -2676,18 +2675,18 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                 channelName: channelName,
                 swiftFunction: null,
                 returnType: const TypeDeclaration.voidDeclaration(),
-                onCreateCall: (
-                  List<String> methodParameters, {
-                  required String apiVarName,
-                }) {
-                  final String instanceArg =
-                      field.isStatic
+                onCreateCall:
+                    (
+                      List<String> methodParameters, {
+                      required String apiVarName,
+                    }) {
+                      final String instanceArg = field.isStatic
                           ? ''
                           : ', golubetsInstance: golubetsInstanceArg';
-                  return '$apiVarName.golubetsRegistrar.instanceManager.addDartCreatedInstance('
-                      'try $apiVarName.golubetsDelegate.${field.name}(golubetsApi: api$instanceArg), '
-                      'withIdentifier: golubetsIdentifierArg)';
-                },
+                      return '$apiVarName.golubetsRegistrar.instanceManager.addDartCreatedInstance('
+                          'try $apiVarName.golubetsDelegate.${field.name}(golubetsApi: api$instanceArg), '
+                          'withIdentifier: golubetsIdentifierArg)';
+                    },
                 parameters: <Parameter>[
                   if (!field.isStatic)
                     Parameter(
@@ -2729,20 +2728,21 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                 returnType: method.returnType,
                 asynchronousType: method.asynchronousType,
                 swiftFunction: null,
-                onCreateCall: (
-                  List<String> methodParameters, {
-                  required String apiVarName,
-                }) {
-                  final String tryStatement =
-                      method.asynchronousType.isCallback ? '' : 'try ';
-                  final List<String> parameters = <String>[
-                    'golubetsApi: $apiVarName',
-                    // Skip the identifier used by the InstanceManager.
-                    ...methodParameters,
-                  ];
+                onCreateCall:
+                    (
+                      List<String> methodParameters, {
+                      required String apiVarName,
+                    }) {
+                      final String tryStatement =
+                          method.asynchronousType.isCallback ? '' : 'try ';
+                      final List<String> parameters = <String>[
+                        'golubetsApi: $apiVarName',
+                        // Skip the identifier used by the InstanceManager.
+                        ...methodParameters,
+                      ];
 
-                  return '$tryStatement$apiVarName.golubetsDelegate.${method.name}(${parameters.join(', ')})';
-                },
+                      return '$tryStatement$apiVarName.golubetsDelegate.${method.name}(${parameters.join(', ')})';
+                    },
                 parameters: <Parameter>[
                   if (!method.isStatic)
                     Parameter(
@@ -3102,10 +3102,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       classLookup: classLookup,
     );
     final String extendsString = hashable ? ': Hashable' : '';
-    final String typeArguments =
-        classDefinition.typeArguments.isEmpty
-            ? ''
-            : '<${_flattenTypeArgumentsWithSelectiveHashableConstraints(classDefinition.typeArguments, hashableTypeParams)}>';
+    final String typeArguments = classDefinition.typeArguments.isEmpty
+        ? ''
+        : '<${_flattenTypeArgumentsWithSelectiveHashableConstraints(classDefinition.typeArguments, hashableTypeParams)}>';
 
     indent.write(
       '$privateString enum ${classDefinition.name}$typeArguments$extendsString',
@@ -3281,10 +3280,9 @@ String _getSafeArgumentName(int count, NamedType argument) {
 }
 
 String _camelCase(String text) {
-  final String pascal =
-      text.split('_').map((String part) {
-        return part.isEmpty ? '' : part[0].toUpperCase() + part.substring(1);
-      }).join();
+  final String pascal = text.split('_').map((String part) {
+    return part.isEmpty ? '' : part[0].toUpperCase() + part.substring(1);
+  }).join();
   return pascal[0].toLowerCase() + pascal.substring(1);
 }
 
@@ -3312,10 +3310,9 @@ Set<String> _getTypeParametersRequiringHashable(
   visited.add(classDefinition.name);
 
   final Set<String> hashableTypeParams = <String>{};
-  final Set<String> classTypeParamNames =
-      classDefinition.typeArguments
-          .map((TypeDeclaration e) => e.baseName)
-          .toSet();
+  final Set<String> classTypeParamNames = classDefinition.typeArguments
+      .map((TypeDeclaration e) => e.baseName)
+      .toSet();
 
   // Analyze each field to see if any type parameters need Hashable constraints
   for (final NamedType field in classDefinition.fields) {
@@ -3534,8 +3531,9 @@ String _getMethodSignature({
     swiftFunction: swiftFunction,
   );
   final String public = isPublic ? 'public' : '';
-  final String returnTypeString =
-      returnType.isVoid ? 'Void' : _nullSafeSwiftTypeForDartType(returnType);
+  final String returnTypeString = returnType.isVoid
+      ? 'Void'
+      : _nullSafeSwiftTypeForDartType(returnType);
 
   final Iterable<String> types = parameters.map(
     (NamedType e) => _nullSafeSwiftTypeForDartType(e.type),
@@ -3615,16 +3613,15 @@ class _SwiftFunctionComponents {
       return _SwiftFunctionComponents._(
         name: name,
         returnType: returnType,
-        arguments:
-            parameters
-                .map(
-                  (NamedType field) => _SwiftFunctionArgument(
-                    name: field.name,
-                    type: field.type,
-                    namedType: field,
-                  ),
-                )
-                .toList(),
+        arguments: parameters
+            .map(
+              (NamedType field) => _SwiftFunctionArgument(
+                name: field.name,
+                type: field.type,
+                namedType: field,
+              ),
+            )
+            .toList(),
       );
     }
 
@@ -3632,27 +3629,23 @@ class _SwiftFunctionComponents {
     final RegExp signatureRegex = RegExp(r'(\w+) *\(' + argsExtractor + r'\)');
     final RegExpMatch match = signatureRegex.firstMatch(swiftFunction)!;
 
-    final Iterable<String> labels =
-        match
-            .groups(
-              List<int>.generate(parameters.length, (int index) => index + 2),
-            )
-            .whereType();
+    final Iterable<String> labels = match
+        .groups(List<int>.generate(parameters.length, (int index) => index + 2))
+        .whereType();
 
     return _SwiftFunctionComponents._(
       name: match.group(1)!,
       returnType: returnType,
-      arguments:
-          map2(
-            parameters,
-            labels,
-            (NamedType field, String label) => _SwiftFunctionArgument(
-              name: field.name,
-              label: label == field.name ? null : label,
-              type: field.type,
-              namedType: field,
-            ),
-          ).toList(),
+      arguments: map2(
+        parameters,
+        labels,
+        (NamedType field, String label) => _SwiftFunctionArgument(
+          name: field.name,
+          label: label == field.name ? null : label,
+          type: field.type,
+          namedType: field,
+        ),
+      ).toList(),
     );
   }
 
@@ -3685,37 +3678,37 @@ extension on DefaultValue {
         elements.isEmpty
             ? indent.add('$prefix[]')
             : indent.addScoped(
-              '$prefix[',
-              ']',
-              () {
-                for (final DefaultValue element in elements) {
-                  element.write(indent, classLookup: classLookup);
-                  indent.addln(', ');
-                }
-              },
-              addTrailingNewline: false,
-            ),
+                '$prefix[',
+                ']',
+                () {
+                  for (final DefaultValue element in elements) {
+                    element.write(indent, classLookup: classLookup);
+                    indent.addln(', ');
+                  }
+                },
+                addTrailingNewline: false,
+              ),
       MapLiteral(:final Map<DefaultValue, DefaultValue> entries) =>
         entries.isEmpty
             ? indent.add('$prefix[:]')
             : indent.addScoped(
-              '$prefix[',
-              ']',
-              () {
-                for (final MapEntry<DefaultValue, DefaultValue> entry
-                    in entries.entries) {
-                  entry.key.write(indent, classLookup: classLookup);
-                  indent.add(': ');
-                  entry.value.write(
-                    indent,
-                    prefix: '',
-                    classLookup: classLookup,
-                  );
-                  indent.addln(', ');
-                }
-              },
-              addTrailingNewline: false,
-            ),
+                '$prefix[',
+                ']',
+                () {
+                  for (final MapEntry<DefaultValue, DefaultValue> entry
+                      in entries.entries) {
+                    entry.key.write(indent, classLookup: classLookup);
+                    indent.add(': ');
+                    entry.value.write(
+                      indent,
+                      prefix: '',
+                      classLookup: classLookup,
+                    );
+                    indent.addln(', ');
+                  }
+                },
+                addTrailingNewline: false,
+              ),
       EnumLiteral(:final String name, :final String value) => indent.add(
         '$prefix$name.$value',
       ),
@@ -3727,10 +3720,9 @@ extension on DefaultValue {
           final bool isSealedChild =
               classLookup[type.baseName]?.superClass?.isSealed ?? false;
 
-          final String name =
-              isSealedChild
-                  ? '.${type.baseName.toLowFirstLetter()}'
-                  : type.baseName;
+          final String name = isSealedChild
+              ? '.${type.baseName.toLowFirstLetter()}'
+              : type.baseName;
 
           indent.add('$prefix$name');
 

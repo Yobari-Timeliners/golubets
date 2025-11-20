@@ -492,7 +492,7 @@ private class ProxyApiTestsGolubetsProxyApiBaseCodec(
 
     fun logNewInstanceFailure(apiName: String, value: Any, exception: Throwable?) {
       Log.w(
-          "GolubetsProxyApiBaseCodec",
+          "GolubetsProxyApiBaseCod",
           "Failed to create new Dart proxy instance of $apiName: $value. $exception")
     }
 
@@ -560,7 +560,7 @@ private open class ProxyApiTestsGolubetsCodec : StandardMessageCodec() {
     when (value) {
       is ProxyApiTestEnum -> {
         stream.write(129)
-        writeValue(stream, value.raw)
+        writeValue(stream, value.raw.toLong())
       }
       else -> super.writeValue(stream, value)
     }
