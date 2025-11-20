@@ -809,17 +809,11 @@ if (self.wrapped == nil) {
     Indent indent, {
     required String dartPackageName,
   }) {
-<<<<<<< HEAD:packages/golubets/lib/src/objc/objc_generator.dart
     const String codecName = 'GolubetsCodec';
-    final List<EnumeratedType> enumeratedTypes =
-        getEnumeratedTypes(root, excludeSealedClasses: true).toList();
-=======
-    const String codecName = 'PigeonCodec';
     final List<EnumeratedType> enumeratedTypes = getEnumeratedTypes(
       root,
       excludeSealedClasses: true,
     ).toList();
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/objc/objc_generator.dart
     final String readerWriterName =
         '${generatorOptions.prefix}${toUpperCamelCase(generatorOptions.fileSpecificClassNameComponent ?? '')}${codecName}ReaderWriter';
     final String readerName =

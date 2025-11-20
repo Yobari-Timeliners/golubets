@@ -28,42 +28,6 @@ const String _overflowFiller = 'overflow';
 const List<String> _fileGroups = <String>[_test, _example];
 
 Future<void> main(List<String> args) async {
-<<<<<<< HEAD:packages/golubets/tool/generate.dart
-  final ArgParser parser =
-      ArgParser()
-        ..addFlag(
-          _formatFlag,
-          abbr: 'f',
-          help:
-              'Autoformat after generation. This flag is no longer needed, as this behavior is the default',
-          defaultsTo: true,
-          hide: true,
-        )
-        ..addFlag(
-          _noFormatFlag,
-          abbr: 'n',
-          help: 'Do not autoformat after generation.',
-        )
-        ..addFlag(
-          _helpFlag,
-          negatable: false,
-          abbr: 'h',
-          help: 'Print this reference.',
-        )
-        ..addFlag(
-          _overflowFiller,
-          abbr: 'o',
-          help:
-              'Injects 120 Enums into the golubets ast, used for testing overflow utilities.',
-          hide: true,
-        )
-        ..addMultiOption(
-          _files,
-          help:
-              'Select specific groups of files to generate; $_test or $_example. Defaults to both.',
-          allowed: _fileGroups,
-        );
-=======
   final ArgParser parser = ArgParser()
     ..addFlag(
       _formatFlag,
@@ -88,7 +52,7 @@ Future<void> main(List<String> args) async {
       _overflowFiller,
       abbr: 'o',
       help:
-          'Injects 120 Enums into the pigeon ast, used for testing overflow utilities.',
+          'Injects 120 Enums into the golubets ast, used for testing overflow utilities.',
       hide: true,
     )
     ..addMultiOption(
@@ -97,7 +61,6 @@ Future<void> main(List<String> args) async {
           'Select specific groups of files to generate; $_test or $_example. Defaults to both.',
       allowed: _fileGroups,
     );
->>>>>>> filtered-upstream/main:packages/pigeon/tool/generate.dart
 
   final ArgResults argResults = parser.parse(args);
   if (argResults.wasParsed(_helpFlag)) {

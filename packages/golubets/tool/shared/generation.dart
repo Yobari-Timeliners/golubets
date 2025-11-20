@@ -150,18 +150,10 @@ Future<int> generateTestPigeons({
     int generateCode = await runGolub(
       input: './pigeons/$input.dart',
       dartOut: '$sharedDartOutputBase/lib/src/generated/$input.gen.dart',
-<<<<<<< HEAD:packages/golubets/tool/shared/generation.dart
-      dartTestOut:
-          input == 'message'
-              ? '$sharedDartOutputBase/test/test_message.gen.dart'
-              : null,
-      dartPackageName: 'golubets_integration_tests',
-=======
       dartTestOut: input == 'message'
           ? '$sharedDartOutputBase/test/test_message.gen.dart'
           : null,
-      dartPackageName: 'pigeon_integration_tests',
->>>>>>> filtered-upstream/main:packages/pigeon/tool/shared/generation.dart
+      dartPackageName: 'golubets_integration_tests',
       suppressVersion: true,
       // Android
       kotlinOut: skipLanguages.contains(GeneratorLanguage.kotlin)
@@ -179,34 +171,13 @@ Future<int> generateTestPigeons({
       swiftErrorClassName: swiftErrorClassName,
       swiftIncludeErrorClass: input != 'primitive',
       // Linux
-<<<<<<< HEAD:packages/golubets/tool/shared/generation.dart
-      gobjectHeaderOut:
-          skipLanguages.contains(GeneratorLanguage.gobject)
-              ? null
-              : '$outputBase/linux/pigeon/$input.gen.h',
-      gobjectSourceOut:
-          skipLanguages.contains(GeneratorLanguage.gobject)
-              ? null
-              : '$outputBase/linux/pigeon/$input.gen.cc',
-      gobjectModule: '${pascalCaseName}GolubetsTest',
-      // Windows
-      cppHeaderOut:
-          skipLanguages.contains(GeneratorLanguage.cpp)
-              ? null
-              : '$outputBase/windows/pigeon/$input.gen.h',
-      cppSourceOut:
-          skipLanguages.contains(GeneratorLanguage.cpp)
-              ? null
-              : '$outputBase/windows/pigeon/$input.gen.cpp',
-      cppNamespace: '${input}_golubetstest',
-=======
       gobjectHeaderOut: skipLanguages.contains(GeneratorLanguage.gobject)
           ? null
           : '$outputBase/linux/pigeon/$input.gen.h',
       gobjectSourceOut: skipLanguages.contains(GeneratorLanguage.gobject)
           ? null
           : '$outputBase/linux/pigeon/$input.gen.cc',
-      gobjectModule: '${pascalCaseName}PigeonTest',
+      gobjectModule: '${pascalCaseName}GolubetsTest',
       // Windows
       cppHeaderOut: skipLanguages.contains(GeneratorLanguage.cpp)
           ? null
@@ -214,8 +185,7 @@ Future<int> generateTestPigeons({
       cppSourceOut: skipLanguages.contains(GeneratorLanguage.cpp)
           ? null
           : '$outputBase/windows/pigeon/$input.gen.cpp',
-      cppNamespace: '${input}_pigeontest',
->>>>>>> filtered-upstream/main:packages/pigeon/tool/shared/generation.dart
+      cppNamespace: '${input}_golubetstest',
       injectOverflowTypes: includeOverflow && input == 'core_tests',
     );
     if (generateCode != 0) {

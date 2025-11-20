@@ -142,7 +142,7 @@ class _Static {
 ///
 /// ```dart
 /// class MyProxyApi {
-///   final MyOtherProxyApi myField = pigeon_myField().
+///   final MyOtherProxyApi myField = golubets_myField().
 /// }
 /// ```
 ///
@@ -157,7 +157,7 @@ const Object attached = _Attached();
 /// and not attached to any instance of the ProxyApi.
 const Object static = _Static();
 
-/// Metadata annotation used to configure how Pigeon will generate code.
+/// Metadata annotation used to configure how Golubets will generate code.
 class ConfigureGolubets {
   /// Constructor for ConfigureGolub.
   const ConfigureGolubets(this.options);
@@ -166,7 +166,7 @@ class ConfigureGolubets {
   final GolubetsOptions options;
 }
 
-/// Metadata to annotate a Pigeon API implemented by the host-platform.
+/// Metadata to annotate a Golubets API implemented by the host-platform.
 ///
 /// The abstract class with this annotation groups a collection of Dart↔host
 /// interop methods. These methods are invoked by Dart and are received by a
@@ -196,7 +196,7 @@ class HostApi {
   final String? dartHostTestHandler;
 }
 
-/// Metadata to annotate a Pigeon API implemented by Flutter.
+/// Metadata to annotate a Golubets API implemented by Flutter.
 ///
 /// The abstract class with this annotation groups a collection of Dart↔host
 /// interop methods. These methods are invoked by the host-platform (such as in
@@ -251,7 +251,7 @@ class ProxyApi {
   final KotlinProxyApiOptions? kotlinOptions;
 }
 
-/// Metadata to annotate a pigeon API that contains event channels.
+/// Metadata to annotate a golubets API that contains event channels.
 ///
 /// This class is a tool to designate a set of event channel methods,
 /// the class itself will not be generated.
@@ -414,7 +414,7 @@ class GolubetsOptions {
   /// A base path to be prepended to all provided output paths.
   final String? basePath;
 
-  /// The name of the package the pigeon files will be used in.
+  /// The name of the package the golubets files will be used in.
   final String? _dartPackageName;
 
   /// Creates a [GolubetsOptions] from a Map representation where:
@@ -509,7 +509,7 @@ class GolubetsOptions {
       throw Exception(
         'Unable to deduce package name, and no package name supplied.\n'
         'Add a `dartPackageName` property to your `GolubetsOptions` config,\n'
-        'or add --package_name={name_of_package} to your command line pigeon call.',
+        'or add --package_name={name_of_package} to your command line golubets call.',
       );
     }
     return name;
@@ -588,119 +588,8 @@ options:
 ${_argParser.usage}''';
   }
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
-  static final ArgParser _argParser =
-      ArgParser()
-        ..addOption('input', help: 'REQUIRED: Path to golubets file.')
-        ..addOption(
-          'dart_out',
-          help:
-              'Path to generated Dart source file (.dart). '
-              'Required if one_language is not specified.',
-        )
-        ..addOption(
-          'dart_test_out',
-          help:
-              'Path to generated library for Dart tests, when using '
-              '@HostApi(dartHostTestHandler:).',
-        )
-        ..addOption(
-          'objc_source_out',
-          help: 'Path to generated Objective-C source file (.m).',
-        )
-        ..addOption('java_out', help: 'Path to generated Java file (.java).')
-        ..addOption(
-          'java_package',
-          help: 'The package that generated Java code will be in.',
-        )
-        ..addFlag(
-          'java_use_generated_annotation',
-          help: 'Adds the java.annotation.Generated annotation to the output.',
-        )
-        ..addOption(
-          'swift_out',
-          help: 'Path to generated Swift file (.swift).',
-          aliases: const <String>['experimental_swift_out'],
-        )
-        ..addOption(
-          'kotlin_out',
-          help: 'Path to generated Kotlin file (.kt).',
-          aliases: const <String>['experimental_kotlin_out'],
-        )
-        ..addOption(
-          'kotlin_package',
-          help: 'The package that generated Kotlin code will be in.',
-          aliases: const <String>['experimental_kotlin_package'],
-        )
-        ..addOption(
-          'cpp_header_out',
-          help: 'Path to generated C++ header file (.h).',
-          aliases: const <String>['experimental_cpp_header_out'],
-        )
-        ..addOption(
-          'cpp_source_out',
-          help: 'Path to generated C++ classes file (.cpp).',
-          aliases: const <String>['experimental_cpp_source_out'],
-        )
-        ..addOption(
-          'cpp_namespace',
-          help: 'The namespace that generated C++ code will be in.',
-        )
-        ..addOption(
-          'gobject_header_out',
-          help: 'Path to generated GObject header file (.h).',
-          aliases: const <String>['experimental_gobject_header_out'],
-        )
-        ..addOption(
-          'gobject_source_out',
-          help: 'Path to generated GObject classes file (.cc).',
-          aliases: const <String>['experimental_gobject_source_out'],
-        )
-        ..addOption(
-          'gobject_module',
-          help: 'The module that generated GObject code will be in.',
-        )
-        ..addOption(
-          'objc_header_out',
-          help: 'Path to generated Objective-C header file (.h).',
-        )
-        ..addOption(
-          'objc_prefix',
-          help: 'Prefix for generated Objective-C classes and protocols.',
-        )
-        ..addOption(
-          'copyright_header',
-          help:
-              'Path to file with copyright header to be prepended to generated code.',
-        )
-        ..addFlag(
-          'one_language',
-          hide: true,
-          help: 'Does nothing, only here to avoid breaking changes',
-        )
-        ..addOption(
-          'ast_out',
-          help:
-              'Path to generated AST debugging info. (Warning: format subject to change)',
-        )
-        ..addFlag(
-          'debug_generators',
-          help:
-              'Print the line number of the generator in comments at newlines.',
-        )
-        ..addOption(
-          'base_path',
-          help:
-              'A base path to be prefixed to all outputs and copyright header path. Generally used for testing',
-          hide: true,
-        )
-        ..addOption(
-          'package_name',
-          help: 'The package that generated code will be in.',
-        );
-=======
   static final ArgParser _argParser = ArgParser()
-    ..addOption('input', help: 'REQUIRED: Path to pigeon file.')
+    ..addOption('input', help: 'REQUIRED: Path to golubets file.')
     ..addOption(
       'dart_out',
       help:
@@ -806,7 +695,6 @@ ${_argParser.usage}''';
       'package_name',
       help: 'The package that generated code will be in.',
     );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
 
   /// Convert command-line arguments to [GolubetsOptions].
   static GolubetsOptions parseArgs(List<String> args) {
@@ -873,7 +761,7 @@ ${_argParser.usage}''';
 
   /// The 'main' entrypoint used by the command-line tool.  [args] are the
   /// command-line arguments.  The optional parameter [adapters] allows you to
-  /// customize the generators that pigeon will use. The optional parameter
+  /// customize the generators that golubets will use. The optional parameter
   /// [sdkPath] allows you to specify the Dart SDK path.
   static Future<int> run(
     List<String> args, {
@@ -886,7 +774,7 @@ ${_argParser.usage}''';
 
   /// The 'main' entrypoint used by external packages.  [options] is
   /// used when running the code generator.  The optional parameter [adapters] allows you to
-  /// customize the generators that pigeon will use. The optional parameter
+  /// customize the generators that golubets will use. The optional parameter
   /// [sdkPath] allows you to specify the Dart SDK path.
   static Future<int> runWithOptions(
     GolubetsOptions options, {
@@ -895,7 +783,7 @@ ${_argParser.usage}''';
     bool mergeDefinitionFileOptions = true,
     @visibleForTesting ParseResults? parseResults,
   }) async {
-    final Golubets pigeon = Golubets.setup();
+    final Golubets golubets = Golubets.setup();
     if (options.debugGenerators ?? false) {
       generator_tools.debugGenerators = true;
     }
@@ -920,7 +808,7 @@ ${_argParser.usage}''';
     }
 
     parseResults =
-        parseResults ?? pigeon.parseFile(options.input!, sdkPath: sdkPath);
+        parseResults ?? golubets.parseFile(options.input!, sdkPath: sdkPath);
 
     final List<Error> errors = <Error>[];
     errors.addAll(parseResults.errors);

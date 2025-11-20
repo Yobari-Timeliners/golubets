@@ -269,12 +269,11 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     ).toList();
 
     void writeDecodeLogic(EnumeratedType customType) {
-      final ({Class child, Class superClass})? sealedHierarchy =
-          customType.findSealedHierarchy();
-      final String typeArguments =
-          customType.isGeneric
-              ? '<${_flattenTypeArguments(customType.typeArguments)}>'
-              : '';
+      final ({Class child, Class superClass})? sealedHierarchy = customType
+          .findSealedHierarchy();
+      final String typeArguments = customType.isGeneric
+          ? '<${_flattenTypeArguments(customType.typeArguments)}>'
+          : '';
 
       indent.writeln('case ${customType.enumeration}:');
       indent.nest(1, () {
@@ -365,10 +364,9 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
 
             final String value = isSealedChild ? 'childValue' : 'value';
 
-            final String typeArguments =
-                customType.isGeneric
-                    ? '<${_flattenTypeArguments(customType.typeArguments)}>'
-                    : '';
+            final String typeArguments = customType.isGeneric
+                ? '<${_flattenTypeArguments(customType.typeArguments)}>'
+                : '';
 
             if (isSealedChild) {
               final (child: Class child, superClass: Class superClass) =
@@ -391,13 +389,8 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
                   : 'rawValue';
               final String valueString =
                   customType.enumeration < maximumCodecFieldKey
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-                      ? '$value.$encodeString'
-                      : 'wrap.toList()';
-=======
-                  ? 'value.$encodeString'
+                  ? '$value.$encodeString'
                   : 'wrap.toList()';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
               final int enumeration =
                   customType.enumeration < maximumCodecFieldKey
                   ? customType.enumeration
@@ -465,7 +458,6 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     bool hashable = true,
     required Root root,
   }) {
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
     final Map<String, Class> classLookup = <String, Class>{
       for (final Class classDefinition in root.classes)
         classDefinition.name: classDefinition,
@@ -488,24 +480,14 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       classLookup: classLookup,
     );
     final String privateString = private ? 'private ' : 'public ';
-    final String typeArguments =
-        classDefinition.typeArguments.isEmpty
-            ? ''
-            : '<${_flattenTypeArgumentsWithSelectiveHashableConstraints(classDefinition.typeArguments, hashableTypeParams)}>';
-    final String extendsString =
-        classDefinition.superClass != null
-            ? ': ${classDefinition.superClass!.name}'
-            : hashable
-            ? ': Hashable'
-            : '';
-=======
-    final String privateString = private ? 'private ' : '';
+    final String typeArguments = classDefinition.typeArguments.isEmpty
+        ? ''
+        : '<${_flattenTypeArgumentsWithSelectiveHashableConstraints(classDefinition.typeArguments, hashableTypeParams)}>';
     final String extendsString = classDefinition.superClass != null
         ? ': ${classDefinition.superClass!.name}'
         : hashable
         ? ': Hashable'
         : '';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
     if (classDefinition.isSwiftClass) {
       indent.write(
         '${privateString}class ${classDefinition.name}$typeArguments$extendsString ',
@@ -876,12 +858,12 @@ if (wrapped == nil) {
                 // It needs soft-casting followed by force unwrapping.
                 final String forceUnwrapMapWithNullableEnums =
                     (field.type.baseName == 'Map' &&
-                            !field.type.isNullable &&
-                            field.type.typeArguments.any(
-                              (TypeDeclaration type) => type.isEnum,
-                            ))
-                        ? '!'
-                        : '';
+                        !field.type.isNullable &&
+                        field.type.typeArguments.any(
+                          (TypeDeclaration type) => type.isEnum,
+                        ))
+                    ? '!'
+                    : '';
                 indent.writeln(
                   '${field.name}: ${field.name}$forceUnwrapMapWithNullableEnums$comma',
                 );
@@ -1230,20 +1212,13 @@ if (wrapped == nil) {
             returnType: const TypeDeclaration.voidDeclaration(),
             swiftFunction: 'method(withIdentifier:)',
             setHandlerCondition: setHandlerCondition,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-            onCreateCall: (
-              List<String> safeArgNames, {
-              required String apiVarName,
-            }) {
-              return 'let _: AnyObject? = try instanceManager.removeInstance(${safeArgNames.single})';
-            },
-=======
-            isAsynchronous: false,
             onCreateCall:
-                (List<String> safeArgNames, {required String apiVarName}) {
+                (
+                  List<String> safeArgNames, {
+                  required String apiVarName,
+                }) {
                   return 'let _: AnyObject? = try instanceManager.removeInstance(${safeArgNames.single})';
                 },
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
           );
           _writeHostMethodMessageHandler(
             indent,
@@ -1253,20 +1228,13 @@ if (wrapped == nil) {
             returnType: const TypeDeclaration.voidDeclaration(),
             setHandlerCondition: setHandlerCondition,
             swiftFunction: null,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-            onCreateCall: (
-              List<String> safeArgNames, {
-              required String apiVarName,
-            }) {
-              return 'try instanceManager.removeAllObjects()';
-            },
-=======
-            isAsynchronous: false,
             onCreateCall:
-                (List<String> safeArgNames, {required String apiVarName}) {
+                (
+                  List<String> safeArgNames, {
+                  required String apiVarName,
+                }) {
                   return 'try instanceManager.removeAllObjects()';
                 },
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
           );
         },
       );
@@ -2103,19 +2071,12 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         if (onCreateCall == null) {
           // Empty parens are not required when calling a method whose only
           // argument is a trailing closure.
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
           final String argumentString =
               methodArgument.isEmpty && asynchronousType.isCallback
-                  ? ''
-                  : '(${methodArgument.join(', ')})';
-          call =
-              '$tryStatement${awaitKeyword}api.${components.name}$argumentString';
-=======
-          final String argumentString = methodArgument.isEmpty && isAsynchronous
               ? ''
               : '(${methodArgument.join(', ')})';
-          call = '${tryStatement}api.${components.name}$argumentString';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+          call =
+              '$tryStatement${awaitKeyword}api.${components.name}$argumentString';
         } else {
           call = onCreateCall(methodArgument, apiVarName: 'api');
         }
@@ -2344,16 +2305,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       }
 
       final String methodSignature = _getMethodSignature(
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-        name:
-            constructor.name.isNotEmpty
-                ? constructor.name
-                : 'golubetsDefaultConstructor',
-=======
         name: constructor.name.isNotEmpty
             ? constructor.name
-            : 'pigeonDefaultConstructor',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+            : 'golubetsDefaultConstructor',
         parameters: <Parameter>[
           Parameter(
             name: 'golubetsApi',
@@ -2647,16 +2601,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         }
 
         for (final Constructor constructor in api.constructors) {
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-          final String name =
-              constructor.name.isNotEmpty
-                  ? constructor.name
-                  : 'golubetsDefaultConstructor';
-=======
           final String name = constructor.name.isNotEmpty
               ? constructor.name
-              : 'pigeonDefaultConstructor';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+              : 'golubetsDefaultConstructor';
           final String channelName = makeChannelNameWithStrings(
             apiName: api.name,
             methodName: constructor.name.isNotEmpty
@@ -2679,37 +2626,20 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                 channelName: channelName,
                 returnType: const TypeDeclaration.voidDeclaration(),
                 swiftFunction: null,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-                onCreateCall: (
-                  List<String> methodParameters, {
-                  required String apiVarName,
-                }) {
-                  final List<String> parameters = <String>[
-                    'golubetsApi: $apiVarName',
-                    // Skip the identifier used by the InstanceManager.
-                    ...methodParameters.skip(1),
-                  ];
-                  return '$apiVarName.golubetsRegistrar.instanceManager.addDartCreatedInstance(\n'
-                      'try $apiVarName.golubetsDelegate.$name(${parameters.join(', ')}),\n'
-                      'withIdentifier: golubetsIdentifierArg)';
-                },
-=======
-                isAsynchronous: false,
                 onCreateCall:
                     (
                       List<String> methodParameters, {
                       required String apiVarName,
                     }) {
                       final List<String> parameters = <String>[
-                        'pigeonApi: $apiVarName',
+                        'golubetsApi: $apiVarName',
                         // Skip the identifier used by the InstanceManager.
                         ...methodParameters.skip(1),
                       ];
-                      return '$apiVarName.pigeonRegistrar.instanceManager.addDartCreatedInstance(\n'
-                          'try $apiVarName.pigeonDelegate.$name(${parameters.join(', ')}),\n'
-                          'withIdentifier: pigeonIdentifierArg)';
+                      return '$apiVarName.golubetsRegistrar.instanceManager.addDartCreatedInstance(\n'
+                          'try $apiVarName.golubetsDelegate.$name(${parameters.join(', ')}),\n'
+                          'withIdentifier: golubetsIdentifierArg)';
                     },
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
                 parameters: <Parameter>[
                   Parameter(
                     name: 'golubetsIdentifier',
@@ -2752,19 +2682,11 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                     }) {
                       final String instanceArg = field.isStatic
                           ? ''
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
                           : ', golubetsInstance: golubetsInstanceArg';
-                  return '$apiVarName.golubetsRegistrar.instanceManager.addDartCreatedInstance('
-                      'try $apiVarName.golubetsDelegate.${field.name}(golubetsApi: api$instanceArg), '
-                      'withIdentifier: golubetsIdentifierArg)';
-                },
-=======
-                          : ', pigeonInstance: pigeonInstanceArg';
-                      return '$apiVarName.pigeonRegistrar.instanceManager.addDartCreatedInstance('
-                          'try $apiVarName.pigeonDelegate.${field.name}(pigeonApi: api$instanceArg), '
-                          'withIdentifier: pigeonIdentifierArg)';
+                      return '$apiVarName.golubetsRegistrar.instanceManager.addDartCreatedInstance('
+                          'try $apiVarName.golubetsDelegate.${field.name}(golubetsApi: api$instanceArg), '
+                          'withIdentifier: golubetsIdentifierArg)';
                     },
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
                 parameters: <Parameter>[
                   if (!field.isStatic)
                     Parameter(
@@ -2806,39 +2728,21 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                 returnType: method.returnType,
                 asynchronousType: method.asynchronousType,
                 swiftFunction: null,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-                onCreateCall: (
-                  List<String> methodParameters, {
-                  required String apiVarName,
-                }) {
-                  final String tryStatement =
-                      method.asynchronousType.isCallback ? '' : 'try ';
-                  final List<String> parameters = <String>[
-                    'golubetsApi: $apiVarName',
-                    // Skip the identifier used by the InstanceManager.
-                    ...methodParameters,
-                  ];
-
-                  return '$tryStatement$apiVarName.golubetsDelegate.${method.name}(${parameters.join(', ')})';
-                },
-=======
                 onCreateCall:
                     (
                       List<String> methodParameters, {
                       required String apiVarName,
                     }) {
-                      final String tryStatement = method.isAsynchronous
-                          ? ''
-                          : 'try ';
+                      final String tryStatement =
+                          method.asynchronousType.isCallback ? '' : 'try ';
                       final List<String> parameters = <String>[
-                        'pigeonApi: $apiVarName',
+                        'golubetsApi: $apiVarName',
                         // Skip the identifier used by the InstanceManager.
                         ...methodParameters,
                       ];
 
-                      return '$tryStatement$apiVarName.pigeonDelegate.${method.name}(${parameters.join(', ')})';
+                      return '$tryStatement$apiVarName.golubetsDelegate.${method.name}(${parameters.join(', ')})';
                     },
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
                 parameters: <Parameter>[
                   if (!method.isStatic)
                     Parameter(
@@ -3198,10 +3102,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       classLookup: classLookup,
     );
     final String extendsString = hashable ? ': Hashable' : '';
-    final String typeArguments =
-        classDefinition.typeArguments.isEmpty
-            ? ''
-            : '<${_flattenTypeArgumentsWithSelectiveHashableConstraints(classDefinition.typeArguments, hashableTypeParams)}>';
+    final String typeArguments = classDefinition.typeArguments.isEmpty
+        ? ''
+        : '<${_flattenTypeArgumentsWithSelectiveHashableConstraints(classDefinition.typeArguments, hashableTypeParams)}>';
 
     indent.write(
       '$privateString enum ${classDefinition.name}$typeArguments$extendsString',
@@ -3407,10 +3310,9 @@ Set<String> _getTypeParametersRequiringHashable(
   visited.add(classDefinition.name);
 
   final Set<String> hashableTypeParams = <String>{};
-  final Set<String> classTypeParamNames =
-      classDefinition.typeArguments
-          .map((TypeDeclaration e) => e.baseName)
-          .toSet();
+  final Set<String> classTypeParamNames = classDefinition.typeArguments
+      .map((TypeDeclaration e) => e.baseName)
+      .toSet();
 
   // Analyze each field to see if any type parameters need Hashable constraints
   for (final NamedType field in classDefinition.fields) {
@@ -3628,15 +3530,10 @@ String _getMethodSignature({
     returnType: returnType,
     swiftFunction: swiftFunction,
   );
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
   final String public = isPublic ? 'public' : '';
-  final String returnTypeString =
-      returnType.isVoid ? 'Void' : _nullSafeSwiftTypeForDartType(returnType);
-=======
   final String returnTypeString = returnType.isVoid
       ? 'Void'
       : _nullSafeSwiftTypeForDartType(returnType);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
 
   final Iterable<String> types = parameters.map(
     (NamedType e) => _nullSafeSwiftTypeForDartType(e.type),
@@ -3781,37 +3678,37 @@ extension on DefaultValue {
         elements.isEmpty
             ? indent.add('$prefix[]')
             : indent.addScoped(
-              '$prefix[',
-              ']',
-              () {
-                for (final DefaultValue element in elements) {
-                  element.write(indent, classLookup: classLookup);
-                  indent.addln(', ');
-                }
-              },
-              addTrailingNewline: false,
-            ),
+                '$prefix[',
+                ']',
+                () {
+                  for (final DefaultValue element in elements) {
+                    element.write(indent, classLookup: classLookup);
+                    indent.addln(', ');
+                  }
+                },
+                addTrailingNewline: false,
+              ),
       MapLiteral(:final Map<DefaultValue, DefaultValue> entries) =>
         entries.isEmpty
             ? indent.add('$prefix[:]')
             : indent.addScoped(
-              '$prefix[',
-              ']',
-              () {
-                for (final MapEntry<DefaultValue, DefaultValue> entry
-                    in entries.entries) {
-                  entry.key.write(indent, classLookup: classLookup);
-                  indent.add(': ');
-                  entry.value.write(
-                    indent,
-                    prefix: '',
-                    classLookup: classLookup,
-                  );
-                  indent.addln(', ');
-                }
-              },
-              addTrailingNewline: false,
-            ),
+                '$prefix[',
+                ']',
+                () {
+                  for (final MapEntry<DefaultValue, DefaultValue> entry
+                      in entries.entries) {
+                    entry.key.write(indent, classLookup: classLookup);
+                    indent.add(': ');
+                    entry.value.write(
+                      indent,
+                      prefix: '',
+                      classLookup: classLookup,
+                    );
+                    indent.addln(', ');
+                  }
+                },
+                addTrailingNewline: false,
+              ),
       EnumLiteral(:final String name, :final String value) => indent.add(
         '$prefix$name.$value',
       ),
@@ -3823,10 +3720,9 @@ extension on DefaultValue {
           final bool isSealedChild =
               classLookup[type.baseName]?.superClass?.isSealed ?? false;
 
-          final String name =
-              isSealedChild
-                  ? '.${type.baseName.toLowFirstLetter()}'
-                  : type.baseName;
+          final String name = isSealedChild
+              ? '.${type.baseName.toLowFirstLetter()}'
+              : type.baseName;
 
           indent.add('$prefix$name');
 

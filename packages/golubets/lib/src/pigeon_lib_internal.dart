@@ -126,24 +126,13 @@ class InternalGolubetsOptions {
       basePath = options.basePath,
       dartPackageName = options.getPackageName();
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
   /// Creates a instance of InternalGolubetsOptions from GolubetsOptions.
   static InternalGolubetsOptions fromGolubetsOptions(GolubetsOptions options) {
-    final Iterable<String>? copyrightHeader =
-        options.copyrightHeader != null
-            ? _lineReader(
-              path.posix.join(options.basePath ?? '', options.copyrightHeader),
-            )
-            : null;
-=======
-  /// Creates a instance of InternalPigeonOptions from PigeonOptions.
-  static InternalPigeonOptions fromPigeonOptions(PigeonOptions options) {
     final Iterable<String>? copyrightHeader = options.copyrightHeader != null
         ? _lineReader(
             path.posix.join(options.basePath ?? '', options.copyrightHeader),
           )
         : null;
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
 
     return InternalGolubetsOptions._fromGolubetsOptionsWithHeader(
       options,
@@ -1419,13 +1408,12 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       containsProxyApi: containsProxyApi,
       containsEventChannel: containsEventChannel,
       genericTypeNames: _genericTypeNames,
-      genericUsage:
-          _genericTypeNames.isEmpty
-              ? const <String, Set<TypeArgumentCombination>>{}
-              : collectGenericTypeUsage(
-                classes: _classes,
-                apis: _apis,
-              ),
+      genericUsage: _genericTypeNames.isEmpty
+          ? const <String, Set<TypeArgumentCombination>>{}
+          : collectGenericTypeUsage(
+              classes: _classes,
+              apis: _apis,
+            ),
     );
 
     final List<Error> totalErrors = List<Error>.from(_errors);
@@ -1444,19 +1432,11 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
           !element.key.isVoid &&
           element.key.baseName != 'dynamic' &&
           element.key.baseName != 'Object' &&
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
           element.key.baseName.isNotEmpty &&
           !_genericTypeNames.contains(element.key.baseName)) {
-        final int? lineNumber =
-            element.value.isEmpty
-                ? null
-                : calculateLineNumber(source, element.value.first);
-=======
-          element.key.baseName.isNotEmpty) {
         final int? lineNumber = element.value.isEmpty
             ? null
             : calculateLineNumber(source, element.value.first);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
         totalErrors.add(
           Error(
             message: 'Unknown type: ${element.key.baseName}',
@@ -1501,22 +1481,15 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     totalErrors.addAll(validateErrors);
 
     return ParseResults(
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-      root:
-          totalErrors.isEmpty
-              ? completeRoot
-              : Root(
-                apis: <Api>[],
-                classes: <Class>[],
-                enums: <Enum>[],
-                genericTypeNames: <String>{},
-                genericUsage: <String, Set<TypeArgumentCombination>>{},
-              ),
-=======
       root: totalErrors.isEmpty
           ? completeRoot
-          : Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]),
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+          : Root(
+              apis: <Api>[],
+              classes: <Class>[],
+              enums: <Enum>[],
+              genericTypeNames: <String>{},
+              genericUsage: <String, Set<TypeArgumentCombination>>{},
+            ),
       errors: totalErrors,
       golubetsOptions: _golubetsOptions,
     );
@@ -2019,18 +1992,12 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
   @override
   Object? visitMethodDeclaration(dart_ast.MethodDeclaration node) {
     final dart_ast.FormalParameterList parameters = node.parameters!;
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-    final List<Parameter> arguments =
-        parameters.parameters.map(_formalParameterToPigeonParameter).toList();
-    final AsynchronousType asynchronousType = _parseAsynchronousType(
-      node.metadata,
-    );
-=======
     final List<Parameter> arguments = parameters.parameters
         .map(_formalParameterToPigeonParameter)
         .toList();
-    final bool isAsynchronous = _hasMetadata(node.metadata, 'async');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+    final AsynchronousType asynchronousType = _parseAsynchronousType(
+      node.metadata,
+    );
     final bool isStatic = _hasMetadata(node.metadata, 'static');
     final String objcSelector =
         _findMetadata(node.metadata, 'ObjCSelector')?.arguments?.arguments.first
@@ -2279,7 +2246,6 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         for (final dart_ast.FormalParameter param
             in node.parameters.parameters) {
           if (param is dart_ast.DefaultFormalParameter) {
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
             final Token? name = param.name;
 
             final dart_ast.Expression? defaultValue = param.defaultValue;
@@ -2312,12 +2278,6 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
                   lineNumber: calculateLineNumber(source, node.offset),
                 ),
               );
-=======
-            if (param.name != null && param.defaultValue != null) {
-              _currentClassDefaultValues[param.name!.toString()] = param
-                  .defaultValue!
-                  .toString();
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
             }
           }
         }
@@ -2531,17 +2491,15 @@ class _DefaultValueVisitor
 
   @override
   DefaultValue? visitListLiteral(dart_ast.ListLiteral node) {
-    final List<DefaultValue> values =
-        node.elements
-            .whereType<dart_ast.Expression>()
-            .map((dart_ast.Expression e) => e.accept(this))
-            .whereType<DefaultValue>()
-            .toList();
+    final List<DefaultValue> values = node.elements
+        .whereType<dart_ast.Expression>()
+        .map((dart_ast.Expression e) => e.accept(this))
+        .whereType<DefaultValue>()
+        .toList();
 
-    final TypeDeclaration? type =
-        RootBuilder._typeAnnotationsToTypeArguments(
-          node.typeArguments,
-        ).firstOrNull;
+    final TypeDeclaration? type = RootBuilder._typeAnnotationsToTypeArguments(
+      node.typeArguments,
+    ).firstOrNull;
 
     if (type == null) {
       throw Exception(
@@ -2602,17 +2560,15 @@ class _DefaultValueVisitor
   DefaultValue? visitInstanceCreationExpression(
     dart_ast.InstanceCreationExpression node,
   ) {
-    final List<DefaultValue> args =
-        node.argumentList.arguments
-            .map(
-              (dart_ast.Expression e) =>
-                  e is! dart_ast.NamedExpression
-                      // https://github.com/Yobari-Timeliners/golub/issues/8
-                      ? throw Exception('NamedExpression expected')
-                      : e.accept(this),
-            )
-            .whereNotNull()
-            .toList();
+    final List<DefaultValue> args = node.argumentList.arguments
+        .map(
+          (dart_ast.Expression e) => e is! dart_ast.NamedExpression
+              // https://github.com/Yobari-Timeliners/golub/issues/8
+              ? throw Exception('NamedExpression expected')
+              : e.accept(this),
+        )
+        .whereNotNull()
+        .toList();
     final TypeDeclaration type = TypeDeclaration(
       baseName: RootBuilder._getNamedTypeQualifiedName(
         node.constructorName.type,
@@ -2645,17 +2601,15 @@ class _DefaultValueVisitor
 
   @override
   DefaultValue? visitMethodInvocation(dart_ast.MethodInvocation node) {
-    final List<DefaultValue> args =
-        node.argumentList.arguments
-            .map(
-              (dart_ast.Expression e) =>
-                  e is! dart_ast.NamedExpression
-                      // https://github.com/Yobari-Timeliners/golub/issues/8
-                      ? throw Exception('NamedExpression expected')
-                      : e.accept(this),
-            )
-            .whereNotNull()
-            .toList();
+    final List<DefaultValue> args = node.argumentList.arguments
+        .map(
+          (dart_ast.Expression e) => e is! dart_ast.NamedExpression
+              // https://github.com/Yobari-Timeliners/golub/issues/8
+              ? throw Exception('NamedExpression expected')
+              : e.accept(this),
+        )
+        .whereNotNull()
+        .toList();
     final TypeDeclaration type = TypeDeclaration(
       baseName: node.methodName.name,
       isNullable: false,

@@ -715,114 +715,6 @@ cb.Method setUpMessageHandlerMethod({
   final bool hasAnyMessageHandlers =
       hasCallbackConstructor || flutterMethods.isNotEmpty;
   return cb.Method.returnsVoid(
-<<<<<<< HEAD:packages/golubets/lib/src/dart/proxy_api_generator_helper.dart
-    (cb.MethodBuilder builder) =>
-        builder
-          ..name = '${classMemberNamePrefix}setUpMessageHandlers'
-          ..returns = cb.refer('void')
-          ..static = true
-          ..optionalParameters.addAll(<cb.Parameter>[
-            cb.Parameter(
-              (cb.ParameterBuilder builder) =>
-                  builder
-                    ..name = '${classMemberNamePrefix}clearHandlers'
-                    ..type = cb.refer('bool')
-                    ..named = true
-                    ..defaultTo = const cb.Code('false'),
-            ),
-            cb.Parameter(
-              (cb.ParameterBuilder builder) =>
-                  builder
-                    ..name = '${classMemberNamePrefix}binaryMessenger'
-                    ..named = true
-                    ..type = cb.refer('BinaryMessenger?'),
-            ),
-            cb.Parameter(
-              (cb.ParameterBuilder builder) =>
-                  builder
-                    ..name = instanceManagerVarName
-                    ..named = true
-                    ..type = cb.refer('$dartInstanceManagerClassName?'),
-            ),
-            if (hasCallbackConstructor)
-              cb.Parameter(
-                (cb.ParameterBuilder builder) =>
-                    builder
-                      ..name = '${classMemberNamePrefix}newInstance'
-                      ..named = true
-                      ..type = cb.FunctionType(
-                        (cb.FunctionTypeBuilder builder) =>
-                            builder
-                              ..returnType = cb.refer(apiName)
-                              ..isNullable = true
-                              ..requiredParameters.addAll(
-                                unattachedFields.mapIndexed((
-                                  int index,
-                                  ApiField field,
-                                ) {
-                                  return cb.refer(
-                                    '${addGenericTypesNullable(field.type)} ${getParameterName(index, field)}',
-                                  );
-                                }),
-                              ),
-                      ),
-              ),
-            for (final Method method in flutterMethods)
-              cb.Parameter(
-                (cb.ParameterBuilder builder) =>
-                    builder
-                      ..name = method.name
-                      ..type = cb.FunctionType(
-                        (cb.FunctionTypeBuilder builder) =>
-                            builder
-                              ..returnType = refer(
-                                method.returnType,
-                                asFuture: method.isAsynchronous,
-                              )
-                              ..isNullable = true
-                              ..requiredParameters.addAll(<cb.Reference>[
-                                cb.refer(
-                                  '$apiName ${classMemberNamePrefix}instance',
-                                ),
-                                ...method.parameters.mapIndexed((
-                                  int index,
-                                  NamedType parameter,
-                                ) {
-                                  return cb.refer(
-                                    '${addGenericTypesNullable(parameter.type)} ${getParameterName(index, parameter)}',
-                                  );
-                                }),
-                              ]),
-                      ),
-              ),
-          ])
-          ..body = cb.Block.of(<cb.Code>[
-            if (hasAnyMessageHandlers) ...<cb.Code>[
-              cb.Code(
-                'final $codecName $golubetsChannelCodec = $codecName($instanceManagerVarName ?? $dartInstanceManagerClassName.instance);',
-              ),
-              const cb.Code(
-                'final BinaryMessenger? binaryMessenger = ${classMemberNamePrefix}binaryMessenger;',
-              ),
-            ],
-            if (hasCallbackConstructor)
-              ...cb.Block((cb.BlockBuilder builder) {
-                final StringBuffer messageHandlerSink = StringBuffer();
-                const String methodName = '${classMemberNamePrefix}newInstance';
-                DartGenerator.writeFlutterMethodMessageHandler(
-                  Indent(messageHandlerSink),
-                  name: methodName,
-                  parameters: <Parameter>[
-                    Parameter(
-                      name: '${classMemberNamePrefix}instanceIdentifier',
-                      type: const TypeDeclaration(
-                        baseName: 'int',
-                        isNullable: false,
-                      ),
-                    ),
-                    ...unattachedFields.map((ApiField field) {
-                      return Parameter(name: field.name, type: field.type);
-=======
     (cb.MethodBuilder builder) => builder
       ..name = '${classMemberNamePrefix}setUpMessageHandlers'
       ..returns = cb.refer('void')
@@ -861,7 +753,6 @@ cb.Method setUpMessageHandlerMethod({
                       return cb.refer(
                         '${addGenericTypesNullable(field.type)} ${getParameterName(index, field)}',
                       );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/proxy_api_generator_helper.dart
                     }),
                   ),
               ),
@@ -894,7 +785,7 @@ cb.Method setUpMessageHandlerMethod({
       ..body = cb.Block.of(<cb.Code>[
         if (hasAnyMessageHandlers) ...<cb.Code>[
           cb.Code(
-            'final $codecName $pigeonChannelCodec = $codecName($instanceManagerVarName ?? $dartInstanceManagerClassName.instance);',
+            'final $codecName $golubetsChannelCodec = $codecName($instanceManagerVarName ?? $dartInstanceManagerClassName.instance);',
           ),
           const cb.Code(
             'final BinaryMessenger? binaryMessenger = ${classMemberNamePrefix}binaryMessenger;',
@@ -1162,46 +1053,6 @@ Iterable<cb.Method> hostMethods(
                     cb.Code(
                       '$proxyApiOverridesClassName.${toLowerCamelCase(apiName)}_${method.name}!',
                     ),
-<<<<<<< HEAD:packages/golubets/lib/src/dart/proxy_api_generator_helper.dart
-                  ...method.parameters,
-                ],
-                returnType: method.returnType,
-              );
-              builder.statements.addAll(<cb.Code>[
-                if (method.isStatic) ...<cb.Code>[
-                  cb.Code(
-                    'if ($proxyApiOverridesClassName.${toLowerCamelCase(apiName)}_${method.name} != null) {',
-                  ),
-                  cb.CodeExpression(
-                        cb.Code(
-                          '$proxyApiOverridesClassName.${toLowerCamelCase(apiName)}_${method.name}!',
-                        ),
-                      )
-                      .call(
-                        parameters.map(
-                          (cb.Parameter parameter) => cb.refer(parameter.name),
-                        ),
-                      )
-                      .returned
-                      .statement,
-                  const cb.Code('}'),
-                ],
-                if (!method.isStatic)
-                  cb.Code(
-                    'final $codecName $golubetsChannelCodec =\n'
-                    '    $codecInstanceName;',
-                  )
-                else
-                  cb.Code(
-                    'final $codecName $golubetsChannelCodec = $codecName($instanceManagerVarName ?? $dartInstanceManagerClassName.instance);',
-                  ),
-                const cb.Code(
-                  'final BinaryMessenger? ${varNamePrefix}binaryMessenger = ${classMemberNamePrefix}binaryMessenger;',
-                ),
-                cb.Code(messageCallSink.toString()),
-              ]);
-            }),
-=======
                   )
                   .call(
                     parameters.map(
@@ -1214,12 +1065,12 @@ Iterable<cb.Method> hostMethods(
             ],
             if (!method.isStatic)
               cb.Code(
-                'final $codecName $pigeonChannelCodec =\n'
+                'final $codecName $golubetsChannelCodec =\n'
                 '    $codecInstanceName;',
               )
             else
               cb.Code(
-                'final $codecName $pigeonChannelCodec = $codecName($instanceManagerVarName ?? $dartInstanceManagerClassName.instance);',
+                'final $codecName $golubetsChannelCodec = $codecName($instanceManagerVarName ?? $dartInstanceManagerClassName.instance);',
               ),
             const cb.Code(
               'final BinaryMessenger? ${varNamePrefix}binaryMessenger = ${classMemberNamePrefix}binaryMessenger;',
@@ -1227,7 +1078,6 @@ Iterable<cb.Method> hostMethods(
             cb.Code(messageCallSink.toString()),
           ]);
         }),
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/proxy_api_generator_helper.dart
     );
   }
 }

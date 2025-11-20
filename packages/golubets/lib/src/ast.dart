@@ -154,21 +154,13 @@ class Method extends Node {
 
   @override
   String toString() {
-<<<<<<< HEAD:packages/golubets/lib/src/ast.dart
-    final String objcSelectorStr =
-        objcSelector.isEmpty ? '' : ' objcSelector:$objcSelector';
-    final String swiftFunctionStr =
-        swiftFunction.isEmpty ? '' : ' swiftFunction:$swiftFunction';
-    return '(Method name:$name returnType:$returnType parameters:$parameters asynchronousType:$asynchronousType$objcSelectorStr$swiftFunctionStr documentationComments:$documentationComments)';
-=======
     final String objcSelectorStr = objcSelector.isEmpty
         ? ''
         : ' objcSelector:$objcSelector';
     final String swiftFunctionStr = swiftFunction.isEmpty
         ? ''
         : ' swiftFunction:$swiftFunction';
-    return '(Method name:$name returnType:$returnType parameters:$parameters isAsynchronous:$isAsynchronous$objcSelectorStr$swiftFunctionStr documentationComments:$documentationComments)';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/ast.dart
+    return '(Method name:$name returnType:$returnType parameters:$parameters asynchronousType:$asynchronousType$objcSelectorStr$swiftFunctionStr documentationComments:$documentationComments)';
   }
 }
 
