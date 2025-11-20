@@ -66,7 +66,8 @@ void main() {
       name: 'Foobar',
       members: <EnumMember>[
         EnumMember(name: 'one'),
-        EnumMember(name: 'two'),
+        EnumMember(name: 'twoThreeFour'),
+        EnumMember(name: 'remoteDB'),
       ],
     );
     final Root root = Root(
@@ -843,7 +844,8 @@ void main() {
       name: 'Enum1',
       members: <EnumMember>[
         EnumMember(name: 'one'),
-        EnumMember(name: 'two'),
+        EnumMember(name: 'twoThreeFour'),
+        EnumMember(name: 'remoteDB'),
       ],
     );
     final Class classDefinition = Class(
