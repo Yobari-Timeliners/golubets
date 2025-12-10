@@ -27,9 +27,10 @@ void main() {
   test('can override ProxyApi static methods', () async {
     GolubetsOverrides.golubets_reset();
 
-    GolubetsOverrides.proxyApiTestClass_echoStaticString = (String value) async {
-      return value;
-    };
+    GolubetsOverrides.proxyApiTestClass_echoStaticString =
+        (String value) async {
+          return value;
+        };
 
     const String value = 'testString';
     expect(await ProxyApiTestClass.echoStaticString(value), value);
@@ -52,9 +53,10 @@ void main() {
   });
 
   test('golubets_reset sets static method overrides to null', () {
-    GolubetsOverrides.proxyApiTestClass_echoStaticString = (String value) async {
-      return value;
-    };
+    GolubetsOverrides.proxyApiTestClass_echoStaticString =
+        (String value) async {
+          return value;
+        };
 
     GolubetsOverrides.golubets_reset();
     expect(GolubetsOverrides.proxyApiTestClass_echoStaticString, isNull);
