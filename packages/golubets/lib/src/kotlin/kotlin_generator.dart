@@ -1726,9 +1726,13 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
       indent.writeln(
         '$openKeyword$abstractKeyword${suspendKeyword}fun $name(${argSignature.join(', ')})',
       );
-    } else if (returnType.isVoid) {
+    } else if (returnType.isVoid && !asynchronousType.isAwait) {
       indent.writeln(
         '$openKeyword${abstractKeyword}fun $name(${argSignature.join(', ')})',
+      );
+    } else if (returnType.isVoid) {
+      indent.writeln(
+        '$openKeyword$abstractKeyword${suspendKeyword}fun $name(${argSignature.join(', ')})',
       );
     } else {
       indent.writeln(

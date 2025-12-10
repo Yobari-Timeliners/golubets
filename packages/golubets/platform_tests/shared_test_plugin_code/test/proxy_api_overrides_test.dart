@@ -28,9 +28,7 @@ void main() {
     GolubetsOverrides.golubets_reset();
 
     GolubetsOverrides.proxyApiTestClass_echoStaticString =
-        (
-          String value,
-        ) async {
+        (String value) async {
           return value;
         };
 
@@ -56,9 +54,7 @@ void main() {
 
   test('golubets_reset sets static method overrides to null', () {
     GolubetsOverrides.proxyApiTestClass_echoStaticString =
-        (
-          String value,
-        ) async {
+        (String value) async {
           return value;
         };
 
