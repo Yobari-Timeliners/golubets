@@ -214,7 +214,7 @@ class ProxyApiTestsGolubetsInstanceManager(
   }
 
   /** Retrieves the instance associated with identifier, if present, otherwise `null`. */
-  fun <T> getInstance(identifier: Long): T? {
+  fun <T : Any> getInstance(identifier: Long): T? {
     logWarningIfFinalizationListenerHasStopped()
     val instance = weakInstances[identifier] as IdentityWeakReference<T>?
     return instance?.get()
@@ -3147,6 +3147,14 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterNoop` failed because native instance was not in the instance manager.",
+                  "")))
+      return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
     val codec = golubetsRegistrar.codec
@@ -3173,6 +3181,14 @@ abstract class GolubetsApiProxyApiTestClass(
       callback(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
+      return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterThrowError` failed because native instance was not in the instance manager.",
+                  "")))
       return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
@@ -3206,6 +3222,14 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterThrowErrorFromVoid` failed because native instance was not in the instance manager.",
+                  "")))
+      return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
     val codec = golubetsRegistrar.codec
@@ -3237,6 +3261,14 @@ abstract class GolubetsApiProxyApiTestClass(
       callback(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
+      return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoBool` failed because native instance was not in the instance manager.",
+                  "")))
       return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
@@ -3278,6 +3310,14 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoInt` failed because native instance was not in the instance manager.",
+                  "")))
+      return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
     val codec = golubetsRegistrar.codec
@@ -3317,6 +3357,14 @@ abstract class GolubetsApiProxyApiTestClass(
       callback(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
+      return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoDouble` failed because native instance was not in the instance manager.",
+                  "")))
       return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
@@ -3358,6 +3406,14 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoString` failed because native instance was not in the instance manager.",
+                  "")))
+      return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
     val codec = golubetsRegistrar.codec
@@ -3397,6 +3453,14 @@ abstract class GolubetsApiProxyApiTestClass(
       callback(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
+      return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoUint8List` failed because native instance was not in the instance manager.",
+                  "")))
       return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
@@ -3438,6 +3502,14 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoList` failed because native instance was not in the instance manager.",
+                  "")))
+      return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
     val codec = golubetsRegistrar.codec
@@ -3477,6 +3549,14 @@ abstract class GolubetsApiProxyApiTestClass(
       callback(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
+      return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoProxyApiList` failed because native instance was not in the instance manager.",
+                  "")))
       return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
@@ -3518,6 +3598,14 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoMap` failed because native instance was not in the instance manager.",
+                  "")))
+      return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
     val codec = golubetsRegistrar.codec
@@ -3557,6 +3645,14 @@ abstract class GolubetsApiProxyApiTestClass(
       callback(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
+      return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoProxyApiMap` failed because native instance was not in the instance manager.",
+                  "")))
       return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
@@ -3598,6 +3694,14 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoEnum` failed because native instance was not in the instance manager.",
+                  "")))
+      return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
     val codec = golubetsRegistrar.codec
@@ -3637,6 +3741,14 @@ abstract class GolubetsApiProxyApiTestClass(
       callback(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
+      return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoProxyApi` failed because native instance was not in the instance manager.",
+                  "")))
       return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
@@ -3678,6 +3790,14 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoNullableBool` failed because native instance was not in the instance manager.",
+                  "")))
+      return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
     val codec = golubetsRegistrar.codec
@@ -3710,6 +3830,14 @@ abstract class GolubetsApiProxyApiTestClass(
       callback(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
+      return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoNullableInt` failed because native instance was not in the instance manager.",
+                  "")))
       return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
@@ -3744,6 +3872,14 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoNullableDouble` failed because native instance was not in the instance manager.",
+                  "")))
+      return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
     val codec = golubetsRegistrar.codec
@@ -3776,6 +3912,14 @@ abstract class GolubetsApiProxyApiTestClass(
       callback(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
+      return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoNullableString` failed because native instance was not in the instance manager.",
+                  "")))
       return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
@@ -3810,6 +3954,14 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoNullableUint8List` failed because native instance was not in the instance manager.",
+                  "")))
+      return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
     val codec = golubetsRegistrar.codec
@@ -3842,6 +3994,14 @@ abstract class GolubetsApiProxyApiTestClass(
       callback(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
+      return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoNullableList` failed because native instance was not in the instance manager.",
+                  "")))
       return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
@@ -3876,6 +4036,14 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoNullableMap` failed because native instance was not in the instance manager.",
+                  "")))
+      return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
     val codec = golubetsRegistrar.codec
@@ -3908,6 +4076,14 @@ abstract class GolubetsApiProxyApiTestClass(
       callback(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
+      return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoNullableEnum` failed because native instance was not in the instance manager.",
+                  "")))
       return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
@@ -3942,6 +4118,14 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoNullableProxyApi` failed because native instance was not in the instance manager.",
+                  "")))
+      return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
     val codec = golubetsRegistrar.codec
@@ -3974,6 +4158,14 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterNoopAsync` failed because native instance was not in the instance manager.",
+                  "")))
+      return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
     val codec = golubetsRegistrar.codec
@@ -4005,6 +4197,14 @@ abstract class GolubetsApiProxyApiTestClass(
       callback(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
+      return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiTestClass.flutterEchoAsyncString` failed because native instance was not in the instance manager.",
+                  "")))
       return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger
@@ -4195,6 +4395,14 @@ open class GolubetsApiProxyApiInterface(
       callback(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
+      return
+    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+      callback(
+          Result.failure(
+              ProxyApiTestsError(
+                  "missing-instance-error",
+                  "Callback to `ProxyApiInterface.anInterfaceMethod` failed because native instance was not in the instance manager.",
+                  "")))
       return
     }
     val binaryMessenger = golubetsRegistrar.binaryMessenger

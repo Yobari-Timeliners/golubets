@@ -11,6 +11,7 @@ import 'package:shared_test_plugin_code/src/generated/proxy_api_tests.gen.dart';
 void main() {
   group('InstanceManager', () {
     test('addHostCreatedInstance', () {
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
       final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
         onWeakReferenceRemoved: (_) {},
       );
@@ -18,6 +19,13 @@ void main() {
       final CopyableObject object = CopyableObject(
         golubets_instanceManager: instanceManager,
       );
+=======
+      final instanceManager = PigeonInstanceManager(
+        onWeakReferenceRemoved: (_) {},
+      );
+
+      final object = CopyableObject(pigeon_instanceManager: instanceManager);
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
 
       instanceManager.addHostCreatedInstance(object, 0);
 
@@ -29,6 +37,7 @@ void main() {
     });
 
     test('addHostCreatedInstance prevents already used objects and ids', () {
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
       final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
         onWeakReferenceRemoved: (_) {},
       );
@@ -36,6 +45,13 @@ void main() {
       final CopyableObject object = CopyableObject(
         golubets_instanceManager: instanceManager,
       );
+=======
+      final instanceManager = PigeonInstanceManager(
+        onWeakReferenceRemoved: (_) {},
+      );
+
+      final object = CopyableObject(pigeon_instanceManager: instanceManager);
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
 
       instanceManager.addHostCreatedInstance(object, 0);
 
@@ -54,6 +70,7 @@ void main() {
     });
 
     test('addFlutterCreatedInstance', () {
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
       final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
         onWeakReferenceRemoved: (_) {},
       );
@@ -61,6 +78,13 @@ void main() {
       final CopyableObject object = CopyableObject(
         golubets_instanceManager: instanceManager,
       );
+=======
+      final instanceManager = PigeonInstanceManager(
+        onWeakReferenceRemoved: (_) {},
+      );
+
+      final object = CopyableObject(pigeon_instanceManager: instanceManager);
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
 
       instanceManager.addDartCreatedInstance(object);
 
@@ -71,15 +95,23 @@ void main() {
 
     test('removeWeakReference', () {
       int? weakInstanceId;
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
       final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
+=======
+      final instanceManager = PigeonInstanceManager(
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
         onWeakReferenceRemoved: (int instanceId) {
           weakInstanceId = instanceId;
         },
       );
 
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
       final CopyableObject object = CopyableObject(
         golubets_instanceManager: instanceManager,
       );
+=======
+      final object = CopyableObject(pigeon_instanceManager: instanceManager);
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
 
       instanceManager.addHostCreatedInstance(object, 0);
 
@@ -92,6 +124,7 @@ void main() {
     });
 
     test('removeWeakReference removes only weak reference', () {
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
       final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
         onWeakReferenceRemoved: (_) {},
       );
@@ -99,6 +132,13 @@ void main() {
       final CopyableObject object = CopyableObject(
         golubets_instanceManager: instanceManager,
       );
+=======
+      final instanceManager = PigeonInstanceManager(
+        onWeakReferenceRemoved: (_) {},
+      );
+
+      final object = CopyableObject(pigeon_instanceManager: instanceManager);
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
 
       instanceManager.addHostCreatedInstance(object, 0);
 
@@ -110,6 +150,7 @@ void main() {
     });
 
     test('remove', () {
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
       final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
         onWeakReferenceRemoved: (_) {},
       );
@@ -117,6 +158,13 @@ void main() {
       final CopyableObject object = CopyableObject(
         golubets_instanceManager: instanceManager,
       );
+=======
+      final instanceManager = PigeonInstanceManager(
+        onWeakReferenceRemoved: (_) {},
+      );
+
+      final object = CopyableObject(pigeon_instanceManager: instanceManager);
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
 
       instanceManager.addHostCreatedInstance(object, 0);
       instanceManager.removeWeakReference(object);
@@ -125,6 +173,7 @@ void main() {
     });
 
     test('remove throws AssertionError if weak reference still exists', () {
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
       final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
         onWeakReferenceRemoved: (_) {},
       );
@@ -132,12 +181,20 @@ void main() {
       final CopyableObject object = CopyableObject(
         golubets_instanceManager: instanceManager,
       );
+=======
+      final instanceManager = PigeonInstanceManager(
+        onWeakReferenceRemoved: (_) {},
+      );
+
+      final object = CopyableObject(pigeon_instanceManager: instanceManager);
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
 
       instanceManager.addDartCreatedInstance(object);
       expect(() => instanceManager.remove(0), throwsAssertionError);
     });
 
     test('getInstance can add a new weak reference', () {
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
       final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
         onWeakReferenceRemoved: (_) {},
       );
@@ -145,6 +202,13 @@ void main() {
       final CopyableObject object = CopyableObject(
         golubets_instanceManager: instanceManager,
       );
+=======
+      final instanceManager = PigeonInstanceManager(
+        onWeakReferenceRemoved: (_) {},
+      );
+
+      final object = CopyableObject(pigeon_instanceManager: instanceManager);
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
 
       instanceManager.addHostCreatedInstance(object, 0);
       instanceManager.removeWeakReference(object);
@@ -157,8 +221,13 @@ void main() {
     test(
       'addDartCreatedInstance should add finalizer to original object',
       () async {
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
         bool weakReferencedRemovedCalled = false;
         final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
+=======
+        var weakReferencedRemovedCalled = false;
+        final instanceManager = PigeonInstanceManager(
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
           onWeakReferenceRemoved: (_) {
             weakReferencedRemovedCalled = true;
           },
@@ -180,8 +249,13 @@ void main() {
     test(
       'addHostCreatedInstance should not add finalizer to original object',
       () async {
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
         bool weakReferencedRemovedCalled = false;
         final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
+=======
+        var weakReferencedRemovedCalled = false;
+        final instanceManager = PigeonInstanceManager(
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/instance_manager_test.dart
           onWeakReferenceRemoved: (_) {
             weakReferencedRemovedCalled = true;
           },
@@ -203,7 +277,7 @@ void main() {
     testWidgets(
       'instantiating default InstanceManager does not make a message call',
       (WidgetTester tester) async {
-        bool messageCallMade = false;
+        var messageCallMade = false;
         TestDefaultBinaryMessengerBinding
             .instance
             .defaultBinaryMessenger
@@ -223,7 +297,7 @@ void main() {
     testWidgets(
       'default InstanceManager does not make message call when weak reference is removed',
       (WidgetTester tester) async {
-        bool messageCallMade = false;
+        var messageCallMade = false;
         TestDefaultBinaryMessengerBinding
             .instance
             .defaultBinaryMessenger

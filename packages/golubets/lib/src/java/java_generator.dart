@@ -59,8 +59,7 @@ class JavaOptions {
   /// Creates a [JavaOptions] from a Map representation where:
   /// `x = JavaOptions.fromMap(x.toMap())`.
   static JavaOptions fromMap(Map<String, Object> map) {
-    final Iterable<dynamic>? copyrightHeader =
-        map['copyrightHeader'] as Iterable<dynamic>?;
+    final copyrightHeader = map['copyrightHeader'] as Iterable<dynamic>?;
     return JavaOptions(
       className: map['className'] as String?,
       package: map['package'] as String?,
@@ -72,7 +71,7 @@ class JavaOptions {
   /// Converts a [JavaOptions] to a Map representation where:
   /// `x = JavaOptions.fromMap(x.toMap())`.
   Map<String, Object> toMap() {
-    final Map<String, Object> result = <String, Object>{
+    final result = <String, Object>{
       if (className != null) 'className': className!,
       if (package != null) 'package': package!,
       if (copyrightHeader != null) 'copyrightHeader': copyrightHeader!,
@@ -218,7 +217,7 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
     required String dartPackageName,
   }) {
     String camelToSnake(String camelCase) {
-      final RegExp regex = RegExp('([a-z])([A-Z]+)');
+      final regex = RegExp('([a-z])([A-Z]+)');
       return camelCase
           .replaceAllMapped(regex, (Match m) => '${m[1]}_${m[2]}')
           .toUpperCase();
@@ -263,8 +262,13 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
     Class classDefinition, {
     required String dartPackageName,
   }) {
+<<<<<<< HEAD:packages/golubets/lib/src/java/java_generator.dart
     const List<String> generatedMessages = <String>[
       ' Generated class from Golubets that represents data sent in messages.',
+=======
+    const generatedMessages = <String>[
+      ' Generated class from Pigeon that represents data sent in messages.',
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/java/java_generator.dart
     ];
     indent.newln();
     addDocumentationComments(
@@ -313,9 +317,7 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
       field,
       (TypeDeclaration x) => _javaTypeForBuiltinDartType(x),
     );
-    final String nullability = field.type.isNullable
-        ? '@Nullable '
-        : '@NonNull ';
+    final nullability = field.type.isNullable ? '@Nullable ' : '@NonNull ';
     addDocumentationComments(
       indent,
       field.documentationComments,
@@ -406,7 +408,7 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
       final Iterable<String> nonArrayFieldNames = classDefinition.fields
           .where((NamedType field) => !_javaTypeIsArray(field.type))
           .map((NamedType field) => field.name);
-      final String nonArrayHashValue = nonArrayFieldNames.isNotEmpty
+      final nonArrayHashValue = nonArrayFieldNames.isNotEmpty
           ? 'Objects.hash(${nonArrayFieldNames.join(', ')})'
           : '0';
 
@@ -415,10 +417,10 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
         // variable lint warnings.
         indent.writeln('return $nonArrayHashValue;');
       } else {
-        const String resultVar = '${varNamePrefix}result';
+        const resultVar = '${varNamePrefix}result';
         indent.writeln('int $resultVar = $nonArrayHashValue;');
         // Manually mix in the Arrays.hashCode values.
-        for (final String name in arrayFieldNames) {
+        for (final name in arrayFieldNames) {
           indent.writeln(
             '$resultVar = 31 * $resultVar + Arrays.hashCode($name);',
           );
@@ -444,9 +446,7 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
           field,
           (TypeDeclaration x) => _javaTypeForBuiltinDartType(x),
         );
-        final String nullability = field.type.isNullable
-            ? '@Nullable'
-            : '@NonNull';
+        final nullability = field.type.isNullable ? '@Nullable' : '@NonNull';
         indent.newln();
         indent.writeln(
           'private @Nullable ${hostDatatype.datatype} ${field.name};',
@@ -465,7 +465,11 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
       indent.newln();
       indent.write('public @NonNull ${classDefinition.name} build() ');
       indent.addScoped('{', '}', () {
+<<<<<<< HEAD:packages/golubets/lib/src/java/java_generator.dart
         const String returnVal = 'golubetsReturn';
+=======
+        const returnVal = 'pigeonReturn';
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/java/java_generator.dart
         indent.writeln(
           '${classDefinition.name} $returnVal = new ${classDefinition.name}();',
         );
@@ -516,7 +520,11 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
       'static @NonNull ${classDefinition.name} fromList(@NonNull ArrayList<Object> ${varNamePrefix}list) ',
     );
     indent.addScoped('{', '}', () {
+<<<<<<< HEAD:packages/golubets/lib/src/java/java_generator.dart
       const String result = 'golubetsResult';
+=======
+      const result = 'pigeonResult';
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/java/java_generator.dart
       indent.writeln(
         '${classDefinition.name} $result = new ${classDefinition.name}();',
       );
@@ -550,13 +558,13 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
     ).toList();
 
     void writeEncodeLogic(EnumeratedType customType) {
-      final String encodeString = customType.type == CustomTypes.customClass
+      final encodeString = customType.type == CustomTypes.customClass
           ? 'toList()'
           : 'index';
-      final String nullCheck = customType.type == CustomTypes.customEnum
+      final nullCheck = customType.type == CustomTypes.customEnum
           ? 'value == null ? null : '
           : '';
-      final String valueString = customType.enumeration < maximumCodecFieldKey
+      final valueString = customType.enumeration < maximumCodecFieldKey
           ? '$nullCheck((${customType.name}) value).$encodeString'
           : 'wrap.toList()';
       final int enumeration = customType.enumeration < maximumCodecFieldKey
@@ -600,7 +608,7 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
       }
     }
 
-    final EnumeratedType overflowClass = EnumeratedType(
+    final overflowClass = EnumeratedType(
       _overflowClassName,
       maximumCodecFieldKey,
       CustomTypes.customClass,
@@ -632,7 +640,7 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
         '}',
         () {
           indent.writeScoped('switch (type) {', '}', () {
-            for (final EnumeratedType customType in enumeratedTypes) {
+            for (final customType in enumeratedTypes) {
               if (customType.enumeration < maximumCodecFieldKey) {
                 writeDecodeLogic(customType);
               }
@@ -670,19 +678,16 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
     List<EnumeratedType> types, {
     required String dartPackageName,
   }) {
-    final NamedType overflowInteration = NamedType(
+    final overflowInteration = NamedType(
       name: 'type',
       type: const TypeDeclaration(baseName: 'int', isNullable: false),
     );
-    final NamedType overflowObject = NamedType(
+    final overflowObject = NamedType(
       name: 'wrapped',
       type: const TypeDeclaration(baseName: 'Object', isNullable: true),
     );
-    final List<NamedType> overflowFields = <NamedType>[
-      overflowInteration,
-      overflowObject,
-    ];
-    final Class overflowClass = Class(
+    final overflowFields = <NamedType>[overflowInteration, overflowObject];
+    final overflowClass = Class(
       name: _overflowClassName,
       fields: overflowFields,
     );
@@ -754,8 +759,13 @@ if (wrapped == null) {
       return '${_getArgumentName(count, argument)}Arg';
     }
 
+<<<<<<< HEAD:packages/golubets/lib/src/java/java_generator.dart
     const List<String> generatedMessages = <String>[
       ' Generated class from Golubets that represents Flutter messages that can be called from Java.',
+=======
+    const generatedMessages = <String>[
+      ' Generated class from Pigeon that represents Flutter messages that can be called from Java.',
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/java/java_generator.dart
     ];
     addDocumentationComments(
       indent,
@@ -844,7 +854,7 @@ if (wrapped == null) {
           );
         }
         indent.addScoped('{', '}', () {
-          const String channel = 'channel';
+          const channel = 'channel';
           indent.writeln(
             'final String channelName = "${makeChannelName(api, func, dartPackageName)}" + messageChannelSuffix;',
           );
@@ -888,7 +898,7 @@ if (wrapped == null) {
                     if (func.returnType.isVoid) {
                       indent.writeln('result.success();');
                     } else {
-                      const String output = 'output';
+                      const output = 'output';
                       final String outputExpression;
                       indent.writeln('@SuppressWarnings("ConstantConditions")');
                       outputExpression =
@@ -950,8 +960,13 @@ if (wrapped == null) {
     AstHostApi api, {
     required String dartPackageName,
   }) {
+<<<<<<< HEAD:packages/golubets/lib/src/java/java_generator.dart
     const List<String> generatedMessages = <String>[
       ' Generated interface from Golubets that represents a handler of messages from Flutter.',
+=======
+    const generatedMessages = <String>[
+      ' Generated interface from Pigeon that represents a handler of messages from Flutter.',
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/java/java_generator.dart
     ];
     addDocumentationComments(
       indent,
@@ -1033,7 +1048,7 @@ if (wrapped == null) {
     final String returnType = method.isAsynchronous
         ? 'void'
         : _javaTypeForDartType(method.returnType);
-    final List<String> argSignature = <String>[];
+    final argSignature = <String>[];
     if (method.parameters.isNotEmpty) {
       final Iterable<String> argTypes = method.parameters.map(
         (NamedType e) => _nullsafeJavaTypeForDartType(e.type),
@@ -1102,7 +1117,7 @@ if (wrapped == null) {
                 ? 'Void'
                 : _javaTypeForDartType(method.returnType);
             indent.writeln('ArrayList<Object> wrapped = new ArrayList<>();');
-            final List<String> methodArgument = <String>[];
+            final methodArgument = <String>[];
             if (method.parameters.isNotEmpty) {
               indent.writeln(
                 'ArrayList<Object> args = (ArrayList<Object>) message;',
@@ -1110,8 +1125,8 @@ if (wrapped == null) {
               enumerate(method.parameters, (int index, NamedType arg) {
                 final String argType = _javaTypeForDartType(arg.type);
                 final String argName = _getSafeArgumentName(index, arg);
-                final String argExpression = argName;
-                String accessor = 'args.get($index)';
+                final argExpression = argName;
+                var accessor = 'args.get($index)';
                 if (argType != 'Object') {
                   accessor = _cast(accessor, javaType: argType);
                 }
@@ -1120,17 +1135,15 @@ if (wrapped == null) {
               });
             }
             if (method.isAsynchronous) {
-              final String resultValue = method.returnType.isVoid
-                  ? 'null'
-                  : 'result';
+              final resultValue = method.returnType.isVoid ? 'null' : 'result';
               final String resultType = _getResultType(method.returnType);
-              final String resultParam = method.returnType.isVoid
+              final resultParam = method.returnType.isVoid
                   ? ''
                   : '$returnType result';
-              final String addResultArg = method.returnType.isVoid
+              final addResultArg = method.returnType.isVoid
                   ? 'null'
                   : resultValue;
-              const String resultName = 'resultCallback';
+              const resultName = 'resultCallback';
               indent.format('''
 $resultType $resultName =
 \t\tnew $resultType() {
@@ -1147,8 +1160,7 @@ $resultType $resultName =
 ''');
               methodArgument.add(resultName);
             }
-            final String call =
-                'api.${method.name}(${methodArgument.join(', ')})';
+            final call = 'api.${method.name}(${methodArgument.join(', ')})';
             if (method.isAsynchronous) {
               indent.writeln('$call;');
             } else {
@@ -1341,7 +1353,7 @@ protected static ArrayList<Object> wrapError(@NonNull Throwable exception) {
 /// Converts an expression that evaluates to an nullable int to an expression
 /// that evaluates to a nullable enum.
 String _intToEnum(String expression, String enumName, bool nullable) {
-  final String toEnum = '$enumName.values()[((Long) $expression).intValue()]';
+  final toEnum = '$enumName.values()[((Long) $expression).intValue()]';
   return nullable ? '$expression == null ? null : $toEnum' : toEnum;
 }
 
@@ -1386,7 +1398,7 @@ bool _javaTypeIsArray(TypeDeclaration type) {
 }
 
 String? _javaTypeForBuiltinDartType(TypeDeclaration type) {
-  const Map<String, String> javaTypeForDartTypeMap = <String, String>{
+  const javaTypeForDartTypeMap = <String, String>{
     'bool': 'Boolean',
     'int': 'Long',
     'String': 'String',
