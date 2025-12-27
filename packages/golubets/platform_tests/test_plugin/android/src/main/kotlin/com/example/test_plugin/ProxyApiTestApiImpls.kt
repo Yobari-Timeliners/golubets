@@ -15,9 +15,15 @@ interface ProxyApiInterface
 
 @RequiresApi(25) class ClassWithApiRequirement
 
+<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/ProxyApiTestApiImpls.kt
 class ProxyApiRegistrar(binaryMessenger: BinaryMessenger) :
     ProxyApiTestsGolubetsProxyApiRegistrar(binaryMessenger) {
   override fun getGolubetsApiProxyApiTestClass(): GolubetsApiProxyApiTestClass {
+=======
+open class ProxyApiRegistrar(binaryMessenger: BinaryMessenger) :
+    ProxyApiTestsPigeonProxyApiRegistrar(binaryMessenger) {
+  override fun getPigeonApiProxyApiTestClass(): PigeonApiProxyApiTestClass {
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/ProxyApiTestApiImpls.kt
     return ProxyApiTestClassApi(this)
   }
 

@@ -27,7 +27,7 @@ final Enum emptyEnum = Enum(
 
 void main() {
   test('gen one class', () {
-    final Class classDefinition = Class(
+    final classDefinition = Class(
       name: 'Foobar',
       fields: <NamedType>[
         NamedType(
@@ -36,24 +36,21 @@ void main() {
         ),
       ],
     );
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[classDefinition],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public class Messages'));
     expect(code, contains('public static final class Foobar'));
     expect(code, contains('public static final class Builder'));
@@ -62,7 +59,7 @@ void main() {
   });
 
   test('gen one enum', () {
-    final Enum anEnum = Enum(
+    final anEnum = Enum(
       name: 'Foobar',
       members: <EnumMember>[
         EnumMember(name: 'one'),
@@ -70,24 +67,17 @@ void main() {
         EnumMember(name: 'remoteDB'),
       ],
     );
-    final Root root = Root(
-      apis: <Api>[],
-      classes: <Class>[],
-      enums: <Enum>[anEnum],
-    );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[anEnum]);
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public enum Foobar'));
     expect(code, contains('    ONE(0),'));
     expect(code, contains('    TWO_THREE_FOUR(1),'));
@@ -98,7 +88,7 @@ void main() {
   });
 
   test('package', () {
-    final Class classDefinition = Class(
+    final classDefinition = Class(
       name: 'Foobar',
       fields: <NamedType>[
         NamedType(
@@ -107,30 +97,30 @@ void main() {
         ),
       ],
     );
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[classDefinition],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(
       className: 'Messages',
       package: 'com.google.foobar',
       javaOut: '',
     );
-    const JavaGenerator generator = JavaGenerator();
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('package com.google.foobar;'));
   });
 
   test('gen one host api', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -180,19 +170,16 @@ void main() {
       enums: <Enum>[],
       containsHostApi: true,
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public interface Api'));
     expect(code, matches('Output.*doSomething.*Input'));
     expect(code, contains('channel.setMessageHandler(null)'));
@@ -220,7 +207,7 @@ void main() {
   });
 
   test('all the simple datatypes header', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[
         Class(
@@ -276,19 +263,16 @@ void main() {
       enums: <Enum>[],
     );
 
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('private @Nullable Boolean aBool;'));
     expect(code, contains('private @Nullable Long aInt;'));
     expect(code, contains('private @Nullable Double aDouble;'));
@@ -300,7 +284,7 @@ void main() {
   });
 
   test('gen one flutter api', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -349,25 +333,22 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public static class Api'));
     expect(code, matches('doSomething.*Input.*Output'));
   });
 
   test('gen host void api', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -403,25 +384,22 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, isNot(matches('=.*doSomething')));
     expect(code, contains('doSomething('));
   });
 
   test('gen flutter void return api', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -457,19 +435,16 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(
       code,
       contains(
@@ -480,7 +455,7 @@ void main() {
   });
 
   test('gen host void argument api', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -511,25 +486,22 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('Output doSomething()'));
     expect(code, contains('api.doSomething()'));
   });
 
   test('gen flutter void argument api', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -560,19 +532,16 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(
       code,
       contains('public void doSomething(@NonNull Result<Output> result)'),
@@ -581,7 +550,7 @@ void main() {
   });
 
   test('gen list', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[
         Class(
@@ -596,25 +565,22 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public static final class Foobar'));
     expect(code, contains('private @Nullable List<Object> field1;'));
   });
 
   test('gen map', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[
         Class(
@@ -629,25 +595,22 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public static final class Foobar'));
     expect(code, contains('private @Nullable Map<Object, Object> field1;'));
   });
 
   test('gen nested', () {
-    final Class classDefinition = Class(
+    final classDefinition = Class(
       name: 'Outer',
       fields: <NamedType>[
         NamedType(
@@ -660,7 +623,7 @@ void main() {
         ),
       ],
     );
-    final Class nestedClass = Class(
+    final nestedClass = Class(
       name: 'Nested',
       fields: <NamedType>[
         NamedType(
@@ -669,24 +632,21 @@ void main() {
         ),
       ],
     );
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[classDefinition, nestedClass],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public class Messages'));
     expect(code, contains('public static final class Outer'));
     expect(code, contains('public static final class Nested'));
@@ -695,7 +655,7 @@ void main() {
   });
 
   test('gen one async Host Api', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -745,19 +705,16 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public interface Api'));
     expect(code, contains('public interface Result<T> {'));
     expect(code, contains('void error(@NonNull Throwable error);'));
@@ -772,7 +729,7 @@ void main() {
   });
 
   test('gen one async Flutter Api', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -822,25 +779,22 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public static class Api'));
     expect(code, matches('doSomething.*Input.*Output'));
   });
 
   test('gen one enum class', () {
-    final Enum anEnum = Enum(
+    final anEnum = Enum(
       name: 'Enum1',
       members: <EnumMember>[
         EnumMember(name: 'one'),
@@ -848,7 +802,7 @@ void main() {
         EnumMember(name: 'remoteDB'),
       ],
     );
-    final Class classDefinition = Class(
+    final classDefinition = Class(
       name: 'EnumClass',
       fields: <NamedType>[
         NamedType(
@@ -861,24 +815,21 @@ void main() {
         ),
       ],
     );
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[classDefinition],
       enums: <Enum>[anEnum],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public enum Enum1'));
     expect(code, contains('    ONE(0),'));
     expect(code, contains('    TWO_THREE_FOUR(1),'));
@@ -892,7 +843,7 @@ void main() {
   });
 
   test('primitive enum host', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Bar',
@@ -926,19 +877,16 @@ void main() {
         ),
       ],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public enum Foo'));
     expect(
       code,
@@ -960,26 +908,26 @@ void main() {
   }
 
   test('header', () {
-    final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    final StringBuffer sink = StringBuffer();
-    final InternalJavaOptions javaOptions = InternalJavaOptions(
+    final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
+    final sink = StringBuffer();
+    final javaOptions = InternalJavaOptions(
       className: 'Messages',
       copyrightHeader: makeIterable('hello world'),
       javaOut: '',
     );
-    const JavaGenerator generator = JavaGenerator();
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, startsWith('// hello world'));
   });
 
   test('generics', () {
-    final Class classDefinition = Class(
+    final classDefinition = Class(
       name: 'Foobar',
       fields: <NamedType>[
         NamedType(
@@ -994,30 +942,27 @@ void main() {
         ),
       ],
     );
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[classDefinition],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('class Foobar'));
     expect(code, contains('List<Long> field1;'));
   });
 
   test('generics - maps', () {
-    final Class classDefinition = Class(
+    final classDefinition = Class(
       name: 'Foobar',
       fields: <NamedType>[
         NamedType(
@@ -1033,30 +978,27 @@ void main() {
         ),
       ],
     );
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[classDefinition],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('class Foobar'));
     expect(code, contains('Map<String, String> field1;'));
   });
 
   test('host generics argument', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1084,24 +1026,21 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('doit(@NonNull List<Long> arg'));
   });
 
   test('flutter generics argument', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -1129,24 +1068,21 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('doit(@NonNull List<Long> arg'));
   });
 
   test('host generics return', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1169,25 +1105,22 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('List<Long> doit('));
     expect(code, contains('List<Long> output ='));
   });
 
   test('flutter generics return', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -1210,19 +1143,16 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(
       code,
       contains('public void doit(@NonNull Result<List<Long>> result)'),
@@ -1231,7 +1161,7 @@ void main() {
   });
 
   test('flutter int return', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -1252,25 +1182,22 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public void doit(@NonNull Result<Long> result)'));
     expect(code, contains('Long output = (Long) listReply.get(0);'));
   });
 
   test('host multiple args', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1305,19 +1232,16 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('class Messages'));
     expect(code, contains('Long add(@NonNull Long x, @NonNull Long y)'));
     expect(
@@ -1330,7 +1254,7 @@ void main() {
   });
 
   test('if host argType is Object not cast', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1355,24 +1279,21 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Api',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Api', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('Object xArg = args.get(0)'));
   });
 
   test('flutter multiple args', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -1407,19 +1328,16 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('class Messages'));
     expect(code, contains('BasicMessageChannel<Object> channel'));
     expect(code, contains('Long output'));
@@ -1440,7 +1358,7 @@ void main() {
   });
 
   test('flutter single args', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -1468,19 +1386,16 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(
       code,
       contains(
@@ -1492,7 +1407,7 @@ void main() {
   });
 
   test('return nullable host', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1512,24 +1427,21 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains(RegExp(r'@Nullable\s*Long doit\(\);')));
   });
 
   test('return nullable host async', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1550,25 +1462,22 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     // Java doesn't accept nullability annotations in type arguments.
     expect(code, contains('Result<Long>'));
   });
 
   test('nullable argument host', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1593,24 +1502,21 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('  void doit(@Nullable Long foo);'));
   });
 
   test('nullable argument flutter', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -1635,19 +1541,16 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(
       code,
       contains(
@@ -1657,7 +1560,7 @@ void main() {
   });
 
   test('background platform channel', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1683,19 +1586,16 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(
       code,
       contains(
@@ -1713,52 +1613,54 @@ void main() {
   });
 
   test('generated annotation', () {
-    final Class classDefinition = Class(name: 'Foobar', fields: <NamedType>[]);
-    final Root root = Root(
+    final classDefinition = Class(name: 'Foobar', fields: <NamedType>[]);
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[classDefinition],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(
       className: 'Messages',
       useGeneratedAnnotation: true,
       javaOut: '',
     );
-    const JavaGenerator generator = JavaGenerator();
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
+<<<<<<< HEAD:packages/golubets/test/java_generator_test.dart
     final String code = sink.toString();
     expect(
       code,
       contains('@javax.annotation.Generated("dev.bayori.golubets")'),
     );
+=======
+    final code = sink.toString();
+    expect(code, contains('@javax.annotation.Generated("dev.flutter.pigeon")'));
+>>>>>>> filtered-upstream/main:packages/pigeon/test/java_generator_test.dart
   });
 
   test('no generated annotation', () {
-    final Class classDefinition = Class(name: 'Foobar', fields: <NamedType>[]);
-    final Root root = Root(
+    final classDefinition = Class(name: 'Foobar', fields: <NamedType>[]);
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[classDefinition],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(
       code,
       isNot(contains('@javax.annotation.Generated("dev.bayori.golubets")')),
@@ -1766,7 +1668,7 @@ void main() {
   });
 
   test('transfers documentation comments', () {
-    final List<String> comments = <String>[
+    final comments = <String>[
       ' api comment',
       ' api method comment',
       ' class comment',
@@ -1774,12 +1676,12 @@ void main() {
       ' enum comment',
       ' enum member comment',
     ];
-    int count = 0;
+    var count = 0;
 
-    final List<String> unspacedComments = <String>['////////'];
-    int unspacedCount = 0;
+    final unspacedComments = <String>['////////'];
+    var unspacedCount = 0;
 
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'api',
@@ -1840,20 +1742,17 @@ void main() {
         ),
       ],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
-    for (final String comment in comments) {
+    final code = sink.toString();
+    for (final comment in comments) {
       // This regex finds the comment only between the open and close comment block
       expect(
         RegExp(
@@ -1867,7 +1766,7 @@ void main() {
   });
 
   test('creates custom codecs', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -1917,48 +1816,42 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains(' extends StandardMessageCodec'));
   });
 
   test('creates api error class for custom errors', () {
     final Api api = AstHostApi(name: 'Api', methods: <Method>[]);
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[api],
       classes: <Class>[],
       enums: <Enum>[],
       containsHostApi: true,
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
-    const JavaGenerator generator = JavaGenerator();
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const generator = JavaGenerator();
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('class FlutterError'));
   });
 
   test('connection error contains channel name', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -1984,19 +1877,16 @@ void main() {
       enums: <Enum>[],
       containsFlutterApi: true,
     );
-    final StringBuffer sink = StringBuffer();
-    const JavaGenerator generator = JavaGenerator();
-    const InternalJavaOptions javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      javaOut: '',
-    );
+    final sink = StringBuffer();
+    const generator = JavaGenerator();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
     generator.generate(
       javaOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('createConnectionError(channelName)'));
     expect(
       code,

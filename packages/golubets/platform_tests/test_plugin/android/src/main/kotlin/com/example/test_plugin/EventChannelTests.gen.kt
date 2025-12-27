@@ -627,6 +627,10 @@ abstract class StreamIntsStreamHandler : EventChannelTestsGolubetsEventChannelWr
           .setStreamHandler(internalStreamHandler)
     }
   }
+  // Implement methods from EventChannelTestsPigeonEventChannelWrapper
+  override fun onListen(p0: Any?, sink: PigeonEventSink<Long>) {}
+
+  override fun onCancel(p0: Any?) {}
 }
 
 abstract class StreamEventsStreamHandler :
@@ -648,6 +652,10 @@ abstract class StreamEventsStreamHandler :
           .setStreamHandler(internalStreamHandler)
     }
   }
+  // Implement methods from EventChannelTestsPigeonEventChannelWrapper
+  override fun onListen(p0: Any?, sink: PigeonEventSink<PlatformEvent>) {}
+
+  override fun onCancel(p0: Any?) {}
 }
 
 abstract class StreamConsistentNumbersStreamHandler :
@@ -668,6 +676,10 @@ abstract class StreamConsistentNumbersStreamHandler :
           .setStreamHandler(internalStreamHandler)
     }
   }
+  // Implement methods from EventChannelTestsPigeonEventChannelWrapper
+  override fun onListen(p0: Any?, sink: PigeonEventSink<Long>) {}
+
+  override fun onCancel(p0: Any?) {}
 }
 
 /** Generated interface from Golubets that represents a handler of messages from Flutter. */

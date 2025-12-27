@@ -124,7 +124,12 @@ Future<int> add(int a, int b) async {
 /// Sends message through host api using `MessageData` class
 /// and api `sendMessage` method.
 Future<bool> sendMessage(String messageText) {
+<<<<<<< HEAD:packages/golubets/example/README.md
   final MessageData message = MessageData(
+=======
+  final message = MessageData(
+    code: Code.one,
+>>>>>>> filtered-upstream/main:packages/pigeon/example/README.md
     data: <String, String>{'header': 'this is a header'},
     description: 'uri text',
   );

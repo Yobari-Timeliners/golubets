@@ -29,7 +29,7 @@ final Enum emptyEnum = Enum(
 
 void main() {
   test('gen one class', () {
-    final Class classDefinition = Class(
+    final classDefinition = Class(
       name: 'Foobar',
       fields: <NamedType>[
         NamedType(
@@ -42,53 +42,49 @@ void main() {
         ),
       ],
     );
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[classDefinition],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('class Foobar'));
     expect(code, contains('  dataType1? field1;'));
   });
 
   test('gen one enum', () {
-    final Enum anEnum = Enum(
+    final anEnum = Enum(
       name: 'Foobar',
       members: <EnumMember>[
         EnumMember(name: 'one'),
         EnumMember(name: 'two'),
       ],
     );
-    final Root root = Root(
-      apis: <Api>[],
-      classes: <Class>[],
-      enums: <Enum>[anEnum],
-    );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[anEnum]);
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('enum Foobar'));
     expect(code, contains('  one,'));
     expect(code, contains('  two,'));
   });
 
   test('gen one host api', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -137,21 +133,21 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('class Api'));
     expect(code, contains('Future<Output> doSomething(Input input)'));
   });
 
   test('host multiple args', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -186,15 +182,15 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('class Api'));
     expect(code, contains('Future<int> add(int x, int y)'));
     expect(
@@ -207,7 +203,7 @@ void main() {
   });
 
   test('flutter multiple args', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -242,15 +238,15 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('class Api'));
     expect(code, contains('int add(int x, int y)'));
     expect(
@@ -263,7 +259,7 @@ void main() {
   });
 
   test('nested class', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[
         Class(
@@ -291,21 +287,21 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('nested,'));
     expect(code, contains('nested: result[0] as Input?'));
   });
 
   test('nested non-nullable class', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[
         Class(
@@ -336,21 +332,21 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('nested,'));
     expect(code, contains('nested: result[0]! as Input'));
   });
 
   test('flutterApi', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -399,22 +395,22 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('abstract class Api'));
     expect(code, contains('static void setUp(Api'));
     expect(code, contains('Output doSomething(Input input)'));
   });
 
   test('host void', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -450,21 +446,21 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('Future<void> doSomething'));
     expect(code, contains('return;'));
   });
 
   test('flutter void return', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -500,15 +496,15 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     // The next line verifies that we're not setting a variable to the value of "doSomething", but
     // ignores the line where we assert the value of the argument isn't null, since on that line
     // we mention "doSomething" in the assertion message.
@@ -517,7 +513,7 @@ void main() {
   });
 
   test('flutter void argument', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -548,21 +544,21 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, matches('output.*=.*doSomething[(][)]'));
     expect(code, contains('Output doSomething();'));
   });
 
   test('flutter enum argument with enum class', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -614,15 +610,15 @@ void main() {
         ),
       ],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('return value == null ? null : Enum.values[value];'));
     expect(code, contains('writeValue(buffer, value.index);'));
     expect(
@@ -633,7 +629,7 @@ void main() {
   });
 
   test('primitive enum host', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Bar',
@@ -667,15 +663,15 @@ void main() {
         ),
       ],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('enum Foo {'));
     expect(code, contains('Future<void> bar(Foo? foo) async'));
     expect(
@@ -688,7 +684,7 @@ void main() {
   });
 
   test('flutter non-nullable enum argument with enum class', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -740,22 +736,22 @@ void main() {
         ),
       ],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('writeValue(buffer, value.index)'));
     expect(code, contains('return value == null ? null : Enum.values[value];'));
     expect(code, contains('enum1: result[0]! as Enum,'));
   });
 
   test('host void argument', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -786,15 +782,15 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(
       code,
       matches('golubetsVar_sendFuture = golubetsVar_channel.send[(]null[)]'),
@@ -802,7 +798,7 @@ void main() {
   });
 
   test('mock Dart handler', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -867,16 +863,16 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer mainCodeSink = StringBuffer();
-    final StringBuffer testCodeSink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final mainCodeSink = StringBuffer();
+    final testCodeSink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       mainCodeSink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String mainCode = mainCodeSink.toString();
+    final mainCode = mainCodeSink.toString();
     expect(mainCode, isNot(contains(r"import 'fo\'o.dart';")));
     expect(mainCode, contains('class Api {'));
     expect(mainCode, isNot(contains('abstract class ApiMock')));
@@ -884,7 +880,7 @@ void main() {
     expect(mainCode, isNot(contains("'${Keys.result}': output")));
     expect(mainCode, isNot(contains('return <Object>[];')));
 
-    const DartGenerator testGenerator = DartGenerator();
+    const testGenerator = DartGenerator();
     testGenerator.generateTest(
       const InternalDartOptions(dartOut: "fo'o.dart", testOut: 'test.dart'),
       root,
@@ -892,7 +888,7 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
       dartOutputPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String testCode = testCodeSink.toString();
+    final testCode = testCodeSink.toString();
     expect(testCode, contains(r"import 'fo\'o.dart';"));
     expect(testCode, isNot(contains('class Api {')));
     expect(testCode, contains('abstract class ApiMock'));
@@ -902,7 +898,7 @@ void main() {
   });
 
   test('gen one async Flutter Api', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -952,15 +948,15 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('abstract class Api'));
     expect(code, contains('Future<Output> doSomething(Input input);'));
     expect(
@@ -970,7 +966,7 @@ void main() {
   });
 
   test('gen one async Flutter Api with void return', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -1016,22 +1012,22 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, isNot(matches('=.s*doSomething')));
     expect(code, contains('await api.doSomething('));
     expect(code, isNot(contains('._toMap()')));
   });
 
   test('gen one async Host Api', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1081,21 +1077,21 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('class Api'));
     expect(code, matches('Output.*doSomething.*Input'));
   });
 
   test('async host void argument', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1127,16 +1123,21 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
+<<<<<<< HEAD:packages/golubets/test/dart_generator_test.dart
     final String code = sink.toString();
     expect(code, matches('golubetsVar_channel.send[(]null[)]'));
+=======
+    final code = sink.toString();
+    expect(code, matches('pigeonVar_channel.send[(]null[)]'));
+>>>>>>> filtered-upstream/main:packages/pigeon/test/dart_generator_test.dart
   });
 
   Iterable<String> makeIterable(String string) sync* {
@@ -1144,22 +1145,22 @@ void main() {
   }
 
   test('header', () {
-    final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    final StringBuffer sink = StringBuffer();
+    final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
+    final sink = StringBuffer();
 
-    const DartGenerator generator = DartGenerator();
+    const generator = DartGenerator();
     generator.generate(
       InternalDartOptions(copyrightHeader: makeIterable('hello world')),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, startsWith('// hello world'));
   });
 
   test('generics', () {
-    final Class classDefinition = Class(
+    final classDefinition = Class(
       name: 'Foobar',
       fields: <NamedType>[
         NamedType(
@@ -1174,26 +1175,26 @@ void main() {
         ),
       ],
     );
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[classDefinition],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('class Foobar'));
     expect(code, contains('  List<int?>? field1;'));
   });
 
   test('map generics', () {
-    final Class classDefinition = Class(
+    final classDefinition = Class(
       name: 'Foobar',
       fields: <NamedType>[
         NamedType(
@@ -1209,26 +1210,26 @@ void main() {
         ),
       ],
     );
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[classDefinition],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('class Foobar'));
     expect(code, contains('  Map<String?, int?>? field1;'));
   });
 
   test('host generics argument', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1256,20 +1257,20 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('doit(List<int?> arg'));
   });
 
   test('flutter generics argument with void return', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -1297,20 +1298,20 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('doit(List<int?> arg'));
   });
 
   test('host generics return', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1333,15 +1334,15 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('Future<List<int?>> doit('));
     expect(
       code,
@@ -1352,7 +1353,7 @@ void main() {
   });
 
   test('flutter generics argument non void return', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -1386,15 +1387,15 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('List<int?> doit('));
     expect(
       code,
@@ -1730,7 +1731,7 @@ void main() {
   });
 
   test('return nullable host', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1750,21 +1751,21 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('Future<int?> doit()'));
     expect(code, contains('return (golubetsVar_replyList[0] as int?);'));
   });
 
   test('return nullable collection host', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1787,15 +1788,15 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('Future<List<int?>?> doit()'));
     expect(
       code,
@@ -1806,7 +1807,7 @@ void main() {
   });
 
   test('return nullable async host', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1827,21 +1828,21 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('Future<int?> doit()'));
     expect(code, contains('return (golubetsVar_replyList[0] as int?);'));
   });
 
   test('return nullable flutter', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -1861,21 +1862,21 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('int? doit();'));
     expect(code, contains('final int? output = api.doit();'));
   });
 
   test('return nullable async flutter', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -1896,21 +1897,21 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('Future<int?> doit();'));
     expect(code, contains('final int? output = await api.doit();'));
   });
 
   test('platform error for return nil on nonnull', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1930,15 +1931,15 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(
       code,
       contains('Host platform returned null value for non-null return value.'),
@@ -1946,7 +1947,7 @@ void main() {
   });
 
   test('nullable argument host', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -1971,20 +1972,20 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('Future<void> doit(int? foo) async {'));
   });
 
   test('nullable argument flutter', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -2009,20 +2010,20 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('void doit(int? foo);'));
   });
 
   test('named argument flutter', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -2049,38 +2050,34 @@ void main() {
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('void doit({required int foo});'));
     expect(code, contains('api.doit(foo: arg_foo!)'));
   });
 
   test('uses output package name for imports', () {
-    const String overriddenPackageName = 'custom_name';
-    const String outputPackageName = 'some_output_package';
+    const overriddenPackageName = 'custom_name';
+    const outputPackageName = 'some_output_package';
     assert(outputPackageName != DEFAULT_PACKAGE_NAME);
     final Directory tempDir = Directory.systemTemp.createTempSync('golubets');
     try {
-      final Directory foo = Directory(path.join(tempDir.path, 'lib', 'foo'));
+      final foo = Directory(path.join(tempDir.path, 'lib', 'foo'));
       foo.createSync(recursive: true);
-      final File pubspecFile = File(path.join(tempDir.path, 'pubspec.yaml'));
+      final pubspecFile = File(path.join(tempDir.path, 'pubspec.yaml'));
       pubspecFile.writeAsStringSync('''
 name: foobar
 ''');
-      final Root root = Root(
-        classes: <Class>[],
-        apis: <Api>[],
-        enums: <Enum>[],
-      );
-      final StringBuffer sink = StringBuffer();
-      const DartGenerator testGenerator = DartGenerator();
+      final root = Root(classes: <Class>[], apis: <Api>[], enums: <Enum>[]);
+      final sink = StringBuffer();
+      const testGenerator = DartGenerator();
       testGenerator.generateTest(
         InternalDartOptions(
           dartOut: path.join(foo.path, 'bar.dart'),
@@ -2091,7 +2088,7 @@ name: foobar
         dartPackageName: overriddenPackageName,
         dartOutputPackageName: outputPackageName,
       );
-      final String code = sink.toString();
+      final code = sink.toString();
       expect(
         code,
         contains("import 'package:$outputPackageName/foo/bar.dart';"),
@@ -2102,7 +2099,7 @@ name: foobar
   });
 
   test('transfers documentation comments', () {
-    final List<String> comments = <String>[
+    final comments = <String>[
       ' api comment',
       ' api method comment',
       ' class comment',
@@ -2110,12 +2107,12 @@ name: foobar
       ' enum comment',
       ' enum member comment',
     ];
-    int count = 0;
+    var count = 0;
 
-    final List<String> unspacedComments = <String>['////////'];
-    int unspacedCount = 0;
+    final unspacedComments = <String>['////////'];
+    var unspacedCount = 0;
 
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -2176,23 +2173,23 @@ name: foobar
         ),
       ],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
-    for (final String comment in comments) {
+    final code = sink.toString();
+    for (final comment in comments) {
       expect(code, contains('///$comment'));
     }
     expect(code, contains('/// ///'));
   });
 
   test('creates custom codecs', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstFlutterApi(
           name: 'Api',
@@ -2242,20 +2239,20 @@ name: foobar
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('extends StandardMessageCodec'));
   });
 
   test('host test code handles enums', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -2290,9 +2287,9 @@ name: foobar
         ),
       ],
     );
-    final StringBuffer sink = StringBuffer();
+    final sink = StringBuffer();
 
-    const DartGenerator testGenerator = DartGenerator();
+    const testGenerator = DartGenerator();
     testGenerator.generateTest(
       const InternalDartOptions(dartOut: 'code.dart', testOut: 'test.dart'),
       root,
@@ -2301,7 +2298,7 @@ name: foobar
       dartOutputPackageName: DEFAULT_PACKAGE_NAME,
     );
 
-    final String testCode = sink.toString();
+    final testCode = sink.toString();
     expect(testCode, contains('final Enum? arg_anEnum = (args[0] as Enum?);'));
     expect(
       testCode,
@@ -2311,7 +2308,7 @@ name: foobar
   });
 
   test('connection error contains channel name', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -2332,15 +2329,15 @@ name: foobar
       enums: <Enum>[],
       containsHostApi: true,
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(
       code,
       contains('throw _createConnectionError(golubetsVar_channelName);'),
@@ -2354,7 +2351,7 @@ name: foobar
   });
 
   test('generate wrapResponse if is generating tests', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -2373,20 +2370,20 @@ name: foobar
       enums: <Enum>[],
     );
 
-    final StringBuffer mainCodeSink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final mainCodeSink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(testOut: 'test.dart'),
       root,
       mainCodeSink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String mainCode = mainCodeSink.toString();
+    final mainCode = mainCodeSink.toString();
     expect(mainCode, contains('List<Object?> wrapResponse('));
   });
 
   test('writes custom int codec without custom types', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -2406,15 +2403,15 @@ name: foobar
       classes: <Class>[],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const DartGenerator generator = DartGenerator();
+    final sink = StringBuffer();
+    const generator = DartGenerator();
     generator.generate(
       const InternalDartOptions(),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('if (value is int) {'));
     expect(code, contains('buffer.putUint8(4);'));
     expect(code, contains('buffer.putInt64(value);'));
