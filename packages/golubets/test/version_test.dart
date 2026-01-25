@@ -8,10 +8,15 @@ import 'package:golubets/src/generator_tools.dart';
 import 'package:test/test.dart';
 
 void main() {
+<<<<<<< HEAD:packages/golubets/test/version_test.dart
   test('golubets version matches pubspec', () {
     final String pubspecPath = '${Directory.current.path}/pubspec.yaml';
+=======
+  test('pigeon version matches pubspec', () {
+    final pubspecPath = '${Directory.current.path}/pubspec.yaml';
+>>>>>>> filtered-upstream/main:packages/pigeon/test/version_test.dart
     final String pubspec = File(pubspecPath).readAsStringSync();
-    final RegExp regex = RegExp(r'version:\s*(.*?) #');
+    final regex = RegExp(r'version:\s*(.*?) #');
     final RegExpMatch? match = regex.firstMatch(pubspec);
     expect(match, isNotNull);
     expect(
