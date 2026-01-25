@@ -11,11 +11,11 @@ import 'package:shared_test_plugin_code/src/generated/proxy_api_tests.gen.dart';
 void main() {
   group('InstanceManager', () {
     test('addHostCreatedInstance', () {
-      final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
+      final instanceManager = GolubetsInstanceManager(
         onWeakReferenceRemoved: (_) {},
       );
 
-      final CopyableObject object = CopyableObject(
+      final object = CopyableObject(
         golubets_instanceManager: instanceManager,
       );
 
@@ -29,11 +29,11 @@ void main() {
     });
 
     test('addHostCreatedInstance prevents already used objects and ids', () {
-      final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
+      final instanceManager = GolubetsInstanceManager(
         onWeakReferenceRemoved: (_) {},
       );
 
-      final CopyableObject object = CopyableObject(
+      final object = CopyableObject(
         golubets_instanceManager: instanceManager,
       );
 
@@ -54,11 +54,11 @@ void main() {
     });
 
     test('addFlutterCreatedInstance', () {
-      final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
+      final instanceManager = GolubetsInstanceManager(
         onWeakReferenceRemoved: (_) {},
       );
 
-      final CopyableObject object = CopyableObject(
+      final object = CopyableObject(
         golubets_instanceManager: instanceManager,
       );
 
@@ -71,13 +71,13 @@ void main() {
 
     test('removeWeakReference', () {
       int? weakInstanceId;
-      final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
+      final instanceManager = GolubetsInstanceManager(
         onWeakReferenceRemoved: (int instanceId) {
           weakInstanceId = instanceId;
         },
       );
 
-      final CopyableObject object = CopyableObject(
+      final object = CopyableObject(
         golubets_instanceManager: instanceManager,
       );
 
@@ -92,11 +92,11 @@ void main() {
     });
 
     test('removeWeakReference removes only weak reference', () {
-      final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
+      final instanceManager = GolubetsInstanceManager(
         onWeakReferenceRemoved: (_) {},
       );
 
-      final CopyableObject object = CopyableObject(
+      final object = CopyableObject(
         golubets_instanceManager: instanceManager,
       );
 
@@ -110,11 +110,11 @@ void main() {
     });
 
     test('remove', () {
-      final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
+      final instanceManager = GolubetsInstanceManager(
         onWeakReferenceRemoved: (_) {},
       );
 
-      final CopyableObject object = CopyableObject(
+      final object = CopyableObject(
         golubets_instanceManager: instanceManager,
       );
 
@@ -125,11 +125,11 @@ void main() {
     });
 
     test('remove throws AssertionError if weak reference still exists', () {
-      final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
+      final instanceManager = GolubetsInstanceManager(
         onWeakReferenceRemoved: (_) {},
       );
 
-      final CopyableObject object = CopyableObject(
+      final object = CopyableObject(
         golubets_instanceManager: instanceManager,
       );
 
@@ -138,11 +138,11 @@ void main() {
     });
 
     test('getInstance can add a new weak reference', () {
-      final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
+      final instanceManager = GolubetsInstanceManager(
         onWeakReferenceRemoved: (_) {},
       );
 
-      final CopyableObject object = CopyableObject(
+      final object = CopyableObject(
         golubets_instanceManager: instanceManager,
       );
 
@@ -157,8 +157,8 @@ void main() {
     test(
       'addDartCreatedInstance should add finalizer to original object',
       () async {
-        bool weakReferencedRemovedCalled = false;
-        final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
+        var weakReferencedRemovedCalled = false;
+        final instanceManager = GolubetsInstanceManager(
           onWeakReferenceRemoved: (_) {
             weakReferencedRemovedCalled = true;
           },
@@ -180,8 +180,8 @@ void main() {
     test(
       'addHostCreatedInstance should not add finalizer to original object',
       () async {
-        bool weakReferencedRemovedCalled = false;
-        final GolubetsInstanceManager instanceManager = GolubetsInstanceManager(
+        var weakReferencedRemovedCalled = false;
+        final instanceManager = GolubetsInstanceManager(
           onWeakReferenceRemoved: (_) {
             weakReferencedRemovedCalled = true;
           },
@@ -203,7 +203,7 @@ void main() {
     testWidgets(
       'instantiating default InstanceManager does not make a message call',
       (WidgetTester tester) async {
-        bool messageCallMade = false;
+        var messageCallMade = false;
         TestDefaultBinaryMessengerBinding
             .instance
             .defaultBinaryMessenger
@@ -223,7 +223,7 @@ void main() {
     testWidgets(
       'default InstanceManager does not make message call when weak reference is removed',
       (WidgetTester tester) async {
-        bool messageCallMade = false;
+        var messageCallMade = false;
         TestDefaultBinaryMessengerBinding
             .instance
             .defaultBinaryMessenger

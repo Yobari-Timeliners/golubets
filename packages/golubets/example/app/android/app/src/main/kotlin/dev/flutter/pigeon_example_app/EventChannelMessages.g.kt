@@ -220,4 +220,8 @@ abstract class StreamEventsStreamHandler :
           .setStreamHandler(internalStreamHandler)
     }
   }
+  // Implement methods from EventChannelMessagesPigeonEventChannelWrapper
+  override fun onListen(p0: Any?, sink: GolubetsEventSink<PlatformEvent>) {}
+
+  override fun onCancel(p0: Any?) {}
 }

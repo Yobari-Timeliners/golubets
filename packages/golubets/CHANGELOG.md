@@ -1,3 +1,16 @@
+## 1.2.0
+* [objc] Updates to use module imports.
+* Bumps kotlin_version to 2.3.0.
+* [kotlin] Fixes a "bridge method" warning when implementing an event stream handler.
+* [swift][kotlin] Fixes crash that occurs when an object that is removed from the instance manager
+  calls to Dart.
+* [dart] Fixes error from constructor parameter sharing name with attached field for a ProxyApi.
+* Updates minimum supported SDK version to Flutter 3.35/Dart 3.9.
+* [kotlin] Fixes compilation error with unbounded type parameter for InstanceManager.
+
+## 1.1.1
+* [kotlin] Fixes generating suspend for AsyncType void method
+
 ## 1.1.0
 * Updates supported analyzer versions to 8.x or 9.x.
 * Updates minimum supported SDK version to Flutter 3.32/Dart 3.8.

@@ -1479,7 +1479,8 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
 
   public func echoAsyncTypedNullableStringIntDouble(
     typed: GenericsAllNullableTypesTyped<String, Int64, Double>,
-    completion: @escaping (Result<GenericsAllNullableTypesTyped<String, Int64, Double>, any Error>)
+    completion:
+      @escaping (Result<GenericsAllNullableTypesTyped<String, Int64, Double>, any Error>)
       -> Void
   ) {
     completion(.success(typed))
@@ -1487,9 +1488,10 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
 
   public func echoAsyncGenericContainerTypedNullable(
     container: GenericContainer<GenericsAllNullableTypesTyped<String, Int64, Double>>,
-    completion: @escaping (
-      Result<GenericContainer<GenericsAllNullableTypesTyped<String, Int64, Double>>, any Error>
-    ) -> Void
+    completion:
+      @escaping (
+        Result<GenericContainer<GenericsAllNullableTypesTyped<String, Int64, Double>>, any Error>
+      ) -> Void
   ) {
     completion(.success(container))
   }
@@ -1566,9 +1568,10 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
 
   public func callFlutterEchoGenericContainerTypedNullable(
     container: GenericContainer<GenericsAllNullableTypesTyped<String, Int64, Double>>,
-    completion: @escaping (
-      Result<GenericContainer<GenericsAllNullableTypesTyped<String, Int64, Double>>, any Error>
-    ) -> Void
+    completion:
+      @escaping (
+        Result<GenericContainer<GenericsAllNullableTypesTyped<String, Int64, Double>>, any Error>
+      ) -> Void
   ) {
     flutterGenericApi!.echoGenericContainerTypedNullable(container: container) { result in
       switch result {
@@ -1693,9 +1696,10 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
 
   public func callFlutterEchoListTypedNullable(
     list: [GenericsAllNullableTypesTyped<String, Int64, Double>],
-    completion: @escaping (
-      Result<[GenericsAllNullableTypesTyped<String, Int64, Double>], any Error>
-    ) -> Void
+    completion:
+      @escaping (
+        Result<[GenericsAllNullableTypesTyped<String, Int64, Double>], any Error>
+      ) -> Void
   ) {
     flutterGenericApi!.echoListTypedNullable(list: list) { result in
       switch result {
@@ -1723,9 +1727,10 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
 
   public func callFlutterEchoMapTypedNullable(
     map: [String: GenericsAllNullableTypesTyped<Int64, String, Double>],
-    completion: @escaping (
-      Result<[String: GenericsAllNullableTypesTyped<Int64, String, Double>], any Error>
-    ) -> Void
+    completion:
+      @escaping (
+        Result<[String: GenericsAllNullableTypesTyped<Int64, String, Double>], any Error>
+      ) -> Void
   ) {
     flutterGenericApi!.echoMapTypedNullable(map: map) { result in
       switch result {
@@ -1753,7 +1758,8 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
 
   public func callFlutterEchoTypedNullableIntStringBool(
     typed: GenericsAllNullableTypesTyped<Int64, String, Bool>,
-    completion: @escaping (Result<GenericsAllNullableTypesTyped<Int64, String, Bool>, any Error>) ->
+    completion:
+      @escaping (Result<GenericsAllNullableTypesTyped<Int64, String, Bool>, any Error>) ->
       Void
   ) {
     flutterGenericApi!.echoTypedNullableIntStringBool(typed: typed) { result in
@@ -1768,7 +1774,8 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
 
   public func callFlutterEchoTypedNullableStringIntDouble(
     typed: GenericsAllNullableTypesTyped<String, Int64, Double>,
-    completion: @escaping (Result<GenericsAllNullableTypesTyped<String, Int64, Double>, any Error>)
+    completion:
+      @escaping (Result<GenericsAllNullableTypesTyped<String, Int64, Double>, any Error>)
       -> Void
   ) {
     flutterGenericApi!.echoTypedNullableStringIntDouble(typed: typed) { result in

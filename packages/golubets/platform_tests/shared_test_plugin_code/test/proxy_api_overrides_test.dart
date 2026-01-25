@@ -9,7 +9,7 @@ void main() {
   test('can override ProxyApi constructors', () {
     GolubetsOverrides.golubets_reset();
 
-    final ProxyApiSuperClass instance = ProxyApiSuperClass.golubets_detached();
+    final instance = ProxyApiSuperClass.golubets_detached();
     GolubetsOverrides.proxyApiSuperClass_new = () => instance;
 
     expect(ProxyApiSuperClass(), instance);
@@ -18,7 +18,7 @@ void main() {
   test('can override ProxyApi static attached fields', () {
     GolubetsOverrides.golubets_reset();
 
-    final ProxyApiSuperClass instance = ProxyApiSuperClass.golubets_detached();
+    final instance = ProxyApiSuperClass.golubets_detached();
     GolubetsOverrides.proxyApiTestClass_staticAttachedField = instance;
 
     expect(ProxyApiTestClass.staticAttachedField, instance);
@@ -32,7 +32,7 @@ void main() {
           return value;
         };
 
-    const String value = 'testString';
+    const value = 'testString';
     expect(await ProxyApiTestClass.echoStaticString(value), value);
   });
 

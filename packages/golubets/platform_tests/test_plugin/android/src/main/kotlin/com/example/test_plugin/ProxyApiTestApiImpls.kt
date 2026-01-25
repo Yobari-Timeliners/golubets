@@ -15,7 +15,7 @@ interface ProxyApiInterface
 
 @RequiresApi(25) class ClassWithApiRequirement
 
-class ProxyApiRegistrar(binaryMessenger: BinaryMessenger) :
+open class ProxyApiRegistrar(binaryMessenger: BinaryMessenger) :
     ProxyApiTestsGolubetsProxyApiRegistrar(binaryMessenger) {
   override fun getGolubetsApiProxyApiTestClass(): GolubetsApiProxyApiTestClass {
     return ProxyApiTestClassApi(this)

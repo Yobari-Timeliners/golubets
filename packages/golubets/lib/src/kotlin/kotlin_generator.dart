@@ -108,7 +108,7 @@ class KotlinOptions {
   /// Converts a [KotlinOptions] to a Map representation where:
   /// `x = KotlinOptions.fromMap(x.toMap())`.
   Map<String, Object> toMap() {
-    final Map<String, Object> result = <String, Object>{
+    final result = <String, Object>{
       if (package != null) 'package': package!,
       if (copyrightHeader != null) 'copyrightHeader': copyrightHeader!,
       if (errorClassName != null) 'errorClassName': errorClassName!,
@@ -325,7 +325,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       return;
     }
 
-    final List<String> generatedMessages = <String>[
+    final generatedMessages = <String>[
       ' Generated class from Golubets that represents data sent in messages.',
     ];
     if (classDefinition.isSealed) {
@@ -405,7 +405,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     Class classDefinition, {
     required String dartPackageName,
   }) {
-    final String typeArguments = classDefinition.typeArguments.isEmpty
+    final typeArguments = classDefinition.typeArguments.isEmpty
         ? ''
         : '<${classDefinition.typeArguments.map((_) => '*').join(', ')}>';
     indent.writeScoped('override fun equals(other: Any?): Boolean {', '}', () {
@@ -435,23 +435,23 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     required Map<String, Class> classLookup,
     required InternalKotlinOptions generatorOptions,
   }) {
-    final String typeArguments = classDefinition.typeArguments.isEmpty
+    final typeArguments = classDefinition.typeArguments.isEmpty
         ? ''
         : '<${_flattenTypeArguments(classDefinition.typeArguments)}>';
-    final String privateString = private ? 'private ' : '';
-    final String classType = classDefinition.isSealed
+    final privateString = private ? 'private ' : '';
+    final classType = classDefinition.isSealed
         ? 'sealed'
         : classDefinition.fields.isNotEmpty
         ? 'data'
         : '';
-    final String superClassTypeArguments =
+    final superClassTypeArguments =
         classDefinition.superClass?.typeArguments.isNotEmpty ?? false
         ? '<${_flattenTypeArguments(classDefinition.superClass!.typeArguments)}>'
         : '';
-    final String inheritance = classDefinition.superClass != null
+    final inheritance = classDefinition.superClass != null
         ? ' : ${classDefinition.superClassName}$superClassTypeArguments()'
         : '';
-    final String internalConstructor = classDefinition.typeArguments.isNotEmpty
+    final internalConstructor = classDefinition.typeArguments.isNotEmpty
         ? ' @PublishedApi internal constructor'
         : '';
     if (classDefinition.typeArguments.isNotEmpty && !classDefinition.isSealed) {
@@ -520,15 +520,13 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
   }) {
     final String className = classDefinition.name;
 
-    final String returnTypeArguments = classDefinition.typeArguments.isEmpty
+    final returnTypeArguments = classDefinition.typeArguments.isEmpty
         ? ''
         : '<${_flattenTypeArguments(classDefinition.typeArguments)}>';
-    final String captureTypeArguments = classDefinition.typeArguments.isEmpty
+    final captureTypeArguments = classDefinition.typeArguments.isEmpty
         ? ''
         : ' <${classDefinition.typeArguments.map((TypeDeclaration e) => 'reified ${_nullSafeKotlinTypeForDartType(e)}').join(', ')}>';
-    final String inline = classDefinition.typeArguments.isEmpty
-        ? ''
-        : 'inline ';
+    final inline = classDefinition.typeArguments.isEmpty ? '' : 'inline ';
 
     indent.write('companion object ');
     indent.addScoped('{', '}', () {
@@ -545,7 +543,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
           int index,
           final NamedType field,
         ) {
-          final String listValue = '${varNamePrefix}list[$index]';
+          final listValue = '${varNamePrefix}list[$index]';
           indent.writeln(
             'val ${field.name} = ${_cast(indent, listValue, type: field.type)}',
           );
@@ -555,7 +553,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         for (final NamedType field in getFieldsInSerializationOrder(
           classDefinition,
         )) {
-          final String comma =
+          final comma =
               getFieldsInSerializationOrder(classDefinition).last == field &&
                   classDefinition.typeArguments.isEmpty
               ? ''
@@ -564,9 +562,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         }
 
         for (final TypeDeclaration type in classDefinition.typeArguments) {
-          final String comma = classDefinition.typeArguments.last == type
-              ? ''
-              : ', ';
+          final comma = classDefinition.typeArguments.last == type ? '' : ', ';
           indent.add(
             'typeOf<${type.baseName}>()$comma',
           );
@@ -576,7 +572,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       });
 
       if (classDefinition.typeArguments.isNotEmpty) {
-        final Map<String, Class> classLookup = <String, Class>{
+        final classLookup = <String, Class>{
           for (final Class classDefinition in root.classes)
             classDefinition.name: classDefinition,
         };
@@ -602,13 +598,11 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
                   generatorOptions: generatorOptions,
                 );
               } else {
-                final String defaultNil = field.type.isNullable
-                    ? ' = null'
-                    : '';
+                final defaultNil = field.type.isNullable ? ' = null' : '';
                 indent.add(defaultNil);
               }
 
-              final String comma =
+              final comma =
                   getFieldsInSerializationOrder(classDefinition).last == field
                   ? ''
                   : ', ';
@@ -630,7 +624,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
 
               for (final TypeDeclaration type
                   in classDefinition.typeArguments) {
-                final String comma = classDefinition.typeArguments.last == type
+                final comma = classDefinition.typeArguments.last == type
                     ? ''
                     : ', ';
                 indent.writeln(
@@ -669,7 +663,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         generatorOptions: generatorOptions,
       );
     } else {
-      final String defaultNil = field.type.isNullable ? ' = null' : '';
+      final defaultNil = field.type.isNullable ? ' = null' : '';
       indent.add(defaultNil);
     }
   }
@@ -703,7 +697,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     Indent indent, {
     required String dartPackageName,
   }) {
-    final Map<String, Class> classLookup = <String, Class>{
+    final classLookup = <String, Class>{
       for (final Class classDefinition in root.classes)
         classDefinition.name: classDefinition,
     };
@@ -711,13 +705,13 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       root,
       excludeSealedClasses: true,
     ).toList();
-    final String value = root.genericTypeNames.isNotEmpty ? 'value ' : '';
+    final value = root.genericTypeNames.isNotEmpty ? 'value ' : '';
 
     void writeEncodeLogic(EnumeratedType customType) {
-      final String encodeString = customType.type == CustomTypes.customClass
+      final encodeString = customType.type == CustomTypes.customClass
           ? 'toList()'
           : 'raw.toLong()';
-      final String valueString = customType.enumeration < maximumCodecFieldKey
+      final valueString = customType.enumeration < maximumCodecFieldKey
           ? 'value.$encodeString'
           : 'wrap.toList()';
       final int enumeration = customType.enumeration < maximumCodecFieldKey
@@ -728,11 +722,11 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
           .findSealedHierarchy()
           ?.superClass
           .name;
-      final String nestedClassPrefix =
+      final nestedClassPrefix =
           sealedSuperClassName != null && generatorOptions.nestSealedClasses
           ? '$sealedSuperClassName.'
           : '';
-      final String typeArguments = customType.typeArguments.isEmpty
+      final typeArguments = customType.typeArguments.isEmpty
           ? ''
           : '<${customType.typeArguments.map((_) => '*').join(', ')}>';
       final List<String>? originalTypeArguments = classLookup[customType.name]
@@ -747,7 +741,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
                 final String typeName = _nullSafeKotlinTypeForDartType(
                   type,
                 );
-                final String typeFieldName =
+                final typeFieldName =
                     '${originalTypeArguments![index].toLowFirstLetter()}Type';
 
                 return ' && value.$typeFieldName == typeOf<$typeName>()';
@@ -773,14 +767,14 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
           .findSealedHierarchy()
           ?.superClass
           .name;
-      final String nestedClassPrefix =
+      final nestedClassPrefix =
           sealedSuperClassName != null && generatorOptions.nestSealedClasses
           ? '$sealedSuperClassName.'
           : '';
       indent.write('${customType.enumeration}.toByte() -> ');
       indent.addScoped('{', '}', () {
         if (customType.type == CustomTypes.customClass) {
-          final String typeArguments = customType.typeArguments.isEmpty
+          final typeArguments = customType.typeArguments.isEmpty
               ? ''
               : '<${_flattenTypeArguments(customType.typeArguments)}>';
           indent.write('return (readValue(buffer) as? List<Any?>)?.let ');
@@ -798,7 +792,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       });
     }
 
-    final EnumeratedType overflowClass = EnumeratedType(
+    final overflowClass = EnumeratedType(
       '${generatorOptions.fileSpecificClassNameComponent}$_overflowClassName',
       maximumCodecFieldKey,
       CustomTypes.customClass,
@@ -826,7 +820,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         if (root.classes.isNotEmpty || root.enums.isNotEmpty) {
           indent.add('when (type) ');
           indent.addScoped('{', '}', () {
-            for (final EnumeratedType customType in enumeratedTypes) {
+            for (final customType in enumeratedTypes) {
               if (customType.enumeration < maximumCodecFieldKey) {
                 writeDecodeLogic(customType);
               }
@@ -846,9 +840,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       );
       indent.writeScoped('{', '}', () {
         if (root.classes.isNotEmpty || root.enums.isNotEmpty) {
-          final String typeCatch = root.genericTypeNames.isEmpty
-              ? ' (value) '
-              : ' ';
+          final typeCatch = root.genericTypeNames.isEmpty ? ' (value) ' : ' ';
           indent.write('when$typeCatch');
           indent.addScoped('{', '}', () {
             enumeratedTypes.forEach(writeEncodeLogic);
@@ -875,19 +867,16 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     List<EnumeratedType> types, {
     required String dartPackageName,
   }) {
-    final NamedType overflowInt = NamedType(
+    final overflowInt = NamedType(
       name: 'type',
       type: const TypeDeclaration(baseName: 'int', isNullable: false),
     );
-    final NamedType overflowObject = NamedType(
+    final overflowObject = NamedType(
       name: 'wrapped',
       type: const TypeDeclaration(baseName: 'Object', isNullable: true),
     );
-    final List<NamedType> overflowFields = <NamedType>[
-      overflowInt,
-      overflowObject,
-    ];
-    final Class overflowClass = Class(
+    final overflowFields = <NamedType>[overflowInt, overflowObject];
+    final overflowClass = Class(
       name:
           '${generatorOptions.fileSpecificClassNameComponent}$_overflowClassName',
       fields: overflowFields,
@@ -963,7 +952,7 @@ if (wrapped == null) {
     AstFlutterApi api, {
     required String dartPackageName,
   }) {
-    const List<String> generatedMessages = <String>[
+    const generatedMessages = <String>[
       ' Generated class from Golubets that represents Flutter messages that can be called from Kotlin.',
     ];
     addDocumentationComments(
@@ -1044,7 +1033,7 @@ if (wrapped == null) {
   }) {
     final String apiName = api.name;
 
-    const List<String> generatedMessages = <String>[
+    const generatedMessages = <String>[
       ' Generated interface from Golubets that represents a handler of messages from Flutter.',
     ];
     addDocumentationComments(
@@ -1081,7 +1070,7 @@ if (wrapped == null) {
           '/** Sets up an instance of `$apiName` to handle messages through the `binaryMessenger`. */',
         );
         indent.writeln('@JvmOverloads');
-        final String coroutineScope =
+        final coroutineScope =
             api.methods.any((Method method) => method.asynchronousType.isAwait)
             ? ', coroutineScope: CoroutineScope'
             : '';
@@ -1142,7 +1131,7 @@ if (wrapped == null) {
     Indent indent, {
     required String dartPackageName,
   }) {
-    final String instanceManagerApiName =
+    final instanceManagerApiName =
         '${kotlinInstanceManagerClassName(generatorOptions)}Api';
 
     addDocumentationComments(indent, <String>[
@@ -1171,7 +1160,7 @@ if (wrapped == null) {
             'fun setUpMessageHandlers(binaryMessenger: BinaryMessenger, instanceManager: ${kotlinInstanceManagerClassName(generatorOptions)}?) {',
             '}',
             () {
-              const String setHandlerCondition = 'instanceManager != null';
+              const setHandlerCondition = 'instanceManager != null';
               _writeHostMethodMessageHandler(
                 indent,
                 generatorOptions: generatorOptions,
@@ -1302,7 +1291,7 @@ if (wrapped == null) {
           'override fun writeValue(stream: ByteArrayOutputStream, value: Any?) {',
           '}',
           () {
-            final List<String> nonProxyApiTypes = <String>[
+            final nonProxyApiTypes = <String>[
               'Boolean',
               'ByteArray',
               'Double',
@@ -1344,7 +1333,7 @@ if (wrapped == null) {
                   api.kotlinOptions?.fullClassName ?? api.name;
 
               final int? minApi = api.kotlinOptions?.minAndroidApi;
-              final String versionCheck = minApi != null
+              final versionCheck = minApi != null
                   ? 'android.os.Build.VERSION.SDK_INT >= $minApi && '
                   : '';
 
@@ -1381,7 +1370,7 @@ if (wrapped == null) {
     AstProxyApi api, {
     required String dartPackageName,
   }) {
-    final String kotlinApiName = '$hostProxyApiPrefix${api.name}';
+    final kotlinApiName = '$hostProxyApiPrefix${api.name}';
 
     addDocumentationComments(
       indent,
@@ -1390,7 +1379,7 @@ if (wrapped == null) {
     );
     indent.writeln('@Suppress("UNCHECKED_CAST")');
     // The API only needs to be abstract if there are methods to override.
-    final String classModifier = api.hasMethodsRequiringImplementation()
+    final classModifier = api.hasMethodsRequiringImplementation()
         ? 'abstract'
         : 'open';
     indent.writeScoped(
@@ -1400,7 +1389,7 @@ if (wrapped == null) {
         final String fullKotlinClassName =
             api.kotlinOptions?.fullClassName ?? api.name;
 
-        final TypeDeclaration apiAsTypeDeclaration = TypeDeclaration(
+        final apiAsTypeDeclaration = TypeDeclaration(
           baseName: api.name,
           isNullable: false,
           associatedProxyApi: api,
@@ -1539,6 +1528,10 @@ if (wrapped == null) {
               EventChannel(messenger, channelName, ${generatorOptions.fileSpecificClassNameComponent}$_golubetsMethodChannelCodec).setStreamHandler(internalStreamHandler)
             }
           }
+        // Implement methods from ${generatorOptions.fileSpecificClassNameComponent}PigeonEventChannelWrapper
+        override fun onListen(p0: Any?, sink: GolubetsEventSink<${_kotlinTypeForDartType(func.returnType)}>) {}
+
+        override fun onCancel(p0: Any?) {}
         }
       ''');
     }
@@ -1691,7 +1684,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
         _getArgumentName,
     AsynchronousType asynchronousType = AsynchronousType.none,
   }) {
-    final List<String> argSignature = <String>[];
+    final argSignature = <String>[];
     if (parameters.isNotEmpty) {
       final Iterable<String> argTypes = parameters.map(
         (NamedType e) => _nullSafeKotlinTypeForDartType(e.type),
@@ -1708,7 +1701,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
         ? ''
         : _nullSafeKotlinTypeForDartType(returnType);
 
-    final String resultType = returnType.isVoid ? 'Unit' : returnTypeString;
+    final resultType = returnType.isVoid ? 'Unit' : returnTypeString;
     addDocumentationComments(indent, documentationComments, _docCommentSpec);
 
     if (minApiRequirement != null) {
@@ -1717,9 +1710,9 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
       );
     }
 
-    final String openKeyword = isOpen ? 'open ' : '';
-    final String abstractKeyword = isAbstract ? 'abstract ' : '';
-    final String suspendKeyword = asynchronousType.isAwait ? 'suspend ' : '';
+    final openKeyword = isOpen ? 'open ' : '';
+    final abstractKeyword = isAbstract ? 'abstract ' : '';
+    final suspendKeyword = asynchronousType.isAwait ? 'suspend ' : '';
 
     if (asynchronousType.isCallback) {
       argSignature.add('callback: (Result<$resultType>) -> Unit');
@@ -1769,16 +1762,16 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
 
       indent.write('if ($setHandlerCondition) ');
       indent.addScoped('{', '}', () {
-        final String messageVarName = parameters.isNotEmpty ? 'message' : '_';
+        final messageVarName = parameters.isNotEmpty ? 'message' : '_';
 
         indent.write('channel.setMessageHandler ');
         indent.addScoped('{ $messageVarName, reply ->', '}', () {
-          final List<String> methodArguments = <String>[];
+          final methodArguments = <String>[];
           if (parameters.isNotEmpty) {
             indent.writeln('val args = message as List<Any?>');
             enumerate(parameters, (int index, NamedType arg) {
               final String argName = _getSafeArgumentName(index, arg);
-              final String argIndex = 'args[$index]';
+              final argIndex = 'args[$index]';
               indent.writeln(
                 'val $argName = ${_castForceUnwrap(argIndex, arg.type, indent)}',
               );
@@ -1913,7 +1906,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
       sendArgument = 'listOf(${enumSafeArgNames.join(', ')})';
     }
 
-    const String channel = 'channel';
+    const channel = 'channel';
     indent.writeln('val channelName = "$channelName"');
     indent.writeln(
       'val $channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)',
@@ -1961,7 +1954,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
     final String instanceManagerName = kotlinInstanceManagerClassName(
       generatorOptions,
     );
-    final String instanceManagerApiName = '${instanceManagerName}Api';
+    final instanceManagerApiName = '${instanceManagerName}Api';
 
     addDocumentationComments(indent, <String>[
       ' Provides implementations for each ProxyApi implementation and provides access to resources',
@@ -1975,7 +1968,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
           ' Whether APIs should ignore calling to Dart.',
         ], _docCommentSpec);
         indent.writeln('public var ignoreCallsToDart = false');
-        const String tag = '${proxyApiClassNamePrefix}ProxyApiRegistrar';
+        const tag = '${proxyApiClassNamePrefix}ProxyApiRegistrar';
         indent.format('''
           val instanceManager: $instanceManagerName
           private var _codec: MessageCodec<Any?>? = null
@@ -2004,7 +1997,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
               }
             )
           }''');
-        for (final AstProxyApi api in allProxyApis) {
+        for (final api in allProxyApis) {
           _writeMethodDeclaration(
             indent,
             name: 'get$hostProxyApiPrefix${api.name}',
@@ -2037,7 +2030,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
           indent.writeln(
             '$instanceManagerApiName.setUpMessageHandlers(binaryMessenger, instanceManager)',
           );
-          for (final AstProxyApi api in allProxyApis) {
+          for (final api in allProxyApis) {
             final bool hasHostMessageCalls =
                 api.constructors.isNotEmpty ||
                 api.attachedFields.isNotEmpty ||
@@ -2054,7 +2047,7 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
           indent.writeln(
             '$instanceManagerApiName.setUpMessageHandlers(binaryMessenger, null)',
           );
-          for (final AstProxyApi api in allProxyApis) {
+          for (final api in allProxyApis) {
             if (api.hasAnyHostMessageCalls()) {
               indent.writeln(
                 '$hostProxyApiPrefix${api.name}.setUpMessageHandlers(binaryMessenger, null)',
@@ -2560,6 +2553,18 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
                         $errorClassName("ignore-calls-error", "Calls to Dart are being ignored.", "")))
                 return''');
                 },
+                addTrailingNewline: false,
+              );
+              indent.writeScoped(
+                ' else if (!golubetsRegistrar.instanceManager.containsInstance(${classMemberNamePrefix}instanceArg)) {',
+                '}',
+                () {
+                  indent.format('''
+                callback(
+                    Result.failure(
+                        $errorClassName("missing-instance-error", "Callback to `${api.name}.${method.name}` failed because native instance was not in the instance manager.", "")))
+                return''');
+                },
               );
               indent.writeln(
                 'val binaryMessenger = golubetsRegistrar.binaryMessenger',
@@ -2583,13 +2588,13 @@ fun deepEquals(a: Any?, b: Any?): Boolean {
   //
   // These are used for inherited Flutter methods.
   void _writeProxyApiInheritedApiMethods(Indent indent, AstProxyApi api) {
-    final Set<String> inheritedApiNames = <String>{
+    final inheritedApiNames = <String>{
       if (api.superClass != null) api.superClass!.baseName,
       ...api.interfaces.map((TypeDeclaration type) => type.baseName),
     };
-    for (final String name in inheritedApiNames) {
+    for (final name in inheritedApiNames) {
       indent.writeln('@Suppress("FunctionName")');
-      final String apiName = '$hostProxyApiPrefix$name';
+      final apiName = '$hostProxyApiPrefix$name';
       _writeMethodDeclaration(
         indent,
         name: '${classMemberNamePrefix}get$apiName',
@@ -2677,7 +2682,7 @@ String _kotlinTypeForBuiltinGenericDartType(TypeDeclaration type) {
 }
 
 String? _kotlinTypeForBuiltinDartType(TypeDeclaration type) {
-  const Map<String, String> kotlinTypeForDartTypeMap = <String, String>{
+  const kotlinTypeForDartTypeMap = <String, String>{
     'void': 'Void',
     'bool': 'Boolean',
     'String': 'String',
@@ -2717,7 +2722,7 @@ String _kotlinTypeForDartType(TypeDeclaration type) {
 }
 
 String _nullSafeKotlinTypeForDartType(TypeDeclaration type) {
-  final String nullSafe = type.isNullable ? '?' : '';
+  final nullSafe = type.isNullable ? '?' : '';
   return '${_kotlinTypeForDartType(type)}$nullSafe';
 }
 
@@ -2778,7 +2783,7 @@ extension on DefaultValue {
             '${prefix}listOf(',
             ')',
             () {
-              for (final DefaultValue element in elements) {
+              for (final element in elements) {
                 element.write(
                   indent,
                   classLookup: classLookup,
@@ -2839,7 +2844,7 @@ extension on DefaultValue {
         :final List<DefaultValue> arguments,
       ):
         final Class? sealedSuperClass = classLookup[type.baseName]?.superClass;
-        final String superScope =
+        final superScope =
             sealedSuperClass != null &&
                 sealedSuperClass.isSealed &&
                 generatorOptions.nestSealedClasses
@@ -2852,7 +2857,7 @@ extension on DefaultValue {
         }
 
         indent.addScoped('(', ')', () {
-          for (int i = 0; i < arguments.length; i++) {
+          for (var i = 0; i < arguments.length; i++) {
             arguments[i].write(
               indent,
               expectedType: type, // Pass the object type, not the field type
