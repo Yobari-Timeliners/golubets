@@ -75,7 +75,6 @@ class _MyHomePageState extends State<MyHomePage> {
   /// and api `sendMessage` method.
   Future<bool> sendMessage(String messageText) {
     final message = MessageData(
-      code: Code.one,
       data: <String, String>{'header': 'this is a header'},
       description: 'uri text',
     );
@@ -88,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<bool> sendMessageModernAsync(String messageText) {
-    final MessageData message = MessageData(
+    final message = MessageData(
       code: Code.two,
       data: <String, String>{'header': 'this is a header'},
       description: 'uri text',
@@ -98,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<bool> sendMessageModernAsyncAndThrow(String messageText) {
-    final MessageData message = MessageData(
+    final message = MessageData(
       code: Code.two,
       data: <String, String>{'header': 'this is a header'},
       description: 'uri text',

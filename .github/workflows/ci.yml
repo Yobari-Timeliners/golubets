@@ -43,9 +43,9 @@ jobs:
           fi
           CONFLICT_FOUND=false
           while IFS= read -r file; do
-            if [ -f "$file" ] && grep -E '^(<<<<<<<|=======|>>>>>>> )' "$file"; then
+            if [ -f "$file" ] && grep -E '^(<<<<<<< |=======$|>>>>>>> )' "$file"; then
               echo "Conflict markers found in $file:"
-              grep -E -n '^(<<<<<<<|=======|>>>>>>> )' "$file" || true
+              grep -E -n '^(<<<<<<< |=======$|>>>>>>> )' "$file" || true
               CONFLICT_FOUND=true
             fi
           done <<< "$CHANGED_FILES"
