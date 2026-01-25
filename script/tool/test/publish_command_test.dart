@@ -1328,13 +1328,15 @@ void main() {
 
           mockStdin.readLineOutput = 'y';
 
-          final List<String> output =
-              await runCapturingPrint(commandRunner, <String>[
-                'publish',
-                '--all-changed',
-                '--base-sha=HEAD~',
-                '--batch-release-branch=release-package1',
-              ]);
+          final List<String> output = await runCapturingPrint(
+            commandRunner,
+            <String>[
+              'publish',
+              '--all-changed',
+              '--base-sha=HEAD~',
+              '--batch-release-branch=release-package1',
+            ],
+          );
           // Package1 is published in batch realease, pacakge2 is not.
           expect(
             output,
@@ -1399,13 +1401,15 @@ void main() {
 
           mockStdin.readLineOutput = 'y';
 
-          final List<String> output =
-              await runCapturingPrint(commandRunner, <String>[
-                'publish',
-                '--all-changed',
-                '--base-sha=HEAD~',
-                '--batch-release-branch=release-package1',
-              ]);
+          final List<String> output = await runCapturingPrint(
+            commandRunner,
+            <String>[
+              'publish',
+              '--all-changed',
+              '--base-sha=HEAD~',
+              '--batch-release-branch=release-package1',
+            ],
+          );
           // Package1 is published in batch realease, pacakge2 is not.
           expect(
             output,
