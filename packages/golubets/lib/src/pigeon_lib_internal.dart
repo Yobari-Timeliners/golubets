@@ -419,13 +419,8 @@ class ObjcGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
   List<Error> validate(InternalGolubetsOptions options, Root root) {
-    final List<Error> errors = <Error>[];
-=======
-  List<Error> validate(InternalPigeonOptions options, Root root) {
     final errors = <Error>[];
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
     _errorOnEventChannelApi(errors, languageString, root);
     _errorOnSealedClass(errors, languageString, root);
     _errorOnInheritedClass(errors, languageString, root);
@@ -468,13 +463,8 @@ class JavaGeneratorAdapter implements GeneratorAdapter {
       _openSink(options.javaOptions?.javaOut, basePath: options.basePath ?? '');
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
   List<Error> validate(InternalGolubetsOptions options, Root root) {
-    final List<Error> errors = <Error>[];
-=======
-  List<Error> validate(InternalPigeonOptions options, Root root) {
     final errors = <Error>[];
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
     _errorOnEventChannelApi(errors, languageString, root);
     _errorOnSealedClass(errors, languageString, root);
     _errorOnInheritedClass(errors, languageString, root);
@@ -521,7 +511,7 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
 
   @override
   List<Error> validate(InternalGolubetsOptions options, Root root) {
-    final List<Error> result = <Error>[];
+    final result = <Error>[];
 
     for (final Class classDefinition in root.classes) {
       for (final NamedType field in classDefinition.fields) {
@@ -638,13 +628,8 @@ class CppGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
   List<Error> validate(InternalGolubetsOptions options, Root root) {
-    final List<Error> errors = <Error>[];
-=======
-  List<Error> validate(InternalPigeonOptions options, Root root) {
     final errors = <Error>[];
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
     _errorOnEventChannelApi(errors, languageString, root);
     _errorOnSealedClass(errors, languageString, root);
     _errorOnInheritedClass(errors, languageString, root);
@@ -704,13 +689,8 @@ class GObjectGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
   List<Error> validate(InternalGolubetsOptions options, Root root) {
-    final List<Error> errors = <Error>[];
-=======
-  List<Error> validate(InternalPigeonOptions options, Root root) {
     final errors = <Error>[];
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
     // TODO(tarrinneal): Remove once overflow class is added to gobject generator.
     // https://github.com/flutter/flutter/issues/152916
     if (root.classes.length + root.enums.length > totalCustomCodecKeysAllowed) {
@@ -1663,11 +1643,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
           ),
         );
       }
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-      final Map<String, Object> golubetsOptionsMap =
-=======
-      final pigeonOptionsMap =
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+      final golubetsOptionsMap =
           _expressionToMap(node.arguments!.arguments.first)
               as Map<String, Object>;
       _golubetsOptions = golubetsOptionsMap;
@@ -1890,7 +1866,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
               .toList() ??
           const <TypeDeclaration>[];
 
-      for (final TypeDeclaration typeArg in typeArguments) {
+      for (final typeArg in typeArguments) {
         _genericTypeNames.add(typeArg.baseName);
       }
 
@@ -2432,8 +2408,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     }
 
     if (type.expression.toSource().contains('AsyncType.await')) {
-      final Map<String, Object> options =
-          _expressionToMap(type.expression) as Map<String, Object>;
+      final options = _expressionToMap(type.expression) as Map<String, Object>;
 
       return AwaitAsynchronous(
         swiftOptions: SwiftAwaitAsynchronousOptions(
@@ -2456,7 +2431,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       return;
     }
 
-    for (int i = 0; i < _currentClass!.fields.length; i++) {
+    for (var i = 0; i < _currentClass!.fields.length; i++) {
       final NamedType field = _currentClass!.fields[i];
       final String fieldName = field.name;
 
@@ -2552,8 +2527,7 @@ class _DefaultValueVisitor
       );
     }
 
-    final Map<DefaultValue, DefaultValue> entries =
-        <DefaultValue, DefaultValue>{};
+    final entries = <DefaultValue, DefaultValue>{};
 
     for (final dart_ast.MapLiteralEntry entry
         in node.elements.whereType<dart_ast.MapLiteralEntry>()) {
@@ -2593,7 +2567,7 @@ class _DefaultValueVisitor
         )
         .whereNotNull()
         .toList();
-    final TypeDeclaration type = TypeDeclaration(
+    final type = TypeDeclaration(
       baseName: RootBuilder._getNamedTypeQualifiedName(
         node.constructorName.type,
       ),
@@ -2634,7 +2608,7 @@ class _DefaultValueVisitor
         )
         .whereNotNull()
         .toList();
-    final TypeDeclaration type = TypeDeclaration(
+    final type = TypeDeclaration(
       baseName: node.methodName.name,
       isNullable: false,
       typeArguments: RootBuilder._typeAnnotationsToTypeArguments(

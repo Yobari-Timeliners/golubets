@@ -240,16 +240,11 @@ void main() {
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
         );
-<<<<<<< HEAD:packages/golubets/test/kotlin/proxy_api_test.dart
-        final String code = sink.toString();
+        final code = sink.toString();
         expect(
           code,
           contains('fun golubets_getGolubetsApiApi2(): GolubetsApiApi2'),
         );
-=======
-        final code = sink.toString();
-        expect(code, contains('fun pigeon_getPigeonApiApi2(): PigeonApiApi2'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin/proxy_api_test.dart
       });
 
       test('implements 2 ProxyApis', () {
@@ -299,8 +294,7 @@ void main() {
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
         );
-<<<<<<< HEAD:packages/golubets/test/kotlin/proxy_api_test.dart
-        final String code = sink.toString();
+        final code = sink.toString();
         expect(
           code,
           contains('fun golubets_getGolubetsApiApi2(): GolubetsApiApi2'),
@@ -309,11 +303,6 @@ void main() {
           code,
           contains('fun golubets_getGolubetsApiApi3(): GolubetsApiApi3'),
         );
-=======
-        final code = sink.toString();
-        expect(code, contains('fun pigeon_getPigeonApiApi2(): PigeonApiApi2'));
-        expect(code, contains('fun pigeon_getPigeonApiApi3(): PigeonApiApi3'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin/proxy_api_test.dart
       });
     });
 

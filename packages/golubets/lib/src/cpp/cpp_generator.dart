@@ -231,15 +231,9 @@ class CppHeaderGenerator extends StructuredGenerator<InternalCppOptions> {
       indent.writeln('namespace ${generatorOptions.namespace} {');
     }
     indent.newln();
-<<<<<<< HEAD:packages/golubets/lib/src/cpp/cpp_generator.dart
     if (generatorOptions.namespace?.endsWith('_golubetstest') ?? false) {
-      final String testFixtureClass =
-          '${_pascalCaseFromSnakeCase(generatorOptions.namespace!.replaceAll('_golubetstest', ''))}Test';
-=======
-    if (generatorOptions.namespace?.endsWith('_pigeontest') ?? false) {
       final testFixtureClass =
-          '${_pascalCaseFromSnakeCase(generatorOptions.namespace!.replaceAll('_pigeontest', ''))}Test';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/cpp/cpp_generator.dart
+          '${_pascalCaseFromSnakeCase(generatorOptions.namespace!.replaceAll('_golubetstest', ''))}Test';
       indent.writeln('class $testFixtureClass;');
     }
     indent.newln();
@@ -339,13 +333,8 @@ class CppHeaderGenerator extends StructuredGenerator<InternalCppOptions> {
     }
     indent.newln();
 
-<<<<<<< HEAD:packages/golubets/lib/src/cpp/cpp_generator.dart
-    const List<String> generatedMessages = <String>[
-      ' Generated class from Golubets that represents data sent in messages.',
-=======
     const generatedMessages = <String>[
-      ' Generated class from Pigeon that represents data sent in messages.',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/cpp/cpp_generator.dart
+      ' Generated class from Golubets that represents data sent in messages.',
     ];
 
     addDocumentationComments(
@@ -599,13 +588,8 @@ class CppHeaderGenerator extends StructuredGenerator<InternalCppOptions> {
     AstFlutterApi api, {
     required String dartPackageName,
   }) {
-<<<<<<< HEAD:packages/golubets/lib/src/cpp/cpp_generator.dart
-    const List<String> generatedMessages = <String>[
-      ' Generated class from Golubets that represents Flutter messages that can be called from C++.',
-=======
     const generatedMessages = <String>[
-      ' Generated class from Pigeon that represents Flutter messages that can be called from C++.',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/cpp/cpp_generator.dart
+      ' Generated class from Golubets that represents Flutter messages that can be called from C++.',
     ];
     addDocumentationComments(
       indent,
@@ -687,13 +671,8 @@ class CppHeaderGenerator extends StructuredGenerator<InternalCppOptions> {
     AstHostApi api, {
     required String dartPackageName,
   }) {
-<<<<<<< HEAD:packages/golubets/lib/src/cpp/cpp_generator.dart
-    const List<String> generatedMessages = <String>[
-      ' Generated interface from Golubets that represents a handler of messages from Flutter.',
-=======
     const generatedMessages = <String>[
-      ' Generated interface from Pigeon that represents a handler of messages from Flutter.',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/cpp/cpp_generator.dart
+      ' Generated interface from Golubets that represents a handler of messages from Flutter.',
     ];
     addDocumentationComments(
       indent,

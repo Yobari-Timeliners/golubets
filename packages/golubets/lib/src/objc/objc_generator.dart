@@ -651,11 +651,7 @@ class ObjcSourceGenerator extends StructuredGenerator<InternalObjcOptions> {
     );
     indent.write('+ ($className *)fromList:(NSArray<id> *)list ');
     indent.addScoped('{', '}', () {
-<<<<<<< HEAD:packages/golubets/lib/src/objc/objc_generator.dart
-      const String resultName = 'golubetsResult';
-=======
-      const resultName = 'pigeonResult';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/objc/objc_generator.dart
+      const resultName = 'golubetsResult';
       indent.writeln('$className *$resultName = [[$className alloc] init];');
       enumerate(getFieldsInSerializationOrder(classDefinition), (
         int index,
@@ -807,11 +803,7 @@ if (self.wrapped == nil) {
     Indent indent, {
     required String dartPackageName,
   }) {
-<<<<<<< HEAD:packages/golubets/lib/src/objc/objc_generator.dart
-    const String codecName = 'GolubetsCodec';
-=======
-    const codecName = 'PigeonCodec';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/objc/objc_generator.dart
+    const codecName = 'GolubetsCodec';
     final List<EnumeratedType> enumeratedTypes = getEnumeratedTypes(
       root,
       excludeSealedClasses: true,
@@ -1360,11 +1352,7 @@ taskQueue:$taskQueue
       languageOptions.prefix,
     );
     indent.writeScoped(' {', '}', () {
-<<<<<<< HEAD:packages/golubets/lib/src/objc/objc_generator.dart
-      const String result = 'golubetsResult';
-=======
-      const result = 'pigeonResult';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/objc/objc_generator.dart
+      const result = 'golubetsResult';
       indent.writeln('$className* $result = [[$className alloc] init];');
       for (final NamedType field in getFieldsInSerializationOrder(
         classDefinition,

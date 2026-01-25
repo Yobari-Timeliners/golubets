@@ -514,19 +514,7 @@ A version with a valid format (3 numbers separated by 2 periods) must be provide
       return false;
     }
 
-<<<<<<< HEAD
     print('${indentation}Updating Golub files...');
-    for (final File input in inputs) {
-      final String relativePath =
-          getRelativePosixPath(input, from: package.directory);
-      final io.ProcessResult pigeonResult = await processRunner.run(
-          'dart', <String>['run', 'golubets', '--input', relativePath],
-          workingDir: package.directory);
-      if (pigeonResult.exitCode != 0) {
-        printError('dart run golubets failed (${pigeonResult.exitCode}):\n'
-            '${pigeonResult.stdout}\n${pigeonResult.stderr}\n');
-=======
-    print('${indentation}Updating Pigeon files...');
     for (final input in inputs) {
       final String relativePath = getRelativePosixPath(
         input,
@@ -534,15 +522,14 @@ A version with a valid format (3 numbers separated by 2 periods) must be provide
       );
       final io.ProcessResult pigeonResult = await processRunner.run(
         'dart',
-        <String>['run', 'pigeon', '--input', relativePath],
+        <String>['run', 'golubets', '--input', relativePath],
         workingDir: package.directory,
       );
       if (pigeonResult.exitCode != 0) {
         printError(
-          'dart run pigeon failed (${pigeonResult.exitCode}):\n'
+          'dart run golubets failed (${pigeonResult.exitCode}):\n'
           '${pigeonResult.stdout}\n${pigeonResult.stderr}\n',
         );
->>>>>>> filtered-upstream/main
         return false;
       }
     }

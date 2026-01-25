@@ -1131,13 +1131,8 @@ void main() {
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-<<<<<<< HEAD:packages/golubets/test/dart_generator_test.dart
-    final String code = sink.toString();
-    expect(code, matches('golubetsVar_channel.send[(]null[)]'));
-=======
     final code = sink.toString();
-    expect(code, matches('pigeonVar_channel.send[(]null[)]'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/dart_generator_test.dart
+    expect(code, matches('golubetsVar_channel.send[(]null[)]'));
   });
 
   Iterable<String> makeIterable(String string) sync* {

@@ -210,14 +210,9 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       classDefinition.documentationComments,
       docCommentSpec,
     );
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
 
-    final String sealed = classDefinition.isSealed ? 'sealed ' : '';
-    final String implements = classDefinition.superClassName != null
-=======
     final sealed = classDefinition.isSealed ? 'sealed ' : '';
     final implements = classDefinition.superClassName != null
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
         ? 'extends ${classDefinition.superClassName} '
         : '';
 
@@ -245,9 +240,7 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
             field.documentationComments,
             docCommentSpec,
           );
-          final String finalKeyword = classDefinition.isImmutable
-              ? 'final '
-              : '';
+          final finalKeyword = classDefinition.isImmutable ? 'final ' : '';
           final String datatype = addGenericTypesNullable(field.type);
           indent.writeln('$finalKeyword$datatype ${field.name};');
           indent.newln();
@@ -287,7 +280,7 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
   }
 
   void _writeConstructor(Indent indent, Class classDefinition) {
-    final String constKeyword = classDefinition.isImmutable ? 'const ' : '';
+    final constKeyword = classDefinition.isImmutable ? 'const ' : '';
 
     indent.write('$constKeyword${classDefinition.name}');
 
@@ -300,10 +293,8 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       for (final NamedType field in getFieldsInSerializationOrder(
         classDefinition,
       )) {
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
         final DefaultValue? defaultValue = field.defaultValue;
-        final String required =
-            !field.type.isNullable && field.defaultValue == null
+        final required = !field.type.isNullable && field.defaultValue == null
             ? 'required '
             : '';
 
@@ -314,15 +305,6 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
           defaultValue.write(indent, prefix: '');
           indent.addln(',');
         }
-=======
-        final required = !field.type.isNullable && field.defaultValue == null
-            ? 'required '
-            : '';
-        final defaultValueString = field.defaultValue == null
-            ? ''
-            : ' = ${field.defaultValue}';
-        indent.writeln('${required}this.${field.name}$defaultValueString,');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
       }
     });
   }
@@ -380,8 +362,8 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     }
 
     final bool isResultUsed = classDefinition.fields.isNotEmpty;
-    final String result = isResultUsed ? 'result' : '_';
-    final String generics = classDefinition.typeArguments.isNotEmpty
+    final result = isResultUsed ? 'result' : '_';
+    final generics = classDefinition.typeArguments.isNotEmpty
         ? '<${_flattenTypeArguments(classDefinition.typeArguments)}>'
         : '';
 
@@ -447,7 +429,7 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       EnumeratedType customType,
       int nonSerializedClassCount,
     ) {
-      final String typeArgumentsCheck = customType.isGeneric
+      final typeArgumentsCheck = customType.isGeneric
           ? ' && value.runtimeType == ${customType.name}<${_flattenTypeArguments(customType.typeArguments)}>'
           : '';
 
@@ -466,8 +448,7 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
               indent.writeln('writeValue(buffer, value.index);');
             }
           } else {
-            final String encodeString =
-                customType.type == CustomTypes.customClass
+            final encodeString = customType.type == CustomTypes.customClass
                 ? '.encode()'
                 : '.index';
             indent.writeln(
@@ -476,23 +457,9 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
             indent.writeln('buffer.putUint8($maximumCodecFieldKey);');
             indent.writeln('writeValue(buffer, wrap.encode());');
           }
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
         },
         addTrailingNewline: false,
       );
-=======
-        } else {
-          final encodeString = customType.type == CustomTypes.customClass
-              ? '.encode()'
-              : '.index';
-          indent.writeln(
-            'final $_overflowClassName wrap = $_overflowClassName(type: ${customType.offset(nonSerializedClassCount) - maximumCodecFieldKey}, wrapped: value$encodeString);',
-          );
-          indent.writeln('buffer.putUint8($maximumCodecFieldKey);');
-          indent.writeln('writeValue(buffer, wrap.encode());');
-        }
-      }, addTrailingNewline: false);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
     }
 
     void writeDecodeLogic(
@@ -512,7 +479,7 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
             indent.writeln('return wrapper.unwrap();');
           } else {
             final String name = customType.name;
-            final String typeArguments = customType.isGeneric
+            final typeArguments = customType.isGeneric
                 ? '<${_flattenTypeArguments(customType.typeArguments)}>'
                 : '';
             indent.writeln(
@@ -1481,15 +1448,8 @@ if (${varNamePrefix}replyList == null) {
         'final ${varNamePrefix}channel = BasicMessageChannel<Object?>(',
       );
       indent.nest(2, () {
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
-        final String channelSuffix = addSuffixVariable
-            ? r'$messageChannelSuffix'
-            : '';
-        indent.writeln("'$channelName$channelSuffix', $golubetsChannelCodec,");
-=======
         final channelSuffix = addSuffixVariable ? r'$messageChannelSuffix' : '';
-        indent.writeln("'$channelName$channelSuffix', $pigeonChannelCodec,");
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
+        indent.writeln("'$channelName$channelSuffix', $golubetsChannelCodec,");
         indent.writeln('binaryMessenger: binaryMessenger);');
       });
       final messageHandlerSetterWithOpeningParentheses = isMockHandler
@@ -1651,28 +1611,18 @@ String _getMethodParameterSignature(
       .toList();
 
   String getParameterString(Parameter p) {
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
-    final String required = p.isRequired && !p.isPositional ? 'required ' : '';
-=======
     final required = p.isRequired && !p.isPositional ? 'required ' : '';
-
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
     final String type = addGenericTypesNullable(p.type);
     final DefaultValue? defaultValue = p.defaultValue;
 
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
     if (defaultValue == null) {
       return '$required$type ${p.name}';
     } else {
-      final StringBuffer buffer = StringBuffer('$required$type ${p.name} = ');
-      final Indent indent = Indent(buffer);
+      final buffer = StringBuffer('$required$type ${p.name} = ');
+      final indent = Indent(buffer);
       defaultValue.write(indent, prefix: '');
       return buffer.toString();
     }
-=======
-    final defaultValue = p.defaultValue == null ? '' : ' = ${p.defaultValue}';
-    return '$required$type ${p.name}$defaultValue';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
   }
 
   final String baseParameterString = requiredPositionalParams
@@ -1779,7 +1729,7 @@ extension on DefaultValue {
                 '${prefix}const <${addGenericTypesNullable(elementType)}>[',
                 ']',
                 () {
-                  for (final DefaultValue element in elements) {
+                  for (final element in elements) {
                     element.write(indent);
                     indent.addln(', ');
                   }
@@ -1817,7 +1767,7 @@ extension on DefaultValue {
         :final List<DefaultValue> arguments,
       ) =>
         () {
-          final String typeArguments = type.typeArguments.isEmpty
+          final typeArguments = type.typeArguments.isEmpty
               ? ''
               : '<${_flattenTypeArguments(type.typeArguments)}>';
           indent.add('${prefix}const ${type.baseName}$typeArguments');
@@ -1831,7 +1781,7 @@ extension on DefaultValue {
             '(',
             ')',
             () {
-              for (final DefaultValue argument in arguments) {
+              for (final argument in arguments) {
                 argument.write(indent);
                 argument == arguments.last
                     ? indent.newln()

@@ -72,13 +72,8 @@ String _javaFilenameForName(String inputName) {
 }
 
 Future<int> generateExamplePigeons() async {
-<<<<<<< HEAD:packages/golubets/tool/shared/generation.dart
-  int success = 0;
-  success = await runGolub(
-=======
   var success = 0;
-  success = await runPigeon(
->>>>>>> filtered-upstream/main:packages/pigeon/tool/shared/generation.dart
+  success = await runGolub(
     input: './example/app/pigeons/messages.dart',
     basePath: './example/app',
     copyrightHeader: '../../copyright_header.txt',

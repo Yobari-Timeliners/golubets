@@ -271,7 +271,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     void writeDecodeLogic(EnumeratedType customType) {
       final ({Class child, Class superClass})? sealedHierarchy = customType
           .findSealedHierarchy();
-      final String typeArguments = customType.isGeneric
+      final typeArguments = customType.isGeneric
           ? '<${_flattenTypeArguments(customType.typeArguments)}>'
           : '';
 
@@ -357,15 +357,14 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
         indent.write('override func writeValue(_ value: Any) ');
         indent.addScoped('{', '}', () {
           indent.write('');
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-          for (final EnumeratedType customType in enumeratedTypes) {
+          for (final customType in enumeratedTypes) {
             final ({Class child, Class superClass})? sealedHierarchy =
                 customType.findSealedHierarchy();
-            final bool isSealedChild = sealedHierarchy != null;
+            final isSealedChild = sealedHierarchy != null;
 
-            final String value = isSealedChild ? 'childValue' : 'value';
+            final value = isSealedChild ? 'childValue' : 'value';
 
-            final String typeArguments = customType.isGeneric
+            final typeArguments = customType.isGeneric
                 ? '<${_flattenTypeArguments(customType.typeArguments)}>'
                 : '';
 
@@ -383,22 +382,12 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
               );
             }
 
-=======
-          for (final customType in enumeratedTypes) {
-            indent.add('if let value = value as? ${customType.name} ');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
             indent.addScoped('{', '} else ', () {
               final encodeString = customType.type == CustomTypes.customClass
                   ? 'toList()'
                   : 'rawValue';
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-              final String valueString =
-                  customType.enumeration < maximumCodecFieldKey
-                  ? '$value.$encodeString'
-=======
               final valueString = customType.enumeration < maximumCodecFieldKey
-                  ? 'value.$encodeString'
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+                  ? '$value.$encodeString'
                   : 'wrap.toList()';
               final int enumeration =
                   customType.enumeration < maximumCodecFieldKey
@@ -467,8 +456,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     bool hashable = true,
     required Root root,
   }) {
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-    final Map<String, Class> classLookup = <String, Class>{
+    final classLookup = <String, Class>{
       for (final Class classDefinition in root.classes)
         classDefinition.name: classDefinition,
     };
@@ -489,15 +477,11 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       classDefinition,
       classLookup: classLookup,
     );
-    final String privateString = private ? 'private ' : 'public ';
-    final String typeArguments = classDefinition.typeArguments.isEmpty
+    final privateString = private ? 'private ' : 'public ';
+    final typeArguments = classDefinition.typeArguments.isEmpty
         ? ''
         : '<${_flattenTypeArgumentsWithSelectiveHashableConstraints(classDefinition.typeArguments, hashableTypeParams)}>';
-    final String extendsString = classDefinition.superClass != null
-=======
-    final privateString = private ? 'private ' : '';
     final extendsString = classDefinition.superClass != null
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
         ? ': ${classDefinition.superClass!.name}'
         : hashable
         ? ': Hashable'
@@ -518,7 +502,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       final Iterable<NamedType> fields = getFieldsInSerializationOrder(
         classDefinition,
       );
-      final Map<String, Class> classLookup = <String, Class>{
+      final classLookup = <String, Class>{
         for (final Class classDefinition in root.classes)
           classDefinition.name: classDefinition,
       };
@@ -533,7 +517,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
           field.documentationComments,
           _docCommentSpec,
         );
-        final String varKeyword = classDefinition.isImmutable ? 'let' : 'var';
+        final varKeyword = classDefinition.isImmutable ? 'let' : 'var';
         indent.write('$varKeyword ');
         _writeClassField(
           indent,
@@ -642,22 +626,12 @@ if (wrapped == nil) {
     Class classDefinition, {
     required String dartPackageName,
   }) {
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
     // Children will be covered in _writeDataClassSignature()
     if (classDefinition.superClass?.isSealed ?? false) {
       return;
-=======
-    final generatedComments = <String>[
-      ' Generated class from Pigeon that represents data sent in messages.',
-    ];
-    if (classDefinition.isSealed) {
-      generatedComments.add(
-        ' This protocol should not be extended by any user class outside of the generated file.',
-      );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
     }
 
-    final List<String> generatedComments = <String>[
+    final generatedComments = <String>[
       ' Generated class from Golubets that represents data sent in messages.',
     ];
     indent.newln();
@@ -698,19 +672,13 @@ if (wrapped == nil) {
     });
   }
 
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
   void _writeClassInit(
     Indent indent,
     List<NamedType> fields, {
     required Map<String, Class> classLookup,
   }) {
     indent.writeScoped('public init(', ')', () {
-      for (int i = 0; i < fields.length; i++) {
-=======
-  void _writeClassInit(Indent indent, List<NamedType> fields) {
-    indent.writeScoped('init(', ')', () {
       for (var i = 0; i < fields.length; i++) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
         indent.write('');
         _writeClassField(
           indent,
@@ -741,18 +709,13 @@ if (wrapped == nil) {
   }) {
     final DefaultValue? defaultValue = field.defaultValue;
     indent.add('${field.name}: ${_nullSafeSwiftTypeForDartType(field.type)}');
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
     if (defaultValue != null && addDefault) {
       indent.add(' = ');
       defaultValue.write(indent, prefix: '', classLookup: classLookup);
     } else {
-      final String defaultNil = field.type.isNullable && addNil ? ' = nil' : '';
+      final defaultNil = field.type.isNullable && addNil ? ' = nil' : '';
       indent.add(defaultNil);
     }
-=======
-    final defaultNil = field.type.isNullable && addNil ? ' = nil' : '';
-    indent.add(defaultNil);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
   }
 
   void _writeClassFieldInit(Indent indent, NamedType field) {
@@ -851,7 +814,7 @@ if (wrapped == nil) {
       }
 
       // Generate functions for each child to decode like fromListB, fromListC etc
-      for (final Class child in children) {
+      for (final child in children) {
         final Iterable<NamedType> orderedFields = getFieldsInSerializationOrder(
           child,
         );
@@ -861,9 +824,9 @@ if (wrapped == nil) {
           'internal static func fromList$name(_ list: [Any?]) -> ${classDefinition.name}? {',
         );
         indent.addScoped('', '}', () {
-          for (int i = 0; i < orderedFields.length; i++) {
+          for (var i = 0; i < orderedFields.length; i++) {
             final NamedType field = orderedFields.elementAt(i);
-            final String listValue = 'list[$i]';
+            final listValue = 'list[$i]';
 
             _writeGenericCasting(
               indent: indent,
@@ -883,12 +846,12 @@ if (wrapped == nil) {
             indent.newln();
           } else {
             indent.addScoped('(', ')', () {
-              for (final NamedType field in orderedFields) {
-                final String comma = orderedFields.last == field ? '' : ', ';
+              for (final field in orderedFields) {
+                final comma = orderedFields.last == field ? '' : ', ';
 
                 // Force-casting nullable enums in maps doesn't work the same as other types.
                 // It needs soft-casting followed by force unwrapping.
-                final String forceUnwrapMapWithNullableEnums =
+                final forceUnwrapMapWithNullableEnums =
                     (field.type.baseName == 'Map' &&
                         !field.type.isNullable &&
                         field.type.typeArguments.any(
@@ -996,13 +959,8 @@ if (wrapped == nil) {
     AstFlutterApi api, {
     required String dartPackageName,
   }) {
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-    const List<String> generatedComments = <String>[
-      ' Generated protocol from Golubets that represents Flutter messages that can be called from Swift.',
-=======
     const generatedComments = <String>[
-      ' Generated protocol from Pigeon that represents Flutter messages that can be called from Swift.',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+      ' Generated protocol from Golubets that represents Flutter messages that can be called from Swift.',
     ];
     addDocumentationComments(
       indent,
@@ -1087,13 +1045,8 @@ if (wrapped == nil) {
   }) {
     final String apiName = api.name;
 
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-    const List<String> generatedComments = <String>[
-      ' Generated protocol from Golubets that represents a handler of messages from Flutter.',
-=======
     const generatedComments = <String>[
-      ' Generated protocol from Pigeon that represents a handler of messages from Flutter.',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+      ' Generated protocol from Golubets that represents a handler of messages from Flutter.',
     ];
     addDocumentationComments(
       indent,
@@ -2096,7 +2049,6 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
             }
           });
         }
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
         final bool throws = switch (asynchronousType) {
           CallbackAsynchronous() => false,
           AwaitAsynchronous(
@@ -2105,21 +2057,14 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
             swiftOptions.throws,
           NoAsynchronous() => true,
         };
-        final String tryStatement = throws ? 'try ' : '';
-        final String awaitKeyword = asynchronousType.isAwait ? 'await ' : '';
-=======
-        final tryStatement = isAsynchronous ? '' : 'try ';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+        final tryStatement = throws ? 'try ' : '';
+        final awaitKeyword = asynchronousType.isAwait ? 'await ' : '';
         late final String call;
         if (onCreateCall == null) {
           // Empty parens are not required when calling a method whose only
           // argument is a trailing closure.
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-          final String argumentString =
+          final argumentString =
               methodArgument.isEmpty && asynchronousType.isCallback
-=======
-          final argumentString = methodArgument.isEmpty && isAsynchronous
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
               ? ''
               : '(${methodArgument.join(', ')})';
           call =
@@ -2127,17 +2072,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         } else {
           call = onCreateCall(methodArgument, apiVarName: 'api');
         }
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
         if (asynchronousType.isCallback) {
-          final String resultName = returnType.isVoid ? 'nil' : 'res';
-          final String successVariableInit = returnType.isVoid
-              ? ''
-              : '(let res)';
-=======
-        if (isAsynchronous) {
           final resultName = returnType.isVoid ? 'nil' : 'res';
           final successVariableInit = returnType.isVoid ? '' : '(let res)';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
           indent.write('$call ');
 
           indent.addScoped('{ result in', '}', () {
@@ -2684,13 +2621,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                       List<String> methodParameters, {
                       required String apiVarName,
                     }) {
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-                      final List<String> parameters = <String>[
-                        'golubetsApi: $apiVarName',
-=======
                       final parameters = <String>[
-                        'pigeonApi: $apiVarName',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+                        'golubetsApi: $apiVarName',
                         // Skip the identifier used by the InstanceManager.
                         ...methodParameters.skip(1),
                       ];
@@ -2791,16 +2723,11 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                       List<String> methodParameters, {
                       required String apiVarName,
                     }) {
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-                      final String tryStatement =
-                          method.asynchronousType.isCallback ? '' : 'try ';
-                      final List<String> parameters = <String>[
-                        'golubetsApi: $apiVarName',
-=======
-                      final tryStatement = method.isAsynchronous ? '' : 'try ';
+                      final tryStatement = method.asynchronousType.isCallback
+                          ? ''
+                          : 'try ';
                       final parameters = <String>[
-                        'pigeonApi: $apiVarName',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+                        'golubetsApi: $apiVarName',
                         // Skip the identifier used by the InstanceManager.
                         ...methodParameters,
                       ];
@@ -3001,17 +2928,16 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                       code: "ignore-calls-error",
                       message: "Calls to Dart are being ignored.", details: "")))
                 return''');
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
             },
-=======
-          }, addTrailingNewline: false);
+            addTrailingNewline: false,
+          );
 
           final String instanceArgName = _getSafeArgumentName(
             0,
-            NamedType(name: 'pigeonInstance', type: apiAsTypeDeclaration),
+            NamedType(name: 'golubetsInstance', type: apiAsTypeDeclaration),
           );
           indent.writeScoped(
-            ' else if !pigeonRegistrar.instanceManager.containsInstance($instanceArgName as AnyObject) {',
+            ' else if !golubetsRegistrar.instanceManager.containsInstance($instanceArgName as AnyObject) {',
             '}',
             () {
               indent.format('''
@@ -3024,10 +2950,6 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
             },
           );
 
-          indent.writeln(
-            'let binaryMessenger = pigeonRegistrar.binaryMessenger',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
-          );
           indent.writeln(
             'let binaryMessenger = golubetsRegistrar.binaryMessenger',
           );
@@ -3139,7 +3061,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           indent.write('case .${child.name.toLowFirstLetter()}');
           if (orderedFields.isNotEmpty) {
             indent.addScoped('(', '):', () {
-              for (int i = 0; i < orderedFields.length; i++) {
+              for (var i = 0; i < orderedFields.length; i++) {
                 final NamedType field = orderedFields.elementAt(i);
                 indent.write('let ${field.name}');
 
@@ -3159,8 +3081,8 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           indent.addScoped(' [', ']', () {
             // Follow swift-format style, which is to use a trailing comma unless
             // there is only one element.
-            final String separator = orderedFields.length > 1 ? ',' : '';
-            for (final NamedType field in orderedFields) {
+            final separator = orderedFields.length > 1 ? ',' : '';
+            for (final field in orderedFields) {
               indent.writeln('${field.name}$separator');
             }
           });
@@ -3184,13 +3106,13 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         'Sealed class ${classDefinition.name} has no children.',
       );
     }
-    final String privateString = private ? 'private' : 'public';
+    final privateString = private ? 'private' : 'public';
     final Set<String> hashableTypeParams = _getTypeParametersRequiringHashable(
       classDefinition,
       classLookup: classLookup,
     );
-    final String extendsString = hashable ? ': Hashable' : '';
-    final String typeArguments = classDefinition.typeArguments.isEmpty
+    final extendsString = hashable ? ': Hashable' : '';
+    final typeArguments = classDefinition.typeArguments.isEmpty
         ? ''
         : '<${_flattenTypeArgumentsWithSelectiveHashableConstraints(classDefinition.typeArguments, hashableTypeParams)}>';
 
@@ -3200,7 +3122,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
 
     indent.writeScoped(' {', '', () {
       // Generate the cases for each child
-      for (final Class child in children) {
+      for (final child in children) {
         final Iterable<NamedType> childFields = getFieldsInSerializationOrder(
           child,
         );
@@ -3218,7 +3140,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
             '(',
             ')',
             () {
-              for (final NamedType field in childFields) {
+              for (final field in childFields) {
                 addDocumentationComments(
                   indent,
                   field.documentationComments,
@@ -3397,7 +3319,7 @@ Set<String> _getTypeParametersRequiringHashable(
   }
   visited.add(classDefinition.name);
 
-  final Set<String> hashableTypeParams = <String>{};
+  final hashableTypeParams = <String>{};
   final Set<String> classTypeParamNames = classDefinition.typeArguments
       .map((TypeDeclaration e) => e.baseName)
       .toSet();
@@ -3467,7 +3389,7 @@ void _collectHashableTypeParameters(
 
       // Map the custom class's type parameter requirements to our context
       for (
-        int i = 0;
+        var i = 0;
         i < type.typeArguments.length && i < customClass.typeArguments.length;
         i++
       ) {
@@ -3618,7 +3540,7 @@ String _getMethodSignature({
     returnType: returnType,
     swiftFunction: swiftFunction,
   );
-  final String public = isPublic ? 'public' : '';
+  final public = isPublic ? 'public' : '';
   final String returnTypeString = returnType.isVoid
       ? 'Void'
       : _nullSafeSwiftTypeForDartType(returnType);
@@ -3648,7 +3570,7 @@ String _getMethodSignature({
       return '$public func ${components.name}($parameterSignature, completion: @escaping (Result<$returnTypeString, $errorTypeName>) -> Void)';
     }
   } else {
-    final String asyncKeyword = (asynchronousType.isAwait) ? ' async' : '';
+    final asyncKeyword = (asynchronousType.isAwait) ? ' async' : '';
     final String throwsKeyword = switch (asynchronousType) {
       CallbackAsynchronous() => '',
       AwaitAsynchronous(:final SwiftAwaitAsynchronousOptions swiftOptions) =>
@@ -3769,7 +3691,7 @@ extension on DefaultValue {
                 '$prefix[',
                 ']',
                 () {
-                  for (final DefaultValue element in elements) {
+                  for (final element in elements) {
                     element.write(indent, classLookup: classLookup);
                     indent.addln(', ');
                   }
@@ -3823,7 +3745,7 @@ extension on DefaultValue {
             '(',
             ')',
             () {
-              for (final DefaultValue argument in arguments) {
+              for (final argument in arguments) {
                 argument.write(indent, classLookup: classLookup);
                 argument == arguments.last
                     ? indent.newln()

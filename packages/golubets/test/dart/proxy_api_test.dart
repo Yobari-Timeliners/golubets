@@ -513,11 +513,7 @@ void main() {
         expect(
           collapsedCode,
           contains(
-<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
-            r"const String golubetsVar_channelName = 'dev.bayori.golubets.test_package.Api.golubets_defaultConstructor';",
-=======
-            r"const pigeonVar_channelName = 'dev.flutter.pigeon.test_package.Api.pigeon_defaultConstructor';",
->>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
+            r"const golubetsVar_channelName = 'dev.bayori.golubets.test_package.Api.golubets_defaultConstructor';",
           ),
         );
         expect(
@@ -529,11 +525,7 @@ void main() {
         expect(
           collapsedCode,
           contains(
-<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
-            '() async { final List<Object?>? golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;',
-=======
-            '() async { final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;',
->>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
+            '() async { final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;',
           ),
         );
       });

@@ -20,7 +20,7 @@ class ProxyApiTests: XCTestCase {
     try? registrar.instanceManager.removeAllObjects()
 
     let api = PigeonApiProxyApiTestClass(
-      pigeonRegistrar: registrar, delegate: ProxyApiTestClassDelegate())
+      golubetsRegistrar: registrar, delegate: ProxyApiTestClassDelegate())
 
     var error: String? = nil
     api.flutterNoop(pigeonInstance: testObject) { response in

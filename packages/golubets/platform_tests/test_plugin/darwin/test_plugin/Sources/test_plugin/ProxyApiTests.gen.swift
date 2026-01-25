@@ -2894,7 +2894,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -2938,7 +2939,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -2983,7 +2985,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3027,7 +3030,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3078,7 +3082,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3129,7 +3134,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3180,7 +3186,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3232,7 +3239,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3283,7 +3291,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3335,7 +3344,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3386,7 +3396,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3439,7 +3450,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3490,7 +3502,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3542,7 +3555,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3593,7 +3607,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3638,7 +3653,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3683,7 +3699,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3728,7 +3745,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3774,7 +3792,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3819,7 +3838,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3864,7 +3884,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3909,7 +3930,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -3955,7 +3977,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -4001,7 +4024,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -4045,7 +4069,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(
@@ -4261,7 +4286,8 @@ final class GolubetsApiProxyApiInterface: GolubetsApiProtocolProxyApiInterface {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !pigeonRegistrar.instanceManager.containsInstance(pigeonInstanceArg as AnyObject) {
+    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
+    {
       completion(
         .failure(
           ProxyApiTestsError(

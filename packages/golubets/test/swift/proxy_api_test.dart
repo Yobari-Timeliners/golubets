@@ -339,13 +339,8 @@ void main() {
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
         );
-<<<<<<< HEAD:packages/golubets/test/swift/proxy_api_test.dart
-        final String code = sink.toString();
-        expect(code, contains('var golubetsApiApi2: GolubetsApiApi2'));
-=======
         final code = sink.toString();
-        expect(code, contains('var pigeonApiApi2: PigeonApiApi2'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift/proxy_api_test.dart
+        expect(code, contains('var golubetsApiApi2: GolubetsApiApi2'));
       });
 
       test('implements', () {
@@ -383,13 +378,8 @@ void main() {
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
         );
-<<<<<<< HEAD:packages/golubets/test/swift/proxy_api_test.dart
-        final String code = sink.toString();
-        expect(code, contains('var golubetsApiApi2: GolubetsApiApi2'));
-=======
         final code = sink.toString();
-        expect(code, contains('var pigeonApiApi2: PigeonApiApi2'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift/proxy_api_test.dart
+        expect(code, contains('var golubetsApiApi2: GolubetsApiApi2'));
       });
 
       test('implements 2 ProxyApis', () {
@@ -439,15 +429,9 @@ void main() {
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
         );
-<<<<<<< HEAD:packages/golubets/test/swift/proxy_api_test.dart
-        final String code = sink.toString();
+        final code = sink.toString();
         expect(code, contains('var golubetsApiApi2: GolubetsApiApi2'));
         expect(code, contains('var golubetsApiApi3: GolubetsApiApi3'));
-=======
-        final code = sink.toString();
-        expect(code, contains('var pigeonApiApi2: PigeonApiApi2'));
-        expect(code, contains('var pigeonApiApi3: PigeonApiApi3'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift/proxy_api_test.dart
       });
     });
 

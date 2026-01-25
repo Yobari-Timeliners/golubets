@@ -277,15 +277,9 @@ abstract class Api {
     );
   });
 
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
   test('Only allow one api annotation plus @ConfigureGolubets', () {
-    const String source = '''
-@ConfigureGolubets(InternalGolubetsOptions(
-=======
-  test('Only allow one api annotation plus @ConfigurePigeon', () {
     const source = '''
-@ConfigurePigeon(InternalPigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+@ConfigureGolubets(InternalGolubetsOptions(
   dartOut: 'stdout',
   javaOut: 'stdout',
   dartOptions: DartOptions(),
@@ -495,13 +489,8 @@ abstract class NestorApi {
   });
 
   test('Dart generator copyright flag', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const GolubetsOptions options = GolubetsOptions(
-=======
     final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const options = PigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    const options = GolubetsOptions(
       copyrightHeader: './copyright_header.txt',
       dartOut: '',
     );
@@ -517,13 +506,8 @@ abstract class NestorApi {
   });
 
   test('Java generator copyright flag', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const GolubetsOptions options = GolubetsOptions(
-=======
     final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const options = PigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    const options = GolubetsOptions(
       javaOut: 'Foo.java',
       copyrightHeader: './copyright_header.txt',
     );
@@ -539,13 +523,8 @@ abstract class NestorApi {
   });
 
   test('Objc header generator copyright flag', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const GolubetsOptions options = GolubetsOptions(
-=======
     final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const options = PigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    const options = GolubetsOptions(
       copyrightHeader: './copyright_header.txt',
       objcHeaderOut: '',
       objcSourceOut: '',
@@ -562,13 +541,8 @@ abstract class NestorApi {
   });
 
   test('Objc source generator copyright flag', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const GolubetsOptions options = GolubetsOptions(
-=======
     final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const options = PigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    const options = GolubetsOptions(
       copyrightHeader: './copyright_header.txt',
       objcHeaderOut: '',
       objcSourceOut: '',
@@ -585,13 +559,8 @@ abstract class NestorApi {
   });
 
   test('Swift generator copyright flag', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const GolubetsOptions options = GolubetsOptions(
-=======
     final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const options = PigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    const options = GolubetsOptions(
       swiftOut: 'Foo.swift',
       copyrightHeader: './copyright_header.txt',
     );
@@ -607,13 +576,8 @@ abstract class NestorApi {
   });
 
   test('C++ header generator copyright flag', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const GolubetsOptions options = GolubetsOptions(
-=======
     final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const options = PigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    const options = GolubetsOptions(
       cppSourceOut: '',
       cppHeaderOut: 'Foo.h',
       copyrightHeader: './copyright_header.txt',
@@ -630,13 +594,8 @@ abstract class NestorApi {
   });
 
   test('C++ source generator copyright flag', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const GolubetsOptions options = GolubetsOptions(
-=======
     final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const options = PigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    const options = GolubetsOptions(
       copyrightHeader: './copyright_header.txt',
       cppHeaderOut: '',
       cppSourceOut: '',
@@ -846,11 +805,7 @@ abstract class Api {
   });
 
   test('test valid import', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    const String code = "import 'package:golubets/golubets.dart';\n";
-=======
-    const code = "import 'package:pigeon/pigeon.dart';\n";
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    const code = "import 'package:golubets/golubets.dart';\n";
     final ParseResults parseResults = parseSource(code);
     expect(parseResults.errors.length, 0);
   });
@@ -1213,13 +1168,8 @@ abstract class Api {
   });
 
   test('dart test has copyright', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const GolubetsOptions options = GolubetsOptions(
-=======
     final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    const options = PigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    const options = GolubetsOptions(
       copyrightHeader: './copyright_header.txt',
       dartTestOut: 'stdout',
       dartOut: 'stdout',
@@ -1349,15 +1299,9 @@ abstract class HostApiBridge {
     expect(results.root.enums[0].name, 'MessageKey');
   });
 
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
   test('@ConfigureGolubets JavaOptions.copyrightHeader', () {
-    const String code = '''
-@ConfigureGolubets(InternalGolubetsOptions(
-=======
-  test('@ConfigurePigeon JavaOptions.copyrightHeader', () {
     const code = '''
-@ConfigurePigeon(InternalPigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+@ConfigureGolubets(InternalGolubetsOptions(
   javaOptions: JavaOptions(copyrightHeader: <String>['A', 'Header']),
 ))
 class Message {
@@ -1372,15 +1316,9 @@ class Message {
     expect(options.javaOptions!.copyrightHeader, <String>['A', 'Header']);
   });
 
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
   test('@ConfigureGolubets DartOptions.copyrightHeader', () {
-    const String code = '''
-@ConfigureGolubets(GolubetsOptions(
-=======
-  test('@ConfigurePigeon DartOptions.copyrightHeader', () {
     const code = '''
-@ConfigurePigeon(PigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+@ConfigureGolubets(GolubetsOptions(
   dartOptions: DartOptions(copyrightHeader: <String>['A', 'Header']),
 ))
 class Message {
@@ -1395,15 +1333,9 @@ class Message {
     expect(options.dartOptions!.copyrightHeader, <String>['A', 'Header']);
   });
 
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
   test('@ConfigureGolubets ObjcOptions.copyrightHeader', () {
-    const String code = '''
-@ConfigureGolubets(GolubetsOptions(
-=======
-  test('@ConfigurePigeon ObjcOptions.copyrightHeader', () {
     const code = '''
-@ConfigurePigeon(PigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+@ConfigureGolubets(GolubetsOptions(
   objcOptions: ObjcOptions(copyrightHeader: <String>['A', 'Header']),
 ))
 class Message {
@@ -1418,15 +1350,9 @@ class Message {
     expect(options.objcOptions!.copyrightHeader, <String>['A', 'Header']);
   });
 
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
   test('@ConfigureGolubets ObjcOptions.headerIncludePath', () {
-    const String code = '''
-@ConfigureGolubets(GolubetsOptions(
-=======
-  test('@ConfigurePigeon ObjcOptions.headerIncludePath', () {
     const code = '''
-@ConfigurePigeon(PigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+@ConfigureGolubets(GolubetsOptions(
   objcOptions: ObjcOptions(headerIncludePath: 'Header.path'),
 ))
 class Message {
@@ -1441,15 +1367,9 @@ class Message {
     expect(options.objcOptions?.headerIncludePath, 'Header.path');
   });
 
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
   test('@ConfigureGolubets CppOptions.headerIncludePath', () {
-    const String code = '''
-@ConfigureGolubets(GolubetsOptions(
-=======
-  test('@ConfigurePigeon CppOptions.headerIncludePath', () {
     const code = '''
-@ConfigurePigeon(PigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+@ConfigureGolubets(GolubetsOptions(
   cppOptions: CppOptions(headerIncludePath: 'Header.path'),
 ))
 class Message {
@@ -1545,15 +1465,10 @@ abstract class Api {
   test('generator validation', () async {
     final completer = Completer<void>();
     withTempFile('foo.dart', (File input) async {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-      final _ValidatorGeneratorAdapter generator = _ValidatorGeneratorAdapter(
+      final generator = _ValidatorGeneratorAdapter(
         stdout,
       );
       final int result = await Golubets.run(
-=======
-      final generator = _ValidatorGeneratorAdapter(stdout);
-      final int result = await Pigeon.run(
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
         <String>['--input', input.path],
         adapters: <GeneratorAdapter>[generator],
       );
@@ -1567,15 +1482,10 @@ abstract class Api {
   test('generator validation skipped', () async {
     final completer = Completer<void>();
     withTempFile('foo.dart', (File input) async {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-      final _ValidatorGeneratorAdapter generator = _ValidatorGeneratorAdapter(
+      final generator = _ValidatorGeneratorAdapter(
         null,
       );
       final int result = await Golubets.run(
-=======
-      final generator = _ValidatorGeneratorAdapter(null);
-      final int result = await Pigeon.run(
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
         <String>['--input', input.path, '--dart_out', 'foo.dart'],
         adapters: <GeneratorAdapter>[generator],
       );
@@ -1586,23 +1496,14 @@ abstract class Api {
     await completer.future;
   });
 
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
   test('run with GolubetsOptions', () async {
-    final Completer<void> completer = Completer<void>();
+    final completer = Completer<void>();
     withTempFile('foo.dart', (File input) async {
-      final _ValidatorGeneratorAdapter generator = _ValidatorGeneratorAdapter(
+      final generator = _ValidatorGeneratorAdapter(
         null,
       );
       final int result = await Golubets.runWithOptions(
         GolubetsOptions(input: input.path, dartOut: 'foo.dart'),
-=======
-  test('run with PigeonOptions', () async {
-    final completer = Completer<void>();
-    withTempFile('foo.dart', (File input) async {
-      final generator = _ValidatorGeneratorAdapter(null);
-      final int result = await Pigeon.runWithOptions(
-        PigeonOptions(input: input.path, dartOut: 'foo.dart'),
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
         adapters: <GeneratorAdapter>[generator],
       );
       expect(generator.didCallValidate, isFalse);

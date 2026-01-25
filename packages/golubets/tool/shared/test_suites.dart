@@ -244,15 +244,9 @@ Future<int> _runDartUnitTests({bool ciMode = false}) async {
 }
 
 Future<int> _analyzeFlutterUnitTests(String flutterUnitTestsPath) async {
-<<<<<<< HEAD:packages/golubets/tool/shared/test_suites.dart
-  final String messagePath = '$flutterUnitTestsPath/lib/message.gen.dart';
-  final String messageTestPath = '$flutterUnitTestsPath/test/message_test.dart';
-  final int generateTestCode = await runGolub(
-=======
   final messagePath = '$flutterUnitTestsPath/lib/message.gen.dart';
   final messageTestPath = '$flutterUnitTestsPath/test/message_test.dart';
-  final int generateTestCode = await runPigeon(
->>>>>>> filtered-upstream/main:packages/pigeon/tool/shared/test_suites.dart
+  final int generateTestCode = await runGolub(
     input: 'pigeons/message.dart',
     dartOut: messagePath,
     dartTestOut: messageTestPath,
@@ -483,17 +477,10 @@ Future<int> _runWindowsIntegrationTests({bool ciMode = false}) async {
 }
 
 Future<int> _runCommandLineTests({bool ciMode = false}) async {
-<<<<<<< HEAD:packages/golubets/tool/shared/test_suites.dart
   final Directory tempDir = Directory.systemTemp.createTempSync('golubets');
   final String tempOutput = p.join(tempDir.path, 'golub_output');
-  const String golubScript = 'bin/golubets.dart';
+  const golubScript = 'bin/golubets.dart';
   final String snapshot = p.join(tempDir.path, 'golubets.dart.dill');
-=======
-  final Directory tempDir = Directory.systemTemp.createTempSync('pigeon');
-  final String tempOutput = p.join(tempDir.path, 'pigeon_output');
-  const pigeonScript = 'bin/pigeon.dart';
-  final String snapshot = p.join(tempDir.path, 'pigeon.dart.dill');
->>>>>>> filtered-upstream/main:packages/pigeon/tool/shared/test_suites.dart
 
   // Precompile to make the repeated calls faster.
   if (await runProcess('dart', <String>[
@@ -523,15 +510,9 @@ Future<int> _runCommandLineTests({bool ciMode = false}) async {
     ],
   ];
 
-<<<<<<< HEAD:packages/golubets/tool/shared/test_suites.dart
-  int exitCode = 0;
-  for (final List<String> arguments in testArguments) {
-    print('Testing dart $golubScript ${arguments.join(', ')}');
-=======
   var exitCode = 0;
   for (final arguments in testArguments) {
-    print('Testing dart $pigeonScript ${arguments.join(', ')}');
->>>>>>> filtered-upstream/main:packages/pigeon/tool/shared/test_suites.dart
+    print('Testing dart $golubScript ${arguments.join(', ')}');
     exitCode = await runProcess(
       'dart',
       <String>[snapshot, ...arguments],

@@ -14,8 +14,8 @@ class ProxyApiTest {
     val testObject = ProxyApiTestClass()
 
     val api = ProxyApiTestClassApi(TestProxyApiRegistrar())
-    api.pigeonRegistrar.instanceManager.addHostCreatedInstance(testObject)
-    api.pigeonRegistrar.instanceManager.clear()
+    api.golubetsRegistrar.instanceManager.addHostCreatedInstance(testObject)
+    api.golubetsRegistrar.instanceManager.clear()
 
     var b: Throwable? = null
     api.flutterNoop(testObject) { b = it.exceptionOrNull() }

@@ -128,13 +128,8 @@ void main() {
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-<<<<<<< HEAD:packages/golubets/test/swift_generator_test.dart
-    final String code = sink.toString();
-    expect(code, contains('public enum Foo: Int'));
-=======
     final code = sink.toString();
-    expect(code, contains('enum Foo: Int'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
+    expect(code, contains('public enum Foo: Int'));
     expect(
       code,
       contains(
@@ -205,15 +200,9 @@ void main() {
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-<<<<<<< HEAD:packages/golubets/test/swift_generator_test.dart
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public protocol Api'));
     expect(code, contains('public class ApiSetup'));
-=======
-    final code = sink.toString();
-    expect(code, contains('protocol Api'));
-    expect(code, matches('func doSomething.*Input.*Output'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
     expect(code, contains('doSomethingChannel.setMessageHandler'));
     expect(code, isNot(contains('if (')));
     expect(code, contains('public class Api'));
@@ -305,21 +294,13 @@ void main() {
     expect(code, contains('var aFloat64List: FlutterStandardTypedData? = nil'));
   });
 
-<<<<<<< HEAD:packages/golubets/test/swift_generator_test.dart
   test('gen golubets error type', () {
-    final Root root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-    final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
-      swiftOut: '',
-    );
-    const SwiftGenerator generator = SwiftGenerator();
-=======
-  test('gen pigeon error type', () {
     final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
     final sink = StringBuffer();
-    const swiftOptions = InternalSwiftOptions(swiftOut: '');
+    const swiftOptions = InternalSwiftOptions(
+      swiftOut: '',
+    );
     const generator = SwiftGenerator();
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
 
     generator.generate(
       swiftOptions,
@@ -327,13 +308,8 @@ void main() {
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-<<<<<<< HEAD:packages/golubets/test/swift_generator_test.dart
-    final String code = sink.toString();
-    expect(code, contains('class GolubetsError: Error'));
-=======
     final code = sink.toString();
-    expect(code, contains('class PigeonError: Error'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
+    expect(code, contains('class GolubetsError: Error'));
     expect(code, contains('let code: String'));
     expect(code, contains('let message: String?'));
     expect(code, contains('let details: Sendable?'));
@@ -402,13 +378,8 @@ void main() {
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-<<<<<<< HEAD:packages/golubets/test/swift_generator_test.dart
-    final String code = sink.toString();
-    expect(code, contains('public class Api'));
-=======
     final code = sink.toString();
-    expect(code, contains('class Api'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
+    expect(code, contains('public class Api'));
     expect(
       code,
       contains(
@@ -816,7 +787,7 @@ void main() {
   });
 
   test('gen one modern async Host Api that throws', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -874,18 +845,18 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+    final sink = StringBuffer();
+    const swiftOptions = InternalSwiftOptions(
       swiftOut: '',
     );
-    const SwiftGenerator generator = SwiftGenerator();
+    const generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('protocol Api'));
     expect(
       code,
@@ -897,7 +868,7 @@ void main() {
   });
 
   test('gen one modern async Host Api that does not throw', () {
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[
         AstHostApi(
           name: 'Api',
@@ -955,18 +926,18 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+    final sink = StringBuffer();
+    const swiftOptions = InternalSwiftOptions(
       swiftOut: '',
     );
-    const SwiftGenerator generator = SwiftGenerator();
+    const generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('protocol Api'));
     expect(
       code,
@@ -1346,7 +1317,7 @@ void main() {
   });
 
   test('generic class with single type parameter', () {
-    final Class classDefinition = Class(
+    final classDefinition = Class(
       name: 'Wrapper',
       typeArguments: <TypeDeclaration>[
         const TypeDeclaration(baseName: 'T', isNullable: false),
@@ -1358,23 +1329,23 @@ void main() {
         ),
       ],
     );
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[classDefinition],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+    final sink = StringBuffer();
+    const swiftOptions = InternalSwiftOptions(
       swiftOut: '',
     );
-    const SwiftGenerator generator = SwiftGenerator();
+    const generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('struct Wrapper<T>'));
     expect(code, contains('var value: T'));
     expect(
@@ -1385,7 +1356,7 @@ void main() {
   });
 
   test('generic class with multiple type parameters', () {
-    final Class classDefinition = Class(
+    final classDefinition = Class(
       name: 'Pair',
       typeArguments: <TypeDeclaration>[
         const TypeDeclaration(baseName: 'T', isNullable: false),
@@ -1402,23 +1373,23 @@ void main() {
         ),
       ],
     );
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[classDefinition],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+    final sink = StringBuffer();
+    const swiftOptions = InternalSwiftOptions(
       swiftOut: '',
     );
-    const SwiftGenerator generator = SwiftGenerator();
+    const generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('struct Pair<T, U>'));
     expect(code, contains('var first: T'));
     expect(code, contains('var second: U? = nil'));
@@ -1430,7 +1401,7 @@ void main() {
   });
 
   test('generic class with nested generic field types', () {
-    final Class classDefinition = Class(
+    final classDefinition = Class(
       name: 'Container',
       typeArguments: <TypeDeclaration>[
         const TypeDeclaration(baseName: 'T', isNullable: false),
@@ -1455,23 +1426,23 @@ void main() {
         ),
       ],
     );
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[classDefinition],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+    final sink = StringBuffer();
+    const swiftOptions = InternalSwiftOptions(
       swiftOut: '',
     );
-    const SwiftGenerator generator = SwiftGenerator();
+    const generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('struct Container<T>'));
     expect(code, contains('var data: [[String: T?]]'));
     expect(
@@ -1484,7 +1455,7 @@ void main() {
   });
 
   test('generic class with generic superclass', () {
-    final Class superClass = Class(
+    final superClass = Class(
       name: 'BaseContainer',
       typeArguments: <TypeDeclaration>[
         const TypeDeclaration(baseName: 'T', isNullable: false),
@@ -1496,7 +1467,7 @@ void main() {
         ),
       ],
     );
-    final Class classDefinition = Class(
+    final classDefinition = Class(
       name: 'SpecialList',
       typeArguments: <TypeDeclaration>[
         const TypeDeclaration(baseName: 'T', isNullable: false),
@@ -1510,23 +1481,23 @@ void main() {
         ),
       ],
     );
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[superClass, classDefinition],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+    final sink = StringBuffer();
+    const swiftOptions = InternalSwiftOptions(
       swiftOut: '',
     );
-    const SwiftGenerator generator = SwiftGenerator();
+    const generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('struct BaseContainer<T>'));
     expect(code, contains('struct SpecialList<T>'));
     expect(code, contains('var capacity: Int64'));
@@ -1539,7 +1510,7 @@ void main() {
   });
 
   test('generic class serialization methods', () {
-    final Class classDefinition = Class(
+    final classDefinition = Class(
       name: 'Result',
       typeArguments: <TypeDeclaration>[
         const TypeDeclaration(baseName: 'T', isNullable: false),
@@ -1556,23 +1527,23 @@ void main() {
         ),
       ],
     );
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[classDefinition],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+    final sink = StringBuffer();
+    const swiftOptions = InternalSwiftOptions(
       swiftOut: '',
     );
-    const SwiftGenerator generator = SwiftGenerator();
+    const generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('struct Result<T, E>'));
     expect(code, contains('var success: T? = nil'));
     expect(code, contains('var error: E? = nil'));
@@ -1589,7 +1560,7 @@ void main() {
   });
 
   test('generic class with Hashable constraints for Map keys', () {
-    final Class classDefinition = Class(
+    final classDefinition = Class(
       name: 'KeyValueStore',
       typeArguments: <TypeDeclaration>[
         const TypeDeclaration(baseName: 'K', isNullable: false),
@@ -1609,23 +1580,23 @@ void main() {
         ),
       ],
     );
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[classDefinition],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+    final sink = StringBuffer();
+    const swiftOptions = InternalSwiftOptions(
       swiftOut: '',
     );
-    const SwiftGenerator generator = SwiftGenerator();
+    const generator = SwiftGenerator();
     generator.generate(
       swiftOptions,
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('struct KeyValueStore<K: Hashable, V>'));
     expect(code, contains('var store: [K: V]'));
     expect(
@@ -2288,12 +2259,12 @@ void main() {
   });
 
   test('sealed class', () {
-    final Class superClass = Class(
+    final superClass = Class(
       name: 'PlatformEvent',
       isSealed: true,
       fields: const <NamedType>[],
     );
-    final List<Class> children = <Class>[
+    final children = <Class>[
       Class(
         name: 'IntEvent',
         superClass: superClass,
@@ -2325,7 +2296,7 @@ void main() {
       ),
     ];
     superClass.children = children;
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[
         superClass,
@@ -2333,9 +2304,9 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const SwiftGenerator generator = SwiftGenerator();
-    const InternalSwiftOptions kotlinOptions = InternalSwiftOptions(
+    final sink = StringBuffer();
+    const generator = SwiftGenerator();
+    const kotlinOptions = InternalSwiftOptions(
       swiftOut: '',
     );
     generator.generate(
@@ -2344,7 +2315,7 @@ void main() {
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(
       code,
       contains('public enum PlatformEvent'),
@@ -2368,7 +2339,7 @@ void main() {
   });
 
   test('sealed class with single generic type parameter', () {
-    final Class superClass = Class(
+    final superClass = Class(
       name: 'Result',
       isSealed: true,
       typeArguments: <TypeDeclaration>[
@@ -2376,7 +2347,7 @@ void main() {
       ],
       fields: const <NamedType>[],
     );
-    final List<Class> children = <Class>[
+    final children = <Class>[
       Class(
         name: 'Success',
         superClass: superClass,
@@ -2413,7 +2384,7 @@ void main() {
       ),
     ];
     superClass.children = children;
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[
         superClass,
@@ -2421,9 +2392,9 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const SwiftGenerator generator = SwiftGenerator();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+    final sink = StringBuffer();
+    const generator = SwiftGenerator();
+    const swiftOptions = InternalSwiftOptions(
       swiftOut: '',
     );
     generator.generate(
@@ -2432,7 +2403,7 @@ void main() {
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public enum Result<T>'));
     expect(code, contains('case success'));
     expect(code, contains('case failure'));
@@ -2443,7 +2414,7 @@ void main() {
   });
 
   test('sealed class with multiple generic type parameters', () {
-    final Class superClass = Class(
+    final superClass = Class(
       name: 'Either',
       isSealed: true,
       typeArguments: <TypeDeclaration>[
@@ -2452,7 +2423,7 @@ void main() {
       ],
       fields: const <NamedType>[],
     );
-    final List<Class> children = <Class>[
+    final children = <Class>[
       Class(
         name: 'Left',
         superClass: superClass,
@@ -2491,7 +2462,7 @@ void main() {
       ),
     ];
     superClass.children = children;
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[
         superClass,
@@ -2499,9 +2470,9 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const SwiftGenerator generator = SwiftGenerator();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+    final sink = StringBuffer();
+    const generator = SwiftGenerator();
+    const swiftOptions = InternalSwiftOptions(
       swiftOut: '',
     );
     generator.generate(
@@ -2510,7 +2481,7 @@ void main() {
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public enum Either<L, R>'));
     expect(code, contains('case left'));
     expect(code, contains('case right'));
@@ -2519,7 +2490,7 @@ void main() {
   });
 
   test('sealed class with generic constraints for Map keys', () {
-    final Class superClass = Class(
+    final superClass = Class(
       name: 'Container',
       isSealed: true,
       typeArguments: <TypeDeclaration>[
@@ -2528,7 +2499,7 @@ void main() {
       ],
       fields: const <NamedType>[],
     );
-    final List<Class> children = <Class>[
+    final children = <Class>[
       Class(
         name: 'MapContainer',
         superClass: superClass,
@@ -2574,7 +2545,7 @@ void main() {
       ),
     ];
     superClass.children = children;
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[
         superClass,
@@ -2582,9 +2553,9 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const SwiftGenerator generator = SwiftGenerator();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+    final sink = StringBuffer();
+    const generator = SwiftGenerator();
+    const swiftOptions = InternalSwiftOptions(
       swiftOut: '',
     );
     generator.generate(
@@ -2593,7 +2564,7 @@ void main() {
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public enum Container<K, V>'));
     expect(code, contains('case mapContainer'));
     expect(code, contains('case listContainer'));
@@ -2602,7 +2573,7 @@ void main() {
   });
 
   test('sealed class with nested generic types', () {
-    final Class superClass = Class(
+    final superClass = Class(
       name: 'Response',
       isSealed: true,
       typeArguments: <TypeDeclaration>[
@@ -2610,7 +2581,7 @@ void main() {
       ],
       fields: const <NamedType>[],
     );
-    final List<Class> children = <Class>[
+    final children = <Class>[
       Class(
         name: 'DataResponse',
         superClass: superClass,
@@ -2664,7 +2635,7 @@ void main() {
       ),
     ];
     superClass.children = children;
-    final Root root = Root(
+    final root = Root(
       apis: <Api>[],
       classes: <Class>[
         superClass,
@@ -2672,9 +2643,9 @@ void main() {
       ],
       enums: <Enum>[],
     );
-    final StringBuffer sink = StringBuffer();
-    const SwiftGenerator generator = SwiftGenerator();
-    const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+    final sink = StringBuffer();
+    const generator = SwiftGenerator();
+    const swiftOptions = InternalSwiftOptions(
       swiftOut: '',
     );
     generator.generate(
@@ -2683,7 +2654,7 @@ void main() {
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(code, contains('public enum Response<T>'));
     expect(code, contains('case dataResponse'));
     expect(code, contains('case errorResponse'));
@@ -2694,7 +2665,7 @@ void main() {
 
   group('default values', () {
     test('gen class with string default value', () {
-      final Class classDefinition = Class(
+      final classDefinition = Class(
         name: 'Foobar',
         fields: <NamedType>[
           NamedType(
@@ -2706,29 +2677,29 @@ void main() {
           ),
         ],
       );
-      final Root root = Root(
+      final root = Root(
         apis: <Api>[],
         classes: <Class>[classDefinition],
         enums: <Enum>[],
       );
-      final StringBuffer sink = StringBuffer();
-      const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      final sink = StringBuffer();
+      const swiftOptions = InternalSwiftOptions(
         swiftOut: '',
       );
-      const SwiftGenerator generator = SwiftGenerator();
+      const generator = SwiftGenerator();
       generator.generate(
         swiftOptions,
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
-      final String code = sink.toString();
+      final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: String = "hello world"'));
     });
 
     test('gen class with int default value', () {
-      final Class classDefinition = Class(
+      final classDefinition = Class(
         name: 'Foobar',
         fields: <NamedType>[
           NamedType(
@@ -2740,29 +2711,29 @@ void main() {
           ),
         ],
       );
-      final Root root = Root(
+      final root = Root(
         apis: <Api>[],
         classes: <Class>[classDefinition],
         enums: <Enum>[],
       );
-      final StringBuffer sink = StringBuffer();
-      const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      final sink = StringBuffer();
+      const swiftOptions = InternalSwiftOptions(
         swiftOut: '',
       );
-      const SwiftGenerator generator = SwiftGenerator();
+      const generator = SwiftGenerator();
       generator.generate(
         swiftOptions,
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
-      final String code = sink.toString();
+      final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: Int64 = 42'));
     });
 
     test('gen class with int default value for double type', () {
-      final Class classDefinition = Class(
+      final classDefinition = Class(
         name: 'Foobar',
         fields: <NamedType>[
           NamedType(
@@ -2774,29 +2745,29 @@ void main() {
           ),
         ],
       );
-      final Root root = Root(
+      final root = Root(
         apis: <Api>[],
         classes: <Class>[classDefinition],
         enums: <Enum>[],
       );
-      final StringBuffer sink = StringBuffer();
-      const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      final sink = StringBuffer();
+      const swiftOptions = InternalSwiftOptions(
         swiftOut: '',
       );
-      const SwiftGenerator generator = SwiftGenerator();
+      const generator = SwiftGenerator();
       generator.generate(
         swiftOptions,
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
-      final String code = sink.toString();
+      final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: Double = 42'));
     });
 
     test('gen class with double default value', () {
-      final Class classDefinition = Class(
+      final classDefinition = Class(
         name: 'Foobar',
         fields: <NamedType>[
           NamedType(
@@ -2808,29 +2779,29 @@ void main() {
           ),
         ],
       );
-      final Root root = Root(
+      final root = Root(
         apis: <Api>[],
         classes: <Class>[classDefinition],
         enums: <Enum>[],
       );
-      final StringBuffer sink = StringBuffer();
-      const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      final sink = StringBuffer();
+      const swiftOptions = InternalSwiftOptions(
         swiftOut: '',
       );
-      const SwiftGenerator generator = SwiftGenerator();
+      const generator = SwiftGenerator();
       generator.generate(
         swiftOptions,
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
-      final String code = sink.toString();
+      final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: Double = 3.14'));
     });
 
     test('gen class with bool default value', () {
-      final Class classDefinition = Class(
+      final classDefinition = Class(
         name: 'Foobar',
         fields: <NamedType>[
           NamedType(
@@ -2849,30 +2820,30 @@ void main() {
           ),
         ],
       );
-      final Root root = Root(
+      final root = Root(
         apis: <Api>[],
         classes: <Class>[classDefinition],
         enums: <Enum>[],
       );
-      final StringBuffer sink = StringBuffer();
-      const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      final sink = StringBuffer();
+      const swiftOptions = InternalSwiftOptions(
         swiftOut: '',
       );
-      const SwiftGenerator generator = SwiftGenerator();
+      const generator = SwiftGenerator();
       generator.generate(
         swiftOptions,
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
-      final String code = sink.toString();
+      final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: Bool = true'));
       expect(code, contains('field2: Bool = false'));
     });
 
     test('gen class with empty list default value', () {
-      final Class classDefinition = Class(
+      final classDefinition = Class(
         name: 'Foobar',
         fields: <NamedType>[
           NamedType(
@@ -2891,29 +2862,29 @@ void main() {
           ),
         ],
       );
-      final Root root = Root(
+      final root = Root(
         apis: <Api>[],
         classes: <Class>[classDefinition],
         enums: <Enum>[],
       );
-      final StringBuffer sink = StringBuffer();
-      const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      final sink = StringBuffer();
+      const swiftOptions = InternalSwiftOptions(
         swiftOut: '',
       );
-      const SwiftGenerator generator = SwiftGenerator();
+      const generator = SwiftGenerator();
       generator.generate(
         swiftOptions,
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
-      final String code = sink.toString();
+      final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: [Int64] = []'));
     });
 
     test('gen class with list default value with elements', () {
-      final Class classDefinition = Class(
+      final classDefinition = Class(
         name: 'Foobar',
         fields: <NamedType>[
           NamedType(
@@ -2936,23 +2907,23 @@ void main() {
           ),
         ],
       );
-      final Root root = Root(
+      final root = Root(
         apis: <Api>[],
         classes: <Class>[classDefinition],
         enums: <Enum>[],
       );
-      final StringBuffer sink = StringBuffer();
-      const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      final sink = StringBuffer();
+      const swiftOptions = InternalSwiftOptions(
         swiftOut: '',
       );
-      const SwiftGenerator generator = SwiftGenerator();
+      const generator = SwiftGenerator();
       generator.generate(
         swiftOptions,
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
-      final String code = sink.toString();
+      final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: [Int64] = ['));
       expect(code, contains('1, '));
@@ -2961,7 +2932,7 @@ void main() {
     });
 
     test('gen class with empty map default value', () {
-      final Class classDefinition = Class(
+      final classDefinition = Class(
         name: 'Foobar',
         fields: <NamedType>[
           NamedType(
@@ -2982,29 +2953,29 @@ void main() {
           ),
         ],
       );
-      final Root root = Root(
+      final root = Root(
         apis: <Api>[],
         classes: <Class>[classDefinition],
         enums: <Enum>[],
       );
-      final StringBuffer sink = StringBuffer();
-      const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      final sink = StringBuffer();
+      const swiftOptions = InternalSwiftOptions(
         swiftOut: '',
       );
-      const SwiftGenerator generator = SwiftGenerator();
+      const generator = SwiftGenerator();
       generator.generate(
         swiftOptions,
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
-      final String code = sink.toString();
+      final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: [String: Int64] = [:]'));
     });
 
     test('gen class with map default value with entries', () {
-      final Class classDefinition = Class(
+      final classDefinition = Class(
         name: 'Foobar',
         fields: <NamedType>[
           NamedType(
@@ -3032,23 +3003,23 @@ void main() {
           ),
         ],
       );
-      final Root root = Root(
+      final root = Root(
         apis: <Api>[],
         classes: <Class>[classDefinition],
         enums: <Enum>[],
       );
-      final StringBuffer sink = StringBuffer();
-      const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      final sink = StringBuffer();
+      const swiftOptions = InternalSwiftOptions(
         swiftOut: '',
       );
-      const SwiftGenerator generator = SwiftGenerator();
+      const generator = SwiftGenerator();
       generator.generate(
         swiftOptions,
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
-      final String code = sink.toString();
+      final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: [String: Int64] = ['));
       expect(code, contains('"key1": 100, '));
@@ -3056,14 +3027,14 @@ void main() {
     });
 
     test('gen class with enum default value', () {
-      final Enum testEnum = Enum(
+      final testEnum = Enum(
         name: 'TestEnum',
         members: <EnumMember>[
           EnumMember(name: 'firstValue'),
           EnumMember(name: 'secondValue'),
         ],
       );
-      final Class classDefinition = Class(
+      final classDefinition = Class(
         name: 'Foobar',
         fields: <NamedType>[
           NamedType(
@@ -3080,23 +3051,23 @@ void main() {
           ),
         ],
       );
-      final Root root = Root(
+      final root = Root(
         apis: <Api>[],
         classes: <Class>[classDefinition],
         enums: <Enum>[testEnum],
       );
-      final StringBuffer sink = StringBuffer();
-      const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      final sink = StringBuffer();
+      const swiftOptions = InternalSwiftOptions(
         swiftOut: '',
       );
-      const SwiftGenerator generator = SwiftGenerator();
+      const generator = SwiftGenerator();
       generator.generate(
         swiftOptions,
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
-      final String code = sink.toString();
+      final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: TestEnum = TestEnum.firstValue'));
       expect(code, contains('enum TestEnum: Int'));
@@ -3105,7 +3076,7 @@ void main() {
     });
 
     test('gen class with object creation default value', () {
-      final Class innerClass = Class(
+      final innerClass = Class(
         name: 'InnerClass',
         fields: <NamedType>[
           NamedType(
@@ -3114,7 +3085,7 @@ void main() {
           ),
         ],
       );
-      final Class classDefinition = Class(
+      final classDefinition = Class(
         name: 'Foobar',
         fields: <NamedType>[
           NamedType(
@@ -3133,23 +3104,23 @@ void main() {
           ),
         ],
       );
-      final Root root = Root(
+      final root = Root(
         apis: <Api>[],
         classes: <Class>[classDefinition, innerClass],
         enums: <Enum>[],
       );
-      final StringBuffer sink = StringBuffer();
-      const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      final sink = StringBuffer();
+      const swiftOptions = InternalSwiftOptions(
         swiftOut: '',
       );
-      const SwiftGenerator generator = SwiftGenerator();
+      const generator = SwiftGenerator();
       generator.generate(
         swiftOptions,
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
-      final String code = sink.toString();
+      final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: InnerClass = InnerClass('));
       expect(code, contains('42'));
@@ -3157,11 +3128,11 @@ void main() {
     });
 
     test('gen class with object creation default value - no arguments', () {
-      final Class innerClass = Class(
+      final innerClass = Class(
         name: 'InnerClass',
         fields: <NamedType>[],
       );
-      final Class classDefinition = Class(
+      final classDefinition = Class(
         name: 'Foobar',
         fields: <NamedType>[
           NamedType(
@@ -3178,29 +3149,29 @@ void main() {
           ),
         ],
       );
-      final Root root = Root(
+      final root = Root(
         apis: <Api>[],
         classes: <Class>[classDefinition, innerClass],
         enums: <Enum>[],
       );
-      final StringBuffer sink = StringBuffer();
-      const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      final sink = StringBuffer();
+      const swiftOptions = InternalSwiftOptions(
         swiftOut: '',
       );
-      const SwiftGenerator generator = SwiftGenerator();
+      const generator = SwiftGenerator();
       generator.generate(
         swiftOptions,
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
-      final String code = sink.toString();
+      final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: InnerClass = InnerClass()'));
     });
 
     test('gen class with named default value', () {
-      final Class innerClass = Class(
+      final innerClass = Class(
         name: 'InnerClass',
         fields: <NamedType>[
           NamedType(
@@ -3213,7 +3184,7 @@ void main() {
           ),
         ],
       );
-      final Class classDefinition = Class(
+      final classDefinition = Class(
         name: 'Foobar',
         fields: <NamedType>[
           NamedType(
@@ -3239,23 +3210,23 @@ void main() {
           ),
         ],
       );
-      final Root root = Root(
+      final root = Root(
         apis: <Api>[],
         classes: <Class>[classDefinition, innerClass],
         enums: <Enum>[],
       );
-      final StringBuffer sink = StringBuffer();
-      const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      final sink = StringBuffer();
+      const swiftOptions = InternalSwiftOptions(
         swiftOut: '',
       );
-      const SwiftGenerator generator = SwiftGenerator();
+      const generator = SwiftGenerator();
       generator.generate(
         swiftOptions,
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
-      final String code = sink.toString();
+      final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: InnerClass = InnerClass('));
       expect(code, contains('x: 10, '));
@@ -3263,7 +3234,7 @@ void main() {
     });
 
     test('gen class with nested list default value', () {
-      final Class classDefinition = Class(
+      final classDefinition = Class(
         name: 'Foobar',
         fields: <NamedType>[
           NamedType(
@@ -3314,23 +3285,23 @@ void main() {
           ),
         ],
       );
-      final Root root = Root(
+      final root = Root(
         apis: <Api>[],
         classes: <Class>[classDefinition],
         enums: <Enum>[],
       );
-      final StringBuffer sink = StringBuffer();
-      const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      final sink = StringBuffer();
+      const swiftOptions = InternalSwiftOptions(
         swiftOut: '',
       );
-      const SwiftGenerator generator = SwiftGenerator();
+      const generator = SwiftGenerator();
       generator.generate(
         swiftOptions,
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
-      final String code = sink.toString();
+      final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: [[String]] = ['));
       expect(code, contains('"a", '));
@@ -3339,12 +3310,12 @@ void main() {
     });
 
     test('gen sealed class with default values', () {
-      final Class superClass = Class(
+      final superClass = Class(
         name: 'PlatformEvent',
         isSealed: true,
         fields: const <NamedType>[],
       );
-      final List<Class> children = <Class>[
+      final children = <Class>[
         Class(
           name: 'IntEvent',
           superClass: superClass,
@@ -3401,7 +3372,7 @@ void main() {
         ),
       ];
       superClass.children = children;
-      final Root root = Root(
+      final root = Root(
         apis: <Api>[],
         classes: <Class>[
           superClass,
@@ -3409,18 +3380,18 @@ void main() {
         ],
         enums: <Enum>[],
       );
-      final StringBuffer sink = StringBuffer();
-      const InternalSwiftOptions swiftOptions = InternalSwiftOptions(
+      final sink = StringBuffer();
+      const swiftOptions = InternalSwiftOptions(
         swiftOut: '',
       );
-      const SwiftGenerator generator = SwiftGenerator();
+      const generator = SwiftGenerator();
       generator.generate(
         swiftOptions,
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
       );
-      final String code = sink.toString();
+      final code = sink.toString();
       expect(code, contains('public enum PlatformEvent'));
       expect(code, contains('case intEvent'));
       expect(code, contains('case stringEvent'));

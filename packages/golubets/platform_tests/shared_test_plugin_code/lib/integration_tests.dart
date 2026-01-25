@@ -1028,16 +1028,15 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       expect(receivedNullString, null);
     });
 
-    const List<TargetGenerator> defaultValuesSupportedTargets =
-        <TargetGenerator>[
-          TargetGenerator.kotlin,
-          TargetGenerator.swift,
-        ];
+    const defaultValuesSupportedTargets = <TargetGenerator>[
+      TargetGenerator.kotlin,
+      TargetGenerator.swift,
+    ];
 
     testWidgets(
       'createAllTypesWithDefaults returns object with correct default values',
       (WidgetTester _) async {
-        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+        final api = HostIntegrationCoreApi();
 
         final AllTypesWithDefaults createdObject = await api
             .createAllTypesWithDefaults();
@@ -1265,7 +1264,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     testWidgets(
       'echoAllTypesWithDefaults preserves default values across platforms',
       (WidgetTester _) async {
-        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+        final api = HostIntegrationCoreApi();
 
         // Test that our test data with defaults roundtrips correctly
         final AllTypesWithDefaults echoedObject = await api
@@ -1278,7 +1277,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     testWidgets(
       'default values are correctly generated in target platform',
       (WidgetTester _) async {
-        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+        final api = HostIntegrationCoreApi();
 
         // Create object with defaults on the platform side
         final AllTypesWithDefaults platformDefaults = await api
@@ -1933,7 +1932,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       expect(echoEnum, sentEnum);
     });
 
-    const List<TargetGenerator> modernAsyncSupportedTargets = <TargetGenerator>[
+    const modernAsyncSupportedTargets = <TargetGenerator>[
       TargetGenerator.kotlin,
       TargetGenerator.swift,
     ];
@@ -1941,7 +1940,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     testWidgets(
       'all nullable async datatypes serialize and deserialize correctly using `await`-style',
       (WidgetTester _) async {
-        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+        final api = HostIntegrationCoreApi();
 
         final AllNullableTypes? echoObject = await api
             .echoModernAsyncNullableAllNullableTypes(recursiveAllNullableTypes);
@@ -1954,7 +1953,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     testWidgets(
       'all datatypes async serialize and deserialize correctly using `await`-style',
       (WidgetTester _) async {
-        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+        final api = HostIntegrationCoreApi();
 
         final AllTypes echoObject = await api.echoModernAsyncAllTypes(
           genericAllTypes,
@@ -1968,7 +1967,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     testWidgets(
       'all datatypes async serialize and deserialize correctly using `await`-style and does not throw',
       (WidgetTester _) async {
-        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+        final api = HostIntegrationCoreApi();
 
         final AllTypes echoObject = await api
             .echoModernAsyncAllTypesAndNotThrow(genericAllTypes);
@@ -1981,7 +1980,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     testWidgets(
       'all datatypes async serialize correctly using `await`-style and throws',
       (WidgetTester _) async {
-        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+        final api = HostIntegrationCoreApi();
 
         await expectLater(
           () => api.echoModernAsyncAllTypesAndThrow(genericAllTypes),
@@ -1994,9 +1993,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     testWidgets(
       'all null datatypes async serialize and deserialize correctly',
       (WidgetTester _) async {
-        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+        final api = HostIntegrationCoreApi();
 
-        final AllNullableTypes allTypesNull = AllNullableTypes();
+        final allTypesNull = AllNullableTypes();
 
         final AllNullableTypes? echoNullFilledClass = await api
             .echoAsyncNullableAllNullableTypes(allTypesNull);
@@ -2007,9 +2006,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     testWidgets(
       'all null datatypes async serialize and deserialize correctly using `await`-style',
       (WidgetTester _) async {
-        final HostIntegrationCoreApi api = HostIntegrationCoreApi();
+        final api = HostIntegrationCoreApi();
 
-        final AllNullableTypes allTypesNull = AllNullableTypes();
+        final allTypesNull = AllNullableTypes();
 
         final AllNullableTypes? echoNullFilledClass = await api
             .echoModernAsyncNullableAllNullableTypes(allTypesNull);
@@ -3569,7 +3568,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
   testWidgets(
     'sealed subclasses serialize and deserialize correctly',
     (WidgetTester _) async {
-      final List<PlatformEvent> events = <PlatformEvent>[
+      final events = <PlatformEvent>[
         IntEvent(value: regularInt),
         IntEvent(value: biggerThanBigInt),
         DoubleEvent(value: 2.0694),
@@ -3582,9 +3581,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
         EmptyEvent(),
       ];
 
-      final SealedClassApi api = SealedClassApi();
+      final api = SealedClassApi();
 
-      for (final PlatformEvent sentEvent in events) {
+      for (final sentEvent in events) {
         final PlatformEvent receivedEvent = await api.echo(sentEvent);
         expect(receivedEvent, equals(sentEvent));
       }
@@ -3595,15 +3594,15 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
   test(
     'nested kotlin sealed classes serialize and deserialize correctly',
     () async {
-      final KotlinNestedSealedApi api = KotlinNestedSealedApi();
+      final api = KotlinNestedSealedApi();
 
-      final List<SomeState> states = <SomeState>[
+      final states = <SomeState>[
         Loading(progress: 42),
         Success(data: 'ok'),
         Error(code: 7),
       ];
 
-      for (final SomeState sentState in states) {
+      for (final sentState in states) {
         final SomeState receivedState = await api.echo(sentState);
         expect(receivedState, equals(sentState));
       }
@@ -3611,7 +3610,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     skip: targetGenerator != TargetGenerator.kotlin,
   );
 
-  const List<TargetGenerator> targetSupportsGenerics = <TargetGenerator>[
+  const targetSupportsGenerics = <TargetGenerator>[
     TargetGenerator.kotlin,
     TargetGenerator.swift,
   ];
@@ -3621,10 +3620,10 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     'Host Generic API tests',
     skip: !targetSupportsGenerics.contains(targetGenerator),
     () {
-      final HostGenericApi api = HostGenericApi();
+      final api = HostGenericApi();
 
       testWidgets('generic container int echo works', (WidgetTester _) async {
-        const GenericContainer<int> input = GenericContainer<int>(
+        const input = GenericContainer<int>(
           value: 42,
           values: <int>[1, 2, 3],
         );
@@ -3637,7 +3636,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('generic container string echo works', (
         WidgetTester _,
       ) async {
-        const GenericContainer<String> input = GenericContainer<String>(
+        const input = GenericContainer<String>(
           value: 'test',
           values: <String>['a', 'b', 'c'],
         );
@@ -3651,7 +3650,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('generic container double echo works', (
         WidgetTester _,
       ) async {
-        const GenericContainer<double> input = GenericContainer<double>(
+        const input = GenericContainer<double>(
           value: 3.14,
           values: <double>[1.0, 2.0, 3.0],
         );
@@ -3663,7 +3662,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       });
 
       testWidgets('generic container bool echo works', (WidgetTester _) async {
-        const GenericContainer<bool> input = GenericContainer<bool>(
+        const input = GenericContainer<bool>(
           value: true,
           values: <bool>[true, false, true],
         );
@@ -3673,15 +3672,14 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       });
 
       testWidgets('generic container enum echo works', (WidgetTester _) async {
-        const GenericContainer<GenericsAnEnum> input =
-            GenericContainer<GenericsAnEnum>(
-              value: GenericsAnEnum.fortyTwo,
-              values: <GenericsAnEnum>[
-                GenericsAnEnum.one,
-                GenericsAnEnum.two,
-                GenericsAnEnum.three,
-              ],
-            );
+        const input = GenericContainer<GenericsAnEnum>(
+          value: GenericsAnEnum.fortyTwo,
+          values: <GenericsAnEnum>[
+            GenericsAnEnum.one,
+            GenericsAnEnum.two,
+            GenericsAnEnum.three,
+          ],
+        );
         final GenericContainer<GenericsAnEnum> result = await api
             .echoGenericEnum(
               input,
@@ -3693,7 +3691,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('generic container nullable int echo works', (
         WidgetTester _,
       ) async {
-        const GenericContainer<int?> input = GenericContainer<int?>(
+        const input = GenericContainer<int?>(
           value: 42,
           values: <int?>[1, null, 3],
         );
@@ -3707,7 +3705,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('generic container nullable string echo works', (
         WidgetTester _,
       ) async {
-        const GenericContainer<String?> input = GenericContainer<String?>(
+        const input = GenericContainer<String?>(
           value: 'test',
           values: <String?>['a', null, 'c'],
         );
@@ -3718,7 +3716,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       });
 
       testWidgets('generic pair string-int echo works', (WidgetTester _) async {
-        const GenericPair<String, int> input = GenericPair<String, int>(
+        const input = GenericPair<String, int>(
           first: 'hello',
           second: 42,
           map: <String, int>{'key1': 1, 'key2': 2},
@@ -3731,7 +3729,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       });
 
       testWidgets('generic pair int-string echo works', (WidgetTester _) async {
-        const GenericPair<int, String> input = GenericPair<int, String>(
+        const input = GenericPair<int, String>(
           first: 42,
           second: 'hello',
           map: <int, String>{1: 'one', 2: 'two'},
@@ -3746,7 +3744,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('generic pair double-bool echo works', (
         WidgetTester _,
       ) async {
-        final GenericPair<double, bool> input = GenericPair<double, bool>(
+        final input = GenericPair<double, bool>(
           first: 3.14,
           second: true,
           map: <double, bool>{1.0: true, 2.0: false},
@@ -3761,29 +3759,28 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('nested generic string-int-double echo works', (
         WidgetTester _,
       ) async {
-        const NestedGeneric<String, int, double> input =
-            NestedGeneric<String, int, double>(
-              container: GenericContainer<String>(
-                value: 'test',
-                values: <String>['a', 'b'],
-              ),
-              pairs: <GenericPair<int, double>>[
-                GenericPair<int, double>(
-                  first: 1,
-                  second: 1.0,
-                  map: <int, double>{1: 1.0, 2: 2.0},
-                ),
-              ],
-              nestedMap: <String, GenericContainer<int>>{
-                'key': GenericContainer<int>(
-                  value: 42,
-                  values: <int>[1, 2, 3],
-                ),
-              },
-              listOfMaps: <Map<int, double>>[
-                <int, double>{1: 1.0, 2: 2.0},
-              ],
-            );
+        const input = NestedGeneric<String, int, double>(
+          container: GenericContainer<String>(
+            value: 'test',
+            values: <String>['a', 'b'],
+          ),
+          pairs: <GenericPair<int, double>>[
+            GenericPair<int, double>(
+              first: 1,
+              second: 1.0,
+              map: <int, double>{1: 1.0, 2: 2.0},
+            ),
+          ],
+          nestedMap: <String, GenericContainer<int>>{
+            'key': GenericContainer<int>(
+              value: 42,
+              values: <int>[1, 2, 3],
+            ),
+          },
+          listOfMaps: <Map<int, double>>[
+            <int, double>{1: 1.0, 2: 2.0},
+          ],
+        );
         final NestedGeneric<String, int, double> result = await api
             .echoNestedGenericStringIntDouble(input);
         expect(result.container.value, equals(input.container.value));
@@ -3794,21 +3791,21 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       });
 
       testWidgets('generic list container echo works', (WidgetTester _) async {
-        final List<GenericContainer<int>> input = <GenericContainer<int>>[
+        final input = <GenericContainer<int>>[
           const GenericContainer<int>(value: 1, values: <int>[1, 2]),
           const GenericContainer<int>(value: 2, values: <int>[3, 4]),
         ];
         final List<GenericContainer<int>> result = await api
             .echoListGenericContainer(input);
         expect(result.length, equals(input.length));
-        for (int i = 0; i < result.length; i++) {
+        for (var i = 0; i < result.length; i++) {
           expect(result[i].value, equals(input[i].value));
           expect(result[i].values, equals(input[i].values));
         }
       });
 
       testWidgets('generic list pair echo works', (WidgetTester _) async {
-        final List<GenericPair<String, int>> input = <GenericPair<String, int>>[
+        final input = <GenericPair<String, int>>[
           const GenericPair<String, int>(
             first: 'a',
             second: 1,
@@ -3823,7 +3820,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
         final List<GenericPair<String, int>> result = await api
             .echoListGenericPair(input);
         expect(result.length, equals(input.length));
-        for (int i = 0; i < result.length; i++) {
+        for (var i = 0; i < result.length; i++) {
           expect(result[i].first, equals(input[i].first));
           expect(result[i].second, equals(input[i].second));
           expect(result[i].map, equals(input[i].map));
@@ -3831,8 +3828,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       });
 
       testWidgets('generic map container echo works', (WidgetTester _) async {
-        final Map<String, GenericContainer<int>>
-        input = <String, GenericContainer<int>>{
+        final input = <String, GenericContainer<int>>{
           'key1': const GenericContainer<int>(value: 1, values: <int>[1, 2]),
           'key2': const GenericContainer<int>(value: 2, values: <int>[3, 4]),
         };
@@ -3846,19 +3842,18 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       });
 
       testWidgets('generic map pair echo works', (WidgetTester _) async {
-        final Map<int, GenericPair<String, double>> input =
-            <int, GenericPair<String, double>>{
-              1: const GenericPair<String, double>(
-                first: 'a',
-                second: 1.0,
-                map: <String, double>{'x': 1.0},
-              ),
-              2: const GenericPair<String, double>(
-                first: 'b',
-                second: 2.0,
-                map: <String, double>{'y': 2.0},
-              ),
-            };
+        final input = <int, GenericPair<String, double>>{
+          1: const GenericPair<String, double>(
+            first: 'a',
+            second: 1.0,
+            map: <String, double>{'x': 1.0},
+          ),
+          2: const GenericPair<String, double>(
+            first: 'b',
+            second: 2.0,
+            map: <String, double>{'y': 2.0},
+          ),
+        };
         final Map<int, GenericPair<String, double>> result = await api
             .echoMapGenericPair(input);
         expect(result.length, equals(input.length));
@@ -3870,7 +3865,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       });
 
       testWidgets('async generic int echo works', (WidgetTester _) async {
-        const GenericContainer<int> input = GenericContainer<int>(
+        const input = GenericContainer<int>(
           value: 42,
           values: <int>[1, 2, 3],
         );
@@ -3882,26 +3877,25 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       });
 
       testWidgets('async nested generic echo works', (WidgetTester _) async {
-        const NestedGeneric<String, int, double> input =
-            NestedGeneric<String, int, double>(
-              container: GenericContainer<String>(
-                value: 'test',
-                values: <String>['a'],
-              ),
-              pairs: <GenericPair<int, double>>[
-                GenericPair<int, double>(
-                  first: 1,
-                  second: 1.0,
-                  map: <int, double>{1: 1.0},
-                ),
-              ],
-              nestedMap: <String, GenericContainer<int>>{
-                'key': GenericContainer<int>(value: 42, values: <int>[1]),
-              },
-              listOfMaps: <Map<int, double>>[
-                <int, double>{1: 1.0},
-              ],
-            );
+        const input = NestedGeneric<String, int, double>(
+          container: GenericContainer<String>(
+            value: 'test',
+            values: <String>['a'],
+          ),
+          pairs: <GenericPair<int, double>>[
+            GenericPair<int, double>(
+              first: 1,
+              second: 1.0,
+              map: <int, double>{1: 1.0},
+            ),
+          ],
+          nestedMap: <String, GenericContainer<int>>{
+            'key': GenericContainer<int>(value: 42, values: <int>[1]),
+          },
+          listOfMaps: <Map<int, double>>[
+            <int, double>{1: 1.0},
+          ],
+        );
         final NestedGeneric<String, int, double> result = await api
             .echoAsyncNestedGeneric(input);
         expect(result.container.value, equals(input.container.value));
@@ -3920,7 +3914,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
           result,
           isA<Left<GenericContainer<int>, GenericContainer<String>>>(),
         );
-        final Left<GenericContainer<int>, GenericContainer<String>> leftResult =
+        final leftResult =
             result as Left<GenericContainer<int>, GenericContainer<String>>;
         expect(leftResult.value.value, equals(42));
         expect(leftResult.value.values, equals(<int>[1, 2, 3]));
@@ -3941,8 +3935,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
           result,
           isA<Right<GenericPair<String, int>, GenericPair<int, String>>>(),
         );
-        final Right<GenericPair<String, int>, GenericPair<int, String>>
-        rightResult =
+        final rightResult =
             result as Right<GenericPair<String, int>, GenericPair<int, String>>;
         expect(rightResult.value.first, equals(42));
         expect(rightResult.value.second, equals('test'));
@@ -3952,67 +3945,66 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('typed nullable string-int-double echo works', (
         WidgetTester _,
       ) async {
-        final GenericsAllNullableTypesTyped<String, int, double> input =
-            GenericsAllNullableTypesTyped<String, int, double>(
-              aNullableInt: 42,
-              aNullableInt64: 64,
-              aNullableDouble: 3.14,
-              aNullableByteArray: Uint8List.fromList(<int>[
-                1,
-                2,
-                3,
-              ]),
-              aNullable4ByteArray: Int32List.fromList(<int>[
-                4,
-                5,
-                6,
-              ]),
-              aNullable8ByteArray: Int64List.fromList(<int>[
-                7,
-                8,
-                9,
-              ]),
-              aNullableFloatArray: Float64List.fromList(<double>[
-                1.1,
-                2.2,
-                3.3,
-              ]),
-              aNullableEnum: GenericsAnEnum.fortyTwo,
-              anotherNullableEnum: GenericsAnotherEnum.justInCase,
-              aNullableString: 'test',
-              aNullableObject: 'object',
-              stringList: <String?>['a', null, 'c'],
-              intList: <double?>[1.0, null, 3.0],
-              doubleList: <int?>[1, null, 3],
-              boolList: <String?>[null, 'b'],
-              enumList: <double?>[4.0, 5.0],
-              objectList: <int?>[6, 7],
-              listList: <List<int?>?>[
-                <int?>[1, 2],
-              ],
-              mapList: <Map<String?, double?>?>[
-                <String?, double?>{'k': 1.0},
-              ],
-              recursiveClassList: <GenericsAllNullableTypes?>[
-                null,
-              ],
-              map: <String?, String?>{'key': 'value'},
-              stringMap: <String?, String?>{'s1': 's2'},
-              intMap: <double?, int?>{1.0: 10},
-              enumMap: <GenericsAnEnum?, GenericsAnEnum?>{
-                GenericsAnEnum.one: GenericsAnEnum.two,
-              },
-              objectMap: <Object?, Object?>{'obj': 'val'},
-              listMap: <int?, List<int?>?>{
-                1: <int?>[1, 2],
-              },
-              mapMap: <int?, Map<int?, int?>?>{
-                1: <int?, int?>{2: 3},
-              },
-              recursiveClassMap: <int?, GenericsAllNullableTypes?>{
-                1: null,
-              },
-            );
+        final input = GenericsAllNullableTypesTyped<String, int, double>(
+          aNullableInt: 42,
+          aNullableInt64: 64,
+          aNullableDouble: 3.14,
+          aNullableByteArray: Uint8List.fromList(<int>[
+            1,
+            2,
+            3,
+          ]),
+          aNullable4ByteArray: Int32List.fromList(<int>[
+            4,
+            5,
+            6,
+          ]),
+          aNullable8ByteArray: Int64List.fromList(<int>[
+            7,
+            8,
+            9,
+          ]),
+          aNullableFloatArray: Float64List.fromList(<double>[
+            1.1,
+            2.2,
+            3.3,
+          ]),
+          aNullableEnum: GenericsAnEnum.fortyTwo,
+          anotherNullableEnum: GenericsAnotherEnum.justInCase,
+          aNullableString: 'test',
+          aNullableObject: 'object',
+          stringList: <String?>['a', null, 'c'],
+          intList: <double?>[1.0, null, 3.0],
+          doubleList: <int?>[1, null, 3],
+          boolList: <String?>[null, 'b'],
+          enumList: <double?>[4.0, 5.0],
+          objectList: <int?>[6, 7],
+          listList: <List<int?>?>[
+            <int?>[1, 2],
+          ],
+          mapList: <Map<String?, double?>?>[
+            <String?, double?>{'k': 1.0},
+          ],
+          recursiveClassList: <GenericsAllNullableTypes?>[
+            null,
+          ],
+          map: <String?, String?>{'key': 'value'},
+          stringMap: <String?, String?>{'s1': 's2'},
+          intMap: <double?, int?>{1.0: 10},
+          enumMap: <GenericsAnEnum?, GenericsAnEnum?>{
+            GenericsAnEnum.one: GenericsAnEnum.two,
+          },
+          objectMap: <Object?, Object?>{'obj': 'val'},
+          listMap: <int?, List<int?>?>{
+            1: <int?>[1, 2],
+          },
+          mapMap: <int?, Map<int?, int?>?>{
+            1: <int?, int?>{2: 3},
+          },
+          recursiveClassMap: <int?, GenericsAllNullableTypes?>{
+            1: null,
+          },
+        );
         final GenericsAllNullableTypesTyped<String, int, double> result =
             await api.echoTypedNullableStringIntDouble(input);
         expect(result.aNullableBool, equals(input.aNullableBool));
@@ -4024,8 +4016,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('typed nullable int-string-bool echo works', (
         WidgetTester _,
       ) async {
-        final GenericsAllNullableTypesTyped<int, String, bool> input =
-            GenericsAllNullableTypesTyped<int, String, bool>();
+        final input = GenericsAllNullableTypesTyped<int, String, bool>();
         final GenericsAllNullableTypesTyped<int, String, bool> result =
             await api.echoTypedNullableIntStringBool(input);
         expect(result.aNullableBool, isNull);
@@ -4037,71 +4028,71 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('typed nullable enum-double-string echo works', (
         WidgetTester _,
       ) async {
-        final GenericsAllNullableTypesTyped<GenericsAnEnum, double, String>
-        input = GenericsAllNullableTypesTyped<GenericsAnEnum, double, String>(
-          aNullableBool: false,
-          aNullableInt: 100,
-          aNullableInt64: 200,
-          aNullableDouble: 2.71,
-          aNullableByteArray: Uint8List.fromList(<int>[
-            9,
-            8,
-            7,
-          ]),
-          aNullable4ByteArray: Int32List.fromList(<int>[
-            6,
-            5,
-            4,
-          ]),
-          aNullable8ByteArray: Int64List.fromList(<int>[
-            3,
-            2,
-            1,
-          ]),
-          aNullableFloatArray: Float64List.fromList(<double>[
-            4.4,
-            5.5,
-          ]),
-          aNullableEnum: GenericsAnEnum.three,
-          anotherNullableEnum: GenericsAnotherEnum.justInCase,
-          aNullableString: 'enum-test',
-          aNullableObject: 42,
-          list: <GenericsAnEnum?>[GenericsAnEnum.one],
-          intList: <String?>[null, 'test'],
-          doubleList: <double?>[9.9, 8.8],
-          boolList: <GenericsAnEnum?>[GenericsAnEnum.two],
-          enumList: <String?>['x', 'y'],
-          objectList: <double?>[7.7],
-          listList: <List<double?>?>[
-            <double?>[1.1],
-          ],
-          mapList: <Map<GenericsAnEnum?, String?>?>[
-            <GenericsAnEnum?, String?>{GenericsAnEnum.one: 'test'},
-          ],
-          recursiveClassList: <GenericsAllNullableTypes?>[
-            null,
-          ],
-          map: <GenericsAnEnum?, GenericsAnEnum?>{
-            GenericsAnEnum.one: GenericsAnEnum.two,
-          },
-          stringMap: <GenericsAnEnum?, GenericsAnEnum?>{
-            GenericsAnEnum.three: GenericsAnEnum.fortyTwo,
-          },
-          intMap: <String?, double?>{'pi': 3.14},
-          enumMap: <GenericsAnEnum?, GenericsAnEnum?>{
-            GenericsAnEnum.one: GenericsAnEnum.two,
-          },
-          objectMap: <Object?, Object?>{'key': 123},
-          listMap: <int?, List<double?>?>{
-            2: <double?>[2.2, 3.3],
-          },
-          mapMap: <int?, Map<double?, double?>?>{
-            3: <double?, double?>{1.1: 2.2},
-          },
-          recursiveClassMap: <int?, GenericsAllNullableTypes?>{
-            2: null,
-          },
-        );
+        final input =
+            GenericsAllNullableTypesTyped<GenericsAnEnum, double, String>(
+              aNullableBool: false,
+              aNullableInt: 100,
+              aNullableInt64: 200,
+              aNullableDouble: 2.71,
+              aNullableByteArray: Uint8List.fromList(<int>[
+                9,
+                8,
+                7,
+              ]),
+              aNullable4ByteArray: Int32List.fromList(<int>[
+                6,
+                5,
+                4,
+              ]),
+              aNullable8ByteArray: Int64List.fromList(<int>[
+                3,
+                2,
+                1,
+              ]),
+              aNullableFloatArray: Float64List.fromList(<double>[
+                4.4,
+                5.5,
+              ]),
+              aNullableEnum: GenericsAnEnum.three,
+              anotherNullableEnum: GenericsAnotherEnum.justInCase,
+              aNullableString: 'enum-test',
+              aNullableObject: 42,
+              list: <GenericsAnEnum?>[GenericsAnEnum.one],
+              intList: <String?>[null, 'test'],
+              doubleList: <double?>[9.9, 8.8],
+              boolList: <GenericsAnEnum?>[GenericsAnEnum.two],
+              enumList: <String?>['x', 'y'],
+              objectList: <double?>[7.7],
+              listList: <List<double?>?>[
+                <double?>[1.1],
+              ],
+              mapList: <Map<GenericsAnEnum?, String?>?>[
+                <GenericsAnEnum?, String?>{GenericsAnEnum.one: 'test'},
+              ],
+              recursiveClassList: <GenericsAllNullableTypes?>[
+                null,
+              ],
+              map: <GenericsAnEnum?, GenericsAnEnum?>{
+                GenericsAnEnum.one: GenericsAnEnum.two,
+              },
+              stringMap: <GenericsAnEnum?, GenericsAnEnum?>{
+                GenericsAnEnum.three: GenericsAnEnum.fortyTwo,
+              },
+              intMap: <String?, double?>{'pi': 3.14},
+              enumMap: <GenericsAnEnum?, GenericsAnEnum?>{
+                GenericsAnEnum.one: GenericsAnEnum.two,
+              },
+              objectMap: <Object?, Object?>{'key': 123},
+              listMap: <int?, List<double?>?>{
+                2: <double?>[2.2, 3.3],
+              },
+              mapMap: <int?, Map<double?, double?>?>{
+                3: <double?, double?>{1.1: 2.2},
+              },
+              recursiveClassMap: <int?, GenericsAllNullableTypes?>{
+                2: null,
+              },
+            );
         final GenericsAllNullableTypesTyped<GenericsAnEnum, double, String>
         result = await api.echoTypedNullableEnumDoubleString(input);
         expect(result.aNullableBool, equals(input.aNullableBool));
@@ -4112,33 +4103,29 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('generic container with typed nullable echo works', (
         WidgetTester _,
       ) async {
-        final GenericsAllNullableTypesTyped<String, int, double> typedInput =
-            GenericsAllNullableTypesTyped<String, int, double>(
-              aNullableBool: true,
-              aNullableInt: 42,
-              aNullableInt64: 64,
-              aNullableDouble: 3.14,
-              aNullableByteArray: Uint8List.fromList(<int>[1]),
-              aNullable4ByteArray: Int32List.fromList(<int>[2]),
-              aNullable8ByteArray: Int64List.fromList(<int>[3]),
-              aNullableFloatArray: Float64List.fromList(<double>[4.0]),
-              aNullableEnum: GenericsAnEnum.one,
-              anotherNullableEnum: GenericsAnotherEnum.justInCase,
-              aNullableString: 'container-test',
-              aNullableObject: 'obj',
-              stringList: <String?>['test'],
-              intList: <double?>[1.0],
-              doubleList: <int?>[2],
-              boolList: <String?>[null],
-              enumList: <double?>[3.0],
-              objectList: <int?>[4],
-              stringMap: <String?, String?>{'k': 'v'},
-              enumMap: <GenericsAnEnum?, GenericsAnEnum?>{},
-            );
-        final GenericContainer<
-          GenericsAllNullableTypesTyped<String, int, double>
-        >
-        input =
+        final typedInput = GenericsAllNullableTypesTyped<String, int, double>(
+          aNullableBool: true,
+          aNullableInt: 42,
+          aNullableInt64: 64,
+          aNullableDouble: 3.14,
+          aNullableByteArray: Uint8List.fromList(<int>[1]),
+          aNullable4ByteArray: Int32List.fromList(<int>[2]),
+          aNullable8ByteArray: Int64List.fromList(<int>[3]),
+          aNullableFloatArray: Float64List.fromList(<double>[4.0]),
+          aNullableEnum: GenericsAnEnum.one,
+          anotherNullableEnum: GenericsAnotherEnum.justInCase,
+          aNullableString: 'container-test',
+          aNullableObject: 'obj',
+          stringList: <String?>['test'],
+          intList: <double?>[1.0],
+          doubleList: <int?>[2],
+          boolList: <String?>[null],
+          enumList: <double?>[3.0],
+          objectList: <int?>[4],
+          stringMap: <String?, String?>{'k': 'v'},
+          enumMap: <GenericsAnEnum?, GenericsAnEnum?>{},
+        );
+        final input =
             GenericContainer<
               GenericsAllNullableTypesTyped<String, int, double>
             >(
@@ -4159,55 +4146,52 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       });
 
       testWidgets('list of typed nullable echo works', (WidgetTester _) async {
-        final GenericsAllNullableTypesTyped<String, int, double> typed1 =
-            GenericsAllNullableTypesTyped<String, int, double>(
-              aNullableBool: true,
-              aNullableInt: 1,
-              aNullableInt64: 2,
-              aNullableDouble: 1.0,
-              aNullableByteArray: Uint8List.fromList(<int>[1]),
-              aNullable4ByteArray: Int32List.fromList(<int>[1]),
-              aNullable8ByteArray: Int64List.fromList(<int>[1]),
-              aNullableFloatArray: Float64List.fromList(<double>[1.0]),
-              aNullableEnum: GenericsAnEnum.one,
-              anotherNullableEnum: GenericsAnotherEnum.justInCase,
-              aNullableString: 'list-test-1',
-              aNullableObject: 'obj1',
-              stringList: <String?>['a'],
-              intList: <double?>[1.0],
-              doubleList: <int?>[1],
-              boolList: <String?>['x'],
-              enumList: <double?>[1.0],
-              objectList: <int?>[1],
-              stringMap: <String?, String?>{'a': 'b'},
-            );
-        final GenericsAllNullableTypesTyped<String, int, double> typed2 =
-            GenericsAllNullableTypesTyped<String, int, double>(
-              aNullableBool: false,
-              aNullableInt: 2,
-              aNullableInt64: 3,
-              aNullableDouble: 2.0,
-              aNullableByteArray: Uint8List.fromList(<int>[2]),
-              aNullable4ByteArray: Int32List.fromList(<int>[2]),
-              aNullable8ByteArray: Int64List.fromList(<int>[2]),
-              aNullableFloatArray: Float64List.fromList(<double>[2.0]),
-              aNullableEnum: GenericsAnEnum.two,
-              anotherNullableEnum: GenericsAnotherEnum.justInCase,
-              aNullableString: 'list-test-2',
-              aNullableObject: 'obj2',
-              stringList: <String?>['b'],
-              intList: <double?>[2.0],
-              doubleList: <int?>[2],
-              boolList: <String?>['y'],
-              enumList: <double?>[2.0],
-              objectList: <int?>[2],
-              stringMap: <String?, String?>{'c': 'd'},
-            );
-        final List<GenericsAllNullableTypesTyped<String, int, double>> input =
-            <GenericsAllNullableTypesTyped<String, int, double>>[
-              typed1,
-              typed2,
-            ];
+        final typed1 = GenericsAllNullableTypesTyped<String, int, double>(
+          aNullableBool: true,
+          aNullableInt: 1,
+          aNullableInt64: 2,
+          aNullableDouble: 1.0,
+          aNullableByteArray: Uint8List.fromList(<int>[1]),
+          aNullable4ByteArray: Int32List.fromList(<int>[1]),
+          aNullable8ByteArray: Int64List.fromList(<int>[1]),
+          aNullableFloatArray: Float64List.fromList(<double>[1.0]),
+          aNullableEnum: GenericsAnEnum.one,
+          anotherNullableEnum: GenericsAnotherEnum.justInCase,
+          aNullableString: 'list-test-1',
+          aNullableObject: 'obj1',
+          stringList: <String?>['a'],
+          intList: <double?>[1.0],
+          doubleList: <int?>[1],
+          boolList: <String?>['x'],
+          enumList: <double?>[1.0],
+          objectList: <int?>[1],
+          stringMap: <String?, String?>{'a': 'b'},
+        );
+        final typed2 = GenericsAllNullableTypesTyped<String, int, double>(
+          aNullableBool: false,
+          aNullableInt: 2,
+          aNullableInt64: 3,
+          aNullableDouble: 2.0,
+          aNullableByteArray: Uint8List.fromList(<int>[2]),
+          aNullable4ByteArray: Int32List.fromList(<int>[2]),
+          aNullable8ByteArray: Int64List.fromList(<int>[2]),
+          aNullableFloatArray: Float64List.fromList(<double>[2.0]),
+          aNullableEnum: GenericsAnEnum.two,
+          anotherNullableEnum: GenericsAnotherEnum.justInCase,
+          aNullableString: 'list-test-2',
+          aNullableObject: 'obj2',
+          stringList: <String?>['b'],
+          intList: <double?>[2.0],
+          doubleList: <int?>[2],
+          boolList: <String?>['y'],
+          enumList: <double?>[2.0],
+          objectList: <int?>[2],
+          stringMap: <String?, String?>{'c': 'd'},
+        );
+        final input = <GenericsAllNullableTypesTyped<String, int, double>>[
+          typed1,
+          typed2,
+        ];
         final List<GenericsAllNullableTypesTyped<String, int, double>> result =
             await api.echoListTypedNullable(input);
         expect(result.length, equals(2));
@@ -4216,26 +4200,25 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       });
 
       testWidgets('map with typed nullable echo works', (WidgetTester _) async {
-        final GenericsAllNullableTypesTyped<int, String, double> typedValue =
-            GenericsAllNullableTypesTyped<int, String, double>(
-              aNullableInt: 99,
-              aNullableInt64: 100,
-              aNullableDouble: 9.99,
-              aNullableEnum: GenericsAnEnum.fortyTwo,
-              aNullableString: 'map-test',
-              aNullableObject: 'map-obj',
-              stringList: <int?>[99],
-              intList: <double?>[9.99],
-              doubleList: <String?>[null],
-              boolList: <int?>[99],
-              enumList: <double?>[9.99],
-              objectList: <String?>['map'],
-              stringMap: <int?, int?>{99: 100},
-            );
-        final Map<String, GenericsAllNullableTypesTyped<int, String, double>>
-        input = <String, GenericsAllNullableTypesTyped<int, String, double>>{
-          'key1': typedValue,
-        };
+        final typedValue = GenericsAllNullableTypesTyped<int, String, double>(
+          aNullableInt: 99,
+          aNullableInt64: 100,
+          aNullableDouble: 9.99,
+          aNullableEnum: GenericsAnEnum.fortyTwo,
+          aNullableString: 'map-test',
+          aNullableObject: 'map-obj',
+          stringList: <int?>[99],
+          intList: <double?>[9.99],
+          doubleList: <String?>[null],
+          boolList: <int?>[99],
+          enumList: <double?>[9.99],
+          objectList: <String?>['map'],
+          stringMap: <int?, int?>{99: 100},
+        );
+        final input =
+            <String, GenericsAllNullableTypesTyped<int, String, double>>{
+              'key1': typedValue,
+            };
         final Map<String, GenericsAllNullableTypesTyped<int, String, double>>
         result = await api.echoMapTypedNullable(input);
         expect(result.containsKey('key1'), isTrue);
@@ -4245,32 +4228,31 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('async typed nullable string-int-double echo works', (
         WidgetTester _,
       ) async {
-        final GenericsAllNullableTypesTyped<String, int, double> input =
-            GenericsAllNullableTypesTyped<String, int, double>(
-              aNullableBool: true,
-              aNullableInt: 42,
-              aNullableInt64: 64,
-              aNullableDouble: 3.14,
-              aNullableByteArray: Uint8List.fromList(<int>[1, 2, 3]),
-              aNullable4ByteArray: Int32List.fromList(<int>[4, 5, 6]),
-              aNullable8ByteArray: Int64List.fromList(<int>[7, 8, 9]),
-              aNullableFloatArray: Float64List.fromList(<double>[
-                1.1,
-                2.2,
-                3.3,
-              ]),
-              aNullableEnum: GenericsAnEnum.fortyTwo,
-              anotherNullableEnum: GenericsAnotherEnum.justInCase,
-              aNullableString: 'async-test',
-              aNullableObject: 'async-object',
-              stringList: <String?>['async'],
-              intList: <double?>[1.0],
-              doubleList: <int?>[1],
-              boolList: <String?>['x'],
-              enumList: <double?>[2.0],
-              objectList: <int?>[2],
-              stringMap: <String?, String?>{'async': 'test'},
-            );
+        final input = GenericsAllNullableTypesTyped<String, int, double>(
+          aNullableBool: true,
+          aNullableInt: 42,
+          aNullableInt64: 64,
+          aNullableDouble: 3.14,
+          aNullableByteArray: Uint8List.fromList(<int>[1, 2, 3]),
+          aNullable4ByteArray: Int32List.fromList(<int>[4, 5, 6]),
+          aNullable8ByteArray: Int64List.fromList(<int>[7, 8, 9]),
+          aNullableFloatArray: Float64List.fromList(<double>[
+            1.1,
+            2.2,
+            3.3,
+          ]),
+          aNullableEnum: GenericsAnEnum.fortyTwo,
+          anotherNullableEnum: GenericsAnotherEnum.justInCase,
+          aNullableString: 'async-test',
+          aNullableObject: 'async-object',
+          stringList: <String?>['async'],
+          intList: <double?>[1.0],
+          doubleList: <int?>[1],
+          boolList: <String?>['x'],
+          enumList: <double?>[2.0],
+          objectList: <int?>[2],
+          stringMap: <String?, String?>{'async': 'test'},
+        );
         final GenericsAllNullableTypesTyped<String, int, double> result =
             await api.echoAsyncTypedNullableStringIntDouble(input);
         expect(result.aNullableBool, equals(input.aNullableBool));
@@ -4280,19 +4262,15 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('async generic container typed nullable echo works', (
         WidgetTester _,
       ) async {
-        final GenericsAllNullableTypesTyped<String, int, double> typedInput =
-            GenericsAllNullableTypesTyped<String, int, double>(
-              aNullableBool: false,
-              aNullableInt: 123,
-              aNullableInt64: 456,
-              aNullableDouble: 7.89,
-              aNullableString: 'async-container',
-              aNullableObject: 'container-obj',
-            );
-        final GenericContainer<
-          GenericsAllNullableTypesTyped<String, int, double>
-        >
-        input =
+        final typedInput = GenericsAllNullableTypesTyped<String, int, double>(
+          aNullableBool: false,
+          aNullableInt: 123,
+          aNullableInt64: 456,
+          aNullableDouble: 7.89,
+          aNullableString: 'async-container',
+          aNullableObject: 'container-obj',
+        );
+        final input =
             GenericContainer<
               GenericsAllNullableTypesTyped<String, int, double>
             >(
@@ -4310,9 +4288,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       });
 
       testWidgets('GenericDefaults echo works', (WidgetTester _) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
-        final GenericDefaults input = GenericDefaults(
+        final input = GenericDefaults(
           genericInt: const GenericContainer<int>(
             value: 100,
             values: <int>[10, 20, 30],
@@ -4435,7 +4413,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('GenericDefaults returnGenericDefaults works', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
         final GenericDefaults result = await api.returnGenericDefaults();
 
@@ -4468,9 +4446,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       });
 
       testWidgets('GenericDefaults async echo works', (WidgetTester _) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
-        final GenericDefaults input = GenericDefaults();
+        final input = GenericDefaults();
         final GenericDefaults result = await api.echoAsyncGenericDefaults(
           input,
         );
@@ -4495,9 +4473,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('generic containers serialize and deserialize correctly', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
-        const GenericContainer<int> sentContainer = GenericContainer<int>(
+        const sentContainer = GenericContainer<int>(
           value: 42,
           values: <int>[1, 2, 3],
         );
@@ -4512,13 +4490,12 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
         (
           WidgetTester _,
         ) async {
-          final HostGenericApi api = HostGenericApi();
+          final api = HostGenericApi();
 
-          const GenericContainer<String> sentContainer =
-              GenericContainer<String>(
-                value: 'test',
-                values: <String>['a', 'b', 'c'],
-              );
+          const sentContainer = GenericContainer<String>(
+            value: 'test',
+            values: <String>['a', 'b', 'c'],
+          );
           final GenericContainer<String> echoContainer = await api
               .callFlutterEchoGenericString(sentContainer);
           expect(echoContainer.value, sentContainer.value);
@@ -4529,9 +4506,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('generic pairs serialize and deserialize correctly', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
-        const GenericPair<String, int> sentPair = GenericPair<String, int>(
+        const sentPair = GenericPair<String, int>(
           first: 'hello',
           second: 42,
           map: <String, int>{'key1': 1, 'key2': 2},
@@ -4546,9 +4523,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('generic defaults serialize and deserialize correctly', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
-        final GenericDefaults sentDefaults = GenericDefaults();
+        final sentDefaults = GenericDefaults();
         final GenericDefaults echoDefaults = await api
             .callFlutterEchoGenericDefaults(sentDefaults);
         expect(echoDefaults.genericInt.value, sentDefaults.genericInt.value);
@@ -4566,9 +4543,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('generic defaults int extraction works correctly', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
-        final GenericDefaults sentDefaults = GenericDefaults();
+        final sentDefaults = GenericDefaults();
         final GenericContainer<int> echoContainer = await api
             .callFlutterEchoGenericDefaultsInt(sentDefaults);
         expect(echoContainer.value, sentDefaults.genericInt.value);
@@ -4578,9 +4555,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('nested generics serialize and deserialize correctly', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
-        final GenericDefaults sentDefaults = GenericDefaults();
+        final sentDefaults = GenericDefaults();
         final NestedGeneric<String, int, double> echoNested = await api
             .callFlutterEchoGenericDefaultsNested(sentDefaults);
         expect(
@@ -4600,9 +4577,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('generic pair either extraction works correctly', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
-        final GenericDefaults sentDefaults = GenericDefaults();
+        final sentDefaults = GenericDefaults();
         final GenericPair<int, Either<String, int>> echoPair = await api
             .callFlutterEchoGenericDefaultsPairEither(sentDefaults);
         expect(echoPair.first, sentDefaults.genericPairEither.first);
@@ -4612,14 +4589,13 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('typed nullables serialize and deserialize correctly', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
-        final GenericsAllNullableTypesTyped<String, int, double> sentTyped =
-            GenericsAllNullableTypesTyped<String, int, double>(
-              aNullableString: 'test',
-              aNullableInt: 42,
-              aNullableDouble: 3.14,
-            );
+        final sentTyped = GenericsAllNullableTypesTyped<String, int, double>(
+          aNullableString: 'test',
+          aNullableInt: 42,
+          aNullableDouble: 3.14,
+        );
         final GenericsAllNullableTypesTyped<String, int, double> echoTyped =
             await api.callFlutterEchoTypedNullableStringIntDouble(sentTyped);
         expect(echoTyped.aNullableString, sentTyped.aNullableString);
@@ -4630,14 +4606,13 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('typed nullables with different type params work correctly', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
-        final GenericsAllNullableTypesTyped<int, String, bool> sentTyped =
-            GenericsAllNullableTypesTyped<int, String, bool>(
-              aNullableString: 'typed-test',
-              aNullableInt: 99,
-              aNullableDouble: 2.71,
-            );
+        final sentTyped = GenericsAllNullableTypesTyped<int, String, bool>(
+          aNullableString: 'typed-test',
+          aNullableInt: 99,
+          aNullableDouble: 2.71,
+        );
         final GenericsAllNullableTypesTyped<int, String, bool> echoTyped =
             await api.callFlutterEchoTypedNullableIntStringBool(sentTyped);
         expect(echoTyped.aNullableString, sentTyped.aNullableString);
@@ -4648,28 +4623,27 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('nested generics with specific types work correctly', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
-        const NestedGeneric<String, int, double> sentNested =
-            NestedGeneric<String, int, double>(
-              container: GenericContainer<String>(
-                value: 'nested',
-                values: <String>['x', 'y', 'z'],
-              ),
-              pairs: <GenericPair<int, double>>[
-                GenericPair<int, double>(
-                  first: 1,
-                  second: 1.1,
-                  map: <int, double>{1: 1.1, 2: 2.2},
-                ),
-              ],
-              nestedMap: <String, GenericContainer<int>>{
-                'key': GenericContainer<int>(value: 99, values: <int>[9, 8, 7]),
-              },
-              listOfMaps: <Map<int, double>>[
-                <int, double>{1: 1.0, 2: 2.0},
-              ],
-            );
+        const sentNested = NestedGeneric<String, int, double>(
+          container: GenericContainer<String>(
+            value: 'nested',
+            values: <String>['x', 'y', 'z'],
+          ),
+          pairs: <GenericPair<int, double>>[
+            GenericPair<int, double>(
+              first: 1,
+              second: 1.1,
+              map: <int, double>{1: 1.1, 2: 2.2},
+            ),
+          ],
+          nestedMap: <String, GenericContainer<int>>{
+            'key': GenericContainer<int>(value: 99, values: <int>[9, 8, 7]),
+          },
+          listOfMaps: <Map<int, double>>[
+            <int, double>{1: 1.0, 2: 2.0},
+          ],
+        );
         final NestedGeneric<String, int, double> echoNested = await api
             .callFlutterEchoNestedGenericStringIntDouble(sentNested);
         expect(echoNested.container.value, sentNested.container.value);
@@ -4680,12 +4654,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('generic container typed nullable works correctly', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
-        final GenericContainer<
-          GenericsAllNullableTypesTyped<String, int, double>
-        >
-        sentContainer =
+        final sentContainer =
             GenericContainer<
               GenericsAllNullableTypesTyped<String, int, double>
             >(
@@ -4716,9 +4687,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('list of generic containers works correctly', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
-        const List<GenericContainer<int>> sentList = <GenericContainer<int>>[
+        const sentList = <GenericContainer<int>>[
           GenericContainer<int>(value: 1, values: <int>[1, 2]),
           GenericContainer<int>(value: 2, values: <int>[3, 4]),
         ];
@@ -4732,10 +4703,9 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('list of typed nullables works correctly', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
-        final List<GenericsAllNullableTypesTyped<String, int, double>>
-        sentList = <GenericsAllNullableTypesTyped<String, int, double>>[
+        final sentList = <GenericsAllNullableTypesTyped<String, int, double>>[
           GenericsAllNullableTypesTyped<String, int, double>(
             aNullableString: 'first',
             aNullableInt: 1,
@@ -4757,13 +4727,12 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('map of generic containers works correctly', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
-        const Map<String, GenericContainer<int>> sentMap =
-            <String, GenericContainer<int>>{
-              'key1': GenericContainer<int>(value: 1, values: <int>[1, 2]),
-              'key2': GenericContainer<int>(value: 2, values: <int>[3, 4]),
-            };
+        const sentMap = <String, GenericContainer<int>>{
+          'key1': GenericContainer<int>(value: 1, values: <int>[1, 2]),
+          'key2': GenericContainer<int>(value: 2, values: <int>[3, 4]),
+        };
         final Map<String, GenericContainer<int>> echoMap = await api
             .callFlutterEchoMapGenericContainer(sentMap);
         expect(echoMap.length, sentMap.length);
@@ -4774,21 +4743,21 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('map of typed nullables works correctly', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
-        final Map<String, GenericsAllNullableTypesTyped<int, String, double>>
-        sentMap = <String, GenericsAllNullableTypesTyped<int, String, double>>{
-          'key1': GenericsAllNullableTypesTyped<int, String, double>(
-            aNullableString: 'first-value',
-            aNullableInt: 1,
-            aNullableDouble: 1.0,
-          ),
-          'key2': GenericsAllNullableTypesTyped<int, String, double>(
-            aNullableString: 'second-value',
-            aNullableInt: 2,
-            aNullableDouble: 2.0,
-          ),
-        };
+        final sentMap =
+            <String, GenericsAllNullableTypesTyped<int, String, double>>{
+              'key1': GenericsAllNullableTypesTyped<int, String, double>(
+                aNullableString: 'first-value',
+                aNullableInt: 1,
+                aNullableDouble: 1.0,
+              ),
+              'key2': GenericsAllNullableTypesTyped<int, String, double>(
+                aNullableString: 'second-value',
+                aNullableInt: 2,
+                aNullableDouble: 2.0,
+              ),
+            };
         final Map<String, GenericsAllNullableTypesTyped<int, String, double>>
         echoMap = await api.callFlutterEchoMapTypedNullable(sentMap);
         expect(echoMap.length, sentMap.length);
@@ -4802,7 +4771,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('return generic defaults either left works correctly', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
         final GenericContainer<Either<String, int>> result = await api
             .callFlutterReturnGenericDefaultsEitherLeft();
@@ -4816,7 +4785,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       testWidgets('return generic defaults either right works correctly', (
         WidgetTester _,
       ) async {
-        final HostGenericApi api = HostGenericApi();
+        final api = HostGenericApi();
 
         final GenericContainer<Either<String, int>> result = await api
             .callFlutterReturnGenericDefaultsEitherRight();

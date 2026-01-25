@@ -409,21 +409,15 @@ dev_dependencies:
     });
 
     test('regenerates all pigeon files when updating pigeon', () async {
-<<<<<<< HEAD
-      final RepositoryPackage package =
-          createFakePackage('a_package', packagesDir, extraFiles: <String>[
-        'pigeons/foo.dart',
-        'pigeons/bar.dart',
-      ]);
-      addDependency(package, 'golubets', version: '1.0.0');
-=======
       final RepositoryPackage package = createFakePackage(
         'a_package',
         packagesDir,
-        extraFiles: <String>['pigeons/foo.dart', 'pigeons/bar.dart'],
+        extraFiles: <String>[
+          'pigeons/foo.dart',
+          'pigeons/bar.dart',
+        ],
       );
-      addDependency(package, 'pigeon', version: '1.0.0');
->>>>>>> filtered-upstream/main
+      addDependency(package, 'golubets', version: '1.0.0');
 
       await runCapturingPrint(runner, <String>[
         'update-dependency',
@@ -436,7 +430,6 @@ dev_dependencies:
       expect(
         processRunner.recordedCalls,
         orderedEquals(<ProcessCall>[
-<<<<<<< HEAD
           ProcessCall(
             'dart',
             const <String>['pub', 'get'],
@@ -452,61 +445,23 @@ dev_dependencies:
             const <String>['run', 'golubets', '--input', 'pigeons/bar.dart'],
             package.path,
           ),
-=======
-          ProcessCall('dart', const <String>['pub', 'get'], package.path),
-          ProcessCall('dart', const <String>[
-            'run',
-            'pigeon',
-            '--input',
-            'pigeons/foo.dart',
-          ], package.path),
-          ProcessCall('dart', const <String>[
-            'run',
-            'pigeon',
-            '--input',
-            'pigeons/bar.dart',
-          ], package.path),
->>>>>>> filtered-upstream/main
         ]),
       );
     });
 
-<<<<<<< HEAD
-    test('warns when regenerating golubets if there are no golubets files',
-        () async {
-      final RepositoryPackage package =
-          createFakePackage('a_package', packagesDir);
-      addDependency(package, 'golubets', version: '1.0.0');
-
-      final List<String> output = await runCapturingPrint(runner, <String>[
-        'update-dependency',
-        '--pub-package',
-        'golubets',
-        '--version',
-        '1.5.0',
-      ]);
-
-      expect(
-        output,
-        containsAllInOrder(<Matcher>[
-          contains('No golubets input files found'),
-        ]),
-      );
-    });
-=======
     test(
-      'warns when regenerating pigeon if there are no pigeon files',
+      'warns when regenerating golubets if there are no golubets files',
       () async {
         final RepositoryPackage package = createFakePackage(
           'a_package',
           packagesDir,
         );
-        addDependency(package, 'pigeon', version: '1.0.0');
+        addDependency(package, 'golubets', version: '1.0.0');
 
         final List<String> output = await runCapturingPrint(runner, <String>[
           'update-dependency',
           '--pub-package',
-          'pigeon',
+          'golubets',
           '--version',
           '1.5.0',
         ]);
@@ -514,49 +469,31 @@ dev_dependencies:
         expect(
           output,
           containsAllInOrder(<Matcher>[
-            contains('No pigeon input files found'),
+            contains('No golubets input files found'),
           ]),
         );
       },
     );
->>>>>>> filtered-upstream/main
 
     test('updating golubets fails if pub get fails', () async {
       final RepositoryPackage package = createFakePackage(
-<<<<<<< HEAD
-          'a_package', packagesDir,
-          extraFiles: <String>['pigeons/foo.dart']);
-      addDependency(package, 'golubets', version: '1.0.0');
-=======
         'a_package',
         packagesDir,
         extraFiles: <String>['pigeons/foo.dart'],
       );
-      addDependency(package, 'pigeon', version: '1.0.0');
->>>>>>> filtered-upstream/main
+      addDependency(package, 'golubets', version: '1.0.0');
 
       processRunner.mockProcessesForExecutable['dart'] = <FakeProcessInfo>[
         FakeProcessInfo(MockProcess(exitCode: 1), <String>['pub', 'get']),
       ];
 
       Error? commandError;
-<<<<<<< HEAD
-      final List<String> output = await runCapturingPrint(runner, <String>[
-        'update-dependency',
-        '--pub-package',
-        'golubets',
-        '--version',
-        '1.5.0',
-      ], errorHandler: (Error e) {
-        commandError = e;
-      });
-=======
       final List<String> output = await runCapturingPrint(
         runner,
         <String>[
           'update-dependency',
           '--pub-package',
-          'pigeon',
+          'golubets',
           '--version',
           '1.5.0',
         ],
@@ -564,7 +501,6 @@ dev_dependencies:
           commandError = e;
         },
       );
->>>>>>> filtered-upstream/main
 
       expect(commandError, isA<ToolExit>());
       expect(
@@ -578,17 +514,11 @@ dev_dependencies:
 
     test('updating golubets fails if running golubets fails', () async {
       final RepositoryPackage package = createFakePackage(
-<<<<<<< HEAD
-          'a_package', packagesDir,
-          extraFiles: <String>['pigeons/foo.dart']);
-      addDependency(package, 'golubets', version: '1.0.0');
-=======
         'a_package',
         packagesDir,
         extraFiles: <String>['pigeons/foo.dart'],
       );
-      addDependency(package, 'pigeon', version: '1.0.0');
->>>>>>> filtered-upstream/main
+      addDependency(package, 'golubets', version: '1.0.0');
 
       processRunner.mockProcessesForExecutable['dart'] = <FakeProcessInfo>[
         FakeProcessInfo(MockProcess(), <String>['pub', 'get']),
@@ -596,23 +526,12 @@ dev_dependencies:
       ];
 
       Error? commandError;
-<<<<<<< HEAD
-      final List<String> output = await runCapturingPrint(runner, <String>[
-        'update-dependency',
-        '--pub-package',
-        'golubets',
-        '--version',
-        '1.5.0',
-      ], errorHandler: (Error e) {
-        commandError = e;
-      });
-=======
       final List<String> output = await runCapturingPrint(
         runner,
         <String>[
           'update-dependency',
           '--pub-package',
-          'pigeon',
+          'golubets',
           '--version',
           '1.5.0',
         ],
@@ -620,7 +539,6 @@ dev_dependencies:
           commandError = e;
         },
       );
->>>>>>> filtered-upstream/main
 
       expect(commandError, isA<ToolExit>());
       expect(

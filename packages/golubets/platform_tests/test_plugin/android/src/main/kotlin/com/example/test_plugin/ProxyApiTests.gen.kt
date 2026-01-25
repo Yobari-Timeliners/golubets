@@ -3147,7 +3147,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3182,7 +3182,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3222,7 +3222,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3262,7 +3262,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3310,7 +3310,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3358,7 +3358,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3406,7 +3406,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3454,7 +3454,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3502,7 +3502,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3550,7 +3550,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3598,7 +3598,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3646,7 +3646,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3694,7 +3694,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3742,7 +3742,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3790,7 +3790,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3831,7 +3831,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3872,7 +3872,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3913,7 +3913,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3954,7 +3954,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -3995,7 +3995,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -4036,7 +4036,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -4077,7 +4077,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -4118,7 +4118,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -4158,7 +4158,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -4198,7 +4198,7 @@ abstract class GolubetsApiProxyApiTestClass(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(
@@ -4396,7 +4396,7 @@ open class GolubetsApiProxyApiInterface(
           Result.failure(
               ProxyApiTestsError("ignore-calls-error", "Calls to Dart are being ignored.", "")))
       return
-    } else if (!pigeonRegistrar.instanceManager.containsInstance(pigeon_instanceArg)) {
+    } else if (!golubetsRegistrar.instanceManager.containsInstance(golubets_instanceArg)) {
       callback(
           Result.failure(
               ProxyApiTestsError(

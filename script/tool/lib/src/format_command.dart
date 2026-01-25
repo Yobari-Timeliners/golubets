@@ -178,10 +178,6 @@ class FormatCommand extends PackageLoopingCommand {
         'ls-files',
         '--modified',
         packagesDir.path,
-<<<<<<< HEAD
-=======
-        thirdPartyPackagesDir.path,
->>>>>>> filtered-upstream/main
       ],
       workingDir: packagesDir.parent,
       logOnError: true,

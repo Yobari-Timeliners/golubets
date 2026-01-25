@@ -262,13 +262,8 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
     Class classDefinition, {
     required String dartPackageName,
   }) {
-<<<<<<< HEAD:packages/golubets/lib/src/java/java_generator.dart
-    const List<String> generatedMessages = <String>[
-      ' Generated class from Golubets that represents data sent in messages.',
-=======
     const generatedMessages = <String>[
-      ' Generated class from Pigeon that represents data sent in messages.',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/java/java_generator.dart
+      ' Generated class from Golubets that represents data sent in messages.',
     ];
     indent.newln();
     addDocumentationComments(
@@ -465,11 +460,7 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
       indent.newln();
       indent.write('public @NonNull ${classDefinition.name} build() ');
       indent.addScoped('{', '}', () {
-<<<<<<< HEAD:packages/golubets/lib/src/java/java_generator.dart
-        const String returnVal = 'golubetsReturn';
-=======
-        const returnVal = 'pigeonReturn';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/java/java_generator.dart
+        const returnVal = 'golubetsReturn';
         indent.writeln(
           '${classDefinition.name} $returnVal = new ${classDefinition.name}();',
         );
@@ -520,11 +511,7 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
       'static @NonNull ${classDefinition.name} fromList(@NonNull ArrayList<Object> ${varNamePrefix}list) ',
     );
     indent.addScoped('{', '}', () {
-<<<<<<< HEAD:packages/golubets/lib/src/java/java_generator.dart
-      const String result = 'golubetsResult';
-=======
-      const result = 'pigeonResult';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/java/java_generator.dart
+      const result = 'golubetsResult';
       indent.writeln(
         '${classDefinition.name} $result = new ${classDefinition.name}();',
       );
@@ -759,13 +746,8 @@ if (wrapped == null) {
       return '${_getArgumentName(count, argument)}Arg';
     }
 
-<<<<<<< HEAD:packages/golubets/lib/src/java/java_generator.dart
-    const List<String> generatedMessages = <String>[
-      ' Generated class from Golubets that represents Flutter messages that can be called from Java.',
-=======
     const generatedMessages = <String>[
-      ' Generated class from Pigeon that represents Flutter messages that can be called from Java.',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/java/java_generator.dart
+      ' Generated class from Golubets that represents Flutter messages that can be called from Java.',
     ];
     addDocumentationComments(
       indent,
@@ -960,13 +942,8 @@ if (wrapped == null) {
     AstHostApi api, {
     required String dartPackageName,
   }) {
-<<<<<<< HEAD:packages/golubets/lib/src/java/java_generator.dart
-    const List<String> generatedMessages = <String>[
-      ' Generated interface from Golubets that represents a handler of messages from Flutter.',
-=======
     const generatedMessages = <String>[
-      ' Generated interface from Pigeon that represents a handler of messages from Flutter.',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/java/java_generator.dart
+      ' Generated interface from Golubets that represents a handler of messages from Flutter.',
     ];
     addDocumentationComments(
       indent,

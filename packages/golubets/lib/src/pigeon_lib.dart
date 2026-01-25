@@ -699,11 +699,7 @@ ${_argParser.usage}''';
     // `configureGolubets` function.
     final ArgResults results = _argParser.parse(args);
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
-    final GolubetsOptions opts = GolubetsOptions(
-=======
-    final opts = PigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
+    final opts = GolubetsOptions(
       input: results['input'] as String?,
       dartOut: results['dart_out'] as String?,
       dartTestOut: results['dart_test_out'] as String?,

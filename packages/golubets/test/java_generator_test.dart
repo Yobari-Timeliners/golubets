@@ -1632,16 +1632,11 @@ void main() {
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
-<<<<<<< HEAD:packages/golubets/test/java_generator_test.dart
-    final String code = sink.toString();
+    final code = sink.toString();
     expect(
       code,
       contains('@javax.annotation.Generated("dev.bayori.golubets")'),
     );
-=======
-    final code = sink.toString();
-    expect(code, contains('@javax.annotation.Generated("dev.flutter.pigeon")'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/java_generator_test.dart
   });
 
   test('no generated annotation', () {

@@ -49,13 +49,8 @@ void main() {
     final request = FlutterSearchRequest()..query = 'hey';
     final reply = FlutterSearchReply()..result = 'ho';
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
-    final Completer<ByteData?> completer = Completer<ByteData?>();
-    completer.complete(Api.golubetsChannelCodec.encodeMessage(<Object>[reply]));
-=======
     final completer = Completer<ByteData?>();
-    completer.complete(Api.pigeonChannelCodec.encodeMessage(<Object>[reply]));
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
+    completer.complete(Api.golubetsChannelCodec.encodeMessage(<Object>[reply]));
     final Future<ByteData?> sendResult = completer.future;
     when(
       mockMessenger.send(
@@ -99,12 +94,7 @@ void main() {
 
   test('return null to nonnull', () async {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
-    const String channel =
-        'dev.bayori.golubets.golubets_integration_tests.Api.anInt';
-=======
-    const channel = 'dev.flutter.pigeon.pigeon_integration_tests.Api.anInt';
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
+    const channel = 'dev.bayori.golubets.golubets_integration_tests.Api.anInt';
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
@@ -119,13 +109,8 @@ void main() {
 
   test('send null parameter', () async {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
-    const String channel =
-        'dev.bayori.golubets.golubets_integration_tests.NullableArgHostApi.doit';
-=======
     const channel =
-        'dev.flutter.pigeon.pigeon_integration_tests.NullableArgHostApi.doit';
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
+        'dev.bayori.golubets.golubets_integration_tests.NullableArgHostApi.doit';
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
@@ -137,13 +122,8 @@ void main() {
 
   test('send null collection parameter', () async {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
-    const String channel =
-        'dev.bayori.golubets.golubets_integration_tests.NullableCollectionArgHostApi.doit';
-=======
     const channel =
-        'dev.flutter.pigeon.pigeon_integration_tests.NullableCollectionArgHostApi.doit';
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
+        'dev.bayori.golubets.golubets_integration_tests.NullableCollectionArgHostApi.doit';
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
@@ -214,13 +194,8 @@ void main() {
 
   test('receive null return', () async {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
-    const String channel =
-        'dev.bayori.golubets.golubets_integration_tests.NullableReturnHostApi.doit';
-=======
     const channel =
-        'dev.flutter.pigeon.pigeon_integration_tests.NullableReturnHostApi.doit';
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
+        'dev.bayori.golubets.golubets_integration_tests.NullableReturnHostApi.doit';
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
@@ -234,13 +209,8 @@ void main() {
 
   test('receive null collection return', () async {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
-    const String channel =
-        'dev.bayori.golubets.golubets_integration_tests.NullableCollectionReturnHostApi.doit';
-=======
     const channel =
-        'dev.flutter.pigeon.pigeon_integration_tests.NullableCollectionReturnHostApi.doit';
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
+        'dev.bayori.golubets.golubets_integration_tests.NullableCollectionReturnHostApi.doit';
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
