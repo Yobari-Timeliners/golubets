@@ -344,15 +344,18 @@ class BuildExamplesCommand extends PackageLoopingCommand {
   }) async {
     final String enableExperiment = getStringArg(kEnableExperiment);
 
-    final int exitCode = await processRunner
-        .runAndStream(flutterCommand, <String>[
-          'build',
-          flutterBuildType,
-          ...extraBuildFlags,
-          ..._readExtraBuildFlagsConfiguration(example.directory),
-          if (enableExperiment.isNotEmpty)
-            '--enable-experiment=$enableExperiment',
-        ], workingDir: example.directory);
+    final int exitCode = await processRunner.runAndStream(
+      flutterCommand,
+      <String>[
+        'build',
+        flutterBuildType,
+        ...extraBuildFlags,
+        ..._readExtraBuildFlagsConfiguration(example.directory),
+        if (enableExperiment.isNotEmpty)
+          '--enable-experiment=$enableExperiment',
+      ],
+      workingDir: example.directory,
+    );
     return exitCode == 0;
   }
 }
