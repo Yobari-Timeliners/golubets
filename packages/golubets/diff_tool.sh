@@ -21,7 +21,11 @@ gitTool="git -c advice.detachedHead=false"
 generate_everything() {
   local inputPath=$1
   local outputDir=$2
+<<<<<<< HEAD:packages/golubets/diff_tool.sh
   pub run golubets \
+=======
+  dart run pigeon \
+>>>>>>> filtered-upstream/main:packages/pigeon/diff_tool.sh
     --input "$inputPath" \
     --dart_out "$outputDir/dart.dart" \
     --java_out "$outputDir/java.dart" \
