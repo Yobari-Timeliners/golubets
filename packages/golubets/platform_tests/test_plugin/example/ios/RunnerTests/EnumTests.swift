@@ -15,20 +15,11 @@ class MockEnumApi2Host: EnumApi2Host {
 @MainActor
 struct EnumTests {
 
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/example/ios/RunnerTests/EnumTests.swift
-  func testEchoHost() throws {
+  func testEchoHost() async throws {
     let binaryMessenger = MockBinaryMessenger<DataWithEnum>(codec: EnumGolubetsCodec.shared)
     EnumApi2HostSetup.setUp(binaryMessenger: binaryMessenger, api: MockEnumApi2Host())
     let channelName = "dev.bayori.golubets.golubets_integration_tests.EnumApi2Host.echo"
-    XCTAssertNotNil(binaryMessenger.handlers[channelName])
-=======
-  @Test
-  func echoHost() async throws {
-    let binaryMessenger = MockBinaryMessenger<DataWithEnum>(codec: EnumPigeonCodec.shared)
-    EnumApi2HostSetup.setUp(binaryMessenger: binaryMessenger, api: MockEnumApi2Host())
-    let channelName = "dev.flutter.pigeon.pigeon_integration_tests.EnumApi2Host.echo"
     #expect(binaryMessenger.handlers[channelName] != nil)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/example/ios/RunnerTests/EnumTests.swift
 
     let input = DataWithEnum(state: .success)
     let inputEncoded = binaryMessenger.codec.encode([input])

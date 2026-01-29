@@ -27,13 +27,8 @@ struct PrimitiveTests {
   func intPrimitiveHost() async throws {
     let binaryMessenger = MockBinaryMessenger<Int32>(codec: codec)
     PrimitiveHostApiSetup.setUp(binaryMessenger: binaryMessenger, api: MockPrimitiveHostApi())
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/example/ios/RunnerTests/PrimitiveTests.swift
     let channelName = "dev.bayori.golubets.golubets_integration_tests.PrimitiveHostApi.anInt"
-    XCTAssertNotNil(binaryMessenger.handlers[channelName])
-=======
-    let channelName = "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.anInt"
     #expect(binaryMessenger.handlers[channelName] != nil)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/example/ios/RunnerTests/PrimitiveTests.swift
 
     let input = 1
     let inputEncoded = binaryMessenger.codec.encode([input])
@@ -73,13 +68,8 @@ struct PrimitiveTests {
   func boolPrimitiveHost() async throws {
     let binaryMessenger = MockBinaryMessenger<Bool>(codec: codec)
     PrimitiveHostApiSetup.setUp(binaryMessenger: binaryMessenger, api: MockPrimitiveHostApi())
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/example/ios/RunnerTests/PrimitiveTests.swift
     let channelName = "dev.bayori.golubets.golubets_integration_tests.PrimitiveHostApi.aBool"
-    XCTAssertNotNil(binaryMessenger.handlers[channelName])
-=======
-    let channelName = "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aBool"
     #expect(binaryMessenger.handlers[channelName] != nil)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/example/ios/RunnerTests/PrimitiveTests.swift
 
     let input = true
     let inputEncoded = binaryMessenger.codec.encode([input])
@@ -119,13 +109,8 @@ struct PrimitiveTests {
   func doublePrimitiveHost() async throws {
     let binaryMessenger = MockBinaryMessenger<Double>(codec: codec)
     PrimitiveHostApiSetup.setUp(binaryMessenger: binaryMessenger, api: MockPrimitiveHostApi())
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/example/ios/RunnerTests/PrimitiveTests.swift
     let channelName = "dev.bayori.golubets.golubets_integration_tests.PrimitiveHostApi.aDouble"
-    XCTAssertNotNil(binaryMessenger.handlers[channelName])
-=======
-    let channelName = "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aDouble"
     #expect(binaryMessenger.handlers[channelName] != nil)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/example/ios/RunnerTests/PrimitiveTests.swift
 
     let input: Double = 1.0
     let inputEncoded = binaryMessenger.codec.encode([input])
@@ -166,13 +151,8 @@ struct PrimitiveTests {
   func stringPrimitiveHost() async throws {
     let binaryMessenger = MockBinaryMessenger<String>(codec: codec)
     PrimitiveHostApiSetup.setUp(binaryMessenger: binaryMessenger, api: MockPrimitiveHostApi())
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/example/ios/RunnerTests/PrimitiveTests.swift
     let channelName = "dev.bayori.golubets.golubets_integration_tests.PrimitiveHostApi.aString"
-    XCTAssertNotNil(binaryMessenger.handlers[channelName])
-=======
-    let channelName = "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aString"
     #expect(binaryMessenger.handlers[channelName] != nil)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/example/ios/RunnerTests/PrimitiveTests.swift
 
     let input: String = "hello"
     let inputEncoded = binaryMessenger.codec.encode([input])
@@ -213,13 +193,8 @@ struct PrimitiveTests {
   func listPrimitiveHost() async throws {
     let binaryMessenger = MockBinaryMessenger<[Int]>(codec: codec)
     PrimitiveHostApiSetup.setUp(binaryMessenger: binaryMessenger, api: MockPrimitiveHostApi())
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/example/ios/RunnerTests/PrimitiveTests.swift
     let channelName = "dev.bayori.golubets.golubets_integration_tests.PrimitiveHostApi.aList"
-    XCTAssertNotNil(binaryMessenger.handlers[channelName])
-=======
-    let channelName = "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aList"
     #expect(binaryMessenger.handlers[channelName] != nil)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/example/ios/RunnerTests/PrimitiveTests.swift
 
     let input: [Int] = [1, 2, 3]
     let inputEncoded = binaryMessenger.codec.encode([input])
@@ -260,13 +235,8 @@ struct PrimitiveTests {
   func mapPrimitiveHost() async throws {
     let binaryMessenger = MockBinaryMessenger<[String: Int]>(codec: codec)
     PrimitiveHostApiSetup.setUp(binaryMessenger: binaryMessenger, api: MockPrimitiveHostApi())
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/example/ios/RunnerTests/PrimitiveTests.swift
     let channelName = "dev.bayori.golubets.golubets_integration_tests.PrimitiveHostApi.aMap"
-    XCTAssertNotNil(binaryMessenger.handlers[channelName])
-=======
-    let channelName = "dev.flutter.pigeon.pigeon_integration_tests.PrimitiveHostApi.aMap"
     #expect(binaryMessenger.handlers[channelName] != nil)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/example/ios/RunnerTests/PrimitiveTests.swift
 
     let input: [String: Int] = ["hello": 1, "world": 2]
     let inputEncoded = binaryMessenger.codec.encode([input])

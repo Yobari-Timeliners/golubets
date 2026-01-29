@@ -15,17 +15,17 @@ struct ProxyApiTests {
 
     let binaryMessenger = MockBinaryMessenger<Any>(
       codec: FlutterStandardMessageCodec.sharedInstance())
-    let registrar = ProxyApiTestsPigeonProxyApiRegistrar(
+    let registrar = ProxyApiTestsGolubetsProxyApiRegistrar(
       binaryMessenger: binaryMessenger, apiDelegate: ProxyApiDelegate())
 
     _ = registrar.instanceManager.addHostCreatedInstance(testObject)
     try? registrar.instanceManager.removeAllObjects()
 
-    let api = PigeonApiProxyApiTestClass(
+    let api = GolubetsApiProxyApiTestClass(
       golubetsRegistrar: registrar, delegate: ProxyApiTestClassDelegate())
 
     await confirmation { confirmed in
-      api.flutterNoop(pigeonInstance: testObject) { response in
+      api.flutterNoop(golubetsInstance: testObject) { response in
         if case .failure(let error) = response {
           #expect(
             error.message

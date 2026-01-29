@@ -154,16 +154,10 @@ struct InstanceManagerTests {
     let _: AnyObject? = try! instanceManager.removeInstance(withIdentifier: identifier)
     try? instanceManager.removeAllObjects()
 
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/example/ios/RunnerTests/InstanceManagerTests.swift
-    XCTAssertNil(finalizer.delegate)
-    XCTAssertNil(
-      objc_getAssociatedObject(object!, ProxyApiTestsGolubetsInternalFinalizer.associatedObjectKey))
-=======
     #expect(finalizer.delegate == nil)
     #expect(
-      objc_getAssociatedObject(object!, ProxyApiTestsPigeonInternalFinalizer.associatedObjectKey)
+      objc_getAssociatedObject(object!, ProxyApiTestsGolubetsInternalFinalizer.associatedObjectKey)
         == nil)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/example/ios/RunnerTests/InstanceManagerTests.swift
   }
 }
 

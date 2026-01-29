@@ -107,7 +107,7 @@ jobs:
         include:
           - os: ubuntu-22.04
             platform: linux
-          - os: macos-14
+          - os: macos-26
             platform: macos
           - os: windows-latest
             platform: windows

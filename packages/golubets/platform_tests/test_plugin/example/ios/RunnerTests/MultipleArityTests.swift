@@ -16,23 +16,12 @@ class MockMultipleArityHostApi: MultipleArityHostApi {
 @MainActor
 struct MultipleArityTests {
   var codec = FlutterStandardMessageCodec.sharedInstance()
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/example/ios/RunnerTests/MultipleArityTests.swift
-  func testSimpleHost() throws {
+  func testSimpleHost() async throws {
     let binaryMessenger = MockBinaryMessenger<Int64>(codec: EnumGolubetsCodec.shared)
     MultipleArityHostApiSetup.setUp(
       binaryMessenger: binaryMessenger, api: MockMultipleArityHostApi())
     let channelName = "dev.bayori.golubets.golubets_integration_tests.MultipleArityHostApi.subtract"
-    XCTAssertNotNil(binaryMessenger.handlers[channelName])
-=======
-
-  @Test
-  func simpleHost() async throws {
-    let binaryMessenger = MockBinaryMessenger<Int64>(codec: EnumPigeonCodec.shared)
-    MultipleArityHostApiSetup.setUp(
-      binaryMessenger: binaryMessenger, api: MockMultipleArityHostApi())
-    let channelName = "dev.flutter.pigeon.pigeon_integration_tests.MultipleArityHostApi.subtract"
     #expect(binaryMessenger.handlers[channelName] != nil)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/example/ios/RunnerTests/MultipleArityTests.swift
 
     let inputX = 10
     let inputY = 7

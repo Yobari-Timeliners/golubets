@@ -1924,956 +1924,955 @@ class SendConsistentNumbers: StreamConsistentNumbersStreamHandler {
   }
 }
 
+class ProxyApiTestClassDelegate: GolubetsApiDelegateProxyApiTestClass {
+  public func golubetsDefaultConstructor(
+    golubetsApi: GolubetsApiProxyApiTestClass, aBool: Bool, anInt: Int64, aDouble: Double,
+    aString: String, aUint8List: FlutterStandardTypedData, aList: [Any?], aMap: [String?: Any?],
+    anEnum: ProxyApiTestEnum, aProxyApi: ProxyApiSuperClass, aNullableBool: Bool?,
+    aNullableInt: Int64?, aNullableDouble: Double?, aNullableString: String?,
+    aNullableUint8List: FlutterStandardTypedData?, aNullableList: [Any?]?,
+    aNullableMap: [String?: Any?]?, aNullableEnum: ProxyApiTestEnum?,
+    aNullableProxyApi: ProxyApiSuperClass?, boolParam: Bool, intParam: Int64,
+    doubleParam: Double, stringParam: String, aUint8ListParam: FlutterStandardTypedData,
+    listParam: [Any?], mapParam: [String?: Any?], enumParam: ProxyApiTestEnum,
+    proxyApiParam: ProxyApiSuperClass, nullableBoolParam: Bool?, nullableIntParam: Int64?,
+    nullableDoubleParam: Double?, nullableStringParam: String?,
+    nullableUint8ListParam: FlutterStandardTypedData?, nullableListParam: [Any?]?,
+    nullableMapParam: [String?: Any?]?, nullableEnumParam: ProxyApiTestEnum?,
+    nullableProxyApiParam: ProxyApiSuperClass?
+  ) throws -> ProxyApiTestClass {
+    return ProxyApiTestClass()
+  }
+
+  public func namedConstructor(
+    golubetsApi: GolubetsApiProxyApiTestClass, aBool: Bool, anInt: Int64, aDouble: Double,
+    aString: String, aUint8List: FlutterStandardTypedData, aList: [Any?], aMap: [String?: Any?],
+    anEnum: ProxyApiTestEnum, aProxyApi: ProxyApiSuperClass, aNullableBool: Bool?,
+    aNullableInt: Int64?, aNullableDouble: Double?, aNullableString: String?,
+    aNullableUint8List: FlutterStandardTypedData?, aNullableList: [Any?]?,
+    aNullableMap: [String?: Any?]?, aNullableEnum: ProxyApiTestEnum?,
+    aNullableProxyApi: ProxyApiSuperClass?
+  ) throws -> ProxyApiTestClass {
+    return ProxyApiTestClass()
+  }
+
+  public func attachedField(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws -> ProxyApiSuperClass
+  {
+    return ProxyApiSuperClass()
+  }
+
+  public func staticAttachedField(golubetsApi: GolubetsApiProxyApiTestClass) throws
+    -> ProxyApiSuperClass
+  {
+    return ProxyApiSuperClass()
+  }
+
+  public func aBool(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws
+    -> Bool
+  {
+    return true
+  }
+
+  public func anInt(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws
+    -> Int64
+  {
+    return 0
+  }
+
+  public func aDouble(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws
+    -> Double
+  {
+    return 0.0
+  }
+
+  public func aString(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws
+    -> String
+  {
+    return ""
+  }
+
+  public func aUint8List(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws -> FlutterStandardTypedData
+  {
+    return FlutterStandardTypedData(bytes: Data())
+  }
+
+  public func aList(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws
+    -> [Any?]
+  {
+    return []
+  }
+
+  public func aMap(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws
+    -> [String?: Any?]
+  {
+    return [:]
+  }
+
+  public func anEnum(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws
+    -> ProxyApiTestEnum
+  {
+    return ProxyApiTestEnum.one
+  }
+
+  public func aProxyApi(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws -> ProxyApiSuperClass
+  {
+    return ProxyApiSuperClass()
+  }
+
+  public func aNullableBool(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws -> Bool?
+  {
+    return nil
+  }
+
+  public func aNullableInt(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws -> Int64?
+  {
+    return nil
+  }
+
+  public func aNullableDouble(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws -> Double?
+  {
+    return nil
+  }
+
+  public func aNullableString(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws -> String?
+  {
+    return nil
+  }
+
+  public func aNullableUint8List(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  ) throws -> FlutterStandardTypedData? {
+    return nil
+  }
+
+  public func aNullableList(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws -> [Any?]?
+  {
+    return nil
+  }
+
+  public func aNullableMap(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws -> [String?: Any?]?
+  {
+    return nil
+  }
+
+  public func aNullableEnum(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws -> ProxyApiTestEnum?
+  {
+    return nil
+  }
+
+  public func aNullableProxyApi(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  ) throws -> ProxyApiSuperClass? {
+    return nil
+  }
+
+  public func noop(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws
+  {}
+
+  public func throwError(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  )
+    throws -> Any?
+  {
+    throw ProxyApiTestsError(code: "code", message: "message", details: "details")
+  }
+
+  public func throwErrorFromVoid(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  ) throws {
+    throw ProxyApiTestsError(code: "code", message: "message", details: "details")
+  }
+
+  public func throwFlutterError(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
+  ) throws -> Any? {
+    throw ProxyApiTestsError(code: "code", message: "message", details: "details")
+  }
+
+  public func echoInt(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anInt: Int64
+  ) throws -> Int64 {
+    return anInt
+  }
+
+  public func echoDouble(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aDouble: Double
+  ) throws -> Double {
+    return aDouble
+  }
+
+  public func echoBool(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aBool: Bool
+  ) throws -> Bool {
+    return aBool
+  }
+
+  public func echoString(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aString: String
+  ) throws -> String {
+    return aString
+  }
+
+  public func echoUint8List(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aUint8List: FlutterStandardTypedData
+  ) throws -> FlutterStandardTypedData {
+    return aUint8List
+  }
+
+  public func echoObject(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    anObject: Any
+  ) throws -> Any {
+    return anObject
+  }
+
+  public func echoList(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aList: [Any?]
+  ) throws -> [Any?] {
+    return aList
+  }
+
+  public func echoProxyApiList(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aList: [ProxyApiTestClass]
+  ) throws -> [ProxyApiTestClass] {
+    return aList
+  }
+
+  public func echoMap(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aMap: [String?: Any?]
+  ) throws -> [String?: Any?] {
+    return aMap
+  }
+
+  public func echoProxyApiMap(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aMap: [String: ProxyApiTestClass]
+  ) throws -> [String: ProxyApiTestClass] {
+    return aMap
+  }
+
+  public func echoEnum(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    anEnum: ProxyApiTestEnum
+  ) throws -> ProxyApiTestEnum {
+    return anEnum
+  }
+
+  public func echoProxyApi(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aProxyApi: ProxyApiSuperClass
+  ) throws -> ProxyApiSuperClass {
+    return aProxyApi
+  }
+
+  public func echoNullableInt(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aNullableInt: Int64?
+  ) throws -> Int64? {
+    return aNullableInt
+  }
+
+  public func echoNullableDouble(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aNullableDouble: Double?
+  ) throws -> Double? {
+    return aNullableDouble
+  }
+
+  public func echoNullableBool(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aNullableBool: Bool?
+  ) throws -> Bool? {
+    return aNullableBool
+  }
+
+  public func echoNullableString(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aNullableString: String?
+  ) throws -> String? {
+    return aNullableString
+  }
+
+  public func echoNullableUint8List(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aNullableUint8List: FlutterStandardTypedData?
+  ) throws -> FlutterStandardTypedData? {
+    return aNullableUint8List
+  }
+
+  public func echoNullableObject(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aNullableObject: Any?
+  ) throws -> Any? {
+    return aNullableObject
+  }
+
+  public func echoNullableList(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aNullableList: [Any?]?
+  ) throws -> [Any?]? {
+    return aNullableList
+  }
+
+  public func echoNullableMap(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aNullableMap: [String?: Any?]?
+  ) throws -> [String?: Any?]? {
+    return aNullableMap
+  }
+
+  public func echoNullableEnum(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aNullableEnum: ProxyApiTestEnum?
+  ) throws -> ProxyApiTestEnum? {
+    return aNullableEnum
+  }
+
+  public func echoNullableProxyApi(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aNullableProxyApi: ProxyApiSuperClass?
+  ) throws -> ProxyApiSuperClass? {
+    return aNullableProxyApi
+  }
+
+  public func noopAsync(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    completion: @escaping (Result<Void, Error>) -> Void
+  ) {
+    completion(.success(()))
+  }
+
+  public func echoAsyncInt(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    anInt: Int64,
+    completion: @escaping (Result<Int64, Error>) -> Void
+  ) {
+    completion(.success(anInt))
+  }
+
+  public func echoAsyncDouble(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aDouble: Double,
+    completion: @escaping (Result<Double, Error>) -> Void
+  ) {
+    completion(.success(aDouble))
+  }
+
+  public func echoAsyncBool(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aBool: Bool,
+    completion: @escaping (Result<Bool, Error>) -> Void
+  ) {
+    completion(.success(aBool))
+  }
+
+  public func echoAsyncString(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aString: String,
+    completion: @escaping (Result<String, Error>) -> Void
+  ) {
+    completion(.success(aString))
+  }
+
+  public func echoAsyncUint8List(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aUint8List: FlutterStandardTypedData,
+    completion: @escaping (Result<FlutterStandardTypedData, Error>) -> Void
+  ) {
+    completion(.success(aUint8List))
+  }
+
+  public func echoAsyncObject(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    anObject: Any,
+    completion: @escaping (Result<Any, Error>) -> Void
+  ) {
+    completion(.success(anObject))
+  }
+
+  public func echoAsyncList(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aList: [Any?],
+    completion: @escaping (Result<[Any?], Error>) -> Void
+  ) {
+    completion(.success(aList))
+  }
+
+  public func echoAsyncMap(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aMap: [String?: Any?], completion: @escaping (Result<[String?: Any?], Error>) -> Void
+  ) {
+    completion(.success(aMap))
+  }
+
+  public func echoAsyncEnum(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    anEnum: ProxyApiTestEnum, completion: @escaping (Result<ProxyApiTestEnum, Error>) -> Void
+  ) {
+    completion(.success(anEnum))
+  }
+
+  public func throwAsyncError(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    completion: @escaping (Result<Any?, Error>) -> Void
+  ) {
+    completion(
+      .failure(ProxyApiTestsError(code: "code", message: "message", details: "details")))
+  }
+
+  public func throwAsyncErrorFromVoid(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    completion: @escaping (Result<Void, Error>) -> Void
+  ) {
+    completion(
+      .failure(ProxyApiTestsError(code: "code", message: "message", details: "details")))
+  }
+
+  public func throwAsyncFlutterError(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    completion: @escaping (Result<Any?, Error>) -> Void
+  ) {
+    completion(
+      .failure(ProxyApiTestsError(code: "code", message: "message", details: "details")))
+  }
+
+  public func echoAsyncNullableInt(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    anInt: Int64?,
+    completion: @escaping (Result<Int64?, Error>) -> Void
+  ) {
+    completion(.success(anInt))
+  }
+
+  public func echoAsyncNullableDouble(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aDouble: Double?,
+    completion: @escaping (Result<Double?, Error>) -> Void
+  ) {
+    completion(.success(aDouble))
+  }
+
+  public func echoAsyncNullableBool(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aBool: Bool?,
+    completion: @escaping (Result<Bool?, Error>) -> Void
+  ) {
+    completion(.success(aBool))
+  }
+
+  public func echoAsyncNullableString(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aString: String?,
+    completion: @escaping (Result<String?, Error>) -> Void
+  ) {
+    completion(.success(aString))
+  }
+
+  public func echoAsyncNullableUint8List(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aUint8List: FlutterStandardTypedData?,
+    completion: @escaping (Result<FlutterStandardTypedData?, Error>) -> Void
+  ) {
+    completion(.success(aUint8List))
+  }
+
+  public func echoAsyncNullableObject(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    anObject: Any?,
+    completion: @escaping (Result<Any?, Error>) -> Void
+  ) {
+    completion(.success(anObject))
+  }
+
+  public func echoAsyncNullableList(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aList: [Any?]?,
+    completion: @escaping (Result<[Any?]?, Error>) -> Void
+  ) {
+    completion(.success(aList))
+  }
+
+  public func echoAsyncNullableMap(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aMap: [String?: Any?]?, completion: @escaping (Result<[String?: Any?]?, Error>) -> Void
+  ) {
+    completion(.success(aMap))
+  }
+
+  public func echoAsyncNullableEnum(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    anEnum: ProxyApiTestEnum?, completion: @escaping (Result<ProxyApiTestEnum?, Error>) -> Void
+  ) {
+    completion(.success(anEnum))
+  }
+
+  public func staticNoop(golubetsApi: GolubetsApiProxyApiTestClass) throws {}
+
+  public func echoStaticString(golubetsApi: GolubetsApiProxyApiTestClass, aString: String)
+    throws
+    -> String
+  {
+    return aString
+  }
+
+  public func staticAsyncNoop(
+    golubetsApi: GolubetsApiProxyApiTestClass,
+    completion: @escaping (Result<Void, Error>) -> Void
+  ) {
+    completion(.success(()))
+  }
+
+  public func callFlutterNoop(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    completion: @escaping (Result<Void, Error>) -> Void
+  ) {
+    golubetsApi.flutterNoop(golubetsInstance: golubetsInstance) { response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterThrowError(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    completion: @escaping (Result<Any?, Error>) -> Void
+  ) {
+    golubetsApi.flutterThrowError(golubetsInstance: golubetsInstance) { response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterThrowErrorFromVoid(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    completion: @escaping (Result<Void, Error>) -> Void
+  ) {
+    golubetsApi.flutterThrowErrorFromVoid(golubetsInstance: golubetsInstance) { response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoBool(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aBool: Bool,
+    completion: @escaping (Result<Bool, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoBool(golubetsInstance: golubetsInstance, aBool: aBool) { response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoInt(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    anInt: Int64,
+    completion: @escaping (Result<Int64, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoInt(golubetsInstance: golubetsInstance, anInt: anInt) { response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoDouble(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aDouble: Double,
+    completion: @escaping (Result<Double, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoDouble(golubetsInstance: golubetsInstance, aDouble: aDouble) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoString(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aString: String,
+    completion: @escaping (Result<String, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoString(golubetsInstance: golubetsInstance, aString: aString) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoUint8List(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aUint8List: FlutterStandardTypedData,
+    completion: @escaping (Result<FlutterStandardTypedData, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoUint8List(golubetsInstance: golubetsInstance, aList: aUint8List) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoList(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aList: [Any?],
+    completion: @escaping (Result<[Any?], Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoList(golubetsInstance: golubetsInstance, aList: aList) { response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoProxyApiList(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aList: [ProxyApiTestClass?],
+    completion: @escaping (Result<[ProxyApiTestClass?], Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoProxyApiList(golubetsInstance: golubetsInstance, aList: aList) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoMap(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aMap: [String?: Any?], completion: @escaping (Result<[String?: Any?], Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoMap(golubetsInstance: golubetsInstance, aMap: aMap) { response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoProxyApiMap(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aMap: [String?: ProxyApiTestClass?],
+    completion: @escaping (Result<[String?: ProxyApiTestClass?], Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoProxyApiMap(golubetsInstance: golubetsInstance, aMap: aMap) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoEnum(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    anEnum: ProxyApiTestEnum, completion: @escaping (Result<ProxyApiTestEnum, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoEnum(golubetsInstance: golubetsInstance, anEnum: anEnum) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoProxyApi(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aProxyApi: ProxyApiSuperClass,
+    completion: @escaping (Result<ProxyApiSuperClass, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoProxyApi(golubetsInstance: golubetsInstance, aProxyApi: aProxyApi) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoNullableBool(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aBool: Bool?,
+    completion: @escaping (Result<Bool?, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoNullableBool(golubetsInstance: golubetsInstance, aBool: aBool) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoNullableInt(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    anInt: Int64?,
+    completion: @escaping (Result<Int64?, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoNullableInt(golubetsInstance: golubetsInstance, anInt: anInt) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoNullableDouble(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aDouble: Double?,
+    completion: @escaping (Result<Double?, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoNullableDouble(golubetsInstance: golubetsInstance, aDouble: aDouble) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoNullableString(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aString: String?,
+    completion: @escaping (Result<String?, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoNullableString(golubetsInstance: golubetsInstance, aString: aString) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoNullableUint8List(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aUint8List: FlutterStandardTypedData?,
+    completion: @escaping (Result<FlutterStandardTypedData?, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoNullableUint8List(
+      golubetsInstance: golubetsInstance, aList: aUint8List
+    ) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoNullableList(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aList: [Any?]?,
+    completion: @escaping (Result<[Any?]?, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoNullableList(golubetsInstance: golubetsInstance, aList: aList) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoNullableMap(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aMap: [String?: Any?]?, completion: @escaping (Result<[String?: Any?]?, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoNullableMap(golubetsInstance: golubetsInstance, aMap: aMap) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoNullableEnum(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    anEnum: ProxyApiTestEnum?, completion: @escaping (Result<ProxyApiTestEnum?, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoNullableEnum(golubetsInstance: golubetsInstance, anEnum: anEnum) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoNullableProxyApi(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aProxyApi: ProxyApiSuperClass?,
+    completion: @escaping (Result<ProxyApiSuperClass?, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoNullableProxyApi(
+      golubetsInstance: golubetsInstance, aProxyApi: aProxyApi
+    ) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterNoopAsync(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    completion: @escaping (Result<Void, Error>) -> Void
+  ) {
+    golubetsApi.flutterNoopAsync(golubetsInstance: golubetsInstance) { response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  public func callFlutterEchoAsyncString(
+    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
+    aString: String,
+    completion: @escaping (Result<String, Error>) -> Void
+  ) {
+    golubetsApi.flutterEchoAsyncString(golubetsInstance: golubetsInstance, aString: aString) {
+      response in
+      switch response {
+      case .success(let res):
+        completion(.success(res))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+}
+
 class ProxyApiDelegate: ProxyApiTestsGolubetsProxyApiDelegate {
   public func golubetsApiProxyApiTestClass(_ registrar: ProxyApiTestsGolubetsProxyApiRegistrar)
     -> GolubetsApiProxyApiTestClass
   {
-    class ProxyApiTestClassDelegate: GolubetsApiDelegateProxyApiTestClass {
-      public func golubetsDefaultConstructor(
-        golubetsApi: GolubetsApiProxyApiTestClass, aBool: Bool, anInt: Int64, aDouble: Double,
-        aString: String, aUint8List: FlutterStandardTypedData, aList: [Any?], aMap: [String?: Any?],
-        anEnum: ProxyApiTestEnum, aProxyApi: ProxyApiSuperClass, aNullableBool: Bool?,
-        aNullableInt: Int64?, aNullableDouble: Double?, aNullableString: String?,
-        aNullableUint8List: FlutterStandardTypedData?, aNullableList: [Any?]?,
-        aNullableMap: [String?: Any?]?, aNullableEnum: ProxyApiTestEnum?,
-        aNullableProxyApi: ProxyApiSuperClass?, boolParam: Bool, intParam: Int64,
-        doubleParam: Double, stringParam: String, aUint8ListParam: FlutterStandardTypedData,
-        listParam: [Any?], mapParam: [String?: Any?], enumParam: ProxyApiTestEnum,
-        proxyApiParam: ProxyApiSuperClass, nullableBoolParam: Bool?, nullableIntParam: Int64?,
-        nullableDoubleParam: Double?, nullableStringParam: String?,
-        nullableUint8ListParam: FlutterStandardTypedData?, nullableListParam: [Any?]?,
-        nullableMapParam: [String?: Any?]?, nullableEnumParam: ProxyApiTestEnum?,
-        nullableProxyApiParam: ProxyApiSuperClass?
-      ) throws -> ProxyApiTestClass {
-        return ProxyApiTestClass()
-      }
-
-      public func namedConstructor(
-        golubetsApi: GolubetsApiProxyApiTestClass, aBool: Bool, anInt: Int64, aDouble: Double,
-        aString: String, aUint8List: FlutterStandardTypedData, aList: [Any?], aMap: [String?: Any?],
-        anEnum: ProxyApiTestEnum, aProxyApi: ProxyApiSuperClass, aNullableBool: Bool?,
-        aNullableInt: Int64?, aNullableDouble: Double?, aNullableString: String?,
-        aNullableUint8List: FlutterStandardTypedData?, aNullableList: [Any?]?,
-        aNullableMap: [String?: Any?]?, aNullableEnum: ProxyApiTestEnum?,
-        aNullableProxyApi: ProxyApiSuperClass?
-      ) throws -> ProxyApiTestClass {
-        return ProxyApiTestClass()
-      }
-
-      public func attachedField(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws -> ProxyApiSuperClass
-      {
-        return ProxyApiSuperClass()
-      }
-
-      public func staticAttachedField(golubetsApi: GolubetsApiProxyApiTestClass) throws
-        -> ProxyApiSuperClass
-      {
-        return ProxyApiSuperClass()
-      }
-
-      public func aBool(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws
-        -> Bool
-      {
-        return true
-      }
-
-      public func anInt(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws
-        -> Int64
-      {
-        return 0
-      }
-
-      public func aDouble(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws
-        -> Double
-      {
-        return 0.0
-      }
-
-      public func aString(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws
-        -> String
-      {
-        return ""
-      }
-
-      public func aUint8List(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws -> FlutterStandardTypedData
-      {
-        return FlutterStandardTypedData(bytes: Data())
-      }
-
-      public func aList(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws
-        -> [Any?]
-      {
-        return []
-      }
-
-      public func aMap(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws
-        -> [String?: Any?]
-      {
-        return [:]
-      }
-
-      public func anEnum(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws
-        -> ProxyApiTestEnum
-      {
-        return ProxyApiTestEnum.one
-      }
-
-      public func aProxyApi(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws -> ProxyApiSuperClass
-      {
-        return ProxyApiSuperClass()
-      }
-
-      public func aNullableBool(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws -> Bool?
-      {
-        return nil
-      }
-
-      public func aNullableInt(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws -> Int64?
-      {
-        return nil
-      }
-
-      public func aNullableDouble(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws -> Double?
-      {
-        return nil
-      }
-
-      public func aNullableString(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws -> String?
-      {
-        return nil
-      }
-
-      public func aNullableUint8List(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      ) throws -> FlutterStandardTypedData? {
-        return nil
-      }
-
-      public func aNullableList(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws -> [Any?]?
-      {
-        return nil
-      }
-
-      public func aNullableMap(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws -> [String?: Any?]?
-      {
-        return nil
-      }
-
-      public func aNullableEnum(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws -> ProxyApiTestEnum?
-      {
-        return nil
-      }
-
-      public func aNullableProxyApi(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      ) throws -> ProxyApiSuperClass? {
-        return nil
-      }
-
-      public func noop(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws
-      {}
-
-      public func throwError(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      )
-        throws -> Any?
-      {
-        throw ProxyApiTestsError(code: "code", message: "message", details: "details")
-      }
-
-      public func throwErrorFromVoid(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      ) throws {
-        throw ProxyApiTestsError(code: "code", message: "message", details: "details")
-      }
-
-      public func throwFlutterError(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-      ) throws -> Any? {
-        throw ProxyApiTestsError(code: "code", message: "message", details: "details")
-      }
-
-      public func echoInt(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anInt: Int64
-      ) throws -> Int64 {
-        return anInt
-      }
-
-      public func echoDouble(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aDouble: Double
-      ) throws -> Double {
-        return aDouble
-      }
-
-      public func echoBool(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aBool: Bool
-      ) throws -> Bool {
-        return aBool
-      }
-
-      public func echoString(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aString: String
-      ) throws -> String {
-        return aString
-      }
-
-      public func echoUint8List(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aUint8List: FlutterStandardTypedData
-      ) throws -> FlutterStandardTypedData {
-        return aUint8List
-      }
-
-      public func echoObject(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        anObject: Any
-      ) throws -> Any {
-        return anObject
-      }
-
-      public func echoList(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aList: [Any?]
-      ) throws -> [Any?] {
-        return aList
-      }
-
-      public func echoProxyApiList(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aList: [ProxyApiTestClass]
-      ) throws -> [ProxyApiTestClass] {
-        return aList
-      }
-
-      public func echoMap(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aMap: [String?: Any?]
-      ) throws -> [String?: Any?] {
-        return aMap
-      }
-
-      public func echoProxyApiMap(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aMap: [String: ProxyApiTestClass]
-      ) throws -> [String: ProxyApiTestClass] {
-        return aMap
-      }
-
-      public func echoEnum(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        anEnum: ProxyApiTestEnum
-      ) throws -> ProxyApiTestEnum {
-        return anEnum
-      }
-
-      public func echoProxyApi(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aProxyApi: ProxyApiSuperClass
-      ) throws -> ProxyApiSuperClass {
-        return aProxyApi
-      }
-
-      public func echoNullableInt(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aNullableInt: Int64?
-      ) throws -> Int64? {
-        return aNullableInt
-      }
-
-      public func echoNullableDouble(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aNullableDouble: Double?
-      ) throws -> Double? {
-        return aNullableDouble
-      }
-
-      public func echoNullableBool(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aNullableBool: Bool?
-      ) throws -> Bool? {
-        return aNullableBool
-      }
-
-      public func echoNullableString(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aNullableString: String?
-      ) throws -> String? {
-        return aNullableString
-      }
-
-      public func echoNullableUint8List(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aNullableUint8List: FlutterStandardTypedData?
-      ) throws -> FlutterStandardTypedData? {
-        return aNullableUint8List
-      }
-
-      public func echoNullableObject(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aNullableObject: Any?
-      ) throws -> Any? {
-        return aNullableObject
-      }
-
-      public func echoNullableList(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aNullableList: [Any?]?
-      ) throws -> [Any?]? {
-        return aNullableList
-      }
-
-      public func echoNullableMap(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aNullableMap: [String?: Any?]?
-      ) throws -> [String?: Any?]? {
-        return aNullableMap
-      }
-
-      public func echoNullableEnum(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aNullableEnum: ProxyApiTestEnum?
-      ) throws -> ProxyApiTestEnum? {
-        return aNullableEnum
-      }
-
-      public func echoNullableProxyApi(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aNullableProxyApi: ProxyApiSuperClass?
-      ) throws -> ProxyApiSuperClass? {
-        return aNullableProxyApi
-      }
-
-      public func noopAsync(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        completion: @escaping (Result<Void, Error>) -> Void
-      ) {
-        completion(.success(()))
-      }
-
-      public func echoAsyncInt(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        anInt: Int64,
-        completion: @escaping (Result<Int64, Error>) -> Void
-      ) {
-        completion(.success(anInt))
-      }
-
-      public func echoAsyncDouble(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aDouble: Double,
-        completion: @escaping (Result<Double, Error>) -> Void
-      ) {
-        completion(.success(aDouble))
-      }
-
-      public func echoAsyncBool(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aBool: Bool,
-        completion: @escaping (Result<Bool, Error>) -> Void
-      ) {
-        completion(.success(aBool))
-      }
-
-      public func echoAsyncString(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aString: String,
-        completion: @escaping (Result<String, Error>) -> Void
-      ) {
-        completion(.success(aString))
-      }
-
-      public func echoAsyncUint8List(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aUint8List: FlutterStandardTypedData,
-        completion: @escaping (Result<FlutterStandardTypedData, Error>) -> Void
-      ) {
-        completion(.success(aUint8List))
-      }
-
-      public func echoAsyncObject(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        anObject: Any,
-        completion: @escaping (Result<Any, Error>) -> Void
-      ) {
-        completion(.success(anObject))
-      }
-
-      public func echoAsyncList(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aList: [Any?],
-        completion: @escaping (Result<[Any?], Error>) -> Void
-      ) {
-        completion(.success(aList))
-      }
-
-      public func echoAsyncMap(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aMap: [String?: Any?], completion: @escaping (Result<[String?: Any?], Error>) -> Void
-      ) {
-        completion(.success(aMap))
-      }
-
-      public func echoAsyncEnum(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        anEnum: ProxyApiTestEnum, completion: @escaping (Result<ProxyApiTestEnum, Error>) -> Void
-      ) {
-        completion(.success(anEnum))
-      }
-
-      public func throwAsyncError(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        completion: @escaping (Result<Any?, Error>) -> Void
-      ) {
-        completion(
-          .failure(ProxyApiTestsError(code: "code", message: "message", details: "details")))
-      }
-
-      public func throwAsyncErrorFromVoid(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        completion: @escaping (Result<Void, Error>) -> Void
-      ) {
-        completion(
-          .failure(ProxyApiTestsError(code: "code", message: "message", details: "details")))
-      }
-
-      public func throwAsyncFlutterError(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        completion: @escaping (Result<Any?, Error>) -> Void
-      ) {
-        completion(
-          .failure(ProxyApiTestsError(code: "code", message: "message", details: "details")))
-      }
-
-      public func echoAsyncNullableInt(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        anInt: Int64?,
-        completion: @escaping (Result<Int64?, Error>) -> Void
-      ) {
-        completion(.success(anInt))
-      }
-
-      public func echoAsyncNullableDouble(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aDouble: Double?,
-        completion: @escaping (Result<Double?, Error>) -> Void
-      ) {
-        completion(.success(aDouble))
-      }
-
-      public func echoAsyncNullableBool(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aBool: Bool?,
-        completion: @escaping (Result<Bool?, Error>) -> Void
-      ) {
-        completion(.success(aBool))
-      }
-
-      public func echoAsyncNullableString(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aString: String?,
-        completion: @escaping (Result<String?, Error>) -> Void
-      ) {
-        completion(.success(aString))
-      }
-
-      public func echoAsyncNullableUint8List(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aUint8List: FlutterStandardTypedData?,
-        completion: @escaping (Result<FlutterStandardTypedData?, Error>) -> Void
-      ) {
-        completion(.success(aUint8List))
-      }
-
-      public func echoAsyncNullableObject(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        anObject: Any?,
-        completion: @escaping (Result<Any?, Error>) -> Void
-      ) {
-        completion(.success(anObject))
-      }
-
-      public func echoAsyncNullableList(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aList: [Any?]?,
-        completion: @escaping (Result<[Any?]?, Error>) -> Void
-      ) {
-        completion(.success(aList))
-      }
-
-      public func echoAsyncNullableMap(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aMap: [String?: Any?]?, completion: @escaping (Result<[String?: Any?]?, Error>) -> Void
-      ) {
-        completion(.success(aMap))
-      }
-
-      public func echoAsyncNullableEnum(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        anEnum: ProxyApiTestEnum?, completion: @escaping (Result<ProxyApiTestEnum?, Error>) -> Void
-      ) {
-        completion(.success(anEnum))
-      }
-
-      public func staticNoop(golubetsApi: GolubetsApiProxyApiTestClass) throws {}
-
-      public func echoStaticString(golubetsApi: GolubetsApiProxyApiTestClass, aString: String)
-        throws
-        -> String
-      {
-        return aString
-      }
-
-      public func staticAsyncNoop(
-        golubetsApi: GolubetsApiProxyApiTestClass,
-        completion: @escaping (Result<Void, Error>) -> Void
-      ) {
-        completion(.success(()))
-      }
-
-      public func callFlutterNoop(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        completion: @escaping (Result<Void, Error>) -> Void
-      ) {
-        golubetsApi.flutterNoop(golubetsInstance: golubetsInstance) { response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterThrowError(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        completion: @escaping (Result<Any?, Error>) -> Void
-      ) {
-        golubetsApi.flutterThrowError(golubetsInstance: golubetsInstance) { response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterThrowErrorFromVoid(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        completion: @escaping (Result<Void, Error>) -> Void
-      ) {
-        golubetsApi.flutterThrowErrorFromVoid(golubetsInstance: golubetsInstance) { response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoBool(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aBool: Bool,
-        completion: @escaping (Result<Bool, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoBool(golubetsInstance: golubetsInstance, aBool: aBool) { response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoInt(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        anInt: Int64,
-        completion: @escaping (Result<Int64, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoInt(golubetsInstance: golubetsInstance, anInt: anInt) { response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoDouble(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aDouble: Double,
-        completion: @escaping (Result<Double, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoDouble(golubetsInstance: golubetsInstance, aDouble: aDouble) {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoString(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aString: String,
-        completion: @escaping (Result<String, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoString(golubetsInstance: golubetsInstance, aString: aString) {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoUint8List(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aUint8List: FlutterStandardTypedData,
-        completion: @escaping (Result<FlutterStandardTypedData, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoUint8List(golubetsInstance: golubetsInstance, aList: aUint8List) {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoList(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aList: [Any?],
-        completion: @escaping (Result<[Any?], Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoList(golubetsInstance: golubetsInstance, aList: aList) { response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoProxyApiList(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aList: [ProxyApiTestClass?],
-        completion: @escaping (Result<[ProxyApiTestClass?], Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoProxyApiList(golubetsInstance: golubetsInstance, aList: aList) {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoMap(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aMap: [String?: Any?], completion: @escaping (Result<[String?: Any?], Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoMap(golubetsInstance: golubetsInstance, aMap: aMap) { response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoProxyApiMap(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aMap: [String?: ProxyApiTestClass?],
-        completion: @escaping (Result<[String?: ProxyApiTestClass?], Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoProxyApiMap(golubetsInstance: golubetsInstance, aMap: aMap) {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoEnum(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        anEnum: ProxyApiTestEnum, completion: @escaping (Result<ProxyApiTestEnum, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoEnum(golubetsInstance: golubetsInstance, anEnum: anEnum) {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoProxyApi(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aProxyApi: ProxyApiSuperClass,
-        completion: @escaping (Result<ProxyApiSuperClass, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoProxyApi(golubetsInstance: golubetsInstance, aProxyApi: aProxyApi) {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoNullableBool(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aBool: Bool?,
-        completion: @escaping (Result<Bool?, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoNullableBool(golubetsInstance: golubetsInstance, aBool: aBool) {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoNullableInt(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        anInt: Int64?,
-        completion: @escaping (Result<Int64?, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoNullableInt(golubetsInstance: golubetsInstance, anInt: anInt) {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoNullableDouble(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aDouble: Double?,
-        completion: @escaping (Result<Double?, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoNullableDouble(golubetsInstance: golubetsInstance, aDouble: aDouble)
-        {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoNullableString(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aString: String?,
-        completion: @escaping (Result<String?, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoNullableString(golubetsInstance: golubetsInstance, aString: aString)
-        {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoNullableUint8List(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aUint8List: FlutterStandardTypedData?,
-        completion: @escaping (Result<FlutterStandardTypedData?, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoNullableUint8List(
-          golubetsInstance: golubetsInstance, aList: aUint8List
-        ) {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoNullableList(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aList: [Any?]?,
-        completion: @escaping (Result<[Any?]?, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoNullableList(golubetsInstance: golubetsInstance, aList: aList) {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoNullableMap(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aMap: [String?: Any?]?, completion: @escaping (Result<[String?: Any?]?, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoNullableMap(golubetsInstance: golubetsInstance, aMap: aMap) {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoNullableEnum(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        anEnum: ProxyApiTestEnum?, completion: @escaping (Result<ProxyApiTestEnum?, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoNullableEnum(golubetsInstance: golubetsInstance, anEnum: anEnum) {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoNullableProxyApi(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aProxyApi: ProxyApiSuperClass?,
-        completion: @escaping (Result<ProxyApiSuperClass?, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoNullableProxyApi(
-          golubetsInstance: golubetsInstance, aProxyApi: aProxyApi
-        ) {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterNoopAsync(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        completion: @escaping (Result<Void, Error>) -> Void
-      ) {
-        golubetsApi.flutterNoopAsync(golubetsInstance: golubetsInstance) { response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-
-      public func callFlutterEchoAsyncString(
-        golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-        aString: String,
-        completion: @escaping (Result<String, Error>) -> Void
-      ) {
-        golubetsApi.flutterEchoAsyncString(golubetsInstance: golubetsInstance, aString: aString) {
-          response in
-          switch response {
-          case .success(let res):
-            completion(.success(res))
-          case .failure(let error):
-            completion(.failure(error))
-          }
-        }
-      }
-    }
     return GolubetsApiProxyApiTestClass(
       golubetsRegistrar: registrar, delegate: ProxyApiTestClassDelegate())
   }

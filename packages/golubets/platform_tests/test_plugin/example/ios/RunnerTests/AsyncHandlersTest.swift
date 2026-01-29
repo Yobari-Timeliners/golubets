@@ -47,13 +47,8 @@ struct AsyncHandlersTest {
       codec: FlutterStandardMessageCodec.sharedInstance())
     let mockHostSmallApi = MockHostSmallApi()
     HostSmallApiSetup.setUp(binaryMessenger: binaryMessenger, api: mockHostSmallApi)
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/example/ios/RunnerTests/AsyncHandlersTest.swift
     let channelName = "dev.bayori.golubets.golubets_integration_tests.HostSmallApi.voidVoid"
-    XCTAssertNotNil(binaryMessenger.handlers[channelName])
-=======
-    let channelName = "dev.flutter.pigeon.pigeon_integration_tests.HostSmallApi.voidVoid"
     #expect(binaryMessenger.handlers[channelName] != nil)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/example/ios/RunnerTests/AsyncHandlersTest.swift
 
     await confirmation { confirmed in
       binaryMessenger.handlers[channelName]?(nil) { data in
@@ -72,13 +67,8 @@ struct AsyncHandlersTest {
     let value = "Test"
     mockHostSmallApi.output = value
     HostSmallApiSetup.setUp(binaryMessenger: binaryMessenger, api: mockHostSmallApi)
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/example/ios/RunnerTests/AsyncHandlersTest.swift
     let channelName = "dev.bayori.golubets.golubets_integration_tests.HostSmallApi.echo"
-    XCTAssertNotNil(binaryMessenger.handlers[channelName])
-=======
-    let channelName = "dev.flutter.pigeon.pigeon_integration_tests.HostSmallApi.echo"
     #expect(binaryMessenger.handlers[channelName] != nil)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/example/ios/RunnerTests/AsyncHandlersTest.swift
 
     let inputEncoded = binaryMessenger.codec.encode([value])
 
