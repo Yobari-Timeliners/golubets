@@ -3626,16 +3626,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       for (final sentState in states) {
         final java_sealed.SomeState receivedState = await api.echo(sentState);
 
-        expect(receivedState.runtimeType, equals(sentState.runtimeType));
-
-        switch (sentState) {
-          case java_sealed.Loading(:final progress):
-            expect((receivedState as java_sealed.Loading).progress, equals(progress));
-          case java_sealed.Success(:final data):
-            expect((receivedState as java_sealed.Success).data, equals(data));
-          case java_sealed.Error(:final code):
-            expect((receivedState as java_sealed.Error).code, equals(code));
-        }
+        expect(receivedState, equals(sentState));
       }
     },
     skip: targetGenerator != TargetGenerator.java,
