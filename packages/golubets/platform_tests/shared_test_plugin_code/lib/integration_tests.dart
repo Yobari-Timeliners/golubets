@@ -14,6 +14,7 @@ import 'package:integration_test/integration_test.dart';
 import 'event_test_types.dart';
 import 'generated.dart';
 import 'src/generated/generics_tests.gen.dart';
+import 'src/generated/java_nested_sealed_tests.gen.dart' as java_sealed;
 import 'src/generated/kotlin_nested_sealed_tests.gen.dart';
 import 'test_types.dart';
 
@@ -3479,6 +3480,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
   const eventChannelSupported = <TargetGenerator>[
     TargetGenerator.kotlin,
     TargetGenerator.swift,
+    TargetGenerator.java,
   ];
 
   testWidgets(
@@ -3608,6 +3610,35 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       }
     },
     skip: targetGenerator != TargetGenerator.kotlin,
+  );
+
+  test(
+    'java nested sealed classes serialize and deserialize correctly',
+    () async {
+      final api = java_sealed.JavaNestedSealedApi();
+
+      final states = <java_sealed.SomeState>[
+        java_sealed.Loading(progress: 42.0),
+        java_sealed.Success(data: 'ok'),
+        java_sealed.Error(code: 7),
+      ];
+
+      for (final sentState in states) {
+        final java_sealed.SomeState receivedState = await api.echo(sentState);
+
+        expect(receivedState.runtimeType, equals(sentState.runtimeType));
+
+        switch (sentState) {
+          case java_sealed.Loading(:final progress):
+            expect((receivedState as java_sealed.Loading).progress, equals(progress));
+          case java_sealed.Success(:final data):
+            expect((receivedState as java_sealed.Success).data, equals(data));
+          case java_sealed.Error(:final code):
+            expect((receivedState as java_sealed.Error).code, equals(code));
+        }
+      }
+    },
+    skip: targetGenerator != TargetGenerator.java,
   );
 
   const targetSupportsGenerics = <TargetGenerator>[
