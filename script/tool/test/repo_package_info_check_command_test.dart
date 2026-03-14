@@ -134,12 +134,13 @@ ${readmeTableEntry(pluginName)}
 
       // 4 packages * 2 checks (git, gh) = 8 calls.
       // Default mocks in setUp cover 1 call each. We need 3 more each.
-      gitProcessRunner.mockProcessesForExecutable['git-ls-remote']!
-          .addAll(<FakeProcessInfo>[
-            FakeProcessInfo(MockProcess(exitCode: 1)),
-            FakeProcessInfo(MockProcess(exitCode: 1)),
-            FakeProcessInfo(MockProcess(exitCode: 1)),
-          ]);
+      gitProcessRunner.mockProcessesForExecutable['git-ls-remote']!.addAll(
+        <FakeProcessInfo>[
+          FakeProcessInfo(MockProcess(exitCode: 1)),
+          FakeProcessInfo(MockProcess(exitCode: 1)),
+          FakeProcessInfo(MockProcess(exitCode: 1)),
+        ],
+      );
 
       final List<String> output = await runCapturingPrint(runner, <String>[
         'repo-package-info-check',
