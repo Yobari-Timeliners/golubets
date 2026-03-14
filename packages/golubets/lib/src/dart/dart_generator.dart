@@ -267,7 +267,7 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
             docCommentSpec,
           );
           final finalKeyword = classDefinition.isImmutable ? 'final ' : '';
-          final String datatype = addGenericTypesNullable(field.type);
+          final String datatype = addGenericTypes(field.type);
           indent.writeln('$finalKeyword$datatype ${field.name};');
           indent.newln();
         }
@@ -277,13 +277,6 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
         return;
       }
 
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
-=======
-        final String datatype = addGenericTypes(field.type);
-        indent.writeln('$datatype ${field.name};');
-        indent.newln();
-      }
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
       _writeToList(indent, classDefinition);
       indent.newln();
       writeClassEncode(
@@ -376,25 +369,6 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     Class classDefinition, {
     required String dartPackageName,
   }) {
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
-    void writeValueDecode(NamedType field, int index) {
-      final resultAt = 'result[$index]';
-      final castCallPrefix = field.type.isNullable ? '?' : '!';
-      final String genericType = _makeGenericTypeArguments(field.type);
-      final String castCall = _makeGenericCastCall(field.type);
-      final nullableTag = field.type.isNullable ? '?' : '';
-      if (field.type.typeArguments.isNotEmpty) {
-        indent.add('($resultAt as $genericType?)$castCallPrefix$castCall');
-      } else {
-        final castCallForcePrefix = field.type.isNullable ? '' : '!';
-        final castString = field.type.baseName == 'Object'
-            ? ''
-            : ' as $genericType$nullableTag';
-
-        indent.add('$resultAt$castCallForcePrefix$castString');
-      }
-    }
-
     final bool isResultUsed = classDefinition.fields.isNotEmpty;
     final result = isResultUsed ? 'result' : '_';
     final generics = classDefinition.typeArguments.isNotEmpty
@@ -404,9 +378,6 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     indent.write(
       'static ${classDefinition.name}$generics decode$generics(Object $result) ',
     );
-=======
-    indent.write('static ${classDefinition.name} decode(Object result) ');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
     indent.addScoped('{', '}', () {
       if (isResultUsed) {
         indent.writeln('result as List<Object?>;');
@@ -1590,26 +1561,14 @@ String _escapeForDartSingleQuotedString(String raw) {
 
 /// Creates a Dart type where all type arguments are [Object]s.
 String _makeGenericTypeArguments(TypeDeclaration type) {
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
-  return type.typeArguments.isNotEmpty && type.associatedClass == null
-      ? '${type.baseName}<${type.typeArguments.map<String>((TypeDeclaration e) => 'Object?').join(', ')}>'
-      : _addGenericTypes(type);
-}
+  if (type.typeArguments.isNotEmpty && type.associatedClass == null) {
+    final withTypeArguments =
+        '${type.baseName}<${type.typeArguments.map<String>((TypeDeclaration e) => 'Object?').join(', ')}>';
 
-/// Creates a `.cast<>` call for an type. Returns an empty string if the
-/// type has no type arguments.
-String _makeGenericCastCall(TypeDeclaration type) {
-  return type.typeArguments.isNotEmpty && type.associatedClass == null
-      ? '.cast<${_flattenTypeArguments(type.typeArguments)}>()'
-      : '';
-=======
-  if (type.typeArguments.isEmpty) {
-    return addGenericTypes(type);
+    return '$withTypeArguments${type.isNullable ? '?' : ''}';
   }
 
-  final withTypeArguments =
-      '${type.baseName}<${type.typeArguments.map<String>((TypeDeclaration e) => 'Object?').join(', ')}>';
-  return '$withTypeArguments${type.isNullable ? '?' : ''}';
+  return addGenericTypes(type);
 }
 
 /// Casts a value to the expected type, considering nullability, and generic
@@ -1632,11 +1591,14 @@ String _castValue(String value, TypeDeclaration type) {
     return valueWithTypeCast;
   }
 
+  if (type.associatedClass != null) {
+    return valueWithTypeCast;
+  }
+
   final nullAwareOperator = type.isNullable ? '?' : '';
   final castCall =
       '$nullAwareOperator.cast<${_flattenTypeArguments(typeArguments)}>()';
   return '($valueWithTypeCast)$castCall';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
 }
 
 /// Returns an argument name that can be used in a context where it is possible to collide.
@@ -1670,21 +1632,15 @@ String _getMethodParameterSignature(
 
   String getParameterString(Parameter p) {
     final required = p.isRequired && !p.isPositional ? 'required ' : '';
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
-    final String type = addGenericTypesNullable(p.type);
-    final DefaultValue? defaultValue = p.defaultValue;
-=======
-
     final String type = addGenericTypes(p.type);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
+    final DefaultValue? defaultValue = p.defaultValue;
 
     if (defaultValue == null) {
       return '$required$type ${p.name}';
     } else {
-      final buffer = StringBuffer('$required$type ${p.name} = ');
-      final indent = Indent(buffer);
+      final indent = Indent()..write('$required$type ${p.name} = ');
       defaultValue.write(indent, prefix: '');
-      return buffer.toString();
+      return indent.toString();
     }
   }
 
@@ -1747,26 +1703,12 @@ String addGenericTypes(TypeDeclaration type) {
     'Map' =>
       typeArguments.isEmpty
           ? 'Map<Object?, Object?>'
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
-          : 'Map<${_flattenTypeArguments(typeArguments)}>';
-    default:
-      if (type.typeArguments.isNotEmpty) {
-        return '${type.baseName}<${_flattenTypeArguments(type.typeArguments)}>';
-      }
-
-      return type.baseName;
-  }
-}
-
-/// Converts the type signature of a [TypeDeclaration] that include generic
-/// types.
-String addGenericTypesNullable(TypeDeclaration type) {
-  final String genericType = _addGenericTypes(type);
-=======
           : 'Map<${_flattenTypeArguments(typeArguments)}>',
+    _ when type.typeArguments.isNotEmpty =>
+      '${type.baseName}<${_flattenTypeArguments(type.typeArguments)}>',
     _ => type.baseName,
   };
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
+
   return type.isNullable ? '$genericType?' : genericType;
 }
 
@@ -1792,10 +1734,10 @@ extension on DefaultValue {
       ) =>
         elements.isEmpty
             ? indent.add(
-                '${prefix}const <${addGenericTypesNullable(elementType)}>[]',
+                '${prefix}const <${addGenericTypes(elementType)}>[]',
               )
             : indent.addScoped(
-                '${prefix}const <${addGenericTypesNullable(elementType)}>[',
+                '${prefix}const <${addGenericTypes(elementType)}>[',
                 ']',
                 () {
                   for (final element in elements) {
@@ -1812,10 +1754,10 @@ extension on DefaultValue {
       ) =>
         entries.isEmpty
             ? indent.add(
-                '${prefix}const <${addGenericTypesNullable(keyType)}, ${addGenericTypesNullable(valueType)}>{}',
+                '${prefix}const <${addGenericTypes(keyType)}, ${addGenericTypes(valueType)}>{}',
               )
             : indent.addScoped(
-                '${prefix}const <${addGenericTypesNullable(keyType)}, ${addGenericTypesNullable(valueType)}>{',
+                '${prefix}const <${addGenericTypes(keyType)}, ${addGenericTypes(valueType)}>{',
                 '}',
                 () {
                   for (final MapEntry<DefaultValue, DefaultValue> entry

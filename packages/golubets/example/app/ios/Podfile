@@ -1,9 +1,5 @@
 # Uncomment this line to define a global platform for your project
-<<<<<<< HEAD:packages/golubets/example/app/ios/Podfile
 platform :ios, '13.0'
-=======
-# platform :ios, '13.0'
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/ios/Podfile
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'

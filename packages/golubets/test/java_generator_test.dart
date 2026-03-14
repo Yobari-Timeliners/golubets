@@ -2,17 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-<<<<<<< HEAD:packages/golubets/test/java_generator_test.dart
 import 'package:golubets/golubets.dart';
 import 'package:golubets/src/ast.dart';
+import 'package:golubets/src/generator_tools.dart';
 import 'package:golubets/src/java/java_generator.dart';
 import 'package:golubets/src/pigeon_lib.dart';
-=======
-import 'package:pigeon/pigeon.dart';
-import 'package:pigeon/src/ast.dart';
-import 'package:pigeon/src/generator_tools.dart';
-import 'package:pigeon/src/java/java_generator.dart';
->>>>>>> filtered-upstream/main:packages/pigeon/test/java_generator_test.dart
 import 'package:test/test.dart';
 
 const String DEFAULT_PACKAGE_NAME = 'test_package';
@@ -1619,56 +1613,6 @@ void main() {
     );
   });
 
-<<<<<<< HEAD:packages/golubets/test/java_generator_test.dart
-  test('generated annotation', () {
-    final classDefinition = Class(name: 'Foobar', fields: <NamedType>[]);
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[],
-    );
-    final sink = StringBuffer();
-    const javaOptions = InternalJavaOptions(
-      className: 'Messages',
-      useGeneratedAnnotation: true,
-      javaOut: '',
-    );
-    const generator = JavaGenerator();
-    generator.generate(
-      javaOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
-    final code = sink.toString();
-    expect(
-      code,
-      contains('@javax.annotation.Generated("dev.bayori.golubets")'),
-    );
-  });
-
-  test('no generated annotation', () {
-    final classDefinition = Class(name: 'Foobar', fields: <NamedType>[]);
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[],
-    );
-    final sink = StringBuffer();
-    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
-    const generator = JavaGenerator();
-    generator.generate(
-      javaOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
-    final code = sink.toString();
-    expect(
-      code,
-      isNot(contains('@javax.annotation.Generated("dev.bayori.golubets")')),
-    );
-=======
   group('generated annotation', () {
     late Class classDefinition;
     late Root root;
@@ -1718,7 +1662,6 @@ void main() {
       final code = sink.toString();
       expect(code, isNot(contains(generatedAnnotation)));
     });
->>>>>>> filtered-upstream/main:packages/pigeon/test/java_generator_test.dart
   });
 
   test('transfers documentation comments', () {

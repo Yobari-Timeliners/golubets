@@ -6,19 +6,6 @@ Golub is a code generation tool that adds type safety to Flutter’s Platform
 Channels.  This document serves as an overview of how it functions to help
 people who would like to contribute to the project.
 
-<<<<<<< HEAD:packages/golubets/CONTRIBUTING.md
-## State Diagram
-
-Golubets generates a temporary file in its _LaunchIsolate_, the isolate that is
-spawned to run `main()`, then launches another isolate, _GolubetsIsolate_, that
-uses `dart:mirrors` to parse the generated file, creating an
-[AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree), then running code
-generators with that AST.
-
-![State Diagram](./doc/golubets_state.png)
-
-=======
->>>>>>> filtered-upstream/main:packages/pigeon/CONTRIBUTING.md
 ## Source Index
 
 * [ast.dart](./lib/src/ast.dart) - The data structure for representing the Abstract Syntax Tree.
@@ -40,11 +27,7 @@ generators with that AST.
 
 ## Testing Overview
 
-<<<<<<< HEAD:packages/golubets/CONTRIBUTING.md
 Golubets has 3 types of tests, you'll find them all in
-=======
-Pigeon has 3 types of tests; you'll find them all in
->>>>>>> filtered-upstream/main:packages/pigeon/CONTRIBUTING.md
 [test.dart](./tool/test.dart).
 
 * Unit tests - These are the fastest tests that are just typical unit tests,

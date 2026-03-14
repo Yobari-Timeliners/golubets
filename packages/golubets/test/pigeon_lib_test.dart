@@ -138,7 +138,7 @@ void main() {
   });
 
   test('parse args - kotlin_use_generated_annotation', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubetsOptions opts = Golubets.parseArgs(<String>[
       '--kotlin_use_generated_annotation',
     ]);
     expect(opts.kotlinOptions!.useGeneratedAnnotation, isTrue);

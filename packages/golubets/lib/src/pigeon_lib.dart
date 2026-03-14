@@ -418,20 +418,13 @@ class GolubetsOptions {
   /// The name of the package the golubets files will be used in.
   final String? _dartPackageName;
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
+  /// Whether to ignore lint violations in generated Dart code.
+  final bool ignoreLints;
+
   /// Creates a [GolubetsOptions] from a Map representation where:
   /// `x = GolubetsOptions.fromMap(x.toMap())`.
   static GolubetsOptions fromMap(Map<String, Object> map) {
     return GolubetsOptions(
-=======
-  /// Whether to ignore lint violations in generated Dart code.
-  final bool ignoreLints;
-
-  /// Creates a [PigeonOptions] from a Map representation where:
-  /// `x = PigeonOptions.fromMap(x.toMap())`.
-  static PigeonOptions fromMap(Map<String, Object> map) {
-    return PigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
       input: map['input'] as String?,
       dartOut: map['dartOut'] as String?,
       dartTestOut: map['dartTestOut'] as String?,

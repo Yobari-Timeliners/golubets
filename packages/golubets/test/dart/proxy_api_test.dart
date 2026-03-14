@@ -178,11 +178,7 @@ void main() {
       expect(
         collapsedCode,
         contains(
-<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
-          '(instanceManager ?? GolubetsInstanceManager.instance) .remove(arg_identifier!);',
-=======
-          '(instanceManager ?? PigeonInstanceManager.instance) .remove(arg_identifier);',
->>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
+          '(instanceManager ?? GolubetsInstanceManager.instance) .remove(arg_identifier);',
         ),
       );
 
@@ -1135,16 +1131,12 @@ void main() {
         );
         expect(
           code,
-<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
-          contains(r'final Api? arg_golubets_instance = (args[0] as Api?);'),
-=======
-          contains(r'final Api arg_pigeon_instance = args[0]! as Api;'),
+          contains(r'final Api arg_golubets_instance = args[0]! as Api;'),
         );
         expect(code, contains(r'final int arg_validType = args[1]! as int;'));
         expect(
           code,
           contains(r'final AnEnum arg_enumType = args[2]! as AnEnum;'),
->>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
         );
         expect(
           code,
@@ -1161,13 +1153,8 @@ void main() {
         expect(
           collapsedCode,
           contains(
-<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
-            r'(doSomething ?? arg_golubets_instance!.doSomething)?.call( arg_golubets_instance!, '
-            r'arg_validType!, arg_enumType!, arg_proxyApiType!, '
-=======
-            r'(doSomething ?? arg_pigeon_instance.doSomething)?.call( arg_pigeon_instance, '
+            r'(doSomething ?? arg_golubets_instance.doSomething)?.call( arg_golubets_instance, '
             r'arg_validType, arg_enumType, arg_proxyApiType, '
->>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
             r'arg_nullableValidType, arg_nullableEnumType, '
             r'arg_nullableProxyApiType);',
           ),

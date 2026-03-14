@@ -224,34 +224,15 @@ void main() {
       ).send(<Object?>[null]),
       isEmpty,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/generated_dart_test_code_test.dart
-    try {
-      await const BasicMessageChannel<Object?>(
-            'dev.bayori.golubets.golubets_integration_tests.MessageApi.search',
-            StandardMessageCodec(),
-          ).send(<Object?>[null])
-          as List<Object?>?;
-      expect(true, isFalse); // should not reach here
-    } catch (error) {
-      expect(error, isAssertionError);
-      expect(
-        error.toString(),
-        contains(
-          'Argument for dev.bayori.golubets.golubets_integration_tests.MessageApi.search was null, expected non-null MessageSearchRequest.',
-        ),
-      );
-    }
-=======
     expect(
       () async =>
           await const BasicMessageChannel<Object?>(
-                'dev.flutter.pigeon.pigeon_integration_tests.MessageApi.search',
+                'dev.bayori.golubets.golubets_integration_tests.MessageApi.search',
                 StandardMessageCodec(),
               ).send(<Object?>[null])
               as List<Object?>?,
       throwsA(isA<TypeError>()),
     );
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/generated_dart_test_code_test.dart
     expect(mock.log, <String>['initialize']);
   });
 }

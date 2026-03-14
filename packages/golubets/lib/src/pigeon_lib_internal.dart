@@ -2075,7 +2075,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
               AstFlutterApi() => ApiLocation.flutter,
               AstEventChannelApi() => ApiLocation.host,
             },
-            isAsynchronous: isAsynchronous,
+            asynchronousType: asynchronousType,
             objcSelector: objcSelector,
             swiftFunction: swiftFunction,
             offset: node.offset,
@@ -2084,29 +2084,8 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
               node.documentationComment?.tokens,
             ),
           ),
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-          parameters: arguments,
-          isStatic: isStatic,
-          location: switch (_currentApi!) {
-            AstHostApi() => ApiLocation.host,
-            AstProxyApi() => ApiLocation.host,
-            AstFlutterApi() => ApiLocation.flutter,
-            AstEventChannelApi() => ApiLocation.host,
-          },
-          asynchronousType: asynchronousType,
-          objcSelector: objcSelector,
-          swiftFunction: swiftFunction,
-          offset: node.offset,
-          taskQueueType: taskQueueType,
-          documentationComments: _documentationCommentsParser(
-            node.documentationComment?.tokens,
-          ),
-        ),
-      );
-=======
         );
       }
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
     } else if (_currentClass != null) {
       _errors.add(
         Error(
