@@ -428,13 +428,17 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
     if (isSealed) {
       final List<Class> children = classDefinition.children;
 
-      final String permitsClause = isNestSealedClasses ? children.map((Class e) => '$className.${e.name}').join(', ') : children.map((Class e) => e.name).join(', ');
+      final String permitsClause = isNestSealedClasses
+          ? children.map((Class e) => '$className.${e.name}').join(', ')
+          : children.map((Class e) => e.name).join(', ');
 
       indent.write(
         'public static sealed class $className permits $permitsClause ',
       );
     } else if (isSealedChild) {
-      final classModificator = isNestSealedClasses ? 'public static final class' : 'final static class';
+      final classModificator = isNestSealedClasses
+          ? 'public static final class'
+          : 'final static class';
 
       indent.write(
         '$classModificator $className extends ${classDefinition.superClass!.name} ',
@@ -638,10 +642,13 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
     ).toList();
 
     void writeEncodeLogic(EnumeratedType customType) {
-      final String? sealedSuperClassName =
-          customType.findSealedHierarchy()?.superClass.name;
-      final String customTypeName = 
-          generatorOptions.nestSealedClasses ? '$sealedSuperClassName.${customType.name}' : customType.name;
+      final String? sealedSuperClassName = customType
+          .findSealedHierarchy()
+          ?.superClass
+          .name;
+      final String customTypeName = generatorOptions.nestSealedClasses
+          ? '$sealedSuperClassName.${customType.name}'
+          : customType.name;
       final encodeString = customType.type == CustomTypes.customClass
           ? 'toList()'
           : 'index';
@@ -672,10 +679,13 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
     }
 
     void writeDecodeLogic(EnumeratedType customType) {
-      final String? sealedSuperClassName =
-          customType.findSealedHierarchy()?.superClass.name;
-      final String customTypeName = 
-          generatorOptions.nestSealedClasses ? '$sealedSuperClassName.${customType.name}' : customType.name;
+      final String? sealedSuperClassName = customType
+          .findSealedHierarchy()
+          ?.superClass
+          .name;
+      final String customTypeName = generatorOptions.nestSealedClasses
+          ? '$sealedSuperClassName.${customType.name}'
+          : customType.name;
       indent.write('case (byte) ${customType.enumeration}:');
       if (customType.type == CustomTypes.customClass) {
         indent.newln();

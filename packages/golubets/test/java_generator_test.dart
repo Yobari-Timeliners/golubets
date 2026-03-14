@@ -1935,7 +1935,10 @@ void main() {
     );
     final code = sink.toString();
 
-    expect(code, contains('public static sealed class Result permits Success, Failure'));
+    expect(
+      code,
+      contains('public static sealed class Result permits Success, Failure'),
+    );
     expect(code, contains('final static class Success extends Result'));
     expect(code, contains('private @Nullable String payload;'));
     expect(code, contains('final static class Failure extends Result'));
@@ -1998,11 +2001,22 @@ void main() {
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final code = sink.toString();
-    expect(code, contains('public static sealed class Result permits Result.Success, Result.Failure {'));
-    expect(code, contains('public static final class Success extends Result {'));
+    expect(
+      code,
+      contains(
+        'public static sealed class Result permits Result.Success, Result.Failure {',
+      ),
+    );
+    expect(
+      code,
+      contains('public static final class Success extends Result {'),
+    );
     expect(code, contains('private @NonNull Long code;'));
     expect(code, contains('private @Nullable String data;'));
-    expect(code, contains('public static final class Failure extends Result {'));
+    expect(
+      code,
+      contains('public static final class Failure extends Result {'),
+    );
     expect(code, contains('private @NonNull String message;'));
     expect(
       code,
