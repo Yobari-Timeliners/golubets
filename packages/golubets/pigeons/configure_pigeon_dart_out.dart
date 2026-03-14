@@ -8,7 +8,7 @@ import 'package:golubets/golubets.dart';
   GolubetsOptions(
     dartOut: 'stdout',
     javaOut: 'stdout',
-    dartOptions: DartOptions(),
+    dartOptions: DartOptions(ignoreLints: false),
   ),
 )
 @HostApi()

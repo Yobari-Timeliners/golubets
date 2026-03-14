@@ -80,7 +80,7 @@ void main() {
       final sink = StringBuffer();
       const generator = DartGenerator();
       generator.generate(
-        const InternalDartOptions(),
+        const InternalDartOptions(ignoreLints: false),
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -155,7 +155,7 @@ void main() {
       final sink = StringBuffer();
       const generator = DartGenerator();
       generator.generate(
-        const InternalDartOptions(),
+        const InternalDartOptions(ignoreLints: false),
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -178,7 +178,7 @@ void main() {
       expect(
         collapsedCode,
         contains(
-          '(instanceManager ?? GolubetsInstanceManager.instance) .remove(arg_identifier!);',
+          '(instanceManager ?? GolubetsInstanceManager.instance) .remove(arg_identifier);',
         ),
       );
 
@@ -208,7 +208,7 @@ void main() {
         final sink = StringBuffer();
         const generator = DartGenerator();
         generator.generate(
-          const InternalDartOptions(),
+          const InternalDartOptions(ignoreLints: false),
           root,
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -237,7 +237,7 @@ void main() {
         final sink = StringBuffer();
         const generator = DartGenerator();
         generator.generate(
-          const InternalDartOptions(),
+          const InternalDartOptions(ignoreLints: false),
           root,
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -284,7 +284,7 @@ void main() {
         final sink = StringBuffer();
         const generator = DartGenerator();
         generator.generate(
-          const InternalDartOptions(),
+          const InternalDartOptions(ignoreLints: false),
           root,
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -330,7 +330,7 @@ void main() {
         final sink = StringBuffer();
         const generator = DartGenerator();
         generator.generate(
-          const InternalDartOptions(),
+          const InternalDartOptions(ignoreLints: false),
           root,
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -386,7 +386,7 @@ void main() {
         final sink = StringBuffer();
         const generator = DartGenerator();
         generator.generate(
-          const InternalDartOptions(),
+          const InternalDartOptions(ignoreLints: false),
           root,
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -444,7 +444,7 @@ void main() {
         final sink = StringBuffer();
         const generator = DartGenerator();
         generator.generate(
-          const InternalDartOptions(),
+          const InternalDartOptions(ignoreLints: false),
           root,
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -488,7 +488,7 @@ void main() {
         final sink = StringBuffer();
         const generator = DartGenerator();
         generator.generate(
-          const InternalDartOptions(),
+          const InternalDartOptions(ignoreLints: false),
           root,
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -606,7 +606,7 @@ void main() {
         final sink = StringBuffer();
         const generator = DartGenerator();
         generator.generate(
-          const InternalDartOptions(),
+          const InternalDartOptions(ignoreLints: false),
           root,
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -726,7 +726,7 @@ void main() {
         final sink = StringBuffer();
         const generator = DartGenerator();
         generator.generate(
-          const InternalDartOptions(),
+          const InternalDartOptions(ignoreLints: false),
           root,
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -810,7 +810,7 @@ void main() {
         final sink = StringBuffer();
         const generator = DartGenerator();
         generator.generate(
-          const InternalDartOptions(),
+          const InternalDartOptions(ignoreLints: false),
           root,
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -858,7 +858,7 @@ void main() {
         final sink = StringBuffer();
         const generator = DartGenerator();
         generator.generate(
-          const InternalDartOptions(),
+          const InternalDartOptions(ignoreLints: false),
           root,
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -958,7 +958,7 @@ void main() {
         final sink = StringBuffer();
         const generator = DartGenerator();
         generator.generate(
-          const InternalDartOptions(),
+          const InternalDartOptions(ignoreLints: false),
           root,
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -1009,7 +1009,7 @@ void main() {
         final sink = StringBuffer();
         const generator = DartGenerator();
         generator.generate(
-          const InternalDartOptions(),
+          const InternalDartOptions(ignoreLints: false),
           root,
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -1103,7 +1103,7 @@ void main() {
         final sink = StringBuffer();
         const generator = DartGenerator();
         generator.generate(
-          const InternalDartOptions(),
+          const InternalDartOptions(ignoreLints: false),
           root,
           sink,
           dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -1131,35 +1131,30 @@ void main() {
         );
         expect(
           code,
-          contains(r'final Api? arg_golubets_instance = (args[0] as Api?);'),
+          contains(r'final Api arg_golubets_instance = args[0]! as Api;'),
+        );
+        expect(code, contains(r'final int arg_validType = args[1]! as int;'));
+        expect(
+          code,
+          contains(r'final AnEnum arg_enumType = args[2]! as AnEnum;'),
         );
         expect(
           code,
-          contains(r'final int? arg_validType = (args[1] as int?);'),
+          contains(r'final Api2 arg_proxyApiType = args[3]! as Api2;'),
         );
         expect(
           code,
-          contains(r'final AnEnum? arg_enumType = (args[2] as AnEnum?);'),
+          contains(r'final int? arg_nullableValidType = args[4] as int?;'),
         );
         expect(
           code,
-          contains(r'final Api2? arg_proxyApiType = (args[3] as Api2?);'),
-        );
-        expect(
-          code,
-          contains(r'final int? arg_nullableValidType = (args[4] as int?);'),
-        );
-        expect(
-          code,
-          contains(
-            r'final AnEnum? arg_nullableEnumType = (args[5] as AnEnum?);',
-          ),
+          contains(r'final AnEnum? arg_nullableEnumType = args[5] as AnEnum?;'),
         );
         expect(
           collapsedCode,
           contains(
-            r'(doSomething ?? arg_golubets_instance!.doSomething)?.call( arg_golubets_instance!, '
-            r'arg_validType!, arg_enumType!, arg_proxyApiType!, '
+            r'(doSomething ?? arg_golubets_instance.doSomething)?.call( arg_golubets_instance, '
+            r'arg_validType, arg_enumType, arg_proxyApiType, '
             r'arg_nullableValidType, arg_nullableEnumType, '
             r'arg_nullableProxyApiType);',
           ),

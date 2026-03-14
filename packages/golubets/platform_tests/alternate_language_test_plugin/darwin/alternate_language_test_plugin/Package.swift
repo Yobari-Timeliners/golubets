@@ -10,8 +10,8 @@ import PackageDescription
 let package = Package(
   name: "alternate_language_test_plugin",
   platforms: [
-    .iOS("12.0"),
-    .macOS("10.14"),
+    .iOS("13.0"),
+    .macOS("10.15"),
   ],
   products: [
     .library(name: "alternate-language-test-plugin", targets: ["alternate_language_test_plugin"])

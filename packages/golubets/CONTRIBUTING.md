@@ -6,16 +6,6 @@ Golub is a code generation tool that adds type safety to Flutter’s Platform
 Channels.  This document serves as an overview of how it functions to help
 people who would like to contribute to the project.
 
-## State Diagram
-
-Golubets generates a temporary file in its _LaunchIsolate_, the isolate that is
-spawned to run `main()`, then launches another isolate, _GolubetsIsolate_, that
-uses `dart:mirrors` to parse the generated file, creating an
-[AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree), then running code
-generators with that AST.
-
-![State Diagram](./doc/golubets_state.png)
-
 ## Source Index
 
 * [ast.dart](./lib/src/ast.dart) - The data structure for representing the Abstract Syntax Tree.
@@ -73,11 +63,3 @@ void main(List<String> args, SendPort sendPort) async {
 ```
 
 This is how `dart:mirrors` gets access to the supplied Golubets file.
-
-## Imminent Plans
-
-* Migrate to Dart Analyzer for AST generation ([issue
-  78818](https://github.com/flutter/flutter/issues/78818)) - We might have
-  reached the limitations of using dart:mirrors for parsing the Dart files.
-  That package has been deprecated and it doesn't support null-safe annotations.
-  We should migrate to using the Dart Analyzer as the front-end parser.
