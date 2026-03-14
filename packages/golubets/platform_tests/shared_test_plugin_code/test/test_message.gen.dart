@@ -124,6 +124,7 @@ abstract class TestHostApi {
             .setMockDecodedMessageHandler<Object?>(golubetsVar_channel, (
               Object? message,
             ) async {
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/test_message.gen.dart
               assert(
                 message != null,
                 'Argument for dev.bayori.golubets.golubets_integration_tests.MessageApi.search was null.',
@@ -135,8 +136,13 @@ abstract class TestHostApi {
                 arg_request != null,
                 'Argument for dev.bayori.golubets.golubets_integration_tests.MessageApi.search was null, expected non-null MessageSearchRequest.',
               );
+=======
+              final List<Object?> args = message! as List<Object?>;
+              final MessageSearchRequest arg_request =
+                  args[0]! as MessageSearchRequest;
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/test_message.gen.dart
               try {
-                final MessageSearchReply output = api.search(arg_request!);
+                final MessageSearchReply output = api.search(arg_request);
                 return <Object?>[output];
               } on PlatformException catch (e) {
                 return wrapResponse(error: e);
@@ -187,6 +193,7 @@ abstract class TestNestedApi {
             .setMockDecodedMessageHandler<Object?>(golubetsVar_channel, (
               Object? message,
             ) async {
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/test_message.gen.dart
               assert(
                 message != null,
                 'Argument for dev.bayori.golubets.golubets_integration_tests.MessageNestedApi.search was null.',
@@ -197,8 +204,12 @@ abstract class TestNestedApi {
                 arg_nested != null,
                 'Argument for dev.bayori.golubets.golubets_integration_tests.MessageNestedApi.search was null, expected non-null MessageNested.',
               );
+=======
+              final List<Object?> args = message! as List<Object?>;
+              final MessageNested arg_nested = args[0]! as MessageNested;
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/test_message.gen.dart
               try {
-                final MessageSearchReply output = api.search(arg_nested!);
+                final MessageSearchReply output = api.search(arg_nested);
                 return <Object?>[output];
               } on PlatformException catch (e) {
                 return wrapResponse(error: e);

@@ -6,6 +6,7 @@ Golub is a code generation tool that adds type safety to Flutter’s Platform
 Channels.  This document serves as an overview of how it functions to help
 people who would like to contribute to the project.
 
+<<<<<<< HEAD:packages/golubets/CONTRIBUTING.md
 ## State Diagram
 
 Golubets generates a temporary file in its _LaunchIsolate_, the isolate that is
@@ -16,6 +17,8 @@ generators with that AST.
 
 ![State Diagram](./doc/golubets_state.png)
 
+=======
+>>>>>>> filtered-upstream/main:packages/pigeon/CONTRIBUTING.md
 ## Source Index
 
 * [ast.dart](./lib/src/ast.dart) - The data structure for representing the Abstract Syntax Tree.
@@ -37,7 +40,11 @@ generators with that AST.
 
 ## Testing Overview
 
+<<<<<<< HEAD:packages/golubets/CONTRIBUTING.md
 Golubets has 3 types of tests, you'll find them all in
+=======
+Pigeon has 3 types of tests; you'll find them all in
+>>>>>>> filtered-upstream/main:packages/pigeon/CONTRIBUTING.md
 [test.dart](./tool/test.dart).
 
 * Unit tests - These are the fastest tests that are just typical unit tests,
@@ -72,6 +79,7 @@ void main(List<String> args, SendPort sendPort) async {
 }
 ```
 
+<<<<<<< HEAD:packages/golubets/CONTRIBUTING.md
 This is how `dart:mirrors` gets access to the supplied Golubets file.
 
 ## Imminent Plans
@@ -81,3 +89,6 @@ This is how `dart:mirrors` gets access to the supplied Golubets file.
   reached the limitations of using dart:mirrors for parsing the Dart files.
   That package has been deprecated and it doesn't support null-safe annotations.
   We should migrate to using the Dart Analyzer as the front-end parser.
+=======
+This is how `dart:mirrors` gets access to the supplied Pigeon file.
+>>>>>>> filtered-upstream/main:packages/pigeon/CONTRIBUTING.md

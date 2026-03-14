@@ -7,8 +7,13 @@ import 'package:golubets/golubets.dart';
 @ConfigureGolubets(
   GolubetsOptions(
     dartOut: 'lib/src/event_channel_messages.g.dart',
+<<<<<<< HEAD:packages/golubets/example/app/pigeons/event_channel_messages.dart
     dartOptions: DartOptions(),
     cppOptions: CppOptions(namespace: 'golubets_example'),
+=======
+    dartOptions: DartOptions(ignoreLints: false),
+    cppOptions: CppOptions(namespace: 'pigeon_example'),
+>>>>>>> filtered-upstream/main:packages/pigeon/example/app/pigeons/event_channel_messages.dart
     kotlinOut:
         'android/app/src/main/kotlin/dev/flutter/pigeon_example_app/EventChannelMessages.g.kt',
     kotlinOptions: KotlinOptions(includeErrorClass: false),

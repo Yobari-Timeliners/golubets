@@ -227,6 +227,21 @@ Future<int> generateTestPigeons({
       return generateCode;
     }
   }
+
+  // Test case for useGeneratedAnnotation feature with core_tests
+  final String corePascalCaseName = _snakeToPascalCase('core_tests');
+  final int generateCodeWithAnnotation = await runPigeon(
+    input: './pigeons/core_tests.dart',
+    kotlinOut:
+        '$outputBase/android/src/main/kotlin/com/example/test_plugin/annotation/${corePascalCaseName}WithAnnotation.gen.kt',
+    kotlinPackage: 'com.example.test_plugin.annotation',
+    kotlinErrorClassName: 'FlutterError',
+    kotlinUseGeneratedAnnotation: true,
+  );
+  if (generateCodeWithAnnotation != 0) {
+    return generateCodeWithAnnotation;
+  }
+
   return 0;
 }
 
@@ -236,6 +251,7 @@ Future<int> runGolub({
   String? kotlinPackage,
   String? kotlinErrorClassName,
   bool kotlinIncludeErrorClass = true,
+  bool kotlinUseGeneratedAnnotation = false,
   bool swiftIncludeErrorClass = true,
   String? swiftOut,
   String? swiftErrorClassName,
@@ -295,7 +311,7 @@ Future<int> runGolub({
       copyrightHeader: copyrightHeader,
       dartOut: dartOut,
       dartTestOut: dartTestOut,
-      dartOptions: const DartOptions(),
+      dartOptions: const DartOptions(ignoreLints: false),
       cppHeaderOut: cppHeaderOut,
       cppSourceOut: cppSourceOut,
       cppOptions: CppOptions(namespace: cppNamespace),
@@ -311,7 +327,11 @@ Future<int> runGolub({
         package: kotlinPackage,
         errorClassName: kotlinErrorClassName,
         includeErrorClass: kotlinIncludeErrorClass,
+<<<<<<< HEAD:packages/golubets/tool/shared/generation.dart
         nestSealedClasses: kotlinNestSealedClasses,
+=======
+        useGeneratedAnnotation: kotlinUseGeneratedAnnotation,
+>>>>>>> filtered-upstream/main:packages/pigeon/tool/shared/generation.dart
       ),
       objcHeaderOut: objcHeaderOut,
       objcSourceOut: objcSourceOut,

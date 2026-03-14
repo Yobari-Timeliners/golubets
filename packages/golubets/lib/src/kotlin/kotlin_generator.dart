@@ -38,6 +38,10 @@ const String _golubetsMethodChannelCodec = 'GolubetsMethodCodec';
 
 const String _overflowClassName = 'GolubetsCodecOverflow';
 
+/// Kotlin file-level annotation for generated code.
+const String kotlinGeneratedAnnotation =
+    '@file:Generated("$defaultPluginPackageName")';
+
 /// Options that control how Kotlin code will be generated.
 class KotlinOptions {
   /// Creates a [KotlinOptions] object
@@ -47,7 +51,11 @@ class KotlinOptions {
     this.errorClassName,
     this.includeErrorClass = true,
     this.fileSpecificClassNameComponent,
+<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
     this.nestSealedClasses = false,
+=======
+    this.useGeneratedAnnotation = false,
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
   });
 
   /// The package where the generated class will live.
@@ -68,6 +76,7 @@ class KotlinOptions {
   /// A String to augment class names to avoid cross file collisions.
   final String? fileSpecificClassNameComponent;
 
+<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
   /// {@template kotlin_options.nest_sealed_classes}
   /// Whether to nest sealed classes inside their base class.
   ///
@@ -90,6 +99,12 @@ class KotlinOptions {
   /// ```
   /// {@endtemplate}
   final bool nestSealedClasses;
+=======
+  /// Determines if the `javax.annotation.Generated` is used in the output. This
+  /// is false by default since that dependency isn't available in plugins by
+  /// default.
+  final bool useGeneratedAnnotation;
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
 
   /// Creates a [KotlinOptions] from a Map representation where:
   /// `x = KotlinOptions.fromMap(x.toMap())`.
@@ -101,7 +116,11 @@ class KotlinOptions {
       includeErrorClass: map['includeErrorClass'] as bool? ?? true,
       fileSpecificClassNameComponent:
           map['fileSpecificClassNameComponent'] as String?,
+<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
       nestSealedClasses: map['nestSealedClasses'] as bool? ?? false,
+=======
+      useGeneratedAnnotation: map['useGeneratedAnnotation'] as bool? ?? false,
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
     );
   }
 
@@ -115,7 +134,11 @@ class KotlinOptions {
       'includeErrorClass': includeErrorClass,
       if (fileSpecificClassNameComponent != null)
         'fileSpecificClassNameComponent': fileSpecificClassNameComponent!,
+<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
       'nestSealedClasses': nestSealedClasses,
+=======
+      'useGeneratedAnnotation': useGeneratedAnnotation,
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
     };
     return result;
   }
@@ -137,7 +160,11 @@ class InternalKotlinOptions extends InternalOptions {
     this.errorClassName,
     this.includeErrorClass = true,
     this.fileSpecificClassNameComponent,
+<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
     this.nestSealedClasses = false,
+=======
+    this.useGeneratedAnnotation = false,
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
   });
 
   /// Creates InternalKotlinOptions from KotlinOptions.
@@ -149,6 +176,7 @@ class InternalKotlinOptions extends InternalOptions {
        copyrightHeader = options.copyrightHeader ?? copyrightHeader,
        errorClassName = options.errorClassName,
        includeErrorClass = options.includeErrorClass,
+       useGeneratedAnnotation = options.useGeneratedAnnotation,
        fileSpecificClassNameComponent =
            options.fileSpecificClassNameComponent ??
            kotlinOut.split('/').lastOrNull?.split('.').first,
@@ -175,8 +203,15 @@ class InternalKotlinOptions extends InternalOptions {
   /// A String to augment class names to avoid cross file collisions.
   final String? fileSpecificClassNameComponent;
 
+<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
   /// {@macro kotlin_options.nest_sealed_classes}
   final bool nestSealedClasses;
+=======
+  /// Determines if the `javax.annotation.Generated` is used in the output. This
+  /// is false by default since that dependency isn't available in plugins by
+  /// default.
+  final bool useGeneratedAnnotation;
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
 }
 
 /// Options that control how Kotlin code will be generated for a specific
@@ -226,6 +261,9 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     indent.writeln('// ${getGeneratedCodeWarning()}');
     indent.writeln('// $seeAlsoWarning');
     indent.writeln('@file:Suppress("UNCHECKED_CAST", "ArrayInDataClass")');
+    if (generatorOptions.useGeneratedAnnotation) {
+      indent.writeln(kotlinGeneratedAnnotation);
+    }
   }
 
   @override
@@ -249,6 +287,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     indent.writeln('import io.flutter.plugin.common.StandardMessageCodec');
     indent.writeln('import java.io.ByteArrayOutputStream');
     indent.writeln('import java.nio.ByteBuffer');
+<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
     if (root.apis.any(
       (Api api) => api.methods.any(
         (Method it) =>
@@ -262,6 +301,10 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     if (root.genericTypeNames.isNotEmpty) {
       indent.writeln('import kotlin.reflect.typeOf');
       indent.writeln('import kotlin.reflect.KType');
+=======
+    if (generatorOptions.useGeneratedAnnotation) {
+      indent.writeln('import javax.annotation.Generated');
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
     }
   }
 

@@ -342,6 +342,7 @@ class GolubetsOptions {
     this.debugGenerators,
     this.basePath,
     String? dartPackageName,
+    this.ignoreLints = true,
   }) : _dartPackageName = dartPackageName;
 
   /// Path to the file which will be processed.
@@ -417,10 +418,20 @@ class GolubetsOptions {
   /// The name of the package the golubets files will be used in.
   final String? _dartPackageName;
 
+<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
   /// Creates a [GolubetsOptions] from a Map representation where:
   /// `x = GolubetsOptions.fromMap(x.toMap())`.
   static GolubetsOptions fromMap(Map<String, Object> map) {
     return GolubetsOptions(
+=======
+  /// Whether to ignore lint violations in generated Dart code.
+  final bool ignoreLints;
+
+  /// Creates a [PigeonOptions] from a Map representation where:
+  /// `x = PigeonOptions.fromMap(x.toMap())`.
+  static PigeonOptions fromMap(Map<String, Object> map) {
+    return PigeonOptions(
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
       input: map['input'] as String?,
       dartOut: map['dartOut'] as String?,
       dartTestOut: map['dartTestOut'] as String?,
@@ -625,6 +636,10 @@ ${_argParser.usage}''';
       help: 'The package that generated Kotlin code will be in.',
       aliases: const <String>['experimental_kotlin_package'],
     )
+    ..addFlag(
+      'kotlin_use_generated_annotation',
+      help: 'Adds javax.annotation.Generated annotation to the output.',
+    )
     ..addOption(
       'cpp_header_out',
       help: 'Path to generated C++ header file (.h).',
@@ -689,6 +704,11 @@ ${_argParser.usage}''';
     ..addOption(
       'package_name',
       help: 'The package that generated code will be in.',
+    )
+    ..addFlag(
+      'ignore_lints',
+      help: 'Ignore all lint violations in generated Dart code.',
+      hide: true,
     );
 
   /// Convert command-line arguments to [GolubetsOptions].
@@ -716,6 +736,8 @@ ${_argParser.usage}''';
       kotlinOut: results['kotlin_out'] as String?,
       kotlinOptions: KotlinOptions(
         package: results['kotlin_package'] as String?,
+        useGeneratedAnnotation:
+            results['kotlin_use_generated_annotation'] as bool? ?? false,
       ),
       cppHeaderOut: results['cpp_header_out'] as String?,
       cppSourceOut: results['cpp_source_out'] as String?,
@@ -730,6 +752,7 @@ ${_argParser.usage}''';
       debugGenerators: results['debug_generators'] as bool?,
       basePath: results['base_path'] as String?,
       dartPackageName: results['package_name'] as String?,
+      ignoreLints: results.flag('ignore_lints'),
     );
     return opts;
   }
@@ -785,15 +808,15 @@ ${_argParser.usage}''';
     final List<GeneratorAdapter> safeGeneratorAdapters =
         adapters ??
         <GeneratorAdapter>[
-          DartGeneratorAdapter(),
-          JavaGeneratorAdapter(),
-          SwiftGeneratorAdapter(),
-          KotlinGeneratorAdapter(),
-          CppGeneratorAdapter(),
-          GObjectGeneratorAdapter(),
-          DartTestGeneratorAdapter(),
-          ObjcGeneratorAdapter(),
-          AstGeneratorAdapter(),
+          const DartGeneratorAdapter(),
+          const JavaGeneratorAdapter(),
+          const SwiftGeneratorAdapter(),
+          const KotlinGeneratorAdapter(),
+          const CppGeneratorAdapter(),
+          const GObjectGeneratorAdapter(),
+          const DartTestGeneratorAdapter(),
+          const ObjcGeneratorAdapter(),
+          const AstGeneratorAdapter(),
         ];
     _executeConfigureGolubets(options);
 

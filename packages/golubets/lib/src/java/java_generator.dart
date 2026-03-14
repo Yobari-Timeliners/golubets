@@ -202,7 +202,13 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
       '@SuppressWarnings({"unused", "unchecked", "CodeBlock2Expr", "RedundantSuppression", "serial"})',
     );
     if (generatorOptions.useGeneratedAnnotation ?? false) {
+<<<<<<< HEAD:packages/golubets/lib/src/java/java_generator.dart
       indent.writeln('@javax.annotation.Generated("dev.bayori.golubets")');
+=======
+      indent.writeln(
+        '@javax.annotation.Generated("$defaultPluginPackageName")',
+      );
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/java/java_generator.dart
     }
     indent.writeln('public class ${generatorOptions.className!} {');
     indent.inc();

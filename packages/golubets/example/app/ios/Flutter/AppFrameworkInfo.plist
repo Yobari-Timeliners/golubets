@@ -20,7 +20,10 @@
   <string>????</string>
   <key>CFBundleVersion</key>
   <string>1.0</string>
+<<<<<<< HEAD:packages/golubets/example/app/ios/Flutter/AppFrameworkInfo.plist
   <key>MinimumOSVersion</key>
   <string>13.0</string>
+=======
+>>>>>>> filtered-upstream/main:packages/pigeon/example/app/ios/Flutter/AppFrameworkInfo.plist
 </dict>
 </plist>
