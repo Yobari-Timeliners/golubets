@@ -62,16 +62,4 @@ void main(List<String> args, SendPort sendPort) async {
 }
 ```
 
-<<<<<<< HEAD:packages/golubets/CONTRIBUTING.md
 This is how `dart:mirrors` gets access to the supplied Golubets file.
-
-## Imminent Plans
-
-* Migrate to Dart Analyzer for AST generation ([issue
-  78818](https://github.com/flutter/flutter/issues/78818)) - We might have
-  reached the limitations of using dart:mirrors for parsing the Dart files.
-  That package has been deprecated and it doesn't support null-safe annotations.
-  We should migrate to using the Dart Analyzer as the front-end parser.
-=======
-This is how `dart:mirrors` gets access to the supplied Pigeon file.
->>>>>>> filtered-upstream/main:packages/pigeon/CONTRIBUTING.md
