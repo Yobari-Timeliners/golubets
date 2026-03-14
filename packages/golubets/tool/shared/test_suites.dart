@@ -246,7 +246,7 @@ Future<int> _runDartUnitTests({bool ciMode = false}) async {
 Future<int> _analyzeFlutterUnitTests(String flutterUnitTestsPath) async {
   final messagePath = '$flutterUnitTestsPath/lib/message.gen.dart';
   final messageTestPath = '$flutterUnitTestsPath/test/message_test.dart';
-  final int generateTestCode = await runGolub(
+  final int generateTestCode = await runGolubets(
     input: 'pigeons/message.dart',
     dartOut: messagePath,
     dartTestOut: messageTestPath,

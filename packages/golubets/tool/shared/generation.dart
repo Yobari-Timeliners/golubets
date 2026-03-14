@@ -80,13 +80,13 @@ String _javaFilenameForName(String inputName) {
 
 Future<int> generateExamplePigeons() async {
   var success = 0;
-  success = await runGolub(
+  success = await runGolubets(
     input: './example/app/pigeons/messages.dart',
     basePath: './example/app',
     copyrightHeader: '../../copyright_header.txt',
     suppressVersion: true,
   );
-  success += await runGolub(
+  success += await runGolubets(
     input: './example/app/pigeons/event_channel_messages.dart',
     basePath: './example/app',
     copyrightHeader: '../../copyright_header.txt',
@@ -153,7 +153,7 @@ Future<int> generateTestPigeons({
         : '${pascalCaseName}Error';
 
     // Generate the default language test plugin output.
-    int generateCode = await runGolub(
+    int generateCode = await runGolubets(
       input: './pigeons/$input.dart',
       dartOut: '$sharedDartOutputBase/lib/src/generated/$input.gen.dart',
       dartTestOut: input == 'message'
@@ -203,7 +203,7 @@ Future<int> generateTestPigeons({
         '$alternateOutputBase/darwin/$alternateTestPluginName/Sources/$alternateTestPluginName/';
     final objcBaseRelativeHeaderPath =
         'include/$alternateTestPluginName/$pascalCaseName.gen.h';
-    generateCode = await runGolub(
+    generateCode = await runGolubets(
       input: './pigeons/$input.dart',
       // Android
       // This doesn't use the '.gen' suffix since Java has strict file naming
@@ -236,15 +236,31 @@ Future<int> generateTestPigeons({
       return generateCode;
     }
   }
+
+  // Test case for useGeneratedAnnotation feature with core_tests
+  final String corePascalCaseName = _snakeToPascalCase('core_tests');
+  final int generateCodeWithAnnotation = await runGolubets(
+    input: './pigeons/core_tests.dart',
+    kotlinOut:
+        '$outputBase/android/src/main/kotlin/com/example/test_plugin/annotation/${corePascalCaseName}WithAnnotation.gen.kt',
+    kotlinPackage: 'com.example.test_plugin.annotation',
+    kotlinErrorClassName: 'FlutterError',
+    kotlinUseGeneratedAnnotation: true,
+  );
+  if (generateCodeWithAnnotation != 0) {
+    return generateCodeWithAnnotation;
+  }
+
   return 0;
 }
 
-Future<int> runGolub({
+Future<int> runGolubets({
   required String input,
   String? kotlinOut,
   String? kotlinPackage,
   String? kotlinErrorClassName,
   bool kotlinIncludeErrorClass = true,
+  bool kotlinUseGeneratedAnnotation = false,
   bool swiftIncludeErrorClass = true,
   String? swiftOut,
   String? swiftErrorClassName,
@@ -305,7 +321,7 @@ Future<int> runGolub({
       copyrightHeader: copyrightHeader,
       dartOut: dartOut,
       dartTestOut: dartTestOut,
-      dartOptions: const DartOptions(),
+      dartOptions: const DartOptions(ignoreLints: false),
       cppHeaderOut: cppHeaderOut,
       cppSourceOut: cppSourceOut,
       cppOptions: CppOptions(namespace: cppNamespace),
@@ -325,6 +341,7 @@ Future<int> runGolub({
         errorClassName: kotlinErrorClassName,
         includeErrorClass: kotlinIncludeErrorClass,
         nestSealedClasses: kotlinNestSealedClasses,
+        useGeneratedAnnotation: kotlinUseGeneratedAnnotation,
       ),
       objcHeaderOut: objcHeaderOut,
       objcSourceOut: objcSourceOut,

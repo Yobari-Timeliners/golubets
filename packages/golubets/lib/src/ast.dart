@@ -618,7 +618,8 @@ class TypeDeclaration {
     }
   }
 
-  /// Returns duplicated `TypeDeclaration` with attached `associatedEnum` value.
+  /// Returns a new [TypeDeclaration] with [enumDefinition] as the
+  /// [associatedEnum] value.
   TypeDeclaration copyWithEnum(Enum enumDefinition) {
     return TypeDeclaration(
       baseName: baseName,
@@ -628,7 +629,8 @@ class TypeDeclaration {
     );
   }
 
-  /// Returns duplicated `TypeDeclaration` with attached `associatedClass` value.
+  /// Returns a new [TypeDeclaration] with [classDefinition] as the
+  /// [associatedClass] value.
   TypeDeclaration copyWithClass(Class classDefinition) {
     return TypeDeclaration(
       baseName: baseName,
@@ -638,7 +640,8 @@ class TypeDeclaration {
     );
   }
 
-  /// Returns duplicated `TypeDeclaration` with attached `associatedProxyApi` value.
+  /// Returns a new [TypeDeclaration] with [proxyApiDefinition] as the
+  /// [associatedProxyApi] value.
   TypeDeclaration copyWithProxyApi(AstProxyApi proxyApiDefinition) {
     return TypeDeclaration(
       baseName: baseName,
@@ -648,7 +651,7 @@ class TypeDeclaration {
     );
   }
 
-  /// Returns duplicated `TypeDeclaration` with attached `associatedProxyApi` value.
+  /// Returns a new [TypeDeclaration] with [types] as the [typeArguments] value.
   TypeDeclaration copyWithTypeArguments(List<TypeDeclaration> types) {
     return TypeDeclaration(
       baseName: baseName,
