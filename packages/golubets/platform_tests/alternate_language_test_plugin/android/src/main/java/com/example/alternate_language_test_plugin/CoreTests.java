@@ -4267,6 +4267,7 @@ public class CoreTests {
     /** Failure case callback method for handling errors. */
     void error(@NonNull Throwable error);
   }
+
   /** Asynchronous error handling return type for nullable API method returns. */
   public interface NullableResult<T> {
     /** Success case callback method for handling returns. */
@@ -4275,6 +4276,7 @@ public class CoreTests {
     /** Failure case callback method for handling errors. */
     void error(@NonNull Throwable error);
   }
+
   /** Asynchronous error handling return type for void API method returns. */
   public interface VoidResult {
     /** Success case callback method for handling returns. */
@@ -4283,6 +4285,7 @@ public class CoreTests {
     /** Failure case callback method for handling errors. */
     void error(@NonNull Throwable error);
   }
+
   /**
    * The core interface that each host language plugin must implement in platform_test integration
    * tests.
@@ -4294,191 +4297,249 @@ public class CoreTests {
      * A no-op function taking no arguments and returning no value, to sanity test basic calling.
      */
     void noop();
+
     /** Returns the passed object, to test serialization and deserialization. */
     @NonNull
     AllTypes echoAllTypes(@NonNull AllTypes everything);
+
     /** Returns an error, to test error handling. */
     @Nullable
     Object throwError();
+
     /** Returns an error from a void function, to test error handling. */
     void throwErrorFromVoid();
+
     /** Returns a Flutter error, to test error handling. */
     @Nullable
     Object throwFlutterError();
+
     /** Returns passed in int. */
     @NonNull
     Long echoInt(@NonNull Long anInt);
+
     /** Returns passed in double. */
     @NonNull
     Double echoDouble(@NonNull Double aDouble);
+
     /** Returns the passed in boolean. */
     @NonNull
     Boolean echoBool(@NonNull Boolean aBool);
+
     /** Returns the passed in string. */
     @NonNull
     String echoString(@NonNull String aString);
+
     /** Returns the passed in Uint8List. */
     @NonNull
     byte[] echoUint8List(@NonNull byte[] aUint8List);
+
     /** Returns the passed in generic Object. */
     @NonNull
     Object echoObject(@NonNull Object anObject);
+
     /** Returns the passed list, to test serialization and deserialization. */
     @NonNull
     List<Object> echoList(@NonNull List<Object> list);
+
     /** Returns the passed list, to test serialization and deserialization. */
     @NonNull
     List<AnEnum> echoEnumList(@NonNull List<AnEnum> enumList);
+
     /** Returns the passed list, to test serialization and deserialization. */
     @NonNull
     List<AllNullableTypes> echoClassList(@NonNull List<AllNullableTypes> classList);
+
     /** Returns the passed list, to test serialization and deserialization. */
     @NonNull
     List<AnEnum> echoNonNullEnumList(@NonNull List<AnEnum> enumList);
+
     /** Returns the passed list, to test serialization and deserialization. */
     @NonNull
     List<AllNullableTypes> echoNonNullClassList(@NonNull List<AllNullableTypes> classList);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @NonNull
     Map<Object, Object> echoMap(@NonNull Map<Object, Object> map);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @NonNull
     Map<String, String> echoStringMap(@NonNull Map<String, String> stringMap);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @NonNull
     Map<Long, Long> echoIntMap(@NonNull Map<Long, Long> intMap);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @NonNull
     Map<AnEnum, AnEnum> echoEnumMap(@NonNull Map<AnEnum, AnEnum> enumMap);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @NonNull
     Map<Long, AllNullableTypes> echoClassMap(@NonNull Map<Long, AllNullableTypes> classMap);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @NonNull
     Map<String, String> echoNonNullStringMap(@NonNull Map<String, String> stringMap);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @NonNull
     Map<Long, Long> echoNonNullIntMap(@NonNull Map<Long, Long> intMap);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @NonNull
     Map<AnEnum, AnEnum> echoNonNullEnumMap(@NonNull Map<AnEnum, AnEnum> enumMap);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @NonNull
     Map<Long, AllNullableTypes> echoNonNullClassMap(@NonNull Map<Long, AllNullableTypes> classMap);
+
     /** Returns the passed class to test nested class serialization and deserialization. */
     @NonNull
     AllClassesWrapper echoClassWrapper(@NonNull AllClassesWrapper wrapper);
+
     /** Returns the passed enum to test serialization and deserialization. */
     @NonNull
     AnEnum echoEnum(@NonNull AnEnum anEnum);
+
     /** Returns the passed enum to test serialization and deserialization. */
     @NonNull
     AnotherEnum echoAnotherEnum(@NonNull AnotherEnum anotherEnum);
+
     /** Returns the default string. */
     @NonNull
     String echoNamedDefaultString(@NonNull String aString);
+
     /** Returns passed in double. */
     @NonNull
     Double echoOptionalDefaultDouble(@NonNull Double aDouble);
+
     /** Returns a new AllTypesWithDefaults instance with all default values. */
     @NonNull
     AllTypesWithDefaults createAllTypesWithDefaults();
+
     /**
      * Returns an AllTypesWithDefaults instance, verifying default values work in cross-platform
      * communication.
      */
     @NonNull
     AllTypesWithDefaults echoAllTypesWithDefaults(@NonNull AllTypesWithDefaults allTypes);
+
     /** Returns passed in int. */
     @NonNull
     Long echoRequiredInt(@NonNull Long anInt);
+
     /** Returns the passed object, to test serialization and deserialization. */
     @Nullable
     AllNullableTypes echoAllNullableTypes(@Nullable AllNullableTypes everything);
+
     /** Returns the passed object, to test serialization and deserialization. */
     @Nullable
     AllNullableTypesWithoutRecursion echoAllNullableTypesWithoutRecursion(
         @Nullable AllNullableTypesWithoutRecursion everything);
+
     /**
      * Returns the inner `aString` value from the wrapped object, to test sending of nested objects.
      */
     @Nullable
     String extractNestedNullableString(@NonNull AllClassesWrapper wrapper);
+
     /**
      * Returns the inner `aString` value from the wrapped object, to test sending of nested objects.
      */
     @NonNull
     AllClassesWrapper createNestedNullableString(@Nullable String nullableString);
+
     /** Returns passed in arguments of multiple types. */
     @NonNull
     AllNullableTypes sendMultipleNullableTypes(
         @Nullable Boolean aNullableBool,
         @Nullable Long aNullableInt,
         @Nullable String aNullableString);
+
     /** Returns passed in arguments of multiple types. */
     @NonNull
     AllNullableTypesWithoutRecursion sendMultipleNullableTypesWithoutRecursion(
         @Nullable Boolean aNullableBool,
         @Nullable Long aNullableInt,
         @Nullable String aNullableString);
+
     /** Returns passed in int. */
     @Nullable
     Long echoNullableInt(@Nullable Long aNullableInt);
+
     /** Returns passed in double. */
     @Nullable
     Double echoNullableDouble(@Nullable Double aNullableDouble);
+
     /** Returns the passed in boolean. */
     @Nullable
     Boolean echoNullableBool(@Nullable Boolean aNullableBool);
+
     /** Returns the passed in string. */
     @Nullable
     String echoNullableString(@Nullable String aNullableString);
+
     /** Returns the passed in Uint8List. */
     @Nullable
     byte[] echoNullableUint8List(@Nullable byte[] aNullableUint8List);
+
     /** Returns the passed in generic Object. */
     @Nullable
     Object echoNullableObject(@Nullable Object aNullableObject);
+
     /** Returns the passed list, to test serialization and deserialization. */
     @Nullable
     List<Object> echoNullableList(@Nullable List<Object> aNullableList);
+
     /** Returns the passed list, to test serialization and deserialization. */
     @Nullable
     List<AnEnum> echoNullableEnumList(@Nullable List<AnEnum> enumList);
+
     /** Returns the passed list, to test serialization and deserialization. */
     @Nullable
     List<AllNullableTypes> echoNullableClassList(@Nullable List<AllNullableTypes> classList);
+
     /** Returns the passed list, to test serialization and deserialization. */
     @Nullable
     List<AnEnum> echoNullableNonNullEnumList(@Nullable List<AnEnum> enumList);
+
     /** Returns the passed list, to test serialization and deserialization. */
     @Nullable
     List<AllNullableTypes> echoNullableNonNullClassList(@Nullable List<AllNullableTypes> classList);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @Nullable
     Map<Object, Object> echoNullableMap(@Nullable Map<Object, Object> map);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @Nullable
     Map<String, String> echoNullableStringMap(@Nullable Map<String, String> stringMap);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @Nullable
     Map<Long, Long> echoNullableIntMap(@Nullable Map<Long, Long> intMap);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @Nullable
     Map<AnEnum, AnEnum> echoNullableEnumMap(@Nullable Map<AnEnum, AnEnum> enumMap);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @Nullable
     Map<Long, AllNullableTypes> echoNullableClassMap(
         @Nullable Map<Long, AllNullableTypes> classMap);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @Nullable
     Map<String, String> echoNullableNonNullStringMap(@Nullable Map<String, String> stringMap);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @Nullable
     Map<Long, Long> echoNullableNonNullIntMap(@Nullable Map<Long, Long> intMap);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @Nullable
     Map<AnEnum, AnEnum> echoNullableNonNullEnumMap(@Nullable Map<AnEnum, AnEnum> enumMap);
+
     /** Returns the passed map, to test serialization and deserialization. */
     @Nullable
     Map<Long, AllNullableTypes> echoNullableNonNullClassMap(
@@ -4489,145 +4550,192 @@ public class CoreTests {
 
     @Nullable
     AnotherEnum echoAnotherNullableEnum(@Nullable AnotherEnum anotherEnum);
+
     /** Returns passed in int. */
     @Nullable
     Long echoOptionalNullableInt(@Nullable Long aNullableInt);
+
     /** Returns the passed in string. */
     @Nullable
     String echoNamedNullableString(@Nullable String aNullableString);
+
     /**
      * A no-op function taking no arguments and returning no value, to sanity test basic
      * asynchronous calling.
      */
     void noopAsync(@NonNull VoidResult result);
+
     /** Returns passed in int asynchronously. */
     void echoAsyncInt(@NonNull Long anInt, @NonNull Result<Long> result);
+
     /** Returns passed in double asynchronously. */
     void echoAsyncDouble(@NonNull Double aDouble, @NonNull Result<Double> result);
+
     /** Returns the passed in boolean asynchronously. */
     void echoAsyncBool(@NonNull Boolean aBool, @NonNull Result<Boolean> result);
+
     /** Returns the passed string asynchronously. */
     void echoAsyncString(@NonNull String aString, @NonNull Result<String> result);
+
     /** Returns the passed in Uint8List asynchronously. */
     void echoAsyncUint8List(@NonNull byte[] aUint8List, @NonNull Result<byte[]> result);
+
     /** Returns the passed in generic Object asynchronously. */
     void echoAsyncObject(@NonNull Object anObject, @NonNull Result<Object> result);
+
     /** Returns the passed list, to test asynchronous serialization and deserialization. */
     void echoAsyncList(@NonNull List<Object> list, @NonNull Result<List<Object>> result);
+
     /** Returns the passed list, to test asynchronous serialization and deserialization. */
     void echoAsyncEnumList(@NonNull List<AnEnum> enumList, @NonNull Result<List<AnEnum>> result);
+
     /** Returns the passed list, to test asynchronous serialization and deserialization. */
     void echoAsyncClassList(
         @NonNull List<AllNullableTypes> classList, @NonNull Result<List<AllNullableTypes>> result);
+
     /** Returns the passed map, to test asynchronous serialization and deserialization. */
     void echoAsyncMap(
         @NonNull Map<Object, Object> map, @NonNull Result<Map<Object, Object>> result);
+
     /** Returns the passed map, to test asynchronous serialization and deserialization. */
     void echoAsyncStringMap(
         @NonNull Map<String, String> stringMap, @NonNull Result<Map<String, String>> result);
+
     /** Returns the passed map, to test asynchronous serialization and deserialization. */
     void echoAsyncIntMap(@NonNull Map<Long, Long> intMap, @NonNull Result<Map<Long, Long>> result);
+
     /** Returns the passed map, to test asynchronous serialization and deserialization. */
     void echoAsyncEnumMap(
         @NonNull Map<AnEnum, AnEnum> enumMap, @NonNull Result<Map<AnEnum, AnEnum>> result);
+
     /** Returns the passed map, to test asynchronous serialization and deserialization. */
     void echoAsyncClassMap(
         @NonNull Map<Long, AllNullableTypes> classMap,
         @NonNull Result<Map<Long, AllNullableTypes>> result);
+
     /** Returns the passed enum, to test asynchronous serialization and deserialization. */
     void echoAsyncEnum(@NonNull AnEnum anEnum, @NonNull Result<AnEnum> result);
+
     /** Returns the passed enum, to test asynchronous serialization and deserialization. */
     void echoAnotherAsyncEnum(
         @NonNull AnotherEnum anotherEnum, @NonNull Result<AnotherEnum> result);
+
     /** Responds with an error from an async function returning a value. */
     void throwAsyncError(@NonNull NullableResult<Object> result);
+
     /** Responds with an error from an async void function. */
     void throwAsyncErrorFromVoid(@NonNull VoidResult result);
+
     /** Responds with a Flutter error from an async function returning a value. */
     void throwAsyncFlutterError(@NonNull NullableResult<Object> result);
+
     /** Returns the passed object, to test async serialization and deserialization. */
     void echoAsyncAllTypes(@NonNull AllTypes everything, @NonNull Result<AllTypes> result);
+
     /**
      * Returns the passed object, to test async serialization and deserialization using
      * `await`-style and Swift does not throw an exception.
      */
     void echoModernAsyncAllTypes(@NonNull AllTypes everything, @NonNull Result<AllTypes> result);
+
     /**
      * Returns the passed object, to test async serialization and deserialization using
      * `await`-style and Swift can throw an exception.
      */
     void echoModernAsyncAllTypesAndNotThrow(
         @NonNull AllTypes everything, @NonNull Result<AllTypes> result);
+
     /**
      * Returns the passed object, to test async serialization and deserialization using
      * `await`-style and throws an exception.
      */
     void echoModernAsyncAllTypesAndThrow(
         @NonNull AllTypes everything, @NonNull Result<AllTypes> result);
+
     /** Returns the passed object, to test serialization and deserialization. */
     void echoAsyncNullableAllNullableTypes(
         @Nullable AllNullableTypes everything, @NonNull NullableResult<AllNullableTypes> result);
+
     /**
      * Returns the passed object, to test async serialization and deserialization using
      * `await`-style and Swift does not throw an exception.
      */
     void echoModernAsyncNullableAllNullableTypes(
         @Nullable AllNullableTypes everything, @NonNull NullableResult<AllNullableTypes> result);
+
     /** Returns the passed object, to test serialization and deserialization. */
     void echoAsyncNullableAllNullableTypesWithoutRecursion(
         @Nullable AllNullableTypesWithoutRecursion everything,
         @NonNull NullableResult<AllNullableTypesWithoutRecursion> result);
+
     /** Returns passed in int asynchronously. */
     void echoAsyncNullableInt(@Nullable Long anInt, @NonNull NullableResult<Long> result);
+
     /** Returns passed in double asynchronously. */
     void echoAsyncNullableDouble(@Nullable Double aDouble, @NonNull NullableResult<Double> result);
+
     /** Returns the passed in boolean asynchronously. */
     void echoAsyncNullableBool(@Nullable Boolean aBool, @NonNull NullableResult<Boolean> result);
+
     /** Returns the passed string asynchronously. */
     void echoAsyncNullableString(@Nullable String aString, @NonNull NullableResult<String> result);
+
     /** Returns the passed in Uint8List asynchronously. */
     void echoAsyncNullableUint8List(
         @Nullable byte[] aUint8List, @NonNull NullableResult<byte[]> result);
+
     /** Returns the passed in generic Object asynchronously. */
     void echoAsyncNullableObject(@Nullable Object anObject, @NonNull NullableResult<Object> result);
+
     /** Returns the passed list, to test asynchronous serialization and deserialization. */
     void echoAsyncNullableList(
         @Nullable List<Object> list, @NonNull NullableResult<List<Object>> result);
+
     /** Returns the passed list, to test asynchronous serialization and deserialization. */
     void echoAsyncNullableEnumList(
         @Nullable List<AnEnum> enumList, @NonNull NullableResult<List<AnEnum>> result);
+
     /** Returns the passed list, to test asynchronous serialization and deserialization. */
     void echoAsyncNullableClassList(
         @Nullable List<AllNullableTypes> classList,
         @NonNull NullableResult<List<AllNullableTypes>> result);
+
     /** Returns the passed map, to test asynchronous serialization and deserialization. */
     void echoAsyncNullableMap(
         @Nullable Map<Object, Object> map, @NonNull NullableResult<Map<Object, Object>> result);
+
     /** Returns the passed map, to test asynchronous serialization and deserialization. */
     void echoAsyncNullableStringMap(
         @Nullable Map<String, String> stringMap,
         @NonNull NullableResult<Map<String, String>> result);
+
     /** Returns the passed map, to test asynchronous serialization and deserialization. */
     void echoAsyncNullableIntMap(
         @Nullable Map<Long, Long> intMap, @NonNull NullableResult<Map<Long, Long>> result);
+
     /** Returns the passed map, to test asynchronous serialization and deserialization. */
     void echoAsyncNullableEnumMap(
         @Nullable Map<AnEnum, AnEnum> enumMap, @NonNull NullableResult<Map<AnEnum, AnEnum>> result);
+
     /** Returns the passed map, to test asynchronous serialization and deserialization. */
     void echoAsyncNullableClassMap(
         @Nullable Map<Long, AllNullableTypes> classMap,
         @NonNull NullableResult<Map<Long, AllNullableTypes>> result);
+
     /** Returns the passed enum, to test asynchronous serialization and deserialization. */
     void echoAsyncNullableEnum(@Nullable AnEnum anEnum, @NonNull NullableResult<AnEnum> result);
+
     /** Returns the passed enum, to test asynchronous serialization and deserialization. */
     void echoAnotherAsyncNullableEnum(
         @Nullable AnotherEnum anotherEnum, @NonNull NullableResult<AnotherEnum> result);
+
     /**
      * Returns true if the handler is run on a main thread, which should be true since there is no
      * TaskQueue annotation.
      */
     @NonNull
     Boolean defaultIsMainThread();
+
     /**
      * Returns true if the handler is run on a non-main thread, which should be true for any
      * platform with TaskQueue support.
@@ -4794,6 +4902,7 @@ public class CoreTests {
     static @NonNull MessageCodec<Object> getCodec() {
       return GolubetsCodec.INSTANCE;
     }
+
     /**
      * Sets up an instance of `HostIntegrationCoreApi` to handle messages through the
      * `binaryMessenger`.
@@ -9440,6 +9549,7 @@ public class CoreTests {
       }
     }
   }
+
   /**
    * The core interface that the Dart platform_test code implements for host integration tests to
    * call into.
@@ -9464,6 +9574,7 @@ public class CoreTests {
     static @NonNull MessageCodec<Object> getCodec() {
       return GolubetsCodec.INSTANCE;
     }
+
     /**
      * A no-op function taking no arguments and returning no value, to sanity test basic calling.
      */
@@ -9490,6 +9601,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Responds with an error from an async function returning a value. */
     public void throwError(@NonNull NullableResult<Object> result) {
       final String channelName =
@@ -9516,6 +9628,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Responds with an error from an async void function. */
     public void throwErrorFromVoid(@NonNull VoidResult result) {
       final String channelName =
@@ -9540,6 +9653,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed object, to test serialization and deserialization. */
     public void echoAllTypes(@NonNull AllTypes everythingArg, @NonNull Result<AllTypes> result) {
       final String channelName =
@@ -9572,6 +9686,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed object, to test serialization and deserialization. */
     public void echoAllNullableTypes(
         @Nullable AllNullableTypes everythingArg,
@@ -9600,6 +9715,7 @@ public class CoreTests {
             }
           });
     }
+
     /**
      * Returns passed in arguments of multiple types.
      *
@@ -9640,6 +9756,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed object, to test serialization and deserialization. */
     public void echoAllNullableTypesWithoutRecursion(
         @Nullable AllNullableTypesWithoutRecursion everythingArg,
@@ -9669,6 +9786,7 @@ public class CoreTests {
             }
           });
     }
+
     /**
      * Returns passed in arguments of multiple types.
      *
@@ -9710,6 +9828,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed boolean, to test serialization and deserialization. */
     public void echoBool(@NonNull Boolean aBoolArg, @NonNull Result<Boolean> result) {
       final String channelName =
@@ -9742,6 +9861,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed int, to test serialization and deserialization. */
     public void echoInt(@NonNull Long anIntArg, @NonNull Result<Long> result) {
       final String channelName =
@@ -9774,6 +9894,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed double, to test serialization and deserialization. */
     public void echoDouble(@NonNull Double aDoubleArg, @NonNull Result<Double> result) {
       final String channelName =
@@ -9806,6 +9927,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed string, to test serialization and deserialization. */
     public void echoString(@NonNull String aStringArg, @NonNull Result<String> result) {
       final String channelName =
@@ -9838,6 +9960,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed byte list, to test serialization and deserialization. */
     public void echoUint8List(@NonNull byte[] listArg, @NonNull Result<byte[]> result) {
       final String channelName =
@@ -9870,6 +9993,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed list, to test serialization and deserialization. */
     public void echoList(@NonNull List<Object> listArg, @NonNull Result<List<Object>> result) {
       final String channelName =
@@ -9902,6 +10026,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed list, to test serialization and deserialization. */
     public void echoEnumList(
         @NonNull List<AnEnum> enumListArg, @NonNull Result<List<AnEnum>> result) {
@@ -9935,6 +10060,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed list, to test serialization and deserialization. */
     public void echoClassList(
         @NonNull List<AllNullableTypes> classListArg,
@@ -9969,6 +10095,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed list, to test serialization and deserialization. */
     public void echoNonNullEnumList(
         @NonNull List<AnEnum> enumListArg, @NonNull Result<List<AnEnum>> result) {
@@ -10002,6 +10129,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed list, to test serialization and deserialization. */
     public void echoNonNullClassList(
         @NonNull List<AllNullableTypes> classListArg,
@@ -10036,6 +10164,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoMap(
         @NonNull Map<Object, Object> mapArg, @NonNull Result<Map<Object, Object>> result) {
@@ -10069,6 +10198,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoStringMap(
         @NonNull Map<String, String> stringMapArg, @NonNull Result<Map<String, String>> result) {
@@ -10102,6 +10232,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoIntMap(
         @NonNull Map<Long, Long> intMapArg, @NonNull Result<Map<Long, Long>> result) {
@@ -10135,6 +10266,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoEnumMap(
         @NonNull Map<AnEnum, AnEnum> enumMapArg, @NonNull Result<Map<AnEnum, AnEnum>> result) {
@@ -10168,6 +10300,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoClassMap(
         @NonNull Map<Long, AllNullableTypes> classMapArg,
@@ -10202,6 +10335,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoNonNullStringMap(
         @NonNull Map<String, String> stringMapArg, @NonNull Result<Map<String, String>> result) {
@@ -10235,6 +10369,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoNonNullIntMap(
         @NonNull Map<Long, Long> intMapArg, @NonNull Result<Map<Long, Long>> result) {
@@ -10268,6 +10403,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoNonNullEnumMap(
         @NonNull Map<AnEnum, AnEnum> enumMapArg, @NonNull Result<Map<AnEnum, AnEnum>> result) {
@@ -10301,6 +10437,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoNonNullClassMap(
         @NonNull Map<Long, AllNullableTypes> classMapArg,
@@ -10335,6 +10472,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed enum to test serialization and deserialization. */
     public void echoEnum(@NonNull AnEnum anEnumArg, @NonNull Result<AnEnum> result) {
       final String channelName =
@@ -10367,6 +10505,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed enum to test serialization and deserialization. */
     public void echoAnotherEnum(
         @NonNull AnotherEnum anotherEnumArg, @NonNull Result<AnotherEnum> result) {
@@ -10400,6 +10539,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed boolean, to test serialization and deserialization. */
     public void echoNullableBool(
         @Nullable Boolean aBoolArg, @NonNull NullableResult<Boolean> result) {
@@ -10427,6 +10567,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed int, to test serialization and deserialization. */
     public void echoNullableInt(@Nullable Long anIntArg, @NonNull NullableResult<Long> result) {
       final String channelName =
@@ -10453,6 +10594,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed double, to test serialization and deserialization. */
     public void echoNullableDouble(
         @Nullable Double aDoubleArg, @NonNull NullableResult<Double> result) {
@@ -10480,6 +10622,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed string, to test serialization and deserialization. */
     public void echoNullableString(
         @Nullable String aStringArg, @NonNull NullableResult<String> result) {
@@ -10507,6 +10650,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed byte list, to test serialization and deserialization. */
     public void echoNullableUint8List(
         @Nullable byte[] listArg, @NonNull NullableResult<byte[]> result) {
@@ -10534,6 +10678,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed list, to test serialization and deserialization. */
     public void echoNullableList(
         @Nullable List<Object> listArg, @NonNull NullableResult<List<Object>> result) {
@@ -10561,6 +10706,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed list, to test serialization and deserialization. */
     public void echoNullableEnumList(
         @Nullable List<AnEnum> enumListArg, @NonNull NullableResult<List<AnEnum>> result) {
@@ -10588,6 +10734,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed list, to test serialization and deserialization. */
     public void echoNullableClassList(
         @Nullable List<AllNullableTypes> classListArg,
@@ -10616,6 +10763,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed list, to test serialization and deserialization. */
     public void echoNullableNonNullEnumList(
         @Nullable List<AnEnum> enumListArg, @NonNull NullableResult<List<AnEnum>> result) {
@@ -10643,6 +10791,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed list, to test serialization and deserialization. */
     public void echoNullableNonNullClassList(
         @Nullable List<AllNullableTypes> classListArg,
@@ -10671,6 +10820,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoNullableMap(
         @Nullable Map<Object, Object> mapArg, @NonNull NullableResult<Map<Object, Object>> result) {
@@ -10698,6 +10848,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoNullableStringMap(
         @Nullable Map<String, String> stringMapArg,
@@ -10726,6 +10877,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoNullableIntMap(
         @Nullable Map<Long, Long> intMapArg, @NonNull NullableResult<Map<Long, Long>> result) {
@@ -10753,6 +10905,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoNullableEnumMap(
         @Nullable Map<AnEnum, AnEnum> enumMapArg,
@@ -10781,6 +10934,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoNullableClassMap(
         @Nullable Map<Long, AllNullableTypes> classMapArg,
@@ -10809,6 +10963,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoNullableNonNullStringMap(
         @Nullable Map<String, String> stringMapArg,
@@ -10837,6 +10992,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoNullableNonNullIntMap(
         @Nullable Map<Long, Long> intMapArg, @NonNull NullableResult<Map<Long, Long>> result) {
@@ -10864,6 +11020,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoNullableNonNullEnumMap(
         @Nullable Map<AnEnum, AnEnum> enumMapArg,
@@ -10892,6 +11049,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed map, to test serialization and deserialization. */
     public void echoNullableNonNullClassMap(
         @Nullable Map<Long, AllNullableTypes> classMapArg,
@@ -10920,6 +11078,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed enum to test serialization and deserialization. */
     public void echoNullableEnum(
         @Nullable AnEnum anEnumArg, @NonNull NullableResult<AnEnum> result) {
@@ -10947,6 +11106,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed enum to test serialization and deserialization. */
     public void echoAnotherNullableEnum(
         @Nullable AnotherEnum anotherEnumArg, @NonNull NullableResult<AnotherEnum> result) {
@@ -10974,6 +11134,7 @@ public class CoreTests {
             }
           });
     }
+
     /**
      * A no-op function taking no arguments and returning no value, to sanity test basic
      * asynchronous calling.
@@ -11001,6 +11162,7 @@ public class CoreTests {
             }
           });
     }
+
     /** Returns the passed in generic Object asynchronously. */
     public void echoAsyncString(@NonNull String aStringArg, @NonNull Result<String> result) {
       final String channelName =
@@ -11034,6 +11196,7 @@ public class CoreTests {
           });
     }
   }
+
   /**
    * An API that can be implemented for minimal, compile-only tests.
    *
@@ -11047,6 +11210,7 @@ public class CoreTests {
     static @NonNull MessageCodec<Object> getCodec() {
       return GolubetsCodec.INSTANCE;
     }
+
     /** Sets up an instance of `HostTrivialApi` to handle messages through the `binaryMessenger`. */
     static void setUp(@NonNull BinaryMessenger binaryMessenger, @Nullable HostTrivialApi api) {
       setUp(binaryMessenger, "", api);
@@ -11082,6 +11246,7 @@ public class CoreTests {
       }
     }
   }
+
   /**
    * A simple API implemented in some unit tests.
    *
@@ -11097,6 +11262,7 @@ public class CoreTests {
     static @NonNull MessageCodec<Object> getCodec() {
       return GolubetsCodec.INSTANCE;
     }
+
     /** Sets up an instance of `HostSmallApi` to handle messages through the `binaryMessenger`. */
     static void setUp(@NonNull BinaryMessenger binaryMessenger, @Nullable HostSmallApi api) {
       setUp(binaryMessenger, "", api);
@@ -11171,6 +11337,7 @@ public class CoreTests {
       }
     }
   }
+
   /**
    * A simple API called in some unit tests.
    *

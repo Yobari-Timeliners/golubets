@@ -663,6 +663,7 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
       final int enumeration = customType.enumeration < maximumCodecFieldKey
           ? customType.enumeration
           : maximumCodecFieldKey;
+      indent.add('if (value instanceof ${customType.name}) ');
       indent.addScoped('{', '} else ', () {
         if (customType.enumeration >= maximumCodecFieldKey) {
           indent.writeln(
