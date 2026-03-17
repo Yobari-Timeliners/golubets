@@ -3401,4 +3401,64 @@ void main() {
       expect(code, contains('isValid: Bool = true'));
     });
   });
+
+  test('sealed class with purify [isSealedNamesPurified] = true', () {
+    final superClass = Class(
+      name: 'SomeClass',
+      isSealed: true,
+      fields: const <NamedType>[],
+    );
+    final children = <Class>[
+      Class(
+        name: 'SomeClassEnabled',
+        superClass: superClass,
+        superClassName: superClass.name,
+        fields: <NamedType>[],
+      ),
+      Class(
+        name: 'DisabledSomeClass',
+        superClass: superClass,
+        superClassName: superClass.name,
+        fields: <NamedType>[],
+      ),
+    ];
+    superClass.children = children;
+    final root = Root(
+      apis: <Api>[],
+      classes: <Class>[
+        superClass,
+        ...children,
+      ],
+      enums: <Enum>[],
+    );
+    final sink = StringBuffer();
+    const generator = SwiftGenerator();
+    const kotlinOptions = InternalSwiftOptions(
+      swiftOut: '',
+      isSealedNamesPurified: true,
+    );
+    generator.generate(
+      kotlinOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+    expect(
+      code,
+      isNot(contains('case someClassEnabled')),
+    );
+    expect(
+      code,
+      isNot(contains('case disabledSomeClass')),
+    );
+    expect(
+      code,
+      isNot(contains('return .someClassEnabled')),
+    );
+    expect(
+      code,
+      isNot(contains('return .disabledSomeClass')),
+    );
+  });
 }

@@ -53,6 +53,7 @@ class KotlinOptions {
     this.fileSpecificClassNameComponent,
     this.nestSealedClasses = false,
     this.useGeneratedAnnotation = false,
+    this.isSealedNamesPurified = false,
   });
 
   /// The package where the generated class will live.
@@ -80,6 +81,17 @@ class KotlinOptions {
   ///
   /// Example:
   ///
+  /// Dart input:
+  ///
+  /// ```dart
+  /// sealed class SomeClass {}
+  /// final class EnabledSomeClass extends SomeClass {}
+  /// final class DisabledSomeClass extends SomeClass {}
+  /// ```
+  ///
+  /// Result:
+  ///
+  /// if [isSealedNamesPurified] and [nestSealedClasses] is true:
   /// ```kotlin
   /// sealed class SomeClass {
   ///  class A : SomeClass()
@@ -101,6 +113,39 @@ class KotlinOptions {
   /// default.
   final bool useGeneratedAnnotation;
 
+  /// {@template kotlin_options.sealed_names_purified}
+  /// Whether the names of sealed classes are purified.
+  ///
+  /// Dart input:
+  ///
+  /// ```dart
+  /// sealed class SomeClass {}
+  /// final class EnabledSomeClass extends SomeClass {}
+  /// final class DisabledSomeClass extends SomeClass {}
+  /// ```
+  ///
+  /// Result:
+  ///
+  /// if [isSealedNamesPurified] is true:
+  /// ```kotlin
+  /// sealed class SomeClass {
+  ///     class Enabled : SomeClass()
+  ///     class Disabled : SomeClass()
+  /// }
+  /// ```
+  ///
+  /// otherwise:
+  /// ```kotlin
+  /// sealed class SomeClass {
+  ///     class EnabledSomeClass : SomeClass()
+  ///     class DisabledSomeClass : SomeClass()
+  /// }
+  /// ```
+  ///
+  /// It will be purified if [KotlinOptions.nestSealedClasses] is true.
+  /// {@endtemplate}
+  final bool isSealedNamesPurified;
+
   /// Creates a [KotlinOptions] from a Map representation where:
   /// `x = KotlinOptions.fromMap(x.toMap())`.
   static KotlinOptions fromMap(Map<String, Object> map) {
@@ -113,6 +158,7 @@ class KotlinOptions {
           map['fileSpecificClassNameComponent'] as String?,
       nestSealedClasses: map['nestSealedClasses'] as bool? ?? false,
       useGeneratedAnnotation: map['useGeneratedAnnotation'] as bool? ?? false,
+      isSealedNamesPurified: map['isSealedNamesPurified'] as bool? ?? false,
     );
   }
 
@@ -128,6 +174,7 @@ class KotlinOptions {
         'fileSpecificClassNameComponent': fileSpecificClassNameComponent!,
       'nestSealedClasses': nestSealedClasses,
       'useGeneratedAnnotation': useGeneratedAnnotation,
+      'isSealedNamesPurified': isSealedNamesPurified,
     };
     return result;
   }
@@ -151,6 +198,7 @@ class InternalKotlinOptions extends InternalOptions {
     this.fileSpecificClassNameComponent,
     this.nestSealedClasses = false,
     this.useGeneratedAnnotation = false,
+    this.isSealedNamesPurified = false,
   });
 
   /// Creates InternalKotlinOptions from KotlinOptions.
@@ -166,7 +214,8 @@ class InternalKotlinOptions extends InternalOptions {
        fileSpecificClassNameComponent =
            options.fileSpecificClassNameComponent ??
            kotlinOut.split('/').lastOrNull?.split('.').first,
-       nestSealedClasses = options.nestSealedClasses;
+       nestSealedClasses = options.nestSealedClasses,
+       isSealedNamesPurified = options.isSealedNamesPurified;
 
   /// The package where the generated class will live.
   final String? package;
@@ -196,6 +245,9 @@ class InternalKotlinOptions extends InternalOptions {
   /// is false by default since that dependency isn't available in plugins by
   /// default.
   final bool useGeneratedAnnotation;
+
+  /// {@macro kotlin_options.sealed_names_purified}
+  final bool isSealedNamesPurified;
 }
 
 /// Options that control how Kotlin code will be generated for a specific
@@ -434,9 +486,16 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     final typeArguments = classDefinition.typeArguments.isEmpty
         ? ''
         : '<${classDefinition.typeArguments.map((_) => '*').join(', ')}>';
+    final bool isSealedChild = classDefinition.superClass?.isSealed ?? false;
+    final String className =
+        isSealedChild &&
+            generatorOptions.isSealedNamesPurified &&
+            generatorOptions.nestSealedClasses
+        ? classDefinition.pureName
+        : classDefinition.name;
     indent.writeScoped('override fun equals(other: Any?): Boolean {', '}', () {
       indent.writeScoped(
-        'if (other !is ${classDefinition.name}$typeArguments) {',
+        'if (other !is $className$typeArguments) {',
         '}',
         () {
           indent.writeln('return false');
@@ -483,8 +542,15 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     if (classDefinition.typeArguments.isNotEmpty && !classDefinition.isSealed) {
       indent.writeln('@ConsistentCopyVisibility');
     }
+    final bool isSealedChild = classDefinition.superClass?.isSealed ?? false;
+    final String className =
+        isSealedChild &&
+            generatorOptions.isSealedNamesPurified &&
+            generatorOptions.nestSealedClasses
+        ? classDefinition.pureName
+        : classDefinition.name;
     indent.write(
-      '$privateString$classType class ${classDefinition.name}$typeArguments ',
+      '$privateString$classType class $className$typeArguments ',
     );
     if (classDefinition.isSealed) {
       return;
@@ -544,7 +610,13 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     Class classDefinition, {
     required String dartPackageName,
   }) {
-    final String className = classDefinition.name;
+    final bool isSealedChild = classDefinition.superClass?.isSealed ?? false;
+    final String className =
+        isSealedChild &&
+            generatorOptions.isSealedNamesPurified &&
+            generatorOptions.nestSealedClasses
+        ? classDefinition.pureName
+        : classDefinition.name;
 
     final returnTypeArguments = classDefinition.typeArguments.isEmpty
         ? ''
@@ -743,11 +815,8 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       final int enumeration = customType.enumeration < maximumCodecFieldKey
           ? customType.enumeration
           : maximumCodecFieldKey;
-
-      final String? sealedSuperClassName = customType
-          .findSealedHierarchy()
-          ?.superClass
-          .name;
+      final Class? superClass = customType.findSealedHierarchy()?.superClass;
+      final String? sealedSuperClassName = superClass?.name;
       final nestedClassPrefix =
           sealedSuperClassName != null && generatorOptions.nestSealedClasses
           ? '$sealedSuperClassName.'
@@ -773,8 +842,15 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
                 return ' && value.$typeFieldName == typeOf<$typeName>()';
               },
             ).join();
+      final bool isSealedChild = superClass?.isSealed ?? false;
+      final String? name =
+          isSealedChild &&
+              generatorOptions.isSealedNamesPurified &&
+              generatorOptions.nestSealedClasses
+          ? customType.associatedClass?.pureName
+          : customType.name;
       indent.writeScoped(
-        '${value}is $nestedClassPrefix${customType.name}$typeArguments$typeArgsCheck -> {',
+        '${value}is $nestedClassPrefix$name$typeArguments$typeArgsCheck -> {',
         '}',
         () {
           if (customType.enumeration >= maximumCodecFieldKey) {
@@ -789,10 +865,8 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     }
 
     void writeDecodeLogic(EnumeratedType customType) {
-      final String? sealedSuperClassName = customType
-          .findSealedHierarchy()
-          ?.superClass
-          .name;
+      final Class? superClass = customType.findSealedHierarchy()?.superClass;
+      final String? sealedSuperClassName = superClass?.name;
       final nestedClassPrefix =
           sealedSuperClassName != null && generatorOptions.nestSealedClasses
           ? '$sealedSuperClassName.'
@@ -803,10 +877,17 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
           final typeArguments = customType.typeArguments.isEmpty
               ? ''
               : '<${_flattenTypeArguments(customType.typeArguments)}>';
+          final bool isSealedChild = superClass?.isSealed ?? false;
+          final String? name =
+              isSealedChild &&
+                  generatorOptions.isSealedNamesPurified &&
+                  generatorOptions.nestSealedClasses
+              ? customType.associatedClass?.pureName
+              : customType.name;
           indent.write('return (readValue(buffer) as? List<Any?>)?.let ');
           indent.addScoped('{', '}', () {
             indent.writeln(
-              '$nestedClassPrefix${customType.name}.fromList$typeArguments(it)',
+              '$nestedClassPrefix$name.fromList$typeArguments(it)',
             );
           });
         } else if (customType.type == CustomTypes.customEnum) {
@@ -947,10 +1028,33 @@ if (wrapped == null) {
     ''');
         indent.writeScoped('when (type.toInt()) {', '}', () {
           for (int i = totalCustomCodecKeysAllowed; i < types.length; i++) {
+            final EnumeratedType customType = types[i];
+            final Class? superClass = customType
+                .findSealedHierarchy()
+                ?.superClass;
             indent.writeScoped('${i - totalCustomCodecKeysAllowed} ->', '', () {
-              if (types[i].type == CustomTypes.customClass) {
+              if (customType.type == CustomTypes.customClass) {
+                final String? sealedSuperClassName = superClass?.name;
+                final nestedClassPrefix =
+                    sealedSuperClassName != null &&
+                        generatorOptions.nestSealedClasses
+                    ? '$sealedSuperClassName.'
+                    : '';
+                final typeArguments = customType.typeArguments.isEmpty
+                    ? ''
+                    : '<${_flattenTypeArguments(customType.typeArguments)}>';
+                final bool isSealedChild = superClass?.isSealed ?? false;
+                final String? pureName =
+                    isSealedChild &&
+                        generatorOptions.isSealedNamesPurified &&
+                        generatorOptions.nestSealedClasses
+                    ? customType.associatedClass?.pureName
+                    : customType.name;
+                final String name = isSealedChild
+                    ? '$nestedClassPrefix$pureName'
+                    : customType.name;
                 indent.writeln(
-                  'return ${types[i].name}.fromList(wrapped as List<Any?>)',
+                  'return $name.fromList$typeArguments(wrapped as List<Any?>)',
                 );
               } else if (types[i].type == CustomTypes.customEnum) {
                 indent.writeln(
@@ -2869,14 +2973,21 @@ extension on DefaultValue {
         :final TypeDeclaration type,
         :final List<DefaultValue> arguments,
       ):
-        final Class? sealedSuperClass = classLookup[type.baseName]?.superClass;
+        final String baseName = type.baseName;
+        final Class classDefinition = classLookup[baseName]!;
+        final Class? sealedSuperClass = classDefinition.superClass;
         final superScope =
             sealedSuperClass != null &&
                 sealedSuperClass.isSealed &&
                 generatorOptions.nestSealedClasses
             ? '${sealedSuperClass.name}.'
             : '';
-        indent.add('$prefix$superScope${type.baseName}');
+        final String postfix =
+            generatorOptions.nestSealedClasses &&
+                generatorOptions.isSealedNamesPurified
+            ? classDefinition.pureName
+            : baseName;
+        indent.add('$prefix$superScope$postfix');
         if (arguments.isEmpty) {
           indent.add('()');
           return;
