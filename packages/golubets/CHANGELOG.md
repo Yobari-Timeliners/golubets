@@ -1,3 +1,6 @@
+## pending
+* [dart][kotlin][swift] Adds opportunity to generate "pure" sealed subclasses names
+
 ## 1.3.0
 * Produces a helpful error message when a method return type is missing or an unsupported type, such as a function type or record type.
 * [dart] Ignores all lint rules in generated code.
