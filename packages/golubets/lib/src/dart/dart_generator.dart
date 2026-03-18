@@ -95,7 +95,7 @@ class DartOptions {
   /// instead of:
   /// ```dart
   /// class SomeApi {
-  ///  int getNumber(int number) {
+  ///  Future<int> getNumber(int number) {
   ///    //...
   ///  }
   /// }
