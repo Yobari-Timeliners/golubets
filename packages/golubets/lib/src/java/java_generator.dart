@@ -714,12 +714,12 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
           ? 'value == null ? null : '
           : '';
       final valueString = customType.enumeration < maximumCodecFieldKey
-          ? '$nullCheck((${customType.name}) value).$encodeString'
+          ? '$nullCheck(($customTypeName) value).$encodeString'
           : 'wrap.toList()';
       final int enumeration = customType.enumeration < maximumCodecFieldKey
           ? customType.enumeration
           : maximumCodecFieldKey;
-      indent.add('if (value instanceof ${customType.name}) ');
+      indent.add('if (value instanceof $customTypeName) ');
       indent.addScoped('{', '} else ', () {
         if (customType.enumeration >= maximumCodecFieldKey) {
           indent.writeln(
