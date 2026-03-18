@@ -20,6 +20,7 @@ import com.example.alternate_language_test_plugin.CoreTests.HostIntegrationCoreA
 import com.example.alternate_language_test_plugin.CoreTests.NullableResult;
 import com.example.alternate_language_test_plugin.CoreTests.Result;
 import com.example.alternate_language_test_plugin.CoreTests.VoidResult;
+import com.example.alternate_language_test_plugin.JavaNestedSealedTests.JavaNestedSealedApi;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 /** This plugin handles the native side of the integration tests in example/integration_test/. */
-public class AlternateLanguageTestPlugin implements FlutterPlugin, HostIntegrationCoreApi {
+public class AlternateLanguageTestPlugin implements FlutterPlugin, HostIntegrationCoreApi, JavaNestedSealedApi {
   @Nullable FlutterIntegrationCoreApi flutterApi = null;
   @Nullable FlutterSmallApi flutterSmallApiOne = null;
   @Nullable FlutterSmallApi flutterSmallApiTwo = null;
@@ -42,10 +43,18 @@ public class AlternateLanguageTestPlugin implements FlutterPlugin, HostIntegrati
     testSuffixApiOne.setUp(binding, "suffixOne");
     TestPluginWithSuffix testSuffixApiTwo = new TestPluginWithSuffix();
     testSuffixApiTwo.setUp(binding, "suffixTwo");
+    JavaNestedSealedApi.setUp(binding.getBinaryMessenger(), this);
   }
 
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {}
+
+  // JavaNestedSealedApi
+
+  @Override
+  public SomeState echo(@NonNull SomeState state) {
+    return state;
+  }
 
   // HostIntegrationCoreApi
 

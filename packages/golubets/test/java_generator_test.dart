@@ -1893,7 +1893,7 @@ void main() {
     );
   });
 
-  test('sealed class [nestSealedClasses = false]', () {
+  test('sealed class [nestSealedClasses] = false', () {
     final superClass = Class(
       name: 'Result',
       isSealed: true,
@@ -1950,7 +1950,7 @@ void main() {
     expect(code, isNot(contains('Result that = (Result) o;')));
   });
 
-  test('nested sealed class [nestSealedClasses = true]', () {
+  test('nested sealed class [nestSealedClasses] = true', () {
     final superClass = Class(
       name: 'Result',
       isSealed: true,
@@ -2066,4 +2066,76 @@ void main() {
     expect(code, isNot(contains('@Override public boolean equals')));
     expect(code, isNot(contains('@Override public int hashCode()')));
   });
+
+  test(
+    'nested sealed class [nestSealedClasses] = true and [usePureSealedSubclasses] = true',
+    () {
+      final superClass = Class(
+        name: 'SomeClass',
+        isSealed: true,
+        fields: const <NamedType>[],
+      );
+      final children = <Class>[
+        Class(
+          name: 'SomeClassA',
+          superClass: superClass,
+          superClassName: superClass.name,
+          fields: <NamedType>[],
+        ),
+        Class(
+          name: 'BSomeClass',
+          superClass: superClass,
+          superClassName: superClass.name,
+          fields: <NamedType>[],
+        ),
+      ];
+      superClass.children = children;
+      final root = Root(
+        apis: <Api>[],
+        classes: <Class>[
+          superClass,
+          ...children,
+        ],
+        enums: <Enum>[],
+      );
+      final sink = StringBuffer();
+      const options = InternalJavaOptions(
+        className: 'Messages',
+        javaOut: '',
+        nestSealedClasses: true,
+        usePureSealedSubclasses: true,
+      );
+      const javaGenerator = JavaGenerator();
+      javaGenerator.generate(
+        options,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final code = sink.toString();
+      expect(
+        code,
+        contains(
+          'public static sealed class SomeClass permits SomeClass.A, SomeClass.B {',
+        ),
+      );
+      expect(
+        code,
+        contains('public static final class A extends SomeClass {'),
+      );
+      expect(
+        code,
+        contains('public static final class B extends SomeClass {'),
+      );
+      expect(
+        code,
+        matches(
+          RegExp(
+            r'sealed class SomeClass permits SomeClass\.A, SomeClass\.B\s*\{.*public static final class A',
+            dotAll: true,
+          ),
+        ),
+      );
+    },
+  );
 }

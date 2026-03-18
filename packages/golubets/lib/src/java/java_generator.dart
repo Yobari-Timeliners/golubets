@@ -41,6 +41,7 @@ class JavaOptions {
     this.copyrightHeader,
     this.useGeneratedAnnotation,
     this.nestSealedClasses = false,
+    this.usePureSealedSubclasses = false,
   });
 
   /// The name of the class that will house all the generated classes.
@@ -80,6 +81,41 @@ class JavaOptions {
   /// {@endtemplate}
   final bool nestSealedClasses;
 
+  /// {@template java_options.sealed_names_purified}
+  /// Whether the names of sealed classes are purified.
+  ///
+  /// Defaults to false.
+  ///
+  /// Example:
+  ///
+  /// Dart input:
+  ///
+  /// ```dart
+  /// sealed class SomeClass {}
+  /// final class SomeClassA extends SomeClass {}
+  /// final class SomeClassB extends SomeClass {}
+  /// ```
+  ///
+  /// if [usePureSealedSubclasses] is true:
+  /// ```java
+  /// public sealed class SomeClass permits SomeClass.A, SomeClass.B {
+  ///  public static final class A extends SomeClass {}
+  ///  public static final class B extends SomeClass {}
+  /// }
+  /// ```
+  ///
+  /// otherwise:
+  /// ```java
+  /// public sealed class SomeClass permits SomeClass.SomeClassA, SomeClass.SomeClassB {
+  ///  public static final class SomeClassA extends SomeClass {}
+  ///  public static final class SomeClassB extends SomeClass {}
+  /// }
+  /// ```
+  ///
+  /// It will be purified if [JavaOptions.nestSealedClasses] is true.
+  /// {@endtemplate}
+  final bool usePureSealedSubclasses;
+
   /// Creates a [JavaOptions] from a Map representation where:
   /// `x = JavaOptions.fromMap(x.toMap())`.
   static JavaOptions fromMap(Map<String, Object> map) {
@@ -90,6 +126,7 @@ class JavaOptions {
       copyrightHeader: copyrightHeader?.cast<String>(),
       useGeneratedAnnotation: map['useGeneratedAnnotation'] as bool?,
       nestSealedClasses: map['nestSealedClasses'] as bool? ?? false,
+      usePureSealedSubclasses: map['usePureSealedSubclasses'] as bool? ?? false,
     );
   }
 
@@ -103,6 +140,7 @@ class JavaOptions {
       if (useGeneratedAnnotation != null)
         'useGeneratedAnnotation': useGeneratedAnnotation!,
       'nestSealedClasses': nestSealedClasses,
+      'usePureSealedSubclasses': usePureSealedSubclasses,
     };
     return result;
   }
@@ -124,6 +162,7 @@ class InternalJavaOptions extends InternalOptions {
     this.copyrightHeader,
     this.useGeneratedAnnotation,
     this.nestSealedClasses = false,
+    this.usePureSealedSubclasses = false,
   });
 
   /// Creates InternalJavaOptions from JavaOptions.
@@ -135,7 +174,8 @@ class InternalJavaOptions extends InternalOptions {
        package = options.package,
        copyrightHeader = options.copyrightHeader ?? copyrightHeader,
        useGeneratedAnnotation = options.useGeneratedAnnotation,
-       nestSealedClasses = options.nestSealedClasses;
+       nestSealedClasses = options.nestSealedClasses,
+       usePureSealedSubclasses = options.usePureSealedSubclasses;
 
   /// Path to the java file that will be generated.
   final String javaOut;
@@ -156,6 +196,9 @@ class InternalJavaOptions extends InternalOptions {
 
   /// {@macro java_options.nest_sealed_classes}
   final bool nestSealedClasses;
+
+  /// {@macro java_options.sealed_names_purified}
+  final bool usePureSealedSubclasses;
 }
 
 /// Class that manages all Java code generation.
@@ -427,12 +470,18 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
 
     final String className = classDefinition.name;
 
+    final bool usePureSealedSubclasses =
+        generatorOptions.usePureSealedSubclasses;
+
     if (isSealed) {
       final List<Class> children = classDefinition.children;
 
-      final String permitsClause = isNestSealedClasses
-          ? children.map((Class e) => '$className.${e.name}').join(', ')
-          : children.map((Class e) => e.name).join(', ');
+      final String permitsClause = switch (isNestSealedClasses) {
+        true when usePureSealedSubclasses =>
+          children.map((Class e) => '$className.${e.pureName}').join(', '),
+        true => children.map((Class e) => '$className.${e.name}').join(', '),
+        false => children.map((Class e) => e.name).join(', '),
+      };
 
       indent.write(
         'public static sealed class $className permits $permitsClause ',
@@ -441,9 +490,11 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
       final classModificator = isNestSealedClasses
           ? 'public static final class'
           : 'final static class';
-
+      final String sealedChildClassName = usePureSealedSubclasses
+          ? classDefinition.pureName
+          : className;
       indent.write(
-        '$classModificator $className extends ${classDefinition.superClass!.name} ',
+        '$classModificator $sealedChildClassName extends ${classDefinition.superClass?.name} ',
       );
     } else {
       indent.write(
@@ -644,13 +695,18 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
     ).toList();
 
     void writeEncodeLogic(EnumeratedType customType) {
-      final String? sealedSuperClassName = customType
-          .findSealedHierarchy()
-          ?.superClass
-          .name;
-      final String customTypeName = generatorOptions.nestSealedClasses
-          ? '$sealedSuperClassName.${customType.name}'
-          : customType.name;
+      final ({Class child, Class superClass})? sealedHierarchy = customType
+          .findSealedHierarchy();
+      final String? sealedSuperClassName = sealedHierarchy?.superClass.name;
+      final bool usePureSealedSubclasses =
+          generatorOptions.usePureSealedSubclasses;
+      final String customTypeName =
+          switch (generatorOptions.nestSealedClasses) {
+            true when usePureSealedSubclasses =>
+              '$sealedSuperClassName.${sealedHierarchy?.child.pureName}',
+            true => '$sealedSuperClassName.${customType.name}',
+            false => customType.name,
+          };
       final encodeString = customType.type == CustomTypes.customClass
           ? 'toList()'
           : 'index';
@@ -682,15 +738,21 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
     }
 
     void writeDecodeLogic(EnumeratedType customType) {
-      final String? sealedSuperClassName = customType
-          .findSealedHierarchy()
-          ?.superClass
-          .name;
-      final String customTypeName = generatorOptions.nestSealedClasses
-          ? '$sealedSuperClassName.${customType.name}'
-          : customType.name;
       indent.write('case (byte) ${customType.enumeration}:');
       if (customType.type == CustomTypes.customClass) {
+        final ({Class child, Class superClass})? sealedHierarchy = customType
+            .findSealedHierarchy();
+        final String? sealedSuperClassName = sealedHierarchy?.superClass.name;
+        final bool usePureSealedSubclasses =
+            generatorOptions.usePureSealedSubclasses;
+        final String customTypeName =
+            switch (generatorOptions.nestSealedClasses) {
+              true when usePureSealedSubclasses =>
+                '$sealedSuperClassName.${sealedHierarchy?.child.pureName}',
+              true => '$sealedSuperClassName.${customType.name}',
+              false => customType.name,
+            };
+
         indent.newln();
         indent.nest(1, () {
           indent.writeln(
@@ -701,7 +763,7 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
         indent.addScoped(' {', '}', () {
           indent.writeln('Object value = readValue(buffer);');
           indent.writeln(
-            'return ${_intToEnum('value', customTypeName, true)};',
+            'return ${_intToEnum('value', customType.name, true)};',
           );
         });
       }
@@ -817,15 +879,29 @@ if (wrapped == null) {
     ''');
         indent.writeScoped('switch (type.intValue()) {', '}', () {
           for (int i = totalCustomCodecKeysAllowed; i < types.length; i++) {
+            final EnumeratedType enumeratedType = types[i];
             indent.writeln('case ${i - totalCustomCodecKeysAllowed}:');
             indent.nest(1, () {
-              if (types[i].type == CustomTypes.customClass) {
+              if (enumeratedType.type == CustomTypes.customClass) {
+                final ({Class child, Class superClass})? sealedHierarchy =
+                    enumeratedType.findSealedHierarchy();
+                final String? sealedSuperClassName =
+                    sealedHierarchy?.superClass.name;
+                final bool usePureSealedSubclasses =
+                    generatorOptions.usePureSealedSubclasses;
+                final String customTypeName = switch (generatorOptions
+                    .nestSealedClasses) {
+                  true when usePureSealedSubclasses =>
+                    '$sealedSuperClassName.${sealedHierarchy?.child.pureName}',
+                  true => '$sealedSuperClassName.${enumeratedType.name}',
+                  false => enumeratedType.name,
+                };
                 indent.writeln(
-                  'return ${types[i].name}.fromList((ArrayList<Object>) wrapped);',
+                  'return $customTypeName.fromList((ArrayList<Object>) wrapped);',
                 );
-              } else if (types[i].type == CustomTypes.customEnum) {
+              } else if (enumeratedType.type == CustomTypes.customEnum) {
                 indent.writeln(
-                  'return ${_intToEnum('wrapped', types[i].name, false)};',
+                  'return ${_intToEnum('wrapped', enumeratedType.name, false)};',
                 );
               }
             });

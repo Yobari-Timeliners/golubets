@@ -3613,7 +3613,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
   );
 
   test(
-    'java nested sealed classes serialize and deserialize correctly',
+    'nested java sealed classes serialize and deserialize correctly',
     () async {
       final api = java_sealed.JavaNestedSealedApi();
 
