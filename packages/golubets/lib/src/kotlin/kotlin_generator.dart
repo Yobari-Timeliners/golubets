@@ -81,6 +81,14 @@ class KotlinOptions {
   ///
   /// Example:
   ///
+  /// Dart input:
+  ///
+  /// ```dart
+  /// sealed class SomeClass {}
+  /// final class SomeClassA extends SomeClass {}
+  /// final class SomeClassB extends SomeClass {}
+  /// ```
+  ///
   /// if [nestSealedClasses] is true:
   /// ```kotlin
   /// sealed class SomeClass {
@@ -94,14 +102,6 @@ class KotlinOptions {
   /// sealed class SomeClass
   /// class SomeClassA : SomeClass()
   /// class SomeClassB : SomeClass()
-  /// ```
-  ///
-  /// Dart input:
-  ///
-  /// ```dart
-  /// sealed class SomeClass {}
-  /// final class SomeClassA extends SomeClass {}
-  /// final class SomeClassB extends SomeClass {}
   /// ```
   /// {@endtemplate}
   final bool nestSealedClasses;
@@ -117,6 +117,14 @@ class KotlinOptions {
   /// Defaults to false.
   ///
   /// Example:
+  ///
+  /// Dart input:
+  ///
+  /// ```dart
+  /// sealed class SomeClass {}
+  /// final class SomeClassA extends SomeClass {}
+  /// final class SomeClassB extends SomeClass {}
+  /// ```
   ///
   /// if [usePureSealedSubclasses] is true:
   /// ```kotlin
@@ -135,14 +143,6 @@ class KotlinOptions {
   /// ```
   ///
   /// It will be purified if [KotlinOptions.nestSealedClasses] is true.
-  ///
-  /// Dart input:
-  ///
-  /// ```dart
-  /// sealed class SomeClass {}
-  /// final class SomeClassA extends SomeClass {}
-  /// final class SomeClassB extends SomeClass {}
-  /// ```
   /// {@endtemplate}
   final bool usePureSealedSubclasses;
 

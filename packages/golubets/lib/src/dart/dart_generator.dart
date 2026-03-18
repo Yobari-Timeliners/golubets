@@ -50,6 +50,7 @@ class DartOptions {
     this.sourceOutPath,
     this.testOutPath,
     bool ignoreLints = true,
+    this.useApiInterface = false,
   }) : _ignoreLints = ignoreLints;
 
   /// A copyright header that will get prepended to generated code.
@@ -64,6 +65,44 @@ class DartOptions {
   /// Whether to ignore lint violations in generated Dart code.
   final bool _ignoreLints;
 
+  /// {@template dart_options.api_interface}
+  /// Whether to generate interface of HostApi.
+  ///
+  /// Defaults to false.
+  ///
+  /// Example:
+  ///
+  /// Dart input:
+  ///
+  /// ```dart
+  /// abstract class SomeApi {
+  ///   int getNumber(int number);
+  /// }
+  /// ```
+  ///
+  /// if [useApiInterface] is true:
+  /// ```dart
+  /// abstract interface class ISomeApi {
+  ///  Future<int> getNumber(int number);
+  /// }
+  /// class SomeApi implements ISomeApi {
+  ///  Future<int> getNumber(int number) {
+  ///    //...
+  ///  }
+  /// }
+  /// ```
+  ///
+  /// instead of:
+  /// ```dart
+  /// class SomeApi {
+  ///  Future<int> getNumber(int number) {
+  ///    //...
+  ///  }
+  /// }
+  /// ```
+  /// {@endtemplate}
+  final bool useApiInterface;
+
   /// Creates a [DartOptions] from a Map representation where:
   /// `x = DartOptions.fromMap(x.toMap())`.
   static DartOptions fromMap(Map<String, Object> map) {
@@ -73,6 +112,7 @@ class DartOptions {
       sourceOutPath: map['sourceOutPath'] as String?,
       testOutPath: map['testOutPath'] as String?,
       ignoreLints: (map['ignoreLints'] as bool?) ?? true,
+      useApiInterface: map['useApiInterface'] as bool? ?? false,
     );
   }
 
@@ -84,6 +124,7 @@ class DartOptions {
       if (sourceOutPath != null) 'sourceOutPath': sourceOutPath!,
       if (testOutPath != null) 'testOutPath': testOutPath!,
       'ignoreLints': _ignoreLints,
+      'useApiInterface': useApiInterface,
     };
     return result;
   }
@@ -103,6 +144,7 @@ class InternalDartOptions extends InternalOptions {
     this.dartOut,
     this.testOut,
     required bool ignoreLints,
+    this.useApiInterface = false,
   }) : _ignoreLints = ignoreLints;
 
   /// Creates InternalDartOptions from DartOptions.
@@ -114,7 +156,8 @@ class InternalDartOptions extends InternalOptions {
   }) : copyrightHeader = copyrightHeader ?? options.copyrightHeader,
        dartOut = (dartOut ?? options.sourceOutPath)!,
        testOut = testOut ?? options.testOutPath,
-       _ignoreLints = options._ignoreLints;
+       _ignoreLints = options._ignoreLints,
+       useApiInterface = options.useApiInterface;
 
   /// A copyright header that will get prepended to generated code.
   final Iterable<String>? copyrightHeader;
@@ -127,6 +170,9 @@ class InternalDartOptions extends InternalOptions {
 
   /// Whether to ignore lint violations in generated Dart code.
   final bool _ignoreLints;
+
+  /// {@macro dart_options.api_interface}
+  final bool useApiInterface;
 }
 
 /// Class that manages all Dart code generation.
@@ -680,7 +726,39 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     indent.newln();
     var first = true;
     addDocumentationComments(indent, api.documentationComments, docCommentSpec);
-    indent.write('class ${api.name} ');
+    final String name = api.name;
+    String? interfaceName;
+    if (generatorOptions.useApiInterface) {
+      interfaceName = 'I$name';
+      indent.write('abstract interface class $interfaceName ');
+      indent.addScoped('{', '}', () {
+        for (final Method func in api.methods) {
+          if (!first) {
+            indent.newln();
+          } else {
+            first = false;
+          }
+          addDocumentationComments(
+            indent,
+            func.documentationComments,
+            docCommentSpec,
+          );
+          final String argSignature = _getMethodParameterSignature(
+            func.parameters,
+          );
+          indent.write(
+            'Future<${addGenericTypes(func.returnType)}> ${func.name}($argSignature);',
+          );
+          indent.newln();
+        }
+      });
+      indent.newln();
+    }
+    final inheritance = interfaceName == null
+        ? ''
+        : ' implements $interfaceName';
+    first = true;
+    indent.write('class $name$inheritance ');
     indent.addScoped('{', '}', () {
       indent.format('''
 /// Constructor for [${api.name}].  The [binaryMessenger] named argument is

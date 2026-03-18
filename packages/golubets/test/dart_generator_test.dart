@@ -3126,4 +3126,97 @@ name: foobar
       expect(code, contains("'c'"));
     });
   });
+
+  test('api with interface [useApiInterface] = true', () {
+    final root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'SomeApi',
+          methods: <Method>[
+            Method(
+              name: 'getNumber',
+              location: ApiLocation.host,
+              returnType: const TypeDeclaration(
+                baseName: 'int',
+                isNullable: false,
+              ),
+              parameters: <Parameter>[
+                Parameter(
+                  type: const TypeDeclaration(
+                    baseName: 'int',
+                    isNullable: false,
+                  ),
+                  name: 'number',
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[],
+      enums: <Enum>[],
+    );
+    final sink = StringBuffer();
+    const generator = DartGenerator();
+    generator.generate(
+      const InternalDartOptions(
+        ignoreLints: false,
+        useApiInterface: true,
+      ),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+
+    expect(code, contains('abstract interface class ISomeApi {'));
+    expect(code, contains('Future<int> getNumber(int number);'));
+    expect(code, contains('class SomeApi implements ISomeApi {'));
+  });
+
+  test('api without interface [useApiInterface] = false', () {
+    final root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'SomeApi',
+          methods: <Method>[
+            Method(
+              name: 'getNumber',
+              location: ApiLocation.host,
+              returnType: const TypeDeclaration(
+                baseName: 'int',
+                isNullable: false,
+              ),
+              parameters: <Parameter>[
+                Parameter(
+                  type: const TypeDeclaration(
+                    baseName: 'int',
+                    isNullable: false,
+                  ),
+                  name: 'number',
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[],
+      enums: <Enum>[],
+    );
+    final sink = StringBuffer();
+    const generator = DartGenerator();
+    generator.generate(
+      const InternalDartOptions(
+        ignoreLints: false,
+      ),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+
+    expect(code, isNot(contains('abstract interface class ISomeApi {')));
+    expect(code, isNot(contains('Future<int> getNumber(int number);')));
+    expect(code, isNot(contains('class SomeApi implements ISomeApi {')));
+  });
 }
