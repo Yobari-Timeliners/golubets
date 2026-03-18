@@ -3706,7 +3706,7 @@ void main() {
   });
 
   test(
-    'sealed class with purify [isSealedNamesPurified] = true and [nestSealedClasses] = true',
+    'sealed class with purify [usePureSealedSubclasses] = true and [nestSealedClasses] = true',
     () {
       final superClass = Class(
         name: 'SomeClass',
@@ -3715,13 +3715,13 @@ void main() {
       );
       final children = <Class>[
         Class(
-          name: 'SomeClassEnabled',
+          name: 'SomeClassA',
           superClass: superClass,
           superClassName: superClass.name,
           fields: <NamedType>[],
         ),
         Class(
-          name: 'DisabledSomeClass',
+          name: 'BSomeClass',
           superClass: superClass,
           superClassName: superClass.name,
           fields: <NamedType>[],
@@ -3740,7 +3740,7 @@ void main() {
       const generator = KotlinGenerator();
       const kotlinOptions = InternalKotlinOptions(
         kotlinOut: '',
-        isSealedNamesPurified: true,
+        usePureSealedSubclasses: true,
         nestSealedClasses: true,
       );
       generator.generate(
@@ -3756,11 +3756,11 @@ void main() {
       );
       expect(
         code,
-        isNot(contains('class SomeClassEnabled')),
+        isNot(contains('class SomeClassA')),
       );
       expect(
         code,
-        isNot(contains('class DisabledSomeClass')),
+        isNot(contains('class BSomeClass')),
       );
     },
   );

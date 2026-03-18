@@ -29,7 +29,7 @@ class SwiftOptions {
     this.fileSpecificClassNameComponent,
     this.errorClassName,
     this.includeErrorClass = true,
-    this.isSealedNamesPurified = false,
+    this.usePureSealedSubclasses = false,
   });
 
   /// A copyright header that will get prepended to generated code.
@@ -54,33 +54,31 @@ class SwiftOptions {
   ///
   /// Example:
   ///
-  /// Dart input:
-  ///
-  /// ```dart
-  /// sealed class SomeClass {}
-  /// final class EnabledSomeClass extends SomeClass {}
-  /// final class DisabledSomeClass extends SomeClass {}
-  /// ```
-  ///
-  /// Result:
-  ///
-  /// if [isSealedNamesPurified] is true:
+  /// if [usePureSealedSubclasses] is true:
   /// ```swift
   /// public enum SomeClass {
-  ///  case enabled
-  ///  case disabled
+  ///  case a
+  ///  case b
   /// }
   /// ```
   ///
   /// instead of:
   /// ```swift
   /// public enum SomeClass {
-  ///  case enabledSomeClass
-  ///  case disabledSomeClass
+  ///  case someClassA
+  ///  case someClassB
   /// }
   /// ```
+  ///
+  /// Dart input:
+  ///
+  /// ```dart
+  /// sealed class SomeClass {}
+  /// final class SomeClassA extends SomeClass {}
+  /// final class SomeClassB extends SomeClass {}
+  /// ```
   /// {@endtemplate}
-  final bool isSealedNamesPurified;
+  final bool usePureSealedSubclasses;
 
   /// Creates a [SwiftOptions] from a Map representation where:
   /// `x = SwiftOptions.fromList(x.toMap())`.
@@ -91,7 +89,7 @@ class SwiftOptions {
           map['fileSpecificClassNameComponent'] as String?,
       errorClassName: map['errorClassName'] as String?,
       includeErrorClass: map['includeErrorClass'] as bool? ?? true,
-      isSealedNamesPurified: map['isSealedNamesPurified'] as bool? ?? false,
+      usePureSealedSubclasses: map['usePureSealedSubclasses'] as bool? ?? false,
     );
   }
 
@@ -104,7 +102,7 @@ class SwiftOptions {
         'fileSpecificClassNameComponent': fileSpecificClassNameComponent!,
       if (errorClassName != null) 'errorClassName': errorClassName!,
       'includeErrorClass': includeErrorClass,
-      'isSealedNamesPurified': isSealedNamesPurified,
+      'usePureSealedSubclasses': usePureSealedSubclasses,
     };
     return result;
   }
@@ -125,7 +123,7 @@ class InternalSwiftOptions extends InternalOptions {
     this.fileSpecificClassNameComponent,
     this.errorClassName,
     this.includeErrorClass = true,
-    this.isSealedNamesPurified = false,
+    this.usePureSealedSubclasses = false,
   });
 
   /// Creates InternalSwiftOptions from SwiftOptions.
@@ -140,7 +138,7 @@ class InternalSwiftOptions extends InternalOptions {
            '',
        errorClassName = options.errorClassName,
        includeErrorClass = options.includeErrorClass,
-       isSealedNamesPurified = options.isSealedNamesPurified;
+       usePureSealedSubclasses = options.usePureSealedSubclasses;
 
   /// A copyright header that will get prepended to generated code.
   final Iterable<String>? copyrightHeader;
@@ -161,7 +159,7 @@ class InternalSwiftOptions extends InternalOptions {
   final bool includeErrorClass;
 
   /// {@macro swift_options.sealed_names_purified}
-  final bool isSealedNamesPurified;
+  final bool usePureSealedSubclasses;
 }
 
 /// Options that control how Swift code will be generated for a specific
@@ -337,7 +335,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
         } else if (sealedHierarchy != null) {
           final (child: Class child, superClass: Class superClass) =
               sealedHierarchy;
-          final String childName = generatorOptions.isSealedNamesPurified
+          final String childName = generatorOptions.usePureSealedSubclasses
               ? child.pureName
               : child.name;
           indent.writeln(
@@ -417,7 +415,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
               final (child: Class child, superClass: Class superClass) =
                   sealedHierarchy;
               final String caseName =
-                  (generatorOptions.isSealedNamesPurified
+                  (generatorOptions.usePureSealedSubclasses
                           ? child.pureName
                           : child.name)
                       .toLowFirstLetter();
@@ -669,7 +667,7 @@ if (wrapped == nil) {
                   final (child: Class child, superClass: Class superClass) =
                       sealedHierarchy;
                   final String childName =
-                      generatorOptions.isSealedNamesPurified
+                      generatorOptions.usePureSealedSubclasses
                       ? child.pureName
                       : child.name;
                   indent.writeln(
@@ -903,7 +901,7 @@ if (wrapped == nil) {
         );
         final bool isSealedChild = classDefinition.isSealed;
         final String name =
-            isSealedChild && generatorOptions.isSealedNamesPurified
+            isSealedChild && generatorOptions.usePureSealedSubclasses
             ? child.pureName
             : child.name;
         indent.newln();
@@ -3146,7 +3144,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           final Iterable<NamedType> orderedFields =
               getFieldsInSerializationOrder(child);
           final String childName =
-              (generatorOptions.isSealedNamesPurified
+              (generatorOptions.usePureSealedSubclasses
                       ? child.pureName
                       : child.name)
                   .toLowFirstLetter();
@@ -3227,7 +3225,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           _docCommentSpec,
         );
         final String childName =
-            (generatorOptions.isSealedNamesPurified
+            (generatorOptions.usePureSealedSubclasses
                     ? child.pureName
                     : child.name)
                 .toLowFirstLetter();
@@ -3841,7 +3839,7 @@ extension on DefaultValue {
               classDefenition?.superClass?.isSealed ?? false;
 
           final String name = switch (isSealedChild) {
-            true when generatorOptions.isSealedNamesPurified =>
+            true when generatorOptions.usePureSealedSubclasses =>
               '.${classDefenition?.pureName.toLowFirstLetter()}',
             true => '.${type.baseName.toLowFirstLetter()}',
             false => type.baseName,

@@ -53,7 +53,7 @@ class KotlinOptions {
     this.fileSpecificClassNameComponent,
     this.nestSealedClasses = false,
     this.useGeneratedAnnotation = false,
-    this.isSealedNamesPurified = false,
+    this.usePureSealedSubclasses = false,
   });
 
   /// The package where the generated class will live.
@@ -81,21 +81,11 @@ class KotlinOptions {
   ///
   /// Example:
   ///
-  /// Dart input:
-  ///
-  /// ```dart
-  /// sealed class SomeClass {}
-  /// final class EnabledSomeClass extends SomeClass {}
-  /// final class DisabledSomeClass extends SomeClass {}
-  /// ```
-  ///
-  /// Result:
-  ///
-  /// if [isSealedNamesPurified] and [nestSealedClasses] is true:
+  /// if [nestSealedClasses] is true:
   /// ```kotlin
   /// sealed class SomeClass {
-  ///  class A : SomeClass()
-  ///  class B : SomeClass()
+  ///  class SomeClassA : SomeClass()
+  ///  class SomeClassB : SomeClass()
   /// }
   /// ```
   ///
@@ -104,6 +94,14 @@ class KotlinOptions {
   /// sealed class SomeClass
   /// class SomeClassA : SomeClass()
   /// class SomeClassB : SomeClass()
+  /// ```
+  ///
+  /// Dart input:
+  ///
+  /// ```dart
+  /// sealed class SomeClass {}
+  /// final class SomeClassA extends SomeClass {}
+  /// final class SomeClassB extends SomeClass {}
   /// ```
   /// {@endtemplate}
   final bool nestSealedClasses;
@@ -116,35 +114,37 @@ class KotlinOptions {
   /// {@template kotlin_options.sealed_names_purified}
   /// Whether the names of sealed classes are purified.
   ///
-  /// Dart input:
+  /// Defaults to false.
   ///
-  /// ```dart
-  /// sealed class SomeClass {}
-  /// final class EnabledSomeClass extends SomeClass {}
-  /// final class DisabledSomeClass extends SomeClass {}
-  /// ```
+  /// Example:
   ///
-  /// Result:
-  ///
-  /// if [isSealedNamesPurified] is true:
+  /// if [usePureSealedSubclasses] is true:
   /// ```kotlin
   /// sealed class SomeClass {
-  ///     class Enabled : SomeClass()
-  ///     class Disabled : SomeClass()
+  ///     class A : SomeClass()
+  ///     class B : SomeClass()
   /// }
   /// ```
   ///
   /// otherwise:
   /// ```kotlin
   /// sealed class SomeClass {
-  ///     class EnabledSomeClass : SomeClass()
-  ///     class DisabledSomeClass : SomeClass()
+  ///     class SomeClassA : SomeClass()
+  ///     class SomeClassB : SomeClass()
   /// }
   /// ```
   ///
   /// It will be purified if [KotlinOptions.nestSealedClasses] is true.
+  ///
+  /// Dart input:
+  ///
+  /// ```dart
+  /// sealed class SomeClass {}
+  /// final class SomeClassA extends SomeClass {}
+  /// final class SomeClassB extends SomeClass {}
+  /// ```
   /// {@endtemplate}
-  final bool isSealedNamesPurified;
+  final bool usePureSealedSubclasses;
 
   /// Creates a [KotlinOptions] from a Map representation where:
   /// `x = KotlinOptions.fromMap(x.toMap())`.
@@ -158,7 +158,7 @@ class KotlinOptions {
           map['fileSpecificClassNameComponent'] as String?,
       nestSealedClasses: map['nestSealedClasses'] as bool? ?? false,
       useGeneratedAnnotation: map['useGeneratedAnnotation'] as bool? ?? false,
-      isSealedNamesPurified: map['isSealedNamesPurified'] as bool? ?? false,
+      usePureSealedSubclasses: map['usePureSealedSubclasses'] as bool? ?? false,
     );
   }
 
@@ -174,7 +174,7 @@ class KotlinOptions {
         'fileSpecificClassNameComponent': fileSpecificClassNameComponent!,
       'nestSealedClasses': nestSealedClasses,
       'useGeneratedAnnotation': useGeneratedAnnotation,
-      'isSealedNamesPurified': isSealedNamesPurified,
+      'usePureSealedSubclasses': usePureSealedSubclasses,
     };
     return result;
   }
@@ -198,7 +198,7 @@ class InternalKotlinOptions extends InternalOptions {
     this.fileSpecificClassNameComponent,
     this.nestSealedClasses = false,
     this.useGeneratedAnnotation = false,
-    this.isSealedNamesPurified = false,
+    this.usePureSealedSubclasses = false,
   });
 
   /// Creates InternalKotlinOptions from KotlinOptions.
@@ -215,7 +215,7 @@ class InternalKotlinOptions extends InternalOptions {
            options.fileSpecificClassNameComponent ??
            kotlinOut.split('/').lastOrNull?.split('.').first,
        nestSealedClasses = options.nestSealedClasses,
-       isSealedNamesPurified = options.isSealedNamesPurified;
+       usePureSealedSubclasses = options.usePureSealedSubclasses;
 
   /// The package where the generated class will live.
   final String? package;
@@ -247,7 +247,7 @@ class InternalKotlinOptions extends InternalOptions {
   final bool useGeneratedAnnotation;
 
   /// {@macro kotlin_options.sealed_names_purified}
-  final bool isSealedNamesPurified;
+  final bool usePureSealedSubclasses;
 }
 
 /// Options that control how Kotlin code will be generated for a specific
@@ -489,7 +489,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     final bool isSealedChild = classDefinition.superClass?.isSealed ?? false;
     final String className =
         isSealedChild &&
-            generatorOptions.isSealedNamesPurified &&
+            generatorOptions.usePureSealedSubclasses &&
             generatorOptions.nestSealedClasses
         ? classDefinition.pureName
         : classDefinition.name;
@@ -545,7 +545,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     final bool isSealedChild = classDefinition.superClass?.isSealed ?? false;
     final String className =
         isSealedChild &&
-            generatorOptions.isSealedNamesPurified &&
+            generatorOptions.usePureSealedSubclasses &&
             generatorOptions.nestSealedClasses
         ? classDefinition.pureName
         : classDefinition.name;
@@ -613,7 +613,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     final bool isSealedChild = classDefinition.superClass?.isSealed ?? false;
     final String className =
         isSealedChild &&
-            generatorOptions.isSealedNamesPurified &&
+            generatorOptions.usePureSealedSubclasses &&
             generatorOptions.nestSealedClasses
         ? classDefinition.pureName
         : classDefinition.name;
@@ -845,7 +845,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       final bool isSealedChild = superClass?.isSealed ?? false;
       final String? name =
           isSealedChild &&
-              generatorOptions.isSealedNamesPurified &&
+              generatorOptions.usePureSealedSubclasses &&
               generatorOptions.nestSealedClasses
           ? customType.associatedClass?.pureName
           : customType.name;
@@ -880,7 +880,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
           final bool isSealedChild = superClass?.isSealed ?? false;
           final String? name =
               isSealedChild &&
-                  generatorOptions.isSealedNamesPurified &&
+                  generatorOptions.usePureSealedSubclasses &&
                   generatorOptions.nestSealedClasses
               ? customType.associatedClass?.pureName
               : customType.name;
@@ -1046,7 +1046,7 @@ if (wrapped == null) {
                 final bool isSealedChild = superClass?.isSealed ?? false;
                 final String? pureName =
                     isSealedChild &&
-                        generatorOptions.isSealedNamesPurified &&
+                        generatorOptions.usePureSealedSubclasses &&
                         generatorOptions.nestSealedClasses
                     ? customType.associatedClass?.pureName
                     : customType.name;
@@ -2984,7 +2984,7 @@ extension on DefaultValue {
             : '';
         final String postfix =
             generatorOptions.nestSealedClasses &&
-                generatorOptions.isSealedNamesPurified
+                generatorOptions.usePureSealedSubclasses
             ? classDefinition.pureName
             : baseName;
         indent.add('$prefix$superScope$postfix');

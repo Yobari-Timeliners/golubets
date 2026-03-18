@@ -3402,7 +3402,7 @@ void main() {
     });
   });
 
-  test('sealed class with purify [isSealedNamesPurified] = true', () {
+  test('sealed class with purify [usePureSealedSubclasses] = true', () {
     final superClass = Class(
       name: 'SomeClass',
       isSealed: true,
@@ -3410,13 +3410,13 @@ void main() {
     );
     final children = <Class>[
       Class(
-        name: 'SomeClassEnabled',
+        name: 'SomeClassA',
         superClass: superClass,
         superClassName: superClass.name,
         fields: <NamedType>[],
       ),
       Class(
-        name: 'DisabledSomeClass',
+        name: 'BSomeClass',
         superClass: superClass,
         superClassName: superClass.name,
         fields: <NamedType>[],
@@ -3435,7 +3435,7 @@ void main() {
     const generator = SwiftGenerator();
     const kotlinOptions = InternalSwiftOptions(
       swiftOut: '',
-      isSealedNamesPurified: true,
+      usePureSealedSubclasses: true,
     );
     generator.generate(
       kotlinOptions,
@@ -3446,19 +3446,19 @@ void main() {
     final code = sink.toString();
     expect(
       code,
-      isNot(contains('case someClassEnabled')),
+      isNot(contains('case someClassA')),
     );
     expect(
       code,
-      isNot(contains('case disabledSomeClass')),
+      isNot(contains('case bSomeClass')),
     );
     expect(
       code,
-      isNot(contains('return .someClassEnabled')),
+      isNot(contains('return .someClassA')),
     );
     expect(
       code,
-      isNot(contains('return .disabledSomeClass')),
+      isNot(contains('return .bSomeClass')),
     );
   });
 }
