@@ -3704,4 +3704,64 @@ void main() {
       expect(code, contains('"c"'));
     });
   });
+
+  test(
+    'sealed class with purify [usePureSealedSubclasses] = true and [nestSealedClasses] = true',
+    () {
+      final superClass = Class(
+        name: 'SomeClass',
+        isSealed: true,
+        fields: const <NamedType>[],
+      );
+      final children = <Class>[
+        Class(
+          name: 'SomeClassA',
+          superClass: superClass,
+          superClassName: superClass.name,
+          fields: <NamedType>[],
+        ),
+        Class(
+          name: 'BSomeClass',
+          superClass: superClass,
+          superClassName: superClass.name,
+          fields: <NamedType>[],
+        ),
+      ];
+      superClass.children = children;
+      final root = Root(
+        apis: <Api>[],
+        classes: <Class>[
+          superClass,
+          ...children,
+        ],
+        enums: <Enum>[],
+      );
+      final sink = StringBuffer();
+      const generator = KotlinGenerator();
+      const kotlinOptions = InternalKotlinOptions(
+        kotlinOut: '',
+        usePureSealedSubclasses: true,
+        nestSealedClasses: true,
+      );
+      generator.generate(
+        kotlinOptions,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final code = sink.toString();
+      expect(
+        code,
+        contains('sealed class SomeClass'),
+      );
+      expect(
+        code,
+        isNot(contains('class SomeClassA')),
+      );
+      expect(
+        code,
+        isNot(contains('class BSomeClass')),
+      );
+    },
+  );
 }

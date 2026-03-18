@@ -29,6 +29,7 @@ class SwiftOptions {
     this.fileSpecificClassNameComponent,
     this.errorClassName,
     this.includeErrorClass = true,
+    this.usePureSealedSubclasses = false,
   });
 
   /// A copyright header that will get prepended to generated code.
@@ -46,6 +47,39 @@ class SwiftOptions {
   /// Swift file in the same directory.
   final bool includeErrorClass;
 
+  /// {@template swift_options.sealed_names_purified}
+  /// Whether the names of sealed classes are purified.
+  ///
+  /// Defaults to false.
+  ///
+  /// Example:
+  ///
+  /// Dart input:
+  ///
+  /// ```dart
+  /// sealed class SomeClass {}
+  /// final class SomeClassA extends SomeClass {}
+  /// final class SomeClassB extends SomeClass {}
+  /// ```
+  ///
+  /// if [usePureSealedSubclasses] is true:
+  /// ```swift
+  /// public enum SomeClass {
+  ///  case a
+  ///  case b
+  /// }
+  /// ```
+  ///
+  /// instead of:
+  /// ```swift
+  /// public enum SomeClass {
+  ///  case someClassA
+  ///  case someClassB
+  /// }
+  /// ```
+  /// {@endtemplate}
+  final bool usePureSealedSubclasses;
+
   /// Creates a [SwiftOptions] from a Map representation where:
   /// `x = SwiftOptions.fromList(x.toMap())`.
   static SwiftOptions fromList(Map<String, Object> map) {
@@ -55,6 +89,7 @@ class SwiftOptions {
           map['fileSpecificClassNameComponent'] as String?,
       errorClassName: map['errorClassName'] as String?,
       includeErrorClass: map['includeErrorClass'] as bool? ?? true,
+      usePureSealedSubclasses: map['usePureSealedSubclasses'] as bool? ?? false,
     );
   }
 
@@ -67,6 +102,7 @@ class SwiftOptions {
         'fileSpecificClassNameComponent': fileSpecificClassNameComponent!,
       if (errorClassName != null) 'errorClassName': errorClassName!,
       'includeErrorClass': includeErrorClass,
+      'usePureSealedSubclasses': usePureSealedSubclasses,
     };
     return result;
   }
@@ -87,6 +123,7 @@ class InternalSwiftOptions extends InternalOptions {
     this.fileSpecificClassNameComponent,
     this.errorClassName,
     this.includeErrorClass = true,
+    this.usePureSealedSubclasses = false,
   });
 
   /// Creates InternalSwiftOptions from SwiftOptions.
@@ -100,7 +137,8 @@ class InternalSwiftOptions extends InternalOptions {
            swiftOut.split('/').lastOrNull?.split('.').firstOrNull ??
            '',
        errorClassName = options.errorClassName,
-       includeErrorClass = options.includeErrorClass;
+       includeErrorClass = options.includeErrorClass,
+       usePureSealedSubclasses = options.usePureSealedSubclasses;
 
   /// A copyright header that will get prepended to generated code.
   final Iterable<String>? copyrightHeader;
@@ -119,6 +157,9 @@ class InternalSwiftOptions extends InternalOptions {
   /// This should only ever be set to false if you have another generated
   /// Swift file in the same directory.
   final bool includeErrorClass;
+
+  /// {@macro swift_options.sealed_names_purified}
+  final bool usePureSealedSubclasses;
 }
 
 /// Options that control how Swift code will be generated for a specific
@@ -294,9 +335,11 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
         } else if (sealedHierarchy != null) {
           final (child: Class child, superClass: Class superClass) =
               sealedHierarchy;
-
+          final String childName = generatorOptions.usePureSealedSubclasses
+              ? child.pureName
+              : child.name;
           indent.writeln(
-            'return ${superClass.name}$typeArguments.fromList${child.name}(self.readValue() as! [Any?])',
+            'return ${superClass.name}$typeArguments.fromList$childName(self.readValue() as! [Any?])',
           );
         } else {
           indent.writeln(
@@ -371,7 +414,11 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
             if (isSealedChild) {
               final (child: Class child, superClass: Class superClass) =
                   sealedHierarchy;
-              final String caseName = child.name.toLowFirstLetter();
+              final String caseName =
+                  (generatorOptions.usePureSealedSubclasses
+                          ? child.pureName
+                          : child.name)
+                      .toLowFirstLetter();
 
               indent.add(
                 'if let $value = value as? ${superClass.name}$typeArguments, case .$caseName = $value ',
@@ -455,6 +502,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     bool private = false,
     bool hashable = true,
     required Root root,
+    required InternalSwiftOptions generatorOptions,
   }) {
     final classLookup = <String, Class>{
       for (final Class classDefinition in root.classes)
@@ -468,6 +516,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
         hashable: hashable,
         classLookup: classLookup,
         root: root,
+        generatorOptions: generatorOptions,
       );
 
       return;
@@ -508,7 +557,12 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       };
 
       if (!classDefinition.isSealed) {
-        _writeClassInit(indent, fields.toList(), classLookup: classLookup);
+        _writeClassInit(
+          indent,
+          fields.toList(),
+          classLookup: classLookup,
+          generatorOptions: generatorOptions,
+        );
       }
 
       for (final field in fields) {
@@ -527,6 +581,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
               field.defaultValue == null &&
               !classDefinition.isImmutable,
           classLookup: classLookup,
+          generatorOptions: generatorOptions,
         );
         indent.newln();
       }
@@ -560,6 +615,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       private: true,
       hashable: false,
       root: root,
+      generatorOptions: generatorOptions,
     );
     indent.addScoped('', '}', () {
       writeClassEncode(
@@ -593,17 +649,33 @@ if (wrapped == nil) {
     ''');
         indent.writeScoped('switch type {', '}', () {
           for (int i = totalCustomCodecKeysAllowed; i < types.length; i++) {
+            final EnumeratedType customType = types[i];
+            final ({Class child, Class superClass})? sealedHierarchy =
+                customType.findSealedHierarchy();
+            final typeArguments = customType.isGeneric
+                ? '<${_flattenTypeArguments(customType.typeArguments)}>'
+                : '';
             indent.writeScoped(
               'case ${i - totalCustomCodecKeysAllowed}:',
               '',
               () {
-                if (types[i].type == CustomTypes.customClass) {
+                if (customType.type == CustomTypes.customEnum) {
                   indent.writeln(
-                    'return ${types[i].name}.fromList(wrapped as! [Any?]);',
+                    'return ${customType.name}$typeArguments(rawValue: wrapped as! Int);',
                   );
-                } else if (types[i].type == CustomTypes.customEnum) {
+                } else if (sealedHierarchy != null) {
+                  final (child: Class child, superClass: Class superClass) =
+                      sealedHierarchy;
+                  final String childName =
+                      generatorOptions.usePureSealedSubclasses
+                      ? child.pureName
+                      : child.name;
                   indent.writeln(
-                    'return ${types[i].name}(rawValue: wrapped as! Int);',
+                    'return ${superClass.name}$typeArguments.fromList$childName(wrapped as! [Any?]);',
+                  );
+                } else {
+                  indent.writeln(
+                    'return ${customType.name}$typeArguments.fromList(wrapped as! [Any?]);',
                   );
                 }
               },
@@ -645,6 +717,7 @@ if (wrapped == nil) {
       indent,
       classDefinition,
       root: root,
+      generatorOptions: generatorOptions,
     );
     indent.writeScoped('', '}', () {
       indent.newln();
@@ -676,6 +749,7 @@ if (wrapped == nil) {
     Indent indent,
     List<NamedType> fields, {
     required Map<String, Class> classLookup,
+    required InternalSwiftOptions generatorOptions,
   }) {
     indent.writeScoped('public init(', ')', () {
       for (var i = 0; i < fields.length; i++) {
@@ -685,6 +759,7 @@ if (wrapped == nil) {
           fields[i],
           addDefault: true,
           classLookup: classLookup,
+          generatorOptions: generatorOptions,
         );
         if (i == fields.length - 1) {
           indent.newln();
@@ -706,12 +781,18 @@ if (wrapped == nil) {
     bool addNil = true,
     bool addDefault = false,
     required Map<String, Class> classLookup,
+    required InternalSwiftOptions generatorOptions,
   }) {
     final DefaultValue? defaultValue = field.defaultValue;
     indent.add('${field.name}: ${_nullSafeSwiftTypeForDartType(field.type)}');
     if (defaultValue != null && addDefault) {
       indent.add(' = ');
-      defaultValue.write(indent, prefix: '', classLookup: classLookup);
+      defaultValue.write(
+        indent,
+        prefix: '',
+        classLookup: classLookup,
+        generatorOptions: generatorOptions,
+      );
     } else {
       final defaultNil = field.type.isNullable && addNil ? ' = nil' : '';
       indent.add(defaultNil);
@@ -818,7 +899,11 @@ if (wrapped == nil) {
         final Iterable<NamedType> orderedFields = getFieldsInSerializationOrder(
           child,
         );
-        final String name = child.name;
+        final bool isSealedChild = classDefinition.isSealed;
+        final String name =
+            isSealedChild && generatorOptions.usePureSealedSubclasses
+            ? child.pureName
+            : child.name;
         indent.newln();
         indent.write(
           'internal static func fromList$name(_ list: [Any?]) -> ${classDefinition.name}? {',
@@ -3058,7 +3143,12 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         for (final Class child in classDefinition.children) {
           final Iterable<NamedType> orderedFields =
               getFieldsInSerializationOrder(child);
-          indent.write('case .${child.name.toLowFirstLetter()}');
+          final String childName =
+              (generatorOptions.usePureSealedSubclasses
+                      ? child.pureName
+                      : child.name)
+                  .toLowFirstLetter();
+          indent.write('case .$childName');
           if (orderedFields.isNotEmpty) {
             indent.addScoped('(', '):', () {
               for (var i = 0; i < orderedFields.length; i++) {
@@ -3098,6 +3188,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     bool hashable = true,
     required Map<String, Class> classLookup,
     required Root root,
+    required InternalSwiftOptions generatorOptions,
   }) {
     final List<Class> children = classDefinition.children;
 
@@ -3133,7 +3224,12 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           child.documentationComments,
           _docCommentSpec,
         );
-        indent.write('case ${child.name.toLowFirstLetter()}');
+        final String childName =
+            (generatorOptions.usePureSealedSubclasses
+                    ? child.pureName
+                    : child.name)
+                .toLowFirstLetter();
+        indent.write('case $childName');
 
         if (childFields.isNotEmpty) {
           indent.addScoped(
@@ -3157,6 +3253,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                     indent,
                     prefix: '',
                     classLookup: classLookup,
+                    generatorOptions: generatorOptions,
                   );
                 }
 
@@ -3676,6 +3773,7 @@ extension on DefaultValue {
     Indent indent, {
     String? prefix,
     required Map<String, Class> classLookup,
+    required InternalSwiftOptions generatorOptions,
   }) {
     prefix = prefix ?? indent.str();
 
@@ -3692,7 +3790,11 @@ extension on DefaultValue {
                 ']',
                 () {
                   for (final element in elements) {
-                    element.write(indent, classLookup: classLookup);
+                    element.write(
+                      indent,
+                      classLookup: classLookup,
+                      generatorOptions: generatorOptions,
+                    );
                     indent.addln(', ');
                   }
                 },
@@ -3707,12 +3809,17 @@ extension on DefaultValue {
                 () {
                   for (final MapEntry<DefaultValue, DefaultValue> entry
                       in entries.entries) {
-                    entry.key.write(indent, classLookup: classLookup);
+                    entry.key.write(
+                      indent,
+                      classLookup: classLookup,
+                      generatorOptions: generatorOptions,
+                    );
                     indent.add(': ');
                     entry.value.write(
                       indent,
                       prefix: '',
                       classLookup: classLookup,
+                      generatorOptions: generatorOptions,
                     );
                     indent.addln(', ');
                   }
@@ -3727,12 +3834,16 @@ extension on DefaultValue {
         :final List<DefaultValue> arguments,
       ) =>
         () {
+          final Class? classDefenition = classLookup[type.baseName];
           final bool isSealedChild =
-              classLookup[type.baseName]?.superClass?.isSealed ?? false;
+              classDefenition?.superClass?.isSealed ?? false;
 
-          final String name = isSealedChild
-              ? '.${type.baseName.toLowFirstLetter()}'
-              : type.baseName;
+          final String name = switch (isSealedChild) {
+            true when generatorOptions.usePureSealedSubclasses =>
+              '.${classDefenition?.pureName.toLowFirstLetter()}',
+            true => '.${type.baseName.toLowFirstLetter()}',
+            false => type.baseName,
+          };
 
           indent.add('$prefix$name');
 
@@ -3746,7 +3857,11 @@ extension on DefaultValue {
             ')',
             () {
               for (final argument in arguments) {
-                argument.write(indent, classLookup: classLookup);
+                argument.write(
+                  indent,
+                  classLookup: classLookup,
+                  generatorOptions: generatorOptions,
+                );
                 argument == arguments.last
                     ? indent.newln()
                     : indent.addln(', ');
@@ -3761,7 +3876,12 @@ extension on DefaultValue {
       ) =>
         () {
           indent.add('$prefix$name: ');
-          value.write(indent, prefix: '', classLookup: classLookup);
+          value.write(
+            indent,
+            prefix: '',
+            classLookup: classLookup,
+            generatorOptions: generatorOptions,
+          );
         }(),
     };
   }

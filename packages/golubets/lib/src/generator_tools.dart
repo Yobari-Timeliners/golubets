@@ -17,7 +17,7 @@ import 'generator.dart';
 /// The current version of golubets.
 ///
 /// This must match the version in pubspec.yaml.
-const String golubetsVersion = '1.3.0';
+const String golubetsVersion = '1.3.1';
 
 /// Default plugin package name.
 const String defaultPluginPackageName = 'dev.bayori.golubets';
@@ -1177,6 +1177,24 @@ extension StringExtension on String {
 
     return this[0].toUpperCase() + substring(1);
   }
+
+  /// Removes any capitalized words from the source string that exactly match words in the provided input.
+  String purify(String input) {
+    final pattern = RegExp(r'[A-Z][a-z]*');
+    // Split both target and input strings into words based on capital letters
+    final Set<String> targetWords = pattern
+        .allMatches(this)
+        .map((m) => m.group(0)!)
+        .toSet();
+    final Set<String> inputWords = pattern
+        .allMatches(input)
+        .map((m) => m.group(0)!)
+        .toSet();
+    // Remove exact matches from the target words
+    targetWords.removeWhere((word) => inputWords.contains(word));
+    // Reconstruct the string from the remaining words
+    return targetWords.join();
+  }
 }
 
 /// [EnumeratedType] extensions.
@@ -1193,5 +1211,18 @@ extension EnumeratedTypeExtensions on EnumeratedType {
     }
 
     return null;
+  }
+}
+
+/// [Class] extensions.
+extension ClassExtension on Class {
+  /// Returns the class name without inherited sealed parent class name parts.
+  String get pureName {
+    final Class? superClass = this.superClass;
+    final bool isSealedChild = superClass?.isSealed ?? false;
+    if (superClass == null || !isSealedChild) {
+      return name;
+    }
+    return name.purify(superClass.name);
   }
 }
