@@ -54,6 +54,14 @@ class SwiftOptions {
   ///
   /// Example:
   ///
+  /// Dart input:
+  ///
+  /// ```dart
+  /// sealed class SomeClass {}
+  /// final class SomeClassA extends SomeClass {}
+  /// final class SomeClassB extends SomeClass {}
+  /// ```
+  ///
   /// if [usePureSealedSubclasses] is true:
   /// ```swift
   /// public enum SomeClass {
@@ -68,14 +76,6 @@ class SwiftOptions {
   ///  case someClassA
   ///  case someClassB
   /// }
-  /// ```
-  ///
-  /// Dart input:
-  ///
-  /// ```dart
-  /// sealed class SomeClass {}
-  /// final class SomeClassA extends SomeClass {}
-  /// final class SomeClassB extends SomeClass {}
   /// ```
   /// {@endtemplate}
   final bool usePureSealedSubclasses;
