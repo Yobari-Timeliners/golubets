@@ -1,3 +1,7 @@
+## pending
+* [java] Adds opportunity to generate java (nested) sealed classes
+* [java] Adds opportunity to generate "pure" sealed subclasses names
+
 ## 1.3.1
 * [dart] Adds opportunity to generate interface of HostApi
 * [dart][kotlin][swift] Adds opportunity to generate "pure" sealed subclasses names
