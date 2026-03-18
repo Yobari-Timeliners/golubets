@@ -21,6 +21,7 @@ import com.example.alternate_language_test_plugin.CoreTests.NullableResult;
 import com.example.alternate_language_test_plugin.CoreTests.Result;
 import com.example.alternate_language_test_plugin.CoreTests.VoidResult;
 import com.example.alternate_language_test_plugin.JavaNestedSealedTests.JavaNestedSealedApi;
+import com.example.alternate_language_test_plugin.JavaNestedSealedTests.SomeState;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 /** This plugin handles the native side of the integration tests in example/integration_test/. */
-public class AlternateLanguageTestPlugin implements FlutterPlugin, HostIntegrationCoreApi, JavaNestedSealedApi {
+public class AlternateLanguageTestPlugin
+    implements FlutterPlugin, HostIntegrationCoreApi, JavaNestedSealedApi {
   @Nullable FlutterIntegrationCoreApi flutterApi = null;
   @Nullable FlutterSmallApi flutterSmallApiOne = null;
   @Nullable FlutterSmallApi flutterSmallApiTwo = null;
