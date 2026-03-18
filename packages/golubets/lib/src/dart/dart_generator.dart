@@ -757,6 +757,7 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     final inheritance = interfaceName == null
         ? ''
         : ' implements $interfaceName';
+    first = true;
     indent.write('class $name$inheritance ');
     indent.addScoped('{', '}', () {
       indent.format('''
