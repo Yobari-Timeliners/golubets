@@ -54,7 +54,7 @@ public class AlternateLanguageTestPlugin
   // JavaNestedSealedApi
 
   @Override
-  public SomeState echo(@NonNull SomeState state) {
+  public @NonNull SomeState echo(@NonNull SomeState state) {
     return state;
   }
 
