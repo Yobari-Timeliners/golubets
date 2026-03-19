@@ -41,7 +41,7 @@ const int _exitDartLanguageVersionIssue = 11;
 
 final Uri _javaFormatterUrl = Uri.https(
   'github.com',
-  '/google/google-java-format/releases/download/google-java-format-1.3/google-java-format-1.3-all-deps.jar',
+  '/google/google-java-format/releases/download/v1.23.0/google-java-format-1.23.0-all-deps.jar',
 );
 final Uri _kotlinFormatterUrl = Uri.https(
   'maven.org',
@@ -472,7 +472,7 @@ class FormatCommand extends PackageLoopingCommand {
   Future<String> _getJavaFormatterPath() async {
     final String javaFormatterPath = path.join(
       path.dirname(path.fromUri(platform.script)),
-      'google-java-format-1.3-all-deps.jar',
+      'google-java-format-1.23.0-all-deps.jar',
     );
     final File javaFormatterFile = packagesDir.fileSystem.file(
       javaFormatterPath,

@@ -48,6 +48,13 @@ const Map<String, Set<GeneratorLanguage>> _unsupportedFiles =
         GeneratorLanguage.java,
         GeneratorLanguage.objc,
       },
+      'java_nested_sealed_tests': <GeneratorLanguage>{
+        GeneratorLanguage.cpp,
+        GeneratorLanguage.gobject,
+        GeneratorLanguage.kotlin,
+        GeneratorLanguage.objc,
+        GeneratorLanguage.swift,
+      },
     };
 
 String _snakeToPascalCase(String snake) {
@@ -109,6 +116,7 @@ Future<int> generateTestPigeons({
     'proxy_api_tests',
     'kotlin_nested_sealed_tests',
     'generics_tests',
+    'java_nested_sealed_tests',
   };
 
   const testPluginName = 'test_plugin';
@@ -205,6 +213,7 @@ Future<int> generateTestPigeons({
           : '$alternateOutputBase/android/src/main/java/com/example/'
                 'alternate_language_test_plugin/${_javaFilenameForName(input)}.java',
       javaPackage: 'com.example.alternate_language_test_plugin',
+      javaNestSealedClasses: input == 'java_nested_sealed_tests',
       // iOS/macOS
       objcHeaderOut: skipLanguages.contains(GeneratorLanguage.objc)
           ? null
@@ -276,6 +285,7 @@ Future<int> runGolubets({
   bool injectOverflowTypes = false,
   bool mergeDefinitionFileOptions = true,
   bool kotlinNestSealedClasses = false,
+  bool javaNestSealedClasses = false,
 }) async {
   // Temporarily suppress the version output via the global flag if requested.
   // This is done because having the version in all the generated test output
@@ -321,7 +331,10 @@ Future<int> runGolubets({
           ? null
           : GObjectOptions(module: gobjectModule),
       javaOut: javaOut,
-      javaOptions: JavaOptions(package: javaPackage),
+      javaOptions: JavaOptions(
+        package: javaPackage,
+        nestSealedClasses: javaNestSealedClasses,
+      ),
       kotlinOut: kotlinOut,
       kotlinOptions: KotlinOptions(
         package: kotlinPackage,

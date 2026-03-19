@@ -815,7 +815,9 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       final int enumeration = customType.enumeration < maximumCodecFieldKey
           ? customType.enumeration
           : maximumCodecFieldKey;
-      final Class? superClass = customType.findSealedHierarchy()?.superClass;
+      final ({Class child, Class superClass})? sealedHierarchy = customType
+          .findSealedHierarchy();
+      final Class? superClass = sealedHierarchy?.superClass;
       final String? sealedSuperClassName = superClass?.name;
       final nestedClassPrefix =
           sealedSuperClassName != null && generatorOptions.nestSealedClasses
@@ -847,7 +849,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
           isSealedChild &&
               generatorOptions.usePureSealedSubclasses &&
               generatorOptions.nestSealedClasses
-          ? customType.associatedClass?.pureName
+          ? sealedHierarchy?.child.pureName
           : customType.name;
       indent.writeScoped(
         '${value}is $nestedClassPrefix$name$typeArguments$typeArgsCheck -> {',
@@ -865,15 +867,17 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     }
 
     void writeDecodeLogic(EnumeratedType customType) {
-      final Class? superClass = customType.findSealedHierarchy()?.superClass;
-      final String? sealedSuperClassName = superClass?.name;
-      final nestedClassPrefix =
-          sealedSuperClassName != null && generatorOptions.nestSealedClasses
-          ? '$sealedSuperClassName.'
-          : '';
       indent.write('${customType.enumeration}.toByte() -> ');
       indent.addScoped('{', '}', () {
         if (customType.type == CustomTypes.customClass) {
+          final ({Class child, Class superClass})? sealedHierarchy = customType
+              .findSealedHierarchy();
+          final Class? superClass = sealedHierarchy?.superClass;
+          final String? sealedSuperClassName = superClass?.name;
+          final nestedClassPrefix =
+              sealedSuperClassName != null && generatorOptions.nestSealedClasses
+              ? '$sealedSuperClassName.'
+              : '';
           final typeArguments = customType.typeArguments.isEmpty
               ? ''
               : '<${_flattenTypeArguments(customType.typeArguments)}>';
@@ -882,7 +886,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
               isSealedChild &&
                   generatorOptions.usePureSealedSubclasses &&
                   generatorOptions.nestSealedClasses
-              ? customType.associatedClass?.pureName
+              ? sealedHierarchy?.child.pureName
               : customType.name;
           indent.write('return (readValue(buffer) as? List<Any?>)?.let ');
           indent.addScoped('{', '}', () {
@@ -1028,31 +1032,31 @@ if (wrapped == null) {
     ''');
         indent.writeScoped('when (type.toInt()) {', '}', () {
           for (int i = totalCustomCodecKeysAllowed; i < types.length; i++) {
-            final EnumeratedType customType = types[i];
-            final Class? superClass = customType
-                .findSealedHierarchy()
-                ?.superClass;
+            final EnumeratedType enumeratedType = types[i];
             indent.writeScoped('${i - totalCustomCodecKeysAllowed} ->', '', () {
-              if (customType.type == CustomTypes.customClass) {
+              if (enumeratedType.type == CustomTypes.customClass) {
+                final ({Class child, Class superClass})? sealedHierarchy =
+                    enumeratedType.findSealedHierarchy();
+                final Class? superClass = sealedHierarchy?.superClass;
                 final String? sealedSuperClassName = superClass?.name;
                 final nestedClassPrefix =
                     sealedSuperClassName != null &&
                         generatorOptions.nestSealedClasses
                     ? '$sealedSuperClassName.'
                     : '';
-                final typeArguments = customType.typeArguments.isEmpty
+                final typeArguments = enumeratedType.typeArguments.isEmpty
                     ? ''
-                    : '<${_flattenTypeArguments(customType.typeArguments)}>';
+                    : '<${_flattenTypeArguments(enumeratedType.typeArguments)}>';
                 final bool isSealedChild = superClass?.isSealed ?? false;
                 final String? pureName =
                     isSealedChild &&
                         generatorOptions.usePureSealedSubclasses &&
                         generatorOptions.nestSealedClasses
-                    ? customType.associatedClass?.pureName
-                    : customType.name;
+                    ? sealedHierarchy?.child.pureName
+                    : enumeratedType.name;
                 final String name = isSealedChild
                     ? '$nestedClassPrefix$pureName'
-                    : customType.name;
+                    : enumeratedType.name;
                 indent.writeln(
                   'return $name.fromList$typeArguments(wrapped as List<Any?>)',
                 );

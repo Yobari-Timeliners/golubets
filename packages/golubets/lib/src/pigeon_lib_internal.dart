@@ -458,13 +458,7 @@ class JavaGeneratorAdapter implements GeneratorAdapter {
       _openSink(options.javaOptions?.javaOut, basePath: options.basePath ?? '');
 
   @override
-  List<Error> validate(InternalGolubetsOptions options, Root root) {
-    final errors = <Error>[];
-    _errorOnEventChannelApi(errors, languageString, root);
-    _errorOnSealedClass(errors, languageString, root);
-    _errorOnInheritedClass(errors, languageString, root);
-    return errors;
-  }
+  List<Error> validate(InternalGolubetsOptions options, Root root) => <Error>[];
 }
 
 /// A [GeneratorAdapter] that generates Swift source code.

@@ -1892,4 +1892,250 @@ void main() {
       ),
     );
   });
+
+  test('sealed class [nestSealedClasses] = false', () {
+    final superClass = Class(
+      name: 'Result',
+      isSealed: true,
+      fields: const <NamedType>[],
+    );
+    final success = Class(
+      name: 'Success',
+      superClass: superClass,
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'String', isNullable: true),
+          name: 'payload',
+        ),
+      ],
+    );
+    final failure = Class(
+      name: 'Failure',
+      superClass: superClass,
+      superClassName: superClass.name,
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'String', isNullable: false),
+          name: 'reason',
+        ),
+      ],
+    );
+    superClass.children = [success, failure];
+    final root = Root(
+      apis: <Api>[],
+      classes: <Class>[superClass, success, failure],
+      enums: <Enum>[],
+    );
+    final sink = StringBuffer();
+    const javaOptions = InternalJavaOptions(className: 'Messages', javaOut: '');
+    const javaGenerator = JavaGenerator();
+    javaGenerator.generate(
+      javaOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+
+    expect(
+      code,
+      contains('public static sealed class Result permits Success, Failure'),
+    );
+    expect(code, contains('final static class Success extends Result'));
+    expect(code, contains('private @Nullable String payload;'));
+    expect(code, contains('final static class Failure extends Result'));
+    expect(code, contains('private @NonNull String reason;'));
+    expect(code, contains('public boolean equals(Object o)'));
+    expect(code, contains('public int hashCode()'));
+    expect(code, isNot(contains('Result that = (Result) o;')));
+  });
+
+  test('nested sealed class [nestSealedClasses] = true', () {
+    final superClass = Class(
+      name: 'Result',
+      isSealed: true,
+      fields: const <NamedType>[],
+    );
+    final success = Class(
+      name: 'Success',
+      superClass: superClass,
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'int', isNullable: false),
+          name: 'code',
+        ),
+        NamedType(
+          type: const TypeDeclaration(
+            baseName: 'String',
+            isNullable: true,
+          ),
+          name: 'data',
+        ),
+      ],
+    );
+    final failure = Class(
+      name: 'Failure',
+      superClass: superClass,
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'String', isNullable: false),
+          name: 'message',
+        ),
+      ],
+    );
+    superClass.children = [success, failure];
+    final root = Root(
+      apis: <Api>[],
+      classes: <Class>[superClass, success, failure],
+      enums: <Enum>[],
+    );
+    final sink = StringBuffer();
+    const options = InternalJavaOptions(
+      className: 'Messages',
+      javaOut: '',
+      nestSealedClasses: true,
+    );
+    const javaGenerator = JavaGenerator();
+    javaGenerator.generate(
+      options,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+    expect(
+      code,
+      contains(
+        'public static sealed class Result permits Result.Success, Result.Failure {',
+      ),
+    );
+    expect(
+      code,
+      contains('public static final class Success extends Result {'),
+    );
+    expect(code, contains('private @NonNull Long code;'));
+    expect(code, contains('private @Nullable String data;'));
+    expect(
+      code,
+      contains('public static final class Failure extends Result {'),
+    );
+    expect(code, contains('private @NonNull String message;'));
+    expect(
+      code,
+      matches(
+        RegExp(
+          r'sealed class Result permits Result\.Success, Result\.Failure\s*\{.*public static final class Success',
+          dotAll: true,
+        ),
+      ),
+    );
+  });
+
+  test('sealed base class has no fields/equals/hashCode', () {
+    final superClass = Class(
+      name: 'Event',
+      isSealed: true,
+      fields: const <NamedType>[],
+    );
+    final ping = Class(
+      name: 'Ping',
+      superClass: superClass,
+      fields: <NamedType>[],
+    );
+    superClass.children = [ping];
+    final root = Root(
+      apis: <Api>[],
+      classes: <Class>[superClass, ping],
+      enums: <Enum>[],
+    );
+    final sink = StringBuffer();
+    const options = InternalJavaOptions(
+      className: 'Messages',
+      javaOut: 'test.java',
+    );
+    const javaGenerator = JavaGenerator();
+    javaGenerator.generate(
+      options,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+    expect(code, contains('public static sealed class Event permits Ping'));
+    expect(code, isNot(contains('private final')));
+    expect(code, isNot(contains('@Override public boolean equals')));
+    expect(code, isNot(contains('@Override public int hashCode()')));
+  });
+
+  test(
+    'nested sealed class [nestSealedClasses] = true and [usePureSealedSubclasses] = true',
+    () {
+      final superClass = Class(
+        name: 'SomeClass',
+        isSealed: true,
+        fields: const <NamedType>[],
+      );
+      final children = <Class>[
+        Class(
+          name: 'SomeClassA',
+          superClass: superClass,
+          superClassName: superClass.name,
+          fields: <NamedType>[],
+        ),
+        Class(
+          name: 'BSomeClass',
+          superClass: superClass,
+          superClassName: superClass.name,
+          fields: <NamedType>[],
+        ),
+      ];
+      superClass.children = children;
+      final root = Root(
+        apis: <Api>[],
+        classes: <Class>[
+          superClass,
+          ...children,
+        ],
+        enums: <Enum>[],
+      );
+      final sink = StringBuffer();
+      const options = InternalJavaOptions(
+        className: 'Messages',
+        javaOut: '',
+        nestSealedClasses: true,
+        usePureSealedSubclasses: true,
+      );
+      const javaGenerator = JavaGenerator();
+      javaGenerator.generate(
+        options,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final code = sink.toString();
+      expect(
+        code,
+        contains(
+          'public static sealed class SomeClass permits SomeClass.A, SomeClass.B {',
+        ),
+      );
+      expect(
+        code,
+        contains('public static final class A extends SomeClass {'),
+      );
+      expect(
+        code,
+        contains('public static final class B extends SomeClass {'),
+      );
+      expect(
+        code,
+        matches(
+          RegExp(
+            r'sealed class SomeClass permits SomeClass\.A, SomeClass\.B\s*\{.*public static final class A',
+            dotAll: true,
+          ),
+        ),
+      );
+    },
+  );
 }
