@@ -370,26 +370,24 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
         indent.writeln('${classDefinition.name}() {}');
         indent.newln();
       }
-      if (isSealed) {
-        if (generatorOptions.nestSealedClasses) {
-          indent.addScoped(
-            null,
-            null,
-            nestCount: 2,
-            () {
-              for (final Class child in classDefinition.children) {
-                writeDataClass(
-                  generatorOptions,
-                  root,
-                  indent,
-                  child,
-                  dartPackageName: dartPackageName,
-                  ignoreSealedChildren: false,
-                );
-              }
-            },
-          );
-        }
+      if (isSealed && generatorOptions.nestSealedClasses) {
+        indent.addScoped(
+          null,
+          null,
+          nestCount: 2,
+          () {
+            for (final Class child in classDefinition.children) {
+              writeDataClass(
+                generatorOptions,
+                root,
+                indent,
+                child,
+                dartPackageName: dartPackageName,
+                ignoreSealedChildren: false,
+              );
+            }
+          },
+        );
 
         return;
       }
