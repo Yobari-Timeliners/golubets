@@ -1,3 +1,7 @@
+## 26.3.1
+
+* Fixes dartdoc comments that accidentally used HTML.
+
 ## 26.3.0
 
 * Optimizes and improves data class equality and hashing.
