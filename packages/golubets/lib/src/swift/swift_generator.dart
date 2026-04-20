@@ -565,6 +565,8 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
         );
       }
 
+      final public = private ? '' : 'public ';
+
       for (final field in fields) {
         addDocumentationComments(
           indent,
@@ -572,7 +574,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
           _docCommentSpec,
         );
         final varKeyword = classDefinition.isImmutable ? 'let' : 'var';
-        indent.write('$varKeyword ');
+        indent.write('$public$varKeyword ');
         _writeClassField(
           indent,
           field,

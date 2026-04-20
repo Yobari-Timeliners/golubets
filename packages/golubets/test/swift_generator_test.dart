@@ -3461,4 +3461,53 @@ void main() {
       isNot(contains('return .bSomeClass')),
     );
   });
+
+  test('gen class with public fields', () {
+    final classDefinition = Class(
+      name: 'Foobar',
+      isImmutable: true,
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(
+            baseName: 'String',
+            isNullable: false,
+          ),
+          name: 'data',
+          defaultValue: const StringLiteral(
+            value: 'hello world',
+          ),
+        ),
+        NamedType(
+          type: const TypeDeclaration(
+            baseName: 'bool',
+            isNullable: false,
+          ),
+          name: 'isValid',
+          defaultValue: const BoolLiteral(
+            value: true,
+          ),
+        ),
+      ],
+    );
+    final root = Root(
+      apis: <Api>[],
+      classes: <Class>[classDefinition],
+      enums: <Enum>[],
+    );
+    final sink = StringBuffer();
+    const swiftOptions = InternalSwiftOptions(
+      swiftOut: '',
+    );
+    const generator = SwiftGenerator();
+    generator.generate(
+      swiftOptions,
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+    expect(code, contains('public struct Foobar'));
+    expect(code, contains('public let data: String'));
+    expect(code, contains('public let isValid: Bool'));
+  });
 }

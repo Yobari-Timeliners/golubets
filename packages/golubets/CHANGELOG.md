@@ -1,3 +1,6 @@
+## 1.3.2
+* [swift] Adds opportunity to generate swift public fields
+
 ## 1.3.1
 * [dart] Adds opportunity to generate interface of HostApi
 * [dart][kotlin][swift] Adds opportunity to generate "pure" sealed subclasses names
