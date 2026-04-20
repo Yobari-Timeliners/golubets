@@ -243,7 +243,6 @@ public class EventAllNullableTypes: Hashable {
   public var mapMap: [Int64?: [AnyHashable?: Any?]?]?
   public var recursiveClassMap: [Int64?: EventAllNullableTypes?]?
 
-
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> EventAllNullableTypes? {
     let aNullableBool: Bool? = nilOrValue(golubetsVar_list[0])

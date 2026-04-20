@@ -162,7 +162,6 @@ public struct MessageData: Hashable {
   public var code: Code
   public var data: [String: String]
 
-
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> MessageData? {
     let name: String? = nilOrValue(golubetsVar_list[0])

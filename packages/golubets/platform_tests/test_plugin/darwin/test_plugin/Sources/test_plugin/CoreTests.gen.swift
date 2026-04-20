@@ -270,7 +270,6 @@ public struct AllTypes: Hashable {
   public var listMap: [Int64: [Any?]]
   public var mapMap: [Int64: [AnyHashable?: Any?]]
 
-
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> AllTypes? {
     let aBool = golubetsVar_list[0] as! Bool
@@ -473,7 +472,6 @@ public class AllNullableTypes: Hashable {
   public var listMap: [Int64?: [Any?]?]?
   public var mapMap: [Int64?: [AnyHashable?: Any?]?]?
   public var recursiveClassMap: [Int64?: AllNullableTypes?]?
-
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> AllNullableTypes? {
@@ -683,7 +681,6 @@ public struct AllNullableTypesWithoutRecursion: Hashable {
   public var listMap: [Int64?: [Any?]?]? = nil
   public var mapMap: [Int64?: [AnyHashable?: Any?]?]? = nil
 
-
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> AllNullableTypesWithoutRecursion? {
     let aNullableBool: Bool? = nilOrValue(golubetsVar_list[0])
@@ -821,7 +818,6 @@ public struct AllClassesWrapper: Hashable {
   public var classMap: [Int64?: AllTypes?]
   public var nullableClassMap: [Int64?: AllNullableTypesWithoutRecursion?]? = nil
 
-
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> AllClassesWrapper? {
     let allNullableTypes = golubetsVar_list[0] as! AllNullableTypes
@@ -942,7 +938,6 @@ public struct ImmutableAllTypes: Hashable {
   public let objectMap: [AnyHashable: Any]
   public let listMap: [Int64: [Any?]]
   public let mapMap: [Int64: [AnyHashable?: Any?]]
-
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> ImmutableAllTypes? {
@@ -1682,7 +1677,6 @@ public struct AllTypesWithDefaults: Hashable {
   public var mapMap: [Int64: [AnyHashable?: Any?]]
   public var allTypes: ImmutableAllTypes
 
-
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> AllTypesWithDefaults? {
     let aBool = golubetsVar_list[0] as! Bool
@@ -1786,7 +1780,6 @@ public struct TestMessage: Hashable {
     self.testList = testList
   }
   public var testList: [Any?]? = nil
-
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> TestMessage? {
