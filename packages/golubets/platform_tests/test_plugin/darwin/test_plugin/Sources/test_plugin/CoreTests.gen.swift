@@ -155,7 +155,7 @@ public struct UnusedClass: Hashable {
   ) {
     self.aField = aField
   }
-  var aField: Any? = nil
+  public var aField: Any? = nil
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> UnusedClass? {
@@ -241,34 +241,35 @@ public struct AllTypes: Hashable {
     self.listMap = listMap
     self.mapMap = mapMap
   }
-  var aBool: Bool
-  var anInt: Int64
-  var anInt64: Int64
-  var aDouble: Double
-  var aByteArray: FlutterStandardTypedData
-  var a4ByteArray: FlutterStandardTypedData
-  var a8ByteArray: FlutterStandardTypedData
-  var aFloatArray: FlutterStandardTypedData
-  var anEnum: AnEnum
-  var anotherEnum: AnotherEnum
-  var aString: String
-  var anObject: Any
-  var list: [Any?]
-  var stringList: [String]
-  var intList: [Int64]
-  var doubleList: [Double]
-  var boolList: [Bool]
-  var enumList: [AnEnum]
-  var objectList: [Any]
-  var listList: [[Any?]]
-  var mapList: [[AnyHashable?: Any?]]
-  var map: [AnyHashable?: Any?]
-  var stringMap: [String: String]
-  var intMap: [Int64: Int64]
-  var enumMap: [AnEnum: AnEnum]
-  var objectMap: [AnyHashable: Any]
-  var listMap: [Int64: [Any?]]
-  var mapMap: [Int64: [AnyHashable?: Any?]]
+  public var aBool: Bool
+  public var anInt: Int64
+  public var anInt64: Int64
+  public var aDouble: Double
+  public var aByteArray: FlutterStandardTypedData
+  public var a4ByteArray: FlutterStandardTypedData
+  public var a8ByteArray: FlutterStandardTypedData
+  public var aFloatArray: FlutterStandardTypedData
+  public var anEnum: AnEnum
+  public var anotherEnum: AnotherEnum
+  public var aString: String
+  public var anObject: Any
+  public var list: [Any?]
+  public var stringList: [String]
+  public var intList: [Int64]
+  public var doubleList: [Double]
+  public var boolList: [Bool]
+  public var enumList: [AnEnum]
+  public var objectList: [Any]
+  public var listList: [[Any?]]
+  public var mapList: [[AnyHashable?: Any?]]
+  public var map: [AnyHashable?: Any?]
+  public var stringMap: [String: String]
+  public var intMap: [Int64: Int64]
+  public var enumMap: [AnEnum: AnEnum]
+  public var objectMap: [AnyHashable: Any]
+  public var listMap: [Int64: [Any?]]
+  public var mapMap: [Int64: [AnyHashable?: Any?]]
+
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> AllTypes? {
@@ -441,37 +442,38 @@ public class AllNullableTypes: Hashable {
     self.mapMap = mapMap
     self.recursiveClassMap = recursiveClassMap
   }
-  var aNullableBool: Bool?
-  var aNullableInt: Int64?
-  var aNullableInt64: Int64?
-  var aNullableDouble: Double?
-  var aNullableByteArray: FlutterStandardTypedData?
-  var aNullable4ByteArray: FlutterStandardTypedData?
-  var aNullable8ByteArray: FlutterStandardTypedData?
-  var aNullableFloatArray: FlutterStandardTypedData?
-  var aNullableEnum: AnEnum?
-  var anotherNullableEnum: AnotherEnum?
-  var aNullableString: String?
-  var aNullableObject: Any?
-  var allNullableTypes: AllNullableTypes?
-  var list: [Any?]?
-  var stringList: [String?]?
-  var intList: [Int64?]?
-  var doubleList: [Double?]?
-  var boolList: [Bool?]?
-  var enumList: [AnEnum?]?
-  var objectList: [Any?]?
-  var listList: [[Any?]?]?
-  var mapList: [[AnyHashable?: Any?]?]?
-  var recursiveClassList: [AllNullableTypes?]?
-  var map: [AnyHashable?: Any?]?
-  var stringMap: [String?: String?]?
-  var intMap: [Int64?: Int64?]?
-  var enumMap: [AnEnum?: AnEnum?]?
-  var objectMap: [AnyHashable?: Any?]?
-  var listMap: [Int64?: [Any?]?]?
-  var mapMap: [Int64?: [AnyHashable?: Any?]?]?
-  var recursiveClassMap: [Int64?: AllNullableTypes?]?
+  public var aNullableBool: Bool?
+  public var aNullableInt: Int64?
+  public var aNullableInt64: Int64?
+  public var aNullableDouble: Double?
+  public var aNullableByteArray: FlutterStandardTypedData?
+  public var aNullable4ByteArray: FlutterStandardTypedData?
+  public var aNullable8ByteArray: FlutterStandardTypedData?
+  public var aNullableFloatArray: FlutterStandardTypedData?
+  public var aNullableEnum: AnEnum?
+  public var anotherNullableEnum: AnotherEnum?
+  public var aNullableString: String?
+  public var aNullableObject: Any?
+  public var allNullableTypes: AllNullableTypes?
+  public var list: [Any?]?
+  public var stringList: [String?]?
+  public var intList: [Int64?]?
+  public var doubleList: [Double?]?
+  public var boolList: [Bool?]?
+  public var enumList: [AnEnum?]?
+  public var objectList: [Any?]?
+  public var listList: [[Any?]?]?
+  public var mapList: [[AnyHashable?: Any?]?]?
+  public var recursiveClassList: [AllNullableTypes?]?
+  public var map: [AnyHashable?: Any?]?
+  public var stringMap: [String?: String?]?
+  public var intMap: [Int64?: Int64?]?
+  public var enumMap: [AnEnum?: AnEnum?]?
+  public var objectMap: [AnyHashable?: Any?]?
+  public var listMap: [Int64?: [Any?]?]?
+  public var mapMap: [Int64?: [AnyHashable?: Any?]?]?
+  public var recursiveClassMap: [Int64?: AllNullableTypes?]?
+
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> AllNullableTypes? {
@@ -652,34 +654,35 @@ public struct AllNullableTypesWithoutRecursion: Hashable {
     self.listMap = listMap
     self.mapMap = mapMap
   }
-  var aNullableBool: Bool? = nil
-  var aNullableInt: Int64? = nil
-  var aNullableInt64: Int64? = nil
-  var aNullableDouble: Double? = nil
-  var aNullableByteArray: FlutterStandardTypedData? = nil
-  var aNullable4ByteArray: FlutterStandardTypedData? = nil
-  var aNullable8ByteArray: FlutterStandardTypedData? = nil
-  var aNullableFloatArray: FlutterStandardTypedData? = nil
-  var aNullableEnum: AnEnum? = nil
-  var anotherNullableEnum: AnotherEnum? = nil
-  var aNullableString: String? = nil
-  var aNullableObject: Any? = nil
-  var list: [Any?]? = nil
-  var stringList: [String?]? = nil
-  var intList: [Int64?]? = nil
-  var doubleList: [Double?]? = nil
-  var boolList: [Bool?]? = nil
-  var enumList: [AnEnum?]? = nil
-  var objectList: [Any?]? = nil
-  var listList: [[Any?]?]? = nil
-  var mapList: [[AnyHashable?: Any?]?]? = nil
-  var map: [AnyHashable?: Any?]? = nil
-  var stringMap: [String?: String?]? = nil
-  var intMap: [Int64?: Int64?]? = nil
-  var enumMap: [AnEnum?: AnEnum?]? = nil
-  var objectMap: [AnyHashable?: Any?]? = nil
-  var listMap: [Int64?: [Any?]?]? = nil
-  var mapMap: [Int64?: [AnyHashable?: Any?]?]? = nil
+  public var aNullableBool: Bool? = nil
+  public var aNullableInt: Int64? = nil
+  public var aNullableInt64: Int64? = nil
+  public var aNullableDouble: Double? = nil
+  public var aNullableByteArray: FlutterStandardTypedData? = nil
+  public var aNullable4ByteArray: FlutterStandardTypedData? = nil
+  public var aNullable8ByteArray: FlutterStandardTypedData? = nil
+  public var aNullableFloatArray: FlutterStandardTypedData? = nil
+  public var aNullableEnum: AnEnum? = nil
+  public var anotherNullableEnum: AnotherEnum? = nil
+  public var aNullableString: String? = nil
+  public var aNullableObject: Any? = nil
+  public var list: [Any?]? = nil
+  public var stringList: [String?]? = nil
+  public var intList: [Int64?]? = nil
+  public var doubleList: [Double?]? = nil
+  public var boolList: [Bool?]? = nil
+  public var enumList: [AnEnum?]? = nil
+  public var objectList: [Any?]? = nil
+  public var listList: [[Any?]?]? = nil
+  public var mapList: [[AnyHashable?: Any?]?]? = nil
+  public var map: [AnyHashable?: Any?]? = nil
+  public var stringMap: [String?: String?]? = nil
+  public var intMap: [Int64?: Int64?]? = nil
+  public var enumMap: [AnEnum?: AnEnum?]? = nil
+  public var objectMap: [AnyHashable?: Any?]? = nil
+  public var listMap: [Int64?: [Any?]?]? = nil
+  public var mapMap: [Int64?: [AnyHashable?: Any?]?]? = nil
+
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> AllNullableTypesWithoutRecursion? {
@@ -810,13 +813,14 @@ public struct AllClassesWrapper: Hashable {
     self.classMap = classMap
     self.nullableClassMap = nullableClassMap
   }
-  var allNullableTypes: AllNullableTypes
-  var allNullableTypesWithoutRecursion: AllNullableTypesWithoutRecursion? = nil
-  var allTypes: AllTypes? = nil
-  var classList: [AllTypes?]
-  var nullableClassList: [AllNullableTypesWithoutRecursion?]? = nil
-  var classMap: [Int64?: AllTypes?]
-  var nullableClassMap: [Int64?: AllNullableTypesWithoutRecursion?]? = nil
+  public var allNullableTypes: AllNullableTypes
+  public var allNullableTypesWithoutRecursion: AllNullableTypesWithoutRecursion? = nil
+  public var allTypes: AllTypes? = nil
+  public var classList: [AllTypes?]
+  public var nullableClassList: [AllNullableTypesWithoutRecursion?]? = nil
+  public var classMap: [Int64?: AllTypes?]
+  public var nullableClassMap: [Int64?: AllNullableTypesWithoutRecursion?]? = nil
+
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> AllClassesWrapper? {
@@ -914,30 +918,31 @@ public struct ImmutableAllTypes: Hashable {
     self.listMap = listMap
     self.mapMap = mapMap
   }
-  let aBool: Bool
-  let anInt: Int64
-  let anInt64: Int64
-  let aDouble: Double
-  let anEnum: AnEnum
-  let anotherEnum: AnotherEnum
-  let aString: String
-  let anObject: Any
-  let list: [Any?]
-  let stringList: [String]
-  let intList: [Int64]
-  let doubleList: [Double]
-  let boolList: [Bool]
-  let enumList: [AnEnum]
-  let objectList: [Any]
-  let listList: [[Any?]]
-  let mapList: [[AnyHashable?: Any?]]
-  let map: [AnyHashable?: Any?]
-  let stringMap: [String: String]
-  let intMap: [Int64: Int64]
-  let enumMap: [AnEnum: AnEnum]
-  let objectMap: [AnyHashable: Any]
-  let listMap: [Int64: [Any?]]
-  let mapMap: [Int64: [AnyHashable?: Any?]]
+  public let aBool: Bool
+  public let anInt: Int64
+  public let anInt64: Int64
+  public let aDouble: Double
+  public let anEnum: AnEnum
+  public let anotherEnum: AnotherEnum
+  public let aString: String
+  public let anObject: Any
+  public let list: [Any?]
+  public let stringList: [String]
+  public let intList: [Int64]
+  public let doubleList: [Double]
+  public let boolList: [Bool]
+  public let enumList: [AnEnum]
+  public let objectList: [Any]
+  public let listList: [[Any?]]
+  public let mapList: [[AnyHashable?: Any?]]
+  public let map: [AnyHashable?: Any?]
+  public let stringMap: [String: String]
+  public let intMap: [Int64: Int64]
+  public let enumMap: [AnEnum: AnEnum]
+  public let objectMap: [AnyHashable: Any]
+  public let listMap: [Int64: [Any?]]
+  public let mapMap: [Int64: [AnyHashable?: Any?]]
+
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> ImmutableAllTypes? {
@@ -1651,31 +1656,32 @@ public struct AllTypesWithDefaults: Hashable {
     self.mapMap = mapMap
     self.allTypes = allTypes
   }
-  var aBool: Bool
-  var anInt: Int64
-  var anInt64: Int64
-  var aDouble: Double
-  var anEnum: AnEnum
-  var anotherEnum: AnotherEnum
-  var aString: String
-  var anObject: Any
-  var list: [Any?]
-  var stringList: [String]
-  var intList: [Int64]
-  var doubleList: [Double]
-  var boolList: [Bool]
-  var enumList: [AnEnum]
-  var objectList: [Any]
-  var listList: [[Any?]]
-  var mapList: [[AnyHashable?: Any?]]
-  var map: [AnyHashable?: Any?]
-  var stringMap: [String: String]
-  var intMap: [Int64: Int64]
-  var enumMap: [AnEnum: AnEnum]
-  var objectMap: [AnyHashable: Any]
-  var listMap: [Int64: [Any?]]
-  var mapMap: [Int64: [AnyHashable?: Any?]]
-  var allTypes: ImmutableAllTypes
+  public var aBool: Bool
+  public var anInt: Int64
+  public var anInt64: Int64
+  public var aDouble: Double
+  public var anEnum: AnEnum
+  public var anotherEnum: AnotherEnum
+  public var aString: String
+  public var anObject: Any
+  public var list: [Any?]
+  public var stringList: [String]
+  public var intList: [Int64]
+  public var doubleList: [Double]
+  public var boolList: [Bool]
+  public var enumList: [AnEnum]
+  public var objectList: [Any]
+  public var listList: [[Any?]]
+  public var mapList: [[AnyHashable?: Any?]]
+  public var map: [AnyHashable?: Any?]
+  public var stringMap: [String: String]
+  public var intMap: [Int64: Int64]
+  public var enumMap: [AnEnum: AnEnum]
+  public var objectMap: [AnyHashable: Any]
+  public var listMap: [Int64: [Any?]]
+  public var mapMap: [Int64: [AnyHashable?: Any?]]
+  public var allTypes: ImmutableAllTypes
+
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> AllTypesWithDefaults? {
@@ -1779,7 +1785,8 @@ public struct TestMessage: Hashable {
   ) {
     self.testList = testList
   }
-  var testList: [Any?]? = nil
+  public var testList: [Any?]? = nil
+
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> TestMessage? {

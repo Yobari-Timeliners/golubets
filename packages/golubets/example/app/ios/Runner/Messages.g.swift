@@ -157,10 +157,11 @@ public struct MessageData: Hashable {
     self.code = code
     self.data = data
   }
-  var name: String?
-  var description: String?
-  var code: Code
-  var data: [String: String]
+  public var name: String?
+  public var description: String?
+  public var code: Code
+  public var data: [String: String]
+
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> MessageData? {

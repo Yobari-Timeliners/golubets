@@ -211,37 +211,38 @@ public class EventAllNullableTypes: Hashable {
     self.mapMap = mapMap
     self.recursiveClassMap = recursiveClassMap
   }
-  var aNullableBool: Bool?
-  var aNullableInt: Int64?
-  var aNullableInt64: Int64?
-  var aNullableDouble: Double?
-  var aNullableByteArray: FlutterStandardTypedData?
-  var aNullable4ByteArray: FlutterStandardTypedData?
-  var aNullable8ByteArray: FlutterStandardTypedData?
-  var aNullableFloatArray: FlutterStandardTypedData?
-  var aNullableEnum: EventEnum?
-  var anotherNullableEnum: AnotherEventEnum?
-  var aNullableString: String?
-  var aNullableObject: Any?
-  var allNullableTypes: EventAllNullableTypes?
-  var list: [Any?]?
-  var stringList: [String?]?
-  var intList: [Int64?]?
-  var doubleList: [Double?]?
-  var boolList: [Bool?]?
-  var enumList: [EventEnum?]?
-  var objectList: [Any?]?
-  var listList: [[Any?]?]?
-  var mapList: [[AnyHashable?: Any?]?]?
-  var recursiveClassList: [EventAllNullableTypes?]?
-  var map: [AnyHashable?: Any?]?
-  var stringMap: [String?: String?]?
-  var intMap: [Int64?: Int64?]?
-  var enumMap: [EventEnum?: EventEnum?]?
-  var objectMap: [AnyHashable?: Any?]?
-  var listMap: [Int64?: [Any?]?]?
-  var mapMap: [Int64?: [AnyHashable?: Any?]?]?
-  var recursiveClassMap: [Int64?: EventAllNullableTypes?]?
+  public var aNullableBool: Bool?
+  public var aNullableInt: Int64?
+  public var aNullableInt64: Int64?
+  public var aNullableDouble: Double?
+  public var aNullableByteArray: FlutterStandardTypedData?
+  public var aNullable4ByteArray: FlutterStandardTypedData?
+  public var aNullable8ByteArray: FlutterStandardTypedData?
+  public var aNullableFloatArray: FlutterStandardTypedData?
+  public var aNullableEnum: EventEnum?
+  public var anotherNullableEnum: AnotherEventEnum?
+  public var aNullableString: String?
+  public var aNullableObject: Any?
+  public var allNullableTypes: EventAllNullableTypes?
+  public var list: [Any?]?
+  public var stringList: [String?]?
+  public var intList: [Int64?]?
+  public var doubleList: [Double?]?
+  public var boolList: [Bool?]?
+  public var enumList: [EventEnum?]?
+  public var objectList: [Any?]?
+  public var listList: [[Any?]?]?
+  public var mapList: [[AnyHashable?: Any?]?]?
+  public var recursiveClassList: [EventAllNullableTypes?]?
+  public var map: [AnyHashable?: Any?]?
+  public var stringMap: [String?: String?]?
+  public var intMap: [Int64?: Int64?]?
+  public var enumMap: [EventEnum?: EventEnum?]?
+  public var objectMap: [AnyHashable?: Any?]?
+  public var listMap: [Int64?: [Any?]?]?
+  public var mapMap: [Int64?: [AnyHashable?: Any?]?]?
+  public var recursiveClassMap: [Int64?: EventAllNullableTypes?]?
+
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> EventAllNullableTypes? {
