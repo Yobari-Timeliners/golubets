@@ -1,4 +1,4 @@
-## pending
+## 1.3.2
 * [swift] Adds opportunity to generate swift public fields
 
 ## 1.3.1

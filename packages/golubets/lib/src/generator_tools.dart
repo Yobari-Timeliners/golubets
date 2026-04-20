@@ -17,7 +17,7 @@ import 'generator.dart';
 /// The current version of golubets.
 ///
 /// This must match the version in pubspec.yaml.
-const String golubetsVersion = '1.3.1';
+const String golubetsVersion = '1.3.2';
 
 /// Default plugin package name.
 const String defaultPluginPackageName = 'dev.bayori.golubets';
