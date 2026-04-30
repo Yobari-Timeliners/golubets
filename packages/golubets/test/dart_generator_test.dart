@@ -2420,6 +2420,7 @@ name: foobar
     expect(code, contains('buffer.putInt64(value);'));
   });
 
+<<<<<<< HEAD:packages/golubets/test/dart_generator_test.dart
   test('sealed class', () {
     final superClass = Class(
       name: 'PlatformEvent',
@@ -2460,6 +2461,21 @@ name: foobar
           ],
         ),
       ],
+=======
+  test('data class equality', () {
+    final classDefinition = Class(
+      name: 'Foobar',
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'int', isNullable: true),
+          name: 'field1',
+        ),
+      ],
+    );
+    final root = Root(
+      apis: <Api>[],
+      classes: <Class>[classDefinition],
+>>>>>>> filtered-upstream/main:packages/pigeon/test/dart_generator_test.dart
       enums: <Enum>[],
     );
     final sink = StringBuffer();
@@ -2471,6 +2487,7 @@ name: foobar
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final code = sink.toString();
+<<<<<<< HEAD:packages/golubets/test/dart_generator_test.dart
     expect(
       code,
       contains('sealed class PlatformEvent'),
@@ -2502,6 +2519,29 @@ name: foobar
           fields: <NamedType>[],
         ),
       ],
+=======
+    expect(code, contains('bool operator ==(Object other) {'));
+    expect(code, contains('int get hashCode =>'));
+  });
+
+  test('data class equality multi-field', () {
+    final classDefinition = Class(
+      name: 'Foobar',
+      fields: <NamedType>[
+        NamedType(
+          type: const TypeDeclaration(baseName: 'int', isNullable: true),
+          name: 'field1',
+        ),
+        NamedType(
+          type: const TypeDeclaration(baseName: 'String', isNullable: true),
+          name: 'field2',
+        ),
+      ],
+    );
+    final root = Root(
+      apis: <Api>[],
+      classes: <Class>[classDefinition],
+>>>>>>> filtered-upstream/main:packages/pigeon/test/dart_generator_test.dart
       enums: <Enum>[],
     );
     final sink = StringBuffer();
@@ -2513,6 +2553,7 @@ name: foobar
       dartPackageName: DEFAULT_PACKAGE_NAME,
     );
     final code = sink.toString();
+<<<<<<< HEAD:packages/golubets/test/dart_generator_test.dart
 
     expect(code, contains('static EmptyClass decode(Object _)'));
     expect(code, isNot(contains('result as List<Object?>')));
@@ -3218,5 +3259,9 @@ name: foobar
     expect(code, isNot(contains('abstract interface class ISomeApi {')));
     expect(code, isNot(contains('Future<int> getNumber(int number);')));
     expect(code, isNot(contains('class SomeApi implements ISomeApi {')));
+=======
+    expect(code, contains('bool operator ==(Object other) {'));
+    expect(code, contains('int get hashCode =>'));
+>>>>>>> filtered-upstream/main:packages/pigeon/test/dart_generator_test.dart
   });
 }

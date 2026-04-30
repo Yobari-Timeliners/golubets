@@ -358,7 +358,11 @@ Future<int> _runIOSPluginUnitTests(String testPluginPath) async {
   }
 
   const deviceName = 'Pigeon-Test-iPhone';
+<<<<<<< HEAD:packages/golubets/tool/shared/test_suites.dart
   const deviceType = 'com.apple.CoreSimulator.SimDeviceType.iPhone-17';
+=======
+  const deviceType = 'com.apple.CoreSimulator.SimDeviceType.iPhone-14';
+>>>>>>> filtered-upstream/main:packages/pigeon/tool/shared/test_suites.dart
   const deviceRuntime = 'com.apple.CoreSimulator.SimRuntime.iOS-26-2';
   const deviceOS = '26.2';
   await _createSimulator(deviceName, deviceType, deviceRuntime);
