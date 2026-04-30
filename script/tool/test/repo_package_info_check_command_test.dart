@@ -44,22 +44,6 @@ void main() {
 ''';
   }
 
-  void writeCodeOwners(List<RepositoryPackage> ownedPackages) {
-    final List<String> subpaths = ownedPackages
-        .map(
-          (RepositoryPackage p) => p.isFederated
-              ? <String>[
-                  p.directory.parent.basename,
-                  p.directory.basename,
-                ].join('/')
-              : p.directory.basename,
-        )
-        .toList();
-    root.childFile('CODEOWNERS').writeAsStringSync('''
-${subpaths.map((String subpath) => 'packages/$subpath/** @someone').join('\n')}
-''');
-  }
-
   String readmeTableEntry(String packageName) {
     final String encodedTag = Uri.encodeComponent('p: $packageName');
     return '| [$packageName](./packages/$packageName/) | '
@@ -100,7 +84,6 @@ ${readmeTableHeader()}
 ${readmeTableEntry('a_package')}
 ''');
     writeAutoLabelerYaml(packages);
-    writeCodeOwners(packages);
 
     final List<String> output = await runCapturingPrint(runner, <String>[
       'repo-package-info-check',
@@ -130,7 +113,6 @@ ${readmeTableEntry(pluginName)}
 ''');
       writeAutoLabelerYaml(<RepositoryPackage>[packages.first]);
       writeAutoLabelerYaml(<RepositoryPackage>[packages.first]);
-      writeCodeOwners(packages);
 
       // 4 packages * 2 checks (git, gh) = 8 calls.
       // Default mocks in setUp cover 1 call each. We need 3 more each.
@@ -163,7 +145,6 @@ ${readmeTableHeader()}
 ${readmeTableEntry('another_package')}
 ''');
     writeAutoLabelerYaml(packages);
-    writeCodeOwners(packages);
 
     Error? commandError;
     final List<String> output = await runCapturingPrint(
@@ -194,7 +175,6 @@ ${readmeTableHeader()}
 ${readmeTableEntry('another_package')}
 ''');
     writeAutoLabelerYaml(packages);
-    writeCodeOwners(packages);
 
     Error? commandError;
     final List<String> output = await runCapturingPrint(
@@ -238,7 +218,6 @@ ${readmeTableHeader()}
 $entry
 ''');
     writeAutoLabelerYaml(packages);
-    writeCodeOwners(packages);
 
     Error? commandError;
     final List<String> output = await runCapturingPrint(
@@ -283,7 +262,6 @@ ${readmeTableHeader()}
 $entry
 ''');
     writeAutoLabelerYaml(packages);
-    writeCodeOwners(packages);
 
     Error? commandError;
     final List<String> output = await runCapturingPrint(
@@ -330,7 +308,6 @@ ${readmeTableHeader()}
 $entry
 ''');
     writeAutoLabelerYaml(packages);
-    writeCodeOwners(packages);
 
     Error? commandError;
     final List<String> output = await runCapturingPrint(
@@ -377,7 +354,6 @@ ${readmeTableHeader()}
 $entry
 ''');
     writeAutoLabelerYaml(packages);
-    writeCodeOwners(packages);
 
     Error? commandError;
     final List<String> output = await runCapturingPrint(
@@ -424,7 +400,6 @@ ${readmeTableHeader()}
 $entry
 ''');
     writeAutoLabelerYaml(packages);
-    writeCodeOwners(packages);
 
     Error? commandError;
     final List<String> output = await runCapturingPrint(
@@ -471,7 +446,6 @@ ${readmeTableHeader()}
 $entry
 ''');
     writeAutoLabelerYaml(packages);
-    writeCodeOwners(packages);
 
     Error? commandError;
     final List<String> output = await runCapturingPrint(
@@ -497,53 +471,15 @@ $entry
     );
   });
 
-  test('fails for missing CODEOWNER', () async {
-    const packageName = 'a_package';
-    final packages = <RepositoryPackage>[
-      createFakePackage('a_package', packagesDir),
-    ];
-
-    root.childFile('README.md').writeAsStringSync('''
-${readmeTableHeader()}
-${readmeTableEntry(packageName)}
-''');
-    writeAutoLabelerYaml(packages);
-    writeCodeOwners(<RepositoryPackage>[]);
-
-    Error? commandError;
-    final List<String> output = await runCapturingPrint(
-      runner,
-      <String>['repo-package-info-check'],
-      errorHandler: (Error e) {
-        commandError = e;
-      },
-    );
-
-    expect(commandError, isA<ToolExit>());
-    expect(
-      output,
-      containsAllInOrder(<Matcher>[
-        contains('Missing CODEOWNERS entry.'),
-        contains(
-          'a_package:\n'
-          '    Missing CODEOWNERS entry',
-        ),
-      ]),
-    );
-  });
-
   test('fails for missing auto-labeler entry', () async {
     const packageName = 'a_package';
-    final packages = <RepositoryPackage>[
-      createFakePackage('a_package', packagesDir),
-    ];
+    createFakePackage('a_package', packagesDir);
 
     root.childFile('README.md').writeAsStringSync('''
 ${readmeTableHeader()}
 ${readmeTableEntry(packageName)}
 ''');
     writeAutoLabelerYaml(<RepositoryPackage>[]);
-    writeCodeOwners(packages);
 
     Error? commandError;
     final List<String> output = await runCapturingPrint(
@@ -579,7 +515,6 @@ ${readmeTableHeader()}
 ${readmeTableEntry('a_package')}
 ''');
       writeAutoLabelerYaml(<RepositoryPackage>[package]);
-      writeCodeOwners(<RepositoryPackage>[package]);
 
       package.ciConfigFile.writeAsStringSync('''
 release:
@@ -604,7 +539,6 @@ ${readmeTableHeader()}
 ${readmeTableEntry('a_package')}
 ''');
       writeAutoLabelerYaml(<RepositoryPackage>[package]);
-      writeCodeOwners(<RepositoryPackage>[package]);
 
       final List<String> output = await runCapturingPrint(runner, <String>[
         'repo-package-info-check',
@@ -627,7 +561,6 @@ ${readmeTableHeader()}
 ${readmeTableEntry('a_package')}
 ''');
       writeAutoLabelerYaml(<RepositoryPackage>[package]);
-      writeCodeOwners(<RepositoryPackage>[package]);
       package.ciConfigFile.writeAsStringSync('''
 something: true
     ''');
@@ -661,7 +594,6 @@ ${readmeTableHeader()}
 ${readmeTableEntry('a_package')}
 ''');
       writeAutoLabelerYaml(<RepositoryPackage>[package]);
-      writeCodeOwners(<RepositoryPackage>[package]);
       package.ciConfigFile.writeAsStringSync('''
 release:
   batch: 1
@@ -700,7 +632,6 @@ ${readmeTableHeader()}
 ${readmeTableEntry('a_package')}
 ''');
       writeAutoLabelerYaml(<RepositoryPackage>[package]);
-      writeCodeOwners(<RepositoryPackage>[package]);
       return package;
     }
 
@@ -744,7 +675,7 @@ jobs:
 on:
   push:
     branches:
-      - 'release-a_package'
+      - 'release-a_package-*'
 ''');
       }
 
@@ -753,7 +684,7 @@ on:
 on:
   push:
     branches:
-      - 'release-a_package'
+      - 'release-a_package-*'
 ''');
       }
     }
@@ -816,7 +747,7 @@ on:
         output,
         contains(
           contains(
-            'Unexpected trigger for release-a_package in .github/workflows/release_from_branches.yml',
+            'Unexpected trigger for release-a_package-* in .github/workflows/release_from_branches.yml',
           ),
         ),
       );
@@ -824,7 +755,7 @@ on:
         output,
         contains(
           contains(
-            'Unexpected trigger for release-a_package in .github/workflows/sync_release_pr.yml',
+            'Unexpected trigger for release-a_package-* in .github/workflows/sync_release_pr.yml',
           ),
         ),
       );
@@ -908,10 +839,10 @@ jobs:
       // Write other files to be valid so we focus on this error
       workflowDir
           .childFile('release_from_branches.yml')
-          .writeAsStringSync("- 'release-a_package'");
+          .writeAsStringSync("- 'release-a_package-*'");
       workflowDir
           .childFile('sync_release_pr.yml')
-          .writeAsStringSync("- 'release-a_package'");
+          .writeAsStringSync("- 'release-a_package-*'");
 
       // Mock successful git and gh calls
       gitProcessRunner.mockProcessesForExecutable['git-ls-remote'] =
@@ -976,7 +907,7 @@ jobs:
         output,
         contains(
           contains(
-            'Missing trigger for release-a_package in .github/workflows/release_from_branches.yml',
+            'Missing trigger for release-a_package-* in .github/workflows/release_from_branches.yml',
           ),
         ),
       );
@@ -984,37 +915,7 @@ jobs:
         output,
         contains(
           contains(
-            'Missing trigger for release-a_package in .github/workflows/sync_release_pr.yml',
-          ),
-        ),
-      );
-    });
-
-    test('fails if remote branch check fails', () async {
-      final RepositoryPackage package = setupReleaseStrategyTest();
-      writeBatchConfig(package);
-      writeWorkflowFiles();
-
-      gitProcessRunner.mockProcessesForExecutable['git-ls-remote'] =
-          <FakeProcessInfo>[
-            FakeProcessInfo(MockProcess(exitCode: 1)), // git ls-remote fails
-          ];
-
-      Error? commandError;
-      final List<String> output = await runCapturingPrint(
-        runner,
-        <String>['repo-package-info-check'],
-        errorHandler: (Error e) {
-          commandError = e;
-        },
-      );
-
-      expect(commandError, isA<ToolExit>());
-      expect(
-        output,
-        contains(
-          contains(
-            'Branch release-a_package does not exist on remote flutter/packages',
+            'Missing trigger for release-a_package-* in .github/workflows/sync_release_pr.yml',
           ),
         ),
       );

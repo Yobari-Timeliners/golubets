@@ -69,6 +69,9 @@ target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin)
 # https://developercommunity.visualstudio.com/t/stdany-doesnt-link-when-exceptions-are-disabled/376072
 # TODO(stuartmorgan): Remove this once CI is using VS 2022 or later.
 target_compile_definitions(${PLUGIN_NAME} PRIVATE "_HAS_EXCEPTIONS=1")
+if (MSVC)
+  target_compile_options(${PLUGIN_NAME} PRIVATE "/bigobj")
+endif()
 
 # List of absolute paths to libraries that should be bundled with the plugin.
 # This list could contain prebuilt libraries, or libraries created by an
@@ -89,7 +92,11 @@ enable_testing()
 include(FetchContent)
 FetchContent_Declare(
   googletest
+<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/CMakeLists.txt
   URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip
+=======
+  URL https://github.com/google/googletest/archive/v1.15.2.zip
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/CMakeLists.txt
 )
 # Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -129,6 +136,9 @@ add_custom_command(TARGET ${TEST_RUNNER} POST_BUILD
 # https://developercommunity.visualstudio.com/t/stdany-doesnt-link-when-exceptions-are-disabled/376072
 # TODO(stuartmorgan): Remove this once CI is using VS 2022 or later.
 target_compile_definitions(${TEST_RUNNER} PRIVATE "_HAS_EXCEPTIONS=1")
+if (MSVC)
+  target_compile_options(${TEST_RUNNER} PRIVATE "/bigobj")
+endif()
 
 include(GoogleTest)
 add_test(NAME ${TEST_RUNNER} COMMAND ${TEST_RUNNER})

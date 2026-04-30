@@ -8,7 +8,11 @@ set -o pipefail
 
 # The name here must match remove_simulator.sh
 readonly DEVICE_NAME=Flutter-iPhone
+<<<<<<< HEAD
 readonly DEVICE=com.apple.CoreSimulator.SimDeviceType.iPhone-17
+=======
+readonly DEVICE=com.apple.CoreSimulator.SimDeviceType.iPhone-14
+>>>>>>> filtered-upstream/main
 readonly OS=com.apple.CoreSimulator.SimRuntime.iOS-26-2
 
 # Delete any existing devices named Flutter-iPhone. Having more than one may
