@@ -1028,6 +1028,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       expect(receivedNullString, null);
     });
 
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/integration_tests.dart
     const defaultValuesSupportedTargets = <TargetGenerator>[
       TargetGenerator.kotlin,
       TargetGenerator.swift,
@@ -1320,6 +1321,172 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       },
       skip: !defaultValuesSupportedTargets.contains(targetGenerator),
     );
+=======
+    testWidgets('Signed zero equality', (WidgetTester _) async {
+      final api = HostIntegrationCoreApi();
+
+      final a = AllNullableTypes(aNullableDouble: 0.0);
+      final b = AllNullableTypes(aNullableDouble: -0.0);
+
+      expect(await api.areAllNullableTypesEqual(a, b), isTrue);
+    });
+
+    testWidgets('Signed zero hashing', (WidgetTester _) async {
+      final api = HostIntegrationCoreApi();
+
+      final a = AllNullableTypes(aNullableDouble: 0.0);
+      final b = AllNullableTypes(aNullableDouble: -0.0);
+
+      final int hashA = await api.getAllNullableTypesHash(a);
+      final int hashB = await api.getAllNullableTypesHash(b);
+      expect(
+        hashA,
+        hashB,
+        reason: 'Hash codes for 0.0 and -0.0 should be equal',
+      );
+    });
+
+    testWidgets('NaN equality', (WidgetTester _) async {
+      final api = HostIntegrationCoreApi();
+
+      final a = AllNullableTypes(aNullableDouble: double.nan);
+      final b = AllNullableTypes(aNullableDouble: double.nan);
+
+      expect(await api.areAllNullableTypesEqual(a, b), isTrue);
+    });
+
+    testWidgets('NaN hashing', (WidgetTester _) async {
+      final api = HostIntegrationCoreApi();
+
+      final a = AllNullableTypes(aNullableDouble: double.nan);
+      final b = AllNullableTypes(aNullableDouble: double.nan);
+
+      final int hashA = await api.getAllNullableTypesHash(a);
+      final int hashB = await api.getAllNullableTypesHash(b);
+      expect(hashA, hashB, reason: 'Hash codes for two NaNs should be equal');
+    });
+
+    testWidgets('Collection equality with signed zero and NaN', (
+      WidgetTester _,
+    ) async {
+      final api = HostIntegrationCoreApi();
+
+      final a = AllNullableTypes(
+        doubleList: <double>[0.0, double.nan],
+        stringMap: <String?, String?>{'k': 'v', 'n': null},
+      );
+      final b = AllNullableTypes(
+        doubleList: <double>[-0.0, double.nan],
+        stringMap: <String?, String?>{'n': null, 'k': 'v'},
+      );
+
+      expect(await api.areAllNullableTypesEqual(a, b), isTrue);
+    });
+
+    testWidgets('Collection hashing with signed zero and NaN', (
+      WidgetTester _,
+    ) async {
+      final api = HostIntegrationCoreApi();
+
+      final a = AllNullableTypes(
+        doubleList: <double>[0.0, double.nan],
+        stringMap: <String?, String?>{'k': 'v', 'n': null},
+      );
+      final b = AllNullableTypes(
+        doubleList: <double>[-0.0, double.nan],
+        stringMap: <String?, String?>{'n': null, 'k': 'v'},
+      );
+
+      expect(
+        await api.getAllNullableTypesHash(a),
+        await api.getAllNullableTypesHash(b),
+      );
+    });
+
+    testWidgets('Collection hashing with null/NSNull', (WidgetTester _) async {
+      final api = HostIntegrationCoreApi();
+
+      final a = AllNullableTypes(
+        list: <Object?>[null],
+        stringMap: <String?, String?>{'k': null},
+      );
+      final b = AllNullableTypes(
+        list: <Object?>[null],
+        stringMap: <String?, String?>{'k': null},
+      );
+
+      // Verify cross-platform equivalence via identical hash values.
+      expect(
+        await api.getAllNullableTypesHash(a),
+        await api.getAllNullableTypesHash(b),
+      );
+      expect(await api.areAllNullableTypesEqual(a, b), isTrue);
+    });
+
+    testWidgets('Map equality with signed zero keys and values', (
+      WidgetTester _,
+    ) async {
+      final api = HostIntegrationCoreApi();
+
+      final a = AllNullableTypes(map: <Object?, Object?>{0.0: 'a', 'b': 0.0});
+      final b = AllNullableTypes(map: <Object?, Object?>{-0.0: 'a', 'b': -0.0});
+
+      expect(await api.areAllNullableTypesEqual(a, b), isTrue);
+    });
+
+    testWidgets('Map hashing with signed zero keys and values', (
+      WidgetTester _,
+    ) async {
+      final api = HostIntegrationCoreApi();
+
+      final a = AllNullableTypes(map: <Object?, Object?>{0.0: 'a', 'b': 0.0});
+      final b = AllNullableTypes(map: <Object?, Object?>{-0.0: 'a', 'b': -0.0});
+
+      expect(
+        await api.getAllNullableTypesHash(a),
+        await api.getAllNullableTypesHash(b),
+      );
+    });
+
+    testWidgets('Map equality with null values and different keys', (
+      WidgetTester _,
+    ) async {
+      final api = HostIntegrationCoreApi();
+
+      final a = AllNullableTypes(intMap: <int?, int?>{1: null});
+      final b = AllNullableTypes(intMap: <int?, int?>{2: null});
+
+      expect(await api.areAllNullableTypesEqual(a, b), isFalse);
+    });
+
+    testWidgets('Deeply nested equality', (WidgetTester _) async {
+      final api = HostIntegrationCoreApi();
+
+      final a = AllNullableTypes(
+        allNullableTypes: AllNullableTypes(aNullableDouble: 0.0),
+      );
+      final b = AllNullableTypes(
+        allNullableTypes: AllNullableTypes(aNullableDouble: -0.0),
+      );
+
+      expect(await api.areAllNullableTypesEqual(a, b), isTrue);
+    });
+
+    testWidgets('Hashing inequality across types with same values', (
+      WidgetTester _,
+    ) async {
+      final api = HostIntegrationCoreApi();
+      final a = AllNullableTypes(aNullableInt: 42);
+      final b = AllNullableTypesWithoutRecursion(aNullableInt: 42);
+
+      expect(a.hashCode, isNot(b.hashCode));
+
+      expect(
+        await api.getAllNullableTypesHash(a),
+        isNot(await api.getAllNullableTypesWithoutRecursionHash(b)),
+      );
+    });
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/integration_tests.dart
   });
 
   group('Host async API tests', () {

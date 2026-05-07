@@ -17,7 +17,11 @@ import 'generator.dart';
 /// The current version of golubets.
 ///
 /// This must match the version in pubspec.yaml.
+<<<<<<< HEAD:packages/golubets/lib/src/generator_tools.dart
 const String golubetsVersion = '1.3.2';
+=======
+const String pigeonVersion = '26.3.4';
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/generator_tools.dart
 
 /// Default plugin package name.
 const String defaultPluginPackageName = 'dev.bayori.golubets';

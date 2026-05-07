@@ -15,9 +15,17 @@ class MockMultipleArityHostApi: MultipleArityHostApi {
 
 @MainActor
 struct MultipleArityTests {
+<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/example/ios/RunnerTests/MultipleArityTests.swift
   var codec = FlutterStandardMessageCodec.sharedInstance()
   func testSimpleHost() async throws {
     let binaryMessenger = MockBinaryMessenger<Int64>(codec: EnumGolubetsCodec.shared)
+=======
+  let codec = FlutterStandardMessageCodec.sharedInstance()
+
+  @Test
+  func simpleHost() async throws {
+    let binaryMessenger = MockBinaryMessenger<Int64>(codec: EnumPigeonCodec.shared)
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/example/ios/RunnerTests/MultipleArityTests.swift
     MultipleArityHostApiSetup.setUp(
       binaryMessenger: binaryMessenger, api: MockMultipleArityHostApi())
     let channelName = "dev.bayori.golubets.golubets_integration_tests.MultipleArityHostApi.subtract"
