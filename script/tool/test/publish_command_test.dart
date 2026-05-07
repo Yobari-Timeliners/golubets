@@ -1328,6 +1328,7 @@ void main() {
 
           mockStdin.readLineOutput = 'y';
 
+<<<<<<< HEAD
           final List<String> output = await runCapturingPrint(
             commandRunner,
             <String>[
@@ -1337,6 +1338,15 @@ void main() {
               '--batch-release-branch=release-package1',
             ],
           );
+=======
+          final List<String> output =
+              await runCapturingPrint(commandRunner, <String>[
+                'publish',
+                '--all-changed',
+                '--base-sha=HEAD~',
+                '--batch-release-branch=release-package1-1.0.0',
+              ]);
+>>>>>>> filtered-upstream/main
           // Package1 is published in batch realease, pacakge2 is not.
           expect(
             output,
@@ -1401,6 +1411,7 @@ void main() {
 
           mockStdin.readLineOutput = 'y';
 
+<<<<<<< HEAD
           final List<String> output = await runCapturingPrint(
             commandRunner,
             <String>[
@@ -1410,6 +1421,15 @@ void main() {
               '--batch-release-branch=release-package1',
             ],
           );
+=======
+          final List<String> output =
+              await runCapturingPrint(commandRunner, <String>[
+                'publish',
+                '--all-changed',
+                '--base-sha=HEAD~',
+                '--batch-release-branch=release-package1-1.0.0',
+              ]);
+>>>>>>> filtered-upstream/main
           // Package1 is published in batch realease, pacakge2 is not.
           expect(
             output,
@@ -1537,7 +1557,7 @@ void main() {
             'publish',
             '--all-changed',
             '--base-sha=HEAD~',
-            '--batch-release-branch=release-package1',
+            '--batch-release-branch=release-package1-1.0.0',
           ],
           errorHandler: (Error e) {
             commandError = e;
