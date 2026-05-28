@@ -1,3 +1,6 @@
+## 1.3.3
+* [dart] Fix incorrect type cast for generic List (Map) type parameter in generated decode method
+
 ## 1.3.2
 * [swift] Adds opportunity to generate swift public fields
 
