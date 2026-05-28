@@ -3790,7 +3790,7 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
         expect(result.listOfMaps.length, equals(input.listOfMaps.length));
       });
 
-      testWidgets('nested generic Either echo works', (
+      testWidgets('generic typed list in Either works', (
         WidgetTester _,
       ) async {
         const input = Right<GenericsAnEnum, List<SimpleStringContainer>>(
