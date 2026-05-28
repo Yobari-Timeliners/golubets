@@ -1458,14 +1458,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       }
     }
 
-    // `collectGenericTypeUsage` walks the API + class tree to record every
-    // concrete instantiation of a generic class. It must run **after**
-    // `_attachAssociatedDefinitions` so that nested type arguments inside
-    // the recorded combinations (e.g. `GenericPair<String, int>` in
-    // `Left<GenericPair<String, int>, …>`) carry their `associatedClass` /
-    // `associatedEnum`. Generators later rely on those to emit the right
-    // cast (`as GenericPair<String, int>` vs. the more verbose
-    // `as GenericPair<Object?, Object?>).cast<…>()`).
+    // It must run **after** `_attachAssociatedDefinitions`.
     final completeRoot = Root(
       apis: _apis,
       classes: _classes,

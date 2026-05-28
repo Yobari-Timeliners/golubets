@@ -415,12 +415,6 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     Class classDefinition, {
     required String dartPackageName,
   }) {
-    // Generic classes don't get a shared `decode` method: a single
-    // `decode<L, R>` cannot apply the per-instantiation `.cast<>()` calls
-    // required when a type parameter is substituted by `List<X>`/`Map<K, V>`,
-    // because those casts must reference concrete types at compile time.
-    // Instead, the codec constructs each concrete instantiation inline
-    // (see `writeGeneralCodec`).
     if (classDefinition.typeArguments.isNotEmpty) {
       return;
     }
@@ -1434,19 +1428,6 @@ if (wrapped == null) {
 
   /// Emits an inline constructor call that decodes a concrete generic class
   /// instantiation (e.g. `Right<E, List<X>>`) from a raw codec payload.
-  ///
-  /// Generic classes don't ship a shared `decode<L, R>` method (see
-  /// [writeClassDecode]) because such a method can't apply the per-instance
-  /// `.cast<>()` calls required when a type parameter is substituted by
-  /// `List<X>` or `Map<K, V>` — those casts must reference concrete types
-  /// at compile time. Instead, for every concrete instantiation the codec
-  /// emits a constructor call here, using the pre-computed
-  /// [EnumeratedType.substitutedFieldTypes] and letting [_castValue] add
-  /// `.cast<>()` where appropriate.
-  ///
-  /// [rawValueExpression] is the expression that yields the raw payload
-  /// (`readValue(buffer)!` in the main codec, `wrapped!` in the overflow
-  /// codec).
   void _writeGenericInstantiationDecode(
     Indent indent,
     EnumeratedType customType, {
