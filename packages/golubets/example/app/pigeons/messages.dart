@@ -76,6 +76,7 @@ abstract class ExampleHostApi {
   @Async(type: AsyncType.await(isSwiftThrows: true))
   bool sendMessageModernAsyncThrows(MessageData message);
 }
+
 // #enddocregion host-definitions
 
 // #docregion flutter-definitions
