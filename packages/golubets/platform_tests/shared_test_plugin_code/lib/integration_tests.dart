@@ -3790,6 +3790,32 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
         expect(result.listOfMaps.length, equals(input.listOfMaps.length));
       });
 
+      testWidgets('nested generic Either echo works', (
+        WidgetTester _,
+      ) async {
+        const input = Right<GenericsAnEnum, List<SimpleStringContainer>>(
+          value: [
+            SimpleStringContainer(
+              id: '1',
+              name: 'first',
+            ),
+            SimpleStringContainer(
+              id: '2',
+              name: 'second',
+            ),
+          ],
+        );
+
+        final Either<GenericsAnEnum, List<SimpleStringContainer>> result =
+            await api.echoFlutterReturnEitherGenericEnumOrListStringContainer(
+              input,
+            );
+        expect(
+          result,
+          isA<Right<GenericsAnEnum, List<SimpleStringContainer>>>(),
+        );
+      });
+
       testWidgets('generic list container echo works', (WidgetTester _) async {
         final input = <GenericContainer<int>>[
           const GenericContainer<int>(value: 1, values: <int>[1, 2]),
@@ -5296,5 +5322,13 @@ class _FlutterGenericApiTestImplementation implements FlutterGenericApi {
         Right<String, int>(value: 2),
       ],
     );
+  }
+
+  @override
+  Either<GenericsAnEnum, List<SimpleStringContainer>>
+  echoFlutterReturnEitherGenericEnumOrListStringContainer(
+    Either<GenericsAnEnum, List<SimpleStringContainer>> arg,
+  ) {
+    return arg;
   }
 }

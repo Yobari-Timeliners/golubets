@@ -451,6 +451,7 @@ class EnumeratedType {
     this.associatedClass,
     this.associatedEnum,
     this.typeArguments = const <TypeDeclaration>[],
+    this.substitutedFieldTypes = const <TypeDeclaration>[],
   });
 
   /// The name of the type.
@@ -470,6 +471,17 @@ class EnumeratedType {
 
   /// The type arguments for generic types.
   final List<TypeDeclaration> typeArguments;
+
+  /// For generic class instantiations: each field of [associatedClass] with
+  /// the class's type parameters substituted by the concrete types from
+  /// [typeArguments], in serialization order.
+  ///
+  /// Pre-computed once in [getEnumeratedTypes] so that generators (which need
+  /// to emit per-instantiation `.cast<>()` calls) don't have to re-run
+  /// [substituteTypeParameters] for every field at every call site.
+  ///
+  /// Empty for non-generic types and non-class enumerated types.
+  final List<TypeDeclaration> substitutedFieldTypes;
 
   /// Returns the offset of the enumeration.
   int offset(int offset) => enumeration - offset;
@@ -659,27 +671,24 @@ enum CustomTypes {
 /// Represents a concrete type argument combination for a generic class.
 typedef TypeArgumentCombination = List<TypeDeclaration>;
 
-/// Substitutes type parameters in a type with their concrete counterparts
-TypeDeclaration _substituteTypeParameters(
+/// Substitutes type parameters in a type with their concrete counterparts.
+TypeDeclaration substituteTypeParameters(
   TypeDeclaration type,
   Map<String, TypeDeclaration> typeParameterMap,
 ) {
   final TypeDeclaration? substitution = typeParameterMap[type.baseName];
   if (substitution != null) {
-    // This is a type parameter that should be substituted
     return substitution;
   }
 
   if (type.typeArguments.isEmpty) {
-    // No type arguments to process
     return type;
   }
 
-  // Recursively substitute type parameters in type arguments
   final List<TypeDeclaration> substitutedArgs = type.typeArguments
       .map(
         (TypeDeclaration arg) =>
-            _substituteTypeParameters(arg, typeParameterMap),
+            substituteTypeParameters(arg, typeParameterMap),
       )
       .toList();
 
@@ -687,7 +696,37 @@ TypeDeclaration _substituteTypeParameters(
     baseName: type.baseName,
     isNullable: type.isNullable,
     typeArguments: substitutedArgs,
+    associatedClass: type.associatedClass,
+    associatedEnum: type.associatedEnum,
+    associatedProxyApi: type.associatedProxyApi,
   );
+}
+
+/// Builds the per-field substituted [TypeDeclaration]s for a single concrete
+/// instantiation of a generic [classDefinition].
+///
+/// The result is positionally aligned with the class's serialization order
+/// (i.e. with [getFieldsInSerializationOrder]).
+List<TypeDeclaration> _substituteFieldTypesForCombination(
+  Class classDefinition,
+  TypeArgumentCombination combination,
+) {
+  final List<TypeDeclaration> params = classDefinition.typeArguments;
+  if (params.isEmpty) {
+    return const <TypeDeclaration>[];
+  }
+
+  final typeParameterMap = <String, TypeDeclaration>{
+    for (var i = 0; i < params.length && i < combination.length; i++)
+      params[i].baseName: combination[i],
+  };
+
+  return <TypeDeclaration>[
+    for (final NamedType field in getFieldsInSerializationOrder(
+      classDefinition,
+    ))
+      substituteTypeParameters(field.type, typeParameterMap),
+  ];
 }
 
 /// Collects nested generic types within a concrete generic instantiation
@@ -719,7 +758,7 @@ void _collectNestedGenericTypes(
 
   // Process each field in the class and substitute type parameters
   for (final NamedType field in target.fields) {
-    final TypeDeclaration substitutedType = _substituteTypeParameters(
+    final TypeDeclaration substitutedType = substituteTypeParameters(
       field.type,
       typeParameterMap,
     );
@@ -914,6 +953,10 @@ Iterable<EnumeratedType> getEnumeratedTypes(
             CustomTypes.customClass,
             associatedClass: customClass,
             typeArguments: combination,
+            substitutedFieldTypes: _substituteFieldTypesForCombination(
+              customClass,
+              combination,
+            ),
           );
           index += 1;
         }

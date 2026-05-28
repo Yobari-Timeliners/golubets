@@ -415,20 +415,27 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     Class classDefinition, {
     required String dartPackageName,
   }) {
+    // Generic classes don't get a shared `decode` method: a single
+    // `decode<L, R>` cannot apply the per-instantiation `.cast<>()` calls
+    // required when a type parameter is substituted by `List<X>`/`Map<K, V>`,
+    // because those casts must reference concrete types at compile time.
+    // Instead, the codec constructs each concrete instantiation inline
+    // (see `writeGeneralCodec`).
+    if (classDefinition.typeArguments.isNotEmpty) {
+      return;
+    }
+
     final bool isResultUsed = classDefinition.fields.isNotEmpty;
     final result = isResultUsed ? 'result' : '_';
-    final generics = classDefinition.typeArguments.isNotEmpty
-        ? '<${_flattenTypeArguments(classDefinition.typeArguments)}>'
-        : '';
 
     indent.write(
-      'static ${classDefinition.name}$generics decode$generics(Object $result) ',
+      'static ${classDefinition.name} decode(Object $result) ',
     );
     indent.addScoped('{', '}', () {
       if (isResultUsed) {
         indent.writeln('result as List<Object?>;');
       }
-      indent.write('return ${classDefinition.name}$generics');
+      indent.write('return ${classDefinition.name}');
       indent.addScoped('(', ');', () {
         enumerate(getFieldsInSerializationOrder(classDefinition), (
           int index,
@@ -531,13 +538,15 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
               'final $baseName wrapper = $baseName.decode(readValue(buffer)!);',
             );
             indent.writeln('return wrapper.unwrap();');
+          } else if (customType.isGeneric) {
+            _writeGenericInstantiationDecode(
+              indent,
+              customType,
+              rawValueExpression: 'readValue(buffer)!',
+            );
           } else {
-            final String name = customType.name;
-            final typeArguments = customType.isGeneric
-                ? '<${_flattenTypeArguments(customType.typeArguments)}>'
-                : '';
             indent.writeln(
-              'return $name.decode$typeArguments(readValue(buffer)!);',
+              'return ${customType.name}.decode(readValue(buffer)!);',
             );
           }
         } else if (customType.type == CustomTypes.customEnum) {
@@ -1397,7 +1406,17 @@ if (wrapped == null) {
                 '',
                 () {
                   if (types[i].type == CustomTypes.customClass) {
-                    indent.writeln('return ${types[i].name}.decode(wrapped!);');
+                    if (types[i].isGeneric) {
+                      _writeGenericInstantiationDecode(
+                        indent,
+                        types[i],
+                        rawValueExpression: 'wrapped!',
+                      );
+                    } else {
+                      indent.writeln(
+                        'return ${types[i].name}.decode(wrapped!);',
+                      );
+                    }
                   } else if (types[i].type == CustomTypes.customEnum) {
                     indent.writeln(
                       'return ${types[i].name}.values[wrapped! as int];',
@@ -1409,6 +1428,55 @@ if (wrapped == null) {
           }
         });
         indent.writeln('return null;');
+      });
+    });
+  }
+
+  /// Emits an inline constructor call that decodes a concrete generic class
+  /// instantiation (e.g. `Right<E, List<X>>`) from a raw codec payload.
+  ///
+  /// Generic classes don't ship a shared `decode<L, R>` method (see
+  /// [writeClassDecode]) because such a method can't apply the per-instance
+  /// `.cast<>()` calls required when a type parameter is substituted by
+  /// `List<X>` or `Map<K, V>` — those casts must reference concrete types
+  /// at compile time. Instead, for every concrete instantiation the codec
+  /// emits a constructor call here, using the pre-computed
+  /// [EnumeratedType.substitutedFieldTypes] and letting [_castValue] add
+  /// `.cast<>()` where appropriate.
+  ///
+  /// [rawValueExpression] is the expression that yields the raw payload
+  /// (`readValue(buffer)!` in the main codec, `wrapped!` in the overflow
+  /// codec).
+  void _writeGenericInstantiationDecode(
+    Indent indent,
+    EnumeratedType customType, {
+    required String rawValueExpression,
+  }) {
+    final Class? associatedClass = customType.associatedClass;
+    assert(
+      associatedClass != null && customType.isGeneric,
+      '_writeGenericInstantiationDecode requires a generic class instantiation',
+    );
+    final List<TypeDeclaration> substitutedFieldTypes =
+        customType.substitutedFieldTypes;
+    assert(
+      substitutedFieldTypes.length == associatedClass!.fields.length,
+      'substitutedFieldTypes must be aligned with the class fields',
+    );
+
+    final typeArgs = '<${_flattenTypeArguments(customType.typeArguments)}>';
+    indent.writeln(
+      'final List<Object?> result = $rawValueExpression as List<Object?>;',
+    );
+    indent.write('return ${customType.name}$typeArgs');
+    indent.addScoped('(', ');', () {
+      enumerate(getFieldsInSerializationOrder(associatedClass!), (
+        int index,
+        final NamedType field,
+      ) {
+        indent.write('${field.name}: ');
+        indent.add(_castValue('result[$index]', substitutedFieldTypes[index]));
+        indent.addln(',');
       });
     });
   }

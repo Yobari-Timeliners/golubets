@@ -1396,23 +1396,6 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       }
     }
 
-    final completeRoot = Root(
-      apis: _apis,
-      classes: _classes,
-      enums: referencedEnums,
-      containsHostApi: containsHostApi,
-      containsFlutterApi: containsFlutterApi,
-      containsProxyApi: containsProxyApi,
-      containsEventChannel: containsEventChannel,
-      genericTypeNames: _genericTypeNames,
-      genericUsage: _genericTypeNames.isEmpty
-          ? const <String, Set<TypeArgumentCombination>>{}
-          : collectGenericTypeUsage(
-              classes: _classes,
-              apis: _apis,
-            ),
-    );
-
     final totalErrors = List<Error>.from(_errors);
 
     for (final MapEntry<TypeDeclaration, List<int>> element
@@ -1474,6 +1457,32 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         api.interfaces = newInterfaceSet;
       }
     }
+
+    // `collectGenericTypeUsage` walks the API + class tree to record every
+    // concrete instantiation of a generic class. It must run **after**
+    // `_attachAssociatedDefinitions` so that nested type arguments inside
+    // the recorded combinations (e.g. `GenericPair<String, int>` in
+    // `Left<GenericPair<String, int>, …>`) carry their `associatedClass` /
+    // `associatedEnum`. Generators later rely on those to emit the right
+    // cast (`as GenericPair<String, int>` vs. the more verbose
+    // `as GenericPair<Object?, Object?>).cast<…>()`).
+    final completeRoot = Root(
+      apis: _apis,
+      classes: _classes,
+      enums: referencedEnums,
+      containsHostApi: containsHostApi,
+      containsFlutterApi: containsFlutterApi,
+      containsProxyApi: containsProxyApi,
+      containsEventChannel: containsEventChannel,
+      genericTypeNames: _genericTypeNames,
+      genericUsage: _genericTypeNames.isEmpty
+          ? const <String, Set<TypeArgumentCombination>>{}
+          : collectGenericTypeUsage(
+              classes: _classes,
+              apis: _apis,
+            ),
+    );
+
     final List<Error> validateErrors = _validateAst(completeRoot, source);
     totalErrors.addAll(validateErrors);
 

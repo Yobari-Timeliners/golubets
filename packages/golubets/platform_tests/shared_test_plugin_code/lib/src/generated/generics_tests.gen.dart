@@ -104,14 +104,6 @@ class GenericContainer<T> {
     return _toList();
   }
 
-  static GenericContainer<T> decode<T>(Object result) {
-    result as List<Object?>;
-    return GenericContainer<T>(
-      value: result[0] as T?,
-      values: (result[1]! as List<Object?>).cast<T>(),
-    );
-  }
-
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
@@ -153,15 +145,6 @@ class GenericPair<T, K> {
 
   Object encode() {
     return _toList();
-  }
-
-  static GenericPair<T, K> decode<T, K>(Object result) {
-    result as List<Object?>;
-    return GenericPair<T, K>(
-      first: result[0]! as T,
-      second: result[1] as K?,
-      map: (result[2]! as Map<Object?, Object?>).cast<T, K>(),
-    );
   }
 
   @override
@@ -211,21 +194,56 @@ class NestedGeneric<T, K, V> {
     return _toList();
   }
 
-  static NestedGeneric<T, K, V> decode<T, K, V>(Object result) {
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! NestedGeneric || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(encode(), other.encode());
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => Object.hashAll(_toList());
+}
+
+class SimpleStringContainer {
+  const SimpleStringContainer({
+    required this.id,
+    required this.name,
+  });
+
+  final String id;
+
+  final String name;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      id,
+      name,
+    ];
+  }
+
+  Object encode() {
+    return _toList();
+  }
+
+  static SimpleStringContainer decode(Object result) {
     result as List<Object?>;
-    return NestedGeneric<T, K, V>(
-      container: result[0]! as GenericContainer<T>,
-      pairs: (result[1]! as List<Object?>).cast<GenericPair<K, V>>(),
-      nestedMap: (result[2]! as Map<Object?, Object?>)
-          .cast<T, GenericContainer<K>>(),
-      listOfMaps: (result[3]! as List<Object?>).cast<Map<Object?, Object?>>(),
+    return SimpleStringContainer(
+      id: result[0]! as String,
+      name: result[1]! as String,
     );
   }
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
-    if (other is! NestedGeneric || other.runtimeType != runtimeType) {
+    if (other is! SimpleStringContainer || other.runtimeType != runtimeType) {
       return false;
     }
     if (identical(this, other)) {
@@ -756,47 +774,6 @@ class GenericsAllNullableTypesTyped<T, K, V> {
     return _toList();
   }
 
-  static GenericsAllNullableTypesTyped<T, K, V> decode<T, K, V>(Object result) {
-    result as List<Object?>;
-    return GenericsAllNullableTypesTyped<T, K, V>(
-      aNullableBool: result[0] as bool?,
-      aNullableInt: result[1] as int?,
-      aNullableInt64: result[2] as int?,
-      aNullableDouble: result[3] as double?,
-      aNullableByteArray: result[4] as Uint8List?,
-      aNullable4ByteArray: result[5] as Int32List?,
-      aNullable8ByteArray: result[6] as Int64List?,
-      aNullableFloatArray: result[7] as Float64List?,
-      aNullableEnum: result[8] as GenericsAnEnum?,
-      anotherNullableEnum: result[9] as GenericsAnotherEnum?,
-      aNullableString: result[10] as String?,
-      aNullableObject: result[11],
-      allNullableTypes: result[12] as GenericsAllNullableTypes?,
-      list: result[13] as List<Object?>?,
-      stringList: (result[14] as List<Object?>?)?.cast<T?>(),
-      intList: (result[15] as List<Object?>?)?.cast<V?>(),
-      doubleList: (result[16] as List<Object?>?)?.cast<K?>(),
-      boolList: (result[17] as List<Object?>?)?.cast<T?>(),
-      enumList: (result[18] as List<Object?>?)?.cast<V?>(),
-      objectList: (result[19] as List<Object?>?)?.cast<K?>(),
-      listList: (result[20] as List<Object?>?)?.cast<List<K?>?>(),
-      mapList: (result[21] as List<Object?>?)?.cast<Map<T?, V?>?>(),
-      recursiveClassList: (result[22] as List<Object?>?)
-          ?.cast<GenericsAllNullableTypes?>(),
-      map: result[23] as Map<Object?, Object?>?,
-      stringMap: (result[24] as Map<Object?, Object?>?)?.cast<T?, T?>(),
-      intMap: (result[25] as Map<Object?, Object?>?)?.cast<V?, K?>(),
-      enumMap: (result[26] as Map<Object?, Object?>?)
-          ?.cast<GenericsAnEnum?, GenericsAnEnum?>(),
-      objectMap: result[27] as Map<Object?, Object?>?,
-      listMap: (result[28] as Map<Object?, Object?>?)?.cast<int?, List<K?>?>(),
-      mapMap: (result[29] as Map<Object?, Object?>?)
-          ?.cast<int?, Map<K?, K?>?>(),
-      recursiveClassMap: (result[30] as Map<Object?, Object?>?)
-          ?.cast<int?, GenericsAllNullableTypes?>(),
-    );
-  }
-
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
@@ -836,13 +813,6 @@ class Left<L, R> extends Either<L, R> {
     return _toList();
   }
 
-  static Left<L, R> decode<L, R>(Object result) {
-    result as List<Object?>;
-    return Left<L, R>(
-      value: result[0]! as L,
-    );
-  }
-
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
@@ -875,13 +845,6 @@ class Right<L, R> extends Either<L, R> {
 
   Object encode() {
     return _toList();
-  }
-
-  static Right<L, R> decode<L, R>(Object result) {
-    result as List<Object?>;
-    return Right<L, R>(
-      value: result[0]! as R,
-    );
   }
 
   @override
@@ -1162,35 +1125,38 @@ class _GolubetsCodec extends StandardMessageCodec {
         value.runtimeType == NestedGeneric<String, int, double>) {
       buffer.putUint8(150);
       writeValue(buffer, value.encode());
-    } else if (value is GenericsAllTypes) {
+    } else if (value is SimpleStringContainer) {
       buffer.putUint8(151);
       writeValue(buffer, value.encode());
-    } else if (value is GenericsAllNullableTypes) {
+    } else if (value is GenericsAllTypes) {
       buffer.putUint8(152);
       writeValue(buffer, value.encode());
-    } else if (value is GenericsAllNullableTypesTyped &&
-        value.runtimeType ==
-            GenericsAllNullableTypesTyped<String, int, double>) {
+    } else if (value is GenericsAllNullableTypes) {
       buffer.putUint8(153);
       writeValue(buffer, value.encode());
     } else if (value is GenericsAllNullableTypesTyped &&
         value.runtimeType ==
-            GenericsAllNullableTypesTyped<int, String, double>) {
+            GenericsAllNullableTypesTyped<String, int, double>) {
       buffer.putUint8(154);
       writeValue(buffer, value.encode());
     } else if (value is GenericsAllNullableTypesTyped &&
-        value.runtimeType == GenericsAllNullableTypesTyped<int, String, bool>) {
+        value.runtimeType ==
+            GenericsAllNullableTypesTyped<int, String, double>) {
       buffer.putUint8(155);
+      writeValue(buffer, value.encode());
+    } else if (value is GenericsAllNullableTypesTyped &&
+        value.runtimeType == GenericsAllNullableTypesTyped<int, String, bool>) {
+      buffer.putUint8(156);
       writeValue(buffer, value.encode());
     } else if (value is GenericsAllNullableTypesTyped &&
         value.runtimeType ==
             GenericsAllNullableTypesTyped<GenericsAnEnum, double, String>) {
-      buffer.putUint8(156);
+      buffer.putUint8(157);
       writeValue(buffer, value.encode());
     } else if (value is Left &&
         value.runtimeType ==
             Left<GenericPair<String, int>, GenericPair<int, String>>) {
-      buffer.putUint8(157);
+      buffer.putUint8(158);
       writeValue(buffer, value.encode());
     } else if (value is Left &&
         value.runtimeType ==
@@ -1198,20 +1164,25 @@ class _GolubetsCodec extends StandardMessageCodec {
               NestedGeneric<String, int, double>,
               NestedGeneric<GenericsAllTypes, String, int>
             >) {
-      buffer.putUint8(158);
-      writeValue(buffer, value.encode());
-    } else if (value is Left && value.runtimeType == Left<String, int>) {
       buffer.putUint8(159);
       writeValue(buffer, value.encode());
     } else if (value is Left &&
         value.runtimeType ==
-            Left<GenericContainer<int>, GenericContainer<String>>) {
+            Left<GenericsAnEnum, List<SimpleStringContainer>>) {
       buffer.putUint8(160);
+      writeValue(buffer, value.encode());
+    } else if (value is Left && value.runtimeType == Left<String, int>) {
+      buffer.putUint8(161);
+      writeValue(buffer, value.encode());
+    } else if (value is Left &&
+        value.runtimeType ==
+            Left<GenericContainer<int>, GenericContainer<String>>) {
+      buffer.putUint8(162);
       writeValue(buffer, value.encode());
     } else if (value is Right &&
         value.runtimeType ==
             Right<GenericPair<String, int>, GenericPair<int, String>>) {
-      buffer.putUint8(161);
+      buffer.putUint8(163);
       writeValue(buffer, value.encode());
     } else if (value is Right &&
         value.runtimeType ==
@@ -1219,18 +1190,23 @@ class _GolubetsCodec extends StandardMessageCodec {
               NestedGeneric<String, int, double>,
               NestedGeneric<GenericsAllTypes, String, int>
             >) {
-      buffer.putUint8(162);
+      buffer.putUint8(164);
+      writeValue(buffer, value.encode());
+    } else if (value is Right &&
+        value.runtimeType ==
+            Right<GenericsAnEnum, List<SimpleStringContainer>>) {
+      buffer.putUint8(165);
       writeValue(buffer, value.encode());
     } else if (value is Right && value.runtimeType == Right<String, int>) {
-      buffer.putUint8(163);
+      buffer.putUint8(166);
       writeValue(buffer, value.encode());
     } else if (value is Right &&
         value.runtimeType ==
             Right<GenericContainer<int>, GenericContainer<String>>) {
-      buffer.putUint8(164);
+      buffer.putUint8(167);
       writeValue(buffer, value.encode());
     } else if (value is GenericDefaults) {
-      buffer.putUint8(165);
+      buffer.putUint8(168);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -1247,107 +1223,384 @@ class _GolubetsCodec extends StandardMessageCodec {
         final value = readValue(buffer) as int?;
         return value == null ? null : GenericsAnotherEnum.values[value];
       case 131:
-        return GenericContainer.decode<
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericContainer<
           GenericsAllNullableTypesTyped<String, int, double>
-        >(readValue(buffer)!);
+        >(
+          value:
+              result[0]! as GenericsAllNullableTypesTyped<String, int, double>,
+          values: (result[1]! as List<Object?>)
+              .cast<GenericsAllNullableTypesTyped<String, int, double>>(),
+        );
       case 132:
-        return GenericContainer.decode<bool>(readValue(buffer)!);
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericContainer<bool>(
+          value: result[0]! as bool,
+          values: (result[1]! as List<Object?>).cast<bool>(),
+        );
       case 133:
-        return GenericContainer.decode<double>(readValue(buffer)!);
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericContainer<double>(
+          value: result[0]! as double,
+          values: (result[1]! as List<Object?>).cast<double>(),
+        );
       case 134:
-        return GenericContainer.decode<int?>(readValue(buffer)!);
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericContainer<int?>(
+          value: result[0] as int?,
+          values: (result[1]! as List<Object?>).cast<int?>(),
+        );
       case 135:
-        return GenericContainer.decode<Either<String, int>>(readValue(buffer)!);
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericContainer<Either<String, int>>(
+          value: result[0]! as Either<String, int>,
+          values: (result[1]! as List<Object?>).cast<Either<String, int>>(),
+        );
       case 136:
-        return GenericContainer.decode<int>(readValue(buffer)!);
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericContainer<int>(
+          value: result[0]! as int,
+          values: (result[1]! as List<Object?>).cast<int>(),
+        );
       case 137:
-        return GenericContainer.decode<String>(readValue(buffer)!);
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericContainer<String>(
+          value: result[0]! as String,
+          values: (result[1]! as List<Object?>).cast<String>(),
+        );
       case 138:
-        return GenericContainer.decode<GenericsAnEnum>(readValue(buffer)!);
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericContainer<GenericsAnEnum>(
+          value: result[0]! as GenericsAnEnum,
+          values: (result[1]! as List<Object?>).cast<GenericsAnEnum>(),
+        );
       case 139:
-        return GenericContainer.decode<String?>(readValue(buffer)!);
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericContainer<String?>(
+          value: result[0] as String?,
+          values: (result[1]! as List<Object?>).cast<String?>(),
+        );
       case 140:
-        return GenericContainer.decode<GenericsAllTypes>(readValue(buffer)!);
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericContainer<GenericsAllTypes>(
+          value: result[0]! as GenericsAllTypes,
+          values: (result[1]! as List<Object?>).cast<GenericsAllTypes>(),
+        );
       case 141:
-        return GenericPair.decode<int, Either<String, int>>(readValue(buffer)!);
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericPair<int, Either<String, int>>(
+          first: result[0]! as int,
+          second: result[1]! as Either<String, int>,
+          map: (result[2]! as Map<Object?, Object?>)
+              .cast<int, Either<String, int>>(),
+        );
       case 142:
-        return GenericPair.decode<double, bool>(readValue(buffer)!);
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericPair<double, bool>(
+          first: result[0]! as double,
+          second: result[1]! as bool,
+          map: (result[2]! as Map<Object?, Object?>).cast<double, bool>(),
+        );
       case 143:
-        return GenericPair.decode<int, String>(readValue(buffer)!);
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericPair<int, String>(
+          first: result[0]! as int,
+          second: result[1]! as String,
+          map: (result[2]! as Map<Object?, Object?>).cast<int, String>(),
+        );
       case 144:
-        return GenericPair.decode<
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericPair<
           GenericsAllNullableTypesTyped<String, int, double>,
           GenericsAllNullableTypesTyped<int, String, bool>
-        >(readValue(buffer)!);
+        >(
+          first:
+              result[0]! as GenericsAllNullableTypesTyped<String, int, double>,
+          second:
+              result[1]! as GenericsAllNullableTypesTyped<int, String, bool>,
+          map: (result[2]! as Map<Object?, Object?>)
+              .cast<
+                GenericsAllNullableTypesTyped<String, int, double>,
+                GenericsAllNullableTypesTyped<int, String, bool>
+              >(),
+        );
       case 145:
-        return GenericPair.decode<int, double>(readValue(buffer)!);
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericPair<int, double>(
+          first: result[0]! as int,
+          second: result[1]! as double,
+          map: (result[2]! as Map<Object?, Object?>).cast<int, double>(),
+        );
       case 146:
-        return GenericPair.decode<String, double>(readValue(buffer)!);
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericPair<String, double>(
+          first: result[0]! as String,
+          second: result[1]! as double,
+          map: (result[2]! as Map<Object?, Object?>).cast<String, double>(),
+        );
       case 147:
-        return GenericPair.decode<String, int>(readValue(buffer)!);
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericPair<String, int>(
+          first: result[0]! as String,
+          second: result[1]! as int,
+          map: (result[2]! as Map<Object?, Object?>).cast<String, int>(),
+        );
       case 148:
-        return GenericPair.decode<GenericsAllTypes, GenericsAllNullableTypes>(
-          readValue(buffer)!,
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericPair<GenericsAllTypes, GenericsAllNullableTypes>(
+          first: result[0]! as GenericsAllTypes,
+          second: result[1]! as GenericsAllNullableTypes,
+          map: (result[2]! as Map<Object?, Object?>)
+              .cast<GenericsAllTypes, GenericsAllNullableTypes>(),
         );
       case 149:
-        return NestedGeneric.decode<GenericsAllTypes, String, int>(
-          readValue(buffer)!,
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return NestedGeneric<GenericsAllTypes, String, int>(
+          container: result[0]! as GenericContainer<GenericsAllTypes>,
+          pairs: (result[1]! as List<Object?>).cast<GenericPair<String, int>>(),
+          nestedMap: (result[2]! as Map<Object?, Object?>)
+              .cast<GenericsAllTypes, GenericContainer<String>>(),
+          listOfMaps: (result[3]! as List<Object?>)
+              .cast<Map<Object?, Object?>>(),
         );
       case 150:
-        return NestedGeneric.decode<String, int, double>(readValue(buffer)!);
-      case 151:
-        return GenericsAllTypes.decode(readValue(buffer)!);
-      case 152:
-        return GenericsAllNullableTypes.decode(readValue(buffer)!);
-      case 153:
-        return GenericsAllNullableTypesTyped.decode<String, int, double>(
-          readValue(buffer)!,
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return NestedGeneric<String, int, double>(
+          container: result[0]! as GenericContainer<String>,
+          pairs: (result[1]! as List<Object?>).cast<GenericPair<int, double>>(),
+          nestedMap: (result[2]! as Map<Object?, Object?>)
+              .cast<String, GenericContainer<int>>(),
+          listOfMaps: (result[3]! as List<Object?>)
+              .cast<Map<Object?, Object?>>(),
         );
+      case 151:
+        return SimpleStringContainer.decode(readValue(buffer)!);
+      case 152:
+        return GenericsAllTypes.decode(readValue(buffer)!);
+      case 153:
+        return GenericsAllNullableTypes.decode(readValue(buffer)!);
       case 154:
-        return GenericsAllNullableTypesTyped.decode<int, String, double>(
-          readValue(buffer)!,
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericsAllNullableTypesTyped<String, int, double>(
+          aNullableBool: result[0] as bool?,
+          aNullableInt: result[1] as int?,
+          aNullableInt64: result[2] as int?,
+          aNullableDouble: result[3] as double?,
+          aNullableByteArray: result[4] as Uint8List?,
+          aNullable4ByteArray: result[5] as Int32List?,
+          aNullable8ByteArray: result[6] as Int64List?,
+          aNullableFloatArray: result[7] as Float64List?,
+          aNullableEnum: result[8] as GenericsAnEnum?,
+          anotherNullableEnum: result[9] as GenericsAnotherEnum?,
+          aNullableString: result[10] as String?,
+          aNullableObject: result[11],
+          allNullableTypes: result[12] as GenericsAllNullableTypes?,
+          list: result[13] as List<Object?>?,
+          stringList: (result[14] as List<Object?>?)?.cast<String>(),
+          intList: (result[15] as List<Object?>?)?.cast<double>(),
+          doubleList: (result[16] as List<Object?>?)?.cast<int>(),
+          boolList: (result[17] as List<Object?>?)?.cast<String>(),
+          enumList: (result[18] as List<Object?>?)?.cast<double>(),
+          objectList: (result[19] as List<Object?>?)?.cast<int>(),
+          listList: (result[20] as List<Object?>?)?.cast<List<int>?>(),
+          mapList: (result[21] as List<Object?>?)?.cast<Map<String, double>?>(),
+          recursiveClassList: (result[22] as List<Object?>?)
+              ?.cast<GenericsAllNullableTypes?>(),
+          map: result[23] as Map<Object?, Object?>?,
+          stringMap: (result[24] as Map<Object?, Object?>?)
+              ?.cast<String, String>(),
+          intMap: (result[25] as Map<Object?, Object?>?)?.cast<double, int>(),
+          enumMap: (result[26] as Map<Object?, Object?>?)
+              ?.cast<GenericsAnEnum?, GenericsAnEnum?>(),
+          objectMap: result[27] as Map<Object?, Object?>?,
+          listMap: (result[28] as Map<Object?, Object?>?)
+              ?.cast<int?, List<int>?>(),
+          mapMap: (result[29] as Map<Object?, Object?>?)
+              ?.cast<int?, Map<int, int>?>(),
+          recursiveClassMap: (result[30] as Map<Object?, Object?>?)
+              ?.cast<int?, GenericsAllNullableTypes?>(),
         );
       case 155:
-        return GenericsAllNullableTypesTyped.decode<int, String, bool>(
-          readValue(buffer)!,
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericsAllNullableTypesTyped<int, String, double>(
+          aNullableBool: result[0] as bool?,
+          aNullableInt: result[1] as int?,
+          aNullableInt64: result[2] as int?,
+          aNullableDouble: result[3] as double?,
+          aNullableByteArray: result[4] as Uint8List?,
+          aNullable4ByteArray: result[5] as Int32List?,
+          aNullable8ByteArray: result[6] as Int64List?,
+          aNullableFloatArray: result[7] as Float64List?,
+          aNullableEnum: result[8] as GenericsAnEnum?,
+          anotherNullableEnum: result[9] as GenericsAnotherEnum?,
+          aNullableString: result[10] as String?,
+          aNullableObject: result[11],
+          allNullableTypes: result[12] as GenericsAllNullableTypes?,
+          list: result[13] as List<Object?>?,
+          stringList: (result[14] as List<Object?>?)?.cast<int>(),
+          intList: (result[15] as List<Object?>?)?.cast<double>(),
+          doubleList: (result[16] as List<Object?>?)?.cast<String>(),
+          boolList: (result[17] as List<Object?>?)?.cast<int>(),
+          enumList: (result[18] as List<Object?>?)?.cast<double>(),
+          objectList: (result[19] as List<Object?>?)?.cast<String>(),
+          listList: (result[20] as List<Object?>?)?.cast<List<String>?>(),
+          mapList: (result[21] as List<Object?>?)?.cast<Map<int, double>?>(),
+          recursiveClassList: (result[22] as List<Object?>?)
+              ?.cast<GenericsAllNullableTypes?>(),
+          map: result[23] as Map<Object?, Object?>?,
+          stringMap: (result[24] as Map<Object?, Object?>?)?.cast<int, int>(),
+          intMap: (result[25] as Map<Object?, Object?>?)
+              ?.cast<double, String>(),
+          enumMap: (result[26] as Map<Object?, Object?>?)
+              ?.cast<GenericsAnEnum?, GenericsAnEnum?>(),
+          objectMap: result[27] as Map<Object?, Object?>?,
+          listMap: (result[28] as Map<Object?, Object?>?)
+              ?.cast<int?, List<String>?>(),
+          mapMap: (result[29] as Map<Object?, Object?>?)
+              ?.cast<int?, Map<String, String>?>(),
+          recursiveClassMap: (result[30] as Map<Object?, Object?>?)
+              ?.cast<int?, GenericsAllNullableTypes?>(),
         );
       case 156:
-        return GenericsAllNullableTypesTyped.decode<
-          GenericsAnEnum,
-          double,
-          String
-        >(readValue(buffer)!);
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericsAllNullableTypesTyped<int, String, bool>(
+          aNullableBool: result[0] as bool?,
+          aNullableInt: result[1] as int?,
+          aNullableInt64: result[2] as int?,
+          aNullableDouble: result[3] as double?,
+          aNullableByteArray: result[4] as Uint8List?,
+          aNullable4ByteArray: result[5] as Int32List?,
+          aNullable8ByteArray: result[6] as Int64List?,
+          aNullableFloatArray: result[7] as Float64List?,
+          aNullableEnum: result[8] as GenericsAnEnum?,
+          anotherNullableEnum: result[9] as GenericsAnotherEnum?,
+          aNullableString: result[10] as String?,
+          aNullableObject: result[11],
+          allNullableTypes: result[12] as GenericsAllNullableTypes?,
+          list: result[13] as List<Object?>?,
+          stringList: (result[14] as List<Object?>?)?.cast<int>(),
+          intList: (result[15] as List<Object?>?)?.cast<bool>(),
+          doubleList: (result[16] as List<Object?>?)?.cast<String>(),
+          boolList: (result[17] as List<Object?>?)?.cast<int>(),
+          enumList: (result[18] as List<Object?>?)?.cast<bool>(),
+          objectList: (result[19] as List<Object?>?)?.cast<String>(),
+          listList: (result[20] as List<Object?>?)?.cast<List<String>?>(),
+          mapList: (result[21] as List<Object?>?)?.cast<Map<int, bool>?>(),
+          recursiveClassList: (result[22] as List<Object?>?)
+              ?.cast<GenericsAllNullableTypes?>(),
+          map: result[23] as Map<Object?, Object?>?,
+          stringMap: (result[24] as Map<Object?, Object?>?)?.cast<int, int>(),
+          intMap: (result[25] as Map<Object?, Object?>?)?.cast<bool, String>(),
+          enumMap: (result[26] as Map<Object?, Object?>?)
+              ?.cast<GenericsAnEnum?, GenericsAnEnum?>(),
+          objectMap: result[27] as Map<Object?, Object?>?,
+          listMap: (result[28] as Map<Object?, Object?>?)
+              ?.cast<int?, List<String>?>(),
+          mapMap: (result[29] as Map<Object?, Object?>?)
+              ?.cast<int?, Map<String, String>?>(),
+          recursiveClassMap: (result[30] as Map<Object?, Object?>?)
+              ?.cast<int?, GenericsAllNullableTypes?>(),
+        );
       case 157:
-        return Left.decode<GenericPair<String, int>, GenericPair<int, String>>(
-          readValue(buffer)!,
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return GenericsAllNullableTypesTyped<GenericsAnEnum, double, String>(
+          aNullableBool: result[0] as bool?,
+          aNullableInt: result[1] as int?,
+          aNullableInt64: result[2] as int?,
+          aNullableDouble: result[3] as double?,
+          aNullableByteArray: result[4] as Uint8List?,
+          aNullable4ByteArray: result[5] as Int32List?,
+          aNullable8ByteArray: result[6] as Int64List?,
+          aNullableFloatArray: result[7] as Float64List?,
+          aNullableEnum: result[8] as GenericsAnEnum?,
+          anotherNullableEnum: result[9] as GenericsAnotherEnum?,
+          aNullableString: result[10] as String?,
+          aNullableObject: result[11],
+          allNullableTypes: result[12] as GenericsAllNullableTypes?,
+          list: result[13] as List<Object?>?,
+          stringList: (result[14] as List<Object?>?)?.cast<GenericsAnEnum>(),
+          intList: (result[15] as List<Object?>?)?.cast<String>(),
+          doubleList: (result[16] as List<Object?>?)?.cast<double>(),
+          boolList: (result[17] as List<Object?>?)?.cast<GenericsAnEnum>(),
+          enumList: (result[18] as List<Object?>?)?.cast<String>(),
+          objectList: (result[19] as List<Object?>?)?.cast<double>(),
+          listList: (result[20] as List<Object?>?)?.cast<List<double>?>(),
+          mapList: (result[21] as List<Object?>?)
+              ?.cast<Map<GenericsAnEnum, String>?>(),
+          recursiveClassList: (result[22] as List<Object?>?)
+              ?.cast<GenericsAllNullableTypes?>(),
+          map: result[23] as Map<Object?, Object?>?,
+          stringMap: (result[24] as Map<Object?, Object?>?)
+              ?.cast<GenericsAnEnum, GenericsAnEnum>(),
+          intMap: (result[25] as Map<Object?, Object?>?)
+              ?.cast<String, double>(),
+          enumMap: (result[26] as Map<Object?, Object?>?)
+              ?.cast<GenericsAnEnum?, GenericsAnEnum?>(),
+          objectMap: result[27] as Map<Object?, Object?>?,
+          listMap: (result[28] as Map<Object?, Object?>?)
+              ?.cast<int?, List<double>?>(),
+          mapMap: (result[29] as Map<Object?, Object?>?)
+              ?.cast<int?, Map<double, double>?>(),
+          recursiveClassMap: (result[30] as Map<Object?, Object?>?)
+              ?.cast<int?, GenericsAllNullableTypes?>(),
         );
       case 158:
-        return Left.decode<
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return Left<GenericPair<String, int>, GenericPair<int, String>>(
+          value: result[0]! as GenericPair<String, int>,
+        );
+      case 159:
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return Left<
           NestedGeneric<String, int, double>,
           NestedGeneric<GenericsAllTypes, String, int>
-        >(readValue(buffer)!);
-      case 159:
-        return Left.decode<String, int>(readValue(buffer)!);
+        >(
+          value: result[0]! as NestedGeneric<String, int, double>,
+        );
       case 160:
-        return Left.decode<GenericContainer<int>, GenericContainer<String>>(
-          readValue(buffer)!,
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return Left<GenericsAnEnum, List<SimpleStringContainer>>(
+          value: result[0]! as GenericsAnEnum,
         );
       case 161:
-        return Right.decode<GenericPair<String, int>, GenericPair<int, String>>(
-          readValue(buffer)!,
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return Left<String, int>(
+          value: result[0]! as String,
         );
       case 162:
-        return Right.decode<
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return Left<GenericContainer<int>, GenericContainer<String>>(
+          value: result[0]! as GenericContainer<int>,
+        );
+      case 163:
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return Right<GenericPair<String, int>, GenericPair<int, String>>(
+          value: result[0]! as GenericPair<int, String>,
+        );
+      case 164:
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return Right<
           NestedGeneric<String, int, double>,
           NestedGeneric<GenericsAllTypes, String, int>
-        >(readValue(buffer)!);
-      case 163:
-        return Right.decode<String, int>(readValue(buffer)!);
-      case 164:
-        return Right.decode<GenericContainer<int>, GenericContainer<String>>(
-          readValue(buffer)!,
+        >(
+          value: result[0]! as NestedGeneric<GenericsAllTypes, String, int>,
         );
       case 165:
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return Right<GenericsAnEnum, List<SimpleStringContainer>>(
+          value: (result[0]! as List<Object?>).cast<SimpleStringContainer>(),
+        );
+      case 166:
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return Right<String, int>(
+          value: result[0]! as int,
+        );
+      case 167:
+        final List<Object?> result = readValue(buffer)! as List<Object?>;
+        return Right<GenericContainer<int>, GenericContainer<String>>(
+          value: result[0]! as GenericContainer<String>,
+        );
+      case 168:
         return GenericDefaults.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -2685,6 +2938,32 @@ class HostGenericApi {
     );
     return golubetsVar_replyValue! as GenericContainer<Either<String, int>>;
   }
+
+  Future<Either<GenericsAnEnum, List<SimpleStringContainer>>>
+  echoFlutterReturnEitherGenericEnumOrListStringContainer(
+    Either<GenericsAnEnum, List<SimpleStringContainer>> arg,
+  ) async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostGenericApi.echoFlutterReturnEitherGenericEnumOrListStringContainer$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
+      <Object?>[arg],
+    );
+    final golubetsVar_replyList =
+        await golubetsVar_sendFuture as List<Object?>?;
+
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue!
+        as Either<GenericsAnEnum, List<SimpleStringContainer>>;
+  }
 }
 
 /// Flutter API for testing generic types from Flutter to host.
@@ -2754,6 +3033,11 @@ abstract class FlutterGenericApi {
   GenericContainer<Either<String, int>> returnGenericDefaultsEitherLeft();
 
   GenericContainer<Either<String, int>> returnGenericDefaultsEitherRight();
+
+  Either<GenericsAnEnum, List<SimpleStringContainer>>
+  echoFlutterReturnEitherGenericEnumOrListStringContainer(
+    Either<GenericsAnEnum, List<SimpleStringContainer>> arg,
+  );
 
   static void setUp(
     FlutterGenericApi? api, {
@@ -3222,6 +3506,35 @@ abstract class FlutterGenericApi {
           try {
             final GenericContainer<Either<String, int>> output = api
                 .returnGenericDefaultsEitherRight();
+            return wrapResponse(result: output);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+    {
+      final golubetsVar_channel = BasicMessageChannel<Object?>(
+        'dev.bayori.golubets.golubets_integration_tests.FlutterGenericApi.echoFlutterReturnEitherGenericEnumOrListStringContainer$messageChannelSuffix',
+        golubetsChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        golubetsVar_channel.setMessageHandler(null);
+      } else {
+        golubetsVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final Either<GenericsAnEnum, List<SimpleStringContainer>> arg_arg =
+              args[0]! as Either<GenericsAnEnum, List<SimpleStringContainer>>;
+          try {
+            final Either<GenericsAnEnum, List<SimpleStringContainer>> output =
+                api.echoFlutterReturnEitherGenericEnumOrListStringContainer(
+                  arg_arg,
+                );
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);

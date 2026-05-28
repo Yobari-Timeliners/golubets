@@ -1351,6 +1351,14 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     return pair
   }
 
+  public func echoFlutterReturnEitherGenericEnumOrListStringContainer(
+    arg: Either<GenericsAnEnum, [SimpleStringContainer]>
+  )
+    throws -> Either<GenericsAnEnum, [SimpleStringContainer]>
+  {
+    return arg
+  }
+
   public func echoNestedGenericStringIntDouble(nested: NestedGeneric<String, Int64, Double>) throws
     -> NestedGeneric<String, Int64, Double>
   {
