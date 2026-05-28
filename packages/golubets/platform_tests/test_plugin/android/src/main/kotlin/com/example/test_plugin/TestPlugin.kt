@@ -976,6 +976,12 @@ class TestPlugin :
     return pair
   }
 
+  override fun echoFlutterReturnEitherGenericEnumOrListStringContainer(
+      arg: Either<GenericsAnEnum, List<SimpleStringContainer>>
+  ): Either<GenericsAnEnum, List<SimpleStringContainer>> {
+    return arg
+  }
+
   override fun echoNestedGenericStringIntDouble(
       nested: NestedGeneric<String, Long, Double>
   ): NestedGeneric<String, Long, Double> {

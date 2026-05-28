@@ -41,6 +41,16 @@ class NestedGeneric<T, K, V> {
   final List<Map<Object?, Object?>> listOfMaps;
 }
 
+class SimpleStringContainer {
+  const SimpleStringContainer({
+    required this.id,
+    required this.name,
+  });
+
+  final String id;
+  final String name;
+}
+
 enum GenericsAnEnum { one, two, three, fortyTwo, fourHundredTwentyTwo }
 
 // Enums require special logic, having multiple ensures that the logic can be
@@ -627,6 +637,11 @@ abstract class HostGenericApi {
   @async
   GenericContainer<Either<String, int>>
   callFlutterReturnGenericDefaultsEitherRight();
+
+  Either<GenericsAnEnum, List<SimpleStringContainer>>
+  echoFlutterReturnEitherGenericEnumOrListStringContainer(
+    Either<GenericsAnEnum, List<SimpleStringContainer>> arg,
+  );
 }
 
 /// Flutter API for testing generic types from Flutter to host.
@@ -702,4 +717,9 @@ abstract class FlutterGenericApi {
   GenericContainer<Either<String, int>> returnGenericDefaultsEitherLeft();
 
   GenericContainer<Either<String, int>> returnGenericDefaultsEitherRight();
+
+  Either<GenericsAnEnum, List<SimpleStringContainer>>
+  echoFlutterReturnEitherGenericEnumOrListStringContainer(
+    Either<GenericsAnEnum, List<SimpleStringContainer>> arg,
+  );
 }

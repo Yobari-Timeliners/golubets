@@ -64,9 +64,9 @@ private class GolubetsFlutterApi {
 
 // #docregion swift-class-event
 class EventListener: StreamEventsStreamHandler {
-  var eventSink: GolubEventSink<PlatformEvent>?
+  var eventSink: GolubetsEventSink<PlatformEvent>?
 
-  override func onListen(withArguments arguments: Any?, sink: GolubEventSink<PlatformEvent>) {
+  override func onListen(withArguments arguments: Any?, sink: GolubetsEventSink<PlatformEvent>) {
     eventSink = sink
   }
 
@@ -137,7 +137,7 @@ func sendEvents(_ eventListener: EventListener) {
   override func awakeFromNib() {
     super.awakeFromNib()
 
-    let api = GolubApiImplementation()
+    let api = GolubetsApiImplementation()
     ExampleHostApiSetup.setUp(binaryMessenger: binaryMessenger, api: api)
     let controller = self
     // #docregion swift-init-event

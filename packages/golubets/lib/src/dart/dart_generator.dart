@@ -415,20 +415,21 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     Class classDefinition, {
     required String dartPackageName,
   }) {
+    if (classDefinition.typeArguments.isNotEmpty) {
+      return;
+    }
+
     final bool isResultUsed = classDefinition.fields.isNotEmpty;
     final result = isResultUsed ? 'result' : '_';
-    final generics = classDefinition.typeArguments.isNotEmpty
-        ? '<${_flattenTypeArguments(classDefinition.typeArguments)}>'
-        : '';
 
     indent.write(
-      'static ${classDefinition.name}$generics decode$generics(Object $result) ',
+      'static ${classDefinition.name} decode(Object $result) ',
     );
     indent.addScoped('{', '}', () {
       if (isResultUsed) {
         indent.writeln('result as List<Object?>;');
       }
-      indent.write('return ${classDefinition.name}$generics');
+      indent.write('return ${classDefinition.name}');
       indent.addScoped('(', ');', () {
         enumerate(getFieldsInSerializationOrder(classDefinition), (
           int index,
@@ -531,13 +532,15 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
               'final $baseName wrapper = $baseName.decode(readValue(buffer)!);',
             );
             indent.writeln('return wrapper.unwrap();');
+          } else if (customType.isGeneric) {
+            _writeGenericInstantiationDecode(
+              indent,
+              customType,
+              rawValueExpression: 'readValue(buffer)!',
+            );
           } else {
-            final String name = customType.name;
-            final typeArguments = customType.isGeneric
-                ? '<${_flattenTypeArguments(customType.typeArguments)}>'
-                : '';
             indent.writeln(
-              'return $name.decode$typeArguments(readValue(buffer)!);',
+              'return ${customType.name}.decode(readValue(buffer)!);',
             );
           }
         } else if (customType.type == CustomTypes.customEnum) {
@@ -1397,7 +1400,17 @@ if (wrapped == null) {
                 '',
                 () {
                   if (types[i].type == CustomTypes.customClass) {
-                    indent.writeln('return ${types[i].name}.decode(wrapped!);');
+                    if (types[i].isGeneric) {
+                      _writeGenericInstantiationDecode(
+                        indent,
+                        types[i],
+                        rawValueExpression: 'wrapped!',
+                      );
+                    } else {
+                      indent.writeln(
+                        'return ${types[i].name}.decode(wrapped!);',
+                      );
+                    }
                   } else if (types[i].type == CustomTypes.customEnum) {
                     indent.writeln(
                       'return ${types[i].name}.values[wrapped! as int];',
@@ -1409,6 +1422,42 @@ if (wrapped == null) {
           }
         });
         indent.writeln('return null;');
+      });
+    });
+  }
+
+  /// Emits an inline constructor call that decodes a concrete generic class
+  /// instantiation (e.g. `Right<E, List<X>>`) from a raw codec payload.
+  void _writeGenericInstantiationDecode(
+    Indent indent,
+    EnumeratedType customType, {
+    required String rawValueExpression,
+  }) {
+    final Class? associatedClass = customType.associatedClass;
+    assert(
+      associatedClass != null && customType.isGeneric,
+      '_writeGenericInstantiationDecode requires a generic class instantiation',
+    );
+    final List<TypeDeclaration> substitutedFieldTypes =
+        customType.substitutedFieldTypes;
+    assert(
+      substitutedFieldTypes.length == associatedClass!.fields.length,
+      'substitutedFieldTypes must be aligned with the class fields',
+    );
+
+    final typeArgs = '<${_flattenTypeArguments(customType.typeArguments)}>';
+    indent.writeln(
+      'final List<Object?> result = $rawValueExpression as List<Object?>;',
+    );
+    indent.write('return ${customType.name}$typeArgs');
+    indent.addScoped('(', ');', () {
+      enumerate(getFieldsInSerializationOrder(associatedClass!), (
+        int index,
+        final NamedType field,
+      ) {
+        indent.write('${field.name}: ');
+        indent.add(_castValue('result[$index]', substitutedFieldTypes[index]));
+        indent.addln(',');
       });
     });
   }

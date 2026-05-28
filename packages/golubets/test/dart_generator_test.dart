@@ -1437,7 +1437,9 @@ void main() {
     expect(code, contains('class Wrapper<T>'));
     expect(code, contains('T value;'));
     expect(code, contains('Wrapper({'));
-    expect(code, contains('static Wrapper<T> decode<T>(Object result)'));
+    // Generic classes intentionally do not get a shared `decode<T>` method;
+    // the codec emits an inline constructor per concrete instantiation.
+    expect(code, isNot(contains('decode<T>')));
   });
 
   test('generic class with multiple type parameters', () {
@@ -1476,7 +1478,7 @@ void main() {
     expect(code, contains('T first;'));
     expect(code, contains('U? second;'));
     expect(code, contains('Pair({'));
-    expect(code, contains('static Pair<T, U> decode<T, U>(Object result)'));
+    expect(code, isNot(contains('decode<T, U>')));
   });
 
   test('generic class with nested generic field types', () {
@@ -1522,7 +1524,7 @@ void main() {
     expect(code, contains('class Container<T>'));
     expect(code, contains('List<Map<String, T?>> data;'));
     expect(code, contains('Container({'));
-    expect(code, contains('static Container<T> decode<T>(Object result)'));
+    expect(code, isNot(contains('decode<T>')));
   });
 
   test('generic class with generic superclass', () {
@@ -1569,7 +1571,7 @@ void main() {
     expect(code, contains('class SpecialList<T> extends BaseContainer'));
     expect(code, contains('int capacity;'));
     expect(code, contains('SpecialList({'));
-    expect(code, contains('static SpecialList<T> decode<T>(Object result)'));
+    expect(code, isNot(contains('decode<T>')));
     expect(code, contains('class BaseContainer<T>'));
   });
 
@@ -1608,10 +1610,7 @@ void main() {
     expect(code, contains('class Result<T, E>'));
     expect(code, contains('T? success;'));
     expect(code, contains('E? error;'));
-    expect(code, contains('static Result<T, E> decode<T, E>(Object result)'));
-    expect(code, contains('return Result<T, E>('));
-    expect(code, contains('success: result[0] as T?,'));
-    expect(code, contains('error: result[1] as E?,'));
+    expect(code, isNot(contains('decode<T, E>')));
     expect(code, contains('Object encode()'));
     expect(code, contains('return _toList();'));
     expect(code, contains('List<Object?> _toList()'));
@@ -1653,9 +1652,7 @@ void main() {
     expect(code, contains('class Optional<T?>'));
     expect(code, contains('T? value;'));
     expect(code, contains('bool hasValue;'));
-    expect(code, contains('static Optional<T?> decode<T?>(Object result)'));
-    expect(code, contains('return Optional<T?>('));
-    expect(code, contains('value: result[0] as T?,'));
+    expect(code, isNot(contains('decode<T?>')));
   });
 
   test('complex generic class with mixed type constraints', () {
@@ -1711,24 +1708,7 @@ void main() {
     expect(code, contains('Map<String, TData?> data;'));
     expect(code, contains('List<TError?>? errors;'));
     expect(code, contains('int statusCode;'));
-    expect(
-      code,
-      contains(
-        'static ApiResponse<TData, TError?> decode<TData, TError?>(Object result)',
-      ),
-    );
-    expect(code, contains('return ApiResponse<TData, TError?>('));
-    expect(
-      code,
-      contains(
-        'data: (result[0]! as Map<Object?, Object?>).cast<String, TData?>()',
-      ),
-    );
-    expect(
-      code,
-      contains('errors: (result[1] as List<Object?>?)?.cast<TError?>()'),
-    );
-    expect(code, contains('statusCode: result[2]! as int'));
+    expect(code, isNot(contains('decode<TData, TError?>')));
   });
 
   test('return nullable host', () {

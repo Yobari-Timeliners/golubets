@@ -1396,23 +1396,6 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       }
     }
 
-    final completeRoot = Root(
-      apis: _apis,
-      classes: _classes,
-      enums: referencedEnums,
-      containsHostApi: containsHostApi,
-      containsFlutterApi: containsFlutterApi,
-      containsProxyApi: containsProxyApi,
-      containsEventChannel: containsEventChannel,
-      genericTypeNames: _genericTypeNames,
-      genericUsage: _genericTypeNames.isEmpty
-          ? const <String, Set<TypeArgumentCombination>>{}
-          : collectGenericTypeUsage(
-              classes: _classes,
-              apis: _apis,
-            ),
-    );
-
     final totalErrors = List<Error>.from(_errors);
 
     for (final MapEntry<TypeDeclaration, List<int>> element
@@ -1474,6 +1457,25 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         api.interfaces = newInterfaceSet;
       }
     }
+
+    // It must run **after** `_attachAssociatedDefinitions`.
+    final completeRoot = Root(
+      apis: _apis,
+      classes: _classes,
+      enums: referencedEnums,
+      containsHostApi: containsHostApi,
+      containsFlutterApi: containsFlutterApi,
+      containsProxyApi: containsProxyApi,
+      containsEventChannel: containsEventChannel,
+      genericTypeNames: _genericTypeNames,
+      genericUsage: _genericTypeNames.isEmpty
+          ? const <String, Set<TypeArgumentCombination>>{}
+          : collectGenericTypeUsage(
+              classes: _classes,
+              apis: _apis,
+            ),
+    );
+
     final List<Error> validateErrors = _validateAst(completeRoot, source);
     totalErrors.addAll(validateErrors);
 
