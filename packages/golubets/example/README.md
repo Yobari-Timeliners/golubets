@@ -23,8 +23,7 @@ needed for your project.
     gobjectHeaderOut: 'linux/messages.g.h',
     gobjectSourceOut: 'linux/messages.g.cc',
     gobjectOptions: GObjectOptions(),
-    kotlinOut:
-        'android/app/src/main/kotlin/dev/flutter/pigeon_example_app/Messages.g.kt',
+    kotlinOut: 'android/app/src/main/kotlin/dev/flutter/pigeon_example_app/Messages.g.kt',
     kotlinOptions: KotlinOptions(),
     javaOut: 'android/app/src/main/java/io/flutter/plugins/Messages.java',
     javaOptions: JavaOptions(),
@@ -100,6 +99,7 @@ abstract class ExampleHostApi {
   @Async(type: AsyncType.await(isSwiftThrows: true))
   bool sendMessageModernAsyncThrows(MessageData message);
 }
+
 ```
 
 ### Dart
@@ -137,6 +137,7 @@ Future<bool> sendMessage(String messageText) {
   }
 }
 
+<<<<<<< HEAD:packages/golubets/example/README.md
 Future<bool> sendMessageModernAsync(String messageText) {
   final MessageData message = MessageData(
     code: Code.two,
@@ -156,6 +157,8 @@ Future<bool> sendMessageModernAsyncAndThrow(String messageText) {
 
   return _api.sendMessageModernAsyncThrows(message);
 }
+=======
+>>>>>>> filtered-upstream/main:packages/pigeon/example/README.md
 ```
 
 ### Swift
@@ -341,6 +344,7 @@ class _ExampleFlutterApi implements MessageFlutterApi {
     return aString ?? '';
   }
 }
+
 // ···
   MessageFlutterApi.setUp(_ExampleFlutterApi());
 ```
@@ -473,6 +477,7 @@ Stream<String> getEventStream() async* {
     }
   }
 }
+
 ```
 
 ### Swift

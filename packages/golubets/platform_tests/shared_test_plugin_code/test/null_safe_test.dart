@@ -22,8 +22,7 @@ import 'test_util.dart';
   NullableCollectionReturnFlutterApi,
 ])
 void main() {
-  final TestWidgetsFlutterBinding binding =
-      TestWidgetsFlutterBinding.ensureInitialized();
+  final TestWidgetsFlutterBinding binding = TestWidgetsFlutterBinding.ensureInitialized();
 
   test('with values filled', () {
     final reply = FlutterSearchReply()
@@ -53,10 +52,14 @@ void main() {
     completer.complete(Api.golubetsChannelCodec.encodeMessage(<Object>[reply]));
     final Future<ByteData?> sendResult = completer.future;
     when(
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
       mockMessenger.send(
         'dev.bayori.golubets.golubets_integration_tests.Api.search',
         any,
       ),
+=======
+      mockMessenger.send('dev.flutter.pigeon.pigeon_integration_tests.Api.search', any),
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
     ).thenAnswer((Invocation realInvocation) => sendResult);
     final api = Api(binaryMessenger: mockMessenger);
     final FlutterSearchReply readReply = await api.search(request);
@@ -66,8 +69,7 @@ void main() {
 
   test('send/receive list classes', () async {
     final request = FlutterSearchRequest()..query = 'hey';
-    final requests = FlutterSearchRequests()
-      ..requests = <FlutterSearchRequest>[request];
+    final requests = FlutterSearchRequests()..requests = <FlutterSearchRequest>[request];
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
     echoOneArgument(
       mockMessenger,
@@ -94,27 +96,36 @@ void main() {
 
   test('return null to nonnull', () async {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
     const channel = 'dev.bayori.golubets.golubets_integration_tests.Api.anInt';
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
       return Api.golubetsChannelCodec.encodeMessage(<Object?>[null]);
+=======
+    const channel = 'dev.flutter.pigeon.pigeon_integration_tests.Api.anInt';
+    when(mockMessenger.send(channel, any)).thenAnswer((Invocation realInvocation) async {
+      return Api.pigeonChannelCodec.encodeMessage(<Object?>[null]);
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
     });
     final api = Api(binaryMessenger: mockMessenger);
-    expect(
-      () async => api.anInt(1),
-      throwsA(const TypeMatcher<PlatformException>()),
-    );
+    expect(() async => api.anInt(1), throwsA(const TypeMatcher<PlatformException>()));
   });
 
   test('send null parameter', () async {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
     const channel =
         'dev.bayori.golubets.golubets_integration_tests.NullableArgHostApi.doit';
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
       return Api.golubetsChannelCodec.encodeMessage(<Object?>[123]);
+=======
+    const channel = 'dev.flutter.pigeon.pigeon_integration_tests.NullableArgHostApi.doit';
+    when(mockMessenger.send(channel, any)).thenAnswer((Invocation realInvocation) async {
+      return Api.pigeonChannelCodec.encodeMessage(<Object?>[123]);
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
     });
     final api = NullableArgHostApi(binaryMessenger: mockMessenger);
     expect(await api.doit(null), 123);
@@ -122,12 +133,18 @@ void main() {
 
   test('send null collection parameter', () async {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
     const channel =
         'dev.bayori.golubets.golubets_integration_tests.NullableCollectionArgHostApi.doit';
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
     ) async {
       return Api.golubetsChannelCodec.encodeMessage(<Object?>[
+=======
+    const channel = 'dev.flutter.pigeon.pigeon_integration_tests.NullableCollectionArgHostApi.doit';
+    when(mockMessenger.send(channel, any)).thenAnswer((Invocation realInvocation) async {
+      return Api.pigeonChannelCodec.encodeMessage(<Object?>[
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
         <String?>['123'],
       ]);
     });
@@ -147,9 +164,13 @@ void main() {
       NullableArgFlutterApi.golubetsChannelCodec.encodeMessage(<Object?>[null]),
       (ByteData? data) {
         resultCompleter.complete(
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
           (NullableArgFlutterApi.golubetsChannelCodec.decodeMessage(data)!
                       as List<Object?>)
                   .first!
+=======
+          (NullableArgFlutterApi.pigeonChannelCodec.decodeMessage(data)! as List<Object?>).first!
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
               as int,
         );
       },
@@ -169,6 +190,7 @@ void main() {
 
     final resultCompleter = Completer<List<String?>>();
     binding.defaultBinaryMessenger.handlePlatformMessage(
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
       'dev.bayori.golubets.golubets_integration_tests.NullableCollectionArgFlutterApi.doit',
       NullableCollectionArgFlutterApi.golubetsChannelCodec.encodeMessage(
         <Object?>[null],
@@ -178,6 +200,13 @@ void main() {
           ((NullableCollectionArgFlutterApi.golubetsChannelCodec.decodeMessage(
                             data,
                           )!
+=======
+      'dev.flutter.pigeon.pigeon_integration_tests.NullableCollectionArgFlutterApi.doit',
+      NullableCollectionArgFlutterApi.pigeonChannelCodec.encodeMessage(<Object?>[null]),
+      (ByteData? data) {
+        resultCompleter.complete(
+          ((NullableCollectionArgFlutterApi.pigeonChannelCodec.decodeMessage(data)!
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
                           as List<Object?>)
                       .first!
                   as List<Object?>)
@@ -194,6 +223,7 @@ void main() {
 
   test('receive null return', () async {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
     const channel =
         'dev.bayori.golubets.golubets_integration_tests.NullableReturnHostApi.doit';
     when(mockMessenger.send(channel, any)).thenAnswer((
@@ -202,6 +232,11 @@ void main() {
       return NullableReturnHostApi.golubetsChannelCodec.encodeMessage(<Object?>[
         null,
       ]);
+=======
+    const channel = 'dev.flutter.pigeon.pigeon_integration_tests.NullableReturnHostApi.doit';
+    when(mockMessenger.send(channel, any)).thenAnswer((Invocation realInvocation) async {
+      return NullableReturnHostApi.pigeonChannelCodec.encodeMessage(<Object?>[null]);
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
     });
     final api = NullableReturnHostApi(binaryMessenger: mockMessenger);
     expect(await api.doit(), null);
@@ -210,6 +245,7 @@ void main() {
   test('receive null collection return', () async {
     final BinaryMessenger mockMessenger = MockBinaryMessenger();
     const channel =
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
         'dev.bayori.golubets.golubets_integration_tests.NullableCollectionReturnHostApi.doit';
     when(mockMessenger.send(channel, any)).thenAnswer((
       Invocation realInvocation,
@@ -217,6 +253,11 @@ void main() {
       return NullableCollectionReturnHostApi.golubetsChannelCodec.encodeMessage(
         <Object?>[null],
       );
+=======
+        'dev.flutter.pigeon.pigeon_integration_tests.NullableCollectionReturnHostApi.doit';
+    when(mockMessenger.send(channel, any)).thenAnswer((Invocation realInvocation) async {
+      return NullableCollectionReturnHostApi.pigeonChannelCodec.encodeMessage(<Object?>[null]);
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
     });
     final api = NullableCollectionReturnHostApi(binaryMessenger: mockMessenger);
     expect(await api.doit(), null);
@@ -256,10 +297,15 @@ void main() {
     final resultCompleter = Completer<List<String?>?>();
     unawaited(
       binding.defaultBinaryMessenger.handlePlatformMessage(
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
         'dev.bayori.golubets.golubets_integration_tests.NullableCollectionReturnFlutterApi.doit',
         NullableCollectionReturnFlutterApi.golubetsChannelCodec.encodeMessage(
           <Object?>[],
         ),
+=======
+        'dev.flutter.pigeon.pigeon_integration_tests.NullableCollectionReturnFlutterApi.doit',
+        NullableCollectionReturnFlutterApi.pigeonChannelCodec.encodeMessage(<Object?>[]),
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/null_safe_test.dart
         (ByteData? data) {
           resultCompleter.complete(null);
         },

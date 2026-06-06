@@ -77,9 +77,7 @@ abstract class TestHostApi {
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
   }) {
-    messageChannelSuffix = messageChannelSuffix.isNotEmpty
-        ? '.$messageChannelSuffix'
-        : '';
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
     {
       final golubetsVar_channel = BasicMessageChannel<Object?>(
         'dev.bayori.golubets.golubets_integration_tests.MessageApi.initialize$messageChannelSuffix',
@@ -87,6 +85,7 @@ abstract class TestHostApi {
         binaryMessenger: binaryMessenger,
       );
       if (api == null) {
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/test_message.gen.dart
         _testBinaryMessengerBinding!.defaultBinaryMessenger
             .setMockDecodedMessageHandler<Object?>(golubetsVar_channel, null);
       } else {
@@ -108,6 +107,28 @@ abstract class TestHostApi {
                 );
               }
             });
+=======
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(
+          pigeonVar_channel,
+          null,
+        );
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(
+          pigeonVar_channel,
+          (Object? message) async {
+            try {
+              api.initialize();
+              return wrapResponse(empty: true);
+            } on PlatformException catch (e) {
+              return wrapResponse(error: e);
+            } catch (e) {
+              return wrapResponse(
+                error: PlatformException(code: 'error', message: e.toString()),
+              );
+            }
+          },
+        );
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/test_message.gen.dart
       }
     }
     {
@@ -117,6 +138,7 @@ abstract class TestHostApi {
         binaryMessenger: binaryMessenger,
       );
       if (api == null) {
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/test_message.gen.dart
         _testBinaryMessengerBinding!.defaultBinaryMessenger
             .setMockDecodedMessageHandler<Object?>(golubetsVar_channel, null);
       } else {
@@ -141,6 +163,30 @@ abstract class TestHostApi {
                 );
               }
             });
+=======
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(
+          pigeonVar_channel,
+          null,
+        );
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(
+          pigeonVar_channel,
+          (Object? message) async {
+            final List<Object?> args = message! as List<Object?>;
+            final MessageSearchRequest arg_request = args[0]! as MessageSearchRequest;
+            try {
+              final MessageSearchReply output = api.search(arg_request);
+              return <Object?>[output];
+            } on PlatformException catch (e) {
+              return wrapResponse(error: e);
+            } catch (e) {
+              return wrapResponse(
+                error: PlatformException(code: 'error', message: e.toString()),
+              );
+            }
+          },
+        );
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/test_message.gen.dart
       }
     }
   }
@@ -162,9 +208,7 @@ abstract class TestNestedApi {
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
   }) {
-    messageChannelSuffix = messageChannelSuffix.isNotEmpty
-        ? '.$messageChannelSuffix'
-        : '';
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
     {
       final golubetsVar_channel = BasicMessageChannel<Object?>(
         'dev.bayori.golubets.golubets_integration_tests.MessageNestedApi.search$messageChannelSuffix',
@@ -172,6 +216,7 @@ abstract class TestNestedApi {
         binaryMessenger: binaryMessenger,
       );
       if (api == null) {
+<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/test_message.gen.dart
         _testBinaryMessengerBinding!.defaultBinaryMessenger
             .setMockDecodedMessageHandler<Object?>(golubetsVar_channel, null);
       } else {
@@ -195,6 +240,30 @@ abstract class TestNestedApi {
                 );
               }
             });
+=======
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(
+          pigeonVar_channel,
+          null,
+        );
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(
+          pigeonVar_channel,
+          (Object? message) async {
+            final List<Object?> args = message! as List<Object?>;
+            final MessageNested arg_nested = args[0]! as MessageNested;
+            try {
+              final MessageSearchReply output = api.search(arg_nested);
+              return <Object?>[output];
+            } on PlatformException catch (e) {
+              return wrapResponse(error: e);
+            } catch (e) {
+              return wrapResponse(
+                error: PlatformException(code: 'error', message: e.toString()),
+              );
+            }
+          },
+        );
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/test_message.gen.dart
       }
     }
   }

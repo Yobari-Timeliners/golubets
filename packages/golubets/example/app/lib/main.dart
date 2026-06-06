@@ -87,6 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+<<<<<<< HEAD:packages/golubets/example/app/lib/main.dart
   Future<bool> sendMessageModernAsync(String messageText) {
     final message = MessageData(
       code: Code.two,
@@ -107,6 +108,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return _api.sendMessageModernAsyncThrows(message);
   }
 
+=======
+>>>>>>> filtered-upstream/main:packages/pigeon/example/app/lib/main.dart
   // #enddocregion main-dart
 
   // #docregion main-dart-event
@@ -161,14 +164,13 @@ class _MyHomePageState extends State<MyHomePage> {
             if (Platform.isAndroid || Platform.isIOS)
               StreamBuilder<String>(
                 stream: getEventStream(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
-                      if (snapshot.hasData) {
-                        return Text(snapshot.data ?? '');
-                      } else {
-                        return const CircularProgressIndicator();
-                      }
-                    },
+                builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(snapshot.data ?? '');
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
               )
             else
               const Text('event channels are not supported on this platform'),

@@ -20,10 +20,7 @@ void main() {
                 name: 'name',
                 parameters: <Parameter>[
                   Parameter(
-                    type: const TypeDeclaration(
-                      baseName: 'Input',
-                      isNullable: false,
-                    ),
+                    type: const TypeDeclaration(baseName: 'Input', isNullable: false),
                     name: 'input',
                   ),
                 ],
@@ -41,34 +38,22 @@ void main() {
                 location: ApiLocation.host,
                 parameters: <Parameter>[
                   Parameter(
-                    type: const TypeDeclaration(
-                      baseName: 'Input',
-                      isNullable: false,
-                    ),
+                    type: const TypeDeclaration(baseName: 'Input', isNullable: false),
                     name: 'input',
                   ),
                 ],
-                returnType: const TypeDeclaration(
-                  baseName: 'String',
-                  isNullable: false,
-                ),
+                returnType: const TypeDeclaration(baseName: 'String', isNullable: false),
               ),
               Method(
                 name: 'doSomethingElse',
                 location: ApiLocation.flutter,
                 parameters: <Parameter>[
                   Parameter(
-                    type: const TypeDeclaration(
-                      baseName: 'Input',
-                      isNullable: false,
-                    ),
+                    type: const TypeDeclaration(baseName: 'Input', isNullable: false),
                     name: 'input',
                   ),
                 ],
-                returnType: const TypeDeclaration(
-                  baseName: 'String',
-                  isNullable: false,
-                ),
+                returnType: const TypeDeclaration(baseName: 'String', isNullable: false),
                 isRequired: false,
               ),
             ],
@@ -93,6 +78,7 @@ void main() {
       expect(code, contains(r'class _GolubetsInternalInstanceManagerApi'));
 
       // Base Api class
+<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
       expect(
         code,
         contains(r'abstract class GolubetsInternalProxyApiBaseClass'),
@@ -104,6 +90,13 @@ void main() {
         code,
         contains(r'class Api extends GolubetsInternalProxyApiBaseClass'),
       );
+=======
+      expect(code, contains(r'abstract class PigeonInternalProxyApiBaseClass'));
+
+      // Codec and class
+      expect(code, contains('class _PigeonInternalProxyApiBaseCodec'));
+      expect(code, contains(r'class Api extends PigeonInternalProxyApiBaseClass'));
+>>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
 
       // Constructors
       expect(
@@ -130,9 +123,13 @@ void main() {
       expect(code, contains(r'static void golubets_setUpMessageHandlers({'));
       expect(
         collapsedCode,
+<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
         contains(
           'final String Function( Api golubets_instance, Input input, )? doSomethingElse;',
         ),
+=======
+        contains('final String Function( Api pigeon_instance, Input input, )? doSomethingElse;'),
+>>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
       );
 
       // Copy method
@@ -165,10 +162,7 @@ void main() {
 
       expect(code, contains(r'class _GolubetsInternalInstanceManagerApi'));
 
-      expect(
-        code,
-        contains('Future<void> removeStrongReference(int identifier)'),
-      );
+      expect(code, contains('Future<void> removeStrongReference(int identifier)'));
       expect(
         code,
         contains(
@@ -177,17 +171,25 @@ void main() {
       );
       expect(
         collapsedCode,
+<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
         contains(
           '(instanceManager ?? GolubetsInstanceManager.instance) .remove(arg_identifier);',
         ),
+=======
+        contains('(instanceManager ?? PigeonInstanceManager.instance) .remove(arg_identifier);'),
+>>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
       );
 
       expect(code, contains('Future<void> clear()'));
       expect(
         code,
+<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
         contains(
           'dev.bayori.golubets.$DEFAULT_PACKAGE_NAME.GolubetsInternalInstanceManager.clear',
         ),
+=======
+        contains('dev.flutter.pigeon.$DEFAULT_PACKAGE_NAME.PigeonInternalInstanceManager.clear'),
+>>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
       );
     });
 
@@ -215,10 +217,14 @@ void main() {
         );
         final code = sink.toString();
 
+<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
         expect(
           code,
           contains(r'abstract class GolubetsInternalProxyApiBaseClass'),
         );
+=======
+        expect(code, contains(r'abstract class PigeonInternalProxyApiBaseClass'));
+>>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
       });
 
       test('InstanceManager field', () {
@@ -315,11 +321,7 @@ void main() {
               fields: <ApiField>[],
               methods: <Method>[],
               interfaces: <TypeDeclaration>{
-                TypeDeclaration(
-                  baseName: 'Api2',
-                  isNullable: false,
-                  associatedProxyApi: api2,
-                ),
+                TypeDeclaration(baseName: 'Api2', isNullable: false, associatedProxyApi: api2),
               },
             ),
             api2,
@@ -338,9 +340,13 @@ void main() {
         final code = sink.toString();
         expect(
           code,
+<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
           contains(
             r'class Api extends GolubetsInternalProxyApiBaseClass implements Api2',
           ),
+=======
+          contains(r'class Api extends PigeonInternalProxyApiBaseClass implements Api2'),
+>>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
         );
       });
 
@@ -365,16 +371,8 @@ void main() {
               fields: <ApiField>[],
               methods: <Method>[],
               interfaces: <TypeDeclaration>{
-                TypeDeclaration(
-                  baseName: 'Api2',
-                  isNullable: false,
-                  associatedProxyApi: api2,
-                ),
-                TypeDeclaration(
-                  baseName: 'Api3',
-                  isNullable: false,
-                  associatedProxyApi: api2,
-                ),
+                TypeDeclaration(baseName: 'Api2', isNullable: false, associatedProxyApi: api2),
+                TypeDeclaration(baseName: 'Api3', isNullable: false, associatedProxyApi: api2),
               },
             ),
             api2,
@@ -394,9 +392,13 @@ void main() {
         final code = sink.toString();
         expect(
           code,
+<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
           contains(
             r'class Api extends GolubetsInternalProxyApiBaseClass implements Api2, Api3',
           ),
+=======
+          contains(r'class Api extends PigeonInternalProxyApiBaseClass implements Api2, Api3'),
+>>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
         );
       });
 
@@ -429,11 +431,7 @@ void main() {
               fields: <ApiField>[],
               methods: <Method>[],
               interfaces: <TypeDeclaration>{
-                TypeDeclaration(
-                  baseName: 'Api2',
-                  isNullable: false,
-                  associatedProxyApi: api2,
-                ),
+                TypeDeclaration(baseName: 'Api2', isNullable: false, associatedProxyApi: api2),
               },
             ),
             api2,
@@ -453,9 +451,13 @@ void main() {
         final String collapsedCode = _collapseNewlineAndIndentation(code);
         expect(
           code,
+<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
           contains(
             r'class Api extends GolubetsInternalProxyApiBaseClass implements Api2',
           ),
+=======
+          contains(r'class Api extends PigeonInternalProxyApiBaseClass implements Api2'),
+>>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
         );
         expect(
           collapsedCode,
@@ -475,9 +477,7 @@ void main() {
           apis: <Api>[
             AstProxyApi(
               name: 'Api',
-              constructors: <Constructor>[
-                Constructor(name: '', parameters: <Parameter>[]),
-              ],
+              constructors: <Constructor>[Constructor(name: '', parameters: <Parameter>[])],
               fields: <ApiField>[],
               methods: <Method>[],
             ),
@@ -544,10 +544,7 @@ void main() {
                   name: 'name',
                   parameters: <Parameter>[
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: false,
-                        baseName: 'int',
-                      ),
+                      type: const TypeDeclaration(isNullable: false, baseName: 'int'),
                       name: 'validType',
                     ),
                     Parameter(
@@ -559,17 +556,11 @@ void main() {
                       name: 'enumType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: false,
-                        baseName: 'Api2',
-                      ),
+                      type: const TypeDeclaration(isNullable: false, baseName: 'Api2'),
                       name: 'proxyApiType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: true,
-                        baseName: 'int',
-                      ),
+                      type: const TypeDeclaration(isNullable: true, baseName: 'int'),
                       name: 'nullableValidType',
                     ),
                     Parameter(
@@ -581,10 +572,7 @@ void main() {
                       name: 'nullableEnumType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: true,
-                        baseName: 'Api2',
-                      ),
+                      type: const TypeDeclaration(isNullable: true, baseName: 'Api2'),
                       name: 'nullableProxyApiType',
                     ),
                   ],
@@ -662,15 +650,10 @@ void main() {
           apis: <Api>[
             AstProxyApi(
               name: 'Api',
-              constructors: <Constructor>[
-                Constructor(name: 'name', parameters: <Parameter>[]),
-              ],
+              constructors: <Constructor>[Constructor(name: 'name', parameters: <Parameter>[])],
               fields: <ApiField>[
                 ApiField(
-                  type: const TypeDeclaration(
-                    isNullable: false,
-                    baseName: 'int',
-                  ),
+                  type: const TypeDeclaration(isNullable: false, baseName: 'int'),
                   name: 'validType',
                 ),
                 ApiField(
@@ -682,17 +665,11 @@ void main() {
                   name: 'enumType',
                 ),
                 ApiField(
-                  type: const TypeDeclaration(
-                    isNullable: false,
-                    baseName: 'Api2',
-                  ),
+                  type: const TypeDeclaration(isNullable: false, baseName: 'Api2'),
                   name: 'proxyApiType',
                 ),
                 ApiField(
-                  type: const TypeDeclaration(
-                    isNullable: true,
-                    baseName: 'int',
-                  ),
+                  type: const TypeDeclaration(isNullable: true, baseName: 'int'),
                   name: 'nullableValidType',
                 ),
                 ApiField(
@@ -704,10 +681,7 @@ void main() {
                   name: 'nullableEnumType',
                 ),
                 ApiField(
-                  type: const TypeDeclaration(
-                    isNullable: true,
-                    baseName: 'Api2',
-                  ),
+                  type: const TypeDeclaration(isNullable: true, baseName: 'Api2'),
                   name: 'nullableProxyApiType',
                 ),
               ],
@@ -865,6 +839,7 @@ void main() {
         );
         final code = sink.toString();
         expect(code, contains('class Api'));
+<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
         expect(
           code,
           contains(
@@ -876,6 +851,11 @@ void main() {
           contains(r'static final Api2 _aField = golubetsVar_aField();'),
         );
         expect(code, contains(r'static Api2 golubetsVar_aField()'));
+=======
+        expect(code, contains(r'static Api2 get aField => PigeonOverrides.api_aField ?? _aField;'));
+        expect(code, contains(r'static final Api2 _aField = pigeonVar_aField();'));
+        expect(code, contains(r'static Api2 pigeonVar_aField()'));
+>>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
       });
     });
 
@@ -897,10 +877,7 @@ void main() {
                   location: ApiLocation.host,
                   parameters: <Parameter>[
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: false,
-                        baseName: 'int',
-                      ),
+                      type: const TypeDeclaration(isNullable: false, baseName: 'int'),
                       name: 'validType',
                     ),
                     Parameter(
@@ -912,17 +889,11 @@ void main() {
                       name: 'enumType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: false,
-                        baseName: 'Api2',
-                      ),
+                      type: const TypeDeclaration(isNullable: false, baseName: 'Api2'),
                       name: 'proxyApiType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: true,
-                        baseName: 'int',
-                      ),
+                      type: const TypeDeclaration(isNullable: true, baseName: 'int'),
                       name: 'nullableValidType',
                     ),
                     Parameter(
@@ -934,10 +905,7 @@ void main() {
                       name: 'nullableEnumType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: true,
-                        baseName: 'Api2',
-                      ),
+                      type: const TypeDeclaration(isNullable: true, baseName: 'Api2'),
                       name: 'nullableProxyApiType',
                     ),
                   ],
@@ -1048,10 +1016,7 @@ void main() {
                   isRequired: false,
                   parameters: <Parameter>[
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: false,
-                        baseName: 'int',
-                      ),
+                      type: const TypeDeclaration(isNullable: false, baseName: 'int'),
                       name: 'validType',
                     ),
                     Parameter(
@@ -1063,17 +1028,11 @@ void main() {
                       name: 'enumType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: false,
-                        baseName: 'Api2',
-                      ),
+                      type: const TypeDeclaration(isNullable: false, baseName: 'Api2'),
                       name: 'proxyApiType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: true,
-                        baseName: 'int',
-                      ),
+                      type: const TypeDeclaration(isNullable: true, baseName: 'int'),
                       name: 'nullableValidType',
                     ),
                     Parameter(
@@ -1085,10 +1044,7 @@ void main() {
                       name: 'nullableEnumType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: true,
-                        baseName: 'Api2',
-                      ),
+                      type: const TypeDeclaration(isNullable: true, baseName: 'Api2'),
                       name: 'nullableProxyApiType',
                     ),
                   ],
@@ -1129,27 +1085,19 @@ void main() {
             r'doSomething',
           ),
         );
+<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
         expect(
           code,
           contains(r'final Api arg_golubets_instance = args[0]! as Api;'),
         );
+=======
+        expect(code, contains(r'final Api arg_pigeon_instance = args[0]! as Api;'));
+>>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
         expect(code, contains(r'final int arg_validType = args[1]! as int;'));
-        expect(
-          code,
-          contains(r'final AnEnum arg_enumType = args[2]! as AnEnum;'),
-        );
-        expect(
-          code,
-          contains(r'final Api2 arg_proxyApiType = args[3]! as Api2;'),
-        );
-        expect(
-          code,
-          contains(r'final int? arg_nullableValidType = args[4] as int?;'),
-        );
-        expect(
-          code,
-          contains(r'final AnEnum? arg_nullableEnumType = args[5] as AnEnum?;'),
-        );
+        expect(code, contains(r'final AnEnum arg_enumType = args[2]! as AnEnum;'));
+        expect(code, contains(r'final Api2 arg_proxyApiType = args[3]! as Api2;'));
+        expect(code, contains(r'final int? arg_nullableValidType = args[4] as int?;'));
+        expect(code, contains(r'final AnEnum? arg_nullableEnumType = args[5] as AnEnum?;'));
         expect(
           collapsedCode,
           contains(

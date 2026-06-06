@@ -37,28 +37,22 @@ Future<void> main(List<String> args) async {
       defaultsTo: true,
       hide: true,
     )
-    ..addFlag(
-      _noFormatFlag,
-      abbr: 'n',
-      help: 'Do not autoformat after generation.',
-    )
-    ..addFlag(
-      _helpFlag,
-      negatable: false,
-      abbr: 'h',
-      help: 'Print this reference.',
-    )
+    ..addFlag(_noFormatFlag, abbr: 'n', help: 'Do not autoformat after generation.')
+    ..addFlag(_helpFlag, negatable: false, abbr: 'h', help: 'Print this reference.')
     ..addFlag(
       _overflowFiller,
       abbr: 'o',
+<<<<<<< HEAD:packages/golubets/tool/generate.dart
       help:
           'Injects 120 Enums into the golubets ast, used for testing overflow utilities.',
+=======
+      help: 'Injects 120 Enums into the pigeon ast, used for testing overflow utilities.',
+>>>>>>> filtered-upstream/main:packages/pigeon/tool/generate.dart
       hide: true,
     )
     ..addMultiOption(
       _files,
-      help:
-          'Select specific groups of files to generate; $_test or $_example. Defaults to both.',
+      help: 'Select specific groups of files to generate; $_test or $_example. Defaults to both.',
       allowed: _fileGroups,
     );
 
@@ -106,9 +100,7 @@ ${parser.usage}''');
 
   if (!argResults.wasParsed(_noFormatFlag)) {
     print('Formatting generated output...');
-    final int formatExitCode = await formatAllFiles(
-      repositoryRoot: p.dirname(p.dirname(baseDir)),
-    );
+    final int formatExitCode = await formatAllFiles(repositoryRoot: p.dirname(p.dirname(baseDir)));
     if (formatExitCode != 0) {
       print('Formatting failed; see above for errors.');
       exit(formatExitCode);

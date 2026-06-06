@@ -17,8 +17,12 @@ void main() {
     expect(
       golubetsVersion,
       match?.group(1)?.trim(),
+<<<<<<< HEAD:packages/golubets/test/version_test.dart
       reason:
           'Update lib/src/generator_tools.dart golubetsVersion to the value in the pubspec',
+=======
+      reason: 'Update lib/src/generator_tools.dart pigeonVersion to the value in the pubspec',
+>>>>>>> filtered-upstream/main:packages/pigeon/test/version_test.dart
     );
   });
 }

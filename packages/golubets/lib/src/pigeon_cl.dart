@@ -9,10 +9,15 @@ import 'pigeon_lib.dart';
 /// command line arguments and there is an optional [packageConfig] to
 /// accommodate users that want to integrate pigeon with other build systems.
 /// [sdkPath] for specifying an optional Dart SDK path.
+<<<<<<< HEAD:packages/golubets/lib/src/pigeon_cl.dart
 Future<int> runCommandLine(
   List<String> args, {
   Uri? packageConfig,
   String? sdkPath,
 }) async {
   return Golubets.run(args, sdkPath: sdkPath);
+=======
+Future<int> runCommandLine(List<String> args, {Uri? packageConfig, String? sdkPath}) async {
+  return Pigeon.run(args, sdkPath: sdkPath);
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_cl.dart
 }

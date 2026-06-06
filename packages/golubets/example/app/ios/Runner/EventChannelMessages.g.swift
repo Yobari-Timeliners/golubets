@@ -23,6 +23,19 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
   return value as! T?
 }
 
+private func doubleEqualsEventChannelMessages(_ lhs: Double, _ rhs: Double) -> Bool {
+  return (lhs.isNaN && rhs.isNaN) || lhs == rhs
+}
+
+private func doubleHashEventChannelMessages(_ value: Double, _ hasher: inout Hasher) {
+  if value.isNaN {
+    hasher.combine(0x7FF8_0000_0000_0000)
+  } else {
+    // Normalize -0.0 to 0.0
+    hasher.combine(value == 0 ? 0 : value)
+  }
+}
+
 func deepEqualsEventChannelMessages(_ lhs: Any?, _ rhs: Any?) -> Bool {
   let cleanLhs = nilOrValue(lhs) as Any?
   let cleanRhs = nilOrValue(rhs) as Any?
@@ -33,56 +46,94 @@ func deepEqualsEventChannelMessages(_ lhs: Any?, _ rhs: Any?) -> Bool {
   case (nil, _), (_, nil):
     return false
 
+  case (let lhs as AnyObject, let rhs as AnyObject) where lhs === rhs:
+    return true
+
   case is (Void, Void):
     return true
 
-  case let (cleanLhsHashable, cleanRhsHashable) as (AnyHashable, AnyHashable):
-    return cleanLhsHashable == cleanRhsHashable
-
-  case let (cleanLhsArray, cleanRhsArray) as ([Any?], [Any?]):
-    guard cleanLhsArray.count == cleanRhsArray.count else { return false }
-    for (index, element) in cleanLhsArray.enumerated() {
-      if !deepEqualsEventChannelMessages(element, cleanRhsArray[index]) {
+  case (let lhsArray, let rhsArray) as ([Any?], [Any?]):
+    guard lhsArray.count == rhsArray.count else { return false }
+    for (index, element) in lhsArray.enumerated() {
+      if !deepEqualsEventChannelMessages(element, rhsArray[index]) {
         return false
       }
     }
     return true
 
-  case let (cleanLhsDictionary, cleanRhsDictionary) as ([AnyHashable: Any?], [AnyHashable: Any?]):
-    guard cleanLhsDictionary.count == cleanRhsDictionary.count else { return false }
-    for (key, cleanLhsValue) in cleanLhsDictionary {
-      guard cleanRhsDictionary.index(forKey: key) != nil else { return false }
-      if !deepEqualsEventChannelMessages(cleanLhsValue, cleanRhsDictionary[key]!) {
+  case (let lhsArray, let rhsArray) as ([Double], [Double]):
+    guard lhsArray.count == rhsArray.count else { return false }
+    for (index, element) in lhsArray.enumerated() {
+      if !doubleEqualsEventChannelMessages(element, rhsArray[index]) {
         return false
       }
     }
     return true
+
+  case (let lhsDictionary, let rhsDictionary) as ([AnyHashable: Any?], [AnyHashable: Any?]):
+    guard lhsDictionary.count == rhsDictionary.count else { return false }
+    for (lhsKey, lhsValue) in lhsDictionary {
+      var found = false
+      for (rhsKey, rhsValue) in rhsDictionary {
+        if deepEqualsEventChannelMessages(lhsKey, rhsKey) {
+          if deepEqualsEventChannelMessages(lhsValue, rhsValue) {
+            found = true
+            break
+          } else {
+            return false
+          }
+        }
+      }
+      if !found { return false }
+    }
+    return true
+
+  case (let lhs as Double, let rhs as Double):
+    return doubleEqualsEventChannelMessages(lhs, rhs)
+
+  case (let lhsHashable, let rhsHashable) as (AnyHashable, AnyHashable):
+    return lhsHashable == rhsHashable
 
   default:
+<<<<<<< HEAD:packages/golubets/example/app/ios/Runner/EventChannelMessages.g.swift
     // Any other type shouldn't be able to be used with golubetsets. File an issue if you find this to be untrue.
+=======
+>>>>>>> filtered-upstream/main:packages/pigeon/example/app/ios/Runner/EventChannelMessages.g.swift
     return false
   }
 }
 
 func deepHashEventChannelMessages(value: Any?, hasher: inout Hasher) {
-  if let valueList = value as? [AnyHashable] {
-    for item in valueList { deepHashEventChannelMessages(value: item, hasher: &hasher) }
-    return
-  }
-
-  if let valueDict = value as? [AnyHashable: AnyHashable] {
-    for key in valueDict.keys {
-      hasher.combine(key)
-      deepHashEventChannelMessages(value: valueDict[key]!, hasher: &hasher)
+  let cleanValue = nilOrValue(value) as Any?
+  if let cleanValue = cleanValue {
+    if let doubleValue = cleanValue as? Double {
+      doubleHashEventChannelMessages(doubleValue, &hasher)
+    } else if let valueList = cleanValue as? [Any?] {
+      for item in valueList {
+        deepHashEventChannelMessages(value: item, hasher: &hasher)
+      }
+    } else if let valueList = cleanValue as? [Double] {
+      for item in valueList {
+        doubleHashEventChannelMessages(item, &hasher)
+      }
+    } else if let valueDict = cleanValue as? [AnyHashable: Any?] {
+      var result = 0
+      for (key, value) in valueDict {
+        var entryKeyHasher = Hasher()
+        deepHashEventChannelMessages(value: key, hasher: &entryKeyHasher)
+        var entryValueHasher = Hasher()
+        deepHashEventChannelMessages(value: value, hasher: &entryValueHasher)
+        result = result &+ ((entryKeyHasher.finalize() &* 31) ^ entryValueHasher.finalize())
+      }
+      hasher.combine(result)
+    } else if let hashableValue = cleanValue as? AnyHashable {
+      hasher.combine(hashableValue)
+    } else {
+      hasher.combine(String(describing: cleanValue))
     }
-    return
+  } else {
+    hasher.combine(0)
   }
-
-  if let hashableValue = value as? AnyHashable {
-    hasher.combine(hashableValue.hashValue)
-  }
-
-  return hasher.combine(String(describing: value))
 }
 
 /// Generated class from Golubets that represents data sent in messages.
@@ -112,6 +163,7 @@ public enum PlatformEvent: Hashable {
       data: data
     )
   }
+<<<<<<< HEAD:packages/golubets/example/app/ios/Runner/EventChannelMessages.g.swift
 
   internal static func fromListEmptyEvent(_ list: [Any?]) -> PlatformEvent? {
     return .emptyEvent
@@ -144,6 +196,52 @@ public enum PlatformEvent: Hashable {
 }
 
 private class EventChannelMessagesGolubetsCodecReader: FlutterStandardReader {
+=======
+  static func == (lhs: IntEvent, rhs: IntEvent) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return deepEqualsEventChannelMessages(lhs.data, rhs.data)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("IntEvent")
+    deepHashEventChannelMessages(value: data, hasher: &hasher)
+  }
+}
+
+/// Generated class from Pigeon that represents data sent in messages.
+struct StringEvent: PlatformEvent {
+  var data: String
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> StringEvent? {
+    let data = pigeonVar_list[0] as! String
+
+    return StringEvent(
+      data: data
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      data
+    ]
+  }
+  static func == (lhs: StringEvent, rhs: StringEvent) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return deepEqualsEventChannelMessages(lhs.data, rhs.data)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("StringEvent")
+    deepHashEventChannelMessages(value: data, hasher: &hasher)
+  }
+}
+
+private class EventChannelMessagesPigeonCodecReader: FlutterStandardReader {
+>>>>>>> filtered-upstream/main:packages/pigeon/example/app/ios/Runner/EventChannelMessages.g.swift
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
     case 129:

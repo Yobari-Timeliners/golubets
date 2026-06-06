@@ -98,6 +98,21 @@ ErrorOr<std::optional<AllNullableTypes>> TestPlugin::EchoAllNullableTypes(
   return std::optional<AllNullableTypes>(*everything);
 }
 
+ErrorOr<bool> TestPlugin::AreAllNullableTypesEqual(const AllNullableTypes& a,
+                                                   const AllNullableTypes& b) {
+  return a == b;
+}
+
+ErrorOr<int64_t> TestPlugin::GetAllNullableTypesHash(
+    const AllNullableTypes& value) {
+  return (int64_t)value.Hash();
+}
+
+ErrorOr<int64_t> TestPlugin::GetAllNullableTypesWithoutRecursionHash(
+    const AllNullableTypesWithoutRecursion& value) {
+  return (int64_t)value.Hash();
+}
+
 ErrorOr<std::optional<AllNullableTypesWithoutRecursion>>
 TestPlugin::EchoAllNullableTypesWithoutRecursion(
     const AllNullableTypesWithoutRecursion* everything) {
@@ -770,11 +785,16 @@ void TestPlugin::CallFlutterThrowError(
         result) {
   flutter_api_->ThrowError(
       [result](const flutter::EncodableValue* echo) {
+<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/test_plugin.cpp
         if (echo) {
           result(std::optional<flutter::EncodableValue>(*echo));
         } else {
           result(std::optional<flutter::EncodableValue>());
         }
+=======
+        result(echo ? std::optional<flutter::EncodableValue>(*echo)
+                    : std::nullopt);
+>>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/test_plugin.cpp
       },
       [result](const FlutterError& error) { result(error); });
 }

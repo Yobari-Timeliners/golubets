@@ -31,8 +31,11 @@ class StringEvent extends PlatformEvent {
   String data;
 }
 
+<<<<<<< HEAD:packages/golubets/example/app/pigeons/event_channel_messages.dart
 class EmptyEvent extends PlatformEvent {}
 
+=======
+>>>>>>> filtered-upstream/main:packages/pigeon/example/app/pigeons/event_channel_messages.dart
 // #enddocregion sealed-definitions
 
 // #docregion event-definitions
