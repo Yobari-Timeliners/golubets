@@ -76,16 +76,12 @@ int _deepHash(Object? value) {
 sealed class PlatformEvent {}
 
 class IntEvent extends PlatformEvent {
-  IntEvent({
-    required this.data,
-  });
+  IntEvent({required this.data});
 
   int data;
 
   List<Object?> _toList() {
-    return <Object?>[
-      data,
-    ];
+    return <Object?>[data];
   }
 
   Object encode() {
@@ -94,9 +90,7 @@ class IntEvent extends PlatformEvent {
 
   static IntEvent decode(Object result) {
     result as List<Object?>;
-    return IntEvent(
-      data: result[0]! as int,
-    );
+    return IntEvent(data: result[0]! as int);
   }
 
   @override
@@ -117,16 +111,12 @@ class IntEvent extends PlatformEvent {
 }
 
 class StringEvent extends PlatformEvent {
-  StringEvent({
-    required this.data,
-  });
+  StringEvent({required this.data});
 
   String data;
 
   List<Object?> _toList() {
-    return <Object?>[
-      data,
-    ];
+    return <Object?>[data];
   }
 
   Object encode() {
@@ -135,9 +125,7 @@ class StringEvent extends PlatformEvent {
 
   static StringEvent decode(Object result) {
     result as List<Object?>;
-    return StringEvent(
-      data: result[0]! as String,
-    );
+    return StringEvent(data: result[0]! as String);
   }
 
   @override
@@ -176,15 +164,12 @@ class EmptyEvent extends PlatformEvent {
     if (other is! EmptyEvent || other.runtimeType != runtimeType) {
       return false;
     }
-    if (identical(this, other)) {
-      return true;
-    }
-    return _deepEquals(encode(), other.encode());
+    return true;
   }
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
-  int get hashCode => Object.hashAll(_toList());
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
 }
 
 class _GolubetsCodec extends StandardMessageCodec {
@@ -223,13 +208,7 @@ class _GolubetsCodec extends StandardMessageCodec {
   }
 }
 
-<<<<<<< HEAD:packages/golubets/example/app/lib/src/event_channel_messages.g.dart
-const StandardMethodCodec golubetsMethodCodec = StandardMethodCodec(
-  _GolubetsCodec(),
-);
-=======
-const StandardMethodCodec pigeonMethodCodec = StandardMethodCodec(_PigeonCodec());
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/lib/src/event_channel_messages.g.dart
+const StandardMethodCodec golubetsMethodCodec = StandardMethodCodec(_GolubetsCodec());
 
 Stream<PlatformEvent> streamEvents({String instanceName = ''}) {
   if (instanceName.isNotEmpty) {

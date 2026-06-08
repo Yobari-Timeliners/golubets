@@ -369,10 +369,7 @@ dev_dependencies:
       final RepositoryPackage package = createFakePackage(
         'a_package',
         packagesDir,
-        extraFiles: <String>[
-          'pigeons/foo.dart',
-          'pigeons/bar.dart',
-        ],
+        extraFiles: <String>['pigeons/foo.dart', 'pigeons/bar.dart'],
       );
       addDependency(package, 'golubets', version: '1.0.0');
 
@@ -387,67 +384,37 @@ dev_dependencies:
       expect(
         processRunner.recordedCalls,
         orderedEquals(<ProcessCall>[
-          ProcessCall(
-            'dart',
-            const <String>['pub', 'get'],
-            package.path,
-          ),
-          ProcessCall(
-            'dart',
-            const <String>['run', 'golubets', '--input', 'pigeons/foo.dart'],
-            package.path,
-          ),
-          ProcessCall(
-            'dart',
-            const <String>['run', 'golubets', '--input', 'pigeons/bar.dart'],
-            package.path,
-          ),
+          ProcessCall('dart', const <String>['pub', 'get'], package.path),
+          ProcessCall('dart', const <String>[
+            'run',
+            'golubets',
+            '--input',
+            'pigeons/foo.dart',
+          ], package.path),
+          ProcessCall('dart', const <String>[
+            'run',
+            'golubets',
+            '--input',
+            'pigeons/bar.dart',
+          ], package.path),
         ]),
       );
     });
 
-<<<<<<< HEAD
-    test(
-      'warns when regenerating golubets if there are no golubets files',
-      () async {
-        final RepositoryPackage package = createFakePackage(
-          'a_package',
-          packagesDir,
-        );
-        addDependency(package, 'golubets', version: '1.0.0');
-
-        final List<String> output = await runCapturingPrint(runner, <String>[
-          'update-dependency',
-          '--pub-package',
-          'golubets',
-          '--version',
-          '1.5.0',
-        ]);
-
-        expect(
-          output,
-          containsAllInOrder(<Matcher>[
-            contains('No golubets input files found'),
-          ]),
-        );
-      },
-    );
-=======
-    test('warns when regenerating pigeon if there are no pigeon files', () async {
+    test('warns when regenerating golubets if there are no golubets files', () async {
       final RepositoryPackage package = createFakePackage('a_package', packagesDir);
-      addDependency(package, 'pigeon', version: '1.0.0');
+      addDependency(package, 'golubets', version: '1.0.0');
 
       final List<String> output = await runCapturingPrint(runner, <String>[
         'update-dependency',
         '--pub-package',
-        'pigeon',
+        'golubets',
         '--version',
         '1.5.0',
       ]);
 
-      expect(output, containsAllInOrder(<Matcher>[contains('No pigeon input files found')]));
+      expect(output, containsAllInOrder(<Matcher>[contains('No golubets input files found')]));
     });
->>>>>>> filtered-upstream/main
 
     test('updating golubets fails if pub get fails', () async {
       final RepositoryPackage package = createFakePackage(
@@ -464,17 +431,7 @@ dev_dependencies:
       Error? commandError;
       final List<String> output = await runCapturingPrint(
         runner,
-<<<<<<< HEAD
-        <String>[
-          'update-dependency',
-          '--pub-package',
-          'golubets',
-          '--version',
-          '1.5.0',
-        ],
-=======
-        <String>['update-dependency', '--pub-package', 'pigeon', '--version', '1.5.0'],
->>>>>>> filtered-upstream/main
+        <String>['update-dependency', '--pub-package', 'golubets', '--version', '1.5.0'],
         errorHandler: (Error e) {
           commandError = e;
         },
@@ -506,17 +463,7 @@ dev_dependencies:
       Error? commandError;
       final List<String> output = await runCapturingPrint(
         runner,
-<<<<<<< HEAD
-        <String>[
-          'update-dependency',
-          '--pub-package',
-          'golubets',
-          '--version',
-          '1.5.0',
-        ],
-=======
-        <String>['update-dependency', '--pub-package', 'pigeon', '--version', '1.5.0'],
->>>>>>> filtered-upstream/main
+        <String>['update-dependency', '--pub-package', 'golubets', '--version', '1.5.0'],
         errorHandler: (Error e) {
           commandError = e;
         },

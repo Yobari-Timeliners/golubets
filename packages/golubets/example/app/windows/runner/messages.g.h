@@ -103,12 +103,7 @@ class MessageData {
   ::flutter::EncodableMap data_;
 };
 
-<<<<<<< HEAD:packages/golubets/example/app/windows/runner/messages.g.h
-class GolubetsCodecSerializer : public flutter::StandardCodecSerializer {
-=======
-class PigeonInternalCodecSerializer
-    : public ::flutter::StandardCodecSerializer {
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/windows/runner/messages.g.h
+class GolubetsCodecSerializer : public ::flutter::StandardCodecSerializer {
  public:
   GolubetsCodecSerializer();
   inline static GolubetsCodecSerializer& GetInstance() {

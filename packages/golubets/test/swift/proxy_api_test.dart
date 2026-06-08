@@ -85,13 +85,9 @@ void main() {
       expect(code, contains(r'protocol MyFileGolubetsProxyApiDelegate'));
       expect(
         collapsedCode,
-<<<<<<< HEAD:packages/golubets/test/swift/proxy_api_test.dart
         contains(
           r'func golubetsApiApi(_ registrar: MyFileGolubetsProxyApiRegistrar) -> GolubetsApiApi',
         ),
-=======
-        contains(r'func pigeonApiApi(_ registrar: MyFilePigeonProxyApiRegistrar) -> PigeonApiApi'),
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift/proxy_api_test.dart
       );
 
       // API registrar
@@ -421,13 +417,7 @@ void main() {
         expect(code, contains('class GolubetsApiApi: GolubetsApiProtocolApi '));
         expect(
           collapsedCode,
-<<<<<<< HEAD:packages/golubets/test/swift/proxy_api_test.dart
-          contains(
-            'func golubetsDefaultConstructor(golubetsApi: GolubetsApiApi) throws -> Api',
-          ),
-=======
-          contains('func pigeonDefaultConstructor(pigeonApi: PigeonApiApi) throws -> Api'),
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift/proxy_api_test.dart
+          contains('func golubetsDefaultConstructor(golubetsApi: GolubetsApiApi) throws -> Api'),
         );
         expect(
           collapsedCode,
@@ -437,13 +427,7 @@ void main() {
         );
         expect(
           collapsedCode,
-<<<<<<< HEAD:packages/golubets/test/swift/proxy_api_test.dart
-          contains(
-            r'api.golubetsRegistrar.instanceManager.addDartCreatedInstance(',
-          ),
-=======
-          contains(r'api.pigeonRegistrar.instanceManager.addDartCreatedInstance('),
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift/proxy_api_test.dart
+          contains(r'api.golubetsRegistrar.instanceManager.addDartCreatedInstance('),
         );
       });
 
@@ -474,13 +458,7 @@ void main() {
         final String collapsedCode = _collapseNewlineAndIndentation(code);
         expect(
           collapsedCode,
-<<<<<<< HEAD:packages/golubets/test/swift/proxy_api_test.dart
-          contains(
-            'func myConstructorName(golubetsApi: GolubetsApiApi) throws -> Api',
-          ),
-=======
-          contains('func myConstructorName(pigeonApi: PigeonApiApi) throws -> Api'),
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift/proxy_api_test.dart
+          contains('func myConstructorName(golubetsApi: GolubetsApiApi) throws -> Api'),
         );
         expect(
           collapsedCode,
@@ -709,7 +687,6 @@ void main() {
         );
         expect(
           code,
-<<<<<<< HEAD:packages/golubets/test/swift/proxy_api_test.dart
           contains(
             r'func validType(golubetsApi: GolubetsApiApi, golubetsInstance: Api) throws -> Int64',
           ),
@@ -719,13 +696,6 @@ void main() {
           contains(
             r'func enumType(golubetsApi: GolubetsApiApi, golubetsInstance: Api) throws -> AnEnum',
           ),
-=======
-          contains(r'func validType(pigeonApi: PigeonApiApi, pigeonInstance: Api) throws -> Int64'),
-        );
-        expect(
-          code,
-          contains(r'func enumType(pigeonApi: PigeonApiApi, pigeonInstance: Api) throws -> AnEnum'),
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift/proxy_api_test.dart
         );
         expect(
           code,
@@ -794,13 +764,9 @@ void main() {
         final code = sink.toString();
         expect(
           code,
-<<<<<<< HEAD:packages/golubets/test/swift/proxy_api_test.dart
           contains(
             r'func aField(golubetsApi: GolubetsApiApi, golubetsInstance: Api) throws -> Api2',
           ),
-=======
-          contains(r'func aField(pigeonApi: PigeonApiApi, pigeonInstance: Api) throws -> Api2'),
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift/proxy_api_test.dart
         );
         expect(
           code,
@@ -850,14 +816,7 @@ void main() {
           dartPackageName: DEFAULT_PACKAGE_NAME,
         );
         final code = sink.toString();
-<<<<<<< HEAD:packages/golubets/test/swift/proxy_api_test.dart
-        expect(
-          code,
-          contains(r'func aField(golubetsApi: GolubetsApiApi) throws -> Api2'),
-        );
-=======
-        expect(code, contains(r'func aField(pigeonApi: PigeonApiApi) throws -> Api2'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift/proxy_api_test.dart
+        expect(code, contains(r'func aField(golubetsApi: GolubetsApiApi) throws -> Api2'));
         expect(
           code,
           contains(
@@ -991,19 +950,8 @@ void main() {
         );
         final code = sink.toString();
         final String collapsedCode = _collapseNewlineAndIndentation(code);
-<<<<<<< HEAD:packages/golubets/test/swift/proxy_api_test.dart
-        expect(
-          collapsedCode,
-          contains('func doSomething(golubetsApi: GolubetsApiApi) throws'),
-        );
-        expect(
-          collapsedCode,
-          contains(r'try api.golubetsDelegate.doSomething(golubetsApi: api)'),
-        );
-=======
-        expect(collapsedCode, contains('func doSomething(pigeonApi: PigeonApiApi) throws'));
-        expect(collapsedCode, contains(r'try api.pigeonDelegate.doSomething(pigeonApi: api)'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift/proxy_api_test.dart
+        expect(collapsedCode, contains('func doSomething(golubetsApi: GolubetsApiApi) throws'));
+        expect(collapsedCode, contains(r'try api.golubetsDelegate.doSomething(golubetsApi: api)'));
       });
     });
 

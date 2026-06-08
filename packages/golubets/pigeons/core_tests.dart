@@ -371,29 +371,10 @@ class AllTypesWithDefaults {
         <Object?>[],
         <String, String>{'hello': 'world'},
       ],
-      stringList: <String>[
-        'hello',
-        'world',
-      ],
-      intList: <int>[
-        1,
-        2,
-        3,
-      ],
-      doubleList: <double>[
-        1.0,
-        2.0,
-        3.0,
-        5,
-        10,
-        20.0,
-        3,
-      ],
-      boolList: <bool>[
-        true,
-        false,
-        true,
-      ],
+      stringList: <String>['hello', 'world'],
+      intList: <int>[1, 2, 3],
+      doubleList: <double>[1.0, 2.0, 3.0, 5, 10, 20.0, 3],
+      boolList: <bool>[true, false, true],
       enumList: <AnEnum>[
         AnEnum.one,
         AnEnum.two,
@@ -428,10 +409,7 @@ class AllTypesWithDefaults {
           <Object?>[1, 2, 3],
         ],
         <Object?>[
-          <String, double>{
-            'hello': 0.0,
-            'world': 1,
-          },
+          <String, double>{'hello': 0.0, 'world': 1},
         ],
       ],
       mapList: <Map<Object?, Object?>>[
@@ -448,10 +426,7 @@ class AllTypesWithDefaults {
           'lorem': <String, String>{'lorem': 'ipsum'},
         },
         <Object?, Object?>{
-          AnEnum.one: <String, double>{
-            'hello': 0.0,
-            'world': 1,
-          },
+          AnEnum.one: <String, double>{'hello': 0.0, 'world': 1},
         },
       ],
       map: <Object?, Object?>{
@@ -461,21 +436,10 @@ class AllTypesWithDefaults {
         'worldEnum': AnEnum.two,
         'list': <Object?>[1, 2, 3],
         'map': <String, String>{'hello': 'world'},
-        'mapDouble': <String, double>{
-          'hello': 2,
-          'world': 3.0,
-        },
+        'mapDouble': <String, double>{'hello': 2, 'world': 3.0},
       },
-      stringMap: <String, String>{
-        'hello': 'world',
-        'lorem': 'ipsum',
-        'golub': 'rocks',
-      },
-      intMap: <int, int>{
-        1: 2,
-        3: 4,
-        5: 6,
-      },
+      stringMap: <String, String>{'hello': 'world', 'lorem': 'ipsum', 'golub': 'rocks'},
+      intMap: <int, int>{1: 2, 3: 4, 5: 6},
       enumMap: <AnEnum, AnEnum>{
         AnEnum.one: AnEnum.two,
         AnEnum.three: AnEnum.fortyTwo,
@@ -488,11 +452,7 @@ class AllTypesWithDefaults {
         'worldEnum': AnEnum.two,
         'list': <Object?>[1, 2, 3],
         'map': <String, String>{'hello': 'world'},
-        'doubleMap': <int, double>{
-          1: 1,
-          2: 0,
-          3: 3.0,
-        },
+        'doubleMap': <int, double>{1: 1, 2: 0, 3: 3.0},
       },
       listMap: <int, List<Object?>>{
         1: <Object?>[1, 2, 3],
@@ -507,14 +467,7 @@ class AllTypesWithDefaults {
           <String, String>{'hello': 'world'},
           <String, String>{'lorem': 'ipsum'},
         ],
-        7: <Object?>[
-          2,
-          3.0,
-          5,
-          10,
-          20.0,
-          3,
-        ],
+        7: <Object?>[2, 3.0, 5, 10, 20.0, 3],
       },
       mapMap: <int, Map<Object?, Object?>>{
         1: <Object?, Object?>{1: 'hello', 2: 'world'},
@@ -530,10 +483,7 @@ class AllTypesWithDefaults {
           'lorem': <String, String>{'lorem': 'ipsum'},
         },
         7: <Object?, Object?>{
-          AnEnum.one: <String, double>{
-            'hello': 0.0,
-            'world': 1,
-          },
+          AnEnum.one: <String, double>{'hello': 0.0, 'world': 1},
         },
       },
     ),
@@ -550,29 +500,10 @@ class AllTypesWithDefaults {
       <Object?>[],
       <String, String>{'hello': 'world'},
     ],
-    this.stringList = const <String>[
-      'hello',
-      'world',
-    ],
-    this.intList = const <int>[
-      1,
-      2,
-      3,
-    ],
-    this.doubleList = const <double>[
-      1.0,
-      2.0,
-      3.0,
-      5,
-      10,
-      20.0,
-      3,
-    ],
-    this.boolList = const <bool>[
-      true,
-      false,
-      true,
-    ],
+    this.stringList = const <String>['hello', 'world'],
+    this.intList = const <int>[1, 2, 3],
+    this.doubleList = const <double>[1.0, 2.0, 3.0, 5, 10, 20.0, 3],
+    this.boolList = const <bool>[true, false, true],
     this.enumList = const <AnEnum>[
       AnEnum.one,
       AnEnum.two,
@@ -607,10 +538,7 @@ class AllTypesWithDefaults {
         <Object?>[1, 2, 3],
       ],
       <Object?>[
-        <String, double>{
-          'hello': 0.0,
-          'world': 1,
-        },
+        <String, double>{'hello': 0.0, 'world': 1},
       ],
     ],
     this.mapList = const <Map<Object?, Object?>>[
@@ -627,10 +555,7 @@ class AllTypesWithDefaults {
         'lorem': <String, String>{'lorem': 'ipsum'},
       },
       <Object?, Object?>{
-        AnEnum.one: <String, double>{
-          'hello': 0.0,
-          'world': 1,
-        },
+        AnEnum.one: <String, double>{'hello': 0.0, 'world': 1},
       },
     ],
 
@@ -642,21 +567,10 @@ class AllTypesWithDefaults {
       'worldEnum': AnEnum.two,
       'list': <Object?>[1, 2, 3],
       'map': <String, String>{'hello': 'world'},
-      'mapDouble': <String, double>{
-        'hello': 2,
-        'world': 3.0,
-      },
+      'mapDouble': <String, double>{'hello': 2, 'world': 3.0},
     },
-    this.stringMap = const <String, String>{
-      'hello': 'world',
-      'lorem': 'ipsum',
-      'golub': 'rocks',
-    },
-    this.intMap = const <int, int>{
-      1: 2,
-      3: 4,
-      5: 6,
-    },
+    this.stringMap = const <String, String>{'hello': 'world', 'lorem': 'ipsum', 'golub': 'rocks'},
+    this.intMap = const <int, int>{1: 2, 3: 4, 5: 6},
     this.enumMap = const <AnEnum, AnEnum>{
       AnEnum.one: AnEnum.two,
       AnEnum.three: AnEnum.fortyTwo,
@@ -669,11 +583,7 @@ class AllTypesWithDefaults {
       'worldEnum': AnEnum.two,
       'list': <Object?>[1, 2, 3],
       'map': <String, String>{'hello': 'world'},
-      'doubleMap': <int, double>{
-        1: 1.0,
-        2: 0.0,
-        3: 3.0,
-      },
+      'doubleMap': <int, double>{1: 1.0, 2: 0.0, 3: 3.0},
     },
     this.listMap = const <int, List<Object?>>{
       1: <Object?>[1, 2, 3],
@@ -688,14 +598,7 @@ class AllTypesWithDefaults {
         <String, String>{'hello': 'world'},
         <String, String>{'lorem': 'ipsum'},
       ],
-      7: <Object?>[
-        2,
-        3.0,
-        5,
-        10,
-        20.0,
-        3,
-      ],
+      7: <Object?>[2, 3.0, 5, 10, 20.0, 3],
     },
     this.mapMap = const <int, Map<Object?, Object?>>{
       1: <Object?, Object?>{1: 'hello', 2: 'world'},
@@ -711,10 +614,7 @@ class AllTypesWithDefaults {
         'lorem': <String, String>{'lorem': 'ipsum'},
       },
       7: <Object?, Object?>{
-        AnEnum.one: <String, double>{
-          'hello': 0.0,
-          'world': 1,
-        },
+        AnEnum.one: <String, double>{'hello': 0.0, 'world': 1},
       },
     },
   });
@@ -1244,9 +1144,7 @@ abstract class HostIntegrationCoreApi {
   @ObjCSelector('echoModernAsyncNullableAllNullableTypes:')
   @SwiftFunction('echoModernAsyncNullableAllNullableTypes(_:)')
   @TaskQueue(type: TaskQueueType.serialBackgroundThread)
-  AllNullableTypes? echoModernAsyncNullableAllNullableTypes(
-    AllNullableTypes? everything,
-  );
+  AllNullableTypes? echoModernAsyncNullableAllNullableTypes(AllNullableTypes? everything);
 
   /// Returns the passed object, to test serialization and deserialization.
   @async

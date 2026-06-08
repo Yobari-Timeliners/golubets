@@ -73,23 +73,12 @@ class NullableReturnHostApi {
   /// Constructor for [NullableReturnHostApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/nullable_returns.gen.dart
-  NullableReturnHostApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
-=======
   NullableReturnHostApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-    : pigeonVar_binaryMessenger = binaryMessenger,
-      pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+    : golubetsVar_binaryMessenger = binaryMessenger,
+      golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? pigeonVar_binaryMessenger;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/nullable_returns.gen.dart
+  final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
@@ -103,11 +92,8 @@ class NullableReturnHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      null,
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -159,23 +145,12 @@ class NullableArgHostApi {
   /// Constructor for [NullableArgHostApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/nullable_returns.gen.dart
-  NullableArgHostApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
-=======
   NullableArgHostApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-    : pigeonVar_binaryMessenger = binaryMessenger,
-      pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+    : golubetsVar_binaryMessenger = binaryMessenger,
+      golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? pigeonVar_binaryMessenger;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/nullable_returns.gen.dart
+  final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
@@ -189,16 +164,8 @@ class NullableArgHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/nullable_returns.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[x],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[x]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/nullable_returns.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[x]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -273,11 +240,8 @@ class NullableCollectionReturnHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      null,
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -329,23 +293,12 @@ class NullableCollectionArgHostApi {
   /// Constructor for [NullableCollectionArgHostApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/nullable_returns.gen.dart
-  NullableCollectionArgHostApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
-=======
   NullableCollectionArgHostApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-    : pigeonVar_binaryMessenger = binaryMessenger,
-      pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+    : golubetsVar_binaryMessenger = binaryMessenger,
+      golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? pigeonVar_binaryMessenger;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/nullable_returns.gen.dart
+  final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
@@ -359,16 +312,8 @@ class NullableCollectionArgHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/nullable_returns.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[x],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[x]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/nullable_returns.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[x]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,

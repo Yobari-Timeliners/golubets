@@ -79,6 +79,11 @@ jobs:
         with:
           channel: master
           flutter-version: ${{ steps.read_flutter_version.outputs.flutter_version }}
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
       - name: Install dependencies
         run: |
           sudo apt-get update

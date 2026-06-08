@@ -385,24 +385,6 @@ class DriveExamplesCommand extends PackageLoopingCommand {
     )?.childDirectory(screenshotBasename);
 
     for (final target in targets) {
-<<<<<<< HEAD
-      final int exitCode = await processRunner.runAndStream(
-        flutterCommand,
-        <String>[
-          'drive',
-          ...deviceFlags,
-          if (enableExperiment.isNotEmpty)
-            '--enable-experiment=$enableExperiment',
-          if (screenshotDirectory != null)
-            '--screenshot=${screenshotDirectory.path}',
-          '--driver',
-          getRelativePosixPath(driver, from: example.directory),
-          '--target',
-          getRelativePosixPath(target, from: example.directory),
-        ],
-        workingDir: example.directory,
-      );
-=======
       final int exitCode = await processRunner.runAndStream(flutterCommand, <String>[
         'drive',
         ...deviceFlags,
@@ -413,7 +395,6 @@ class DriveExamplesCommand extends PackageLoopingCommand {
         '--target',
         getRelativePosixPath(target, from: example.directory),
       ], workingDir: example.directory);
->>>>>>> filtered-upstream/main
       if (exitCode != 0) {
         failures.add(target);
       }
@@ -459,20 +440,6 @@ class DriveExamplesCommand extends PackageLoopingCommand {
           if (logsDirectory != null) '--out=${logsDirectory.childFile(screenshotBasename).path}',
         ], workingDir: example.directory);
       });
-<<<<<<< HEAD
-      final int exitCode = await processRunner.runAndStream(
-        flutterCommand,
-        <String>[
-          'test',
-          ...deviceFlags,
-          if (enableExperiment.isNotEmpty)
-            '--enable-experiment=$enableExperiment',
-          if (logsDirectory != null) '--debug-logs-dir=${logsDirectory.path}',
-          target,
-        ],
-        workingDir: example.directory,
-      );
-=======
       final int exitCode = await processRunner.runAndStream(flutterCommand, <String>[
         'test',
         ...deviceFlags,
@@ -480,7 +447,6 @@ class DriveExamplesCommand extends PackageLoopingCommand {
         if (logsDirectory != null) '--debug-logs-dir=${logsDirectory.path}',
         target,
       ], workingDir: example.directory);
->>>>>>> filtered-upstream/main
 
       timeoutTimer.cancel();
       passed = passed && (exitCode == 0);

@@ -56,6 +56,15 @@ class TestPlugin : public flutter::Plugin,
   std::optional<core_tests_golubetstest::FlutterError> Noop() override;
   core_tests_golubetstest::ErrorOr<core_tests_golubetstest::AllTypes>
   EchoAllTypes(const core_tests_golubetstest::AllTypes& everything) override;
+  core_tests_golubetstest::ErrorOr<bool> AreAllNullableTypesEqual(
+      const core_tests_golubetstest::AllNullableTypes& a,
+      const core_tests_golubetstest::AllNullableTypes& b) override;
+  core_tests_golubetstest::ErrorOr<int64_t> GetAllNullableTypesHash(
+      const core_tests_golubetstest::AllNullableTypes& value) override;
+  core_tests_golubetstest::ErrorOr<int64_t>
+  GetAllNullableTypesWithoutRecursionHash(
+      const core_tests_golubetstest::AllNullableTypesWithoutRecursion& value)
+      override;
   core_tests_golubetstest::ErrorOr<
       std::optional<core_tests_golubetstest::AllNullableTypes>>
   EchoAllNullableTypes(

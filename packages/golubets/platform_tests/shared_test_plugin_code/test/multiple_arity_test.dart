@@ -20,24 +20,13 @@ void main() {
         any,
       ),
     ).thenAnswer((Invocation realInvocation) async {
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/multiple_arity_test.dart
-      final Object input = MultipleArityHostApi.golubetsChannelCodec
-          .decodeMessage(realInvocation.positionalArguments[1] as ByteData?)!;
-      final args = input as List<Object?>;
-      final int x = (args[0] as int?)!;
-      final int y = (args[1] as int?)!;
-      return MultipleArityHostApi.golubetsChannelCodec.encodeMessage(<Object>[
-        x - y,
-      ]);
-=======
-      final Object input = MultipleArityHostApi.pigeonChannelCodec.decodeMessage(
+      final Object input = MultipleArityHostApi.golubetsChannelCodec.decodeMessage(
         realInvocation.positionalArguments[1] as ByteData?,
       )!;
       final args = input as List<Object?>;
       final int x = (args[0] as int?)!;
       final int y = (args[1] as int?)!;
-      return MultipleArityHostApi.pigeonChannelCodec.encodeMessage(<Object>[x - y]);
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/multiple_arity_test.dart
+      return MultipleArityHostApi.golubetsChannelCodec.encodeMessage(<Object>[x - y]);
     });
 
     final api = MultipleArityHostApi(binaryMessenger: mockMessenger);

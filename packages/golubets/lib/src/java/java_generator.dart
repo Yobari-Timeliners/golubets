@@ -191,24 +191,12 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
     Indent indent, {
     required String dartPackageName,
   }) {
-<<<<<<< HEAD:packages/golubets/lib/src/java/java_generator.dart
-    indent.writeln(
-      '$_docCommentPrefix Generated class from Golubets.$_docCommentSuffix',
-    );
-=======
-    indent.writeln('$_docCommentPrefix Generated class from Pigeon.$_docCommentSuffix');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/java/java_generator.dart
+    indent.writeln('$_docCommentPrefix Generated class from Golubets.$_docCommentSuffix');
     indent.writeln(
       '@SuppressWarnings({"unused", "unchecked", "CodeBlock2Expr", "RedundantSuppression", "serial"})',
     );
     if (generatorOptions.useGeneratedAnnotation ?? false) {
-<<<<<<< HEAD:packages/golubets/lib/src/java/java_generator.dart
-      indent.writeln(
-        '@javax.annotation.Generated("dev.bayori.golubets")',
-      );
-=======
-      indent.writeln('@javax.annotation.Generated("$defaultPluginPackageName")');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/java/java_generator.dart
+      indent.writeln('@javax.annotation.Generated("dev.bayori.golubets")');
     }
     indent.writeln('public class ${generatorOptions.className!} {');
     indent.inc();
@@ -576,19 +564,9 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
       indent.newln();
       indent.write('public @NonNull ${classDefinition.name} build() ');
       indent.addScoped('{', '}', () {
-<<<<<<< HEAD:packages/golubets/lib/src/java/java_generator.dart
         const returnVal = 'golubetsReturn';
-        indent.writeln(
-          '${classDefinition.name} $returnVal = new ${classDefinition.name}();',
-        );
-        for (final NamedType field in getFieldsInSerializationOrder(
-          classDefinition,
-        )) {
-=======
-        const returnVal = 'pigeonReturn';
         indent.writeln('${classDefinition.name} $returnVal = new ${classDefinition.name}();');
         for (final NamedType field in getFieldsInSerializationOrder(classDefinition)) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/java/java_generator.dart
           indent.writeln('$returnVal.${_makeSetter(field)}(${field.name});');
         }
         indent.writeln('return $returnVal;');
@@ -631,20 +609,9 @@ class JavaGenerator extends StructuredGenerator<InternalJavaOptions> {
       'static @NonNull ${classDefinition.name} fromList(@NonNull ArrayList<Object> ${varNamePrefix}list) ',
     );
     indent.addScoped('{', '}', () {
-<<<<<<< HEAD:packages/golubets/lib/src/java/java_generator.dart
       const result = 'golubetsResult';
-      indent.writeln(
-        '${classDefinition.name} $result = new ${classDefinition.name}();',
-      );
-      enumerate(getFieldsInSerializationOrder(classDefinition), (
-        int index,
-        final NamedType field,
-      ) {
-=======
-      const result = 'pigeonResult';
       indent.writeln('${classDefinition.name} $result = new ${classDefinition.name}();');
       enumerate(getFieldsInSerializationOrder(classDefinition), (int index, NamedType field) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/java/java_generator.dart
         final String fieldVariable = field.name;
         final String setter = _makeSetter(field);
         indent.writeln('Object $fieldVariable = ${varNamePrefix}list.get($index);');

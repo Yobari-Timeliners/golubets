@@ -137,7 +137,6 @@ Future<bool> sendMessage(String messageText) {
   }
 }
 
-<<<<<<< HEAD:packages/golubets/example/README.md
 Future<bool> sendMessageModernAsync(String messageText) {
   final MessageData message = MessageData(
     code: Code.two,
@@ -157,8 +156,6 @@ Future<bool> sendMessageModernAsyncAndThrow(String messageText) {
 
   return _api.sendMessageModernAsyncThrows(message);
 }
-=======
->>>>>>> filtered-upstream/main:packages/pigeon/example/README.md
 ```
 
 ### Swift

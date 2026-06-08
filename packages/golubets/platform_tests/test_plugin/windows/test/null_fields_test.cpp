@@ -211,9 +211,6 @@ TEST_F(NullFieldsTest, ReplyToListWithNulls) {
   }
 }
 
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/test/null_fields_test.cpp
-}  // namespace null_fields_golubetstest
-=======
 TEST(NullFields, Equality) {
   NullFieldsSearchRequest request1(1);
   request1.set_query("hello");
@@ -244,5 +241,4 @@ TEST(NullFields, Equality) {
   EXPECT_FALSE(reply1 == reply3);
 }
 
-}  // namespace null_fields_pigeontest
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/test/null_fields_test.cpp
+}  // namespace null_fields_golubetstest

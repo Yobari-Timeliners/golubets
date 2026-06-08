@@ -112,36 +112,17 @@ void main() {
       );
 
       // Field
-<<<<<<< HEAD:packages/golubets/test/kotlin/proxy_api_test.dart
-      expect(
-        code,
-        contains(
-          'abstract fun someField(golubets_instance: my.library.Api): Long',
-        ),
-      );
+      expect(code, contains('abstract fun someField(golubets_instance: my.library.Api): Long'));
 
       // Dart -> Host method
-      expect(
-        collapsedCode,
-        contains('api.doSomething(golubets_instanceArg, inputArg)'),
-      );
-=======
-      expect(code, contains('abstract fun someField(pigeon_instance: my.library.Api): Long'));
-
-      // Dart -> Host method
-      expect(collapsedCode, contains('api.doSomething(pigeon_instanceArg, inputArg)'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin/proxy_api_test.dart
+      expect(collapsedCode, contains('api.doSomething(golubets_instanceArg, inputArg)'));
 
       // Host -> Dart method
       expect(
         code,
-<<<<<<< HEAD:packages/golubets/test/kotlin/proxy_api_test.dart
         contains(
           r'fun setUpMessageHandlers(binaryMessenger: BinaryMessenger, api: GolubetsApiApi?)',
         ),
-=======
-        contains(r'fun setUpMessageHandlers(binaryMessenger: BinaryMessenger, api: PigeonApiApi?)'),
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin/proxy_api_test.dart
       );
       expect(
         code,
@@ -187,14 +168,7 @@ void main() {
         );
         final code = sink.toString();
         final String collapsedCode = _collapseNewlineAndIndentation(code);
-<<<<<<< HEAD:packages/golubets/test/kotlin/proxy_api_test.dart
-        expect(
-          collapsedCode,
-          contains('fun golubets_getGolubetsApiApi2(): GolubetsApiApi2'),
-        );
-=======
-        expect(collapsedCode, contains('fun pigeon_getPigeonApiApi2(): PigeonApiApi2'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin/proxy_api_test.dart
+        expect(collapsedCode, contains('fun golubets_getGolubetsApiApi2(): GolubetsApiApi2'));
       });
 
       test('implements', () {
@@ -229,10 +203,7 @@ void main() {
           dartPackageName: DEFAULT_PACKAGE_NAME,
         );
         final code = sink.toString();
-        expect(
-          code,
-          contains('fun golubets_getGolubetsApiApi2(): GolubetsApiApi2'),
-        );
+        expect(code, contains('fun golubets_getGolubetsApiApi2(): GolubetsApiApi2'));
       });
 
       test('implements 2 ProxyApis', () {
@@ -275,14 +246,8 @@ void main() {
           dartPackageName: DEFAULT_PACKAGE_NAME,
         );
         final code = sink.toString();
-        expect(
-          code,
-          contains('fun golubets_getGolubetsApiApi2(): GolubetsApiApi2'),
-        );
-        expect(
-          code,
-          contains('fun golubets_getGolubetsApiApi3(): GolubetsApiApi3'),
-        );
+        expect(code, contains('fun golubets_getGolubetsApiApi2(): GolubetsApiApi2'));
+        expect(code, contains('fun golubets_getGolubetsApiApi3(): GolubetsApiApi3'));
       });
     });
 
@@ -316,14 +281,7 @@ void main() {
             'abstract class GolubetsApiApi(open val golubetsRegistrar: GolubetsProxyApiRegistrar) ',
           ),
         );
-<<<<<<< HEAD:packages/golubets/test/kotlin/proxy_api_test.dart
-        expect(
-          collapsedCode,
-          contains('abstract fun golubets_defaultConstructor(): Api'),
-        );
-=======
-        expect(collapsedCode, contains('abstract fun pigeon_defaultConstructor(): Api'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin/proxy_api_test.dart
+        expect(collapsedCode, contains('abstract fun golubets_defaultConstructor(): Api'));
         expect(
           collapsedCode,
           contains(
@@ -598,45 +556,12 @@ void main() {
             'nullableEnumTypeArg, nullableProxyApiTypeArg))',
           ),
         );
-<<<<<<< HEAD:packages/golubets/test/kotlin/proxy_api_test.dart
-        expect(
-          code,
-          contains(r'abstract fun validType(golubets_instance: Api): Long'),
-        );
-        expect(
-          code,
-          contains(r'abstract fun enumType(golubets_instance: Api): AnEnum'),
-        );
-        expect(
-          code,
-          contains(r'abstract fun proxyApiType(golubets_instance: Api): Api2'),
-        );
-        expect(
-          code,
-          contains(
-            r'abstract fun nullableValidType(golubets_instance: Api): Long?',
-          ),
-        );
-        expect(
-          code,
-          contains(
-            r'abstract fun nullableEnumType(golubets_instance: Api): AnEnum?',
-          ),
-        );
-        expect(
-          code,
-          contains(
-            r'abstract fun nullableProxyApiType(golubets_instance: Api): Api2?',
-          ),
-        );
-=======
-        expect(code, contains(r'abstract fun validType(pigeon_instance: Api): Long'));
-        expect(code, contains(r'abstract fun enumType(pigeon_instance: Api): AnEnum'));
-        expect(code, contains(r'abstract fun proxyApiType(pigeon_instance: Api): Api2'));
-        expect(code, contains(r'abstract fun nullableValidType(pigeon_instance: Api): Long?'));
-        expect(code, contains(r'abstract fun nullableEnumType(pigeon_instance: Api): AnEnum?'));
-        expect(code, contains(r'abstract fun nullableProxyApiType(pigeon_instance: Api): Api2?'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin/proxy_api_test.dart
+        expect(code, contains(r'abstract fun validType(golubets_instance: Api): Long'));
+        expect(code, contains(r'abstract fun enumType(golubets_instance: Api): AnEnum'));
+        expect(code, contains(r'abstract fun proxyApiType(golubets_instance: Api): Api2'));
+        expect(code, contains(r'abstract fun nullableValidType(golubets_instance: Api): Long?'));
+        expect(code, contains(r'abstract fun nullableEnumType(golubets_instance: Api): AnEnum?'));
+        expect(code, contains(r'abstract fun nullableProxyApiType(golubets_instance: Api): Api2?'));
       });
 
       test('attached field', () {
@@ -678,14 +603,7 @@ void main() {
           dartPackageName: DEFAULT_PACKAGE_NAME,
         );
         final code = sink.toString();
-<<<<<<< HEAD:packages/golubets/test/kotlin/proxy_api_test.dart
-        expect(
-          code,
-          contains(r'abstract fun aField(golubets_instance: Api): Api2'),
-        );
-=======
-        expect(code, contains(r'abstract fun aField(pigeon_instance: Api): Api2'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin/proxy_api_test.dart
+        expect(code, contains(r'abstract fun aField(golubets_instance: Api): Api2'));
         expect(
           code,
           contains(

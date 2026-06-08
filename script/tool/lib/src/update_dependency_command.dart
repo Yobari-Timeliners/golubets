@@ -457,25 +457,13 @@ A version with a valid format (3 numbers separated by 2 periods) must be provide
 
     print('${indentation}Updating Golub files...');
     for (final input in inputs) {
-<<<<<<< HEAD
-      final String relativePath = getRelativePosixPath(
-        input,
-        from: package.directory,
-      );
-      final io.ProcessResult pigeonResult = await processRunner.run(
-        'dart',
-        <String>['run', 'golubets', '--input', relativePath],
-        workingDir: package.directory,
-      );
-=======
       final String relativePath = getRelativePosixPath(input, from: package.directory);
       final io.ProcessResult pigeonResult = await processRunner.run('dart', <String>[
         'run',
-        'pigeon',
+        'golubets',
         '--input',
         relativePath,
       ], workingDir: package.directory);
->>>>>>> filtered-upstream/main
       if (pigeonResult.exitCode != 0) {
         printError(
           'dart run golubets failed (${pigeonResult.exitCode}):\n'

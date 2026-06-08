@@ -260,16 +260,8 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     required String dartPackageName,
   }) {
     indent.newln();
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
-    addDocumentationComments(
-      indent,
-      classDefinition.documentationComments,
-      docCommentSpec,
-    );
-
-=======
     addDocumentationComments(indent, classDefinition.documentationComments, docCommentSpec);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
+
     final sealed = classDefinition.isSealed ? 'sealed ' : '';
     final implements = classDefinition.superClassName != null
         ? 'extends ${classDefinition.superClassName} '
@@ -281,8 +273,7 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     }
     indent.write(' $implements');
 
-    final List<TypeDeclaration>? superTypeArguments =
-        classDefinition.superClass?.typeArguments;
+    final List<TypeDeclaration>? superTypeArguments = classDefinition.superClass?.typeArguments;
     if (superTypeArguments != null && superTypeArguments.isNotEmpty) {
       indent.write('<${_flattenTypeArguments(superTypeArguments)}>');
     }
@@ -291,14 +282,8 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       if (classDefinition.fields.isNotEmpty || classDefinition.isImmutable) {
         _writeConstructor(indent, classDefinition);
         indent.newln();
-        for (final NamedType field in getFieldsInSerializationOrder(
-          classDefinition,
-        )) {
-          addDocumentationComments(
-            indent,
-            field.documentationComments,
-            docCommentSpec,
-          );
+        for (final NamedType field in getFieldsInSerializationOrder(classDefinition)) {
+          addDocumentationComments(indent, field.documentationComments, docCommentSpec);
           final finalKeyword = classDefinition.isImmutable ? 'final ' : '';
           final String datatype = addGenericTypes(field.type);
           indent.writeln('$finalKeyword$datatype ${field.name};');
@@ -309,13 +294,6 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       if (classDefinition.isSealed) {
         return;
       }
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
-=======
-      _writeConstructor(indent, classDefinition);
-      indent.newln();
-      for (final NamedType field in getFieldsInSerializationOrder(classDefinition)) {
-        addDocumentationComments(indent, field.documentationComments, docCommentSpec);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
 
       _writeToList(indent, classDefinition);
       indent.newln();
@@ -356,14 +334,9 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     }
 
     indent.addScoped('({', '});', () {
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
-      for (final NamedType field in getFieldsInSerializationOrder(
-        classDefinition,
-      )) {
+      for (final NamedType field in getFieldsInSerializationOrder(classDefinition)) {
         final DefaultValue? defaultValue = field.defaultValue;
-        final required = !field.type.isNullable && field.defaultValue == null
-            ? 'required '
-            : '';
+        final required = !field.type.isNullable && field.defaultValue == null ? 'required ' : '';
 
         if (defaultValue == null) {
           indent.writeln('${required}this.${field.name},');
@@ -372,12 +345,6 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
           defaultValue.write(indent, prefix: '');
           indent.addln(',');
         }
-=======
-      for (final NamedType field in getFieldsInSerializationOrder(classDefinition)) {
-        final required = !field.type.isNullable && field.defaultValue == null ? 'required ' : '';
-        final defaultValueString = field.defaultValue == null ? '' : ' = ${field.defaultValue}';
-        indent.writeln('${required}this.${field.name}$defaultValueString,');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
       }
     });
   }
@@ -421,9 +388,7 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     final bool isResultUsed = classDefinition.fields.isNotEmpty;
     final result = isResultUsed ? 'result' : '_';
 
-    indent.write(
-      'static ${classDefinition.name} decode(Object $result) ',
-    );
+    indent.write('static ${classDefinition.name} decode(Object $result) ');
     indent.addScoped('{', '}', () {
       if (isResultUsed) {
         indent.writeln('result as List<Object?>;');
@@ -484,45 +449,12 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     Indent indent, {
     required String dartPackageName,
   }) {
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
-    void writeEncodeLogic(
-      EnumeratedType customType,
-      int nonSerializedClassCount,
-    ) {
+    void writeEncodeLogic(EnumeratedType customType, int nonSerializedClassCount) {
       final typeArgumentsCheck = customType.isGeneric
           ? ' && value.runtimeType == ${customType.name}<${_flattenTypeArguments(customType.typeArguments)}>'
           : '';
 
-      indent.writeScoped(
-        'else if (value is ${customType.name}$typeArgumentsCheck) {',
-        '}',
-        () {
-          if (customType.offset(nonSerializedClassCount) <
-              maximumCodecFieldKey) {
-            indent.writeln(
-              'buffer.putUint8(${customType.offset(nonSerializedClassCount)});',
-            );
-            if (customType.type == CustomTypes.customClass) {
-              indent.writeln('writeValue(buffer, value.encode());');
-            } else if (customType.type == CustomTypes.customEnum) {
-              indent.writeln('writeValue(buffer, value.index);');
-            }
-          } else {
-            final encodeString = customType.type == CustomTypes.customClass
-                ? '.encode()'
-                : '.index';
-            indent.writeln(
-              'final $_overflowClassName wrap = $_overflowClassName(type: ${customType.offset(nonSerializedClassCount) - maximumCodecFieldKey}, wrapped: value$encodeString);',
-            );
-            indent.writeln('buffer.putUint8($maximumCodecFieldKey);');
-            indent.writeln('writeValue(buffer, wrap.encode());');
-          }
-        },
-        addTrailingNewline: false,
-      );
-=======
-    void writeEncodeLogic(EnumeratedType customType, int nonSerializedClassCount) {
-      indent.writeScoped('else if (value is ${customType.name}) {', '}', () {
+      indent.writeScoped('else if (value is ${customType.name}$typeArgumentsCheck) {', '}', () {
         if (customType.offset(nonSerializedClassCount) < maximumCodecFieldKey) {
           indent.writeln('buffer.putUint8(${customType.offset(nonSerializedClassCount)});');
           if (customType.type == CustomTypes.customClass) {
@@ -539,24 +471,15 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
           indent.writeln('writeValue(buffer, wrap.encode());');
         }
       }, addTrailingNewline: false);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
     }
 
     void writeDecodeLogic(EnumeratedType customType, int nonSerializedClassCount) {
       indent.writeln('case ${customType.offset(nonSerializedClassCount)}:');
       indent.nest(1, () {
         if (customType.type == CustomTypes.customClass) {
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
-          if (customType.offset(nonSerializedClassCount) ==
-              maximumCodecFieldKey) {
-            final String baseName =
-                customType.associatedClass?.name ?? customType.name;
-=======
           if (customType.offset(nonSerializedClassCount) == maximumCodecFieldKey) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
-            indent.writeln(
-              'final $baseName wrapper = $baseName.decode(readValue(buffer)!);',
-            );
+            final String baseName = customType.associatedClass?.name ?? customType.name;
+            indent.writeln('final $baseName wrapper = $baseName.decode(readValue(buffer)!);');
             indent.writeln('return wrapper.unwrap();');
           } else if (customType.isGeneric) {
             _writeGenericInstantiationDecode(
@@ -757,25 +680,15 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
           } else {
             first = false;
           }
-          addDocumentationComments(
-            indent,
-            func.documentationComments,
-            docCommentSpec,
-          );
-          final String argSignature = _getMethodParameterSignature(
-            func.parameters,
-          );
-          indent.write(
-            'Future<${addGenericTypes(func.returnType)}> ${func.name}($argSignature);',
-          );
+          addDocumentationComments(indent, func.documentationComments, docCommentSpec);
+          final String argSignature = _getMethodParameterSignature(func.parameters);
+          indent.write('Future<${addGenericTypes(func.returnType)}> ${func.name}($argSignature);');
           indent.newln();
         }
       });
       indent.newln();
     }
-    final inheritance = interfaceName == null
-        ? ''
-        : ' implements $interfaceName';
+    final inheritance = interfaceName == null ? '' : ' implements $interfaceName';
     first = true;
     indent.write('class $name$inheritance ');
     indent.addScoped('{', '}', () {
@@ -1046,22 +959,8 @@ final BinaryMessenger? ${varNamePrefix}binaryMessenger;
         ..extend = api.superClass != null
             ? cb.refer(api.superClass!.baseName)
             : cb.refer(proxyApiBaseClassName)
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
-        ..implements.addAll(
-          api.interfaces.map(
-            (TypeDeclaration type) => cb.refer(type.baseName),
-          ),
-        )
-        ..docs.addAll(
-          asDocumentationComments(
-            api.documentationComments,
-            docCommentSpec,
-          ),
-        )
-=======
         ..implements.addAll(api.interfaces.map((TypeDeclaration type) => cb.refer(type.baseName)))
         ..docs.addAll(asDocumentationComments(api.documentationComments, docCommentSpec))
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
         ..constructors.addAll(
           proxy_api_helper.constructors(
             api.constructors,
@@ -1095,24 +994,9 @@ final BinaryMessenger? ${varNamePrefix}binaryMessenger;
               codecName: codecName,
             ),
         ])
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
-        ..fields.addAll(
-          proxy_api_helper.unattachedFields(api.unattachedFields),
-        )
-        ..fields.addAll(
-          proxy_api_helper.flutterMethodFields(
-            api.flutterMethods,
-            apiName: api.name,
-          ),
-        )
-        ..fields.addAll(
-          proxy_api_helper.interfaceApiFields(api.apisOfInterfaces()),
-        )
-=======
         ..fields.addAll(proxy_api_helper.unattachedFields(api.unattachedFields))
         ..fields.addAll(proxy_api_helper.flutterMethodFields(api.flutterMethods, apiName: api.name))
         ..fields.addAll(proxy_api_helper.interfaceApiFields(api.apisOfInterfaces()))
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
         ..fields.addAll(proxy_api_helper.attachedFields(api.attachedFields))
         ..methods.addAll(
           proxy_api_helper.staticAttachedFieldsGetters(
@@ -1179,19 +1063,9 @@ final BinaryMessenger? ${varNamePrefix}binaryMessenger;
     final String testOutPath = generatorOptions.testOut ?? '';
     _writeTestPrologue(generatorOptions, root, indent);
     _writeTestImports(generatorOptions, root, indent);
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
-    final String relativeDartPath =
-        path.Context(
-          style: path.Style.posix,
-        ).relative(
-          _posixify(sourceOutPath),
-          from: _posixify(path.dirname(testOutPath)),
-        );
-=======
     final String relativeDartPath = path.Context(
       style: path.Style.posix,
     ).relative(_posixify(sourceOutPath), from: _posixify(path.dirname(testOutPath)));
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
     if (!relativeDartPath.contains('/lib/')) {
       // If we can't figure out the package name or the relative path doesn't
       // include a 'lib' directory, try relative path import which only works in
@@ -1441,9 +1315,7 @@ if (wrapped == null) {
                         rawValueExpression: 'wrapped!',
                       );
                     } else {
-                      indent.writeln(
-                        'return ${types[i].name}.decode(wrapped!);',
-                      );
+                      indent.writeln('return ${types[i].name}.decode(wrapped!);');
                     }
                   } else if (types[i].type == CustomTypes.customEnum) {
                     indent.writeln('return ${types[i].name}.values[wrapped! as int];');
@@ -1470,23 +1342,17 @@ if (wrapped == null) {
       associatedClass != null && customType.isGeneric,
       '_writeGenericInstantiationDecode requires a generic class instantiation',
     );
-    final List<TypeDeclaration> substitutedFieldTypes =
-        customType.substitutedFieldTypes;
+    final List<TypeDeclaration> substitutedFieldTypes = customType.substitutedFieldTypes;
     assert(
       substitutedFieldTypes.length == associatedClass!.fields.length,
       'substitutedFieldTypes must be aligned with the class fields',
     );
 
     final typeArgs = '<${_flattenTypeArguments(customType.typeArguments)}>';
-    indent.writeln(
-      'final List<Object?> result = $rawValueExpression as List<Object?>;',
-    );
+    indent.writeln('final List<Object?> result = $rawValueExpression as List<Object?>;');
     indent.write('return ${customType.name}$typeArgs');
     indent.addScoped('(', ');', () {
-      enumerate(getFieldsInSerializationOrder(associatedClass!), (
-        int index,
-        final NamedType field,
-      ) {
+      enumerate(getFieldsInSerializationOrder(associatedClass!), (int index, NamedType field) {
         indent.write('${field.name}: ');
         indent.add(_castValue('result[$index]', substitutedFieldTypes[index]));
         indent.addln(',');
@@ -1536,27 +1402,12 @@ if (wrapped == null) {
     }
     final channelSuffix = addSuffixVariable ? '\$$_suffixVarName' : '';
     final constOrFinal = addSuffixVariable ? 'final' : 'const';
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
-    indent.writeln(
-      "$constOrFinal ${varNamePrefix}channelName = '$channelName$channelSuffix';",
-    );
-    indent.writeScoped(
-      'final ${varNamePrefix}channel = BasicMessageChannel<Object?>(',
-      ');',
-      () {
-        indent.writeln('${varNamePrefix}channelName,');
-        indent.writeln('$golubetsChannelCodec,');
-        indent.writeln('binaryMessenger: ${varNamePrefix}binaryMessenger,');
-      },
-    );
-=======
     indent.writeln("$constOrFinal ${varNamePrefix}channelName = '$channelName$channelSuffix';");
     indent.writeScoped('final ${varNamePrefix}channel = BasicMessageChannel<Object?>(', ');', () {
       indent.writeln('${varNamePrefix}channelName,');
-      indent.writeln('$pigeonChannelCodec,');
+      indent.writeln('$golubetsChannelCodec,');
       indent.writeln('binaryMessenger: ${varNamePrefix}binaryMessenger,');
     });
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
 
     const sendFutureVar = '${varNamePrefix}sendFuture';
     indent.writeln(
@@ -1867,25 +1718,15 @@ extension on DefaultValue {
       IntLiteral(:final int value) => indent.add('$prefix$value'),
       DoubleLiteral(:final double value) => indent.add('$prefix$value'),
       BoolLiteral(:final bool value) => indent.add('$prefix$value'),
-      ListLiteral(
-        :final List<DefaultValue> elements,
-        :final TypeDeclaration elementType,
-      ) =>
+      ListLiteral(:final List<DefaultValue> elements, :final TypeDeclaration elementType) =>
         elements.isEmpty
-            ? indent.add(
-                '${prefix}const <${addGenericTypes(elementType)}>[]',
-              )
-            : indent.addScoped(
-                '${prefix}const <${addGenericTypes(elementType)}>[',
-                ']',
-                () {
-                  for (final element in elements) {
-                    element.write(indent);
-                    indent.addln(', ');
-                  }
-                },
-                addTrailingNewline: false,
-              ),
+            ? indent.add('${prefix}const <${addGenericTypes(elementType)}>[]')
+            : indent.addScoped('${prefix}const <${addGenericTypes(elementType)}>[', ']', () {
+                for (final element in elements) {
+                  element.write(indent);
+                  indent.addln(', ');
+                }
+              }, addTrailingNewline: false),
       MapLiteral(
         :final Map<DefaultValue, DefaultValue> entries,
         :final TypeDeclaration keyType,
@@ -1899,8 +1740,7 @@ extension on DefaultValue {
                 '${prefix}const <${addGenericTypes(keyType)}, ${addGenericTypes(valueType)}>{',
                 '}',
                 () {
-                  for (final MapEntry<DefaultValue, DefaultValue> entry
-                      in entries.entries) {
+                  for (final MapEntry<DefaultValue, DefaultValue> entry in entries.entries) {
                     entry.key.write(indent);
                     indent.add(': ');
                     entry.value.write(indent, prefix: '');
@@ -1909,46 +1749,29 @@ extension on DefaultValue {
                 },
                 addTrailingNewline: false,
               ),
-      EnumLiteral(:final String name, :final String value) => indent.add(
-        '$prefix$name.$value',
-      ),
-      ObjectCreation(
-        :final TypeDeclaration type,
-        :final List<DefaultValue> arguments,
-      ) =>
-        () {
-          final typeArguments = type.typeArguments.isEmpty
-              ? ''
-              : '<${_flattenTypeArguments(type.typeArguments)}>';
-          indent.add('${prefix}const ${type.baseName}$typeArguments');
+      EnumLiteral(:final String name, :final String value) => indent.add('$prefix$name.$value'),
+      ObjectCreation(:final TypeDeclaration type, :final List<DefaultValue> arguments) => () {
+        final typeArguments = type.typeArguments.isEmpty
+            ? ''
+            : '<${_flattenTypeArguments(type.typeArguments)}>';
+        indent.add('${prefix}const ${type.baseName}$typeArguments');
 
-          if (arguments.isEmpty) {
-            indent.add('()');
-            return;
+        if (arguments.isEmpty) {
+          indent.add('()');
+          return;
+        }
+
+        indent.addScoped('(', ')', () {
+          for (final argument in arguments) {
+            argument.write(indent);
+            argument == arguments.last ? indent.newln() : indent.addln(', ');
           }
-
-          indent.addScoped(
-            '(',
-            ')',
-            () {
-              for (final argument in arguments) {
-                argument.write(indent);
-                argument == arguments.last
-                    ? indent.newln()
-                    : indent.addln(', ');
-              }
-            },
-            addTrailingNewline: false,
-          );
-        }(),
-      NamedDefaultValue(
-        :final String name,
-        :final DefaultValue value,
-      ) =>
-        () {
-          indent.add('$prefix$name: ');
-          value.write(indent, prefix: '');
-        }(),
+        }, addTrailingNewline: false);
+      }(),
+      NamedDefaultValue(:final String name, :final DefaultValue value) => () {
+        indent.add('$prefix$name: ');
+        value.write(indent, prefix: '');
+      }(),
     };
   }
 }

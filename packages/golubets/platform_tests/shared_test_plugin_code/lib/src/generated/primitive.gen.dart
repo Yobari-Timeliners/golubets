@@ -73,23 +73,12 @@ class PrimitiveHostApi {
   /// Constructor for [PrimitiveHostApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
-  PrimitiveHostApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
-=======
   PrimitiveHostApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-    : pigeonVar_binaryMessenger = binaryMessenger,
-      pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+    : golubetsVar_binaryMessenger = binaryMessenger,
+      golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? pigeonVar_binaryMessenger;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
+  final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
@@ -103,16 +92,8 @@ class PrimitiveHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[value],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[value]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -130,16 +111,8 @@ class PrimitiveHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[value],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[value]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -157,16 +130,8 @@ class PrimitiveHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[value],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[value]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -184,16 +149,8 @@ class PrimitiveHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[value],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[value]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -211,16 +168,8 @@ class PrimitiveHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[value],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[value]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -238,16 +187,8 @@ class PrimitiveHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[value],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[value]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -265,16 +206,8 @@ class PrimitiveHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[value],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[value]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -292,16 +225,8 @@ class PrimitiveHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[value],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[value]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -319,28 +244,15 @@ class PrimitiveHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[value],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[value]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
       isNullValid: false,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
-    return (golubetsVar_replyValue! as Map<Object?, Object?>)
-        .cast<String?, int?>();
-=======
-    return (pigeonVar_replyValue! as Map<Object?, Object?>).cast<String?, int?>();
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/primitive.gen.dart
+    return (golubetsVar_replyValue! as Map<Object?, Object?>).cast<String?, int?>();
   }
 }
 

@@ -87,7 +87,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-<<<<<<< HEAD:packages/golubets/example/app/lib/main.dart
   Future<bool> sendMessageModernAsync(String messageText) {
     final message = MessageData(
       code: Code.two,
@@ -108,8 +107,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return _api.sendMessageModernAsyncThrows(message);
   }
 
-=======
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/lib/main.dart
   // #enddocregion main-dart
 
   // #docregion main-dart-event
@@ -177,28 +174,15 @@ class _MyHomePageState extends State<MyHomePage> {
             if (Platform.isAndroid || Platform.isIOS)
               ElevatedButton(
                 onPressed: () async {
-                  final ScaffoldMessengerState scaffoldMessenger =
-                      ScaffoldMessenger.of(context);
+                  final ScaffoldMessengerState scaffoldMessenger = ScaffoldMessenger.of(context);
                   scaffoldMessenger.hideCurrentSnackBar();
 
                   try {
                     final bool result = await sendMessageModernAsync('test');
 
-                    scaffoldMessenger.showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          result.toString(),
-                        ),
-                      ),
-                    );
+                    scaffoldMessenger.showSnackBar(SnackBar(content: Text(result.toString())));
                   } catch (e) {
-                    scaffoldMessenger.showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          e.toString(),
-                        ),
-                      ),
-                    );
+                    scaffoldMessenger.showSnackBar(SnackBar(content: Text(e.toString())));
                   }
                 },
                 child: const Text('Send message modern async'),
@@ -206,18 +190,13 @@ class _MyHomePageState extends State<MyHomePage> {
             if (Platform.isAndroid || Platform.isIOS)
               ElevatedButton(
                 onPressed: () async {
-                  final ScaffoldMessengerState scaffoldMessenger =
-                      ScaffoldMessenger.of(context);
+                  final ScaffoldMessengerState scaffoldMessenger = ScaffoldMessenger.of(context);
                   scaffoldMessenger.hideCurrentSnackBar();
 
                   try {
                     await sendMessageModernAsyncAndThrow('throw');
                   } catch (e) {
-                    scaffoldMessenger.showSnackBar(
-                      SnackBar(
-                        content: Text(e.toString()),
-                      ),
-                    );
+                    scaffoldMessenger.showSnackBar(SnackBar(content: Text(e.toString())));
                   }
                 },
                 child: const Text('Send message modern async and throw'),

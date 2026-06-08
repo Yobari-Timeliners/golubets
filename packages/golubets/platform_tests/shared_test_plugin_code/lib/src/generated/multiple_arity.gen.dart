@@ -73,23 +73,12 @@ class MultipleArityHostApi {
   /// Constructor for [MultipleArityHostApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/multiple_arity.gen.dart
-  MultipleArityHostApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
-=======
   MultipleArityHostApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-    : pigeonVar_binaryMessenger = binaryMessenger,
-      pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+    : golubetsVar_binaryMessenger = binaryMessenger,
+      golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? pigeonVar_binaryMessenger;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/multiple_arity.gen.dart
+  final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
@@ -103,16 +92,8 @@ class MultipleArityHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/multiple_arity.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[x, y],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[x, y]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/multiple_arity.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[x, y]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,

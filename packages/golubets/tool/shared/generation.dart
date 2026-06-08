@@ -15,42 +15,6 @@ enum GeneratorLanguage { cpp, dart, gobject, java, kotlin, objc, swift }
 
 // A map of pigeons/ files to the languages that they can't yet be generated
 // for due to limitations of that generator.
-<<<<<<< HEAD:packages/golubets/tool/shared/generation.dart
-const Map<String, Set<GeneratorLanguage>> _unsupportedFiles =
-    <String, Set<GeneratorLanguage>>{
-      'event_channel_tests': <GeneratorLanguage>{
-        GeneratorLanguage.cpp,
-        GeneratorLanguage.gobject,
-        GeneratorLanguage.java,
-        GeneratorLanguage.objc,
-      },
-      'event_channel_without_classes_tests': <GeneratorLanguage>{
-        GeneratorLanguage.cpp,
-        GeneratorLanguage.gobject,
-        GeneratorLanguage.java,
-        GeneratorLanguage.objc,
-      },
-      'proxy_api_tests': <GeneratorLanguage>{
-        GeneratorLanguage.cpp,
-        GeneratorLanguage.gobject,
-        GeneratorLanguage.java,
-        GeneratorLanguage.objc,
-      },
-      'kotlin_nested_sealed_tests': <GeneratorLanguage>{
-        GeneratorLanguage.cpp,
-        GeneratorLanguage.gobject,
-        GeneratorLanguage.java,
-        GeneratorLanguage.objc,
-        GeneratorLanguage.swift,
-      },
-      'generics_tests': <GeneratorLanguage>{
-        GeneratorLanguage.cpp,
-        GeneratorLanguage.gobject,
-        GeneratorLanguage.java,
-        GeneratorLanguage.objc,
-      },
-    };
-=======
 const Map<String, Set<GeneratorLanguage>> _unsupportedFiles = <String, Set<GeneratorLanguage>>{
   'event_channel_tests': <GeneratorLanguage>{
     GeneratorLanguage.cpp,
@@ -70,8 +34,20 @@ const Map<String, Set<GeneratorLanguage>> _unsupportedFiles = <String, Set<Gener
     GeneratorLanguage.java,
     GeneratorLanguage.objc,
   },
+  'kotlin_nested_sealed_tests': <GeneratorLanguage>{
+    GeneratorLanguage.cpp,
+    GeneratorLanguage.gobject,
+    GeneratorLanguage.java,
+    GeneratorLanguage.objc,
+    GeneratorLanguage.swift,
+  },
+  'generics_tests': <GeneratorLanguage>{
+    GeneratorLanguage.cpp,
+    GeneratorLanguage.gobject,
+    GeneratorLanguage.java,
+    GeneratorLanguage.objc,
+  },
 };
->>>>>>> filtered-upstream/main:packages/pigeon/tool/shared/generation.dart
 
 String _snakeToPascalCase(String snake) {
   final List<String> parts = snake.split('_');
@@ -153,15 +129,8 @@ Future<int> generateTestPigeons({required String baseDir, bool includeOverflow =
     int generateCode = await runGolubets(
       input: './pigeons/$input.dart',
       dartOut: '$sharedDartOutputBase/lib/src/generated/$input.gen.dart',
-<<<<<<< HEAD:packages/golubets/tool/shared/generation.dart
-      dartTestOut: input == 'message'
-          ? '$sharedDartOutputBase/test/test_message.gen.dart'
-          : null,
-      dartPackageName: 'golubets_integration_tests',
-=======
       dartTestOut: input == 'message' ? '$sharedDartOutputBase/test/test_message.gen.dart' : null,
-      dartPackageName: 'pigeon_integration_tests',
->>>>>>> filtered-upstream/main:packages/pigeon/tool/shared/generation.dart
+      dartPackageName: 'golubets_integration_tests',
       suppressVersion: true,
       // Android
       kotlinOut: skipLanguages.contains(GeneratorLanguage.kotlin)
@@ -170,8 +139,7 @@ Future<int> generateTestPigeons({required String baseDir, bool includeOverflow =
       kotlinPackage: 'com.example.test_plugin',
       kotlinErrorClassName: kotlinErrorName,
       kotlinIncludeErrorClass: input != 'primitive',
-      kotlinNestSealedClasses:
-          input == 'kotlin_nested_sealed_tests' || input == 'generics_tests',
+      kotlinNestSealedClasses: input == 'kotlin_nested_sealed_tests' || input == 'generics_tests',
       // iOS/macOS
       swiftOut: skipLanguages.contains(GeneratorLanguage.swift)
           ? null
@@ -203,14 +171,8 @@ Future<int> generateTestPigeons({required String baseDir, bool includeOverflow =
     // Generate the alternate language test plugin output.
     final objcBase =
         '$alternateOutputBase/darwin/$alternateTestPluginName/Sources/$alternateTestPluginName/';
-<<<<<<< HEAD:packages/golubets/tool/shared/generation.dart
-    final objcBaseRelativeHeaderPath =
-        'include/$alternateTestPluginName/$pascalCaseName.gen.h';
-    generateCode = await runGolubets(
-=======
     final objcBaseRelativeHeaderPath = 'include/$alternateTestPluginName/$pascalCaseName.gen.h';
-    generateCode = await runPigeon(
->>>>>>> filtered-upstream/main:packages/pigeon/tool/shared/generation.dart
+    generateCode = await runGolubets(
       input: './pigeons/$input.dart',
       // Android
       // This doesn't use the '.gen' suffix since Java has strict file naming

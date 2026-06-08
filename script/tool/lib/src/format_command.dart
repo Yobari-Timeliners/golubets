@@ -152,17 +152,8 @@ class FormatCommand extends PackageLoopingCommand {
   Future<bool> _didModifyAnything() async {
     final io.ProcessResult modifiedFiles = await processRunner.run(
       'git',
-<<<<<<< HEAD
-      <String>[
-        'ls-files',
-        '--modified',
-        packagesDir.path,
-      ],
+      <String>['ls-files', '--modified', packagesDir.path],
       workingDir: packagesDir.parent,
-=======
-      <String>['ls-files', '--modified', packagesDir.path, thirdPartyPackagesDir.path],
-      workingDir: rootDir,
->>>>>>> filtered-upstream/main
       logOnError: true,
     );
     if (modifiedFiles.exitCode != 0) {
@@ -189,13 +180,8 @@ class FormatCommand extends PackageLoopingCommand {
 
     final io.ProcessResult diff = await processRunner.run(
       'git',
-<<<<<<< HEAD
       <String>['diff', packagesDir.path],
       workingDir: packagesDir.parent,
-=======
-      <String>['diff', packagesDir.path, thirdPartyPackagesDir.path],
-      workingDir: rootDir,
->>>>>>> filtered-upstream/main
       logOnError: true,
     );
     if (diff.exitCode != 0) {

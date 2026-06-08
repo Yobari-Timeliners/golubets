@@ -601,14 +601,7 @@ void main() {
     generator.generate(generatorOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('@implementation Foobar'));
-<<<<<<< HEAD:packages/golubets/test/objc_generator_test.dart
-    expect(
-      code,
-      contains('golubetsResult.aBool = GetNullableObjectAtIndex(list, 0);'),
-    );
-=======
-    expect(code, contains('pigeonResult.aBool = GetNullableObjectAtIndex(list, 0);'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/objc_generator_test.dart
+    expect(code, contains('golubetsResult.aBool = GetNullableObjectAtIndex(list, 0);'));
   });
 
   test('nested class header', () {
@@ -696,14 +689,7 @@ void main() {
     );
     generator.generate(generatorOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-<<<<<<< HEAD:packages/golubets/test/objc_generator_test.dart
-    expect(
-      code,
-      contains('golubetsResult.nested = GetNullableObjectAtIndex(list, 0);'),
-    );
-=======
-    expect(code, contains('pigeonResult.nested = GetNullableObjectAtIndex(list, 0);'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/objc_generator_test.dart
+    expect(code, contains('golubetsResult.nested = GetNullableObjectAtIndex(list, 0);'));
   });
 
   test('prefix class header', () {
@@ -2548,16 +2534,8 @@ void main() {
                   type: const TypeDeclaration(isNullable: false, baseName: 'int'),
                 ),
               ],
-<<<<<<< HEAD:packages/golubets/test/objc_generator_test.dart
-              returnType: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: false,
-              ),
-              asynchronousType: AsynchronousType.callback,
-=======
               returnType: const TypeDeclaration(baseName: 'int', isNullable: false),
-              isAsynchronous: true,
->>>>>>> filtered-upstream/main:packages/pigeon/test/objc_generator_test.dart
+              asynchronousType: AsynchronousType.callback,
             ),
           ],
         ),

@@ -7,18 +7,9 @@
 
 import 'package:golubets/golubets.dart';
 
-<<<<<<< HEAD:packages/golubets/pigeons/message.dart
 @ConfigureGolubets(
   GolubetsOptions(
-    javaOptions: JavaOptions(
-      className: 'MessagePigeon',
-      package: 'dev.flutter.aaclarke.pigeon',
-    ),
-=======
-@ConfigurePigeon(
-  PigeonOptions(
     javaOptions: JavaOptions(className: 'MessagePigeon', package: 'dev.flutter.aaclarke.pigeon'),
->>>>>>> filtered-upstream/main:packages/pigeon/pigeons/message.dart
     objcOptions: ObjcOptions(prefix: 'AC'),
   ),
 )

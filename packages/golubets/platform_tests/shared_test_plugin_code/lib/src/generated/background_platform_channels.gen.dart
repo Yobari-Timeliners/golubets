@@ -56,24 +56,9 @@ class BackgroundApi2Host {
   final String pigeonVar_messageChannelSuffix;
 
   Future<int> add(int x, int y) async {
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/background_platform_channels.gen.dart
     final String pigeonVar_channelName =
         'dev.bayori.golubets.golubets_integration_tests.BackgroundApi2Host.add$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
-          pigeonVar_channelName,
-          pigeonChannelCodec,
-          binaryMessenger: pigeonVar_binaryMessenger,
-        );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[
-        <Object?>[x, y],
-      ],
-    );
-=======
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.pigeon_integration_tests.BackgroundApi2Host.add$pigeonVar_messageChannelSuffix';
-    final pigeonVar_channel = BasicMessageChannel<Object?>(
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -81,7 +66,6 @@ class BackgroundApi2Host {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[
       <Object?>[x, y],
     ]);
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/background_platform_channels.gen.dart
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {
       throw _createConnectionError(pigeonVar_channelName);

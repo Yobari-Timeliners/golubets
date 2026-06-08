@@ -20,21 +20,12 @@
 #include <optional>
 #include <string>
 
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
 namespace core_tests_golubetstest {
-using flutter::BasicMessageChannel;
-using flutter::CustomEncodableValue;
-using flutter::EncodableList;
-using flutter::EncodableMap;
-using flutter::EncodableValue;
-=======
-namespace core_tests_pigeontest {
 using ::flutter::BasicMessageChannel;
 using ::flutter::CustomEncodableValue;
 using ::flutter::EncodableList;
 using ::flutter::EncodableMap;
 using ::flutter::EncodableValue;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
 
 FlutterError CreateConnectionError(const std::string channel_name) {
   return FlutterError(
@@ -2551,7 +2542,40 @@ AllClassesWrapper AllClassesWrapper::FromEncodableList(
   return decoded;
 }
 
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
+bool AllClassesWrapper::operator==(const AllClassesWrapper& other) const {
+  return PigeonInternalDeepEquals(all_nullable_types_,
+                                  other.all_nullable_types_) &&
+         PigeonInternalDeepEquals(
+             all_nullable_types_without_recursion_,
+             other.all_nullable_types_without_recursion_) &&
+         PigeonInternalDeepEquals(all_types_, other.all_types_) &&
+         PigeonInternalDeepEquals(class_list_, other.class_list_) &&
+         PigeonInternalDeepEquals(nullable_class_list_,
+                                  other.nullable_class_list_) &&
+         PigeonInternalDeepEquals(class_map_, other.class_map_) &&
+         PigeonInternalDeepEquals(nullable_class_map_,
+                                  other.nullable_class_map_);
+}
+
+bool AllClassesWrapper::operator!=(const AllClassesWrapper& other) const {
+  return !(*this == other);
+}
+
+size_t AllClassesWrapper::Hash() const {
+  size_t result = 1;
+  result = result * 31 + PigeonInternalDeepHash(all_nullable_types_);
+  result = result * 31 +
+           PigeonInternalDeepHash(all_nullable_types_without_recursion_);
+  result = result * 31 + PigeonInternalDeepHash(all_types_);
+  result = result * 31 + PigeonInternalDeepHash(class_list_);
+  result = result * 31 + PigeonInternalDeepHash(nullable_class_list_);
+  result = result * 31 + PigeonInternalDeepHash(class_map_);
+  result = result * 31 + PigeonInternalDeepHash(nullable_class_map_);
+  return result;
+}
+
+size_t PigeonInternalDeepHash(const AllClassesWrapper& v) { return v.Hash(); }
+
 // ImmutableAllTypes
 
 ImmutableAllTypes::ImmutableAllTypes(
@@ -2794,6 +2818,68 @@ ImmutableAllTypes ImmutableAllTypes::FromEncodableList(
       std::get<EncodableMap>(list[23]));
   return decoded;
 }
+
+bool ImmutableAllTypes::operator==(const ImmutableAllTypes& other) const {
+  return PigeonInternalDeepEquals(a_bool_, other.a_bool_) &&
+         PigeonInternalDeepEquals(an_int_, other.an_int_) &&
+         PigeonInternalDeepEquals(an_int64_, other.an_int64_) &&
+         PigeonInternalDeepEquals(a_double_, other.a_double_) &&
+         PigeonInternalDeepEquals(an_enum_, other.an_enum_) &&
+         PigeonInternalDeepEquals(another_enum_, other.another_enum_) &&
+         PigeonInternalDeepEquals(a_string_, other.a_string_) &&
+         PigeonInternalDeepEquals(an_object_, other.an_object_) &&
+         PigeonInternalDeepEquals(list_, other.list_) &&
+         PigeonInternalDeepEquals(string_list_, other.string_list_) &&
+         PigeonInternalDeepEquals(int_list_, other.int_list_) &&
+         PigeonInternalDeepEquals(double_list_, other.double_list_) &&
+         PigeonInternalDeepEquals(bool_list_, other.bool_list_) &&
+         PigeonInternalDeepEquals(enum_list_, other.enum_list_) &&
+         PigeonInternalDeepEquals(object_list_, other.object_list_) &&
+         PigeonInternalDeepEquals(list_list_, other.list_list_) &&
+         PigeonInternalDeepEquals(map_list_, other.map_list_) &&
+         PigeonInternalDeepEquals(map_, other.map_) &&
+         PigeonInternalDeepEquals(string_map_, other.string_map_) &&
+         PigeonInternalDeepEquals(int_map_, other.int_map_) &&
+         PigeonInternalDeepEquals(enum_map_, other.enum_map_) &&
+         PigeonInternalDeepEquals(object_map_, other.object_map_) &&
+         PigeonInternalDeepEquals(list_map_, other.list_map_) &&
+         PigeonInternalDeepEquals(map_map_, other.map_map_);
+}
+
+bool ImmutableAllTypes::operator!=(const ImmutableAllTypes& other) const {
+  return !(*this == other);
+}
+
+size_t ImmutableAllTypes::Hash() const {
+  size_t result = 1;
+  result = result * 31 + PigeonInternalDeepHash(a_bool_);
+  result = result * 31 + PigeonInternalDeepHash(an_int_);
+  result = result * 31 + PigeonInternalDeepHash(an_int64_);
+  result = result * 31 + PigeonInternalDeepHash(a_double_);
+  result = result * 31 + PigeonInternalDeepHash(an_enum_);
+  result = result * 31 + PigeonInternalDeepHash(another_enum_);
+  result = result * 31 + PigeonInternalDeepHash(a_string_);
+  result = result * 31 + PigeonInternalDeepHash(an_object_);
+  result = result * 31 + PigeonInternalDeepHash(list_);
+  result = result * 31 + PigeonInternalDeepHash(string_list_);
+  result = result * 31 + PigeonInternalDeepHash(int_list_);
+  result = result * 31 + PigeonInternalDeepHash(double_list_);
+  result = result * 31 + PigeonInternalDeepHash(bool_list_);
+  result = result * 31 + PigeonInternalDeepHash(enum_list_);
+  result = result * 31 + PigeonInternalDeepHash(object_list_);
+  result = result * 31 + PigeonInternalDeepHash(list_list_);
+  result = result * 31 + PigeonInternalDeepHash(map_list_);
+  result = result * 31 + PigeonInternalDeepHash(map_);
+  result = result * 31 + PigeonInternalDeepHash(string_map_);
+  result = result * 31 + PigeonInternalDeepHash(int_map_);
+  result = result * 31 + PigeonInternalDeepHash(enum_map_);
+  result = result * 31 + PigeonInternalDeepHash(object_map_);
+  result = result * 31 + PigeonInternalDeepHash(list_map_);
+  result = result * 31 + PigeonInternalDeepHash(map_map_);
+  return result;
+}
+
+size_t PigeonInternalDeepHash(const ImmutableAllTypes& v) { return v.Hash(); }
 
 // AllTypesWithDefaults
 
@@ -3119,41 +3205,72 @@ AllTypesWithDefaults AllTypesWithDefaults::FromEncodableList(
           std::get<CustomEncodableValue>(list[24])));
   return decoded;
 }
-=======
-bool AllClassesWrapper::operator==(const AllClassesWrapper& other) const {
-  return PigeonInternalDeepEquals(all_nullable_types_,
-                                  other.all_nullable_types_) &&
-         PigeonInternalDeepEquals(
-             all_nullable_types_without_recursion_,
-             other.all_nullable_types_without_recursion_) &&
-         PigeonInternalDeepEquals(all_types_, other.all_types_) &&
-         PigeonInternalDeepEquals(class_list_, other.class_list_) &&
-         PigeonInternalDeepEquals(nullable_class_list_,
-                                  other.nullable_class_list_) &&
-         PigeonInternalDeepEquals(class_map_, other.class_map_) &&
-         PigeonInternalDeepEquals(nullable_class_map_,
-                                  other.nullable_class_map_);
+
+bool AllTypesWithDefaults::operator==(const AllTypesWithDefaults& other) const {
+  return PigeonInternalDeepEquals(a_bool_, other.a_bool_) &&
+         PigeonInternalDeepEquals(an_int_, other.an_int_) &&
+         PigeonInternalDeepEquals(an_int64_, other.an_int64_) &&
+         PigeonInternalDeepEquals(a_double_, other.a_double_) &&
+         PigeonInternalDeepEquals(an_enum_, other.an_enum_) &&
+         PigeonInternalDeepEquals(another_enum_, other.another_enum_) &&
+         PigeonInternalDeepEquals(a_string_, other.a_string_) &&
+         PigeonInternalDeepEquals(an_object_, other.an_object_) &&
+         PigeonInternalDeepEquals(list_, other.list_) &&
+         PigeonInternalDeepEquals(string_list_, other.string_list_) &&
+         PigeonInternalDeepEquals(int_list_, other.int_list_) &&
+         PigeonInternalDeepEquals(double_list_, other.double_list_) &&
+         PigeonInternalDeepEquals(bool_list_, other.bool_list_) &&
+         PigeonInternalDeepEquals(enum_list_, other.enum_list_) &&
+         PigeonInternalDeepEquals(object_list_, other.object_list_) &&
+         PigeonInternalDeepEquals(list_list_, other.list_list_) &&
+         PigeonInternalDeepEquals(map_list_, other.map_list_) &&
+         PigeonInternalDeepEquals(map_, other.map_) &&
+         PigeonInternalDeepEquals(string_map_, other.string_map_) &&
+         PigeonInternalDeepEquals(int_map_, other.int_map_) &&
+         PigeonInternalDeepEquals(enum_map_, other.enum_map_) &&
+         PigeonInternalDeepEquals(object_map_, other.object_map_) &&
+         PigeonInternalDeepEquals(list_map_, other.list_map_) &&
+         PigeonInternalDeepEquals(map_map_, other.map_map_) &&
+         PigeonInternalDeepEquals(all_types_, other.all_types_);
 }
 
-bool AllClassesWrapper::operator!=(const AllClassesWrapper& other) const {
+bool AllTypesWithDefaults::operator!=(const AllTypesWithDefaults& other) const {
   return !(*this == other);
 }
 
-size_t AllClassesWrapper::Hash() const {
+size_t AllTypesWithDefaults::Hash() const {
   size_t result = 1;
-  result = result * 31 + PigeonInternalDeepHash(all_nullable_types_);
-  result = result * 31 +
-           PigeonInternalDeepHash(all_nullable_types_without_recursion_);
+  result = result * 31 + PigeonInternalDeepHash(a_bool_);
+  result = result * 31 + PigeonInternalDeepHash(an_int_);
+  result = result * 31 + PigeonInternalDeepHash(an_int64_);
+  result = result * 31 + PigeonInternalDeepHash(a_double_);
+  result = result * 31 + PigeonInternalDeepHash(an_enum_);
+  result = result * 31 + PigeonInternalDeepHash(another_enum_);
+  result = result * 31 + PigeonInternalDeepHash(a_string_);
+  result = result * 31 + PigeonInternalDeepHash(an_object_);
+  result = result * 31 + PigeonInternalDeepHash(list_);
+  result = result * 31 + PigeonInternalDeepHash(string_list_);
+  result = result * 31 + PigeonInternalDeepHash(int_list_);
+  result = result * 31 + PigeonInternalDeepHash(double_list_);
+  result = result * 31 + PigeonInternalDeepHash(bool_list_);
+  result = result * 31 + PigeonInternalDeepHash(enum_list_);
+  result = result * 31 + PigeonInternalDeepHash(object_list_);
+  result = result * 31 + PigeonInternalDeepHash(list_list_);
+  result = result * 31 + PigeonInternalDeepHash(map_list_);
+  result = result * 31 + PigeonInternalDeepHash(map_);
+  result = result * 31 + PigeonInternalDeepHash(string_map_);
+  result = result * 31 + PigeonInternalDeepHash(int_map_);
+  result = result * 31 + PigeonInternalDeepHash(enum_map_);
+  result = result * 31 + PigeonInternalDeepHash(object_map_);
+  result = result * 31 + PigeonInternalDeepHash(list_map_);
+  result = result * 31 + PigeonInternalDeepHash(map_map_);
   result = result * 31 + PigeonInternalDeepHash(all_types_);
-  result = result * 31 + PigeonInternalDeepHash(class_list_);
-  result = result * 31 + PigeonInternalDeepHash(nullable_class_list_);
-  result = result * 31 + PigeonInternalDeepHash(class_map_);
-  result = result * 31 + PigeonInternalDeepHash(nullable_class_map_);
   return result;
 }
 
-size_t PigeonInternalDeepHash(const AllClassesWrapper& v) { return v.Hash(); }
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
+size_t PigeonInternalDeepHash(const AllTypesWithDefaults& v) {
+  return v.Hash();
+}
 
 // TestMessage
 
@@ -3192,12 +3309,6 @@ TestMessage TestMessage::FromEncodableList(const EncodableList& list) {
   return decoded;
 }
 
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
-GolubetsCodecSerializer::GolubetsCodecSerializer() {}
-
-EncodableValue GolubetsCodecSerializer::ReadValueOfType(
-    uint8_t type, flutter::ByteStreamReader* stream) const {
-=======
 bool TestMessage::operator==(const TestMessage& other) const {
   return PigeonInternalDeepEquals(test_list_, other.test_list_);
 }
@@ -3214,11 +3325,10 @@ size_t TestMessage::Hash() const {
 
 size_t PigeonInternalDeepHash(const TestMessage& v) { return v.Hash(); }
 
-PigeonInternalCodecSerializer::PigeonInternalCodecSerializer() {}
+GolubetsCodecSerializer::GolubetsCodecSerializer() {}
 
-EncodableValue PigeonInternalCodecSerializer::ReadValueOfType(
+EncodableValue GolubetsCodecSerializer::ReadValueOfType(
     uint8_t type, ::flutter::ByteStreamReader* stream) const {
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
   switch (type) {
     case 129: {
       const auto& encodable_enum_arg = ReadValue(stream);
@@ -3275,13 +3385,8 @@ EncodableValue PigeonInternalCodecSerializer::ReadValueOfType(
   }
 }
 
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
 void GolubetsCodecSerializer::WriteValue(
-    const EncodableValue& value, flutter::ByteStreamWriter* stream) const {
-=======
-void PigeonInternalCodecSerializer::WriteValue(
     const EncodableValue& value, ::flutter::ByteStreamWriter* stream) const {
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
   if (const CustomEncodableValue* custom_value =
           std::get_if<CustomEncodableValue>(&value)) {
     if (custom_value->type() == typeid(AnEnum)) {
@@ -3364,15 +3469,9 @@ void PigeonInternalCodecSerializer::WriteValue(
 }
 
 /// The codec used by HostIntegrationCoreApi.
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
-const flutter::StandardMessageCodec& HostIntegrationCoreApi::GetCodec() {
-  return flutter::StandardMessageCodec::GetInstance(
-      &GolubetsCodecSerializer::GetInstance());
-=======
 const ::flutter::StandardMessageCodec& HostIntegrationCoreApi::GetCodec() {
   return ::flutter::StandardMessageCodec::GetInstance(
-      &PigeonInternalCodecSerializer::GetInstance());
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
+      &GolubetsCodecSerializer::GetInstance());
 }
 
 // Sets up an instance of `HostIntegrationCoreApi` to handle messages through
@@ -4454,7 +4553,7 @@ void HostIntegrationCoreApi::SetUp(::flutter::BinaryMessenger* binary_messenger,
     if (api != nullptr) {
       channel.SetMessageHandler(
           [api](const EncodableValue& message,
-                const flutter::MessageReply<EncodableValue>& reply) {
+                const ::flutter::MessageReply<EncodableValue>& reply) {
             try {
               ErrorOr<AllTypesWithDefaults> output =
                   api->CreateAllTypesWithDefaults();
@@ -4484,7 +4583,7 @@ void HostIntegrationCoreApi::SetUp(::flutter::BinaryMessenger* binary_messenger,
     if (api != nullptr) {
       channel.SetMessageHandler(
           [api](const EncodableValue& message,
-                const flutter::MessageReply<EncodableValue>& reply) {
+                const ::flutter::MessageReply<EncodableValue>& reply) {
             try {
               const auto& args = std::get<EncodableList>(message);
               const auto& encodable_all_types_arg = args.at(0);
@@ -4551,10 +4650,7 @@ void HostIntegrationCoreApi::SetUp(::flutter::BinaryMessenger* binary_messenger,
   {
     BasicMessageChannel<> channel(
         binary_messenger,
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
         "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi."
-=======
-        "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi."
         "areAllNullableTypesEqual" +
             prepended_suffix,
         &GetCodec());
@@ -4598,7 +4694,7 @@ void HostIntegrationCoreApi::SetUp(::flutter::BinaryMessenger* binary_messenger,
   {
     BasicMessageChannel<> channel(
         binary_messenger,
-        "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi."
+        "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi."
         "getAllNullableTypesHash" +
             prepended_suffix,
         &GetCodec());
@@ -4634,7 +4730,7 @@ void HostIntegrationCoreApi::SetUp(::flutter::BinaryMessenger* binary_messenger,
   {
     BasicMessageChannel<> channel(
         binary_messenger,
-        "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi."
+        "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi."
         "getAllNullableTypesWithoutRecursionHash" +
             prepended_suffix,
         &GetCodec());
@@ -4672,8 +4768,7 @@ void HostIntegrationCoreApi::SetUp(::flutter::BinaryMessenger* binary_messenger,
   {
     BasicMessageChannel<> channel(
         binary_messenger,
-        "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi."
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
+        "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi."
         "echoAllNullableTypes" +
             prepended_suffix,
         &GetCodec());
@@ -6657,7 +6752,7 @@ void HostIntegrationCoreApi::SetUp(::flutter::BinaryMessenger* binary_messenger,
     if (api != nullptr) {
       channel.SetMessageHandler(
           [api](const EncodableValue& message,
-                const flutter::MessageReply<EncodableValue>& reply) {
+                const ::flutter::MessageReply<EncodableValue>& reply) {
             try {
               const auto& args = std::get<EncodableList>(message);
               const auto& encodable_everything_arg = args.at(0);
@@ -6696,7 +6791,7 @@ void HostIntegrationCoreApi::SetUp(::flutter::BinaryMessenger* binary_messenger,
     if (api != nullptr) {
       channel.SetMessageHandler(
           [api](const EncodableValue& message,
-                const flutter::MessageReply<EncodableValue>& reply) {
+                const ::flutter::MessageReply<EncodableValue>& reply) {
             try {
               const auto& args = std::get<EncodableList>(message);
               const auto& encodable_everything_arg = args.at(0);
@@ -6735,7 +6830,7 @@ void HostIntegrationCoreApi::SetUp(::flutter::BinaryMessenger* binary_messenger,
     if (api != nullptr) {
       channel.SetMessageHandler(
           [api](const EncodableValue& message,
-                const flutter::MessageReply<EncodableValue>& reply) {
+                const ::flutter::MessageReply<EncodableValue>& reply) {
             try {
               const auto& args = std::get<EncodableList>(message);
               const auto& encodable_everything_arg = args.at(0);
@@ -6819,7 +6914,7 @@ void HostIntegrationCoreApi::SetUp(::flutter::BinaryMessenger* binary_messenger,
     if (api != nullptr) {
       channel.SetMessageHandler(
           [api](const EncodableValue& message,
-                const flutter::MessageReply<EncodableValue>& reply) {
+                const ::flutter::MessageReply<EncodableValue>& reply) {
             try {
               const auto& args = std::get<EncodableList>(message);
               const auto& encodable_everything_arg = args.at(0);
@@ -9686,15 +9781,9 @@ FlutterIntegrationCoreApi::FlutterIntegrationCoreApi(
                                   ? std::string(".") + message_channel_suffix
                                   : "") {}
 
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
-const flutter::StandardMessageCodec& FlutterIntegrationCoreApi::GetCodec() {
-  return flutter::StandardMessageCodec::GetInstance(
-      &GolubetsCodecSerializer::GetInstance());
-=======
 const ::flutter::StandardMessageCodec& FlutterIntegrationCoreApi::GetCodec() {
   return ::flutter::StandardMessageCodec::GetInstance(
-      &PigeonInternalCodecSerializer::GetInstance());
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
+      &GolubetsCodecSerializer::GetInstance());
 }
 
 void FlutterIntegrationCoreApi::Noop(
@@ -11675,15 +11764,9 @@ void FlutterIntegrationCoreApi::EchoAsyncString(
 }
 
 /// The codec used by HostTrivialApi.
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
-const flutter::StandardMessageCodec& HostTrivialApi::GetCodec() {
-  return flutter::StandardMessageCodec::GetInstance(
-      &GolubetsCodecSerializer::GetInstance());
-=======
 const ::flutter::StandardMessageCodec& HostTrivialApi::GetCodec() {
   return ::flutter::StandardMessageCodec::GetInstance(
-      &PigeonInternalCodecSerializer::GetInstance());
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
+      &GolubetsCodecSerializer::GetInstance());
 }
 
 // Sets up an instance of `HostTrivialApi` to handle messages through the
@@ -11742,15 +11825,9 @@ EncodableValue HostTrivialApi::WrapError(const FlutterError& error) {
 }
 
 /// The codec used by HostSmallApi.
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
-const flutter::StandardMessageCodec& HostSmallApi::GetCodec() {
-  return flutter::StandardMessageCodec::GetInstance(
-      &GolubetsCodecSerializer::GetInstance());
-=======
 const ::flutter::StandardMessageCodec& HostSmallApi::GetCodec() {
   return ::flutter::StandardMessageCodec::GetInstance(
-      &PigeonInternalCodecSerializer::GetInstance());
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
+      &GolubetsCodecSerializer::GetInstance());
 }
 
 // Sets up an instance of `HostSmallApi` to handle messages through the
@@ -11858,15 +11935,9 @@ FlutterSmallApi::FlutterSmallApi(::flutter::BinaryMessenger* binary_messenger,
                                   ? std::string(".") + message_channel_suffix
                                   : "") {}
 
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
-const flutter::StandardMessageCodec& FlutterSmallApi::GetCodec() {
-  return flutter::StandardMessageCodec::GetInstance(
-      &GolubetsCodecSerializer::GetInstance());
-=======
 const ::flutter::StandardMessageCodec& FlutterSmallApi::GetCodec() {
   return ::flutter::StandardMessageCodec::GetInstance(
-      &PigeonInternalCodecSerializer::GetInstance());
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/pigeon/core_tests.gen.cpp
+      &GolubetsCodecSerializer::GetInstance());
 }
 
 void FlutterSmallApi::EchoWrappedList(

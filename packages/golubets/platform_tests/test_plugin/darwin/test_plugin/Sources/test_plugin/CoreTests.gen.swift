@@ -146,10 +146,7 @@ func deepEqualsCoreTests(_ lhs: Any?, _ rhs: Any?) -> Bool {
     return lhsHashable == rhsHashable
 
   default:
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/darwin/test_plugin/Sources/test_plugin/CoreTests.gen.swift
     // Any other type shouldn't be able to be used with golubetsets. File an issue if you find this to be untrue.
-=======
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/darwin/test_plugin/Sources/test_plugin/CoreTests.gen.swift
     return false
   }
 }
@@ -221,24 +218,16 @@ public struct UnusedClass: Hashable {
       aField
     ]
   }
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/darwin/test_plugin/Sources/test_plugin/CoreTests.gen.swift
   public static func == (lhs: UnusedClass, rhs: UnusedClass) -> Bool {
-    return deepEqualsCoreTests(lhs.toList(), rhs.toList())
-  }
-  public func hash(into hasher: inout Hasher) {
-    deepHashCoreTests(value: toList(), hasher: &hasher)
-=======
-  static func == (lhs: UnusedClass, rhs: UnusedClass) -> Bool {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
     return deepEqualsCoreTests(lhs.aField, rhs.aField)
   }
 
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     hasher.combine("UnusedClass")
     deepHashCoreTests(value: aField, hasher: &hasher)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/darwin/test_plugin/Sources/test_plugin/CoreTests.gen.swift
   }
 }
 
@@ -428,14 +417,7 @@ public struct AllTypes: Hashable {
       mapMap,
     ]
   }
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/darwin/test_plugin/Sources/test_plugin/CoreTests.gen.swift
   public static func == (lhs: AllTypes, rhs: AllTypes) -> Bool {
-    return deepEqualsCoreTests(lhs.toList(), rhs.toList())
-  }
-  public func hash(into hasher: inout Hasher) {
-    deepHashCoreTests(value: toList(), hasher: &hasher)
-=======
-  static func == (lhs: AllTypes, rhs: AllTypes) -> Bool {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
@@ -466,7 +448,7 @@ public struct AllTypes: Hashable {
       && deepEqualsCoreTests(lhs.mapMap, rhs.mapMap)
   }
 
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     hasher.combine("AllTypes")
     deepHashCoreTests(value: aBool, hasher: &hasher)
     deepHashCoreTests(value: anInt, hasher: &hasher)
@@ -496,7 +478,6 @@ public struct AllTypes: Hashable {
     deepHashCoreTests(value: objectMap, hasher: &hasher)
     deepHashCoreTests(value: listMap, hasher: &hasher)
     deepHashCoreTests(value: mapMap, hasher: &hasher)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/darwin/test_plugin/Sources/test_plugin/CoreTests.gen.swift
   }
 }
 
@@ -704,14 +685,10 @@ public class AllNullableTypes: Hashable {
       recursiveClassMap,
     ]
   }
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/darwin/test_plugin/Sources/test_plugin/CoreTests.gen.swift
   public static func == (lhs: AllNullableTypes, rhs: AllNullableTypes) -> Bool {
-=======
-  static func == (lhs: AllNullableTypes, rhs: AllNullableTypes) -> Bool {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/darwin/test_plugin/Sources/test_plugin/CoreTests.gen.swift
     if lhs === rhs {
       return true
     }
@@ -746,12 +723,8 @@ public class AllNullableTypes: Hashable {
       && deepEqualsCoreTests(lhs.mapMap, rhs.mapMap)
       && deepEqualsCoreTests(lhs.recursiveClassMap, rhs.recursiveClassMap)
   }
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/darwin/test_plugin/Sources/test_plugin/CoreTests.gen.swift
-  public func hash(into hasher: inout Hasher) {
-    deepHashCoreTests(value: toList(), hasher: &hasher)
-=======
 
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     hasher.combine("AllNullableTypes")
     deepHashCoreTests(value: aNullableBool, hasher: &hasher)
     deepHashCoreTests(value: aNullableInt, hasher: &hasher)
@@ -784,7 +757,6 @@ public class AllNullableTypes: Hashable {
     deepHashCoreTests(value: listMap, hasher: &hasher)
     deepHashCoreTests(value: mapMap, hasher: &hasher)
     deepHashCoreTests(value: recursiveClassMap, hasher: &hasher)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/darwin/test_plugin/Sources/test_plugin/CoreTests.gen.swift
   }
 }
 
@@ -976,18 +948,9 @@ public struct AllNullableTypesWithoutRecursion: Hashable {
       mapMap,
     ]
   }
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/darwin/test_plugin/Sources/test_plugin/CoreTests.gen.swift
   public static func == (
     lhs: AllNullableTypesWithoutRecursion, rhs: AllNullableTypesWithoutRecursion
   ) -> Bool {
-    return deepEqualsCoreTests(lhs.toList(), rhs.toList())
-  }
-  public func hash(into hasher: inout Hasher) {
-    deepHashCoreTests(value: toList(), hasher: &hasher)
-=======
-  static func == (lhs: AllNullableTypesWithoutRecursion, rhs: AllNullableTypesWithoutRecursion)
-    -> Bool
-  {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
@@ -1020,7 +983,7 @@ public struct AllNullableTypesWithoutRecursion: Hashable {
       && deepEqualsCoreTests(lhs.mapMap, rhs.mapMap)
   }
 
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     hasher.combine("AllNullableTypesWithoutRecursion")
     deepHashCoreTests(value: aNullableBool, hasher: &hasher)
     deepHashCoreTests(value: aNullableInt, hasher: &hasher)
@@ -1050,7 +1013,6 @@ public struct AllNullableTypesWithoutRecursion: Hashable {
     deepHashCoreTests(value: objectMap, hasher: &hasher)
     deepHashCoreTests(value: listMap, hasher: &hasher)
     deepHashCoreTests(value: mapMap, hasher: &hasher)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/darwin/test_plugin/Sources/test_plugin/CoreTests.gen.swift
   }
 }
 
@@ -1120,12 +1082,29 @@ public struct AllClassesWrapper: Hashable {
       nullableClassMap,
     ]
   }
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/darwin/test_plugin/Sources/test_plugin/CoreTests.gen.swift
   public static func == (lhs: AllClassesWrapper, rhs: AllClassesWrapper) -> Bool {
-    return deepEqualsCoreTests(lhs.toList(), rhs.toList())
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return deepEqualsCoreTests(lhs.allNullableTypes, rhs.allNullableTypes)
+      && deepEqualsCoreTests(
+        lhs.allNullableTypesWithoutRecursion, rhs.allNullableTypesWithoutRecursion)
+      && deepEqualsCoreTests(lhs.allTypes, rhs.allTypes)
+      && deepEqualsCoreTests(lhs.classList, rhs.classList)
+      && deepEqualsCoreTests(lhs.nullableClassList, rhs.nullableClassList)
+      && deepEqualsCoreTests(lhs.classMap, rhs.classMap)
+      && deepEqualsCoreTests(lhs.nullableClassMap, rhs.nullableClassMap)
   }
+
   public func hash(into hasher: inout Hasher) {
-    deepHashCoreTests(value: toList(), hasher: &hasher)
+    hasher.combine("AllClassesWrapper")
+    deepHashCoreTests(value: allNullableTypes, hasher: &hasher)
+    deepHashCoreTests(value: allNullableTypesWithoutRecursion, hasher: &hasher)
+    deepHashCoreTests(value: allTypes, hasher: &hasher)
+    deepHashCoreTests(value: classList, hasher: &hasher)
+    deepHashCoreTests(value: nullableClassList, hasher: &hasher)
+    deepHashCoreTests(value: classMap, hasher: &hasher)
+    deepHashCoreTests(value: nullableClassMap, hasher: &hasher)
   }
 }
 
@@ -1292,10 +1271,58 @@ public struct ImmutableAllTypes: Hashable {
     ]
   }
   public static func == (lhs: ImmutableAllTypes, rhs: ImmutableAllTypes) -> Bool {
-    return deepEqualsCoreTests(lhs.toList(), rhs.toList())
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return deepEqualsCoreTests(lhs.aBool, rhs.aBool) && deepEqualsCoreTests(lhs.anInt, rhs.anInt)
+      && deepEqualsCoreTests(lhs.anInt64, rhs.anInt64)
+      && deepEqualsCoreTests(lhs.aDouble, rhs.aDouble)
+      && deepEqualsCoreTests(lhs.anEnum, rhs.anEnum)
+      && deepEqualsCoreTests(lhs.anotherEnum, rhs.anotherEnum)
+      && deepEqualsCoreTests(lhs.aString, rhs.aString)
+      && deepEqualsCoreTests(lhs.anObject, rhs.anObject) && deepEqualsCoreTests(lhs.list, rhs.list)
+      && deepEqualsCoreTests(lhs.stringList, rhs.stringList)
+      && deepEqualsCoreTests(lhs.intList, rhs.intList)
+      && deepEqualsCoreTests(lhs.doubleList, rhs.doubleList)
+      && deepEqualsCoreTests(lhs.boolList, rhs.boolList)
+      && deepEqualsCoreTests(lhs.enumList, rhs.enumList)
+      && deepEqualsCoreTests(lhs.objectList, rhs.objectList)
+      && deepEqualsCoreTests(lhs.listList, rhs.listList)
+      && deepEqualsCoreTests(lhs.mapList, rhs.mapList) && deepEqualsCoreTests(lhs.map, rhs.map)
+      && deepEqualsCoreTests(lhs.stringMap, rhs.stringMap)
+      && deepEqualsCoreTests(lhs.intMap, rhs.intMap)
+      && deepEqualsCoreTests(lhs.enumMap, rhs.enumMap)
+      && deepEqualsCoreTests(lhs.objectMap, rhs.objectMap)
+      && deepEqualsCoreTests(lhs.listMap, rhs.listMap)
+      && deepEqualsCoreTests(lhs.mapMap, rhs.mapMap)
   }
+
   public func hash(into hasher: inout Hasher) {
-    deepHashCoreTests(value: toList(), hasher: &hasher)
+    hasher.combine("ImmutableAllTypes")
+    deepHashCoreTests(value: aBool, hasher: &hasher)
+    deepHashCoreTests(value: anInt, hasher: &hasher)
+    deepHashCoreTests(value: anInt64, hasher: &hasher)
+    deepHashCoreTests(value: aDouble, hasher: &hasher)
+    deepHashCoreTests(value: anEnum, hasher: &hasher)
+    deepHashCoreTests(value: anotherEnum, hasher: &hasher)
+    deepHashCoreTests(value: aString, hasher: &hasher)
+    deepHashCoreTests(value: anObject, hasher: &hasher)
+    deepHashCoreTests(value: list, hasher: &hasher)
+    deepHashCoreTests(value: stringList, hasher: &hasher)
+    deepHashCoreTests(value: intList, hasher: &hasher)
+    deepHashCoreTests(value: doubleList, hasher: &hasher)
+    deepHashCoreTests(value: boolList, hasher: &hasher)
+    deepHashCoreTests(value: enumList, hasher: &hasher)
+    deepHashCoreTests(value: objectList, hasher: &hasher)
+    deepHashCoreTests(value: listList, hasher: &hasher)
+    deepHashCoreTests(value: mapList, hasher: &hasher)
+    deepHashCoreTests(value: map, hasher: &hasher)
+    deepHashCoreTests(value: stringMap, hasher: &hasher)
+    deepHashCoreTests(value: intMap, hasher: &hasher)
+    deepHashCoreTests(value: enumMap, hasher: &hasher)
+    deepHashCoreTests(value: objectMap, hasher: &hasher)
+    deepHashCoreTests(value: listMap, hasher: &hasher)
+    deepHashCoreTests(value: mapMap, hasher: &hasher)
   }
 }
 
@@ -2033,35 +2060,60 @@ public struct AllTypesWithDefaults: Hashable {
     ]
   }
   public static func == (lhs: AllTypesWithDefaults, rhs: AllTypesWithDefaults) -> Bool {
-    return deepEqualsCoreTests(lhs.toList(), rhs.toList())
-  }
-  public func hash(into hasher: inout Hasher) {
-    deepHashCoreTests(value: toList(), hasher: &hasher)
-=======
-  static func == (lhs: AllClassesWrapper, rhs: AllClassesWrapper) -> Bool {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return deepEqualsCoreTests(lhs.allNullableTypes, rhs.allNullableTypes)
-      && deepEqualsCoreTests(
-        lhs.allNullableTypesWithoutRecursion, rhs.allNullableTypesWithoutRecursion)
+    return deepEqualsCoreTests(lhs.aBool, rhs.aBool) && deepEqualsCoreTests(lhs.anInt, rhs.anInt)
+      && deepEqualsCoreTests(lhs.anInt64, rhs.anInt64)
+      && deepEqualsCoreTests(lhs.aDouble, rhs.aDouble)
+      && deepEqualsCoreTests(lhs.anEnum, rhs.anEnum)
+      && deepEqualsCoreTests(lhs.anotherEnum, rhs.anotherEnum)
+      && deepEqualsCoreTests(lhs.aString, rhs.aString)
+      && deepEqualsCoreTests(lhs.anObject, rhs.anObject) && deepEqualsCoreTests(lhs.list, rhs.list)
+      && deepEqualsCoreTests(lhs.stringList, rhs.stringList)
+      && deepEqualsCoreTests(lhs.intList, rhs.intList)
+      && deepEqualsCoreTests(lhs.doubleList, rhs.doubleList)
+      && deepEqualsCoreTests(lhs.boolList, rhs.boolList)
+      && deepEqualsCoreTests(lhs.enumList, rhs.enumList)
+      && deepEqualsCoreTests(lhs.objectList, rhs.objectList)
+      && deepEqualsCoreTests(lhs.listList, rhs.listList)
+      && deepEqualsCoreTests(lhs.mapList, rhs.mapList) && deepEqualsCoreTests(lhs.map, rhs.map)
+      && deepEqualsCoreTests(lhs.stringMap, rhs.stringMap)
+      && deepEqualsCoreTests(lhs.intMap, rhs.intMap)
+      && deepEqualsCoreTests(lhs.enumMap, rhs.enumMap)
+      && deepEqualsCoreTests(lhs.objectMap, rhs.objectMap)
+      && deepEqualsCoreTests(lhs.listMap, rhs.listMap)
+      && deepEqualsCoreTests(lhs.mapMap, rhs.mapMap)
       && deepEqualsCoreTests(lhs.allTypes, rhs.allTypes)
-      && deepEqualsCoreTests(lhs.classList, rhs.classList)
-      && deepEqualsCoreTests(lhs.nullableClassList, rhs.nullableClassList)
-      && deepEqualsCoreTests(lhs.classMap, rhs.classMap)
-      && deepEqualsCoreTests(lhs.nullableClassMap, rhs.nullableClassMap)
   }
 
-  func hash(into hasher: inout Hasher) {
-    hasher.combine("AllClassesWrapper")
-    deepHashCoreTests(value: allNullableTypes, hasher: &hasher)
-    deepHashCoreTests(value: allNullableTypesWithoutRecursion, hasher: &hasher)
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine("AllTypesWithDefaults")
+    deepHashCoreTests(value: aBool, hasher: &hasher)
+    deepHashCoreTests(value: anInt, hasher: &hasher)
+    deepHashCoreTests(value: anInt64, hasher: &hasher)
+    deepHashCoreTests(value: aDouble, hasher: &hasher)
+    deepHashCoreTests(value: anEnum, hasher: &hasher)
+    deepHashCoreTests(value: anotherEnum, hasher: &hasher)
+    deepHashCoreTests(value: aString, hasher: &hasher)
+    deepHashCoreTests(value: anObject, hasher: &hasher)
+    deepHashCoreTests(value: list, hasher: &hasher)
+    deepHashCoreTests(value: stringList, hasher: &hasher)
+    deepHashCoreTests(value: intList, hasher: &hasher)
+    deepHashCoreTests(value: doubleList, hasher: &hasher)
+    deepHashCoreTests(value: boolList, hasher: &hasher)
+    deepHashCoreTests(value: enumList, hasher: &hasher)
+    deepHashCoreTests(value: objectList, hasher: &hasher)
+    deepHashCoreTests(value: listList, hasher: &hasher)
+    deepHashCoreTests(value: mapList, hasher: &hasher)
+    deepHashCoreTests(value: map, hasher: &hasher)
+    deepHashCoreTests(value: stringMap, hasher: &hasher)
+    deepHashCoreTests(value: intMap, hasher: &hasher)
+    deepHashCoreTests(value: enumMap, hasher: &hasher)
+    deepHashCoreTests(value: objectMap, hasher: &hasher)
+    deepHashCoreTests(value: listMap, hasher: &hasher)
+    deepHashCoreTests(value: mapMap, hasher: &hasher)
     deepHashCoreTests(value: allTypes, hasher: &hasher)
-    deepHashCoreTests(value: classList, hasher: &hasher)
-    deepHashCoreTests(value: nullableClassList, hasher: &hasher)
-    deepHashCoreTests(value: classMap, hasher: &hasher)
-    deepHashCoreTests(value: nullableClassMap, hasher: &hasher)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/darwin/test_plugin/Sources/test_plugin/CoreTests.gen.swift
   }
 }
 
@@ -2089,24 +2141,16 @@ public struct TestMessage: Hashable {
       testList
     ]
   }
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/darwin/test_plugin/Sources/test_plugin/CoreTests.gen.swift
   public static func == (lhs: TestMessage, rhs: TestMessage) -> Bool {
-    return deepEqualsCoreTests(lhs.toList(), rhs.toList())
-  }
-  public func hash(into hasher: inout Hasher) {
-    deepHashCoreTests(value: toList(), hasher: &hasher)
-=======
-  static func == (lhs: TestMessage, rhs: TestMessage) -> Bool {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
     return deepEqualsCoreTests(lhs.testList, rhs.testList)
   }
 
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     hasher.combine("TestMessage")
     deepHashCoreTests(value: testList, hasher: &hasher)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/darwin/test_plugin/Sources/test_plugin/CoreTests.gen.swift
   }
 }
 
@@ -3222,7 +3266,7 @@ public class HostIntegrationCoreApiSetup {
     /// Returns the result of platform-side equality check.
     let areAllNullableTypesEqualChannel = FlutterBasicMessageChannel(
       name:
-        "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.areAllNullableTypesEqual\(channelSuffix)",
+        "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.areAllNullableTypesEqual\(channelSuffix)",
       binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       areAllNullableTypesEqualChannel.setMessageHandler { message, reply in
@@ -3242,7 +3286,7 @@ public class HostIntegrationCoreApiSetup {
     /// Returns the platform-side hash code for the given object.
     let getAllNullableTypesHashChannel = FlutterBasicMessageChannel(
       name:
-        "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.getAllNullableTypesHash\(channelSuffix)",
+        "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.getAllNullableTypesHash\(channelSuffix)",
       binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       getAllNullableTypesHashChannel.setMessageHandler { message, reply in
@@ -3261,7 +3305,7 @@ public class HostIntegrationCoreApiSetup {
     /// Returns the platform-side hash code for the given object.
     let getAllNullableTypesWithoutRecursionHashChannel = FlutterBasicMessageChannel(
       name:
-        "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.getAllNullableTypesWithoutRecursionHash\(channelSuffix)",
+        "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.getAllNullableTypesWithoutRecursionHash\(channelSuffix)",
       binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       getAllNullableTypesWithoutRecursionHashChannel.setMessageHandler { message, reply in

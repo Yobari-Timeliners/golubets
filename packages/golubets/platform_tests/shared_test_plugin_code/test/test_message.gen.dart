@@ -85,36 +85,13 @@ abstract class TestHostApi {
         binaryMessenger: binaryMessenger,
       );
       if (api == null) {
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/test_message.gen.dart
-        _testBinaryMessengerBinding!.defaultBinaryMessenger
-            .setMockDecodedMessageHandler<Object?>(golubetsVar_channel, null);
-      } else {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger
-            .setMockDecodedMessageHandler<Object?>(golubetsVar_channel, (
-              Object? message,
-            ) async {
-              try {
-                api.initialize();
-                return wrapResponse(empty: true);
-              } on PlatformException catch (e) {
-                return wrapResponse(error: e);
-              } catch (e) {
-                return wrapResponse(
-                  error: PlatformException(
-                    code: 'error',
-                    message: e.toString(),
-                  ),
-                );
-              }
-            });
-=======
         _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(
-          pigeonVar_channel,
+          golubetsVar_channel,
           null,
         );
       } else {
         _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(
-          pigeonVar_channel,
+          golubetsVar_channel,
           (Object? message) async {
             try {
               api.initialize();
@@ -128,7 +105,6 @@ abstract class TestHostApi {
             }
           },
         );
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/test_message.gen.dart
       }
     }
     {
@@ -138,39 +114,13 @@ abstract class TestHostApi {
         binaryMessenger: binaryMessenger,
       );
       if (api == null) {
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/test_message.gen.dart
-        _testBinaryMessengerBinding!.defaultBinaryMessenger
-            .setMockDecodedMessageHandler<Object?>(golubetsVar_channel, null);
-      } else {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger
-            .setMockDecodedMessageHandler<Object?>(golubetsVar_channel, (
-              Object? message,
-            ) async {
-              final List<Object?> args = message! as List<Object?>;
-              final MessageSearchRequest arg_request =
-                  args[0]! as MessageSearchRequest;
-              try {
-                final MessageSearchReply output = api.search(arg_request);
-                return <Object?>[output];
-              } on PlatformException catch (e) {
-                return wrapResponse(error: e);
-              } catch (e) {
-                return wrapResponse(
-                  error: PlatformException(
-                    code: 'error',
-                    message: e.toString(),
-                  ),
-                );
-              }
-            });
-=======
         _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(
-          pigeonVar_channel,
+          golubetsVar_channel,
           null,
         );
       } else {
         _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(
-          pigeonVar_channel,
+          golubetsVar_channel,
           (Object? message) async {
             final List<Object?> args = message! as List<Object?>;
             final MessageSearchRequest arg_request = args[0]! as MessageSearchRequest;
@@ -186,7 +136,6 @@ abstract class TestHostApi {
             }
           },
         );
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/test_message.gen.dart
       }
     }
   }
@@ -216,38 +165,13 @@ abstract class TestNestedApi {
         binaryMessenger: binaryMessenger,
       );
       if (api == null) {
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/test/test_message.gen.dart
-        _testBinaryMessengerBinding!.defaultBinaryMessenger
-            .setMockDecodedMessageHandler<Object?>(golubetsVar_channel, null);
-      } else {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger
-            .setMockDecodedMessageHandler<Object?>(golubetsVar_channel, (
-              Object? message,
-            ) async {
-              final List<Object?> args = message! as List<Object?>;
-              final MessageNested arg_nested = args[0]! as MessageNested;
-              try {
-                final MessageSearchReply output = api.search(arg_nested);
-                return <Object?>[output];
-              } on PlatformException catch (e) {
-                return wrapResponse(error: e);
-              } catch (e) {
-                return wrapResponse(
-                  error: PlatformException(
-                    code: 'error',
-                    message: e.toString(),
-                  ),
-                );
-              }
-            });
-=======
         _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(
-          pigeonVar_channel,
+          golubetsVar_channel,
           null,
         );
       } else {
         _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(
-          pigeonVar_channel,
+          golubetsVar_channel,
           (Object? message) async {
             final List<Object?> args = message! as List<Object?>;
             final MessageNested arg_nested = args[0]! as MessageNested;
@@ -263,7 +187,6 @@ abstract class TestNestedApi {
             }
           },
         );
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/test/test_message.gen.dart
       }
     }
   }

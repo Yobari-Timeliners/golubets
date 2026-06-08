@@ -238,23 +238,18 @@ data class UnusedClass(val aField: Any? = null) {
   }
 
   override fun equals(other: Any?): Boolean {
-    if (other == null || other.javaClass != javaClass) {
+    if (other !is UnusedClass) {
       return false
     }
     if (this === other) {
       return true
     }
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/CoreTests.gen.kt
-    return CoreTestsGolubetsUtils.deepEquals(toList(), other.toList())
-=======
-    val other = other as UnusedClass
-    return CoreTestsPigeonUtils.deepEquals(this.aField, other.aField)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/CoreTests.gen.kt
+    return CoreTestsGolubetsUtils.deepEquals(this.aField, other.aField)
   }
 
   override fun hashCode(): Int {
     var result = javaClass.hashCode()
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aField)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aField)
     return result
   }
 }
@@ -390,77 +385,72 @@ data class AllTypes(
   }
 
   override fun equals(other: Any?): Boolean {
-    if (other == null || other.javaClass != javaClass) {
+    if (other !is AllTypes) {
       return false
     }
     if (this === other) {
       return true
     }
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/CoreTests.gen.kt
-    return CoreTestsGolubetsUtils.deepEquals(toList(), other.toList())
-=======
-    val other = other as AllTypes
-    return CoreTestsPigeonUtils.deepEquals(this.aBool, other.aBool) &&
-        CoreTestsPigeonUtils.deepEquals(this.anInt, other.anInt) &&
-        CoreTestsPigeonUtils.deepEquals(this.anInt64, other.anInt64) &&
-        CoreTestsPigeonUtils.deepEquals(this.aDouble, other.aDouble) &&
-        CoreTestsPigeonUtils.deepEquals(this.aByteArray, other.aByteArray) &&
-        CoreTestsPigeonUtils.deepEquals(this.a4ByteArray, other.a4ByteArray) &&
-        CoreTestsPigeonUtils.deepEquals(this.a8ByteArray, other.a8ByteArray) &&
-        CoreTestsPigeonUtils.deepEquals(this.aFloatArray, other.aFloatArray) &&
-        CoreTestsPigeonUtils.deepEquals(this.anEnum, other.anEnum) &&
-        CoreTestsPigeonUtils.deepEquals(this.anotherEnum, other.anotherEnum) &&
-        CoreTestsPigeonUtils.deepEquals(this.aString, other.aString) &&
-        CoreTestsPigeonUtils.deepEquals(this.anObject, other.anObject) &&
-        CoreTestsPigeonUtils.deepEquals(this.list, other.list) &&
-        CoreTestsPigeonUtils.deepEquals(this.stringList, other.stringList) &&
-        CoreTestsPigeonUtils.deepEquals(this.intList, other.intList) &&
-        CoreTestsPigeonUtils.deepEquals(this.doubleList, other.doubleList) &&
-        CoreTestsPigeonUtils.deepEquals(this.boolList, other.boolList) &&
-        CoreTestsPigeonUtils.deepEquals(this.enumList, other.enumList) &&
-        CoreTestsPigeonUtils.deepEquals(this.objectList, other.objectList) &&
-        CoreTestsPigeonUtils.deepEquals(this.listList, other.listList) &&
-        CoreTestsPigeonUtils.deepEquals(this.mapList, other.mapList) &&
-        CoreTestsPigeonUtils.deepEquals(this.map, other.map) &&
-        CoreTestsPigeonUtils.deepEquals(this.stringMap, other.stringMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.intMap, other.intMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.enumMap, other.enumMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.objectMap, other.objectMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.listMap, other.listMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.mapMap, other.mapMap)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/CoreTests.gen.kt
+    return CoreTestsGolubetsUtils.deepEquals(this.aBool, other.aBool) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anInt, other.anInt) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anInt64, other.anInt64) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aDouble, other.aDouble) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aByteArray, other.aByteArray) &&
+        CoreTestsGolubetsUtils.deepEquals(this.a4ByteArray, other.a4ByteArray) &&
+        CoreTestsGolubetsUtils.deepEquals(this.a8ByteArray, other.a8ByteArray) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aFloatArray, other.aFloatArray) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anEnum, other.anEnum) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anotherEnum, other.anotherEnum) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aString, other.aString) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anObject, other.anObject) &&
+        CoreTestsGolubetsUtils.deepEquals(this.list, other.list) &&
+        CoreTestsGolubetsUtils.deepEquals(this.stringList, other.stringList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.intList, other.intList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.doubleList, other.doubleList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.boolList, other.boolList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.enumList, other.enumList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.objectList, other.objectList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.listList, other.listList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.mapList, other.mapList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.map, other.map) &&
+        CoreTestsGolubetsUtils.deepEquals(this.stringMap, other.stringMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.intMap, other.intMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.enumMap, other.enumMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.objectMap, other.objectMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.listMap, other.listMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.mapMap, other.mapMap)
   }
 
   override fun hashCode(): Int {
     var result = javaClass.hashCode()
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aBool)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.anInt)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.anInt64)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aDouble)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aByteArray)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.a4ByteArray)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.a8ByteArray)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aFloatArray)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.anEnum)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.anotherEnum)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aString)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.anObject)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.list)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.stringList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.intList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.doubleList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.boolList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.enumList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.objectList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.listList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.mapList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.map)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.stringMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.intMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.enumMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.objectMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.listMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.mapMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aBool)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anInt)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anInt64)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aDouble)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aByteArray)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.a4ByteArray)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.a8ByteArray)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aFloatArray)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anEnum)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anotherEnum)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aString)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anObject)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.list)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.stringList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.intList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.doubleList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.boolList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.enumList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.objectList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.listList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.mapList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.map)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.stringMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.intMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.enumMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.objectMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.listMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.mapMap)
     return result
   }
 }
@@ -608,83 +598,78 @@ data class AllNullableTypes(
   }
 
   override fun equals(other: Any?): Boolean {
-    if (other == null || other.javaClass != javaClass) {
+    if (other !is AllNullableTypes) {
       return false
     }
     if (this === other) {
       return true
     }
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/CoreTests.gen.kt
-    return CoreTestsGolubetsUtils.deepEquals(toList(), other.toList())
-=======
-    val other = other as AllNullableTypes
-    return CoreTestsPigeonUtils.deepEquals(this.aNullableBool, other.aNullableBool) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullableInt, other.aNullableInt) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullableInt64, other.aNullableInt64) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullableDouble, other.aNullableDouble) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullableByteArray, other.aNullableByteArray) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullable4ByteArray, other.aNullable4ByteArray) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullable8ByteArray, other.aNullable8ByteArray) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullableFloatArray, other.aNullableFloatArray) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullableEnum, other.aNullableEnum) &&
-        CoreTestsPigeonUtils.deepEquals(this.anotherNullableEnum, other.anotherNullableEnum) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullableString, other.aNullableString) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullableObject, other.aNullableObject) &&
-        CoreTestsPigeonUtils.deepEquals(this.allNullableTypes, other.allNullableTypes) &&
-        CoreTestsPigeonUtils.deepEquals(this.list, other.list) &&
-        CoreTestsPigeonUtils.deepEquals(this.stringList, other.stringList) &&
-        CoreTestsPigeonUtils.deepEquals(this.intList, other.intList) &&
-        CoreTestsPigeonUtils.deepEquals(this.doubleList, other.doubleList) &&
-        CoreTestsPigeonUtils.deepEquals(this.boolList, other.boolList) &&
-        CoreTestsPigeonUtils.deepEquals(this.enumList, other.enumList) &&
-        CoreTestsPigeonUtils.deepEquals(this.objectList, other.objectList) &&
-        CoreTestsPigeonUtils.deepEquals(this.listList, other.listList) &&
-        CoreTestsPigeonUtils.deepEquals(this.mapList, other.mapList) &&
-        CoreTestsPigeonUtils.deepEquals(this.recursiveClassList, other.recursiveClassList) &&
-        CoreTestsPigeonUtils.deepEquals(this.map, other.map) &&
-        CoreTestsPigeonUtils.deepEquals(this.stringMap, other.stringMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.intMap, other.intMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.enumMap, other.enumMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.objectMap, other.objectMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.listMap, other.listMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.mapMap, other.mapMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.recursiveClassMap, other.recursiveClassMap)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/CoreTests.gen.kt
+    return CoreTestsGolubetsUtils.deepEquals(this.aNullableBool, other.aNullableBool) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullableInt, other.aNullableInt) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullableInt64, other.aNullableInt64) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullableDouble, other.aNullableDouble) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullableByteArray, other.aNullableByteArray) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullable4ByteArray, other.aNullable4ByteArray) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullable8ByteArray, other.aNullable8ByteArray) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullableFloatArray, other.aNullableFloatArray) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullableEnum, other.aNullableEnum) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anotherNullableEnum, other.anotherNullableEnum) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullableString, other.aNullableString) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullableObject, other.aNullableObject) &&
+        CoreTestsGolubetsUtils.deepEquals(this.allNullableTypes, other.allNullableTypes) &&
+        CoreTestsGolubetsUtils.deepEquals(this.list, other.list) &&
+        CoreTestsGolubetsUtils.deepEquals(this.stringList, other.stringList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.intList, other.intList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.doubleList, other.doubleList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.boolList, other.boolList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.enumList, other.enumList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.objectList, other.objectList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.listList, other.listList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.mapList, other.mapList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.recursiveClassList, other.recursiveClassList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.map, other.map) &&
+        CoreTestsGolubetsUtils.deepEquals(this.stringMap, other.stringMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.intMap, other.intMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.enumMap, other.enumMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.objectMap, other.objectMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.listMap, other.listMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.mapMap, other.mapMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.recursiveClassMap, other.recursiveClassMap)
   }
 
   override fun hashCode(): Int {
     var result = javaClass.hashCode()
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableBool)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableInt)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableInt64)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableDouble)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableByteArray)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullable4ByteArray)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullable8ByteArray)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableFloatArray)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableEnum)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.anotherNullableEnum)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableString)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableObject)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.allNullableTypes)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.list)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.stringList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.intList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.doubleList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.boolList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.enumList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.objectList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.listList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.mapList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.recursiveClassList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.map)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.stringMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.intMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.enumMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.objectMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.listMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.mapMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.recursiveClassMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableBool)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableInt)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableInt64)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableDouble)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableByteArray)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullable4ByteArray)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullable8ByteArray)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableFloatArray)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableEnum)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anotherNullableEnum)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableString)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableObject)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.allNullableTypes)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.list)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.stringList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.intList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.doubleList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.boolList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.enumList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.objectList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.listList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.mapList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.recursiveClassList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.map)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.stringMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.intMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.enumMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.objectMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.listMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.mapMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.recursiveClassMap)
     return result
   }
 }
@@ -821,77 +806,72 @@ data class AllNullableTypesWithoutRecursion(
   }
 
   override fun equals(other: Any?): Boolean {
-    if (other == null || other.javaClass != javaClass) {
+    if (other !is AllNullableTypesWithoutRecursion) {
       return false
     }
     if (this === other) {
       return true
     }
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/CoreTests.gen.kt
-    return CoreTestsGolubetsUtils.deepEquals(toList(), other.toList())
-=======
-    val other = other as AllNullableTypesWithoutRecursion
-    return CoreTestsPigeonUtils.deepEquals(this.aNullableBool, other.aNullableBool) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullableInt, other.aNullableInt) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullableInt64, other.aNullableInt64) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullableDouble, other.aNullableDouble) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullableByteArray, other.aNullableByteArray) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullable4ByteArray, other.aNullable4ByteArray) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullable8ByteArray, other.aNullable8ByteArray) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullableFloatArray, other.aNullableFloatArray) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullableEnum, other.aNullableEnum) &&
-        CoreTestsPigeonUtils.deepEquals(this.anotherNullableEnum, other.anotherNullableEnum) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullableString, other.aNullableString) &&
-        CoreTestsPigeonUtils.deepEquals(this.aNullableObject, other.aNullableObject) &&
-        CoreTestsPigeonUtils.deepEquals(this.list, other.list) &&
-        CoreTestsPigeonUtils.deepEquals(this.stringList, other.stringList) &&
-        CoreTestsPigeonUtils.deepEquals(this.intList, other.intList) &&
-        CoreTestsPigeonUtils.deepEquals(this.doubleList, other.doubleList) &&
-        CoreTestsPigeonUtils.deepEquals(this.boolList, other.boolList) &&
-        CoreTestsPigeonUtils.deepEquals(this.enumList, other.enumList) &&
-        CoreTestsPigeonUtils.deepEquals(this.objectList, other.objectList) &&
-        CoreTestsPigeonUtils.deepEquals(this.listList, other.listList) &&
-        CoreTestsPigeonUtils.deepEquals(this.mapList, other.mapList) &&
-        CoreTestsPigeonUtils.deepEquals(this.map, other.map) &&
-        CoreTestsPigeonUtils.deepEquals(this.stringMap, other.stringMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.intMap, other.intMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.enumMap, other.enumMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.objectMap, other.objectMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.listMap, other.listMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.mapMap, other.mapMap)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/CoreTests.gen.kt
+    return CoreTestsGolubetsUtils.deepEquals(this.aNullableBool, other.aNullableBool) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullableInt, other.aNullableInt) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullableInt64, other.aNullableInt64) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullableDouble, other.aNullableDouble) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullableByteArray, other.aNullableByteArray) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullable4ByteArray, other.aNullable4ByteArray) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullable8ByteArray, other.aNullable8ByteArray) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullableFloatArray, other.aNullableFloatArray) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullableEnum, other.aNullableEnum) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anotherNullableEnum, other.anotherNullableEnum) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullableString, other.aNullableString) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aNullableObject, other.aNullableObject) &&
+        CoreTestsGolubetsUtils.deepEquals(this.list, other.list) &&
+        CoreTestsGolubetsUtils.deepEquals(this.stringList, other.stringList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.intList, other.intList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.doubleList, other.doubleList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.boolList, other.boolList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.enumList, other.enumList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.objectList, other.objectList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.listList, other.listList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.mapList, other.mapList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.map, other.map) &&
+        CoreTestsGolubetsUtils.deepEquals(this.stringMap, other.stringMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.intMap, other.intMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.enumMap, other.enumMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.objectMap, other.objectMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.listMap, other.listMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.mapMap, other.mapMap)
   }
 
   override fun hashCode(): Int {
     var result = javaClass.hashCode()
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableBool)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableInt)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableInt64)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableDouble)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableByteArray)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullable4ByteArray)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullable8ByteArray)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableFloatArray)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableEnum)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.anotherNullableEnum)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableString)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.aNullableObject)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.list)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.stringList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.intList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.doubleList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.boolList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.enumList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.objectList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.listList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.mapList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.map)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.stringMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.intMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.enumMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.objectMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.listMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.mapMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableBool)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableInt)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableInt64)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableDouble)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableByteArray)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullable4ByteArray)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullable8ByteArray)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableFloatArray)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableEnum)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anotherNullableEnum)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableString)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aNullableObject)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.list)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.stringList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.intList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.doubleList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.boolList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.enumList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.objectList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.listList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.mapList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.map)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.stringMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.intMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.enumMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.objectMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.listMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.mapMap)
     return result
   }
 }
@@ -948,17 +928,33 @@ data class AllClassesWrapper(
   }
 
   override fun equals(other: Any?): Boolean {
-    if (other == null || other.javaClass != javaClass) {
+    if (other !is AllClassesWrapper) {
       return false
     }
     if (this === other) {
       return true
     }
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/CoreTests.gen.kt
-    return CoreTestsGolubetsUtils.deepEquals(toList(), other.toList())
+    return CoreTestsGolubetsUtils.deepEquals(this.allNullableTypes, other.allNullableTypes) &&
+        CoreTestsGolubetsUtils.deepEquals(
+            this.allNullableTypesWithoutRecursion, other.allNullableTypesWithoutRecursion) &&
+        CoreTestsGolubetsUtils.deepEquals(this.allTypes, other.allTypes) &&
+        CoreTestsGolubetsUtils.deepEquals(this.classList, other.classList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.nullableClassList, other.nullableClassList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.classMap, other.classMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.nullableClassMap, other.nullableClassMap)
   }
 
-  override fun hashCode(): Int = toList().hashCode()
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.allNullableTypes)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.allNullableTypesWithoutRecursion)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.allTypes)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.classList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.nullableClassList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.classMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.nullableClassMap)
+    return result
+  }
 }
 
 /**
@@ -1082,10 +1078,60 @@ data class ImmutableAllTypes(
     if (this === other) {
       return true
     }
-    return CoreTestsGolubetsUtils.deepEquals(toList(), other.toList())
+    return CoreTestsGolubetsUtils.deepEquals(this.aBool, other.aBool) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anInt, other.anInt) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anInt64, other.anInt64) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aDouble, other.aDouble) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anEnum, other.anEnum) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anotherEnum, other.anotherEnum) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aString, other.aString) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anObject, other.anObject) &&
+        CoreTestsGolubetsUtils.deepEquals(this.list, other.list) &&
+        CoreTestsGolubetsUtils.deepEquals(this.stringList, other.stringList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.intList, other.intList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.doubleList, other.doubleList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.boolList, other.boolList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.enumList, other.enumList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.objectList, other.objectList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.listList, other.listList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.mapList, other.mapList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.map, other.map) &&
+        CoreTestsGolubetsUtils.deepEquals(this.stringMap, other.stringMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.intMap, other.intMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.enumMap, other.enumMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.objectMap, other.objectMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.listMap, other.listMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.mapMap, other.mapMap)
   }
 
-  override fun hashCode(): Int = toList().hashCode()
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aBool)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anInt)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anInt64)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aDouble)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anEnum)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anotherEnum)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aString)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anObject)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.list)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.stringList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.intList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.doubleList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.boolList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.enumList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.objectList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.listList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.mapList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.map)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.stringMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.intMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.enumMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.objectMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.listMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.mapMap)
+    return result
+  }
 }
 
 /**
@@ -1620,29 +1666,60 @@ data class AllTypesWithDefaults(
     if (this === other) {
       return true
     }
-    return CoreTestsGolubetsUtils.deepEquals(toList(), other.toList())
-=======
-    val other = other as AllClassesWrapper
-    return CoreTestsPigeonUtils.deepEquals(this.allNullableTypes, other.allNullableTypes) &&
-        CoreTestsPigeonUtils.deepEquals(
-            this.allNullableTypesWithoutRecursion, other.allNullableTypesWithoutRecursion) &&
-        CoreTestsPigeonUtils.deepEquals(this.allTypes, other.allTypes) &&
-        CoreTestsPigeonUtils.deepEquals(this.classList, other.classList) &&
-        CoreTestsPigeonUtils.deepEquals(this.nullableClassList, other.nullableClassList) &&
-        CoreTestsPigeonUtils.deepEquals(this.classMap, other.classMap) &&
-        CoreTestsPigeonUtils.deepEquals(this.nullableClassMap, other.nullableClassMap)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/CoreTests.gen.kt
+    return CoreTestsGolubetsUtils.deepEquals(this.aBool, other.aBool) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anInt, other.anInt) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anInt64, other.anInt64) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aDouble, other.aDouble) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anEnum, other.anEnum) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anotherEnum, other.anotherEnum) &&
+        CoreTestsGolubetsUtils.deepEquals(this.aString, other.aString) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anObject, other.anObject) &&
+        CoreTestsGolubetsUtils.deepEquals(this.list, other.list) &&
+        CoreTestsGolubetsUtils.deepEquals(this.stringList, other.stringList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.intList, other.intList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.doubleList, other.doubleList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.boolList, other.boolList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.enumList, other.enumList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.objectList, other.objectList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.listList, other.listList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.mapList, other.mapList) &&
+        CoreTestsGolubetsUtils.deepEquals(this.map, other.map) &&
+        CoreTestsGolubetsUtils.deepEquals(this.stringMap, other.stringMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.intMap, other.intMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.enumMap, other.enumMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.objectMap, other.objectMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.listMap, other.listMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.mapMap, other.mapMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.allTypes, other.allTypes)
   }
 
   override fun hashCode(): Int {
     var result = javaClass.hashCode()
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.allNullableTypes)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.allNullableTypesWithoutRecursion)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.allTypes)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.classList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.nullableClassList)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.classMap)
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.nullableClassMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aBool)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anInt)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anInt64)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aDouble)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anEnum)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anotherEnum)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aString)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anObject)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.list)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.stringList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.intList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.doubleList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.boolList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.enumList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.objectList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.listList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.mapList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.map)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.stringMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.intMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.enumMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.objectMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.listMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.mapMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.allTypes)
     return result
   }
 }
@@ -1667,23 +1744,18 @@ data class TestMessage(val testList: List<Any?>? = null) {
   }
 
   override fun equals(other: Any?): Boolean {
-    if (other == null || other.javaClass != javaClass) {
+    if (other !is TestMessage) {
       return false
     }
     if (this === other) {
       return true
     }
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/CoreTests.gen.kt
-    return CoreTestsGolubetsUtils.deepEquals(toList(), other.toList())
-=======
-    val other = other as TestMessage
-    return CoreTestsPigeonUtils.deepEquals(this.testList, other.testList)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/CoreTests.gen.kt
+    return CoreTestsGolubetsUtils.deepEquals(this.testList, other.testList)
   }
 
   override fun hashCode(): Int {
     var result = javaClass.hashCode()
-    result = 31 * result + CoreTestsPigeonUtils.deepHash(this.testList)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.testList)
     return result
   }
 }
@@ -3017,10 +3089,7 @@ interface HostIntegrationCoreApi {
         val channel =
             BasicMessageChannel<Any?>(
                 binaryMessenger,
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/CoreTests.gen.kt
-                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoAllNullableTypes$separatedMessageChannelSuffix",
-=======
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.areAllNullableTypesEqual$separatedMessageChannelSuffix",
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.areAllNullableTypesEqual$separatedMessageChannelSuffix",
                 codec)
         if (api != null) {
           channel.setMessageHandler { message, reply ->
@@ -3031,7 +3100,7 @@ interface HostIntegrationCoreApi {
                 try {
                   listOf(api.areAllNullableTypesEqual(aArg, bArg))
                 } catch (exception: Throwable) {
-                  CoreTestsPigeonUtils.wrapError(exception)
+                  CoreTestsGolubetsUtils.wrapError(exception)
                 }
             reply.reply(wrapped)
           }
@@ -3043,7 +3112,7 @@ interface HostIntegrationCoreApi {
         val channel =
             BasicMessageChannel<Any?>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.getAllNullableTypesHash$separatedMessageChannelSuffix",
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.getAllNullableTypesHash$separatedMessageChannelSuffix",
                 codec)
         if (api != null) {
           channel.setMessageHandler { message, reply ->
@@ -3053,7 +3122,7 @@ interface HostIntegrationCoreApi {
                 try {
                   listOf(api.getAllNullableTypesHash(valueArg))
                 } catch (exception: Throwable) {
-                  CoreTestsPigeonUtils.wrapError(exception)
+                  CoreTestsGolubetsUtils.wrapError(exception)
                 }
             reply.reply(wrapped)
           }
@@ -3065,7 +3134,7 @@ interface HostIntegrationCoreApi {
         val channel =
             BasicMessageChannel<Any?>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.getAllNullableTypesWithoutRecursionHash$separatedMessageChannelSuffix",
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.getAllNullableTypesWithoutRecursionHash$separatedMessageChannelSuffix",
                 codec)
         if (api != null) {
           channel.setMessageHandler { message, reply ->
@@ -3075,7 +3144,7 @@ interface HostIntegrationCoreApi {
                 try {
                   listOf(api.getAllNullableTypesWithoutRecursionHash(valueArg))
                 } catch (exception: Throwable) {
-                  CoreTestsPigeonUtils.wrapError(exception)
+                  CoreTestsGolubetsUtils.wrapError(exception)
                 }
             reply.reply(wrapped)
           }
@@ -3087,8 +3156,7 @@ interface HostIntegrationCoreApi {
         val channel =
             BasicMessageChannel<Any?>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoAllNullableTypes$separatedMessageChannelSuffix",
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/CoreTests.gen.kt
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoAllNullableTypes$separatedMessageChannelSuffix",
                 codec)
         if (api != null) {
           channel.setMessageHandler { message, reply ->

@@ -1198,16 +1198,8 @@ void main() {
             Method(
               name: 'doit',
               location: ApiLocation.host,
-<<<<<<< HEAD:packages/golubets/test/java_generator_test.dart
-              returnType: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: true,
-              ),
-              asynchronousType: AsynchronousType.callback,
-=======
               returnType: const TypeDeclaration(baseName: 'int', isNullable: true),
-              isAsynchronous: true,
->>>>>>> filtered-upstream/main:packages/pigeon/test/java_generator_test.dart
+              asynchronousType: AsynchronousType.callback,
               parameters: <Parameter>[],
             ),
           ],

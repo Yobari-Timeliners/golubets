@@ -238,29 +238,24 @@ data class MessageData(
   }
 
   override fun equals(other: Any?): Boolean {
-    if (other == null || other.javaClass != javaClass) {
+    if (other !is MessageData) {
       return false
     }
     if (this === other) {
       return true
     }
-<<<<<<< HEAD:packages/golubets/example/app/android/app/src/main/kotlin/dev/flutter/pigeon_example_app/Messages.g.kt
-    return MessagesGolubetsUtils.deepEquals(toList(), other.toList())
-=======
-    val other = other as MessageData
-    return MessagesPigeonUtils.deepEquals(this.name, other.name) &&
-        MessagesPigeonUtils.deepEquals(this.description, other.description) &&
-        MessagesPigeonUtils.deepEquals(this.code, other.code) &&
-        MessagesPigeonUtils.deepEquals(this.data, other.data)
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/android/app/src/main/kotlin/dev/flutter/pigeon_example_app/Messages.g.kt
+    return MessagesGolubetsUtils.deepEquals(this.name, other.name) &&
+        MessagesGolubetsUtils.deepEquals(this.description, other.description) &&
+        MessagesGolubetsUtils.deepEquals(this.code, other.code) &&
+        MessagesGolubetsUtils.deepEquals(this.data, other.data)
   }
 
   override fun hashCode(): Int {
     var result = javaClass.hashCode()
-    result = 31 * result + MessagesPigeonUtils.deepHash(this.name)
-    result = 31 * result + MessagesPigeonUtils.deepHash(this.description)
-    result = 31 * result + MessagesPigeonUtils.deepHash(this.code)
-    result = 31 * result + MessagesPigeonUtils.deepHash(this.data)
+    result = 31 * result + MessagesGolubetsUtils.deepHash(this.name)
+    result = 31 * result + MessagesGolubetsUtils.deepHash(this.description)
+    result = 31 * result + MessagesGolubetsUtils.deepHash(this.code)
+    result = 31 * result + MessagesGolubetsUtils.deepHash(this.data)
     return result
   }
 }

@@ -36,9 +36,7 @@ export 'types/task_queue.dart' show TaskQueueType;
 /// {@macro pigeon_lib.async}
 class Async {
   /// Constructor for [Async].
-  const Async({
-    this.type,
-  });
+  const Async({this.type});
 
   /// The type of asynchronous api will be used.
   ///
@@ -557,15 +555,7 @@ class Golubets {
     if (compilationErrors.isEmpty) {
       return rootBuilder.results();
     } else {
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
-      return ParseResults(
-        root: Root.makeEmpty(),
-        errors: compilationErrors,
-        golubetsOptions: null,
-      );
-=======
-      return ParseResults(root: Root.makeEmpty(), errors: compilationErrors, pigeonOptions: null);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
+      return ParseResults(root: Root.makeEmpty(), errors: compilationErrors, golubetsOptions: null);
     }
   }
 
@@ -715,18 +705,11 @@ ${_argParser.usage}''';
 
   /// Crawls through the reflection system looking for a configureGolubets method and
   /// executing it.
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
   static void _executeConfigureGolubets(GolubetsOptions options) {
-    for (final LibraryMirror library
-        in currentMirrorSystem().libraries.values) {
-=======
-  static void _executeConfigurePigeon(PigeonOptions options) {
     for (final LibraryMirror library in currentMirrorSystem().libraries.values) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
       for (final DeclarationMirror declaration in library.declarations.values) {
         if (declaration is MethodMirror &&
-            MirrorSystem.getName(declaration.simpleName) ==
-                'configureGolubets') {
+            MirrorSystem.getName(declaration.simpleName) == 'configureGolubets') {
           if (declaration.parameters.length == 1 &&
               declaration.parameters[0].type == reflectClass(GolubetsOptions)) {
             library.invoke(declaration.simpleName, <dynamic>[options]);
@@ -742,17 +725,8 @@ ${_argParser.usage}''';
   /// command-line arguments.  The optional parameter [adapters] allows you to
   /// customize the generators that golubets will use. The optional parameter
   /// [sdkPath] allows you to specify the Dart SDK path.
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
-  static Future<int> run(
-    List<String> args, {
-    List<GeneratorAdapter>? adapters,
-    String? sdkPath,
-  }) {
-    final GolubetsOptions options = Golubets.parseArgs(args);
-=======
   static Future<int> run(List<String> args, {List<GeneratorAdapter>? adapters, String? sdkPath}) {
-    final PigeonOptions options = Pigeon.parseArgs(args);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
+    final GolubetsOptions options = Golubets.parseArgs(args);
     return runWithOptions(options, adapters: adapters, sdkPath: sdkPath);
   }
 
@@ -791,12 +765,7 @@ ${_argParser.usage}''';
       return 0;
     }
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
-    parseResults =
-        parseResults ?? golubets.parseFile(options.input!, sdkPath: sdkPath);
-=======
-    parseResults = parseResults ?? pigeon.parseFile(options.input!, sdkPath: sdkPath);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
+    parseResults = parseResults ?? golubets.parseFile(options.input!, sdkPath: sdkPath);
 
     final errors = <Error>[];
     errors.addAll(parseResults.errors);
@@ -808,22 +777,13 @@ ${_argParser.usage}''';
       }
     }
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
     if (parseResults.golubetsOptions != null && mergeDefinitionFileOptions) {
-      options = GolubetsOptions.fromMap(
-        mergeMaps(options.toMap(), parseResults.golubetsOptions!),
-      );
+      options = GolubetsOptions.fromMap(mergeMaps(options.toMap(), parseResults.golubetsOptions!));
     }
 
-    final InternalGolubetsOptions internalOptions =
-        InternalGolubetsOptions.fromGolubetsOptions(options);
-=======
-    if (parseResults.pigeonOptions != null && mergeDefinitionFileOptions) {
-      options = PigeonOptions.fromMap(mergeMaps(options.toMap(), parseResults.pigeonOptions!));
-    }
-
-    final InternalPigeonOptions internalOptions = InternalPigeonOptions.fromPigeonOptions(options);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
+    final InternalGolubetsOptions internalOptions = InternalGolubetsOptions.fromGolubetsOptions(
+      options,
+    );
 
     for (final adapter in safeGeneratorAdapters) {
       final IOSink? sink = adapter.shouldGenerate(internalOptions, FileType.source);
@@ -902,15 +862,7 @@ class Error {
 /// A collection of an AST represented as a [Root] and [Error]'s.
 class ParseResults {
   /// Parametric constructor for [ParseResults].
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
-  ParseResults({
-    required this.root,
-    required this.errors,
-    required this.golubetsOptions,
-  });
-=======
-  ParseResults({required this.root, required this.errors, required this.pigeonOptions});
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
+  ParseResults({required this.root, required this.errors, required this.golubetsOptions});
 
   /// The resulting AST.
   final Root root;

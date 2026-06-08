@@ -126,17 +126,13 @@ enum EnumState {
 
 /// This comment is to test class documentation comments.
 class DataWithEnum {
-  DataWithEnum({
-    this.state,
-  });
+  DataWithEnum({this.state});
 
   /// This comment is to test field documentation comments.
   EnumState? state;
 
   List<Object?> _toList() {
-    return <Object?>[
-      state,
-    ];
+    return <Object?>[state];
   }
 
   Object encode() {
@@ -145,9 +141,7 @@ class DataWithEnum {
 
   static DataWithEnum decode(Object result) {
     result as List<Object?>;
-    return DataWithEnum(
-      state: result[0] as EnumState?,
-    );
+    return DataWithEnum(state: result[0] as EnumState?);
   }
 
   @override
@@ -204,23 +198,12 @@ class EnumApi2Host {
   /// Constructor for [EnumApi2Host].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/enum.gen.dart
-  EnumApi2Host({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
-=======
   EnumApi2Host({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-    : pigeonVar_binaryMessenger = binaryMessenger,
-      pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+    : golubetsVar_binaryMessenger = binaryMessenger,
+      golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? pigeonVar_binaryMessenger;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/enum.gen.dart
+  final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
@@ -235,16 +218,8 @@ class EnumApi2Host {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/enum.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[data],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[data]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/enum.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[data]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,

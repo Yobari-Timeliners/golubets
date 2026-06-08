@@ -19,21 +19,12 @@
 #include <optional>
 #include <string>
 
-<<<<<<< HEAD:packages/golubets/example/app/windows/runner/messages.g.cpp
 namespace golub_example {
-using flutter::BasicMessageChannel;
-using flutter::CustomEncodableValue;
-using flutter::EncodableList;
-using flutter::EncodableMap;
-using flutter::EncodableValue;
-=======
-namespace pigeon_example {
 using ::flutter::BasicMessageChannel;
 using ::flutter::CustomEncodableValue;
 using ::flutter::EncodableList;
 using ::flutter::EncodableMap;
 using ::flutter::EncodableValue;
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/windows/runner/messages.g.cpp
 
 FlutterError CreateConnectionError(const std::string channel_name) {
   return FlutterError(
@@ -319,12 +310,6 @@ MessageData MessageData::FromEncodableList(const EncodableList& list) {
   return decoded;
 }
 
-<<<<<<< HEAD:packages/golubets/example/app/windows/runner/messages.g.cpp
-GolubetsCodecSerializer::GolubetsCodecSerializer() {}
-
-EncodableValue GolubetsCodecSerializer::ReadValueOfType(
-    uint8_t type, flutter::ByteStreamReader* stream) const {
-=======
 bool MessageData::operator==(const MessageData& other) const {
   return PigeonInternalDeepEquals(name_, other.name_) &&
          PigeonInternalDeepEquals(description_, other.description_) &&
@@ -347,11 +332,10 @@ size_t MessageData::Hash() const {
 
 size_t PigeonInternalDeepHash(const MessageData& v) { return v.Hash(); }
 
-PigeonInternalCodecSerializer::PigeonInternalCodecSerializer() {}
+GolubetsCodecSerializer::GolubetsCodecSerializer() {}
 
-EncodableValue PigeonInternalCodecSerializer::ReadValueOfType(
+EncodableValue GolubetsCodecSerializer::ReadValueOfType(
     uint8_t type, ::flutter::ByteStreamReader* stream) const {
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/windows/runner/messages.g.cpp
   switch (type) {
     case 129: {
       const auto& encodable_enum_arg = ReadValue(stream);
@@ -370,13 +354,8 @@ EncodableValue PigeonInternalCodecSerializer::ReadValueOfType(
   }
 }
 
-<<<<<<< HEAD:packages/golubets/example/app/windows/runner/messages.g.cpp
 void GolubetsCodecSerializer::WriteValue(
-    const EncodableValue& value, flutter::ByteStreamWriter* stream) const {
-=======
-void PigeonInternalCodecSerializer::WriteValue(
     const EncodableValue& value, ::flutter::ByteStreamWriter* stream) const {
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/windows/runner/messages.g.cpp
   if (const CustomEncodableValue* custom_value =
           std::get_if<CustomEncodableValue>(&value)) {
     if (custom_value->type() == typeid(Code)) {
@@ -399,15 +378,9 @@ void PigeonInternalCodecSerializer::WriteValue(
 }
 
 /// The codec used by ExampleHostApi.
-<<<<<<< HEAD:packages/golubets/example/app/windows/runner/messages.g.cpp
-const flutter::StandardMessageCodec& ExampleHostApi::GetCodec() {
-  return flutter::StandardMessageCodec::GetInstance(
-      &GolubetsCodecSerializer::GetInstance());
-=======
 const ::flutter::StandardMessageCodec& ExampleHostApi::GetCodec() {
   return ::flutter::StandardMessageCodec::GetInstance(
-      &PigeonInternalCodecSerializer::GetInstance());
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/windows/runner/messages.g.cpp
+      &GolubetsCodecSerializer::GetInstance());
 }
 
 // Sets up an instance of `ExampleHostApi` to handle messages through the
@@ -538,7 +511,7 @@ void ExampleHostApi::SetUp(::flutter::BinaryMessenger* binary_messenger,
     if (api != nullptr) {
       channel.SetMessageHandler(
           [api](const EncodableValue& message,
-                const flutter::MessageReply<EncodableValue>& reply) {
+                const ::flutter::MessageReply<EncodableValue>& reply) {
             try {
               const auto& args = std::get<EncodableList>(message);
               const auto& encodable_message_arg = args.at(0);
@@ -577,7 +550,7 @@ void ExampleHostApi::SetUp(::flutter::BinaryMessenger* binary_messenger,
     if (api != nullptr) {
       channel.SetMessageHandler(
           [api](const EncodableValue& message,
-                const flutter::MessageReply<EncodableValue>& reply) {
+                const ::flutter::MessageReply<EncodableValue>& reply) {
             try {
               const auto& args = std::get<EncodableList>(message);
               const auto& encodable_message_arg = args.at(0);
@@ -634,15 +607,9 @@ MessageFlutterApi::MessageFlutterApi(
                                   ? std::string(".") + message_channel_suffix
                                   : "") {}
 
-<<<<<<< HEAD:packages/golubets/example/app/windows/runner/messages.g.cpp
-const flutter::StandardMessageCodec& MessageFlutterApi::GetCodec() {
-  return flutter::StandardMessageCodec::GetInstance(
-      &GolubetsCodecSerializer::GetInstance());
-=======
 const ::flutter::StandardMessageCodec& MessageFlutterApi::GetCodec() {
   return ::flutter::StandardMessageCodec::GetInstance(
-      &PigeonInternalCodecSerializer::GetInstance());
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/windows/runner/messages.g.cpp
+      &GolubetsCodecSerializer::GetInstance());
 }
 
 void MessageFlutterApi::FlutterMethod(

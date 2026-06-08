@@ -13,9 +13,18 @@ permissions:
   contents: write
   pull-requests: write
 
+# Paths whose merge conflicts are safe to auto-resolve by regeneration. These
+# are produced by `tool/generate.dart`, so any conflict in them is throwaway:
+# we take our side just to clear the markers and then regenerate on top.
+env:
+  GENERATED_FILE_REGEX: '\.gen\.(dart|swift|kt|kts|java|h|m|mm|cc|cpp)$|[^/]+\.g\.(dart|swift|kt|java|h|m|mm)$'
+
 jobs:
   sync-upstream:
     runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -31,9 +40,31 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Clone upstream repository
+      # --- Toolchain: mirror the `tests` job in ci.yml so we can regenerate and
+      # --- run the same analyze/format/test checks the PR will be graded on.
+      - name: Read Flutter version from file
+        id: read_flutter_version
+        run: echo "FLUTTER_VERSION=$(cat .ci/flutter_stable.version)" >> "$GITHUB_ENV"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install native build/format dependencies
         run: |
-          git clone https://github.com/flutter/packages.git /tmp/upstream-temp
+          sudo apt-get update
+          sudo apt-get install -y clang clang-format cmake ninja-build curl libgtk-3-dev libglib2.0-dev libgdk-pixbuf2.0-dev
+
+      - name: Clone upstream repository
+        run: git clone https://github.com/flutter/packages.git /tmp/upstream-temp
 
       - name: Apply git filter-repo to upstream
         run: |
@@ -46,21 +77,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GPAT }}
         run: |
           echo "Checking for existing PR with label 'sync upstream' in ${{ github.repository }}"
-          echo "Triggering branch: ${{ github.ref_name }}"
           PR_JSON=$(gh pr list --repo "${{ github.repository }}" --label "sync upstream" --state open --json number,headRefName 2>/dev/null || echo "")
-          echo "PR_JSON=$PR_JSON"
           PR_DATA=$(echo "$PR_JSON" | jq -r '.[0] | select(.number) | "\(.number):\(.headRefName)"' 2>/dev/null || echo "")
-          echo "PR_DATA=$PR_DATA"
           if [ -n "$PR_DATA" ]; then
             echo "Found existing PR: $PR_DATA"
-            echo "number=$(echo "$PR_DATA" | cut -d':' -f1)" >> $GITHUB_OUTPUT
-            echo "headRefName=$(echo "$PR_DATA" | cut -d':' -f2)" >> $GITHUB_OUTPUT
+            echo "number=$(echo "$PR_DATA" | cut -d':' -f1)" >> "$GITHUB_OUTPUT"
+            echo "headRefName=$(echo "$PR_DATA" | cut -d':' -f2)" >> "$GITHUB_OUTPUT"
           else
             echo "No existing PR found with label 'sync upstream'."
-            echo "Checking all PRs for debugging:"
-            gh pr list --repo "${{ github.repository }}" --state open --json number,title,labels,headRefName || echo "Failed to list PRs"
-            echo "number=" >> $GITHUB_OUTPUT
-            echo "headRefName=" >> $GITHUB_OUTPUT
+            echo "number=" >> "$GITHUB_OUTPUT"
+            echo "headRefName=" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create or checkout sync branch
@@ -68,7 +94,7 @@ jobs:
           if [ -n "${{ steps.check-pr.outputs.headRefName }}" ]; then
             echo "Checking out existing PR branch: ${{ steps.check-pr.outputs.headRefName }}"
             git checkout "${{ steps.check-pr.outputs.headRefName }}"
-            git reset --hard origin/${{github.ref_name}} # Reset to main before applying new changes
+            git reset --hard origin/${{ github.ref_name }} # Reset to main before applying new changes
           else
             echo "Creating new branch: sync-upstream-$(date +%Y%m%d-%H%M%S)"
             git checkout -b "sync-upstream-$(date +%Y%m%d-%H%M%S)"
@@ -81,34 +107,195 @@ jobs:
 
       - name: Merge filtered upstream changes
         id: merge
+        continue-on-error: true
         run: |
           git merge filtered-upstream/main --no-commit --no-ff || true
-          if git status --porcelain | grep '^UU'; then
-            echo "conflicts_detected=true" >> $GITHUB_OUTPUT
-            echo "conflicted_files<<EOF" >> $GITHUB_OUTPUT
-            git status --porcelain | grep '^UU' | awk '{print $2}' >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
+          # Full list of conflicted files (status code UU/AA/DD/etc.).
+          git diff --name-only --diff-filter=U > /tmp/all_conflicts.txt || true
+          if [ -s /tmp/all_conflicts.txt ]; then
+            echo "raw_conflicts=true" >> "$GITHUB_OUTPUT"
           else
-            echo "conflicts_detected=false" >> $GITHUB_OUTPUT
-            echo "conflicted_files=" >> $GITHUB_OUTPUT
+            echo "raw_conflicts=false" >> "$GITHUB_OUTPUT"
           fi
-        continue-on-error: true
 
-      - name: Commit changes or conflicts
+      # Generated-file conflicts are noise: take our side to clear the markers,
+      # they get overwritten by regeneration in the next step. Whatever remains
+      # is a *real* source conflict a human must resolve.
+      - name: Auto-resolve generated-file conflicts
+        id: autoresolve
+        continue-on-error: true
+        run: |
+          : > /tmp/generated_conflicts.txt
+          : > /tmp/source_conflicts.txt
+          if [ -s /tmp/all_conflicts.txt ]; then
+            while IFS= read -r file; do
+              [ -z "$file" ] && continue
+              if echo "$file" | grep -Eq "$GENERATED_FILE_REGEX"; then
+                git checkout --ours -- "$file" 2>/dev/null || true
+                git add -- "$file" 2>/dev/null || true
+                echo "$file" >> /tmp/generated_conflicts.txt
+              else
+                echo "$file" >> /tmp/source_conflicts.txt
+              fi
+            done < /tmp/all_conflicts.txt
+          fi
+          if [ -s /tmp/source_conflicts.txt ]; then
+            echo "source_conflicts=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "source_conflicts=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Only safe to build/regenerate when no *source* conflict markers remain.
+      - name: Regenerate, format and verify
+        id: verify
+        if: steps.autoresolve.outputs.source_conflicts == 'false'
+        continue-on-error: true
+        run: |
+          status() { echo "$1=$2" >> "$GITHUB_OUTPUT"; }
+
+          chmod +x .ci/scripts/*.sh || true
+
+          if .ci/scripts/prepare_tool.sh && .ci/scripts/tool_runner.sh fetch-deps; then
+            status deps ok
+          else
+            status deps fail
+          fi
+
+          # Regenerate all generated pigeon/golubets output so it matches the
+          # merged generators. Skip swift-format (not available on Linux).
+          if (cd packages/golubets && dart run tool/generate.dart --no-format); then
+            status regen ok
+          else
+            status regen fail
+          fi
+          dart ./script/tool/bin/flutter_plugin_tools.dart format --no-swift || true
+
+          if dart ./script/tool/bin/flutter_plugin_tools.dart analyze; then
+            status analyze ok
+          else
+            status analyze fail
+          fi
+
+          if dart ./script/tool/bin/flutter_plugin_tools.dart format --fail-on-change --no-swift; then
+            status format ok
+          else
+            status format fail
+          fi
+
+          if dart ./script/tool/bin/flutter_plugin_tools.dart dart-test; then
+            status darttest ok
+          else
+            status darttest fail
+          fi
+
+          git add -A || true
+
+      # Heuristic for the recurring "upstream migrated X.gradle -> X.gradle.kts
+      # but the old Groovy file lingered" class of breakage.
+      - name: Detect leftover duplicate config files
+        id: dups
+        continue-on-error: true
+        run: |
+          : > /tmp/dup_files.txt
+          while IFS= read -r kts; do
+            groovy="${kts%.kts}"
+            if [ -f "$groovy" ]; then
+              echo "$groovy (superseded by $kts)" >> /tmp/dup_files.txt
+            fi
+          done < <(git ls-files '*.gradle.kts')
+          if [ -s /tmp/dup_files.txt ]; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build PR report
+        id: report
+        run: |
+          REPORT=/tmp/pr_body.md
+          {
+            echo "Automated sync with upstream \`flutter/packages\` (pigeon paths)."
+            echo ""
+
+            if [ "${{ steps.autoresolve.outputs.source_conflicts }}" = "true" ]; then
+              echo "## ❌ Source conflicts — manual resolution required"
+              echo ""
+              echo "Resolve these preferring our \`golubets\` implementation while consuming upstream updates:"
+              echo ""
+              sed 's/^/- [ ] `/; s/$/`/' /tmp/source_conflicts.txt
+              echo ""
+            else
+              echo "## ✅ No source conflicts"
+              echo ""
+            fi
+
+            if [ -s /tmp/generated_conflicts.txt ]; then
+              echo "## 🔁 Generated files auto-resolved by regeneration"
+              echo ""
+              echo "<details><summary>$(wc -l < /tmp/generated_conflicts.txt) generated file(s) regenerated via \`tool/generate.dart\`</summary>"
+              echo ""
+              sed 's/^/- `/; s/$/`/' /tmp/generated_conflicts.txt
+              echo ""
+              echo "</details>"
+              echo ""
+            fi
+
+            echo "## Post-merge checks"
+            echo ""
+            icon() { case "$1" in ok) echo "✅";; fail) echo "❌";; *) echo "⏭️ skipped";; esac; }
+            echo "| Check | Result |"
+            echo "| --- | --- |"
+            echo "| Dependencies | $(icon '${{ steps.verify.outputs.deps }}') |"
+            echo "| Regenerate code | $(icon '${{ steps.verify.outputs.regen }}') |"
+            echo "| Analyze (\`--fatal-infos\`) | $(icon '${{ steps.verify.outputs.analyze }}') |"
+            echo "| Format (\`--no-swift\`) | $(icon '${{ steps.verify.outputs.format }}') |"
+            echo "| Dart unit tests | $(icon '${{ steps.verify.outputs.darttest }}') |"
+            echo ""
+            if [ "${{ steps.autoresolve.outputs.source_conflicts }}" = "true" ]; then
+              echo "> Checks were skipped because source conflicts must be resolved first. Re-run after resolving."
+              echo ""
+            fi
+
+            if [ "${{ steps.dups.outputs.found }}" = "true" ]; then
+              echo "## ⚠️ Leftover duplicate config files"
+              echo ""
+              echo "Upstream likely migrated these to Kotlin DSL. Delete the Groovy versions if obsolete:"
+              echo ""
+              sed 's/^/- [ ] `/; s/ (superseded.*$//; s/$/`/' /tmp/dup_files.txt
+              echo ""
+            fi
+
+            echo "## Manual review checklist (native code the CI sync job can't build)"
+            echo ""
+            echo "These broke on previous syncs and are **not** covered by the checks above:"
+            echo "- [ ] Hand-written \`TestPlugin\` conforms to new \`HostIntegrationCoreApi\` methods (Swift \`darwin/.../TestPlugin.swift\`, Windows \`windows/test_plugin.{h,cpp}\`)."
+            echo "- [ ] Linux GObject hand-written tests use \`Golubets\`-prefixed symbols, not \`Pigeon\` (\`linux/test/*.cc\`)."
+            echo "- [ ] Gradle wrapper versions (\`gradle-wrapper.properties\`) match upstream AGP requirements."
+            echo "- [ ] JDK / Kotlin / Gradle plugin version bumps from upstream are reflected in our build config."
+            echo "- [ ] Brittle test assertions (e.g. broad \`isNot(contains('try'))\`) didn't regress."
+          } > "$REPORT"
+
+          if [ "${{ steps.autoresolve.outputs.source_conflicts }}" = "true" ]; then
+            echo "title=Sync with upstream flutter/packages (Conflicts)" >> "$GITHUB_OUTPUT"
+          else
+            echo "title=Sync with upstream flutter/packages" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit changes
         id: commit
         run: |
+          git add -A
           if [ -n "$(git status --porcelain)" ]; then
-            git add .
-            if [ "${{ steps.merge.outputs.conflicts_detected }}" = "true" ]; then
+            if [ "${{ steps.autoresolve.outputs.source_conflicts }}" = "true" ]; then
               git commit -m "Sync with upstream flutter/packages (conflicts detected)" || true
             else
-              git commit -m "Sync with upstream flutter/packages" || true
+              git commit -m "Sync with upstream flutter/packages (generated code regenerated)" || true
             fi
             git push --force origin HEAD
-            echo "committed=true" >> $GITHUB_OUTPUT
+            echo "committed=true" >> "$GITHUB_OUTPUT"
           else
             echo "No changes to commit."
-            echo "committed=false" >> $GITHUB_OUTPUT
+            echo "committed=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create or update PR
@@ -116,28 +303,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GPAT }}
         run: |
-          PR_TITLE="Sync with upstream flutter/packages"
-          if [ "${{ steps.merge.outputs.conflicts_detected }}" = "true" ]; then
-            PR_TITLE="$PR_TITLE (Conflicts)"
-            CONFLICTED_FILES=$(echo "${{ steps.merge.outputs.conflicted_files }}" | sed 's/^/- /')
-            PR_BODY=$(echo -e "Sync with upstream flutter/packages\n\n**Conflicts detected**: Please resolve conflicts manually:\n$CONFLICTED_FILES\n")
-          else
-            PR_BODY=$(echo -e "Sync with upstream flutter/packages\n\nNo conflicts detected.")
-          fi
           if [ -n "${{ steps.check-pr.outputs.number }}" ]; then
             echo "Updating PR #${{ steps.check-pr.outputs.number }}"
-            echo -e "$PR_BODY" | gh pr edit "${{ steps.check-pr.outputs.number }}" \
-              --repo "${{ github.repository }}" --title "$PR_TITLE" --body-file - \
+            gh pr edit "${{ steps.check-pr.outputs.number }}" \
+              --repo "${{ github.repository }}" \
+              --title "${{ steps.report.outputs.title }}" \
+              --body-file /tmp/pr_body.md \
               --add-label "sync upstream"
           else
             echo "Creating new PR"
-            echo -e "$PR_BODY" | gh pr create \
-              --repo "${{ github.repository }}" --title "$PR_TITLE" \
+            gh pr create \
+              --repo "${{ github.repository }}" \
+              --title "${{ steps.report.outputs.title }}" \
               --base main --head "$(git rev-parse --abbrev-ref HEAD)" \
-              --assignee feduke-nukem --label "sync upstream" --body-file -
+              --assignee feduke-nukem --label "sync upstream" \
+              --body-file /tmp/pr_body.md
           fi
 
       - name: Clean up temporary upstream
         if: always()
-        run: |
-          rm -rf /tmp/upstream-temp
+        run: rm -rf /tmp/upstream-temp

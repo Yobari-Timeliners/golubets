@@ -142,17 +142,6 @@ ${readmeTableEntry(pluginName)}
 ''');
     writeAutoLabelerYaml(<RepositoryPackage>[packages.first]);
 
-<<<<<<< HEAD:script/tool/test/repo_package_info_check_command_test.dart
-      // 4 packages * 2 checks (git, gh) = 8 calls.
-      // Default mocks in setUp cover 1 call each. We need 3 more each.
-      gitProcessRunner.mockProcessesForExecutable['git-ls-remote']!.addAll(
-        <FakeProcessInfo>[
-          FakeProcessInfo(MockProcess(exitCode: 1)),
-          FakeProcessInfo(MockProcess(exitCode: 1)),
-          FakeProcessInfo(MockProcess(exitCode: 1)),
-        ],
-      );
-=======
     // 4 packages * 2 checks (git, gh) = 8 calls.
     // Default mocks in setUp cover 1 call each. We need 3 more each.
     gitProcessRunner.mockProcessesForExecutable['git-ls-remote']!.addAll(<FakeProcessInfo>[
@@ -160,7 +149,6 @@ ${readmeTableEntry(pluginName)}
       FakeProcessInfo(MockProcess(exitCode: 1)),
       FakeProcessInfo(MockProcess(exitCode: 1)),
     ]);
->>>>>>> filtered-upstream/main:script/tool/test/validate_command_repo_info_test.dart
 
     final List<String> output = await runCapturingPrint(runner, <String>['validate']);
 

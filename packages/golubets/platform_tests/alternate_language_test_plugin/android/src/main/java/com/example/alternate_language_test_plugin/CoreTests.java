@@ -731,39 +731,6 @@ public class CoreTests {
 
     @Override
     public int hashCode() {
-<<<<<<< HEAD:packages/golubets/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
-      int golubetsVar_result =
-          Objects.hash(
-              aBool,
-              anInt,
-              anInt64,
-              aDouble,
-              anEnum,
-              anotherEnum,
-              aString,
-              anObject,
-              list,
-              stringList,
-              intList,
-              doubleList,
-              boolList,
-              enumList,
-              objectList,
-              listList,
-              mapList,
-              map,
-              stringMap,
-              intMap,
-              enumMap,
-              objectMap,
-              listMap,
-              mapMap);
-      golubetsVar_result = 31 * golubetsVar_result + Arrays.hashCode(aByteArray);
-      golubetsVar_result = 31 * golubetsVar_result + Arrays.hashCode(a4ByteArray);
-      golubetsVar_result = 31 * golubetsVar_result + Arrays.hashCode(a8ByteArray);
-      golubetsVar_result = 31 * golubetsVar_result + Arrays.hashCode(aFloatArray);
-      return golubetsVar_result;
-=======
       Object[] fields =
           new Object[] {
             getClass(),
@@ -797,7 +764,6 @@ public class CoreTests {
             mapMap
           };
       return pigeonDeepHashCode(fields);
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
     }
 
     public static final class Builder {
@@ -1516,42 +1482,6 @@ public class CoreTests {
 
     @Override
     public int hashCode() {
-<<<<<<< HEAD:packages/golubets/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
-      int golubetsVar_result =
-          Objects.hash(
-              aNullableBool,
-              aNullableInt,
-              aNullableInt64,
-              aNullableDouble,
-              aNullableEnum,
-              anotherNullableEnum,
-              aNullableString,
-              aNullableObject,
-              allNullableTypes,
-              list,
-              stringList,
-              intList,
-              doubleList,
-              boolList,
-              enumList,
-              objectList,
-              listList,
-              mapList,
-              recursiveClassList,
-              map,
-              stringMap,
-              intMap,
-              enumMap,
-              objectMap,
-              listMap,
-              mapMap,
-              recursiveClassMap);
-      golubetsVar_result = 31 * golubetsVar_result + Arrays.hashCode(aNullableByteArray);
-      golubetsVar_result = 31 * golubetsVar_result + Arrays.hashCode(aNullable4ByteArray);
-      golubetsVar_result = 31 * golubetsVar_result + Arrays.hashCode(aNullable8ByteArray);
-      golubetsVar_result = 31 * golubetsVar_result + Arrays.hashCode(aNullableFloatArray);
-      return golubetsVar_result;
-=======
       Object[] fields =
           new Object[] {
             getClass(),
@@ -1588,7 +1518,6 @@ public class CoreTests {
             recursiveClassMap
           };
       return pigeonDeepHashCode(fields);
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
     }
 
     public static final class Builder {
@@ -2312,39 +2241,6 @@ public class CoreTests {
 
     @Override
     public int hashCode() {
-<<<<<<< HEAD:packages/golubets/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
-      int golubetsVar_result =
-          Objects.hash(
-              aNullableBool,
-              aNullableInt,
-              aNullableInt64,
-              aNullableDouble,
-              aNullableEnum,
-              anotherNullableEnum,
-              aNullableString,
-              aNullableObject,
-              list,
-              stringList,
-              intList,
-              doubleList,
-              boolList,
-              enumList,
-              objectList,
-              listList,
-              mapList,
-              map,
-              stringMap,
-              intMap,
-              enumMap,
-              objectMap,
-              listMap,
-              mapMap);
-      golubetsVar_result = 31 * golubetsVar_result + Arrays.hashCode(aNullableByteArray);
-      golubetsVar_result = 31 * golubetsVar_result + Arrays.hashCode(aNullable4ByteArray);
-      golubetsVar_result = 31 * golubetsVar_result + Arrays.hashCode(aNullable8ByteArray);
-      golubetsVar_result = 31 * golubetsVar_result + Arrays.hashCode(aNullableFloatArray);
-      return golubetsVar_result;
-=======
       Object[] fields =
           new Object[] {
             getClass(),
@@ -2378,7 +2274,6 @@ public class CoreTests {
             mapMap
           };
       return pigeonDeepHashCode(fields);
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
     }
 
     public static final class Builder {
@@ -3307,59 +3202,63 @@ public class CoreTests {
         return false;
       }
       ImmutableAllTypes that = (ImmutableAllTypes) o;
-      return aBool.equals(that.aBool)
-          && anInt.equals(that.anInt)
-          && anInt64.equals(that.anInt64)
-          && aDouble.equals(that.aDouble)
-          && anEnum.equals(that.anEnum)
-          && anotherEnum.equals(that.anotherEnum)
-          && aString.equals(that.aString)
-          && anObject.equals(that.anObject)
-          && list.equals(that.list)
-          && stringList.equals(that.stringList)
-          && intList.equals(that.intList)
-          && doubleList.equals(that.doubleList)
-          && boolList.equals(that.boolList)
-          && enumList.equals(that.enumList)
-          && objectList.equals(that.objectList)
-          && listList.equals(that.listList)
-          && mapList.equals(that.mapList)
-          && map.equals(that.map)
-          && stringMap.equals(that.stringMap)
-          && intMap.equals(that.intMap)
-          && enumMap.equals(that.enumMap)
-          && objectMap.equals(that.objectMap)
-          && listMap.equals(that.listMap)
-          && mapMap.equals(that.mapMap);
+      return pigeonDeepEquals(aBool, that.aBool)
+          && pigeonDeepEquals(anInt, that.anInt)
+          && pigeonDeepEquals(anInt64, that.anInt64)
+          && pigeonDeepEquals(aDouble, that.aDouble)
+          && pigeonDeepEquals(anEnum, that.anEnum)
+          && pigeonDeepEquals(anotherEnum, that.anotherEnum)
+          && pigeonDeepEquals(aString, that.aString)
+          && pigeonDeepEquals(anObject, that.anObject)
+          && pigeonDeepEquals(list, that.list)
+          && pigeonDeepEquals(stringList, that.stringList)
+          && pigeonDeepEquals(intList, that.intList)
+          && pigeonDeepEquals(doubleList, that.doubleList)
+          && pigeonDeepEquals(boolList, that.boolList)
+          && pigeonDeepEquals(enumList, that.enumList)
+          && pigeonDeepEquals(objectList, that.objectList)
+          && pigeonDeepEquals(listList, that.listList)
+          && pigeonDeepEquals(mapList, that.mapList)
+          && pigeonDeepEquals(map, that.map)
+          && pigeonDeepEquals(stringMap, that.stringMap)
+          && pigeonDeepEquals(intMap, that.intMap)
+          && pigeonDeepEquals(enumMap, that.enumMap)
+          && pigeonDeepEquals(objectMap, that.objectMap)
+          && pigeonDeepEquals(listMap, that.listMap)
+          && pigeonDeepEquals(mapMap, that.mapMap);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(
-          aBool,
-          anInt,
-          anInt64,
-          aDouble,
-          anEnum,
-          anotherEnum,
-          aString,
-          anObject,
-          list,
-          stringList,
-          intList,
-          doubleList,
-          boolList,
-          enumList,
-          objectList,
-          listList,
-          mapList,
-          map,
-          stringMap,
-          intMap,
-          enumMap,
-          objectMap,
-          listMap,
-          mapMap);
+      Object[] fields =
+          new Object[] {
+            getClass(),
+            aBool,
+            anInt,
+            anInt64,
+            aDouble,
+            anEnum,
+            anotherEnum,
+            aString,
+            anObject,
+            list,
+            stringList,
+            intList,
+            doubleList,
+            boolList,
+            enumList,
+            objectList,
+            listList,
+            mapList,
+            map,
+            stringMap,
+            intMap,
+            enumMap,
+            objectMap,
+            listMap,
+            mapMap
+          };
+      return pigeonDeepHashCode(fields);
     }
 
     public static final class Builder {
@@ -4013,61 +3912,65 @@ public class CoreTests {
         return false;
       }
       AllTypesWithDefaults that = (AllTypesWithDefaults) o;
-      return aBool.equals(that.aBool)
-          && anInt.equals(that.anInt)
-          && anInt64.equals(that.anInt64)
-          && aDouble.equals(that.aDouble)
-          && anEnum.equals(that.anEnum)
-          && anotherEnum.equals(that.anotherEnum)
-          && aString.equals(that.aString)
-          && anObject.equals(that.anObject)
-          && list.equals(that.list)
-          && stringList.equals(that.stringList)
-          && intList.equals(that.intList)
-          && doubleList.equals(that.doubleList)
-          && boolList.equals(that.boolList)
-          && enumList.equals(that.enumList)
-          && objectList.equals(that.objectList)
-          && listList.equals(that.listList)
-          && mapList.equals(that.mapList)
-          && map.equals(that.map)
-          && stringMap.equals(that.stringMap)
-          && intMap.equals(that.intMap)
-          && enumMap.equals(that.enumMap)
-          && objectMap.equals(that.objectMap)
-          && listMap.equals(that.listMap)
-          && mapMap.equals(that.mapMap)
-          && allTypes.equals(that.allTypes);
+      return pigeonDeepEquals(aBool, that.aBool)
+          && pigeonDeepEquals(anInt, that.anInt)
+          && pigeonDeepEquals(anInt64, that.anInt64)
+          && pigeonDeepEquals(aDouble, that.aDouble)
+          && pigeonDeepEquals(anEnum, that.anEnum)
+          && pigeonDeepEquals(anotherEnum, that.anotherEnum)
+          && pigeonDeepEquals(aString, that.aString)
+          && pigeonDeepEquals(anObject, that.anObject)
+          && pigeonDeepEquals(list, that.list)
+          && pigeonDeepEquals(stringList, that.stringList)
+          && pigeonDeepEquals(intList, that.intList)
+          && pigeonDeepEquals(doubleList, that.doubleList)
+          && pigeonDeepEquals(boolList, that.boolList)
+          && pigeonDeepEquals(enumList, that.enumList)
+          && pigeonDeepEquals(objectList, that.objectList)
+          && pigeonDeepEquals(listList, that.listList)
+          && pigeonDeepEquals(mapList, that.mapList)
+          && pigeonDeepEquals(map, that.map)
+          && pigeonDeepEquals(stringMap, that.stringMap)
+          && pigeonDeepEquals(intMap, that.intMap)
+          && pigeonDeepEquals(enumMap, that.enumMap)
+          && pigeonDeepEquals(objectMap, that.objectMap)
+          && pigeonDeepEquals(listMap, that.listMap)
+          && pigeonDeepEquals(mapMap, that.mapMap)
+          && pigeonDeepEquals(allTypes, that.allTypes);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(
-          aBool,
-          anInt,
-          anInt64,
-          aDouble,
-          anEnum,
-          anotherEnum,
-          aString,
-          anObject,
-          list,
-          stringList,
-          intList,
-          doubleList,
-          boolList,
-          enumList,
-          objectList,
-          listList,
-          mapList,
-          map,
-          stringMap,
-          intMap,
-          enumMap,
-          objectMap,
-          listMap,
-          mapMap,
-          allTypes);
+      Object[] fields =
+          new Object[] {
+            getClass(),
+            aBool,
+            anInt,
+            anInt64,
+            aDouble,
+            anEnum,
+            anotherEnum,
+            aString,
+            anObject,
+            list,
+            stringList,
+            intList,
+            doubleList,
+            boolList,
+            enumList,
+            objectList,
+            listList,
+            mapList,
+            map,
+            stringMap,
+            intMap,
+            enumMap,
+            objectMap,
+            listMap,
+            mapMap,
+            allTypes
+          };
+      return pigeonDeepHashCode(fields);
     }
 
     public static final class Builder {
@@ -4686,19 +4589,18 @@ public class CoreTests {
     /** Returns passed in double. */
     @NonNull
     Double echoOptionalDefaultDouble(@NonNull Double aDouble);
-<<<<<<< HEAD:packages/golubets/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
+
     /** Returns a new AllTypesWithDefaults instance with all default values. */
     @NonNull
     AllTypesWithDefaults createAllTypesWithDefaults();
+
     /**
      * Returns an AllTypesWithDefaults instance, verifying default values work in cross-platform
      * communication.
      */
     @NonNull
     AllTypesWithDefaults echoAllTypesWithDefaults(@NonNull AllTypesWithDefaults allTypes);
-=======
 
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
     /** Returns passed in int. */
     @NonNull
     Long echoRequiredInt(@NonNull Long anInt);
@@ -4918,40 +4820,38 @@ public class CoreTests {
 
     /** Returns the passed object, to test async serialization and deserialization. */
     void echoAsyncAllTypes(@NonNull AllTypes everything, @NonNull Result<AllTypes> result);
-<<<<<<< HEAD:packages/golubets/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
+
     /**
      * Returns the passed object, to test async serialization and deserialization using
      * `await`-style and Swift does not throw an exception.
      */
     void echoModernAsyncAllTypes(@NonNull AllTypes everything, @NonNull Result<AllTypes> result);
+
     /**
      * Returns the passed object, to test async serialization and deserialization using
      * `await`-style and Swift can throw an exception.
      */
     void echoModernAsyncAllTypesAndNotThrow(
         @NonNull AllTypes everything, @NonNull Result<AllTypes> result);
+
     /**
      * Returns the passed object, to test async serialization and deserialization using
      * `await`-style and throws an exception.
      */
     void echoModernAsyncAllTypesAndThrow(
         @NonNull AllTypes everything, @NonNull Result<AllTypes> result);
+
     /** Returns the passed object, to test serialization and deserialization. */
     void echoAsyncNullableAllNullableTypes(
         @Nullable AllNullableTypes everything, @NonNull NullableResult<AllNullableTypes> result);
+
     /**
      * Returns the passed object, to test async serialization and deserialization using
      * `await`-style and Swift does not throw an exception.
      */
     void echoModernAsyncNullableAllNullableTypes(
         @Nullable AllNullableTypes everything, @NonNull NullableResult<AllNullableTypes> result);
-=======
 
-    /** Returns the passed object, to test serialization and deserialization. */
-    void echoAsyncNullableAllNullableTypes(
-        @Nullable AllNullableTypes everything, @NonNull NullableResult<AllNullableTypes> result);
-
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
     /** Returns the passed object, to test serialization and deserialization. */
     void echoAsyncNullableAllNullableTypesWithoutRecursion(
         @Nullable AllNullableTypesWithoutRecursion everything,
@@ -6026,10 +5926,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-<<<<<<< HEAD:packages/golubets/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
-                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoAllNullableTypes"
-=======
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.areAllNullableTypesEqual"
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.areAllNullableTypesEqual"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -6055,7 +5952,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.getAllNullableTypesHash"
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.getAllNullableTypesHash"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -6080,7 +5977,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.getAllNullableTypesWithoutRecursionHash"
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.getAllNullableTypesWithoutRecursionHash"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -6106,8 +6003,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoAllNullableTypes"
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoAllNullableTypes"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {

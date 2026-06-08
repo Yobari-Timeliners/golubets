@@ -92,11 +92,7 @@ enable_testing()
 include(FetchContent)
 FetchContent_Declare(
   googletest
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/CMakeLists.txt
   URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip
-=======
-  URL https://github.com/google/googletest/archive/v1.15.2.zip
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/CMakeLists.txt
 )
 # Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)

@@ -263,6 +263,3 @@ linter:
     # TODO(kallentu): Remove this lint once the Dart SDK in Flutter is on version 3.13.
     - var_with_no_type_annotation
     - void_checks
-
-formatter:
-  trailing_commas: preserve

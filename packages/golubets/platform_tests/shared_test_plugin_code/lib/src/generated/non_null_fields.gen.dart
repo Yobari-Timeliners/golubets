@@ -87,12 +87,6 @@ bool _deepEquals(Object? a, Object? b) {
   return a == b;
 }
 
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/non_null_fields.gen.dart
-enum ReplyType {
-  success,
-  error,
-}
-=======
 int _deepHash(Object? value) {
   if (value is List) {
     return Object.hashAll(value.map(_deepHash));
@@ -116,19 +110,14 @@ int _deepHash(Object? value) {
 }
 
 enum ReplyType { success, error }
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/non_null_fields.gen.dart
 
 class NonNullFieldSearchRequest {
-  NonNullFieldSearchRequest({
-    required this.query,
-  });
+  NonNullFieldSearchRequest({required this.query});
 
   String query;
 
   List<Object?> _toList() {
-    return <Object?>[
-      query,
-    ];
+    return <Object?>[query];
   }
 
   Object encode() {
@@ -137,9 +126,7 @@ class NonNullFieldSearchRequest {
 
   static NonNullFieldSearchRequest decode(Object result) {
     result as List<Object?>;
-    return NonNullFieldSearchRequest(
-      query: result[0]! as String,
-    );
+    return NonNullFieldSearchRequest(query: result[0]! as String);
   }
 
   @override
@@ -160,20 +147,14 @@ class NonNullFieldSearchRequest {
 }
 
 class ExtraData {
-  ExtraData({
-    required this.detailA,
-    required this.detailB,
-  });
+  ExtraData({required this.detailA, required this.detailB});
 
   String detailA;
 
   String detailB;
 
   List<Object?> _toList() {
-    return <Object?>[
-      detailA,
-      detailB,
-    ];
+    return <Object?>[detailA, detailB];
   }
 
   Object encode() {
@@ -222,13 +203,7 @@ class NonNullFieldSearchReply {
   ReplyType type;
 
   List<Object?> _toList() {
-    return <Object?>[
-      result,
-      error,
-      indices,
-      extraData,
-      type,
-    ];
+    return <Object?>[result, error, indices, extraData, type];
   }
 
   Object encode() {
@@ -313,32 +288,18 @@ class NonNullFieldHostApi {
   /// Constructor for [NonNullFieldHostApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/non_null_fields.gen.dart
-  NonNullFieldHostApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
-=======
   NonNullFieldHostApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-    : pigeonVar_binaryMessenger = binaryMessenger,
-      pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+    : golubetsVar_binaryMessenger = binaryMessenger,
+      golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? pigeonVar_binaryMessenger;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/non_null_fields.gen.dart
+  final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
   final String golubetsVar_messageChannelSuffix;
 
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/non_null_fields.gen.dart
-  Future<NonNullFieldSearchReply> search(
-    NonNullFieldSearchRequest nested,
-  ) async {
+  Future<NonNullFieldSearchReply> search(NonNullFieldSearchRequest nested) async {
     final golubetsVar_channelName =
         'dev.bayori.golubets.golubets_integration_tests.NonNullFieldHostApi.search$golubetsVar_messageChannelSuffix';
     final golubetsVar_channel = BasicMessageChannel<Object?>(
@@ -346,23 +307,8 @@ class NonNullFieldHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[nested],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-  Future<NonNullFieldSearchReply> search(NonNullFieldSearchRequest nested) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.pigeon_integration_tests.NonNullFieldHostApi.search$pigeonVar_messageChannelSuffix';
-    final pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[nested]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/non_null_fields.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[nested]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,

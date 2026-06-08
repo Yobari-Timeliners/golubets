@@ -1123,25 +1123,6 @@ void main() {
 
         mockStdin.readLineOutput = 'y';
 
-<<<<<<< HEAD
-          final List<String> output = await runCapturingPrint(
-            commandRunner,
-            <String>[
-              'publish',
-              '--all-changed',
-              '--base-sha=HEAD~',
-              '--batch-release-branch=release-package1',
-            ],
-          );
-          // Package1 is published in batch realease, pacakge2 is not.
-          expect(
-            output,
-            containsAllInOrder(<Matcher>[
-              contains('Running `pub publish ` in ${package1.path}...'),
-              contains('Published package1 successfully!'),
-            ]),
-          );
-=======
         final List<String> output = await runCapturingPrint(commandRunner, <String>[
           'publish',
           '--all-changed',
@@ -1156,7 +1137,6 @@ void main() {
             contains('Published package1 successfully!'),
           ]),
         );
->>>>>>> filtered-upstream/main
 
         expect(output, isNot(contains(contains('Running `pub publish ` in ${package2.path}...!'))));
         expect(output, isNot(contains(contains('Published package2 successfully!'))));
@@ -1196,25 +1176,6 @@ void main() {
 
         mockStdin.readLineOutput = 'y';
 
-<<<<<<< HEAD
-          final List<String> output = await runCapturingPrint(
-            commandRunner,
-            <String>[
-              'publish',
-              '--all-changed',
-              '--base-sha=HEAD~',
-              '--batch-release-branch=release-package1',
-            ],
-          );
-          // Package1 is published in batch realease, pacakge2 is not.
-          expect(
-            output,
-            containsAllInOrder(<Matcher>[
-              contains('Running `pub publish ` in ${package1.path}...'),
-              contains('Published package1 successfully!'),
-            ]),
-          );
-=======
         final List<String> output = await runCapturingPrint(commandRunner, <String>[
           'publish',
           '--all-changed',
@@ -1229,7 +1190,6 @@ void main() {
             contains('Published package1 successfully!'),
           ]),
         );
->>>>>>> filtered-upstream/main
 
         expect(output, isNot(contains(contains('Running `pub publish ` in ${package2.path}...!'))));
         expect(output, isNot(contains(contains('Published package2 successfully!'))));

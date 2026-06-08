@@ -22,16 +22,7 @@ class _ValidatorGeneratorAdapter implements GeneratorAdapter {
   final IOSink? sink;
 
   @override
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-  void generate(
-    StringSink sink,
-    InternalGolubetsOptions options,
-    Root root,
-    FileType fileType,
-  ) {}
-=======
-  void generate(StringSink sink, InternalPigeonOptions options, Root root, FileType fileType) {}
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+  void generate(StringSink sink, InternalGolubetsOptions options, Root root, FileType fileType) {}
 
   @override
   IOSink? shouldGenerate(InternalGolubetsOptions options, FileType _) => sink;
@@ -70,180 +61,77 @@ void main() {
   }
 
   test('parse args - input', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final GolubetsOptions opts = Golubets.parseArgs(<String>[
-      '--input',
-      'foo.dart',
-    ]);
-=======
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--input', 'foo.dart']);
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--input', 'foo.dart']);
     expect(opts.input, equals('foo.dart'));
   });
 
   test('parse args - dart_out', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final GolubetsOptions opts = Golubets.parseArgs(<String>[
-      '--dart_out',
-      'foo.dart',
-    ]);
-=======
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--dart_out', 'foo.dart']);
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--dart_out', 'foo.dart']);
     expect(opts.dartOut, equals('foo.dart'));
   });
 
   test('parse args - java_package', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final GolubetsOptions opts = Golubets.parseArgs(<String>[
-      '--java_package',
-      'com.google.foo',
-    ]);
-=======
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--java_package', 'com.google.foo']);
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--java_package', 'com.google.foo']);
     expect(opts.javaOptions?.package, equals('com.google.foo'));
   });
 
   test('parse args - input', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final GolubetsOptions opts = Golubets.parseArgs(<String>[
-      '--java_out',
-      'foo.java',
-    ]);
-=======
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--java_out', 'foo.java']);
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--java_out', 'foo.java']);
     expect(opts.javaOut, equals('foo.java'));
   });
 
   test('parse args - objc_header_out', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final GolubetsOptions opts = Golubets.parseArgs(<String>[
-      '--objc_header_out',
-      'foo.h',
-    ]);
-=======
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--objc_header_out', 'foo.h']);
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--objc_header_out', 'foo.h']);
     expect(opts.objcHeaderOut, equals('foo.h'));
   });
 
   test('parse args - objc_source_out', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final GolubetsOptions opts = Golubets.parseArgs(<String>[
-      '--objc_source_out',
-      'foo.m',
-    ]);
-=======
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--objc_source_out', 'foo.m']);
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--objc_source_out', 'foo.m']);
     expect(opts.objcSourceOut, equals('foo.m'));
   });
 
   test('parse args - swift_out', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final GolubetsOptions opts = Golubets.parseArgs(<String>[
-      '--swift_out',
-      'Foo.swift',
-    ]);
-=======
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--swift_out', 'Foo.swift']);
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--swift_out', 'Foo.swift']);
     expect(opts.swiftOut, equals('Foo.swift'));
   });
 
   test('parse args - kotlin_out', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final GolubetsOptions opts = Golubets.parseArgs(<String>[
-      '--kotlin_out',
-      'Foo.kt',
-    ]);
-=======
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--kotlin_out', 'Foo.kt']);
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--kotlin_out', 'Foo.kt']);
     expect(opts.kotlinOut, equals('Foo.kt'));
   });
 
   test('parse args - kotlin_package', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final GolubetsOptions opts = Golubets.parseArgs(<String>[
-      '--kotlin_package',
-      'com.google.foo',
-    ]);
-=======
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--kotlin_package', 'com.google.foo']);
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--kotlin_package', 'com.google.foo']);
     expect(opts.kotlinOptions?.package, equals('com.google.foo'));
   });
 
   test('parse args - kotlin_use_generated_annotation', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final GolubetsOptions opts = Golubets.parseArgs(<String>[
-      '--kotlin_use_generated_annotation',
-    ]);
-=======
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--kotlin_use_generated_annotation']);
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--kotlin_use_generated_annotation']);
     expect(opts.kotlinOptions!.useGeneratedAnnotation, isTrue);
   });
 
   test('parse args - cpp_header_out', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final GolubetsOptions opts = Golubets.parseArgs(<String>[
-      '--cpp_header_out',
-      'foo.h',
-    ]);
-=======
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--cpp_header_out', 'foo.h']);
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--cpp_header_out', 'foo.h']);
     expect(opts.cppHeaderOut, equals('foo.h'));
   });
 
   test('parse args - java_use_generated_annotation', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final GolubetsOptions opts = Golubets.parseArgs(<String>[
-      '--java_use_generated_annotation',
-    ]);
-=======
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--java_use_generated_annotation']);
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--java_use_generated_annotation']);
     expect(opts.javaOptions!.useGeneratedAnnotation, isTrue);
   });
 
   test('parse args - cpp_source_out', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final GolubetsOptions opts = Golubets.parseArgs(<String>[
-      '--cpp_source_out',
-      'foo.cpp',
-    ]);
-=======
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--cpp_source_out', 'foo.cpp']);
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--cpp_source_out', 'foo.cpp']);
     expect(opts.cppSourceOut, equals('foo.cpp'));
   });
 
   test('parse args - ast_out', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final GolubetsOptions opts = Golubets.parseArgs(<String>[
-      '--ast_out',
-      'stdout',
-    ]);
-=======
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--ast_out', 'stdout']);
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--ast_out', 'stdout']);
     expect(opts.astOut, equals('stdout'));
   });
 
   test('parse args - base_path', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    final GolubetsOptions opts = Golubets.parseArgs(<String>[
-      '--base_path',
-      './foo/',
-    ]);
-=======
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--base_path', './foo/']);
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--base_path', './foo/']);
     expect(opts.basePath, equals('./foo/'));
   });
 
@@ -541,27 +429,16 @@ abstract class NestorApi {
   });
 
   test('copyright flag', () {
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
     final GolubetsOptions results = Golubets.parseArgs(<String>[
       '--copyright_header',
       'foobar.txt',
     ]);
-=======
-    final PigeonOptions results = Pigeon.parseArgs(<String>['--copyright_header', 'foobar.txt']);
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
     expect(results.copyrightHeader, 'foobar.txt');
   });
 
   test('Dart generator copyright flag', () {
     final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    const options = GolubetsOptions(
-      copyrightHeader: './copyright_header.txt',
-      dartOut: '',
-    );
-=======
-    const options = PigeonOptions(copyrightHeader: './copyright_header.txt', dartOut: '');
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    const options = GolubetsOptions(copyrightHeader: './copyright_header.txt', dartOut: '');
     const dartGeneratorAdapter = DartGeneratorAdapter();
     final buffer = StringBuffer();
     dartGeneratorAdapter.generate(
@@ -575,14 +452,7 @@ abstract class NestorApi {
 
   test('Java generator copyright flag', () {
     final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
-    const options = GolubetsOptions(
-      javaOut: 'Foo.java',
-      copyrightHeader: './copyright_header.txt',
-    );
-=======
-    const options = PigeonOptions(javaOut: 'Foo.java', copyrightHeader: './copyright_header.txt');
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
+    const options = GolubetsOptions(javaOut: 'Foo.java', copyrightHeader: './copyright_header.txt');
     const javaGeneratorAdapter = JavaGeneratorAdapter();
     final buffer = StringBuffer();
     javaGeneratorAdapter.generate(
@@ -632,14 +502,10 @@ abstract class NestorApi {
 
   test('Swift generator copyright flag', () {
     final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
     const options = GolubetsOptions(
       swiftOut: 'Foo.swift',
       copyrightHeader: './copyright_header.txt',
     );
-=======
-    const options = PigeonOptions(swiftOut: 'Foo.swift', copyrightHeader: './copyright_header.txt');
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
     const swiftGeneratorAdapter = SwiftGeneratorAdapter();
     final buffer = StringBuffer();
     swiftGeneratorAdapter.generate(
@@ -1363,9 +1229,7 @@ class Message {
 ''';
 
     final ParseResults results = parseSource(code);
-    final GolubetsOptions options = GolubetsOptions.fromMap(
-      results.golubetsOptions!,
-    );
+    final GolubetsOptions options = GolubetsOptions.fromMap(results.golubetsOptions!);
     expect(options.javaOptions!.copyrightHeader, <String>['A', 'Header']);
   });
 
@@ -1380,9 +1244,7 @@ class Message {
 ''';
 
     final ParseResults results = parseSource(code);
-    final GolubetsOptions options = GolubetsOptions.fromMap(
-      results.golubetsOptions!,
-    );
+    final GolubetsOptions options = GolubetsOptions.fromMap(results.golubetsOptions!);
     expect(options.dartOptions!.copyrightHeader, <String>['A', 'Header']);
   });
 
@@ -1397,9 +1259,7 @@ class Message {
 ''';
 
     final ParseResults results = parseSource(code);
-    final GolubetsOptions options = GolubetsOptions.fromMap(
-      results.golubetsOptions!,
-    );
+    final GolubetsOptions options = GolubetsOptions.fromMap(results.golubetsOptions!);
     expect(options.objcOptions!.copyrightHeader, <String>['A', 'Header']);
   });
 
@@ -1414,9 +1274,7 @@ class Message {
 ''';
 
     final ParseResults results = parseSource(code);
-    final GolubetsOptions options = GolubetsOptions.fromMap(
-      results.golubetsOptions!,
-    );
+    final GolubetsOptions options = GolubetsOptions.fromMap(results.golubetsOptions!);
     expect(options.objcOptions?.headerIncludePath, 'Header.path');
   });
 
@@ -1431,9 +1289,7 @@ class Message {
 ''';
 
     final ParseResults results = parseSource(code);
-    final GolubetsOptions options = GolubetsOptions.fromMap(
-      results.golubetsOptions!,
-    );
+    final GolubetsOptions options = GolubetsOptions.fromMap(results.golubetsOptions!);
     expect(options.cppOptions?.headerIncludePath, 'Header.path');
   });
 
@@ -1509,9 +1365,7 @@ abstract class Api {
   test('generator validation', () async {
     final completer = Completer<void>();
     withTempFile('foo.dart', (File input) async {
-      final generator = _ValidatorGeneratorAdapter(
-        stdout,
-      );
+      final generator = _ValidatorGeneratorAdapter(stdout);
       final int result = await Golubets.run(
         <String>['--input', input.path],
         adapters: <GeneratorAdapter>[generator],
@@ -1526,9 +1380,7 @@ abstract class Api {
   test('generator validation skipped', () async {
     final completer = Completer<void>();
     withTempFile('foo.dart', (File input) async {
-      final generator = _ValidatorGeneratorAdapter(
-        null,
-      );
+      final generator = _ValidatorGeneratorAdapter(null);
       final int result = await Golubets.run(
         <String>['--input', input.path, '--dart_out', 'foo.dart'],
         adapters: <GeneratorAdapter>[generator],
@@ -1543,9 +1395,7 @@ abstract class Api {
   test('run with GolubetsOptions', () async {
     final completer = Completer<void>();
     withTempFile('foo.dart', (File input) async {
-      final generator = _ValidatorGeneratorAdapter(
-        null,
-      );
+      final generator = _ValidatorGeneratorAdapter(null);
       final int result = await Golubets.runWithOptions(
         GolubetsOptions(input: input.path, dartOut: 'foo.dart'),
         adapters: <GeneratorAdapter>[generator],

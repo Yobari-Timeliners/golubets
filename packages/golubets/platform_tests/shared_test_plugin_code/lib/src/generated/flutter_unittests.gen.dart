@@ -100,16 +100,12 @@ int _deepHash(Object? value) {
 }
 
 class FlutterSearchRequest {
-  FlutterSearchRequest({
-    this.query,
-  });
+  FlutterSearchRequest({this.query});
 
   String? query;
 
   List<Object?> _toList() {
-    return <Object?>[
-      query,
-    ];
+    return <Object?>[query];
   }
 
   Object encode() {
@@ -118,9 +114,7 @@ class FlutterSearchRequest {
 
   static FlutterSearchRequest decode(Object result) {
     result as List<Object?>;
-    return FlutterSearchRequest(
-      query: result[0] as String?,
-    );
+    return FlutterSearchRequest(query: result[0] as String?);
   }
 
   @override
@@ -141,20 +135,14 @@ class FlutterSearchRequest {
 }
 
 class FlutterSearchReply {
-  FlutterSearchReply({
-    this.result,
-    this.error,
-  });
+  FlutterSearchReply({this.result, this.error});
 
   String? result;
 
   String? error;
 
   List<Object?> _toList() {
-    return <Object?>[
-      result,
-      error,
-    ];
+    return <Object?>[result, error];
   }
 
   Object encode() {
@@ -184,16 +172,12 @@ class FlutterSearchReply {
 }
 
 class FlutterSearchRequests {
-  FlutterSearchRequests({
-    this.requests,
-  });
+  FlutterSearchRequests({this.requests});
 
   List<Object?>? requests;
 
   List<Object?> _toList() {
-    return <Object?>[
-      requests,
-    ];
+    return <Object?>[requests];
   }
 
   Object encode() {
@@ -202,9 +186,7 @@ class FlutterSearchRequests {
 
   static FlutterSearchRequests decode(Object result) {
     result as List<Object?>;
-    return FlutterSearchRequests(
-      requests: result[0] as List<Object?>?,
-    );
+    return FlutterSearchRequests(requests: result[0] as List<Object?>?);
   }
 
   @override
@@ -225,16 +207,12 @@ class FlutterSearchRequests {
 }
 
 class FlutterSearchReplies {
-  FlutterSearchReplies({
-    this.replies,
-  });
+  FlutterSearchReplies({this.replies});
 
   List<Object?>? replies;
 
   List<Object?> _toList() {
-    return <Object?>[
-      replies,
-    ];
+    return <Object?>[replies];
   }
 
   Object encode() {
@@ -243,9 +221,7 @@ class FlutterSearchReplies {
 
   static FlutterSearchReplies decode(Object result) {
     result as List<Object?>;
-    return FlutterSearchReplies(
-      replies: result[0] as List<Object?>?,
-    );
+    return FlutterSearchReplies(replies: result[0] as List<Object?>?);
   }
 
   @override
@@ -329,16 +305,8 @@ class Api {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/flutter_unittests.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[request],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[request]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/flutter_unittests.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[request]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -356,16 +324,8 @@ class Api {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/flutter_unittests.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[request],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[request]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/flutter_unittests.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[request]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -383,16 +343,8 @@ class Api {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/flutter_unittests.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[requests],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[requests]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/flutter_unittests.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[requests]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -410,16 +362,8 @@ class Api {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/flutter_unittests.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[value],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[value]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/flutter_unittests.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,

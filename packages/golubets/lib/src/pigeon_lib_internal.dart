@@ -119,14 +119,7 @@ class InternalGolubetsOptions {
         ? _lineReader(path.posix.join(options.basePath ?? '', options.copyrightHeader))
         : null;
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-    return InternalGolubetsOptions._fromGolubetsOptionsWithHeader(
-      options,
-      copyrightHeader,
-    );
-=======
-    return InternalPigeonOptions._fromPigeonOptionsWithHeader(options, copyrightHeader);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+    return InternalGolubetsOptions._fromGolubetsOptionsWithHeader(options, copyrightHeader);
   }
 
   /// Path to the file which will be processed.
@@ -203,16 +196,7 @@ abstract class GeneratorAdapter {
   IOSink? shouldGenerate(InternalGolubetsOptions options, FileType fileType);
 
   /// Write the generated code described in [root] to [sink] using the [options].
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-  void generate(
-    StringSink sink,
-    InternalGolubetsOptions options,
-    Root root,
-    FileType fileType,
-  );
-=======
-  void generate(StringSink sink, InternalPigeonOptions options, Root root, FileType fileType);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+  void generate(StringSink sink, InternalGolubetsOptions options, Root root, FileType fileType);
 
   /// Generates errors that would only be appropriate for this [GeneratorAdapter].
   ///
@@ -247,16 +231,7 @@ class AstGeneratorAdapter implements GeneratorAdapter {
   List<FileType> get fileTypeList => const <FileType>[FileType.na];
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-  void generate(
-    StringSink sink,
-    InternalGolubetsOptions options,
-    Root root,
-    FileType fileType,
-  ) {
-=======
-  void generate(StringSink sink, InternalPigeonOptions options, Root root, FileType fileType) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+  void generate(StringSink sink, InternalGolubetsOptions options, Root root, FileType fileType) {
     generateAst(root, sink);
   }
 
@@ -280,16 +255,7 @@ class DartGeneratorAdapter implements GeneratorAdapter {
   List<FileType> get fileTypeList => const <FileType>[FileType.na];
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-  void generate(
-    StringSink sink,
-    InternalGolubetsOptions options,
-    Root root,
-    FileType fileType,
-  ) {
-=======
-  void generate(StringSink sink, InternalPigeonOptions options, Root root, FileType fileType) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+  void generate(StringSink sink, InternalGolubetsOptions options, Root root, FileType fileType) {
     if (options.dartOptions == null) {
       return;
     }
@@ -315,16 +281,7 @@ class DartTestGeneratorAdapter implements GeneratorAdapter {
   List<FileType> get fileTypeList => const <FileType>[FileType.na];
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-  void generate(
-    StringSink sink,
-    InternalGolubetsOptions options,
-    Root root,
-    FileType fileType,
-  ) {
-=======
-  void generate(StringSink sink, InternalPigeonOptions options, Root root, FileType fileType) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+  void generate(StringSink sink, InternalGolubetsOptions options, Root root, FileType fileType) {
     if (options.dartOptions == null) {
       return;
     }
@@ -366,16 +323,7 @@ class ObjcGeneratorAdapter implements GeneratorAdapter {
   List<FileType> get fileTypeList => const <FileType>[FileType.header, FileType.source];
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-  void generate(
-    StringSink sink,
-    InternalGolubetsOptions options,
-    Root root,
-    FileType fileType,
-  ) {
-=======
-  void generate(StringSink sink, InternalPigeonOptions options, Root root, FileType fileType) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+  void generate(StringSink sink, InternalGolubetsOptions options, Root root, FileType fileType) {
     if (options.objcOptions == null) {
       return;
     }
@@ -418,16 +366,7 @@ class JavaGeneratorAdapter implements GeneratorAdapter {
   List<FileType> get fileTypeList => const <FileType>[FileType.na];
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-  void generate(
-    StringSink sink,
-    InternalGolubetsOptions options,
-    Root root,
-    FileType fileType,
-  ) {
-=======
-  void generate(StringSink sink, InternalPigeonOptions options, Root root, FileType fileType) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+  void generate(StringSink sink, InternalGolubetsOptions options, Root root, FileType fileType) {
     if (options.javaOptions == null) {
       return;
     }
@@ -461,16 +400,7 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
   List<FileType> get fileTypeList => const <FileType>[FileType.na];
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-  void generate(
-    StringSink sink,
-    InternalGolubetsOptions options,
-    Root root,
-    FileType fileType,
-  ) {
-=======
-  void generate(StringSink sink, InternalPigeonOptions options, Root root, FileType fileType) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+  void generate(StringSink sink, InternalGolubetsOptions options, Root root, FileType fileType) {
     if (options.swiftOptions == null) {
       return;
     }
@@ -479,16 +409,8 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
   IOSink? shouldGenerate(InternalGolubetsOptions options, FileType _) =>
-      _openSink(
-        options.swiftOptions?.swiftOut,
-        basePath: options.basePath ?? '',
-      );
-=======
-  IOSink? shouldGenerate(InternalPigeonOptions options, FileType _) =>
       _openSink(options.swiftOptions?.swiftOut, basePath: options.basePath ?? '');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
 
   @override
   List<Error> validate(InternalGolubetsOptions options, Root root) {
@@ -499,9 +421,7 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
         final Class? associatedClass = field.type.associatedClass;
         final Class? superClass = associatedClass?.superClass;
         final bool isSealedChild =
-            associatedClass != null &&
-            superClass != null &&
-            superClass.isSealed;
+            associatedClass != null && superClass != null && superClass.isSealed;
 
         if (isSealedChild) {
           result.add(
@@ -536,9 +456,7 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
         final Class? associatedClass = parameter.type.associatedClass;
         final Class? superClass = associatedClass?.superClass;
         final bool isSealedChild =
-            associatedClass != null &&
-            superClass != null &&
-            superClass.isSealed;
+            associatedClass != null && superClass != null && superClass.isSealed;
 
         if (isSealedChild) {
           result.add(
@@ -569,16 +487,7 @@ class CppGeneratorAdapter implements GeneratorAdapter {
   List<FileType> get fileTypeList => const <FileType>[FileType.header, FileType.source];
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-  void generate(
-    StringSink sink,
-    InternalGolubetsOptions options,
-    Root root,
-    FileType fileType,
-  ) {
-=======
-  void generate(StringSink sink, InternalPigeonOptions options, Root root, FileType fileType) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+  void generate(StringSink sink, InternalGolubetsOptions options, Root root, FileType fileType) {
     if (options.cppOptions == null) {
       return;
     }
@@ -621,16 +530,7 @@ class GObjectGeneratorAdapter implements GeneratorAdapter {
   List<FileType> get fileTypeList => const <FileType>[FileType.header, FileType.source];
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-  void generate(
-    StringSink sink,
-    InternalGolubetsOptions options,
-    Root root,
-    FileType fileType,
-  ) {
-=======
-  void generate(StringSink sink, InternalPigeonOptions options, Root root, FileType fileType) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+  void generate(StringSink sink, InternalGolubetsOptions options, Root root, FileType fileType) {
     if (options.gobjectOptions == null) {
       return;
     }
@@ -681,16 +581,7 @@ class KotlinGeneratorAdapter implements GeneratorAdapter {
   List<FileType> get fileTypeList => const <FileType>[FileType.na];
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-  void generate(
-    StringSink sink,
-    InternalGolubetsOptions options,
-    Root root,
-    FileType fileType,
-  ) {
-=======
-  void generate(StringSink sink, InternalPigeonOptions options, Root root, FileType fileType) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+  void generate(StringSink sink, InternalGolubetsOptions options, Root root, FileType fileType) {
     if (options.kotlinOptions == null) {
       return;
     }
@@ -704,16 +595,8 @@ class KotlinGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
   IOSink? shouldGenerate(InternalGolubetsOptions options, FileType _) =>
-      _openSink(
-        options.kotlinOptions?.kotlinOut,
-        basePath: options.basePath ?? '',
-      );
-=======
-  IOSink? shouldGenerate(InternalPigeonOptions options, FileType _) =>
       _openSink(options.kotlinOptions?.kotlinOut, basePath: options.basePath ?? '');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
 
   @override
   List<Error> validate(InternalGolubetsOptions options, Root root) => <Error>[];
@@ -1264,8 +1147,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
   final String source;
 
   Class? _currentClass;
-  Map<String, DefaultValue?> _currentClassDefaultValues =
-      <String, DefaultValue?>{};
+  Map<String, DefaultValue?> _currentClassDefaultValues = <String, DefaultValue?>{};
   Api? _currentApi;
   Map<String, Object>? _golubetsOptions;
 
@@ -1383,10 +1265,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       genericTypeNames: _genericTypeNames,
       genericUsage: _genericTypeNames.isEmpty
           ? const <String, Set<TypeArgumentCombination>>{}
-          : collectGenericTypeUsage(
-              classes: _classes,
-              apis: _apis,
-            ),
+          : collectGenericTypeUsage(classes: _classes, apis: _apis),
     );
 
     final List<Error> validateErrors = _validateAst(completeRoot, source);
@@ -1547,16 +1426,9 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
           ),
         );
       }
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
       final golubetsOptionsMap =
-          _expressionToMap(node.arguments!.arguments.first)
-              as Map<String, Object>;
-      _golubetsOptions = golubetsOptionsMap;
-=======
-      final pigeonOptionsMap =
           _expressionToMap(node.arguments!.arguments.first) as Map<String, Object>;
-      _pigeonOptions = pigeonOptionsMap;
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+      _golubetsOptions = golubetsOptionsMap;
     }
     node.visitChildren(this);
     return null;
@@ -1569,12 +1441,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
 
     if (node.abstractKeyword != null) {
       if (node.metadata.length > 2 ||
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-          (node.metadata.length > 1 &&
-              !_hasMetadata(node.metadata, 'ConfigureGolubets'))) {
-=======
-          (node.metadata.length > 1 && !_hasMetadata(node.metadata, 'ConfigurePigeon'))) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+          (node.metadata.length > 1 && !_hasMetadata(node.metadata, 'ConfigureGolubets'))) {
         _errors.add(
           Error(
             message:
@@ -1740,12 +1607,10 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       }
     } else {
       final List<TypeDeclaration> typeArguments =
-          node.typeParameters?.typeParameters
+          node.namePart.typeParameters?.typeParameters
               .map(
-                (dart_ast.TypeParameter e) => TypeDeclaration(
-                  baseName: e.name.lexeme,
-                  isNullable: e.bound?.question != null,
-                ),
+                (dart_ast.TypeParameter e) =>
+                    TypeDeclaration(baseName: e.name.lexeme, isNullable: e.bound?.question != null),
               )
               .toList() ??
           const <TypeDeclaration>[];
@@ -1762,14 +1627,8 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
             node.extendsClause?.superclass.name.toString(),
         isSealed: node.sealedKeyword != null,
         isSwiftClass: _hasMetadata(node.metadata, 'SwiftClass'),
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-        documentationComments: _documentationCommentsParser(
-          node.documentationComment?.tokens,
-        ),
-        typeArguments: typeArguments,
-=======
         documentationComments: _documentationCommentsParser(node.documentationComment?.tokens),
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+        typeArguments: typeArguments,
       );
     }
 
@@ -1825,9 +1684,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       DefaultValue? defaultValue;
       if (formalParameter is dart_ast.DefaultFormalParameter) {
         try {
-          defaultValue = formalParameter.defaultValue?.accept(
-            const _DefaultValueVisitor(),
-          );
+          defaultValue = formalParameter.defaultValue?.accept(const _DefaultValueVisitor());
         } on Object catch (e) {
           _errors.add(
             Error(
@@ -1882,9 +1739,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     final List<Parameter> arguments = parameters.parameters
         .map(_formalParameterToPigeonParameter)
         .toList();
-    final AsynchronousType asynchronousType = _parseAsynchronousType(
-      node.metadata,
-    );
+    final AsynchronousType asynchronousType = _parseAsynchronousType(node.metadata);
     final bool isStatic = _hasMetadata(node.metadata, 'static');
     final String objcSelector =
         _findMetadata(
@@ -1914,8 +1769,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       if (node.typeParameters != null) {
         _errors.add(
           Error(
-            message:
-                'Generic methods aren\'t supported in Pigeon ("${node.name.lexeme}").',
+            message: 'Generic methods aren\'t supported in Pigeon ("${node.name.lexeme}").',
             lineNumber: calculateLineNumber(source, node.offset),
           ),
         );
@@ -2004,13 +1858,9 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     return null;
   }
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
   static List<TypeDeclaration> _typeAnnotationsToTypeArguments(
     dart_ast.TypeArgumentList? typeArguments,
   ) {
-=======
-  List<TypeDeclaration> _typeAnnotationsToTypeArguments(dart_ast.TypeArgumentList? typeArguments) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
     final result = <TypeDeclaration>[];
     if (typeArguments != null) {
       for (final Object x in typeArguments.childEntities) {
@@ -2135,13 +1985,11 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
           ),
         );
       } else {
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
         if (node.name == null) {
           _currentClass!.isImmutable = node.constKeyword != null;
         }
 
-        for (final dart_ast.FormalParameter param
-            in node.parameters.parameters) {
+        for (final dart_ast.FormalParameter param in node.parameters.parameters) {
           if (param is dart_ast.DefaultFormalParameter) {
             final Token? name = param.name;
 
@@ -2163,24 +2011,13 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
             }
 
             try {
-              final DefaultValue? value = defaultValue.accept(
-                const _DefaultValueVisitor(),
-              );
+              final DefaultValue? value = defaultValue.accept(const _DefaultValueVisitor());
 
               _currentClassDefaultValues[name.toString()] = value;
             } catch (e) {
               _errors.add(
-                Error(
-                  message: e.toString(),
-                  lineNumber: calculateLineNumber(source, node.offset),
-                ),
+                Error(message: e.toString(), lineNumber: calculateLineNumber(source, node.offset)),
               );
-=======
-        for (final dart_ast.FormalParameter param in node.parameters.parameters) {
-          if (param is dart_ast.DefaultFormalParameter) {
-            if (param.name != null && param.defaultValue != null) {
-              _currentClassDefaultValues[param.name!.toString()] = param.defaultValue!.toString();
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
             }
           }
         }
@@ -2220,15 +2057,8 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
               taskQueueArguments,
             )?.expression.asNullable<dart_ast.PrefixedIdentifier>()?.name;
       final TaskQueueType taskQueueType =
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-          _stringToEnum(TaskQueueType.values, taskQueueTypeName) ??
-          TaskQueueType.serial;
-      final AsynchronousType asynchronousType = _parseAsynchronousType(
-        node.metadata,
-      );
-=======
           _stringToEnum(TaskQueueType.values, taskQueueTypeName) ?? TaskQueueType.serial;
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+      final AsynchronousType asynchronousType = _parseAsynchronousType(node.metadata);
 
       // Methods without named return types aren't supported.
       final dart_ast.TypeAnnotation returnType = type.returnType!;
@@ -2284,9 +2114,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     }
   }
 
-  AsynchronousType _parseAsynchronousType(
-    dart_ast.NodeList<dart_ast.Annotation> metadata,
-  ) {
+  AsynchronousType _parseAsynchronousType(dart_ast.NodeList<dart_ast.Annotation> metadata) {
     if (_hasMetadata(metadata, 'async')) {
       return AsynchronousType.callback;
     }
@@ -2353,8 +2181,7 @@ int calculateLineNumber(String contents, int offset) {
   return result;
 }
 
-class _DefaultValueVisitor
-    extends dart_ast_visitor.SimpleAstVisitor<DefaultValue> {
+class _DefaultValueVisitor extends dart_ast_visitor.SimpleAstVisitor<DefaultValue> {
   const _DefaultValueVisitor();
 
   @override
@@ -2364,9 +2191,7 @@ class _DefaultValueVisitor
 
   @override
   DefaultValue? visitSimpleIdentifier(dart_ast.SimpleIdentifier node) {
-    throw Exception(
-      'Unsupported "${node.name}" in default value "$node"',
-    );
+    throw Exception('Unsupported "${node.name}" in default value "$node"');
   }
 
   @override
@@ -2397,30 +2222,22 @@ class _DefaultValueVisitor
     ).firstOrNull;
 
     if (type == null) {
-      throw Exception(
-        'Default List value type arguments must be specified.',
-      );
+      throw Exception('Default List value type arguments must be specified.');
     }
 
-    return ListLiteral(
-      elements: values,
-      elementType: type,
-    );
+    return ListLiteral(elements: values, elementType: type);
   }
 
   @override
   DefaultValue? visitSetOrMapLiteral(dart_ast.SetOrMapLiteral node) {
-    final List<TypeDeclaration> typeArguments =
-        RootBuilder._typeAnnotationsToTypeArguments(
-          node.typeArguments,
-        );
+    final List<TypeDeclaration> typeArguments = RootBuilder._typeAnnotationsToTypeArguments(
+      node.typeArguments,
+    );
     final TypeDeclaration? keyType = typeArguments.firstOrNull;
     final TypeDeclaration? valueType = typeArguments.lastOrNull;
 
     if (keyType == null || valueType == null) {
-      throw Exception(
-        'Default Map value type arguments must be specified.',
-      );
+      throw Exception('Default Map value type arguments must be specified.');
     }
 
     final entries = <DefaultValue, DefaultValue>{};
@@ -2435,25 +2252,16 @@ class _DefaultValueVisitor
       }
     }
 
-    return MapLiteral(
-      entries: entries,
-      keyType: keyType,
-      valueType: valueType,
-    );
+    return MapLiteral(entries: entries, keyType: keyType, valueType: valueType);
   }
 
   @override
   DefaultValue? visitPrefixedIdentifier(dart_ast.PrefixedIdentifier node) {
-    return EnumLiteral(
-      value: node.identifier.name,
-      name: node.prefix.name,
-    );
+    return EnumLiteral(value: node.identifier.name, name: node.prefix.name);
   }
 
   @override
-  DefaultValue? visitInstanceCreationExpression(
-    dart_ast.InstanceCreationExpression node,
-  ) {
+  DefaultValue? visitInstanceCreationExpression(dart_ast.InstanceCreationExpression node) {
     final List<DefaultValue> args = node.argumentList.arguments
         .map(
           (dart_ast.Expression e) => e is! dart_ast.NamedExpression
@@ -2464,19 +2272,14 @@ class _DefaultValueVisitor
         .whereNotNull()
         .toList();
     final type = TypeDeclaration(
-      baseName: RootBuilder._getNamedTypeQualifiedName(
-        node.constructorName.type,
-      ),
+      baseName: RootBuilder._getNamedTypeQualifiedName(node.constructorName.type),
       isNullable: node.constructorName.type.question != null,
       typeArguments: RootBuilder._typeAnnotationsToTypeArguments(
         node.constructorName.type.typeArguments,
       ),
     );
 
-    return ObjectCreation(
-      type: type,
-      arguments: args,
-    );
+    return ObjectCreation(type: type, arguments: args);
   }
 
   @override
@@ -2487,10 +2290,7 @@ class _DefaultValueVisitor
       return null;
     }
 
-    return NamedDefaultValue(
-      value: defaultValue,
-      name: node.name.label.name,
-    );
+    return NamedDefaultValue(value: defaultValue, name: node.name.label.name);
   }
 
   @override
@@ -2507,14 +2307,9 @@ class _DefaultValueVisitor
     final type = TypeDeclaration(
       baseName: node.methodName.name,
       isNullable: false,
-      typeArguments: RootBuilder._typeAnnotationsToTypeArguments(
-        node.typeArguments,
-      ),
+      typeArguments: RootBuilder._typeAnnotationsToTypeArguments(node.typeArguments),
     );
 
-    return ObjectCreation(
-      type: type,
-      arguments: args,
-    );
+    return ObjectCreation(type: type, arguments: args);
   }
 }

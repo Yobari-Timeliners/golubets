@@ -145,10 +145,7 @@ func deepEqualsMessages(_ lhs: Any?, _ rhs: Any?) -> Bool {
     return lhsHashable == rhsHashable
 
   default:
-<<<<<<< HEAD:packages/golubets/example/app/ios/Runner/Messages.g.swift
     // Any other type shouldn't be able to be used with golubetsets. File an issue if you find this to be untrue.
-=======
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/ios/Runner/Messages.g.swift
     return false
   }
 }
@@ -235,14 +232,7 @@ public struct MessageData: Hashable {
       data,
     ]
   }
-<<<<<<< HEAD:packages/golubets/example/app/ios/Runner/Messages.g.swift
   public static func == (lhs: MessageData, rhs: MessageData) -> Bool {
-    return deepEqualsMessages(lhs.toList(), rhs.toList())
-  }
-  public func hash(into hasher: inout Hasher) {
-    deepHashMessages(value: toList(), hasher: &hasher)
-=======
-  static func == (lhs: MessageData, rhs: MessageData) -> Bool {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
@@ -251,13 +241,12 @@ public struct MessageData: Hashable {
       && deepEqualsMessages(lhs.code, rhs.code) && deepEqualsMessages(lhs.data, rhs.data)
   }
 
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     hasher.combine("MessageData")
     deepHashMessages(value: name, hasher: &hasher)
     deepHashMessages(value: description, hasher: &hasher)
     deepHashMessages(value: code, hasher: &hasher)
     deepHashMessages(value: data, hasher: &hasher)
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/ios/Runner/Messages.g.swift
   }
 }
 

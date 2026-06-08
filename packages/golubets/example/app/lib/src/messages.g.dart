@@ -86,24 +86,6 @@ bool _deepEquals(Object? a, Object? b) {
   return a == b;
 }
 
-<<<<<<< HEAD:packages/golubets/example/app/lib/src/messages.g.dart
-enum Code {
-  one,
-  two,
-}
-
-class MessageData {
-  MessageData({
-    this.name = 'Golub',
-    this.description = 'Example description',
-    this.code = Code.one,
-    this.data = const <String, String>{
-      'hello': 'world',
-      'lorem': 'ipsum',
-      'golubets': 'rocks',
-    },
-  });
-=======
 int _deepHash(Object? value) {
   if (value is List) {
     return Object.hashAll(value.map(_deepHash));
@@ -129,8 +111,12 @@ int _deepHash(Object? value) {
 enum Code { one, two }
 
 class MessageData {
-  MessageData({this.name, this.description, required this.code, required this.data});
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/lib/src/messages.g.dart
+  MessageData({
+    this.name = 'Golub',
+    this.description = 'Example description',
+    this.code = Code.one,
+    this.data = const <String, String>{'hello': 'world', 'lorem': 'ipsum', 'golubets': 'rocks'},
+  });
 
   String? name;
 
@@ -141,12 +127,7 @@ class MessageData {
   Map<String, String> data;
 
   List<Object?> _toList() {
-    return <Object?>[
-      name,
-      description,
-      code,
-      data,
-    ];
+    return <Object?>[name, description, code, data];
   }
 
   Object encode() {
@@ -219,23 +200,12 @@ class ExampleHostApi {
   /// Constructor for [ExampleHostApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-<<<<<<< HEAD:packages/golubets/example/app/lib/src/messages.g.dart
-  ExampleHostApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
-=======
   ExampleHostApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-    : pigeonVar_binaryMessenger = binaryMessenger,
-      pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+    : golubetsVar_binaryMessenger = binaryMessenger,
+      golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? pigeonVar_binaryMessenger;
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/lib/src/messages.g.dart
+  final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
@@ -249,11 +219,8 @@ class ExampleHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      null,
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -271,16 +238,8 @@ class ExampleHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/example/app/lib/src/messages.g.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[a, b],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[a, b]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/lib/src/messages.g.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[a, b]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -298,16 +257,8 @@ class ExampleHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/example/app/lib/src/messages.g.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[message],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[message]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/lib/src/messages.g.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[message]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -325,11 +276,8 @@ class ExampleHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[message],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[message]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -347,11 +295,8 @@ class ExampleHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[message],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[message]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,

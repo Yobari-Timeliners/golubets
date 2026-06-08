@@ -42,10 +42,7 @@ void main() {
     final code = sink.toString();
     expect(code, contains('data class Foobar ('));
     expect(code, contains('val field1: Long? = null'));
-    expect(
-      code,
-      contains('fun fromList(golubetsVar_list: List<Any?>): Foobar'),
-    );
+    expect(code, contains('fun fromList(golubetsVar_list: List<Any?>): Foobar'));
     expect(code, contains('fun toList(): List<Any?>'));
     expect(code, isNot(contains('containsKey')));
   });
@@ -770,10 +767,7 @@ void main() {
           name: 'Input',
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'String',
-                isNullable: true,
-              ),
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
               name: 'input',
             ),
           ],
@@ -782,10 +776,7 @@ void main() {
           name: 'Output',
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'String',
-                isNullable: true,
-              ),
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
               name: 'output',
             ),
           ],
@@ -794,22 +785,12 @@ void main() {
       enums: <Enum>[],
     );
     final sink = StringBuffer();
-    const kotlinOptions = InternalKotlinOptions(
-      kotlinOut: '',
-    );
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const generator = KotlinGenerator();
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('interface Api'));
-    expect(
-      code,
-      contains('suspend fun doSomething(arg: Input): Output'),
-    );
+    expect(code, contains('suspend fun doSomething(arg: Input): Output'));
     expect(code, contains('coroutineScope.launch {'));
     expect(code, contains('coroutineScope: CoroutineScope'));
     expect(code, contains('api.doSomething(argArg)'));
@@ -848,10 +829,7 @@ void main() {
           name: 'Input',
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'String',
-                isNullable: true,
-              ),
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
               name: 'input',
             ),
           ],
@@ -860,10 +838,7 @@ void main() {
           name: 'Output',
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'String',
-                isNullable: true,
-              ),
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
               name: 'output',
             ),
           ],
@@ -872,22 +847,12 @@ void main() {
       enums: <Enum>[],
     );
     final sink = StringBuffer();
-    const kotlinOptions = InternalKotlinOptions(
-      kotlinOut: '',
-    );
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const generator = KotlinGenerator();
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('interface Api'));
-    expect(
-      code,
-      isNot(contains('suspend fun doSomething(arg: Input):')),
-    );
+    expect(code, isNot(contains('suspend fun doSomething(arg: Input):')));
     expect(code, contains('coroutineScope.launch {'));
     expect(code, contains('coroutineScope: CoroutineScope'));
     expect(code, contains('api.doSomething(argArg)'));
@@ -1232,44 +1197,26 @@ void main() {
   test('generic class with single type parameter', () {
     final classDefinition = Class(
       name: 'Wrapper',
-      typeArguments: <TypeDeclaration>[
-        const TypeDeclaration(baseName: 'T', isNullable: false),
-      ],
+      typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
       fields: <NamedType>[
         NamedType(
-          type: const TypeDeclaration(
-            baseName: 'T',
-            isNullable: false,
-          ),
+          type: const TypeDeclaration(baseName: 'T', isNullable: false),
           name: 'value',
         ),
       ],
     );
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
     final sink = StringBuffer();
-    const kotlinOptions = InternalKotlinOptions(
-      kotlinOut: '',
-    );
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const generator = KotlinGenerator();
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('data class Wrapper<T>'));
     expect(code, contains('val value: T'));
     expect(code, contains('internal val tType: KType'));
     expect(
       code,
-      contains(
-        'inline fun <reified T> fromList(golubetsVar_list: List<Any?>): Wrapper<T>',
-      ),
+      contains('inline fun <reified T> fromList(golubetsVar_list: List<Any?>): Wrapper<T>'),
     );
     expect(code, contains('fun toList(): List<Any?>'));
   });
@@ -1283,37 +1230,20 @@ void main() {
       ],
       fields: <NamedType>[
         NamedType(
-          type: const TypeDeclaration(
-            baseName: 'T',
-            isNullable: false,
-          ),
+          type: const TypeDeclaration(baseName: 'T', isNullable: false),
           name: 'first',
         ),
         NamedType(
-          type: const TypeDeclaration(
-            baseName: 'U',
-            isNullable: true,
-          ),
+          type: const TypeDeclaration(baseName: 'U', isNullable: true),
           name: 'second',
         ),
       ],
     );
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
     final sink = StringBuffer();
-    const kotlinOptions = InternalKotlinOptions(
-      kotlinOut: '',
-    );
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const generator = KotlinGenerator();
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('data class Pair<T, U>'));
     expect(code, contains('val first: T'));
@@ -1322,9 +1252,7 @@ void main() {
     expect(code, contains('internal val uType: KType'));
     expect(
       code,
-      contains(
-        'fun <reified T, reified U> fromList(golubetsVar_list: List<Any?>): Pair<T, U>',
-      ),
+      contains('fun <reified T, reified U> fromList(golubetsVar_list: List<Any?>): Pair<T, U>'),
     );
     expect(code, contains('fun toList(): List<Any?>'));
   });
@@ -1332,9 +1260,7 @@ void main() {
   test('generic class with nested generic field types', () {
     final classDefinition = Class(
       name: 'Container',
-      typeArguments: <TypeDeclaration>[
-        const TypeDeclaration(baseName: 'T', isNullable: false),
-      ],
+      typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
       fields: <NamedType>[
         NamedType(
           type: const TypeDeclaration(
@@ -1355,64 +1281,38 @@ void main() {
         ),
       ],
     );
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
     final sink = StringBuffer();
-    const kotlinOptions = InternalKotlinOptions(
-      kotlinOut: '',
-    );
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const generator = KotlinGenerator();
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('data class Container<T>'));
     expect(code, contains('val data: List<Map<String, T?>>'));
     expect(code, contains('internal val tType: KType'));
-    expect(
-      code,
-      contains(
-        'fun <reified T> fromList(golubetsVar_list: List<Any?>): Container<T>',
-      ),
-    );
+    expect(code, contains('fun <reified T> fromList(golubetsVar_list: List<Any?>): Container<T>'));
     expect(code, contains('fun toList(): List<Any?>'));
   });
 
   test('generic class with generic superclass', () {
     final superClass = Class(
       name: 'BaseContainer',
-      typeArguments: <TypeDeclaration>[
-        const TypeDeclaration(baseName: 'T', isNullable: false),
-      ],
+      typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
       fields: <NamedType>[
         NamedType(
-          type: const TypeDeclaration(
-            baseName: 'T',
-            isNullable: false,
-          ),
+          type: const TypeDeclaration(baseName: 'T', isNullable: false),
           name: 'item',
         ),
       ],
     );
     final classDefinition = Class(
       name: 'SpecialList',
-      typeArguments: <TypeDeclaration>[
-        const TypeDeclaration(baseName: 'T', isNullable: false),
-      ],
+      typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
       superClassName: superClass.name,
       superClass: superClass,
       fields: <NamedType>[
         NamedType(
-          type: const TypeDeclaration(
-            baseName: 'int',
-            isNullable: false,
-          ),
+          type: const TypeDeclaration(baseName: 'int', isNullable: false),
           name: 'capacity',
         ),
       ],
@@ -1423,16 +1323,9 @@ void main() {
       enums: <Enum>[],
     );
     final sink = StringBuffer();
-    const kotlinOptions = InternalKotlinOptions(
-      kotlinOut: '',
-    );
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const generator = KotlinGenerator();
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('data class BaseContainer<T>'));
     expect(code, contains('data class SpecialList<T>'));
@@ -1440,9 +1333,7 @@ void main() {
     expect(code, contains('internal val tType: KType'));
     expect(
       code,
-      contains(
-        'fun <reified T> fromList(golubetsVar_list: List<Any?>): SpecialList<T>',
-      ),
+      contains('fun <reified T> fromList(golubetsVar_list: List<Any?>): SpecialList<T>'),
     );
   });
 
@@ -1455,37 +1346,20 @@ void main() {
       ],
       fields: <NamedType>[
         NamedType(
-          type: const TypeDeclaration(
-            baseName: 'T',
-            isNullable: true,
-          ),
+          type: const TypeDeclaration(baseName: 'T', isNullable: true),
           name: 'success',
         ),
         NamedType(
-          type: const TypeDeclaration(
-            baseName: 'E',
-            isNullable: true,
-          ),
+          type: const TypeDeclaration(baseName: 'E', isNullable: true),
           name: 'error',
         ),
       ],
     );
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
     final sink = StringBuffer();
-    const kotlinOptions = InternalKotlinOptions(
-      kotlinOut: '',
-    );
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const generator = KotlinGenerator();
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('data class Result<T, E>'));
     expect(code, contains('val success: T? = null'));
@@ -1494,9 +1368,7 @@ void main() {
     expect(code, contains('internal val eType: KType'));
     expect(
       code,
-      contains(
-        'fun <reified T, reified E> fromList(golubetsVar_list: List<Any?>): Result<T, E>',
-      ),
+      contains('fun <reified T, reified E> fromList(golubetsVar_list: List<Any?>): Result<T, E>'),
     );
     expect(code, contains('fun toList(): List<Any?>'));
   });
@@ -1522,22 +1394,11 @@ void main() {
         ),
       ],
     );
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
     final sink = StringBuffer();
-    const kotlinOptions = InternalKotlinOptions(
-      kotlinOut: '',
-    );
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
     const generator = KotlinGenerator();
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('data class KeyValueStore<K, V>'));
     expect(code, contains('val store: Map<K, V>'));
@@ -1663,16 +1524,8 @@ void main() {
             Method(
               name: 'doit',
               location: ApiLocation.host,
-<<<<<<< HEAD:packages/golubets/test/kotlin_generator_test.dart
-              returnType: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: true,
-              ),
-              asynchronousType: AsynchronousType.callback,
-=======
               returnType: const TypeDeclaration(baseName: 'int', isNullable: true),
-              isAsynchronous: true,
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin_generator_test.dart
+              asynchronousType: AsynchronousType.callback,
               parameters: <Parameter>[],
             ),
           ],
@@ -1994,13 +1847,7 @@ void main() {
     );
     expect(
       code,
-<<<<<<< HEAD:packages/golubets/test/kotlin_generator_test.dart
-      contains(
-        'callback(Result.failure(GolubetsUtils.createConnectionError(channelName)))',
-      ),
-=======
-      contains('callback(Result.failure(PigeonUtils.createConnectionError(channelName)))'),
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin_generator_test.dart
+      contains('callback(Result.failure(GolubetsUtils.createConnectionError(channelName)))'),
     );
   });
 
@@ -2240,13 +2087,8 @@ void main() {
     expect(count, 1);
   });
 
-<<<<<<< HEAD:packages/golubets/test/kotlin_generator_test.dart
   test('sealed class', () {
-    final superClass = Class(
-      name: 'PlatformEvent',
-      isSealed: true,
-      fields: const <NamedType>[],
-    );
+    final superClass = Class(name: 'PlatformEvent', isSealed: true, fields: const <NamedType>[]);
     final root = Root(
       apis: <Api>[],
       classes: <Class>[
@@ -2257,10 +2099,7 @@ void main() {
           superClassName: superClass.name,
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: false,
-              ),
+              type: const TypeDeclaration(baseName: 'int', isNullable: false),
               name: 'value',
             ),
           ],
@@ -2285,38 +2124,20 @@ void main() {
     );
     final sink = StringBuffer();
     const generator = KotlinGenerator();
-    const kotlinOptions = InternalKotlinOptions(
-      kotlinOut: '',
-    );
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-    expect(
-      code,
-      contains('sealed class PlatformEvent'),
-    );
-    expect(
-      code,
-      contains('data class IntEvent'),
-    );
+    expect(code, contains('sealed class PlatformEvent'));
+    expect(code, contains('data class IntEvent'));
     expect(code, contains(': PlatformEvent'));
-    expect(
-      code,
-      contains('data class ClassEvent'),
-    );
+    expect(code, contains('data class ClassEvent'));
   });
 
   test('sealed class with single generic type parameter', () {
     final superClass = Class(
       name: 'Result',
       isSealed: true,
-      typeArguments: <TypeDeclaration>[
-        const TypeDeclaration(baseName: 'T', isNullable: false),
-      ],
+      typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
       fields: const <NamedType>[],
     );
     final children = <Class>[
@@ -2324,15 +2145,10 @@ void main() {
         name: 'Success',
         superClass: superClass,
         superClassName: superClass.name,
-        typeArguments: <TypeDeclaration>[
-          const TypeDeclaration(baseName: 'T', isNullable: false),
-        ],
+        typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
         fields: <NamedType>[
           NamedType(
-            type: const TypeDeclaration(
-              baseName: 'T',
-              isNullable: false,
-            ),
+            type: const TypeDeclaration(baseName: 'T', isNullable: false),
             name: 'value',
           ),
         ],
@@ -2341,40 +2157,21 @@ void main() {
         name: 'Failure',
         superClass: superClass,
         superClassName: superClass.name,
-        typeArguments: <TypeDeclaration>[
-          const TypeDeclaration(baseName: 'T', isNullable: false),
-        ],
+        typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
         fields: <NamedType>[
           NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: false,
-            ),
+            type: const TypeDeclaration(baseName: 'String', isNullable: false),
             name: 'error',
           ),
         ],
       ),
     ];
     superClass.children = children;
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[
-        superClass,
-        ...children,
-      ],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[superClass, ...children], enums: <Enum>[]);
     final sink = StringBuffer();
     const generator = KotlinGenerator();
-    const kotlinOptions = InternalKotlinOptions(
-      kotlinOut: '',
-    );
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('sealed class Result<T>'));
     expect(code, contains('data class Success<T>'));
@@ -2405,10 +2202,7 @@ void main() {
         ],
         fields: <NamedType>[
           NamedType(
-            type: const TypeDeclaration(
-              baseName: 'L',
-              isNullable: false,
-            ),
+            type: const TypeDeclaration(baseName: 'L', isNullable: false),
             name: 'value',
           ),
         ],
@@ -2423,35 +2217,18 @@ void main() {
         ],
         fields: <NamedType>[
           NamedType(
-            type: const TypeDeclaration(
-              baseName: 'R',
-              isNullable: false,
-            ),
+            type: const TypeDeclaration(baseName: 'R', isNullable: false),
             name: 'value',
           ),
         ],
       ),
     ];
     superClass.children = children;
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[
-        superClass,
-        ...children,
-      ],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[superClass, ...children], enums: <Enum>[]);
     final sink = StringBuffer();
     const generator = KotlinGenerator();
-    const kotlinOptions = InternalKotlinOptions(
-      kotlinOut: '',
-    );
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('sealed class Either<L, R>'));
     expect(code, contains('data class Left<L, R>'));
@@ -2505,9 +2282,7 @@ void main() {
             type: const TypeDeclaration(
               baseName: 'List',
               isNullable: false,
-              typeArguments: <TypeDeclaration>[
-                TypeDeclaration(baseName: 'V', isNullable: false),
-              ],
+              typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'V', isNullable: false)],
             ),
             name: 'items',
           ),
@@ -2515,25 +2290,11 @@ void main() {
       ),
     ];
     superClass.children = children;
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[
-        superClass,
-        ...children,
-      ],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[superClass, ...children], enums: <Enum>[]);
     final sink = StringBuffer();
     const generator = KotlinGenerator();
-    const kotlinOptions = InternalKotlinOptions(
-      kotlinOut: '',
-    );
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('sealed class Container<K, V>'));
     expect(code, contains('data class MapContainer<K, V>'));
@@ -2546,9 +2307,7 @@ void main() {
     final superClass = Class(
       name: 'Response',
       isSealed: true,
-      typeArguments: <TypeDeclaration>[
-        const TypeDeclaration(baseName: 'T', isNullable: false),
-      ],
+      typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
       fields: const <NamedType>[],
     );
     final children = <Class>[
@@ -2556,9 +2315,7 @@ void main() {
         name: 'DataResponse',
         superClass: superClass,
         superClassName: superClass.name,
-        typeArguments: <TypeDeclaration>[
-          const TypeDeclaration(baseName: 'T', isNullable: false),
-        ],
+        typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
         fields: <NamedType>[
           NamedType(
             type: const TypeDeclaration(
@@ -2583,47 +2340,25 @@ void main() {
         name: 'ErrorResponse',
         superClass: superClass,
         superClassName: superClass.name,
-        typeArguments: <TypeDeclaration>[
-          const TypeDeclaration(baseName: 'T', isNullable: false),
-        ],
+        typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
         fields: <NamedType>[
           NamedType(
-            type: const TypeDeclaration(
-              baseName: 'int',
-              isNullable: false,
-            ),
+            type: const TypeDeclaration(baseName: 'int', isNullable: false),
             name: 'code',
           ),
           NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: false,
-            ),
+            type: const TypeDeclaration(baseName: 'String', isNullable: false),
             name: 'message',
           ),
         ],
       ),
     ];
     superClass.children = children;
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[
-        superClass,
-        ...children,
-      ],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[superClass, ...children], enums: <Enum>[]);
     final sink = StringBuffer();
     const generator = KotlinGenerator();
-    const kotlinOptions = InternalKotlinOptions(
-      kotlinOut: '',
-    );
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('sealed class Response<T>'));
     expect(code, contains('data class DataResponse<T>'));
@@ -2636,25 +2371,13 @@ void main() {
   test('empty class', () {
     final root = Root(
       apis: <Api>[],
-      classes: <Class>[
-        Class(
-          name: 'EmptyClass',
-          fields: <NamedType>[],
-        ),
-      ],
+      classes: <Class>[Class(name: 'EmptyClass', fields: <NamedType>[])],
       enums: <Enum>[],
     );
     final sink = StringBuffer();
     const generator = KotlinGenerator();
-    const kotlinOptions = InternalKotlinOptions(
-      kotlinOut: '',
-    );
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
 
     expect(code, contains('class EmptyClass'));
@@ -2662,11 +2385,7 @@ void main() {
   });
 
   test('nested sealed class', () {
-    final superClass = Class(
-      name: 'PlatformEvent',
-      isSealed: true,
-      fields: const <NamedType>[],
-    );
+    final superClass = Class(name: 'PlatformEvent', isSealed: true, fields: const <NamedType>[]);
     final root = Root(
       apis: <Api>[],
       classes: <Class>[
@@ -2677,10 +2396,7 @@ void main() {
           superClassName: superClass.name,
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: false,
-              ),
+              type: const TypeDeclaration(baseName: 'int', isNullable: false),
               name: 'value',
             ),
           ],
@@ -2705,37 +2421,14 @@ void main() {
     );
     final sink = StringBuffer();
     const generator = KotlinGenerator();
-    const kotlinOptions = InternalKotlinOptions(
-      kotlinOut: '',
-      nestSealedClasses: true,
-    );
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '', nestSealedClasses: true);
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-    expect(
-      code,
-      contains('sealed class PlatformEvent'),
-    );
-    expect(
-      code,
-      contains('is PlatformEvent.Int'),
-    );
-    expect(
-      code,
-      contains('is PlatformEvent.Class'),
-    );
-    expect(
-      code,
-      contains('PlatformEvent.Int.fromList'),
-    );
-    expect(
-      code,
-      contains('PlatformEvent.Class.fromList'),
-    );
+    expect(code, contains('sealed class PlatformEvent'));
+    expect(code, contains('is PlatformEvent.Int'));
+    expect(code, contains('is PlatformEvent.Class'));
+    expect(code, contains('PlatformEvent.Int.fromList'));
+    expect(code, contains('PlatformEvent.Class.fromList'));
   });
 
   group('default values', () {
@@ -2746,28 +2439,15 @@ void main() {
           NamedType(
             name: 'field1',
             type: const TypeDeclaration(baseName: 'String', isNullable: false),
-            defaultValue: const StringLiteral(
-              value: 'hello world',
-            ),
+            defaultValue: const StringLiteral(value: 'hello world'),
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const kotlinOptions = InternalKotlinOptions(
-        kotlinOut: '',
-      );
+      const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
       const generator = KotlinGenerator();
-      generator.generate(
-        kotlinOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('data class Foobar'));
       expect(code, contains('val field1: String = "hello world"'));
@@ -2780,28 +2460,15 @@ void main() {
           NamedType(
             name: 'field1',
             type: const TypeDeclaration(baseName: 'int', isNullable: false),
-            defaultValue: const IntLiteral(
-              value: 42,
-            ),
+            defaultValue: const IntLiteral(value: 42),
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const kotlinOptions = InternalKotlinOptions(
-        kotlinOut: '',
-      );
+      const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
       const generator = KotlinGenerator();
-      generator.generate(
-        kotlinOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('data class Foobar'));
       expect(code, contains('val field1: Long = 42L'));
@@ -2814,28 +2481,15 @@ void main() {
           NamedType(
             name: 'field1',
             type: const TypeDeclaration(baseName: 'double', isNullable: false),
-            defaultValue: const IntLiteral(
-              value: 42,
-            ),
+            defaultValue: const IntLiteral(value: 42),
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const kotlinOptions = InternalKotlinOptions(
-        kotlinOut: '',
-      );
+      const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
       const generator = KotlinGenerator();
-      generator.generate(
-        kotlinOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('data class Foobar'));
       expect(code, contains('val field1: Double = 42.0'));
@@ -2848,28 +2502,15 @@ void main() {
           NamedType(
             name: 'field1',
             type: const TypeDeclaration(baseName: 'double', isNullable: false),
-            defaultValue: const DoubleLiteral(
-              value: 3.14,
-            ),
+            defaultValue: const DoubleLiteral(value: 3.14),
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const kotlinOptions = InternalKotlinOptions(
-        kotlinOut: '',
-      );
+      const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
       const generator = KotlinGenerator();
-      generator.generate(
-        kotlinOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('data class Foobar'));
       expect(code, contains('val field1: Double = 3.14'));
@@ -2882,35 +2523,20 @@ void main() {
           NamedType(
             name: 'field1',
             type: const TypeDeclaration(baseName: 'bool', isNullable: false),
-            defaultValue: const BoolLiteral(
-              value: true,
-            ),
+            defaultValue: const BoolLiteral(value: true),
           ),
           NamedType(
             name: 'field2',
             type: const TypeDeclaration(baseName: 'bool', isNullable: false),
-            defaultValue: const BoolLiteral(
-              value: false,
-            ),
+            defaultValue: const BoolLiteral(value: false),
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const kotlinOptions = InternalKotlinOptions(
-        kotlinOut: '',
-      );
+      const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
       const generator = KotlinGenerator();
-      generator.generate(
-        kotlinOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('data class Foobar'));
       expect(code, contains('val field1: Boolean = true'));
@@ -2926,9 +2552,7 @@ void main() {
             type: const TypeDeclaration(
               baseName: 'List',
               isNullable: false,
-              typeArguments: <TypeDeclaration>[
-                TypeDeclaration(baseName: 'int', isNullable: false),
-              ],
+              typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: false)],
             ),
             defaultValue: const ListLiteral(
               elements: <DefaultValue>[],
@@ -2937,22 +2561,11 @@ void main() {
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const kotlinOptions = InternalKotlinOptions(
-        kotlinOut: '',
-      );
+      const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
       const generator = KotlinGenerator();
-      generator.generate(
-        kotlinOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('data class Foobar'));
       expect(code, contains('val field1: List<Long> = listOf<Long>()'));
@@ -2967,9 +2580,7 @@ void main() {
             type: const TypeDeclaration(
               baseName: 'List',
               isNullable: false,
-              typeArguments: <TypeDeclaration>[
-                TypeDeclaration(baseName: 'int', isNullable: false),
-              ],
+              typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: false)],
             ),
             defaultValue: const ListLiteral(
               elements: <DefaultValue>[
@@ -2982,22 +2593,11 @@ void main() {
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const kotlinOptions = InternalKotlinOptions(
-        kotlinOut: '',
-      );
+      const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
       const generator = KotlinGenerator();
-      generator.generate(
-        kotlinOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('data class Foobar'));
       expect(code, contains('val field1: List<Long> = listOf('));
@@ -3028,28 +2628,14 @@ void main() {
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const kotlinOptions = InternalKotlinOptions(
-        kotlinOut: '',
-      );
+      const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
       const generator = KotlinGenerator();
-      generator.generate(
-        kotlinOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('data class Foobar'));
-      expect(
-        code,
-        contains('val field1: Map<String, Long> = mapOf<String, Long>()'),
-      );
+      expect(code, contains('val field1: Map<String, Long> = mapOf<String, Long>()'));
     });
 
     test('gen class with map default value with entries', () {
@@ -3068,12 +2654,8 @@ void main() {
             ),
             defaultValue: const MapLiteral(
               entries: <DefaultValue, DefaultValue>{
-                StringLiteral(value: 'key1'): IntLiteral(
-                  value: 100,
-                ),
-                StringLiteral(value: 'key2'): IntLiteral(
-                  value: 200,
-                ),
+                StringLiteral(value: 'key1'): IntLiteral(value: 100),
+                StringLiteral(value: 'key2'): IntLiteral(value: 200),
               },
               keyType: TypeDeclaration(baseName: 'String', isNullable: false),
               valueType: TypeDeclaration(baseName: 'int', isNullable: false),
@@ -3081,22 +2663,11 @@ void main() {
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const kotlinOptions = InternalKotlinOptions(
-        kotlinOut: '',
-      );
+      const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
       const generator = KotlinGenerator();
-      generator.generate(
-        kotlinOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('data class Foobar'));
       expect(code, contains('val field1: Map<String, Long> = mapOf('));
@@ -3122,29 +2693,15 @@ void main() {
               isNullable: false,
               associatedEnum: testEnum,
             ),
-            defaultValue: const EnumLiteral(
-              name: 'TestEnum',
-              value: 'firstValue',
-            ),
+            defaultValue: const EnumLiteral(name: 'TestEnum', value: 'firstValue'),
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[testEnum],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[testEnum]);
       final sink = StringBuffer();
-      const kotlinOptions = InternalKotlinOptions(
-        kotlinOut: '',
-      );
+      const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
       const generator = KotlinGenerator();
-      generator.generate(
-        kotlinOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('data class Foobar'));
       expect(code, contains('val field1: TestEnum = TestEnum.FIRST_VALUE'));
@@ -3175,9 +2732,7 @@ void main() {
             ),
             defaultValue: const ObjectCreation(
               type: TypeDeclaration(baseName: 'InnerClass', isNullable: false),
-              arguments: <DefaultValue>[
-                IntLiteral(value: 42),
-              ],
+              arguments: <DefaultValue>[IntLiteral(value: 42)],
             ),
           ),
         ],
@@ -3188,16 +2743,9 @@ void main() {
         enums: <Enum>[],
       );
       final sink = StringBuffer();
-      const kotlinOptions = InternalKotlinOptions(
-        kotlinOut: '',
-      );
+      const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
       const generator = KotlinGenerator();
-      generator.generate(
-        kotlinOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('data class Foobar'));
       expect(code, contains('val field1: InnerClass = InnerClass('));
@@ -3206,10 +2754,7 @@ void main() {
     });
 
     test('gen class with object creation default value - no arguments', () {
-      final innerClass = Class(
-        name: 'InnerClass',
-        fields: <NamedType>[],
-      );
+      final innerClass = Class(name: 'InnerClass', fields: <NamedType>[]);
       final classDefinition = Class(
         name: 'Foobar',
         fields: <NamedType>[
@@ -3233,16 +2778,9 @@ void main() {
         enums: <Enum>[],
       );
       final sink = StringBuffer();
-      const kotlinOptions = InternalKotlinOptions(
-        kotlinOut: '',
-      );
+      const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
       const generator = KotlinGenerator();
-      generator.generate(
-        kotlinOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('data class Foobar'));
       expect(code, contains('val field1: InnerClass = InnerClass()'));
@@ -3275,14 +2813,8 @@ void main() {
             defaultValue: const ObjectCreation(
               type: TypeDeclaration(baseName: 'InnerClass', isNullable: false),
               arguments: <DefaultValue>[
-                NamedDefaultValue(
-                  name: 'x',
-                  value: IntLiteral(value: 10),
-                ),
-                NamedDefaultValue(
-                  name: 'y',
-                  value: IntLiteral(value: 20),
-                ),
+                NamedDefaultValue(name: 'x', value: IntLiteral(value: 10)),
+                NamedDefaultValue(name: 'y', value: IntLiteral(value: 20)),
               ],
             ),
           ),
@@ -3294,16 +2826,9 @@ void main() {
         enums: <Enum>[],
       );
       final sink = StringBuffer();
-      const kotlinOptions = InternalKotlinOptions(
-        kotlinOut: '',
-      );
+      const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
       const generator = KotlinGenerator();
-      generator.generate(
-        kotlinOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('data class Foobar'));
       expect(code, contains('val field1: InnerClass = InnerClass('));
@@ -3337,19 +2862,11 @@ void main() {
                     StringLiteral(value: 'a'),
                     StringLiteral(value: 'b'),
                   ],
-                  elementType: TypeDeclaration(
-                    baseName: 'String',
-                    isNullable: false,
-                  ),
+                  elementType: TypeDeclaration(baseName: 'String', isNullable: false),
                 ),
                 ListLiteral(
-                  elements: <DefaultValue>[
-                    StringLiteral(value: 'c'),
-                  ],
-                  elementType: TypeDeclaration(
-                    baseName: 'String',
-                    isNullable: false,
-                  ),
+                  elements: <DefaultValue>[StringLiteral(value: 'c')],
+                  elementType: TypeDeclaration(baseName: 'String', isNullable: false),
                 ),
               ],
               elementType: TypeDeclaration(
@@ -3363,22 +2880,11 @@ void main() {
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const kotlinOptions = InternalKotlinOptions(
-        kotlinOut: '',
-      );
+      const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
       const generator = KotlinGenerator();
-      generator.generate(
-        kotlinOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('data class Foobar'));
       expect(code, contains('val field1: List<List<String>> = listOf('));
@@ -3392,11 +2898,7 @@ void main() {
   test(
     'sealed class with purify [usePureSealedSubclasses] = true and [nestSealedClasses] = true',
     () {
-      final superClass = Class(
-        name: 'SomeClass',
-        isSealed: true,
-        fields: const <NamedType>[],
-      );
+      final superClass = Class(name: 'SomeClass', isSealed: true, fields: const <NamedType>[]);
       final children = <Class>[
         Class(
           name: 'SomeClassA',
@@ -3412,14 +2914,7 @@ void main() {
         ),
       ];
       superClass.children = children;
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[
-          superClass,
-          ...children,
-        ],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[superClass, ...children], enums: <Enum>[]);
       final sink = StringBuffer();
       const generator = KotlinGenerator();
       const kotlinOptions = InternalKotlinOptions(
@@ -3427,28 +2922,14 @@ void main() {
         usePureSealedSubclasses: true,
         nestSealedClasses: true,
       );
-      generator.generate(
-        kotlinOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
-      expect(
-        code,
-        contains('sealed class SomeClass'),
-      );
-      expect(
-        code,
-        isNot(contains('class SomeClassA')),
-      );
-      expect(
-        code,
-        isNot(contains('class BSomeClass')),
-      );
+      expect(code, contains('sealed class SomeClass'));
+      expect(code, isNot(contains('class SomeClassA')));
+      expect(code, isNot(contains('class BSomeClass')));
     },
   );
-=======
+
   test('data class equality', () {
     final classDefinition = Class(
       name: 'Foobar',
@@ -3492,5 +2973,4 @@ void main() {
     expect(code, contains('override fun equals(other: Any?): Boolean {'));
     expect(code, contains('override fun hashCode(): Int {'));
   });
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin_generator_test.dart
 }

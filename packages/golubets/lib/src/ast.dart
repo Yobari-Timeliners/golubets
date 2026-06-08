@@ -56,9 +56,7 @@ class CallbackAsynchronous extends AsynchronousType {
 /// * Kotlin - suspend.
 class AwaitAsynchronous extends AsynchronousType {
   /// Constructor for [AwaitAsynchronous].
-  const AwaitAsynchronous({
-    required this.swiftOptions,
-  });
+  const AwaitAsynchronous({required this.swiftOptions});
 
   /// {@macro ast.swift_modern_asynchronous_options}
   final SwiftAwaitAsynchronousOptions swiftOptions;
@@ -75,9 +73,7 @@ class NoAsynchronous extends AsynchronousType {
 /// {@endtemplate}
 class SwiftAwaitAsynchronousOptions {
   /// Constructor for [SwiftAwaitAsynchronousOptions].
-  const SwiftAwaitAsynchronousOptions({
-    required this.throws,
-  });
+  const SwiftAwaitAsynchronousOptions({required this.throws});
 
   /// Whether the function throws an exception or not.
   final bool throws;
@@ -152,19 +148,9 @@ class Method extends Node {
 
   @override
   String toString() {
-<<<<<<< HEAD:packages/golubets/lib/src/ast.dart
-    final objcSelectorStr = objcSelector.isEmpty
-        ? ''
-        : ' objcSelector:$objcSelector';
-    final swiftFunctionStr = swiftFunction.isEmpty
-        ? ''
-        : ' swiftFunction:$swiftFunction';
-    return '(Method name:$name returnType:$returnType parameters:$parameters asynchronousType:$asynchronousType$objcSelectorStr$swiftFunctionStr documentationComments:$documentationComments)';
-=======
     final objcSelectorStr = objcSelector.isEmpty ? '' : ' objcSelector:$objcSelector';
     final swiftFunctionStr = swiftFunction.isEmpty ? '' : ' swiftFunction:$swiftFunction';
-    return '(Method name:$name returnType:$returnType parameters:$parameters isAsynchronous:$isAsynchronous$objcSelectorStr$swiftFunctionStr documentationComments:$documentationComments)';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/ast.dart
+    return '(Method name:$name returnType:$returnType parameters:$parameters asynchronousType:$asynchronousType$objcSelectorStr$swiftFunctionStr documentationComments:$documentationComments)';
   }
 }
 
@@ -708,8 +694,7 @@ class NamedType extends Node {
       type: type ?? this.type,
       offset: offset ?? this.offset,
       defaultValue: defaultValue ?? this.defaultValue,
-      documentationComments:
-          documentationComments ?? this.documentationComments,
+      documentationComments: documentationComments ?? this.documentationComments,
     );
   }
 }
@@ -830,7 +815,7 @@ class Class extends Node {
   /// Whether the class is immutable.
   bool isImmutable;
 
-  /// The type arguments to the entity (ex 'Bar' to 'Foo<Bar>?').
+  /// The type arguments to the entity (ex 'Bar' to `Foo<Bar>?`).
   List<TypeDeclaration> typeArguments;
 
   @override
@@ -959,9 +944,7 @@ sealed class DefaultValue {
 /// [String] default value.
 class StringLiteral extends DefaultValue {
   /// Constructor for [StringLiteral].
-  const StringLiteral({
-    required this.value,
-  });
+  const StringLiteral({required this.value});
 
   /// The default value.
   final String value;
@@ -973,9 +956,7 @@ class StringLiteral extends DefaultValue {
 /// [int] default value.
 class IntLiteral extends DefaultValue {
   /// Constructor for [IntLiteral].
-  const IntLiteral({
-    required this.value,
-  });
+  const IntLiteral({required this.value});
 
   /// The default value.
   final int value;
@@ -987,9 +968,7 @@ class IntLiteral extends DefaultValue {
 /// [double] default value.
 class DoubleLiteral extends DefaultValue {
   /// Constructor for [DoubleLiteral].
-  const DoubleLiteral({
-    required this.value,
-  });
+  const DoubleLiteral({required this.value});
 
   /// The default value.
   final double value;
@@ -1001,9 +980,7 @@ class DoubleLiteral extends DefaultValue {
 /// [bool] default value.
 class BoolLiteral extends DefaultValue {
   /// Constructor for [BoolLiteral].
-  const BoolLiteral({
-    required this.value,
-  });
+  const BoolLiteral({required this.value});
 
   /// The default value.
   final bool value;
@@ -1015,10 +992,7 @@ class BoolLiteral extends DefaultValue {
 /// [List] default value.
 class ListLiteral extends DefaultValue {
   /// Constructor for [ListLiteral].
-  const ListLiteral({
-    required this.elements,
-    required this.elementType,
-  });
+  const ListLiteral({required this.elements, required this.elementType});
 
   /// The default value.
   final List<DefaultValue> elements;
@@ -1033,11 +1007,7 @@ class ListLiteral extends DefaultValue {
 /// [Map] default value.
 class MapLiteral extends DefaultValue {
   /// Constructor for [MapLiteral].
-  const MapLiteral({
-    required this.entries,
-    required this.keyType,
-    required this.valueType,
-  });
+  const MapLiteral({required this.entries, required this.keyType, required this.valueType});
 
   /// The type of the keys in the map.
   final TypeDeclaration keyType;
@@ -1056,10 +1026,7 @@ class MapLiteral extends DefaultValue {
 /// [Enum] default value.
 class EnumLiteral extends DefaultValue {
   /// Constructor for [EnumLiteral].
-  const EnumLiteral({
-    required this.name,
-    required this.value,
-  });
+  const EnumLiteral({required this.name, required this.value});
 
   /// The name of the enum.
   final String name;
@@ -1074,10 +1041,7 @@ class EnumLiteral extends DefaultValue {
 /// [Object] default value.
 class ObjectCreation extends DefaultValue {
   /// Constructor for [ObjectCreation].
-  const ObjectCreation({
-    required this.type,
-    required this.arguments,
-  });
+  const ObjectCreation({required this.type, required this.arguments});
 
   /// The type of the object.
   final TypeDeclaration type;
@@ -1092,10 +1056,7 @@ class ObjectCreation extends DefaultValue {
 /// Value for a named default value.
 class NamedDefaultValue extends DefaultValue {
   /// Constructor for [NamedDefaultValue].
-  const NamedDefaultValue({
-    required this.value,
-    required this.name,
-  });
+  const NamedDefaultValue({required this.value, required this.name});
 
   /// The value of the field.
   final DefaultValue value;

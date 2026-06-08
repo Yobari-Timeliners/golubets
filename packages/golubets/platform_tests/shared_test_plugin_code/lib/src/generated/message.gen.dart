@@ -116,21 +116,13 @@ int _deepHash(Object? value) {
 /// ////////////////////////
 /// This comment also tests comments that start with '/'
 /// ////////////////////////
-enum MessageRequestState {
-  pending,
-  success,
-  failure,
-}
+enum MessageRequestState { pending, success, failure }
 
 /// This comment is to test class documentation comments.
 ///
 /// This comment also tests multiple line comments.
 class MessageSearchRequest {
-  MessageSearchRequest({
-    this.query,
-    this.anInt,
-    this.aBool,
-  });
+  MessageSearchRequest({this.query, this.anInt, this.aBool});
 
   /// This comment is to test field documentation comments.
   String? query;
@@ -142,11 +134,7 @@ class MessageSearchRequest {
   bool? aBool;
 
   List<Object?> _toList() {
-    return <Object?>[
-      query,
-      anInt,
-      aBool,
-    ];
+    return <Object?>[query, anInt, aBool];
   }
 
   Object encode() {
@@ -183,11 +171,7 @@ class MessageSearchRequest {
 
 /// This comment is to test class documentation comments.
 class MessageSearchReply {
-  MessageSearchReply({
-    this.result,
-    this.error,
-    this.state,
-  });
+  MessageSearchReply({this.result, this.error, this.state});
 
   /// This comment is to test field documentation comments.
   ///
@@ -201,11 +185,7 @@ class MessageSearchReply {
   MessageRequestState? state;
 
   List<Object?> _toList() {
-    return <Object?>[
-      result,
-      error,
-      state,
-    ];
+    return <Object?>[result, error, state];
   }
 
   Object encode() {
@@ -242,17 +222,13 @@ class MessageSearchReply {
 
 /// This comment is to test class documentation comments.
 class MessageNested {
-  MessageNested({
-    this.request,
-  });
+  MessageNested({this.request});
 
   /// This comment is to test field documentation comments.
   MessageSearchRequest? request;
 
   List<Object?> _toList() {
-    return <Object?>[
-      request,
-    ];
+    return <Object?>[request];
   }
 
   Object encode() {
@@ -261,9 +237,7 @@ class MessageNested {
 
   static MessageNested decode(Object result) {
     result as List<Object?>;
-    return MessageNested(
-      request: result[0] as MessageSearchRequest?,
-    );
+    return MessageNested(request: result[0] as MessageSearchRequest?);
   }
 
   @override
@@ -332,23 +306,12 @@ class MessageApi {
   /// Constructor for [MessageApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/message.gen.dart
-  MessageApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
-=======
   MessageApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-    : pigeonVar_binaryMessenger = binaryMessenger,
-      pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+    : golubetsVar_binaryMessenger = binaryMessenger,
+      golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? pigeonVar_binaryMessenger;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/message.gen.dart
+  final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
@@ -365,21 +328,10 @@ class MessageApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      null,
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/message.gen.dart
-    _extractReplyValueOrThrow(
-      golubetsVar_replyList,
-      golubetsVar_channelName,
-      isNullValid: true,
-    );
-=======
-    _extractReplyValueOrThrow(pigeonVar_replyList, pigeonVar_channelName, isNullValid: true);
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/message.gen.dart
+    _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
   /// This comment is to test method documentation comments.
@@ -391,16 +343,8 @@ class MessageApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/message.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[request],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[request]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/message.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[request]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
@@ -416,23 +360,12 @@ class MessageNestedApi {
   /// Constructor for [MessageNestedApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/message.gen.dart
-  MessageNestedApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
-=======
   MessageNestedApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-    : pigeonVar_binaryMessenger = binaryMessenger,
-      pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+    : golubetsVar_binaryMessenger = binaryMessenger,
+      golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? pigeonVar_binaryMessenger;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/message.gen.dart
+  final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
@@ -449,16 +382,8 @@ class MessageNestedApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/message.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[nested],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[nested]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/message.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[nested]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,

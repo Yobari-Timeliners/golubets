@@ -42,12 +42,7 @@ Future<void> main(List<String> args) async {
     ..addFlag(
       _overflowFiller,
       abbr: 'o',
-<<<<<<< HEAD:packages/golubets/tool/generate.dart
-      help:
-          'Injects 120 Enums into the golubets ast, used for testing overflow utilities.',
-=======
-      help: 'Injects 120 Enums into the pigeon ast, used for testing overflow utilities.',
->>>>>>> filtered-upstream/main:packages/pigeon/tool/generate.dart
+      help: 'Injects 120 Enums into the golubets ast, used for testing overflow utilities.',
       hide: true,
     )
     ..addMultiOption(

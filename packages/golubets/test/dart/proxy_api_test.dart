@@ -78,25 +78,11 @@ void main() {
       expect(code, contains(r'class _GolubetsInternalInstanceManagerApi'));
 
       // Base Api class
-<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
-      expect(
-        code,
-        contains(r'abstract class GolubetsInternalProxyApiBaseClass'),
-      );
+      expect(code, contains(r'abstract class GolubetsInternalProxyApiBaseClass'));
 
       // Codec and class
       expect(code, contains('class _GolubetsInternalProxyApiBaseCodec'));
-      expect(
-        code,
-        contains(r'class Api extends GolubetsInternalProxyApiBaseClass'),
-      );
-=======
-      expect(code, contains(r'abstract class PigeonInternalProxyApiBaseClass'));
-
-      // Codec and class
-      expect(code, contains('class _PigeonInternalProxyApiBaseCodec'));
-      expect(code, contains(r'class Api extends PigeonInternalProxyApiBaseClass'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
+      expect(code, contains(r'class Api extends GolubetsInternalProxyApiBaseClass'));
 
       // Constructors
       expect(
@@ -123,13 +109,7 @@ void main() {
       expect(code, contains(r'static void golubets_setUpMessageHandlers({'));
       expect(
         collapsedCode,
-<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
-        contains(
-          'final String Function( Api golubets_instance, Input input, )? doSomethingElse;',
-        ),
-=======
-        contains('final String Function( Api pigeon_instance, Input input, )? doSomethingElse;'),
->>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
+        contains('final String Function( Api golubets_instance, Input input, )? doSomethingElse;'),
       );
 
       // Copy method
@@ -171,25 +151,13 @@ void main() {
       );
       expect(
         collapsedCode,
-<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
-        contains(
-          '(instanceManager ?? GolubetsInstanceManager.instance) .remove(arg_identifier);',
-        ),
-=======
-        contains('(instanceManager ?? PigeonInstanceManager.instance) .remove(arg_identifier);'),
->>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
+        contains('(instanceManager ?? GolubetsInstanceManager.instance) .remove(arg_identifier);'),
       );
 
       expect(code, contains('Future<void> clear()'));
       expect(
         code,
-<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
-        contains(
-          'dev.bayori.golubets.$DEFAULT_PACKAGE_NAME.GolubetsInternalInstanceManager.clear',
-        ),
-=======
-        contains('dev.flutter.pigeon.$DEFAULT_PACKAGE_NAME.PigeonInternalInstanceManager.clear'),
->>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
+        contains('dev.bayori.golubets.$DEFAULT_PACKAGE_NAME.GolubetsInternalInstanceManager.clear'),
       );
     });
 
@@ -217,14 +185,7 @@ void main() {
         );
         final code = sink.toString();
 
-<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
-        expect(
-          code,
-          contains(r'abstract class GolubetsInternalProxyApiBaseClass'),
-        );
-=======
-        expect(code, contains(r'abstract class PigeonInternalProxyApiBaseClass'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
+        expect(code, contains(r'abstract class GolubetsInternalProxyApiBaseClass'));
       });
 
       test('InstanceManager field', () {
@@ -340,13 +301,7 @@ void main() {
         final code = sink.toString();
         expect(
           code,
-<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
-          contains(
-            r'class Api extends GolubetsInternalProxyApiBaseClass implements Api2',
-          ),
-=======
-          contains(r'class Api extends PigeonInternalProxyApiBaseClass implements Api2'),
->>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
+          contains(r'class Api extends GolubetsInternalProxyApiBaseClass implements Api2'),
         );
       });
 
@@ -392,13 +347,7 @@ void main() {
         final code = sink.toString();
         expect(
           code,
-<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
-          contains(
-            r'class Api extends GolubetsInternalProxyApiBaseClass implements Api2, Api3',
-          ),
-=======
-          contains(r'class Api extends PigeonInternalProxyApiBaseClass implements Api2, Api3'),
->>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
+          contains(r'class Api extends GolubetsInternalProxyApiBaseClass implements Api2, Api3'),
         );
       });
 
@@ -451,13 +400,7 @@ void main() {
         final String collapsedCode = _collapseNewlineAndIndentation(code);
         expect(
           code,
-<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
-          contains(
-            r'class Api extends GolubetsInternalProxyApiBaseClass implements Api2',
-          ),
-=======
-          contains(r'class Api extends PigeonInternalProxyApiBaseClass implements Api2'),
->>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
+          contains(r'class Api extends GolubetsInternalProxyApiBaseClass implements Api2'),
         );
         expect(
           collapsedCode,
@@ -791,10 +734,7 @@ void main() {
         );
         final code = sink.toString();
         expect(code, contains('class Api'));
-        expect(
-          code,
-          contains(r'late final Api2 aField = golubetsVar_aField();'),
-        );
+        expect(code, contains(r'late final Api2 aField = golubetsVar_aField();'));
         expect(code, contains(r'Api2 golubetsVar_aField()'));
       });
 
@@ -839,23 +779,12 @@ void main() {
         );
         final code = sink.toString();
         expect(code, contains('class Api'));
-<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
         expect(
           code,
-          contains(
-            r'static Api2 get aField => GolubetsOverrides.api_aField ?? _aField;',
-          ),
+          contains(r'static Api2 get aField => GolubetsOverrides.api_aField ?? _aField;'),
         );
-        expect(
-          code,
-          contains(r'static final Api2 _aField = golubetsVar_aField();'),
-        );
+        expect(code, contains(r'static final Api2 _aField = golubetsVar_aField();'));
         expect(code, contains(r'static Api2 golubetsVar_aField()'));
-=======
-        expect(code, contains(r'static Api2 get aField => PigeonOverrides.api_aField ?? _aField;'));
-        expect(code, contains(r'static final Api2 _aField = pigeonVar_aField();'));
-        expect(code, contains(r'static Api2 pigeonVar_aField()'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
       });
     });
 
@@ -1085,14 +1014,7 @@ void main() {
             r'doSomething',
           ),
         );
-<<<<<<< HEAD:packages/golubets/test/dart/proxy_api_test.dart
-        expect(
-          code,
-          contains(r'final Api arg_golubets_instance = args[0]! as Api;'),
-        );
-=======
-        expect(code, contains(r'final Api arg_pigeon_instance = args[0]! as Api;'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/dart/proxy_api_test.dart
+        expect(code, contains(r'final Api arg_golubets_instance = args[0]! as Api;'));
         expect(code, contains(r'final int arg_validType = args[1]! as int;'));
         expect(code, contains(r'final AnEnum arg_enumType = args[2]! as AnEnum;'));
         expect(code, contains(r'final Api2 arg_proxyApiType = args[3]! as Api2;'));

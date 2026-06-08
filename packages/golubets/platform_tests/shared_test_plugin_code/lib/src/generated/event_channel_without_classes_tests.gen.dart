@@ -34,13 +34,7 @@ class _GolubetsCodec extends StandardMessageCodec {
   }
 }
 
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/event_channel_without_classes_tests.gen.dart
-const StandardMethodCodec golubetsMethodCodec = StandardMethodCodec(
-  _GolubetsCodec(),
-);
-=======
-const StandardMethodCodec pigeonMethodCodec = StandardMethodCodec(_PigeonCodec());
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/event_channel_without_classes_tests.gen.dart
+const StandardMethodCodec golubetsMethodCodec = StandardMethodCodec(_GolubetsCodec());
 
 Stream<int> streamIntsAgain({String instanceName = ''}) {
   if (instanceName.isNotEmpty) {

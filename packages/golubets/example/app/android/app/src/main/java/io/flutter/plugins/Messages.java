@@ -439,12 +439,8 @@ public class Messages {
     /** Failure case callback method for handling errors. */
     void error(@NonNull Throwable error);
   }
-<<<<<<< HEAD:packages/golubets/example/app/android/app/src/main/java/io/flutter/plugins/Messages.java
-  /** Generated interface from Golubets that represents a handler of messages from Flutter. */
-=======
 
-  /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/android/app/src/main/java/io/flutter/plugins/Messages.java
+  /** Generated interface from Golubets that represents a handler of messages from Flutter. */
   public interface ExampleHostApi {
 
     @NonNull
@@ -625,14 +621,10 @@ public class Messages {
       }
     }
   }
-<<<<<<< HEAD:packages/golubets/example/app/android/app/src/main/java/io/flutter/plugins/Messages.java
+
   /**
    * Generated class from Golubets that represents Flutter messages that can be called from Java.
    */
-=======
-
-  /** Generated class from Pigeon that represents Flutter messages that can be called from Java. */
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/android/app/src/main/java/io/flutter/plugins/Messages.java
   public static class MessageFlutterApi {
     private final @NonNull BinaryMessenger binaryMessenger;
     private final String messageChannelSuffix;

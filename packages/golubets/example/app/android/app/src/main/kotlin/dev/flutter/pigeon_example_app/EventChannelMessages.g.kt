@@ -12,10 +12,7 @@ import io.flutter.plugin.common.StandardMethodCodec
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 
-<<<<<<< HEAD:packages/golubets/example/app/android/app/src/main/kotlin/dev/flutter/pigeon_example_app/EventChannelMessages.g.kt
 private object EventChannelMessagesGolubetsUtils {
-=======
-private object EventChannelMessagesPigeonUtils {
   fun doubleEquals(a: Double, b: Double): Boolean {
     // Normalize -0.0 to 0.0 and handle NaN equality.
     return (if (a == 0.0) 0.0 else a) == (if (b == 0.0) 0.0 else b) || (a.isNaN() && b.isNaN())
@@ -39,7 +36,6 @@ private object EventChannelMessagesPigeonUtils {
     return java.lang.Float.floatToIntBits(normalized)
   }
 
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/android/app/src/main/kotlin/dev/flutter/pigeon_example_app/EventChannelMessages.g.kt
   fun deepEquals(a: Any?, b: Any?): Boolean {
     if (a === b) {
       return true
@@ -183,23 +179,18 @@ data class IntEvent(val data: Long) : PlatformEvent() {
   }
 
   override fun equals(other: Any?): Boolean {
-    if (other == null || other.javaClass != javaClass) {
+    if (other !is IntEvent) {
       return false
     }
     if (this === other) {
       return true
     }
-<<<<<<< HEAD:packages/golubets/example/app/android/app/src/main/kotlin/dev/flutter/pigeon_example_app/EventChannelMessages.g.kt
-    return EventChannelMessagesGolubetsUtils.deepEquals(toList(), other.toList())
-=======
-    val other = other as IntEvent
-    return EventChannelMessagesPigeonUtils.deepEquals(this.data, other.data)
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/android/app/src/main/kotlin/dev/flutter/pigeon_example_app/EventChannelMessages.g.kt
+    return EventChannelMessagesGolubetsUtils.deepEquals(this.data, other.data)
   }
 
   override fun hashCode(): Int {
     var result = javaClass.hashCode()
-    result = 31 * result + EventChannelMessagesPigeonUtils.deepHash(this.data)
+    result = 31 * result + EventChannelMessagesGolubetsUtils.deepHash(this.data)
     return result
   }
 }
@@ -220,23 +211,18 @@ data class StringEvent(val data: String) : PlatformEvent() {
   }
 
   override fun equals(other: Any?): Boolean {
-    if (other == null || other.javaClass != javaClass) {
+    if (other !is StringEvent) {
       return false
     }
     if (this === other) {
       return true
     }
-<<<<<<< HEAD:packages/golubets/example/app/android/app/src/main/kotlin/dev/flutter/pigeon_example_app/EventChannelMessages.g.kt
-    return EventChannelMessagesGolubetsUtils.deepEquals(toList(), other.toList())
-=======
-    val other = other as StringEvent
-    return EventChannelMessagesPigeonUtils.deepEquals(this.data, other.data)
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/android/app/src/main/kotlin/dev/flutter/pigeon_example_app/EventChannelMessages.g.kt
+    return EventChannelMessagesGolubetsUtils.deepEquals(this.data, other.data)
   }
 
   override fun hashCode(): Int {
     var result = javaClass.hashCode()
-    result = 31 * result + EventChannelMessagesPigeonUtils.deepHash(this.data)
+    result = 31 * result + EventChannelMessagesGolubetsUtils.deepHash(this.data)
     return result
   }
 }
@@ -261,10 +247,13 @@ class EmptyEvent() : PlatformEvent() {
     if (this === other) {
       return true
     }
-    return EventChannelMessagesGolubetsUtils.deepEquals(toList(), other.toList())
+    return true
   }
 
-  override fun hashCode(): Int = toList().hashCode()
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    return result
+  }
 }
 
 private open class EventChannelMessagesGolubetsCodec : StandardMessageCodec() {

@@ -95,10 +95,7 @@ func deepEqualsEventChannelMessages(_ lhs: Any?, _ rhs: Any?) -> Bool {
     return lhsHashable == rhsHashable
 
   default:
-<<<<<<< HEAD:packages/golubets/example/app/ios/Runner/EventChannelMessages.g.swift
     // Any other type shouldn't be able to be used with golubetsets. File an issue if you find this to be untrue.
-=======
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/ios/Runner/EventChannelMessages.g.swift
     return false
   }
 }
@@ -163,7 +160,6 @@ public enum PlatformEvent: Hashable {
       data: data
     )
   }
-<<<<<<< HEAD:packages/golubets/example/app/ios/Runner/EventChannelMessages.g.swift
 
   internal static func fromListEmptyEvent(_ list: [Any?]) -> PlatformEvent? {
     return .emptyEvent
@@ -190,58 +186,13 @@ public enum PlatformEvent: Hashable {
   public static func == (lhs: PlatformEvent, rhs: PlatformEvent) -> Bool {
     return deepEqualsEventChannelMessages(lhs.toList(), rhs.toList())
   }
+
   public func hash(into hasher: inout Hasher) {
     deepHashEventChannelMessages(value: toList(), hasher: &hasher)
   }
 }
 
 private class EventChannelMessagesGolubetsCodecReader: FlutterStandardReader {
-=======
-  static func == (lhs: IntEvent, rhs: IntEvent) -> Bool {
-    if Swift.type(of: lhs) != Swift.type(of: rhs) {
-      return false
-    }
-    return deepEqualsEventChannelMessages(lhs.data, rhs.data)
-  }
-
-  func hash(into hasher: inout Hasher) {
-    hasher.combine("IntEvent")
-    deepHashEventChannelMessages(value: data, hasher: &hasher)
-  }
-}
-
-/// Generated class from Pigeon that represents data sent in messages.
-struct StringEvent: PlatformEvent {
-  var data: String
-
-  // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> StringEvent? {
-    let data = pigeonVar_list[0] as! String
-
-    return StringEvent(
-      data: data
-    )
-  }
-  func toList() -> [Any?] {
-    return [
-      data
-    ]
-  }
-  static func == (lhs: StringEvent, rhs: StringEvent) -> Bool {
-    if Swift.type(of: lhs) != Swift.type(of: rhs) {
-      return false
-    }
-    return deepEqualsEventChannelMessages(lhs.data, rhs.data)
-  }
-
-  func hash(into hasher: inout Hasher) {
-    hasher.combine("StringEvent")
-    deepHashEventChannelMessages(value: data, hasher: &hasher)
-  }
-}
-
-private class EventChannelMessagesPigeonCodecReader: FlutterStandardReader {
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/ios/Runner/EventChannelMessages.g.swift
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
     case 129:

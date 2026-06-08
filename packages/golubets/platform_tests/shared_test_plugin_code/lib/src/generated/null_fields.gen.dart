@@ -87,12 +87,6 @@ bool _deepEquals(Object? a, Object? b) {
   return a == b;
 }
 
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/null_fields.gen.dart
-enum NullFieldsSearchReplyType {
-  success,
-  failure,
-}
-=======
 int _deepHash(Object? value) {
   if (value is List) {
     return Object.hashAll(value.map(_deepHash));
@@ -116,23 +110,16 @@ int _deepHash(Object? value) {
 }
 
 enum NullFieldsSearchReplyType { success, failure }
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/null_fields.gen.dart
 
 class NullFieldsSearchRequest {
-  NullFieldsSearchRequest({
-    this.query,
-    required this.identifier,
-  });
+  NullFieldsSearchRequest({this.query, required this.identifier});
 
   String? query;
 
   int identifier;
 
   List<Object?> _toList() {
-    return <Object?>[
-      query,
-      identifier,
-    ];
+    return <Object?>[query, identifier];
   }
 
   Object encode() {
@@ -175,13 +162,7 @@ class NullFieldsSearchReply {
   NullFieldsSearchReplyType? type;
 
   List<Object?> _toList() {
-    return <Object?>[
-      result,
-      error,
-      indices,
-      request,
-      type,
-    ];
+    return <Object?>[result, error, indices, request, type];
   }
 
   Object encode() {
@@ -261,23 +242,12 @@ class NullFieldsHostApi {
   /// Constructor for [NullFieldsHostApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/null_fields.gen.dart
-  NullFieldsHostApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : golubetsVar_binaryMessenger = binaryMessenger,
-       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
-=======
   NullFieldsHostApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-    : pigeonVar_binaryMessenger = binaryMessenger,
-      pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+    : golubetsVar_binaryMessenger = binaryMessenger,
+      golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? pigeonVar_binaryMessenger;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/null_fields.gen.dart
+  final BinaryMessenger? golubetsVar_binaryMessenger;
 
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
@@ -291,16 +261,8 @@ class NullFieldsHostApi {
       golubetsChannelCodec,
       binaryMessenger: golubetsVar_binaryMessenger,
     );
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/src/generated/null_fields.gen.dart
-    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(
-      <Object?>[nested],
-    );
-    final golubetsVar_replyList =
-        await golubetsVar_sendFuture as List<Object?>?;
-=======
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[nested]);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/src/generated/null_fields.gen.dart
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[nested]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
 
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,

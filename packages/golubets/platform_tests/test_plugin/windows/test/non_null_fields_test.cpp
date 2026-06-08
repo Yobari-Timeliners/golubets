@@ -14,9 +14,6 @@ TEST(NonNullFields, Build) {
   EXPECT_EQ(request.query(), "hello");
 }
 
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/test/non_null_fields_test.cpp
-}  // namespace non_null_fields_golubetstest
-=======
 TEST(NonNullFields, Equality) {
   NonNullFieldSearchRequest request1("hello");
   NonNullFieldSearchRequest request2("hello");
@@ -26,5 +23,4 @@ TEST(NonNullFields, Equality) {
   EXPECT_NE(request1, request3);
 }
 
-}  // namespace non_null_fields_pigeontest
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/test/non_null_fields_test.cpp
+}  // namespace non_null_fields_golubetstest

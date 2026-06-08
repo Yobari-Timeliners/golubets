@@ -1044,6 +1044,66 @@ static id GetNullableObjectAtIndex(NSArray<id> *array, NSInteger key) {
     self.mapMap ?: [NSNull null],
   ];
 }
+- (BOOL)isEqual:(id)object {
+  if (self == object) {
+    return YES;
+  }
+  if (![object isKindOfClass:[self class]]) {
+    return NO;
+  }
+  FLTImmutableAllTypes *other = (FLTImmutableAllTypes *)object;
+  return self.aBool == other.aBool && self.anInt == other.anInt && self.anInt64 == other.anInt64 &&
+         (self.aDouble == other.aDouble || (isnan(self.aDouble) && isnan(other.aDouble))) &&
+         self.anEnum == other.anEnum && self.anotherEnum == other.anotherEnum &&
+         FLTPigeonDeepEquals(self.aString, other.aString) &&
+         FLTPigeonDeepEquals(self.anObject, other.anObject) &&
+         FLTPigeonDeepEquals(self.list, other.list) &&
+         FLTPigeonDeepEquals(self.stringList, other.stringList) &&
+         FLTPigeonDeepEquals(self.intList, other.intList) &&
+         FLTPigeonDeepEquals(self.doubleList, other.doubleList) &&
+         FLTPigeonDeepEquals(self.boolList, other.boolList) &&
+         FLTPigeonDeepEquals(self.enumList, other.enumList) &&
+         FLTPigeonDeepEquals(self.objectList, other.objectList) &&
+         FLTPigeonDeepEquals(self.listList, other.listList) &&
+         FLTPigeonDeepEquals(self.mapList, other.mapList) &&
+         FLTPigeonDeepEquals(self.map, other.map) &&
+         FLTPigeonDeepEquals(self.stringMap, other.stringMap) &&
+         FLTPigeonDeepEquals(self.intMap, other.intMap) &&
+         FLTPigeonDeepEquals(self.enumMap, other.enumMap) &&
+         FLTPigeonDeepEquals(self.objectMap, other.objectMap) &&
+         FLTPigeonDeepEquals(self.listMap, other.listMap) &&
+         FLTPigeonDeepEquals(self.mapMap, other.mapMap);
+}
+
+- (NSUInteger)hash {
+  NSUInteger result = [self class].hash;
+  result = result * 31 + @(self.aBool).hash;
+  result = result * 31 + @(self.anInt).hash;
+  result = result * 31 + @(self.anInt64).hash;
+  result =
+      result * 31 + (isnan(self.aDouble) ? (NSUInteger)0x7FF8000000000000 : @(self.aDouble).hash);
+  result = result * 31 + @(self.anEnum).hash;
+  result = result * 31 + @(self.anotherEnum).hash;
+  result = result * 31 + FLTPigeonDeepHash(self.aString);
+  result = result * 31 + FLTPigeonDeepHash(self.anObject);
+  result = result * 31 + FLTPigeonDeepHash(self.list);
+  result = result * 31 + FLTPigeonDeepHash(self.stringList);
+  result = result * 31 + FLTPigeonDeepHash(self.intList);
+  result = result * 31 + FLTPigeonDeepHash(self.doubleList);
+  result = result * 31 + FLTPigeonDeepHash(self.boolList);
+  result = result * 31 + FLTPigeonDeepHash(self.enumList);
+  result = result * 31 + FLTPigeonDeepHash(self.objectList);
+  result = result * 31 + FLTPigeonDeepHash(self.listList);
+  result = result * 31 + FLTPigeonDeepHash(self.mapList);
+  result = result * 31 + FLTPigeonDeepHash(self.map);
+  result = result * 31 + FLTPigeonDeepHash(self.stringMap);
+  result = result * 31 + FLTPigeonDeepHash(self.intMap);
+  result = result * 31 + FLTPigeonDeepHash(self.enumMap);
+  result = result * 31 + FLTPigeonDeepHash(self.objectMap);
+  result = result * 31 + FLTPigeonDeepHash(self.listMap);
+  result = result * 31 + FLTPigeonDeepHash(self.mapMap);
+  return result;
+}
 @end
 
 @implementation FLTAllTypesWithDefaults
@@ -1162,6 +1222,68 @@ static id GetNullableObjectAtIndex(NSArray<id> *array, NSInteger key) {
     self.mapMap ?: [NSNull null],
     self.allTypes ?: [NSNull null],
   ];
+}
+- (BOOL)isEqual:(id)object {
+  if (self == object) {
+    return YES;
+  }
+  if (![object isKindOfClass:[self class]]) {
+    return NO;
+  }
+  FLTAllTypesWithDefaults *other = (FLTAllTypesWithDefaults *)object;
+  return self.aBool == other.aBool && self.anInt == other.anInt && self.anInt64 == other.anInt64 &&
+         (self.aDouble == other.aDouble || (isnan(self.aDouble) && isnan(other.aDouble))) &&
+         self.anEnum == other.anEnum && self.anotherEnum == other.anotherEnum &&
+         FLTPigeonDeepEquals(self.aString, other.aString) &&
+         FLTPigeonDeepEquals(self.anObject, other.anObject) &&
+         FLTPigeonDeepEquals(self.list, other.list) &&
+         FLTPigeonDeepEquals(self.stringList, other.stringList) &&
+         FLTPigeonDeepEquals(self.intList, other.intList) &&
+         FLTPigeonDeepEquals(self.doubleList, other.doubleList) &&
+         FLTPigeonDeepEquals(self.boolList, other.boolList) &&
+         FLTPigeonDeepEquals(self.enumList, other.enumList) &&
+         FLTPigeonDeepEquals(self.objectList, other.objectList) &&
+         FLTPigeonDeepEquals(self.listList, other.listList) &&
+         FLTPigeonDeepEquals(self.mapList, other.mapList) &&
+         FLTPigeonDeepEquals(self.map, other.map) &&
+         FLTPigeonDeepEquals(self.stringMap, other.stringMap) &&
+         FLTPigeonDeepEquals(self.intMap, other.intMap) &&
+         FLTPigeonDeepEquals(self.enumMap, other.enumMap) &&
+         FLTPigeonDeepEquals(self.objectMap, other.objectMap) &&
+         FLTPigeonDeepEquals(self.listMap, other.listMap) &&
+         FLTPigeonDeepEquals(self.mapMap, other.mapMap) &&
+         FLTPigeonDeepEquals(self.allTypes, other.allTypes);
+}
+
+- (NSUInteger)hash {
+  NSUInteger result = [self class].hash;
+  result = result * 31 + @(self.aBool).hash;
+  result = result * 31 + @(self.anInt).hash;
+  result = result * 31 + @(self.anInt64).hash;
+  result =
+      result * 31 + (isnan(self.aDouble) ? (NSUInteger)0x7FF8000000000000 : @(self.aDouble).hash);
+  result = result * 31 + @(self.anEnum).hash;
+  result = result * 31 + @(self.anotherEnum).hash;
+  result = result * 31 + FLTPigeonDeepHash(self.aString);
+  result = result * 31 + FLTPigeonDeepHash(self.anObject);
+  result = result * 31 + FLTPigeonDeepHash(self.list);
+  result = result * 31 + FLTPigeonDeepHash(self.stringList);
+  result = result * 31 + FLTPigeonDeepHash(self.intList);
+  result = result * 31 + FLTPigeonDeepHash(self.doubleList);
+  result = result * 31 + FLTPigeonDeepHash(self.boolList);
+  result = result * 31 + FLTPigeonDeepHash(self.enumList);
+  result = result * 31 + FLTPigeonDeepHash(self.objectList);
+  result = result * 31 + FLTPigeonDeepHash(self.listList);
+  result = result * 31 + FLTPigeonDeepHash(self.mapList);
+  result = result * 31 + FLTPigeonDeepHash(self.map);
+  result = result * 31 + FLTPigeonDeepHash(self.stringMap);
+  result = result * 31 + FLTPigeonDeepHash(self.intMap);
+  result = result * 31 + FLTPigeonDeepHash(self.enumMap);
+  result = result * 31 + FLTPigeonDeepHash(self.objectMap);
+  result = result * 31 + FLTPigeonDeepHash(self.listMap);
+  result = result * 31 + FLTPigeonDeepHash(self.mapMap);
+  result = result * 31 + FLTPigeonDeepHash(self.allTypes);
+  return result;
 }
 @end
 
@@ -2161,7 +2283,7 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
     FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
            initWithName:[NSString
                             stringWithFormat:@"%@%@",
-                                             @"dev.flutter.pigeon.pigeon_integration_tests."
+                                             @"dev.bayori.golubets.golubets_integration_tests."
                                              @"HostIntegrationCoreApi.areAllNullableTypesEqual",
                                              messageChannelSuffix]
         binaryMessenger:binaryMessenger
@@ -2188,7 +2310,7 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
     FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
            initWithName:[NSString
                             stringWithFormat:@"%@%@",
-                                             @"dev.flutter.pigeon.pigeon_integration_tests."
+                                             @"dev.bayori.golubets.golubets_integration_tests."
                                              @"HostIntegrationCoreApi.getAllNullableTypesHash",
                                              messageChannelSuffix]
         binaryMessenger:binaryMessenger
@@ -2215,7 +2337,7 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
            initWithName:[NSString
                             stringWithFormat:
                                 @"%@%@",
-                                @"dev.flutter.pigeon.pigeon_integration_tests."
+                                @"dev.bayori.golubets.golubets_integration_tests."
                                 @"HostIntegrationCoreApi.getAllNullableTypesWithoutRecursionHash",
                                 messageChannelSuffix]
         binaryMessenger:binaryMessenger

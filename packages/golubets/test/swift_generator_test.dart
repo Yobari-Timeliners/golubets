@@ -34,27 +34,15 @@ void main() {
         ),
       ],
     );
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('struct Foobar'));
     expect(code, contains('var field1: Int64? = nil'));
-    expect(
-      code,
-      contains('static func fromList(_ golubetsVar_list: [Any?]) -> Foobar?'),
-    );
+    expect(code, contains('static func fromList(_ golubetsVar_list: [Any?]) -> Foobar?'));
     expect(code, contains('func toList() -> [Any?]'));
     expect(code, isNot(contains('if (')));
   });
@@ -71,12 +59,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('enum Foobar: Int'));
     expect(code, contains('  case one = 0'));
@@ -122,20 +105,10 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('public enum Foo: Int'));
-    expect(
-      code,
-      contains(
-        'let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)',
-      ),
-    );
+    expect(code, contains('let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)'));
     expect(code, contains('return Foo(rawValue: enumResultAsInt)'));
     expect(code, contains('let fooArg = args[0] as! Foo'));
     expect(code, isNot(contains('if (')));
@@ -194,12 +167,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('public protocol Api'));
     expect(code, contains('public class ApiSetup'));
@@ -241,31 +209,19 @@ void main() {
               name: 'aString',
             ),
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'Uint8List',
-                isNullable: true,
-              ),
+              type: const TypeDeclaration(baseName: 'Uint8List', isNullable: true),
               name: 'aUint8List',
             ),
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'Int32List',
-                isNullable: true,
-              ),
+              type: const TypeDeclaration(baseName: 'Int32List', isNullable: true),
               name: 'aInt32List',
             ),
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'Int64List',
-                isNullable: true,
-              ),
+              type: const TypeDeclaration(baseName: 'Int64List', isNullable: true),
               name: 'aInt64List',
             ),
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'Float64List',
-                isNullable: true,
-              ),
+              type: const TypeDeclaration(baseName: 'Float64List', isNullable: true),
               name: 'aFloat64List',
             ),
           ],
@@ -277,12 +233,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('var aBool: Bool? = nil'));
     expect(code, contains('var aInt: Int64? = nil'));
@@ -297,26 +248,16 @@ void main() {
   test('gen golubets error type', () {
     final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
     final sink = StringBuffer();
-    const swiftOptions = InternalSwiftOptions(
-      swiftOut: '',
-    );
+    const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
 
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('class GolubetsError: Error'));
     expect(code, contains('let code: String'));
     expect(code, contains('let message: String?'));
     expect(code, contains('let details: Sendable?'));
-    expect(
-      code,
-      contains('init(code: String, message: String?, details: Sendable?)'),
-    );
+    expect(code, contains('init(code: String, message: String?, details: Sendable?)'));
   });
 
   test('gen one flutter api', () {
@@ -372,12 +313,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('public class Api'));
     expect(
@@ -435,12 +371,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, isNot(matches('.*doSomething(.*) ->')));
     expect(code, matches('doSomething(.*)'));
@@ -487,17 +418,9 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-    expect(
-      code,
-      contains('completion: @escaping (Result<Void, GolubetsError>) -> Void'),
-    );
+    expect(code, contains('completion: @escaping (Result<Void, GolubetsError>) -> Void'));
     expect(code, contains('completion(.success(()))'));
     expect(code, isNot(contains('if (')));
   });
@@ -537,12 +460,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('func doSomething() throws -> Output'));
     expect(code, contains('let result = try api.doSomething()'));
@@ -585,18 +503,11 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(
       code,
-      contains(
-        'func doSomething(completion: @escaping (Result<Output, GolubetsError>) -> Void)',
-      ),
+      contains('func doSomething(completion: @escaping (Result<Output, GolubetsError>) -> Void)'),
     );
     expect(code, contains('channel.sendMessage(nil'));
     expect(code, isNot(contains('if (')));
@@ -621,12 +532,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('struct Foobar'));
     expect(code, contains('var field1: [Any?]? = nil'));
@@ -652,12 +558,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('struct Foobar'));
     expect(code, contains('var field1: [AnyHashable?: Any?]? = nil'));
@@ -669,11 +570,7 @@ void main() {
       name: 'Outer',
       fields: <NamedType>[
         NamedType(
-          type: TypeDeclaration(
-            baseName: 'Nested',
-            associatedClass: emptyClass,
-            isNullable: true,
-          ),
+          type: TypeDeclaration(baseName: 'Nested', associatedClass: emptyClass, isNullable: true),
           name: 'nested',
         ),
       ],
@@ -695,24 +592,13 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('struct Outer'));
     expect(code, contains('struct Nested'));
     expect(code, contains('var nested: Nested? = nil'));
-    expect(
-      code,
-      contains('static func fromList(_ golubetsVar_list: [Any?]) -> Outer?'),
-    );
-    expect(
-      code,
-      contains('let nested: Nested? = nilOrValue(golubetsVar_list[0])'),
-    );
+    expect(code, contains('static func fromList(_ golubetsVar_list: [Any?]) -> Outer?'));
+    expect(code, contains('let nested: Nested? = nilOrValue(golubetsVar_list[0])'));
     expect(code, contains('func toList() -> [Any?]'));
     expect(code, isNot(contains('if (')));
     // Single-element list serializations should not have a trailing comma.
@@ -773,12 +659,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('protocol Api'));
     expect(code, contains('api.doSomething(arg: argArg) { result in'));
@@ -822,10 +703,7 @@ void main() {
           name: 'Input',
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'String',
-                isNullable: true,
-              ),
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
               name: 'input',
             ),
           ],
@@ -834,10 +712,7 @@ void main() {
           name: 'Output',
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'String',
-                isNullable: true,
-              ),
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
               name: 'output',
             ),
           ],
@@ -846,22 +721,12 @@ void main() {
       enums: <Enum>[],
     );
     final sink = StringBuffer();
-    const swiftOptions = InternalSwiftOptions(
-      swiftOut: '',
-    );
+    const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('protocol Api'));
-    expect(
-      code,
-      contains('func doSomething(arg: Input) async throws -> Output'),
-    );
+    expect(code, contains('func doSomething(arg: Input) async throws -> Output'));
     expect(code, contains('try await api.doSomething(arg: argArg)'));
     expect(code, contains('Task {'));
     expect(code, contains('reply(wrapResult(result))'));
@@ -903,10 +768,7 @@ void main() {
           name: 'Input',
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'String',
-                isNullable: true,
-              ),
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
               name: 'input',
             ),
           ],
@@ -915,10 +777,7 @@ void main() {
           name: 'Output',
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'String',
-                isNullable: true,
-              ),
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
               name: 'output',
             ),
           ],
@@ -927,27 +786,18 @@ void main() {
       enums: <Enum>[],
     );
     final sink = StringBuffer();
-    const swiftOptions = InternalSwiftOptions(
-      swiftOut: '',
-    );
+    const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('protocol Api'));
-    expect(
-      code,
-      contains('func doSomething(arg: Input) async -> Output'),
-    );
+    expect(code, contains('func doSomething(arg: Input) async -> Output'));
     expect(code, contains('await api.doSomething(arg: argArg)'));
     expect(code, contains('Task {'));
     expect(code, contains('reply(wrapResult(result))'));
-    expect(code, isNot(contains('try')));
-    expect(code, isNot(contains('catch')));
+    expect(code, isNot(contains('try await api.doSomething')));
+    expect(code, isNot(contains('try api.doSomething')));
+    expect(code, isNot(contains('} catch {')));
   });
 
   test('gen one async Flutter Api', () {
@@ -1004,12 +854,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('class Api'));
     expect(code, matches('func doSomething.*Input.*completion.*Output.*Void'));
@@ -1028,29 +873,16 @@ void main() {
       name: 'EnumClass',
       fields: <NamedType>[
         NamedType(
-          type: TypeDeclaration(
-            baseName: 'Enum1',
-            associatedEnum: emptyEnum,
-            isNullable: true,
-          ),
+          type: TypeDeclaration(baseName: 'Enum1', associatedEnum: emptyEnum, isNullable: true),
           name: 'enum1',
         ),
       ],
     );
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[anEnum],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[anEnum]);
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('enum Enum1: Int'));
     expect(code, contains('case one = 0'));
@@ -1066,12 +898,7 @@ void main() {
       copyrightHeader: <String>['hello world', ''],
     );
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, startsWith('// hello world'));
     // There should be no trailing whitespace on generated comments.
@@ -1086,28 +913,17 @@ void main() {
           type: const TypeDeclaration(
             baseName: 'List',
             isNullable: true,
-            typeArguments: <TypeDeclaration>[
-              TypeDeclaration(baseName: 'int', isNullable: true),
-            ],
+            typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: true)],
           ),
           name: 'field1',
         ),
       ],
     );
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('struct Foobar'));
     expect(code, contains('var field1: [Int64?]'));
@@ -1130,20 +946,11 @@ void main() {
         ),
       ],
     );
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('struct Foobar'));
     expect(code, contains('var field1: [String?: String?]'));
@@ -1181,12 +988,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('func doit(arg: [Int64?]'));
   });
@@ -1223,12 +1025,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('func doit(arg argArg: [Int64?]'));
   });
@@ -1260,12 +1057,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('func doit() throws -> [Int64?]'));
     expect(code, contains('let result = try api.doit()'));
@@ -1299,18 +1091,11 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(
       code,
-      contains(
-        'func doit(completion: @escaping (Result<[Int64?], GolubetsError>) -> Void)',
-      ),
+      contains('func doit(completion: @escaping (Result<[Int64?], GolubetsError>) -> Void)'),
     );
     expect(code, contains('let result = listResponse[0] as! [Int64?]'));
     expect(code, contains('completion(.success(result))'));
@@ -1319,9 +1104,7 @@ void main() {
   test('generic class with single type parameter', () {
     final classDefinition = Class(
       name: 'Wrapper',
-      typeArguments: <TypeDeclaration>[
-        const TypeDeclaration(baseName: 'T', isNullable: false),
-      ],
+      typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
       fields: <NamedType>[
         NamedType(
           type: const TypeDeclaration(baseName: 'T', isNullable: false),
@@ -1329,29 +1112,15 @@ void main() {
         ),
       ],
     );
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
     final sink = StringBuffer();
-    const swiftOptions = InternalSwiftOptions(
-      swiftOut: '',
-    );
+    const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('struct Wrapper<T>'));
     expect(code, contains('var value: T'));
-    expect(
-      code,
-      contains('static func fromList(_ golubetsVar_list: [Any?]) -> Wrapper?'),
-    );
+    expect(code, contains('static func fromList(_ golubetsVar_list: [Any?]) -> Wrapper?'));
     expect(code, contains('return Wrapper('));
   });
 
@@ -1373,39 +1142,23 @@ void main() {
         ),
       ],
     );
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
     final sink = StringBuffer();
-    const swiftOptions = InternalSwiftOptions(
-      swiftOut: '',
-    );
+    const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('struct Pair<T, U>'));
     expect(code, contains('var first: T'));
     expect(code, contains('var second: U? = nil'));
-    expect(
-      code,
-      contains('static func fromList(_ golubetsVar_list: [Any?]) -> Pair?'),
-    );
+    expect(code, contains('static func fromList(_ golubetsVar_list: [Any?]) -> Pair?'));
     expect(code, contains('return Pair('));
   });
 
   test('generic class with nested generic field types', () {
     final classDefinition = Class(
       name: 'Container',
-      typeArguments: <TypeDeclaration>[
-        const TypeDeclaration(baseName: 'T', isNullable: false),
-      ],
+      typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
       fields: <NamedType>[
         NamedType(
           type: const TypeDeclaration(
@@ -1426,40 +1179,22 @@ void main() {
         ),
       ],
     );
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
     final sink = StringBuffer();
-    const swiftOptions = InternalSwiftOptions(
-      swiftOut: '',
-    );
+    const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('struct Container<T>'));
     expect(code, contains('var data: [[String: T?]]'));
-    expect(
-      code,
-      contains(
-        'static func fromList(_ golubetsVar_list: [Any?]) -> Container?',
-      ),
-    );
+    expect(code, contains('static func fromList(_ golubetsVar_list: [Any?]) -> Container?'));
     expect(code, contains('return Container('));
   });
 
   test('generic class with generic superclass', () {
     final superClass = Class(
       name: 'BaseContainer',
-      typeArguments: <TypeDeclaration>[
-        const TypeDeclaration(baseName: 'T', isNullable: false),
-      ],
+      typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
       fields: <NamedType>[
         NamedType(
           type: const TypeDeclaration(baseName: 'T', isNullable: false),
@@ -1469,9 +1204,7 @@ void main() {
     );
     final classDefinition = Class(
       name: 'SpecialList',
-      typeArguments: <TypeDeclaration>[
-        const TypeDeclaration(baseName: 'T', isNullable: false),
-      ],
+      typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
       superClassName: superClass.name,
       superClass: superClass,
       fields: <NamedType>[
@@ -1487,26 +1220,14 @@ void main() {
       enums: <Enum>[],
     );
     final sink = StringBuffer();
-    const swiftOptions = InternalSwiftOptions(
-      swiftOut: '',
-    );
+    const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('struct BaseContainer<T>'));
     expect(code, contains('struct SpecialList<T>'));
     expect(code, contains('var capacity: Int64'));
-    expect(
-      code,
-      contains(
-        'static func fromList(_ golubetsVar_list: [Any?]) -> SpecialList?',
-      ),
-    );
+    expect(code, contains('static func fromList(_ golubetsVar_list: [Any?]) -> SpecialList?'));
   });
 
   test('generic class serialization methods', () {
@@ -1527,30 +1248,16 @@ void main() {
         ),
       ],
     );
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
     final sink = StringBuffer();
-    const swiftOptions = InternalSwiftOptions(
-      swiftOut: '',
-    );
+    const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('struct Result<T, E>'));
     expect(code, contains('var success: T? = nil'));
     expect(code, contains('var error: E? = nil'));
-    expect(
-      code,
-      contains('static func fromList(_ golubetsVar_list: [Any?]) -> Result?'),
-    );
+    expect(code, contains('static func fromList(_ golubetsVar_list: [Any?]) -> Result?'));
     expect(code, contains('return Result('));
     expect(code, contains('success: success'));
     expect(code, contains('error: error'));
@@ -1580,31 +1287,15 @@ void main() {
         ),
       ],
     );
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
     final sink = StringBuffer();
-    const swiftOptions = InternalSwiftOptions(
-      swiftOut: '',
-    );
+    const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('struct KeyValueStore<K: Hashable, V>'));
     expect(code, contains('var store: [K: V]'));
-    expect(
-      code,
-      contains(
-        'static func fromList(_ golubetsVar_list: [Any?]) -> KeyValueStore?',
-      ),
-    );
+    expect(code, contains('static func fromList(_ golubetsVar_list: [Any?]) -> KeyValueStore?'));
     expect(code, contains('return KeyValueStore('));
   });
 
@@ -1620,23 +1311,14 @@ void main() {
               parameters: <Parameter>[
                 Parameter(
                   name: 'x',
-                  type: const TypeDeclaration(
-                    isNullable: false,
-                    baseName: 'int',
-                  ),
+                  type: const TypeDeclaration(isNullable: false, baseName: 'int'),
                 ),
                 Parameter(
                   name: 'y',
-                  type: const TypeDeclaration(
-                    isNullable: false,
-                    baseName: 'int',
-                  ),
+                  type: const TypeDeclaration(isNullable: false, baseName: 'int'),
                 ),
               ],
-              returnType: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: false,
-              ),
+              returnType: const TypeDeclaration(baseName: 'int', isNullable: false),
             ),
           ],
         ),
@@ -1647,12 +1329,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('func add(x: Int64, y: Int64) throws -> Int64'));
     expect(code, contains('let args = message as! [Any?]'));
@@ -1674,23 +1351,14 @@ void main() {
               parameters: <Parameter>[
                 Parameter(
                   name: 'x',
-                  type: const TypeDeclaration(
-                    baseName: 'int',
-                    isNullable: false,
-                  ),
+                  type: const TypeDeclaration(baseName: 'int', isNullable: false),
                 ),
                 Parameter(
                   name: 'y',
-                  type: const TypeDeclaration(
-                    baseName: 'int',
-                    isNullable: false,
-                  ),
+                  type: const TypeDeclaration(baseName: 'int', isNullable: false),
                 ),
               ],
-              returnType: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: false,
-              ),
+              returnType: const TypeDeclaration(baseName: 'int', isNullable: false),
             ),
           ],
         ),
@@ -1701,12 +1369,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('let channel = FlutterBasicMessageChannel'));
     expect(code, contains('let result = listResponse[0] as! Int64'));
@@ -1717,10 +1380,7 @@ void main() {
         'func add(x xArg: Int64, y yArg: Int64, completion: @escaping (Result<Int64, GolubetsError>) -> Void)',
       ),
     );
-    expect(
-      code,
-      contains('channel.sendMessage([xArg, yArg] as [Any?]) { response in'),
-    );
+    expect(code, contains('channel.sendMessage([xArg, yArg] as [Any?]) { response in'));
   });
 
   test('return nullable host', () {
@@ -1732,10 +1392,7 @@ void main() {
             Method(
               name: 'doit',
               location: ApiLocation.host,
-              returnType: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: true,
-              ),
+              returnType: const TypeDeclaration(baseName: 'int', isNullable: true),
               parameters: <Parameter>[],
             ),
           ],
@@ -1747,12 +1404,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('func doit() throws -> Int64?'));
   });
@@ -1766,10 +1418,7 @@ void main() {
             Method(
               name: 'doit',
               location: ApiLocation.host,
-              returnType: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: true,
-              ),
+              returnType: const TypeDeclaration(baseName: 'int', isNullable: true),
               asynchronousType: AsynchronousType.callback,
               parameters: <Parameter>[],
             ),
@@ -1782,19 +1431,9 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-    expect(
-      code,
-      contains(
-        'func doit(completion: @escaping (Result<Int64?, Error>) -> Void',
-      ),
-    );
+    expect(code, contains('func doit(completion: @escaping (Result<Int64?, Error>) -> Void'));
   });
 
   test('nullable argument host', () {
@@ -1810,10 +1449,7 @@ void main() {
               parameters: <Parameter>[
                 Parameter(
                   name: 'foo',
-                  type: const TypeDeclaration(
-                    baseName: 'int',
-                    isNullable: true,
-                  ),
+                  type: const TypeDeclaration(baseName: 'int', isNullable: true),
                 ),
               ],
             ),
@@ -1826,12 +1462,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('let fooArg: Int64? = nilOrValue(args[0])'));
   });
@@ -1849,10 +1480,7 @@ void main() {
               parameters: <Parameter>[
                 Parameter(
                   name: 'foo',
-                  type: const TypeDeclaration(
-                    baseName: 'int',
-                    isNullable: true,
-                  ),
+                  type: const TypeDeclaration(baseName: 'int', isNullable: true),
                 ),
               ],
             ),
@@ -1865,12 +1493,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(
       code,
@@ -1909,10 +1532,7 @@ void main() {
           name: 'Input',
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'String',
-                isNullable: false,
-              ),
+              type: const TypeDeclaration(baseName: 'String', isNullable: false),
               name: 'input',
             ),
           ],
@@ -1923,12 +1543,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('var input: String\n'));
   });
@@ -1961,10 +1576,7 @@ void main() {
               parameters: <Parameter>[
                 Parameter(
                   name: 'field',
-                  type: const TypeDeclaration(
-                    baseName: 'int',
-                    isNullable: true,
-                  ),
+                  type: const TypeDeclaration(baseName: 'int', isNullable: true),
                 ),
               ],
             ),
@@ -1994,15 +1606,9 @@ void main() {
       enums: <Enum>[
         Enum(
           name: 'enum',
-          documentationComments: <String>[
-            comments[count++],
-            unspacedComments[unspacedCount++],
-          ],
+          documentationComments: <String>[comments[count++], unspacedComments[unspacedCount++]],
           members: <EnumMember>[
-            EnumMember(
-              name: 'one',
-              documentationComments: <String>[comments[count++]],
-            ),
+            EnumMember(name: 'one', documentationComments: <String>[comments[count++]]),
             EnumMember(name: 'two'),
           ],
         ),
@@ -2011,12 +1617,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     for (final comment in comments) {
       expect(code, contains('///$comment'));
@@ -2078,12 +1679,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains(': FlutterStandardReader '));
   });
@@ -2099,17 +1695,11 @@ void main() {
               location: ApiLocation.host,
               parameters: <Parameter>[
                 Parameter(
-                  type: const TypeDeclaration(
-                    baseName: 'int',
-                    isNullable: false,
-                  ),
+                  type: const TypeDeclaration(baseName: 'int', isNullable: false),
                   name: 'value',
                 ),
                 Parameter(
-                  type: const TypeDeclaration(
-                    baseName: 'String',
-                    isNullable: false,
-                  ),
+                  type: const TypeDeclaration(baseName: 'String', isNullable: false),
                   name: 'key',
                 ),
               ],
@@ -2125,12 +1715,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('func setValue(_ value: Int64, for key: String)'));
   });
@@ -2146,10 +1731,7 @@ void main() {
               location: ApiLocation.host,
               parameters: <Parameter>[
                 Parameter(
-                  type: const TypeDeclaration(
-                    baseName: 'String',
-                    isNullable: false,
-                  ),
+                  type: const TypeDeclaration(baseName: 'String', isNullable: false),
                   name: 'key',
                 ),
               ],
@@ -2165,12 +1747,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('func removeValue(key: String)'));
   });
@@ -2197,12 +1774,7 @@ void main() {
     final sink = StringBuffer();
     const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('func removeAll()'));
   });
@@ -2220,10 +1792,7 @@ void main() {
               parameters: <Parameter>[
                 Parameter(
                   name: 'field',
-                  type: const TypeDeclaration(
-                    baseName: 'int',
-                    isNullable: true,
-                  ),
+                  type: const TypeDeclaration(baseName: 'int', isNullable: true),
                 ),
               ],
             ),
@@ -2237,18 +1806,11 @@ void main() {
     final sink = StringBuffer();
     const kotlinOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(
       code,
-      contains(
-        'completion(.failure(createConnectionError(withChannelName: channelName)))',
-      ),
+      contains('completion(.failure(createConnectionError(withChannelName: channelName)))'),
     );
     expect(
       code,
@@ -2259,11 +1821,7 @@ void main() {
   });
 
   test('sealed class', () {
-    final superClass = Class(
-      name: 'PlatformEvent',
-      isSealed: true,
-      fields: const <NamedType>[],
-    );
+    final superClass = Class(name: 'PlatformEvent', isSealed: true, fields: const <NamedType>[]);
     final children = <Class>[
       Class(
         name: 'IntEvent',
@@ -2271,10 +1829,7 @@ void main() {
         superClassName: superClass.name,
         fields: <NamedType>[
           NamedType(
-            type: const TypeDeclaration(
-              baseName: 'int',
-              isNullable: false,
-            ),
+            type: const TypeDeclaration(baseName: 'int', isNullable: false),
             name: 'value',
           ),
         ],
@@ -2285,66 +1840,31 @@ void main() {
         superClassName: superClass.name,
         fields: <NamedType>[
           NamedType(
-            type: TypeDeclaration(
-              baseName: 'Input',
-              isNullable: true,
-              associatedClass: emptyClass,
-            ),
+            type: TypeDeclaration(baseName: 'Input', isNullable: true, associatedClass: emptyClass),
             name: 'value',
           ),
         ],
       ),
     ];
     superClass.children = children;
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[
-        superClass,
-        ...children,
-      ],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[superClass, ...children], enums: <Enum>[]);
     final sink = StringBuffer();
     const generator = SwiftGenerator();
-    const kotlinOptions = InternalSwiftOptions(
-      swiftOut: '',
-    );
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    const kotlinOptions = InternalSwiftOptions(swiftOut: '');
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-    expect(
-      code,
-      contains('public enum PlatformEvent'),
-    );
-    expect(
-      code,
-      contains('case intEvent'),
-    );
-    expect(
-      code,
-      contains('case classEvent'),
-    );
-    expect(
-      code,
-      contains('internal static func fromListIntEvent'),
-    );
-    expect(
-      code,
-      contains('internal static func fromListClassEvent'),
-    );
+    expect(code, contains('public enum PlatformEvent'));
+    expect(code, contains('case intEvent'));
+    expect(code, contains('case classEvent'));
+    expect(code, contains('internal static func fromListIntEvent'));
+    expect(code, contains('internal static func fromListClassEvent'));
   });
 
   test('sealed class with single generic type parameter', () {
     final superClass = Class(
       name: 'Result',
       isSealed: true,
-      typeArguments: <TypeDeclaration>[
-        const TypeDeclaration(baseName: 'T', isNullable: false),
-      ],
+      typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
       fields: const <NamedType>[],
     );
     final children = <Class>[
@@ -2352,15 +1872,10 @@ void main() {
         name: 'Success',
         superClass: superClass,
         superClassName: superClass.name,
-        typeArguments: <TypeDeclaration>[
-          const TypeDeclaration(baseName: 'T', isNullable: false),
-        ],
+        typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
         fields: <NamedType>[
           NamedType(
-            type: const TypeDeclaration(
-              baseName: 'T',
-              isNullable: false,
-            ),
+            type: const TypeDeclaration(baseName: 'T', isNullable: false),
             name: 'value',
           ),
         ],
@@ -2369,40 +1884,21 @@ void main() {
         name: 'Failure',
         superClass: superClass,
         superClassName: superClass.name,
-        typeArguments: <TypeDeclaration>[
-          const TypeDeclaration(baseName: 'T', isNullable: false),
-        ],
+        typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
         fields: <NamedType>[
           NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: false,
-            ),
+            type: const TypeDeclaration(baseName: 'String', isNullable: false),
             name: 'error',
           ),
         ],
       ),
     ];
     superClass.children = children;
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[
-        superClass,
-        ...children,
-      ],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[superClass, ...children], enums: <Enum>[]);
     final sink = StringBuffer();
     const generator = SwiftGenerator();
-    const swiftOptions = InternalSwiftOptions(
-      swiftOut: '',
-    );
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    const swiftOptions = InternalSwiftOptions(swiftOut: '');
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('public enum Result<T>'));
     expect(code, contains('case success'));
@@ -2434,10 +1930,7 @@ void main() {
         ],
         fields: <NamedType>[
           NamedType(
-            type: const TypeDeclaration(
-              baseName: 'L',
-              isNullable: false,
-            ),
+            type: const TypeDeclaration(baseName: 'L', isNullable: false),
             name: 'value',
           ),
         ],
@@ -2452,35 +1945,18 @@ void main() {
         ],
         fields: <NamedType>[
           NamedType(
-            type: const TypeDeclaration(
-              baseName: 'R',
-              isNullable: false,
-            ),
+            type: const TypeDeclaration(baseName: 'R', isNullable: false),
             name: 'value',
           ),
         ],
       ),
     ];
     superClass.children = children;
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[
-        superClass,
-        ...children,
-      ],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[superClass, ...children], enums: <Enum>[]);
     final sink = StringBuffer();
     const generator = SwiftGenerator();
-    const swiftOptions = InternalSwiftOptions(
-      swiftOut: '',
-    );
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    const swiftOptions = InternalSwiftOptions(swiftOut: '');
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('public enum Either<L, R>'));
     expect(code, contains('case left'));
@@ -2535,9 +2011,7 @@ void main() {
             type: const TypeDeclaration(
               baseName: 'List',
               isNullable: false,
-              typeArguments: <TypeDeclaration>[
-                TypeDeclaration(baseName: 'V', isNullable: false),
-              ],
+              typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'V', isNullable: false)],
             ),
             name: 'items',
           ),
@@ -2545,25 +2019,11 @@ void main() {
       ),
     ];
     superClass.children = children;
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[
-        superClass,
-        ...children,
-      ],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[superClass, ...children], enums: <Enum>[]);
     final sink = StringBuffer();
     const generator = SwiftGenerator();
-    const swiftOptions = InternalSwiftOptions(
-      swiftOut: '',
-    );
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    const swiftOptions = InternalSwiftOptions(swiftOut: '');
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('public enum Container<K, V>'));
     expect(code, contains('case mapContainer'));
@@ -2576,9 +2036,7 @@ void main() {
     final superClass = Class(
       name: 'Response',
       isSealed: true,
-      typeArguments: <TypeDeclaration>[
-        const TypeDeclaration(baseName: 'T', isNullable: false),
-      ],
+      typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
       fields: const <NamedType>[],
     );
     final children = <Class>[
@@ -2586,9 +2044,7 @@ void main() {
         name: 'DataResponse',
         superClass: superClass,
         superClassName: superClass.name,
-        typeArguments: <TypeDeclaration>[
-          const TypeDeclaration(baseName: 'T', isNullable: false),
-        ],
+        typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
         fields: <NamedType>[
           NamedType(
             type: const TypeDeclaration(
@@ -2613,47 +2069,25 @@ void main() {
         name: 'ErrorResponse',
         superClass: superClass,
         superClassName: superClass.name,
-        typeArguments: <TypeDeclaration>[
-          const TypeDeclaration(baseName: 'T', isNullable: false),
-        ],
+        typeArguments: <TypeDeclaration>[const TypeDeclaration(baseName: 'T', isNullable: false)],
         fields: <NamedType>[
           NamedType(
-            type: const TypeDeclaration(
-              baseName: 'int',
-              isNullable: false,
-            ),
+            type: const TypeDeclaration(baseName: 'int', isNullable: false),
             name: 'code',
           ),
           NamedType(
-            type: const TypeDeclaration(
-              baseName: 'String',
-              isNullable: false,
-            ),
+            type: const TypeDeclaration(baseName: 'String', isNullable: false),
             name: 'message',
           ),
         ],
       ),
     ];
     superClass.children = children;
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[
-        superClass,
-        ...children,
-      ],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[superClass, ...children], enums: <Enum>[]);
     final sink = StringBuffer();
     const generator = SwiftGenerator();
-    const swiftOptions = InternalSwiftOptions(
-      swiftOut: '',
-    );
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    const swiftOptions = InternalSwiftOptions(swiftOut: '');
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('public enum Response<T>'));
     expect(code, contains('case dataResponse'));
@@ -2671,28 +2105,15 @@ void main() {
           NamedType(
             name: 'field1',
             type: const TypeDeclaration(baseName: 'String', isNullable: false),
-            defaultValue: const StringLiteral(
-              value: 'hello world',
-            ),
+            defaultValue: const StringLiteral(value: 'hello world'),
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const swiftOptions = InternalSwiftOptions(
-        swiftOut: '',
-      );
+      const swiftOptions = InternalSwiftOptions(swiftOut: '');
       const generator = SwiftGenerator();
-      generator.generate(
-        swiftOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: String = "hello world"'));
@@ -2705,28 +2126,15 @@ void main() {
           NamedType(
             name: 'field1',
             type: const TypeDeclaration(baseName: 'int', isNullable: false),
-            defaultValue: const IntLiteral(
-              value: 42,
-            ),
+            defaultValue: const IntLiteral(value: 42),
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const swiftOptions = InternalSwiftOptions(
-        swiftOut: '',
-      );
+      const swiftOptions = InternalSwiftOptions(swiftOut: '');
       const generator = SwiftGenerator();
-      generator.generate(
-        swiftOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: Int64 = 42'));
@@ -2739,28 +2147,15 @@ void main() {
           NamedType(
             name: 'field1',
             type: const TypeDeclaration(baseName: 'double', isNullable: false),
-            defaultValue: const IntLiteral(
-              value: 42,
-            ),
+            defaultValue: const IntLiteral(value: 42),
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const swiftOptions = InternalSwiftOptions(
-        swiftOut: '',
-      );
+      const swiftOptions = InternalSwiftOptions(swiftOut: '');
       const generator = SwiftGenerator();
-      generator.generate(
-        swiftOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: Double = 42'));
@@ -2773,28 +2168,15 @@ void main() {
           NamedType(
             name: 'field1',
             type: const TypeDeclaration(baseName: 'double', isNullable: false),
-            defaultValue: const DoubleLiteral(
-              value: 3.14,
-            ),
+            defaultValue: const DoubleLiteral(value: 3.14),
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const swiftOptions = InternalSwiftOptions(
-        swiftOut: '',
-      );
+      const swiftOptions = InternalSwiftOptions(swiftOut: '');
       const generator = SwiftGenerator();
-      generator.generate(
-        swiftOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: Double = 3.14'));
@@ -2807,35 +2189,20 @@ void main() {
           NamedType(
             name: 'field1',
             type: const TypeDeclaration(baseName: 'bool', isNullable: false),
-            defaultValue: const BoolLiteral(
-              value: true,
-            ),
+            defaultValue: const BoolLiteral(value: true),
           ),
           NamedType(
             name: 'field2',
             type: const TypeDeclaration(baseName: 'bool', isNullable: false),
-            defaultValue: const BoolLiteral(
-              value: false,
-            ),
+            defaultValue: const BoolLiteral(value: false),
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const swiftOptions = InternalSwiftOptions(
-        swiftOut: '',
-      );
+      const swiftOptions = InternalSwiftOptions(swiftOut: '');
       const generator = SwiftGenerator();
-      generator.generate(
-        swiftOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: Bool = true'));
@@ -2851,9 +2218,7 @@ void main() {
             type: const TypeDeclaration(
               baseName: 'List',
               isNullable: false,
-              typeArguments: <TypeDeclaration>[
-                TypeDeclaration(baseName: 'int', isNullable: false),
-              ],
+              typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: false)],
             ),
             defaultValue: const ListLiteral(
               elements: <DefaultValue>[],
@@ -2862,22 +2227,11 @@ void main() {
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const swiftOptions = InternalSwiftOptions(
-        swiftOut: '',
-      );
+      const swiftOptions = InternalSwiftOptions(swiftOut: '');
       const generator = SwiftGenerator();
-      generator.generate(
-        swiftOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: [Int64] = []'));
@@ -2892,9 +2246,7 @@ void main() {
             type: const TypeDeclaration(
               baseName: 'List',
               isNullable: false,
-              typeArguments: <TypeDeclaration>[
-                TypeDeclaration(baseName: 'int', isNullable: false),
-              ],
+              typeArguments: <TypeDeclaration>[TypeDeclaration(baseName: 'int', isNullable: false)],
             ),
             defaultValue: const ListLiteral(
               elements: <DefaultValue>[
@@ -2907,22 +2259,11 @@ void main() {
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const swiftOptions = InternalSwiftOptions(
-        swiftOut: '',
-      );
+      const swiftOptions = InternalSwiftOptions(swiftOut: '');
       const generator = SwiftGenerator();
-      generator.generate(
-        swiftOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: [Int64] = ['));
@@ -2953,22 +2294,11 @@ void main() {
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const swiftOptions = InternalSwiftOptions(
-        swiftOut: '',
-      );
+      const swiftOptions = InternalSwiftOptions(swiftOut: '');
       const generator = SwiftGenerator();
-      generator.generate(
-        swiftOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: [String: Int64] = [:]'));
@@ -2990,12 +2320,8 @@ void main() {
             ),
             defaultValue: const MapLiteral(
               entries: <DefaultValue, DefaultValue>{
-                StringLiteral(value: 'key1'): IntLiteral(
-                  value: 100,
-                ),
-                StringLiteral(value: 'key2'): IntLiteral(
-                  value: 200,
-                ),
+                StringLiteral(value: 'key1'): IntLiteral(value: 100),
+                StringLiteral(value: 'key2'): IntLiteral(value: 200),
               },
               keyType: TypeDeclaration(baseName: 'String', isNullable: false),
               valueType: TypeDeclaration(baseName: 'int', isNullable: false),
@@ -3003,22 +2329,11 @@ void main() {
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const swiftOptions = InternalSwiftOptions(
-        swiftOut: '',
-      );
+      const swiftOptions = InternalSwiftOptions(swiftOut: '');
       const generator = SwiftGenerator();
-      generator.generate(
-        swiftOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: [String: Int64] = ['));
@@ -3044,29 +2359,15 @@ void main() {
               isNullable: false,
               associatedEnum: testEnum,
             ),
-            defaultValue: const EnumLiteral(
-              name: 'TestEnum',
-              value: 'firstValue',
-            ),
+            defaultValue: const EnumLiteral(name: 'TestEnum', value: 'firstValue'),
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[testEnum],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[testEnum]);
       final sink = StringBuffer();
-      const swiftOptions = InternalSwiftOptions(
-        swiftOut: '',
-      );
+      const swiftOptions = InternalSwiftOptions(swiftOut: '');
       const generator = SwiftGenerator();
-      generator.generate(
-        swiftOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: TestEnum = TestEnum.firstValue'));
@@ -3097,9 +2398,7 @@ void main() {
             ),
             defaultValue: const ObjectCreation(
               type: TypeDeclaration(baseName: 'InnerClass', isNullable: false),
-              arguments: <DefaultValue>[
-                IntLiteral(value: 42),
-              ],
+              arguments: <DefaultValue>[IntLiteral(value: 42)],
             ),
           ),
         ],
@@ -3110,16 +2409,9 @@ void main() {
         enums: <Enum>[],
       );
       final sink = StringBuffer();
-      const swiftOptions = InternalSwiftOptions(
-        swiftOut: '',
-      );
+      const swiftOptions = InternalSwiftOptions(swiftOut: '');
       const generator = SwiftGenerator();
-      generator.generate(
-        swiftOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: InnerClass = InnerClass('));
@@ -3128,10 +2420,7 @@ void main() {
     });
 
     test('gen class with object creation default value - no arguments', () {
-      final innerClass = Class(
-        name: 'InnerClass',
-        fields: <NamedType>[],
-      );
+      final innerClass = Class(name: 'InnerClass', fields: <NamedType>[]);
       final classDefinition = Class(
         name: 'Foobar',
         fields: <NamedType>[
@@ -3155,16 +2444,9 @@ void main() {
         enums: <Enum>[],
       );
       final sink = StringBuffer();
-      const swiftOptions = InternalSwiftOptions(
-        swiftOut: '',
-      );
+      const swiftOptions = InternalSwiftOptions(swiftOut: '');
       const generator = SwiftGenerator();
-      generator.generate(
-        swiftOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: InnerClass = InnerClass()'));
@@ -3197,14 +2479,8 @@ void main() {
             defaultValue: const ObjectCreation(
               type: TypeDeclaration(baseName: 'InnerClass', isNullable: false),
               arguments: <DefaultValue>[
-                NamedDefaultValue(
-                  name: 'x',
-                  value: IntLiteral(value: 10),
-                ),
-                NamedDefaultValue(
-                  name: 'y',
-                  value: IntLiteral(value: 20),
-                ),
+                NamedDefaultValue(name: 'x', value: IntLiteral(value: 10)),
+                NamedDefaultValue(name: 'y', value: IntLiteral(value: 20)),
               ],
             ),
           ),
@@ -3216,16 +2492,9 @@ void main() {
         enums: <Enum>[],
       );
       final sink = StringBuffer();
-      const swiftOptions = InternalSwiftOptions(
-        swiftOut: '',
-      );
+      const swiftOptions = InternalSwiftOptions(swiftOut: '');
       const generator = SwiftGenerator();
-      generator.generate(
-        swiftOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: InnerClass = InnerClass('));
@@ -3259,19 +2528,11 @@ void main() {
                     StringLiteral(value: 'a'),
                     StringLiteral(value: 'b'),
                   ],
-                  elementType: TypeDeclaration(
-                    baseName: 'String',
-                    isNullable: false,
-                  ),
+                  elementType: TypeDeclaration(baseName: 'String', isNullable: false),
                 ),
                 ListLiteral(
-                  elements: <DefaultValue>[
-                    StringLiteral(value: 'c'),
-                  ],
-                  elementType: TypeDeclaration(
-                    baseName: 'String',
-                    isNullable: false,
-                  ),
+                  elements: <DefaultValue>[StringLiteral(value: 'c')],
+                  elementType: TypeDeclaration(baseName: 'String', isNullable: false),
                 ),
               ],
               elementType: TypeDeclaration(
@@ -3285,22 +2546,11 @@ void main() {
           ),
         ],
       );
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[classDefinition],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
       final sink = StringBuffer();
-      const swiftOptions = InternalSwiftOptions(
-        swiftOut: '',
-      );
+      const swiftOptions = InternalSwiftOptions(swiftOut: '');
       const generator = SwiftGenerator();
-      generator.generate(
-        swiftOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('struct Foobar'));
       expect(code, contains('field1: [[String]] = ['));
@@ -3310,11 +2560,7 @@ void main() {
     });
 
     test('gen sealed class with default values', () {
-      final superClass = Class(
-        name: 'PlatformEvent',
-        isSealed: true,
-        fields: const <NamedType>[],
-      );
+      final superClass = Class(name: 'PlatformEvent', isSealed: true, fields: const <NamedType>[]);
       final children = <Class>[
         Class(
           name: 'IntEvent',
@@ -3322,24 +2568,14 @@ void main() {
           superClassName: superClass.name,
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'int',
-                isNullable: false,
-              ),
+              type: const TypeDeclaration(baseName: 'int', isNullable: false),
               name: 'value',
-              defaultValue: const IntLiteral(
-                value: 42,
-              ),
+              defaultValue: const IntLiteral(value: 42),
             ),
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'String',
-                isNullable: false,
-              ),
+              type: const TypeDeclaration(baseName: 'String', isNullable: false),
               name: 'message',
-              defaultValue: const StringLiteral(
-                value: 'default message',
-              ),
+              defaultValue: const StringLiteral(value: 'default message'),
             ),
           ],
         ),
@@ -3349,48 +2585,24 @@ void main() {
           superClassName: superClass.name,
           fields: <NamedType>[
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'String',
-                isNullable: false,
-              ),
+              type: const TypeDeclaration(baseName: 'String', isNullable: false),
               name: 'data',
-              defaultValue: const StringLiteral(
-                value: 'hello world',
-              ),
+              defaultValue: const StringLiteral(value: 'hello world'),
             ),
             NamedType(
-              type: const TypeDeclaration(
-                baseName: 'bool',
-                isNullable: false,
-              ),
+              type: const TypeDeclaration(baseName: 'bool', isNullable: false),
               name: 'isValid',
-              defaultValue: const BoolLiteral(
-                value: true,
-              ),
+              defaultValue: const BoolLiteral(value: true),
             ),
           ],
         ),
       ];
       superClass.children = children;
-      final root = Root(
-        apis: <Api>[],
-        classes: <Class>[
-          superClass,
-          ...children,
-        ],
-        enums: <Enum>[],
-      );
+      final root = Root(apis: <Api>[], classes: <Class>[superClass, ...children], enums: <Enum>[]);
       final sink = StringBuffer();
-      const swiftOptions = InternalSwiftOptions(
-        swiftOut: '',
-      );
+      const swiftOptions = InternalSwiftOptions(swiftOut: '');
       const generator = SwiftGenerator();
-      generator.generate(
-        swiftOptions,
-        root,
-        sink,
-        dartPackageName: DEFAULT_PACKAGE_NAME,
-      );
+      generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
       final code = sink.toString();
       expect(code, contains('public enum PlatformEvent'));
       expect(code, contains('case intEvent'));
@@ -3403,11 +2615,7 @@ void main() {
   });
 
   test('sealed class with purify [usePureSealedSubclasses] = true', () {
-    final superClass = Class(
-      name: 'SomeClass',
-      isSealed: true,
-      fields: const <NamedType>[],
-    );
+    final superClass = Class(name: 'SomeClass', isSealed: true, fields: const <NamedType>[]);
     final children = <Class>[
       Class(
         name: 'SomeClassA',
@@ -3423,43 +2631,16 @@ void main() {
       ),
     ];
     superClass.children = children;
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[
-        superClass,
-        ...children,
-      ],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[superClass, ...children], enums: <Enum>[]);
     final sink = StringBuffer();
     const generator = SwiftGenerator();
-    const kotlinOptions = InternalSwiftOptions(
-      swiftOut: '',
-      usePureSealedSubclasses: true,
-    );
-    generator.generate(
-      kotlinOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    const kotlinOptions = InternalSwiftOptions(swiftOut: '', usePureSealedSubclasses: true);
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-    expect(
-      code,
-      isNot(contains('case someClassA')),
-    );
-    expect(
-      code,
-      isNot(contains('case bSomeClass')),
-    );
-    expect(
-      code,
-      isNot(contains('return .someClassA')),
-    );
-    expect(
-      code,
-      isNot(contains('return .bSomeClass')),
-    );
+    expect(code, isNot(contains('case someClassA')));
+    expect(code, isNot(contains('case bSomeClass')));
+    expect(code, isNot(contains('return .someClassA')));
+    expect(code, isNot(contains('return .bSomeClass')));
   });
 
   test('gen class with public fields', () {
@@ -3468,43 +2649,22 @@ void main() {
       isImmutable: true,
       fields: <NamedType>[
         NamedType(
-          type: const TypeDeclaration(
-            baseName: 'String',
-            isNullable: false,
-          ),
+          type: const TypeDeclaration(baseName: 'String', isNullable: false),
           name: 'data',
-          defaultValue: const StringLiteral(
-            value: 'hello world',
-          ),
+          defaultValue: const StringLiteral(value: 'hello world'),
         ),
         NamedType(
-          type: const TypeDeclaration(
-            baseName: 'bool',
-            isNullable: false,
-          ),
+          type: const TypeDeclaration(baseName: 'bool', isNullable: false),
           name: 'isValid',
-          defaultValue: const BoolLiteral(
-            value: true,
-          ),
+          defaultValue: const BoolLiteral(value: true),
         ),
       ],
     );
-    final root = Root(
-      apis: <Api>[],
-      classes: <Class>[classDefinition],
-      enums: <Enum>[],
-    );
+    final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
     final sink = StringBuffer();
-    const swiftOptions = InternalSwiftOptions(
-      swiftOut: '',
-    );
+    const swiftOptions = InternalSwiftOptions(swiftOut: '');
     const generator = SwiftGenerator();
-    generator.generate(
-      swiftOptions,
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('public struct Foobar'));
     expect(code, contains('public let data: String'));

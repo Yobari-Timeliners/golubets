@@ -36,11 +36,7 @@ enum Code { one, two }
 class MessageData {
   MessageData({
     this.code = Code.one,
-    this.data = const <String, String>{
-      'hello': 'world',
-      'lorem': 'ipsum',
-      'golubets': 'rocks',
-    },
+    this.data = const <String, String>{'hello': 'world', 'lorem': 'ipsum', 'golubets': 'rocks'},
     this.name = 'Golub',
     this.description = 'Example description',
   });

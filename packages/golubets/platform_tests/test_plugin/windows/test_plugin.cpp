@@ -785,16 +785,11 @@ void TestPlugin::CallFlutterThrowError(
         result) {
   flutter_api_->ThrowError(
       [result](const flutter::EncodableValue* echo) {
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/test_plugin.cpp
         if (echo) {
           result(std::optional<flutter::EncodableValue>(*echo));
         } else {
           result(std::optional<flutter::EncodableValue>());
         }
-=======
-        result(echo ? std::optional<flutter::EncodableValue>(*echo)
-                    : std::nullopt);
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/test_plugin.cpp
       },
       [result](const FlutterError& error) { result(error); });
 }

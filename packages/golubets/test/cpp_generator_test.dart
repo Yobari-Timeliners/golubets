@@ -2034,16 +2034,8 @@ void main() {
                   name: '',
                 ),
               ],
-<<<<<<< HEAD:packages/golubets/test/cpp_generator_test.dart
-              returnType: const TypeDeclaration(
-                baseName: 'double',
-                isNullable: false,
-              ),
-              asynchronousType: AsynchronousType.callback,
-=======
               returnType: const TypeDeclaration(baseName: 'double', isNullable: false),
-              isAsynchronous: true,
->>>>>>> filtered-upstream/main:packages/pigeon/test/cpp_generator_test.dart
+              asynchronousType: AsynchronousType.callback,
             ),
           ],
         ),
@@ -2066,16 +2058,8 @@ void main() {
                   name: '',
                 ),
               ],
-<<<<<<< HEAD:packages/golubets/test/cpp_generator_test.dart
-              returnType: const TypeDeclaration(
-                baseName: 'bool',
-                isNullable: false,
-              ),
-              asynchronousType: AsynchronousType.callback,
-=======
               returnType: const TypeDeclaration(baseName: 'bool', isNullable: false),
-              isAsynchronous: true,
->>>>>>> filtered-upstream/main:packages/pigeon/test/cpp_generator_test.dart
+              asynchronousType: AsynchronousType.callback,
             ),
           ],
         ),
