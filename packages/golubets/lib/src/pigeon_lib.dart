@@ -7,8 +7,7 @@
 import 'dart:io';
 import 'dart:mirrors';
 
-import 'package:analyzer/dart/analysis/analysis_context.dart'
-    show AnalysisContext;
+import 'package:analyzer/dart/analysis/analysis_context.dart' show AnalysisContext;
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart'
     show AnalysisContextCollection;
 import 'package:analyzer/dart/analysis/results.dart' show ParsedUnitResult;
@@ -37,9 +36,7 @@ export 'types/task_queue.dart' show TaskQueueType;
 /// {@macro pigeon_lib.async}
 class Async {
   /// Constructor for [Async].
-  const Async({
-    this.type,
-  });
+  const Async({this.type});
 
   /// The type of asynchronous api will be used.
   ///
@@ -175,8 +172,7 @@ class ConfigureGolubets {
 class HostApi {
   /// Parametric constructor for [HostApi].
   const HostApi({
-    @Deprecated('Mock/fake the generated Dart API instead.')
-    this.dartHostTestHandler,
+    @Deprecated('Mock/fake the generated Dart API instead.') this.dartHostTestHandler,
   });
 
   /// The name of an interface generated for tests. Implement this
@@ -453,9 +449,7 @@ class GolubetsOptions {
       gobjectHeaderOut: map['gobjectHeaderOut'] as String?,
       gobjectSourceOut: map['gobjectSourceOut'] as String?,
       gobjectOptions: map.containsKey('gobjectOptions')
-          ? GObjectOptions.fromMap(
-              map['gobjectOptions']! as Map<String, Object>,
-            )
+          ? GObjectOptions.fromMap(map['gobjectOptions']! as Map<String, Object>)
           : null,
       dartOptions: map.containsKey('dartOptions')
           ? DartOptions.fromMap(map['dartOptions']! as Map<String, Object>)
@@ -533,10 +527,7 @@ class Golubets {
   /// [AnalysisContextCollection].
   ParseResults parseFile(String inputPath, {String? sdkPath}) {
     final includedPaths = <String>[path.absolute(path.normalize(inputPath))];
-    final collection = AnalysisContextCollection(
-      includedPaths: includedPaths,
-      sdkPath: sdkPath,
-    );
+    final collection = AnalysisContextCollection(includedPaths: includedPaths, sdkPath: sdkPath);
 
     final compilationErrors = <Error>[];
     final rootBuilder = RootBuilder(File(inputPath).readAsStringSync());
@@ -553,10 +544,7 @@ class Golubets {
               Error(
                 message: diagnostic.message,
                 filename: diagnostic.source.fullName,
-                lineNumber: calculateLineNumber(
-                  diagnostic.source.contents.data,
-                  diagnostic.offset,
-                ),
+                lineNumber: calculateLineNumber(diagnostic.source.contents.data, diagnostic.offset),
               ),
             );
           }
@@ -567,11 +555,7 @@ class Golubets {
     if (compilationErrors.isEmpty) {
       return rootBuilder.results();
     } else {
-      return ParseResults(
-        root: Root.makeEmpty(),
-        errors: compilationErrors,
-        golubetsOptions: null,
-      );
+      return ParseResults(root: Root.makeEmpty(), errors: compilationErrors, golubetsOptions: null);
     }
   }
 
@@ -601,15 +585,9 @@ ${_argParser.usage}''';
           'Path to generated library for Dart tests, when using '
           '@HostApi(dartHostTestHandler:).',
     )
-    ..addOption(
-      'objc_source_out',
-      help: 'Path to generated Objective-C source file (.m).',
-    )
+    ..addOption('objc_source_out', help: 'Path to generated Objective-C source file (.m).')
     ..addOption('java_out', help: 'Path to generated Java file (.java).')
-    ..addOption(
-      'java_package',
-      help: 'The package that generated Java code will be in.',
-    )
+    ..addOption('java_package', help: 'The package that generated Java code will be in.')
     ..addFlag(
       'java_use_generated_annotation',
       help: 'Adds the java.annotation.Generated annotation to the output.',
@@ -643,10 +621,7 @@ ${_argParser.usage}''';
       help: 'Path to generated C++ classes file (.cpp).',
       aliases: const <String>['experimental_cpp_source_out'],
     )
-    ..addOption(
-      'cpp_namespace',
-      help: 'The namespace that generated C++ code will be in.',
-    )
+    ..addOption('cpp_namespace', help: 'The namespace that generated C++ code will be in.')
     ..addOption(
       'gobject_header_out',
       help: 'Path to generated GObject header file (.h).',
@@ -657,32 +632,17 @@ ${_argParser.usage}''';
       help: 'Path to generated GObject classes file (.cc).',
       aliases: const <String>['experimental_gobject_source_out'],
     )
-    ..addOption(
-      'gobject_module',
-      help: 'The module that generated GObject code will be in.',
-    )
-    ..addOption(
-      'objc_header_out',
-      help: 'Path to generated Objective-C header file (.h).',
-    )
-    ..addOption(
-      'objc_prefix',
-      help: 'Prefix for generated Objective-C classes and protocols.',
-    )
+    ..addOption('gobject_module', help: 'The module that generated GObject code will be in.')
+    ..addOption('objc_header_out', help: 'Path to generated Objective-C header file (.h).')
+    ..addOption('objc_prefix', help: 'Prefix for generated Objective-C classes and protocols.')
     ..addOption(
       'copyright_header',
-      help:
-          'Path to file with copyright header to be prepended to generated code.',
+      help: 'Path to file with copyright header to be prepended to generated code.',
     )
-    ..addFlag(
-      'one_language',
-      hide: true,
-      help: 'Does nothing, only here to avoid breaking changes',
-    )
+    ..addFlag('one_language', hide: true, help: 'Does nothing, only here to avoid breaking changes')
     ..addOption(
       'ast_out',
-      help:
-          'Path to generated AST debugging info. (Warning: format subject to change)',
+      help: 'Path to generated AST debugging info. (Warning: format subject to change)',
     )
     ..addFlag(
       'debug_generators',
@@ -694,10 +654,7 @@ ${_argParser.usage}''';
           'A base path to be prefixed to all outputs and copyright header path. Generally used for testing',
       hide: true,
     )
-    ..addOption(
-      'package_name',
-      help: 'The package that generated code will be in.',
-    )
+    ..addOption('package_name', help: 'The package that generated code will be in.')
     ..addFlag(
       'ignore_lints',
       help: 'Ignore all lint violations in generated Dart code.',
@@ -722,24 +679,20 @@ ${_argParser.usage}''';
       javaOut: results['java_out'] as String?,
       javaOptions: JavaOptions(
         package: results['java_package'] as String?,
-        useGeneratedAnnotation:
-            results['java_use_generated_annotation'] as bool?,
+        useGeneratedAnnotation: results['java_use_generated_annotation'] as bool?,
       ),
       swiftOut: results['swift_out'] as String?,
       kotlinOut: results['kotlin_out'] as String?,
       kotlinOptions: KotlinOptions(
         package: results['kotlin_package'] as String?,
-        useGeneratedAnnotation:
-            results['kotlin_use_generated_annotation'] as bool? ?? false,
+        useGeneratedAnnotation: results['kotlin_use_generated_annotation'] as bool? ?? false,
       ),
       cppHeaderOut: results['cpp_header_out'] as String?,
       cppSourceOut: results['cpp_source_out'] as String?,
       cppOptions: CppOptions(namespace: results['cpp_namespace'] as String?),
       gobjectHeaderOut: results['gobject_header_out'] as String?,
       gobjectSourceOut: results['gobject_source_out'] as String?,
-      gobjectOptions: GObjectOptions(
-        module: results['gobject_module'] as String?,
-      ),
+      gobjectOptions: GObjectOptions(module: results['gobject_module'] as String?),
       copyrightHeader: results['copyright_header'] as String?,
       astOut: results['ast_out'] as String?,
       debugGenerators: results['debug_generators'] as bool?,
@@ -753,12 +706,10 @@ ${_argParser.usage}''';
   /// Crawls through the reflection system looking for a configureGolubets method and
   /// executing it.
   static void _executeConfigureGolubets(GolubetsOptions options) {
-    for (final LibraryMirror library
-        in currentMirrorSystem().libraries.values) {
+    for (final LibraryMirror library in currentMirrorSystem().libraries.values) {
       for (final DeclarationMirror declaration in library.declarations.values) {
         if (declaration is MethodMirror &&
-            MirrorSystem.getName(declaration.simpleName) ==
-                'configureGolubets') {
+            MirrorSystem.getName(declaration.simpleName) == 'configureGolubets') {
           if (declaration.parameters.length == 1 &&
               declaration.parameters[0].type == reflectClass(GolubetsOptions)) {
             library.invoke(declaration.simpleName, <dynamic>[options]);
@@ -774,11 +725,7 @@ ${_argParser.usage}''';
   /// command-line arguments.  The optional parameter [adapters] allows you to
   /// customize the generators that golubets will use. The optional parameter
   /// [sdkPath] allows you to specify the Dart SDK path.
-  static Future<int> run(
-    List<String> args, {
-    List<GeneratorAdapter>? adapters,
-    String? sdkPath,
-  }) {
+  static Future<int> run(List<String> args, {List<GeneratorAdapter>? adapters, String? sdkPath}) {
     final GolubetsOptions options = Golubets.parseArgs(args);
     return runWithOptions(options, adapters: adapters, sdkPath: sdkPath);
   }
@@ -818,8 +765,7 @@ ${_argParser.usage}''';
       return 0;
     }
 
-    parseResults =
-        parseResults ?? golubets.parseFile(options.input!, sdkPath: sdkPath);
+    parseResults = parseResults ?? golubets.parseFile(options.input!, sdkPath: sdkPath);
 
     final errors = <Error>[];
     errors.addAll(parseResults.errors);
@@ -832,24 +778,17 @@ ${_argParser.usage}''';
     }
 
     if (parseResults.golubetsOptions != null && mergeDefinitionFileOptions) {
-      options = GolubetsOptions.fromMap(
-        mergeMaps(options.toMap(), parseResults.golubetsOptions!),
-      );
+      options = GolubetsOptions.fromMap(mergeMaps(options.toMap(), parseResults.golubetsOptions!));
     }
 
-    final InternalGolubetsOptions internalOptions =
-        InternalGolubetsOptions.fromGolubetsOptions(options);
+    final InternalGolubetsOptions internalOptions = InternalGolubetsOptions.fromGolubetsOptions(
+      options,
+    );
 
     for (final adapter in safeGeneratorAdapters) {
-      final IOSink? sink = adapter.shouldGenerate(
-        internalOptions,
-        FileType.source,
-      );
+      final IOSink? sink = adapter.shouldGenerate(internalOptions, FileType.source);
       if (sink != null) {
-        final List<Error> adapterErrors = adapter.validate(
-          internalOptions,
-          parseResults.root,
-        );
+        final List<Error> adapterErrors = adapter.validate(internalOptions, parseResults.root);
         errors.addAll(adapterErrors);
         await releaseSink(sink);
       }
@@ -889,9 +828,7 @@ ${_argParser.usage}''';
     for (final err in errors) {
       if (err.filename != null) {
         if (err.lineNumber != null) {
-          stderr.writeln(
-            'Error: ${err.filename}:${err.lineNumber}: ${err.message}',
-          );
+          stderr.writeln('Error: ${err.filename}:${err.lineNumber}: ${err.message}');
         } else {
           stderr.writeln('Error: ${err.filename}: ${err.message}');
         }
@@ -925,11 +862,7 @@ class Error {
 /// A collection of an AST represented as a [Root] and [Error]'s.
 class ParseResults {
   /// Parametric constructor for [ParseResults].
-  ParseResults({
-    required this.root,
-    required this.errors,
-    required this.golubetsOptions,
-  });
+  ParseResults({required this.root, required this.errors, required this.golubetsOptions});
 
   /// The resulting AST.
   final Root root;

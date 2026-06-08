@@ -15,8 +15,7 @@ import 'package:golubets/golubets.dart';
     gobjectHeaderOut: 'linux/messages.g.h',
     gobjectSourceOut: 'linux/messages.g.cc',
     gobjectOptions: GObjectOptions(),
-    kotlinOut:
-        'android/app/src/main/kotlin/dev/flutter/pigeon_example_app/Messages.g.kt',
+    kotlinOut: 'android/app/src/main/kotlin/dev/flutter/pigeon_example_app/Messages.g.kt',
     kotlinOptions: KotlinOptions(),
     javaOut: 'android/app/src/main/java/io/flutter/plugins/Messages.java',
     javaOptions: JavaOptions(),
@@ -37,11 +36,7 @@ enum Code { one, two }
 class MessageData {
   MessageData({
     this.code = Code.one,
-    this.data = const <String, String>{
-      'hello': 'world',
-      'lorem': 'ipsum',
-      'golubets': 'rocks',
-    },
+    this.data = const <String, String>{'hello': 'world', 'lorem': 'ipsum', 'golubets': 'rocks'},
     this.name = 'Golub',
     this.description = 'Example description',
   });

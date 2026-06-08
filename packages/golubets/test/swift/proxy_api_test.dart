@@ -15,19 +15,13 @@ void main() {
         apis: <Api>[
           AstProxyApi(
             name: 'Api',
-            swiftOptions: const SwiftProxyApiOptions(
-              name: 'MyLibraryApi',
-              import: 'MyLibrary',
-            ),
+            swiftOptions: const SwiftProxyApiOptions(name: 'MyLibraryApi', import: 'MyLibrary'),
             constructors: <Constructor>[
               Constructor(
                 name: 'name',
                 parameters: <Parameter>[
                   Parameter(
-                    type: const TypeDeclaration(
-                      baseName: 'Input',
-                      isNullable: false,
-                    ),
+                    type: const TypeDeclaration(baseName: 'Input', isNullable: false),
                     name: 'input',
                   ),
                 ],
@@ -45,17 +39,11 @@ void main() {
                 location: ApiLocation.host,
                 parameters: <Parameter>[
                   Parameter(
-                    type: const TypeDeclaration(
-                      baseName: 'Input',
-                      isNullable: false,
-                    ),
+                    type: const TypeDeclaration(baseName: 'Input', isNullable: false),
                     name: 'input',
                   ),
                 ],
-                returnType: const TypeDeclaration(
-                  baseName: 'String',
-                  isNullable: false,
-                ),
+                returnType: const TypeDeclaration(baseName: 'String', isNullable: false),
               ),
               Method(
                 name: 'doSomethingElse',
@@ -63,17 +51,11 @@ void main() {
                 isRequired: false,
                 parameters: <Parameter>[
                   Parameter(
-                    type: const TypeDeclaration(
-                      baseName: 'Input',
-                      isNullable: false,
-                    ),
+                    type: const TypeDeclaration(baseName: 'Input', isNullable: false),
                     name: 'input',
                   ),
                 ],
-                returnType: const TypeDeclaration(
-                  baseName: 'String',
-                  isNullable: false,
-                ),
+                returnType: const TypeDeclaration(baseName: 'String', isNullable: false),
               ),
             ],
           ),
@@ -84,10 +66,7 @@ void main() {
       final sink = StringBuffer();
       const generator = SwiftGenerator();
       generator.generate(
-        const InternalSwiftOptions(
-          fileSpecificClassNameComponent: 'MyFile',
-          swiftOut: '',
-        ),
+        const InternalSwiftOptions(fileSpecificClassNameComponent: 'MyFile', swiftOut: ''),
         root,
         sink,
         dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -178,10 +157,7 @@ void main() {
           apis: <Api>[
             AstProxyApi(
               name: 'Api',
-              swiftOptions: const SwiftProxyApiOptions(
-                import: 'MyImport',
-                supportsIos: false,
-              ),
+              swiftOptions: const SwiftProxyApiOptions(import: 'MyImport', supportsIos: false),
               constructors: <Constructor>[],
               fields: <ApiField>[],
               methods: <Method>[],
@@ -208,10 +184,7 @@ void main() {
           apis: <Api>[
             AstProxyApi(
               name: 'Api',
-              swiftOptions: const SwiftProxyApiOptions(
-                import: 'MyImport',
-                supportsMacos: false,
-              ),
+              swiftOptions: const SwiftProxyApiOptions(import: 'MyImport', supportsMacos: false),
               constructors: <Constructor>[],
               fields: <ApiField>[],
               methods: <Method>[],
@@ -261,10 +234,7 @@ void main() {
         );
         final code = sink.toString();
 
-        expect(
-          code,
-          contains('#if !os(iOS) || !os(macOS)\nimport MyImport\n#endif'),
-        );
+        expect(code, contains('#if !os(iOS) || !os(macOS)\nimport MyImport\n#endif'));
       });
 
       test('do not add check if at least one class is supported', () {
@@ -272,10 +242,7 @@ void main() {
           apis: <Api>[
             AstProxyApi(
               name: 'Api',
-              swiftOptions: const SwiftProxyApiOptions(
-                import: 'MyImport',
-                supportsIos: false,
-              ),
+              swiftOptions: const SwiftProxyApiOptions(import: 'MyImport', supportsIos: false),
               constructors: <Constructor>[],
               fields: <ApiField>[],
               methods: <Method>[],
@@ -358,11 +325,7 @@ void main() {
               fields: <ApiField>[],
               methods: <Method>[],
               interfaces: <TypeDeclaration>{
-                TypeDeclaration(
-                  baseName: api2.name,
-                  isNullable: false,
-                  associatedProxyApi: api2,
-                ),
+                TypeDeclaration(baseName: api2.name, isNullable: false, associatedProxyApi: api2),
               },
             ),
             api2,
@@ -403,16 +366,8 @@ void main() {
               fields: <ApiField>[],
               methods: <Method>[],
               interfaces: <TypeDeclaration>{
-                TypeDeclaration(
-                  baseName: api2.name,
-                  isNullable: false,
-                  associatedProxyApi: api2,
-                ),
-                TypeDeclaration(
-                  baseName: api3.name,
-                  isNullable: false,
-                  associatedProxyApi: api3,
-                ),
+                TypeDeclaration(baseName: api2.name, isNullable: false, associatedProxyApi: api2),
+                TypeDeclaration(baseName: api3.name, isNullable: false, associatedProxyApi: api3),
               },
             ),
             api2,
@@ -441,9 +396,7 @@ void main() {
           apis: <Api>[
             AstProxyApi(
               name: 'Api',
-              constructors: <Constructor>[
-                Constructor(name: '', parameters: <Parameter>[]),
-              ],
+              constructors: <Constructor>[Constructor(name: '', parameters: <Parameter>[])],
               fields: <ApiField>[],
               methods: <Method>[],
             ),
@@ -464,9 +417,7 @@ void main() {
         expect(code, contains('class GolubetsApiApi: GolubetsApiProtocolApi '));
         expect(
           collapsedCode,
-          contains(
-            'func golubetsDefaultConstructor(golubetsApi: GolubetsApiApi) throws -> Api',
-          ),
+          contains('func golubetsDefaultConstructor(golubetsApi: GolubetsApiApi) throws -> Api'),
         );
         expect(
           collapsedCode,
@@ -476,9 +427,7 @@ void main() {
         );
         expect(
           collapsedCode,
-          contains(
-            r'api.golubetsRegistrar.instanceManager.addDartCreatedInstance(',
-          ),
+          contains(r'api.golubetsRegistrar.instanceManager.addDartCreatedInstance('),
         );
       });
 
@@ -488,10 +437,7 @@ void main() {
             AstProxyApi(
               name: 'Api',
               constructors: <Constructor>[
-                Constructor(
-                  name: 'myConstructorName',
-                  parameters: <Parameter>[],
-                ),
+                Constructor(name: 'myConstructorName', parameters: <Parameter>[]),
               ],
               fields: <ApiField>[],
               methods: <Method>[],
@@ -512,9 +458,7 @@ void main() {
         final String collapsedCode = _collapseNewlineAndIndentation(code);
         expect(
           collapsedCode,
-          contains(
-            'func myConstructorName(golubetsApi: GolubetsApiApi) throws -> Api',
-          ),
+          contains('func myConstructorName(golubetsApi: GolubetsApiApi) throws -> Api'),
         );
         expect(
           collapsedCode,
@@ -538,10 +482,7 @@ void main() {
                   name: 'name',
                   parameters: <Parameter>[
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: false,
-                        baseName: 'int',
-                      ),
+                      type: const TypeDeclaration(isNullable: false, baseName: 'int'),
                       name: 'validType',
                     ),
                     Parameter(
@@ -553,17 +494,11 @@ void main() {
                       name: 'enumType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: false,
-                        baseName: 'Api2',
-                      ),
+                      type: const TypeDeclaration(isNullable: false, baseName: 'Api2'),
                       name: 'proxyApiType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: true,
-                        baseName: 'int',
-                      ),
+                      type: const TypeDeclaration(isNullable: true, baseName: 'int'),
                       name: 'nullableValidType',
                     ),
                     Parameter(
@@ -575,10 +510,7 @@ void main() {
                       name: 'nullableEnumType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: true,
-                        baseName: 'Api2',
-                      ),
+                      type: const TypeDeclaration(isNullable: true, baseName: 'Api2'),
                       name: 'nullableProxyApiType',
                     ),
                   ],
@@ -625,50 +557,42 @@ void main() {
         );
       });
 
-      test(
-        'host platform constructor calls new instance error for required callbacks',
-        () {
-          final root = Root(
-            apis: <Api>[
-              AstProxyApi(
-                name: 'Api',
-                constructors: <Constructor>[],
-                fields: <ApiField>[],
-                methods: <Method>[
-                  Method(
-                    name: 'aCallbackMethod',
-                    returnType: const TypeDeclaration.voidDeclaration(),
-                    parameters: <Parameter>[],
-                    location: ApiLocation.flutter,
-                  ),
-                ],
-              ),
-            ],
-            classes: <Class>[],
-            enums: <Enum>[],
-          );
-          final sink = StringBuffer();
-          const generator = SwiftGenerator();
-          generator.generate(
-            const InternalSwiftOptions(
-              errorClassName: 'TestError',
-              swiftOut: '',
+      test('host platform constructor calls new instance error for required callbacks', () {
+        final root = Root(
+          apis: <Api>[
+            AstProxyApi(
+              name: 'Api',
+              constructors: <Constructor>[],
+              fields: <ApiField>[],
+              methods: <Method>[
+                Method(
+                  name: 'aCallbackMethod',
+                  returnType: const TypeDeclaration.voidDeclaration(),
+                  parameters: <Parameter>[],
+                  location: ApiLocation.flutter,
+                ),
+              ],
             ),
-            root,
-            sink,
-            dartPackageName: DEFAULT_PACKAGE_NAME,
-          );
-          final code = sink.toString();
-          final String collapsedCode = _collapseNewlineAndIndentation(code);
+          ],
+          classes: <Class>[],
+          enums: <Enum>[],
+        );
+        final sink = StringBuffer();
+        const generator = SwiftGenerator();
+        generator.generate(
+          const InternalSwiftOptions(errorClassName: 'TestError', swiftOut: ''),
+          root,
+          sink,
+          dartPackageName: DEFAULT_PACKAGE_NAME,
+        );
+        final code = sink.toString();
+        final String collapsedCode = _collapseNewlineAndIndentation(code);
 
-          expect(
-            collapsedCode,
-            contains(
-              r'completion( .failure( TestError( code: "new-instance-error"',
-            ),
-          );
-        },
-      );
+        expect(
+          collapsedCode,
+          contains(r'completion( .failure( TestError( code: "new-instance-error"'),
+        );
+      });
     });
 
     group('Fields', () {
@@ -681,15 +605,10 @@ void main() {
           apis: <Api>[
             AstProxyApi(
               name: 'Api',
-              constructors: <Constructor>[
-                Constructor(name: 'name', parameters: <Parameter>[]),
-              ],
+              constructors: <Constructor>[Constructor(name: 'name', parameters: <Parameter>[])],
               fields: <ApiField>[
                 ApiField(
-                  type: const TypeDeclaration(
-                    isNullable: false,
-                    baseName: 'int',
-                  ),
+                  type: const TypeDeclaration(isNullable: false, baseName: 'int'),
                   name: 'validType',
                 ),
                 ApiField(
@@ -701,17 +620,11 @@ void main() {
                   name: 'enumType',
                 ),
                 ApiField(
-                  type: const TypeDeclaration(
-                    isNullable: false,
-                    baseName: 'Api2',
-                  ),
+                  type: const TypeDeclaration(isNullable: false, baseName: 'Api2'),
                   name: 'proxyApiType',
                 ),
                 ApiField(
-                  type: const TypeDeclaration(
-                    isNullable: true,
-                    baseName: 'int',
-                  ),
+                  type: const TypeDeclaration(isNullable: true, baseName: 'int'),
                   name: 'nullableValidType',
                 ),
                 ApiField(
@@ -723,10 +636,7 @@ void main() {
                   name: 'nullableEnumType',
                 ),
                 ApiField(
-                  type: const TypeDeclaration(
-                    isNullable: true,
-                    baseName: 'Api2',
-                  ),
+                  type: const TypeDeclaration(isNullable: true, baseName: 'Api2'),
                   name: 'nullableProxyApiType',
                 ),
               ],
@@ -906,10 +816,7 @@ void main() {
           dartPackageName: DEFAULT_PACKAGE_NAME,
         );
         final code = sink.toString();
-        expect(
-          code,
-          contains(r'func aField(golubetsApi: GolubetsApiApi) throws -> Api2'),
-        );
+        expect(code, contains(r'func aField(golubetsApi: GolubetsApiApi) throws -> Api2'));
         expect(
           code,
           contains(
@@ -937,10 +844,7 @@ void main() {
                   location: ApiLocation.host,
                   parameters: <Parameter>[
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: false,
-                        baseName: 'int',
-                      ),
+                      type: const TypeDeclaration(isNullable: false, baseName: 'int'),
                       name: 'validType',
                     ),
                     Parameter(
@@ -952,17 +856,11 @@ void main() {
                       name: 'enumType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: false,
-                        baseName: 'Api2',
-                      ),
+                      type: const TypeDeclaration(isNullable: false, baseName: 'Api2'),
                       name: 'proxyApiType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: true,
-                        baseName: 'int',
-                      ),
+                      type: const TypeDeclaration(isNullable: true, baseName: 'int'),
                       name: 'nullableValidType',
                     ),
                     Parameter(
@@ -974,10 +872,7 @@ void main() {
                       name: 'nullableEnumType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: true,
-                        baseName: 'Api2',
-                      ),
+                      type: const TypeDeclaration(isNullable: true, baseName: 'Api2'),
                       name: 'nullableProxyApiType',
                     ),
                   ],
@@ -1055,14 +950,8 @@ void main() {
         );
         final code = sink.toString();
         final String collapsedCode = _collapseNewlineAndIndentation(code);
-        expect(
-          collapsedCode,
-          contains('func doSomething(golubetsApi: GolubetsApiApi) throws'),
-        );
-        expect(
-          collapsedCode,
-          contains(r'try api.golubetsDelegate.doSomething(golubetsApi: api)'),
-        );
+        expect(collapsedCode, contains('func doSomething(golubetsApi: GolubetsApiApi) throws'));
+        expect(collapsedCode, contains(r'try api.golubetsDelegate.doSomething(golubetsApi: api)'));
       });
     });
 
@@ -1084,10 +973,7 @@ void main() {
                   location: ApiLocation.flutter,
                   parameters: <Parameter>[
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: false,
-                        baseName: 'int',
-                      ),
+                      type: const TypeDeclaration(isNullable: false, baseName: 'int'),
                       name: 'validType',
                     ),
                     Parameter(
@@ -1099,17 +985,11 @@ void main() {
                       name: 'enumType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: false,
-                        baseName: 'Api2',
-                      ),
+                      type: const TypeDeclaration(isNullable: false, baseName: 'Api2'),
                       name: 'proxyApiType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: true,
-                        baseName: 'int',
-                      ),
+                      type: const TypeDeclaration(isNullable: true, baseName: 'int'),
                       name: 'nullableValidType',
                     ),
                     Parameter(
@@ -1121,10 +1001,7 @@ void main() {
                       name: 'nullableEnumType',
                     ),
                     Parameter(
-                      type: const TypeDeclaration(
-                        isNullable: true,
-                        baseName: 'Api2',
-                      ),
+                      type: const TypeDeclaration(isNullable: true, baseName: 'Api2'),
                       name: 'nullableProxyApiType',
                     ),
                   ],

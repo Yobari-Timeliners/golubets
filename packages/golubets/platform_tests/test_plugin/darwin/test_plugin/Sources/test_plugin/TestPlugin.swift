@@ -75,6 +75,24 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     return everything
   }
 
+  public func areAllNullableTypesEqual(a: AllNullableTypes, b: AllNullableTypes) -> Bool {
+    return a == b
+  }
+
+  public func getAllNullableTypesHash(value: AllNullableTypes) -> Int64 {
+    var hasher = Hasher()
+    value.hash(into: &hasher)
+    return Int64(hasher.finalize())
+  }
+
+  public func getAllNullableTypesWithoutRecursionHash(value: AllNullableTypesWithoutRecursion)
+    -> Int64
+  {
+    var hasher = Hasher()
+    value.hash(into: &hasher)
+    return Int64(hasher.finalize())
+  }
+
   public func echo(_ everything: AllNullableTypesWithoutRecursion?) throws
     -> AllNullableTypesWithoutRecursion?
   {

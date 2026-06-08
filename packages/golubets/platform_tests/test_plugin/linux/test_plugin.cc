@@ -246,6 +246,30 @@ echo_required_int(int64_t an_int, gpointer user_data) {
       an_int);
 }
 
+static CoreTestsGolubetsTestHostIntegrationCoreApiAreAllNullableTypesEqualResponse*
+are_all_nullable_types_equal(CoreTestsGolubetsTestAllNullableTypes* a,
+                             CoreTestsGolubetsTestAllNullableTypes* b,
+                             gpointer user_data) {
+  return core_tests_golubets_test_host_integration_core_api_are_all_nullable_types_equal_response_new(
+      core_tests_golubets_test_all_nullable_types_equals(a, b));
+}
+
+static CoreTestsGolubetsTestHostIntegrationCoreApiGetAllNullableTypesHashResponse*
+get_all_nullable_types_hash(CoreTestsGolubetsTestAllNullableTypes* value,
+                            gpointer user_data) {
+  return core_tests_golubets_test_host_integration_core_api_get_all_nullable_types_hash_response_new(
+      core_tests_golubets_test_all_nullable_types_hash(value));
+}
+
+static CoreTestsGolubetsTestHostIntegrationCoreApiGetAllNullableTypesWithoutRecursionHashResponse*
+get_all_nullable_types_without_recursion_hash(
+    CoreTestsGolubetsTestAllNullableTypesWithoutRecursion* value,
+    gpointer user_data) {
+  return core_tests_golubets_test_host_integration_core_api_get_all_nullable_types_without_recursion_hash_response_new(
+      core_tests_golubets_test_all_nullable_types_without_recursion_hash(
+          value));
+}
+
 static CoreTestsGolubetsTestHostIntegrationCoreApiCreateAllTypesWithDefaultsResponse*
 create_all_types_with_defaults(gpointer user_data) {
   return core_tests_golubets_test_host_integration_core_api_create_all_types_with_defaults_response_new_error(
@@ -3283,6 +3307,10 @@ static CoreTestsGolubetsTestHostIntegrationCoreApiVTable host_core_api_vtable =
      .create_all_types_with_defaults = create_all_types_with_defaults,
      .echo_all_types_with_defaults = echo_all_types_with_defaults,
      .echo_required_int = echo_required_int,
+     .are_all_nullable_types_equal = are_all_nullable_types_equal,
+     .get_all_nullable_types_hash = get_all_nullable_types_hash,
+     .get_all_nullable_types_without_recursion_hash =
+         get_all_nullable_types_without_recursion_hash,
      .echo_all_nullable_types = echo_all_nullable_types,
      .echo_all_nullable_types_without_recursion =
          echo_all_nullable_types_without_recursion,

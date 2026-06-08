@@ -70,6 +70,29 @@ FlValue* core_tests_golubets_test_unused_class_get_a_field(
     CoreTestsGolubetsTestUnusedClass* object);
 
 /**
+ * core_tests_golubets_test_unused_class_equals:
+ * @a: a #CoreTestsGolubetsTestUnusedClass.
+ * @b: another #CoreTestsGolubetsTestUnusedClass.
+ *
+ * Checks if two #CoreTestsGolubetsTestUnusedClass objects are equal.
+ *
+ * Returns: TRUE if @a and @b are equal.
+ */
+gboolean core_tests_golubets_test_unused_class_equals(
+    CoreTestsGolubetsTestUnusedClass* a, CoreTestsGolubetsTestUnusedClass* b);
+
+/**
+ * core_tests_golubets_test_unused_class_hash:
+ * @object: a #CoreTestsGolubetsTestUnusedClass.
+ *
+ * Calculates a hash code for a #CoreTestsGolubetsTestUnusedClass object.
+ *
+ * Returns: the hash code.
+ */
+guint core_tests_golubets_test_unused_class_hash(
+    CoreTestsGolubetsTestUnusedClass* object);
+
+/**
  * CoreTestsGolubetsTestAllTypes:
  *
  * A class containing all supported types.
@@ -443,6 +466,29 @@ FlValue* core_tests_golubets_test_all_types_get_list_map(
  * Returns: the field value.
  */
 FlValue* core_tests_golubets_test_all_types_get_map_map(
+    CoreTestsGolubetsTestAllTypes* object);
+
+/**
+ * core_tests_golubets_test_all_types_equals:
+ * @a: a #CoreTestsGolubetsTestAllTypes.
+ * @b: another #CoreTestsGolubetsTestAllTypes.
+ *
+ * Checks if two #CoreTestsGolubetsTestAllTypes objects are equal.
+ *
+ * Returns: TRUE if @a and @b are equal.
+ */
+gboolean core_tests_golubets_test_all_types_equals(
+    CoreTestsGolubetsTestAllTypes* a, CoreTestsGolubetsTestAllTypes* b);
+
+/**
+ * core_tests_golubets_test_all_types_hash:
+ * @object: a #CoreTestsGolubetsTestAllTypes.
+ *
+ * Calculates a hash code for a #CoreTestsGolubetsTestAllTypes object.
+ *
+ * Returns: the hash code.
+ */
+guint core_tests_golubets_test_all_types_hash(
     CoreTestsGolubetsTestAllTypes* object);
 
 /**
@@ -869,6 +915,30 @@ FlValue* core_tests_golubets_test_all_nullable_types_get_recursive_class_map(
     CoreTestsGolubetsTestAllNullableTypes* object);
 
 /**
+ * core_tests_golubets_test_all_nullable_types_equals:
+ * @a: a #CoreTestsGolubetsTestAllNullableTypes.
+ * @b: another #CoreTestsGolubetsTestAllNullableTypes.
+ *
+ * Checks if two #CoreTestsGolubetsTestAllNullableTypes objects are equal.
+ *
+ * Returns: TRUE if @a and @b are equal.
+ */
+gboolean core_tests_golubets_test_all_nullable_types_equals(
+    CoreTestsGolubetsTestAllNullableTypes* a,
+    CoreTestsGolubetsTestAllNullableTypes* b);
+
+/**
+ * core_tests_golubets_test_all_nullable_types_hash:
+ * @object: a #CoreTestsGolubetsTestAllNullableTypes.
+ *
+ * Calculates a hash code for a #CoreTestsGolubetsTestAllNullableTypes object.
+ *
+ * Returns: the hash code.
+ */
+guint core_tests_golubets_test_all_nullable_types_hash(
+    CoreTestsGolubetsTestAllNullableTypes* object);
+
+/**
  * CoreTestsGolubetsTestAllNullableTypesWithoutRecursion:
  *
  * The primary purpose for this class is to ensure coverage of Swift structs
@@ -1280,6 +1350,32 @@ core_tests_golubets_test_all_nullable_types_without_recursion_get_map_map(
     CoreTestsGolubetsTestAllNullableTypesWithoutRecursion* object);
 
 /**
+ * core_tests_golubets_test_all_nullable_types_without_recursion_equals:
+ * @a: a #CoreTestsGolubetsTestAllNullableTypesWithoutRecursion.
+ * @b: another #CoreTestsGolubetsTestAllNullableTypesWithoutRecursion.
+ *
+ * Checks if two #CoreTestsGolubetsTestAllNullableTypesWithoutRecursion objects
+ * are equal.
+ *
+ * Returns: TRUE if @a and @b are equal.
+ */
+gboolean core_tests_golubets_test_all_nullable_types_without_recursion_equals(
+    CoreTestsGolubetsTestAllNullableTypesWithoutRecursion* a,
+    CoreTestsGolubetsTestAllNullableTypesWithoutRecursion* b);
+
+/**
+ * core_tests_golubets_test_all_nullable_types_without_recursion_hash:
+ * @object: a #CoreTestsGolubetsTestAllNullableTypesWithoutRecursion.
+ *
+ * Calculates a hash code for a
+ * #CoreTestsGolubetsTestAllNullableTypesWithoutRecursion object.
+ *
+ * Returns: the hash code.
+ */
+guint core_tests_golubets_test_all_nullable_types_without_recursion_hash(
+    CoreTestsGolubetsTestAllNullableTypesWithoutRecursion* object);
+
+/**
  * CoreTestsGolubetsTestAllClassesWrapper:
  *
  * A class for testing nested class handling.
@@ -1394,6 +1490,30 @@ FlValue* core_tests_golubets_test_all_classes_wrapper_get_class_map(
  * Returns: the field value.
  */
 FlValue* core_tests_golubets_test_all_classes_wrapper_get_nullable_class_map(
+    CoreTestsGolubetsTestAllClassesWrapper* object);
+
+/**
+ * core_tests_golubets_test_all_classes_wrapper_equals:
+ * @a: a #CoreTestsGolubetsTestAllClassesWrapper.
+ * @b: another #CoreTestsGolubetsTestAllClassesWrapper.
+ *
+ * Checks if two #CoreTestsGolubetsTestAllClassesWrapper objects are equal.
+ *
+ * Returns: TRUE if @a and @b are equal.
+ */
+gboolean core_tests_golubets_test_all_classes_wrapper_equals(
+    CoreTestsGolubetsTestAllClassesWrapper* a,
+    CoreTestsGolubetsTestAllClassesWrapper* b);
+
+/**
+ * core_tests_golubets_test_all_classes_wrapper_hash:
+ * @object: a #CoreTestsGolubetsTestAllClassesWrapper.
+ *
+ * Calculates a hash code for a #CoreTestsGolubetsTestAllClassesWrapper object.
+ *
+ * Returns: the hash code.
+ */
+guint core_tests_golubets_test_all_classes_wrapper_hash(
     CoreTestsGolubetsTestAllClassesWrapper* object);
 
 /**
@@ -1712,6 +1832,30 @@ FlValue* core_tests_golubets_test_immutable_all_types_get_list_map(
  * Returns: the field value.
  */
 FlValue* core_tests_golubets_test_immutable_all_types_get_map_map(
+    CoreTestsGolubetsTestImmutableAllTypes* object);
+
+/**
+ * core_tests_golubets_test_immutable_all_types_equals:
+ * @a: a #CoreTestsGolubetsTestImmutableAllTypes.
+ * @b: another #CoreTestsGolubetsTestImmutableAllTypes.
+ *
+ * Checks if two #CoreTestsGolubetsTestImmutableAllTypes objects are equal.
+ *
+ * Returns: TRUE if @a and @b are equal.
+ */
+gboolean core_tests_golubets_test_immutable_all_types_equals(
+    CoreTestsGolubetsTestImmutableAllTypes* a,
+    CoreTestsGolubetsTestImmutableAllTypes* b);
+
+/**
+ * core_tests_golubets_test_immutable_all_types_hash:
+ * @object: a #CoreTestsGolubetsTestImmutableAllTypes.
+ *
+ * Calculates a hash code for a #CoreTestsGolubetsTestImmutableAllTypes object.
+ *
+ * Returns: the hash code.
+ */
+guint core_tests_golubets_test_immutable_all_types_hash(
     CoreTestsGolubetsTestImmutableAllTypes* object);
 
 /**
@@ -2047,6 +2191,31 @@ core_tests_golubets_test_all_types_with_defaults_get_all_types(
     CoreTestsGolubetsTestAllTypesWithDefaults* object);
 
 /**
+ * core_tests_golubets_test_all_types_with_defaults_equals:
+ * @a: a #CoreTestsGolubetsTestAllTypesWithDefaults.
+ * @b: another #CoreTestsGolubetsTestAllTypesWithDefaults.
+ *
+ * Checks if two #CoreTestsGolubetsTestAllTypesWithDefaults objects are equal.
+ *
+ * Returns: TRUE if @a and @b are equal.
+ */
+gboolean core_tests_golubets_test_all_types_with_defaults_equals(
+    CoreTestsGolubetsTestAllTypesWithDefaults* a,
+    CoreTestsGolubetsTestAllTypesWithDefaults* b);
+
+/**
+ * core_tests_golubets_test_all_types_with_defaults_hash:
+ * @object: a #CoreTestsGolubetsTestAllTypesWithDefaults.
+ *
+ * Calculates a hash code for a #CoreTestsGolubetsTestAllTypesWithDefaults
+ * object.
+ *
+ * Returns: the hash code.
+ */
+guint core_tests_golubets_test_all_types_with_defaults_hash(
+    CoreTestsGolubetsTestAllTypesWithDefaults* object);
+
+/**
  * CoreTestsGolubetsTestTestMessage:
  *
  * A data class containing a List, used in unit tests.
@@ -2076,6 +2245,29 @@ CoreTestsGolubetsTestTestMessage* core_tests_golubets_test_test_message_new(
  * Returns: the field value.
  */
 FlValue* core_tests_golubets_test_test_message_get_test_list(
+    CoreTestsGolubetsTestTestMessage* object);
+
+/**
+ * core_tests_golubets_test_test_message_equals:
+ * @a: a #CoreTestsGolubetsTestTestMessage.
+ * @b: another #CoreTestsGolubetsTestTestMessage.
+ *
+ * Checks if two #CoreTestsGolubetsTestTestMessage objects are equal.
+ *
+ * Returns: TRUE if @a and @b are equal.
+ */
+gboolean core_tests_golubets_test_test_message_equals(
+    CoreTestsGolubetsTestTestMessage* a, CoreTestsGolubetsTestTestMessage* b);
+
+/**
+ * core_tests_golubets_test_test_message_hash:
+ * @object: a #CoreTestsGolubetsTestTestMessage.
+ *
+ * Calculates a hash code for a #CoreTestsGolubetsTestTestMessage object.
+ *
+ * Returns: the hash code.
+ */
+guint core_tests_golubets_test_test_message_hash(
     CoreTestsGolubetsTestTestMessage* object);
 
 G_DECLARE_FINAL_TYPE(CoreTestsGolubetsTestGolubMessageCodec,
@@ -3179,6 +3371,110 @@ core_tests_golubets_test_host_integration_core_api_echo_required_int_response_ne
  */
 CoreTestsGolubetsTestHostIntegrationCoreApiEchoRequiredIntResponse*
 core_tests_golubets_test_host_integration_core_api_echo_required_int_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details);
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiAreAllNullableTypesEqualResponse,
+    core_tests_golubets_test_host_integration_core_api_are_all_nullable_types_equal_response,
+    CORE_TESTS_GOLUBETS_TEST,
+    HOST_INTEGRATION_CORE_API_ARE_ALL_NULLABLE_TYPES_EQUAL_RESPONSE, GObject)
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_are_all_nullable_types_equal_response_new:
+ *
+ * Creates a new response to HostIntegrationCoreApi.areAllNullableTypesEqual.
+ *
+ * Returns: a new
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiAreAllNullableTypesEqualResponse
+ */
+CoreTestsGolubetsTestHostIntegrationCoreApiAreAllNullableTypesEqualResponse*
+core_tests_golubets_test_host_integration_core_api_are_all_nullable_types_equal_response_new(
+    gboolean return_value);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_are_all_nullable_types_equal_response_new_error:
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Creates a new error response to
+ * HostIntegrationCoreApi.areAllNullableTypesEqual.
+ *
+ * Returns: a new
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiAreAllNullableTypesEqualResponse
+ */
+CoreTestsGolubetsTestHostIntegrationCoreApiAreAllNullableTypesEqualResponse*
+core_tests_golubets_test_host_integration_core_api_are_all_nullable_types_equal_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details);
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiGetAllNullableTypesHashResponse,
+    core_tests_golubets_test_host_integration_core_api_get_all_nullable_types_hash_response,
+    CORE_TESTS_GOLUBETS_TEST,
+    HOST_INTEGRATION_CORE_API_GET_ALL_NULLABLE_TYPES_HASH_RESPONSE, GObject)
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_get_all_nullable_types_hash_response_new:
+ *
+ * Creates a new response to HostIntegrationCoreApi.getAllNullableTypesHash.
+ *
+ * Returns: a new
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiGetAllNullableTypesHashResponse
+ */
+CoreTestsGolubetsTestHostIntegrationCoreApiGetAllNullableTypesHashResponse*
+core_tests_golubets_test_host_integration_core_api_get_all_nullable_types_hash_response_new(
+    int64_t return_value);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_get_all_nullable_types_hash_response_new_error:
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Creates a new error response to
+ * HostIntegrationCoreApi.getAllNullableTypesHash.
+ *
+ * Returns: a new
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiGetAllNullableTypesHashResponse
+ */
+CoreTestsGolubetsTestHostIntegrationCoreApiGetAllNullableTypesHashResponse*
+core_tests_golubets_test_host_integration_core_api_get_all_nullable_types_hash_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details);
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiGetAllNullableTypesWithoutRecursionHashResponse,
+    core_tests_golubets_test_host_integration_core_api_get_all_nullable_types_without_recursion_hash_response,
+    CORE_TESTS_GOLUBETS_TEST,
+    HOST_INTEGRATION_CORE_API_GET_ALL_NULLABLE_TYPES_WITHOUT_RECURSION_HASH_RESPONSE,
+    GObject)
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_get_all_nullable_types_without_recursion_hash_response_new:
+ *
+ * Creates a new response to
+ * HostIntegrationCoreApi.getAllNullableTypesWithoutRecursionHash.
+ *
+ * Returns: a new
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiGetAllNullableTypesWithoutRecursionHashResponse
+ */
+CoreTestsGolubetsTestHostIntegrationCoreApiGetAllNullableTypesWithoutRecursionHashResponse*
+core_tests_golubets_test_host_integration_core_api_get_all_nullable_types_without_recursion_hash_response_new(
+    int64_t return_value);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_get_all_nullable_types_without_recursion_hash_response_new_error:
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Creates a new error response to
+ * HostIntegrationCoreApi.getAllNullableTypesWithoutRecursionHash.
+ *
+ * Returns: a new
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiGetAllNullableTypesWithoutRecursionHashResponse
+ */
+CoreTestsGolubetsTestHostIntegrationCoreApiGetAllNullableTypesWithoutRecursionHashResponse*
+core_tests_golubets_test_host_integration_core_api_get_all_nullable_types_without_recursion_hash_response_new_error(
     const gchar* code, const gchar* message, FlValue* details);
 
 G_DECLARE_FINAL_TYPE(
@@ -4340,6 +4636,17 @@ typedef struct {
       CoreTestsGolubetsTestAllTypesWithDefaults* all_types, gpointer user_data);
   CoreTestsGolubetsTestHostIntegrationCoreApiEchoRequiredIntResponse* (
       *echo_required_int)(int64_t an_int, gpointer user_data);
+  CoreTestsGolubetsTestHostIntegrationCoreApiAreAllNullableTypesEqualResponse* (
+      *are_all_nullable_types_equal)(CoreTestsGolubetsTestAllNullableTypes* a,
+                                     CoreTestsGolubetsTestAllNullableTypes* b,
+                                     gpointer user_data);
+  CoreTestsGolubetsTestHostIntegrationCoreApiGetAllNullableTypesHashResponse* (
+      *get_all_nullable_types_hash)(
+      CoreTestsGolubetsTestAllNullableTypes* value, gpointer user_data);
+  CoreTestsGolubetsTestHostIntegrationCoreApiGetAllNullableTypesWithoutRecursionHashResponse* (
+      *get_all_nullable_types_without_recursion_hash)(
+      CoreTestsGolubetsTestAllNullableTypesWithoutRecursion* value,
+      gpointer user_data);
   CoreTestsGolubetsTestHostIntegrationCoreApiEchoAllNullableTypesResponse* (
       *echo_all_nullable_types)(
       CoreTestsGolubetsTestAllNullableTypes* everything, gpointer user_data);

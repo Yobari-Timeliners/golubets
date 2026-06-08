@@ -1,3 +1,12 @@
+## 1.3.4
+* [kotlin] Updates generated error class to inherit from RuntimeException instead of Throwable, for better Java interoperability.
+* Updates analyzer dependency to support versions 10 through 12.
+* Updates analyzer dependency to support version 10.
+* Fixes dartdoc comments that accidentally used HTML.
+* Optimizes and improves data class equality and hashing.
+* Changes hashing and equality methods to behave consistently across platforms.
+* Adds equality methods to previously unsupported languages.
+
 ## 1.3.3
 * [dart] Fix incorrect type cast for generic List (Map) type parameter in generated decode method
 

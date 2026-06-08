@@ -90,6 +90,29 @@ GolubetsExamplePackageCode golubets_example_package_message_data_get_code(
 FlValue* golubets_example_package_message_data_get_data(
     GolubetsExamplePackageMessageData* object);
 
+/**
+ * golubets_example_package_message_data_equals:
+ * @a: a #GolubetsExamplePackageMessageData.
+ * @b: another #GolubetsExamplePackageMessageData.
+ *
+ * Checks if two #GolubetsExamplePackageMessageData objects are equal.
+ *
+ * Returns: TRUE if @a and @b are equal.
+ */
+gboolean golubets_example_package_message_data_equals(
+    GolubetsExamplePackageMessageData* a, GolubetsExamplePackageMessageData* b);
+
+/**
+ * golubets_example_package_message_data_hash:
+ * @object: a #GolubetsExamplePackageMessageData.
+ *
+ * Calculates a hash code for a #GolubetsExamplePackageMessageData object.
+ *
+ * Returns: the hash code.
+ */
+guint golubets_example_package_message_data_hash(
+    GolubetsExamplePackageMessageData* object);
+
 G_DECLARE_FINAL_TYPE(GolubetsExamplePackageGolubMessageCodec,
                      golubets_example_package_golub_message_codec,
                      GOLUBETS_EXAMPLE_PACKAGE, GOLUB_MESSAGE_CODEC,

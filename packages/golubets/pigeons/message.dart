@@ -9,10 +9,7 @@ import 'package:golubets/golubets.dart';
 
 @ConfigureGolubets(
   GolubetsOptions(
-    javaOptions: JavaOptions(
-      className: 'MessagePigeon',
-      package: 'dev.flutter.aaclarke.pigeon',
-    ),
+    javaOptions: JavaOptions(className: 'MessagePigeon', package: 'dev.flutter.aaclarke.pigeon'),
     objcOptions: ObjcOptions(prefix: 'AC'),
   ),
 )

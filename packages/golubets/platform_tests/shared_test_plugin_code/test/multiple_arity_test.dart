@@ -20,14 +20,13 @@ void main() {
         any,
       ),
     ).thenAnswer((Invocation realInvocation) async {
-      final Object input = MultipleArityHostApi.golubetsChannelCodec
-          .decodeMessage(realInvocation.positionalArguments[1] as ByteData?)!;
+      final Object input = MultipleArityHostApi.golubetsChannelCodec.decodeMessage(
+        realInvocation.positionalArguments[1] as ByteData?,
+      )!;
       final args = input as List<Object?>;
       final int x = (args[0] as int?)!;
       final int y = (args[1] as int?)!;
-      return MultipleArityHostApi.golubetsChannelCodec.encodeMessage(<Object>[
-        x - y,
-      ]);
+      return MultipleArityHostApi.golubetsChannelCodec.encodeMessage(<Object>[x - y]);
     });
 
     final api = MultipleArityHostApi(binaryMessenger: mockMessenger);

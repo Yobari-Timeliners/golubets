@@ -16,8 +16,9 @@ import 'templates.dart';
 const String _docCommentPrefix = '///';
 
 /// Documentation comment spec.
-const DocumentCommentSpecification _docCommentSpec =
-    DocumentCommentSpecification(_docCommentPrefix);
+const DocumentCommentSpecification _docCommentSpec = DocumentCommentSpecification(
+  _docCommentPrefix,
+);
 
 const String _overflowClassName = 'GolubetsCodecOverflow';
 
@@ -85,8 +86,7 @@ class SwiftOptions {
   static SwiftOptions fromList(Map<String, Object> map) {
     return SwiftOptions(
       copyrightHeader: map['copyrightHeader'] as Iterable<String>?,
-      fileSpecificClassNameComponent:
-          map['fileSpecificClassNameComponent'] as String?,
+      fileSpecificClassNameComponent: map['fileSpecificClassNameComponent'] as String?,
       errorClassName: map['errorClassName'] as String?,
       includeErrorClass: map['includeErrorClass'] as bool? ?? true,
       usePureSealedSubclasses: map['usePureSealedSubclasses'] as bool? ?? false,
@@ -273,20 +273,12 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     required String dartPackageName,
   }) {
     indent.newln();
-    addDocumentationComments(
-      indent,
-      anEnum.documentationComments,
-      _docCommentSpec,
-    );
+    addDocumentationComments(indent, anEnum.documentationComments, _docCommentSpec);
 
     indent.write('public enum ${anEnum.name}: Int ');
     indent.addScoped('{', '}', () {
-      enumerate(anEnum.members, (int index, final EnumMember member) {
-        addDocumentationComments(
-          indent,
-          member.documentationComments,
-          _docCommentSpec,
-        );
+      enumerate(anEnum.members, (int index, EnumMember member) {
+        addDocumentationComments(indent, member.documentationComments, _docCommentSpec);
         indent.writeln('case ${_camelCase(member.name)} = $index');
       });
     });
@@ -310,8 +302,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     ).toList();
 
     void writeDecodeLogic(EnumeratedType customType) {
-      final ({Class child, Class superClass})? sealedHierarchy = customType
-          .findSealedHierarchy();
+      final ({Class child, Class superClass})? sealedHierarchy = customType.findSealedHierarchy();
       final typeArguments = customType.isGeneric
           ? '<${_flattenTypeArguments(customType.typeArguments)}>'
           : '';
@@ -319,22 +310,13 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       indent.writeln('case ${customType.enumeration}:');
       indent.nest(1, () {
         if (customType.type == CustomTypes.customEnum) {
-          indent.writeln(
-            'let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)',
-          );
-          indent.writeScoped(
-            'if let enumResultAsInt = enumResultAsInt {',
-            '}',
-            () {
-              indent.writeln(
-                'return ${customType.name}(rawValue: enumResultAsInt)',
-              );
-            },
-          );
+          indent.writeln('let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)');
+          indent.writeScoped('if let enumResultAsInt = enumResultAsInt {', '}', () {
+            indent.writeln('return ${customType.name}(rawValue: enumResultAsInt)');
+          });
           indent.writeln('return nil');
         } else if (sealedHierarchy != null) {
-          final (child: Class child, superClass: Class superClass) =
-              sealedHierarchy;
+          final (child: Class child, superClass: Class superClass) = sealedHierarchy;
           final String childName = generatorOptions.usePureSealedSubclasses
               ? child.pureName
               : child.name;
@@ -401,8 +383,8 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
         indent.addScoped('{', '}', () {
           indent.write('');
           for (final customType in enumeratedTypes) {
-            final ({Class child, Class superClass})? sealedHierarchy =
-                customType.findSealedHierarchy();
+            final ({Class child, Class superClass})? sealedHierarchy = customType
+                .findSealedHierarchy();
             final isSealedChild = sealedHierarchy != null;
 
             final value = isSealedChild ? 'childValue' : 'value';
@@ -412,21 +394,16 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
                 : '';
 
             if (isSealedChild) {
-              final (child: Class child, superClass: Class superClass) =
-                  sealedHierarchy;
+              final (child: Class child, superClass: Class superClass) = sealedHierarchy;
               final String caseName =
-                  (generatorOptions.usePureSealedSubclasses
-                          ? child.pureName
-                          : child.name)
+                  (generatorOptions.usePureSealedSubclasses ? child.pureName : child.name)
                       .toLowFirstLetter();
 
               indent.add(
                 'if let $value = value as? ${superClass.name}$typeArguments, case .$caseName = $value ',
               );
             } else {
-              indent.add(
-                'if let $value = value as? ${customType.name}$typeArguments ',
-              );
+              indent.add('if let $value = value as? ${customType.name}$typeArguments ');
             }
 
             indent.addScoped('{', '} else ', () {
@@ -436,8 +413,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
               final valueString = customType.enumeration < maximumCodecFieldKey
                   ? '$value.$encodeString'
                   : 'wrap.toList()';
-              final int enumeration =
-                  customType.enumeration < maximumCodecFieldKey
+              final int enumeration = customType.enumeration < maximumCodecFieldKey
                   ? customType.enumeration
                   : maximumCodecFieldKey;
               if (customType.enumeration >= maximumCodecFieldKey) {
@@ -458,20 +434,14 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     indent.newln();
 
     // Generate ReaderWriter
-    indent.write(
-      'private class $readerWriterName: FlutterStandardReaderWriter ',
-    );
+    indent.write('private class $readerWriterName: FlutterStandardReaderWriter ');
     indent.addScoped('{', '}', () {
-      indent.write(
-        'override func reader(with data: Data) -> FlutterStandardReader ',
-      );
+      indent.write('override func reader(with data: Data) -> FlutterStandardReader ');
       indent.addScoped('{', '}', () {
         indent.writeln('return $readerName(data: data)');
       });
       indent.newln();
-      indent.write(
-        'override func writer(with data: NSMutableData) -> FlutterStandardWriter ',
-      );
+      indent.write('override func writer(with data: NSMutableData) -> FlutterStandardWriter ');
       indent.addScoped('{', '}', () {
         indent.writeln('return $writerName(data: data)');
       });
@@ -479,13 +449,9 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     indent.newln();
 
     // Generate Codec
-    indent.write(
-      'class $codecName: FlutterStandardMessageCodec, @unchecked Sendable ',
-    );
+    indent.write('class $codecName: FlutterStandardMessageCodec, @unchecked Sendable ');
     indent.addScoped('{', '}', () {
-      indent.writeln(
-        'static let shared = $codecName(readerWriter: $readerWriterName())',
-      );
+      indent.writeln('static let shared = $codecName(readerWriter: $readerWriterName())');
     });
     indent.newln();
     if (root.containsEventChannel) {
@@ -505,8 +471,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     required InternalSwiftOptions generatorOptions,
   }) {
     final classLookup = <String, Class>{
-      for (final Class classDefinition in root.classes)
-        classDefinition.name: classDefinition,
+      for (final Class classDefinition in root.classes) classDefinition.name: classDefinition,
     };
     if (classDefinition.isSealed) {
       _writeSealedClassSignature(
@@ -536,24 +501,17 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
         ? ': Hashable'
         : '';
     if (classDefinition.isSwiftClass) {
-      indent.write(
-        '${privateString}class ${classDefinition.name}$typeArguments$extendsString ',
-      );
+      indent.write('${privateString}class ${classDefinition.name}$typeArguments$extendsString ');
     } else if (classDefinition.isSealed) {
       indent.write('${privateString}protocol ${classDefinition.name} ');
     } else {
-      indent.write(
-        '${privateString}struct ${classDefinition.name}$typeArguments$extendsString ',
-      );
+      indent.write('${privateString}struct ${classDefinition.name}$typeArguments$extendsString ');
     }
 
     indent.addScoped('{', '', () {
-      final Iterable<NamedType> fields = getFieldsInSerializationOrder(
-        classDefinition,
-      );
+      final Iterable<NamedType> fields = getFieldsInSerializationOrder(classDefinition);
       final classLookup = <String, Class>{
-        for (final Class classDefinition in root.classes)
-          classDefinition.name: classDefinition,
+        for (final Class classDefinition in root.classes) classDefinition.name: classDefinition,
       };
 
       if (!classDefinition.isSealed) {
@@ -568,11 +526,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       final public = private ? '' : 'public ';
 
       for (final field in fields) {
-        addDocumentationComments(
-          indent,
-          field.documentationComments,
-          _docCommentSpec,
-        );
+        addDocumentationComments(indent, field.documentationComments, _docCommentSpec);
         final varKeyword = classDefinition.isImmutable ? 'let' : 'var';
         indent.write('$public$varKeyword ');
         _writeClassField(
@@ -606,10 +560,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       type: const TypeDeclaration(baseName: 'Object', isNullable: true),
     );
     final overflowFields = <NamedType>[overflowInt, overflowObject];
-    final overflowClass = Class(
-      name: _overflowClassName,
-      fields: overflowFields,
-    );
+    final overflowClass = Class(name: _overflowClassName, fields: overflowFields);
     indent.newln();
     _writeDataClassSignature(
       indent,
@@ -652,37 +603,30 @@ if (wrapped == nil) {
         indent.writeScoped('switch type {', '}', () {
           for (int i = totalCustomCodecKeysAllowed; i < types.length; i++) {
             final EnumeratedType customType = types[i];
-            final ({Class child, Class superClass})? sealedHierarchy =
-                customType.findSealedHierarchy();
+            final ({Class child, Class superClass})? sealedHierarchy = customType
+                .findSealedHierarchy();
             final typeArguments = customType.isGeneric
                 ? '<${_flattenTypeArguments(customType.typeArguments)}>'
                 : '';
-            indent.writeScoped(
-              'case ${i - totalCustomCodecKeysAllowed}:',
-              '',
-              () {
-                if (customType.type == CustomTypes.customEnum) {
-                  indent.writeln(
-                    'return ${customType.name}$typeArguments(rawValue: wrapped as! Int);',
-                  );
-                } else if (sealedHierarchy != null) {
-                  final (child: Class child, superClass: Class superClass) =
-                      sealedHierarchy;
-                  final String childName =
-                      generatorOptions.usePureSealedSubclasses
-                      ? child.pureName
-                      : child.name;
-                  indent.writeln(
-                    'return ${superClass.name}$typeArguments.fromList$childName(wrapped as! [Any?]);',
-                  );
-                } else {
-                  indent.writeln(
-                    'return ${customType.name}$typeArguments.fromList(wrapped as! [Any?]);',
-                  );
-                }
-              },
-              addTrailingNewline: false,
-            );
+            indent.writeScoped('case ${i - totalCustomCodecKeysAllowed}:', '', () {
+              if (customType.type == CustomTypes.customEnum) {
+                indent.writeln(
+                  'return ${customType.name}$typeArguments(rawValue: wrapped as! Int);',
+                );
+              } else if (sealedHierarchy != null) {
+                final (child: Class child, superClass: Class superClass) = sealedHierarchy;
+                final String childName = generatorOptions.usePureSealedSubclasses
+                    ? child.pureName
+                    : child.name;
+                indent.writeln(
+                  'return ${superClass.name}$typeArguments.fromList$childName(wrapped as! [Any?]);',
+                );
+              } else {
+                indent.writeln(
+                  'return ${customType.name}$typeArguments.fromList(wrapped as! [Any?]);',
+                );
+              }
+            }, addTrailingNewline: false);
           }
           indent.writeScoped('default: ', '', () {
             indent.writeln('return nil');
@@ -815,18 +759,10 @@ if (wrapped == nil) {
   }) {
     if (classDefinition.isSealed) {
       if (classDefinition.children.isEmpty) {
-        throw Exception(
-          'Sealed class ${classDefinition.name} has no children.',
-        );
+        throw Exception('Sealed class ${classDefinition.name} has no children.');
       }
 
-      _writeSealedClassEncode(
-        generatorOptions,
-        root,
-        indent,
-        classDefinition,
-        dartPackageName,
-      );
+      _writeSealedClassEncode(generatorOptions, root, indent, classDefinition, dartPackageName);
 
       return;
     }
@@ -838,9 +774,7 @@ if (wrapped == nil) {
         // Follow swift-format style, which is to use a trailing comma unless
         // there is only one element.
         final separator = classDefinition.fields.length > 1 ? ',' : '';
-        for (final NamedType field in getFieldsInSerializationOrder(
-          classDefinition,
-        )) {
+        for (final NamedType field in getFieldsInSerializationOrder(classDefinition)) {
           indent.writeln('${field.name}$separator');
         }
       });
@@ -855,25 +789,48 @@ if (wrapped == nil) {
     Class classDefinition, {
     required String dartPackageName,
   }) {
+    final String component = generatorOptions.fileSpecificClassNameComponent ?? '';
     indent.writeScoped(
       'public static func == (lhs: ${classDefinition.name}, rhs: ${classDefinition.name}) -> Bool {',
       '}',
       () {
+        if (classDefinition.isSealed) {
+          indent.writeln('return deepEquals$component(lhs.toList(), rhs.toList())');
+          return;
+        }
+        indent.writeScoped('if Swift.type(of: lhs) != Swift.type(of: rhs) {', '}', () {
+          indent.writeln('return false');
+        });
         if (classDefinition.isSwiftClass) {
           indent.writeScoped('if (lhs === rhs) {', '}', () {
             indent.writeln('return true');
           });
         }
-        indent.write(
-          'return deepEquals${generatorOptions.fileSpecificClassNameComponent}(lhs.toList(), rhs.toList())',
-        );
+        final Iterable<NamedType> fields = getFieldsInSerializationOrder(classDefinition);
+        if (fields.isEmpty) {
+          indent.writeln('return true');
+        } else {
+          final String comparisons = fields
+              .map(
+                (NamedType field) => 'deepEquals$component(lhs.${field.name}, rhs.${field.name})',
+              )
+              .join(' && ');
+          indent.writeln('return $comparisons');
+        }
       },
     );
 
+    indent.newln();
     indent.writeScoped('public func hash(into hasher: inout Hasher) {', '}', () {
-      indent.writeln(
-        'deepHash${generatorOptions.fileSpecificClassNameComponent}(value: toList(), hasher: &hasher)',
-      );
+      if (classDefinition.isSealed) {
+        indent.writeln('deepHash$component(value: toList(), hasher: &hasher)');
+        return;
+      }
+      indent.writeln('hasher.combine("${classDefinition.name}")');
+      final Iterable<NamedType> fields = getFieldsInSerializationOrder(classDefinition);
+      for (final field in fields) {
+        indent.writeln('deepHash$component(value: ${field.name}, hasher: &hasher)');
+      }
     });
   }
 
@@ -891,19 +848,14 @@ if (wrapped == nil) {
       final List<Class> children = classDefinition.children;
 
       if (children.isEmpty) {
-        throw Exception(
-          'Sealed class ${classDefinition.name} has no children.',
-        );
+        throw Exception('Sealed class ${classDefinition.name} has no children.');
       }
 
       // Generate functions for each child to decode like fromListB, fromListC etc
       for (final child in children) {
-        final Iterable<NamedType> orderedFields = getFieldsInSerializationOrder(
-          child,
-        );
+        final Iterable<NamedType> orderedFields = getFieldsInSerializationOrder(child);
         final bool isSealedChild = classDefinition.isSealed;
-        final String name =
-            isSealedChild && generatorOptions.usePureSealedSubclasses
+        final String name = isSealedChild && generatorOptions.usePureSealedSubclasses
             ? child.pureName
             : child.name;
         indent.newln();
@@ -941,9 +893,7 @@ if (wrapped == nil) {
                 final forceUnwrapMapWithNullableEnums =
                     (field.type.baseName == 'Map' &&
                         !field.type.isNullable &&
-                        field.type.typeArguments.any(
-                          (TypeDeclaration type) => type.isEnum,
-                        ))
+                        field.type.typeArguments.any((TypeDeclaration type) => type.isEnum))
                     ? '!'
                     : '';
                 indent.writeln(
@@ -961,15 +911,10 @@ if (wrapped == nil) {
     }
 
     indent.writeln('// swift-format-ignore: AlwaysUseLowerCamelCase');
-    indent.write(
-      'static func fromList(_ ${varNamePrefix}list: [Any?]) -> $className? ',
-    );
+    indent.write('static func fromList(_ ${varNamePrefix}list: [Any?]) -> $className? ');
 
     indent.addScoped('{', '}', () {
-      enumerate(getFieldsInSerializationOrder(classDefinition), (
-        int index,
-        final NamedType field,
-      ) {
+      enumerate(getFieldsInSerializationOrder(classDefinition), (int index, NamedType field) {
         final listValue = '${varNamePrefix}list[$index]';
 
         _writeGenericCasting(
@@ -984,26 +929,17 @@ if (wrapped == nil) {
       indent.newln();
       indent.write('return ');
       indent.addScoped('$className(', ')', () {
-        for (final NamedType field in getFieldsInSerializationOrder(
-          classDefinition,
-        )) {
-          final comma =
-              getFieldsInSerializationOrder(classDefinition).last == field
-              ? ''
-              : ',';
+        for (final NamedType field in getFieldsInSerializationOrder(classDefinition)) {
+          final comma = getFieldsInSerializationOrder(classDefinition).last == field ? '' : ',';
           // Force-casting nullable enums in maps doesn't work the same as other types.
           // It needs soft-casting followed by force unwrapping.
           final forceUnwrapMapWithNullableEnums =
               (field.type.baseName == 'Map' &&
                   !field.type.isNullable &&
-                  field.type.typeArguments.any(
-                    (TypeDeclaration type) => type.isEnum,
-                  ))
+                  field.type.typeArguments.any((TypeDeclaration type) => type.isEnum))
               ? '!'
               : '';
-          indent.writeln(
-            '${field.name}: ${field.name}$forceUnwrapMapWithNullableEnums$comma',
-          );
+          indent.writeln('${field.name}: ${field.name}$forceUnwrapMapWithNullableEnums$comma');
         }
       });
     });
@@ -1017,18 +953,11 @@ if (wrapped == nil) {
     required String dartPackageName,
   }) {
     if (root.apis.any(
-      (Api api) =>
-          api is AstHostApi &&
-          api.methods.any((Method it) => it.isAsynchronous),
+      (Api api) => api is AstHostApi && api.methods.any((Method it) => it.isAsynchronous),
     )) {
       indent.newln();
     }
-    super.writeApis(
-      generatorOptions,
-      root,
-      indent,
-      dartPackageName: dartPackageName,
-    );
+    super.writeApis(generatorOptions, root, indent, dartPackageName: dartPackageName);
   }
 
   /// Writes the code for a flutter [Api], [api].
@@ -1058,11 +987,7 @@ if (wrapped == nil) {
 
     indent.addScoped('public protocol ${api.name}Protocol {', '}', () {
       for (final Method func in api.methods) {
-        addDocumentationComments(
-          indent,
-          func.documentationComments,
-          _docCommentSpec,
-        );
+        addDocumentationComments(indent, func.documentationComments, _docCommentSpec);
         indent.writeln(
           _getMethodSignature(
             name: func.name,
@@ -1098,17 +1023,12 @@ if (wrapped == nil) {
       });
 
       for (final Method func in api.methods) {
-        addDocumentationComments(
-          indent,
-          func.documentationComments,
-          _docCommentSpec,
-        );
+        addDocumentationComments(indent, func.documentationComments, _docCommentSpec);
         _writeFlutterMethod(
           indent,
           generatorOptions: generatorOptions,
           name: func.name,
-          channelName:
-              '${makeChannelName(api, func, dartPackageName)}\\(messageChannelSuffix)',
+          channelName: '${makeChannelName(api, func, dartPackageName)}\\(messageChannelSuffix)',
           parameters: func.parameters,
           returnType: func.returnType,
           swiftFunction: func.swiftFunction,
@@ -1145,11 +1065,7 @@ if (wrapped == nil) {
     indent.write('public protocol $apiName ');
     indent.addScoped('{', '}', () {
       for (final Method method in api.methods) {
-        addDocumentationComments(
-          indent,
-          method.documentationComments,
-          _docCommentSpec,
-        );
+        addDocumentationComments(indent, method.documentationComments, _docCommentSpec);
         indent.writeln(
           _getMethodSignature(
             name: method.name,
@@ -1203,15 +1119,13 @@ if (wrapped == nil) {
           _writeHostMethodMessageHandler(
             indent,
             name: method.name,
-            channelName:
-                '${makeChannelName(api, method, dartPackageName)}\\(channelSuffix)',
+            channelName: '${makeChannelName(api, method, dartPackageName)}\\(channelSuffix)',
             parameters: method.parameters,
             returnType: method.returnType,
             asynchronousType: method.asynchronousType,
             swiftFunction: method.swiftFunction,
             documentationComments: method.documentationComments,
-            serialBackgroundQueue:
-                method.taskQueueType == TaskQueueType.serialBackgroundThread
+            serialBackgroundQueue: method.taskQueueType == TaskQueueType.serialBackgroundThread
                 ? serialBackgroundQueue
                 : null,
           );
@@ -1239,11 +1153,9 @@ if (wrapped == nil) {
     Indent indent, {
     required String dartPackageName,
   }) {
-    final instanceManagerApiName =
-        '${swiftInstanceManagerClassName(generatorOptions)}Api';
+    final instanceManagerApiName = '${swiftInstanceManagerClassName(generatorOptions)}Api';
 
-    final String removeStrongReferenceName =
-        makeRemoveStrongReferenceChannelName(dartPackageName);
+    final String removeStrongReferenceName = makeRemoveStrongReferenceChannelName(dartPackageName);
 
     indent.writeScoped('private class $instanceManagerApiName {', '}', () {
       addDocumentationComments(indent, <String>[
@@ -1260,13 +1172,9 @@ if (wrapped == nil) {
       indent.writeln('unowned let binaryMessenger: FlutterBinaryMessenger');
       indent.newln();
 
-      indent.writeScoped(
-        'init(binaryMessenger: FlutterBinaryMessenger) {',
-        '}',
-        () {
-          indent.writeln('self.binaryMessenger = binaryMessenger');
-        },
-      );
+      indent.writeScoped('init(binaryMessenger: FlutterBinaryMessenger) {', '}', () {
+        indent.writeln('self.binaryMessenger = binaryMessenger');
+      });
       indent.newln();
 
       addDocumentationComments(indent, <String>[
@@ -1276,9 +1184,7 @@ if (wrapped == nil) {
         'static func setUpMessageHandlers(binaryMessenger: FlutterBinaryMessenger, instanceManager: ${swiftInstanceManagerClassName(generatorOptions)}?) {',
         '}',
         () {
-          indent.writeln(
-            'let codec = ${_getMessageCodecName(generatorOptions)}.shared',
-          );
+          indent.writeln('let codec = ${_getMessageCodecName(generatorOptions)}.shared');
           const setHandlerCondition = 'let instanceManager = instanceManager';
           _writeHostMethodMessageHandler(
             indent,
@@ -1293,13 +1199,9 @@ if (wrapped == nil) {
             returnType: const TypeDeclaration.voidDeclaration(),
             swiftFunction: 'method(withIdentifier:)',
             setHandlerCondition: setHandlerCondition,
-            onCreateCall:
-                (
-                  List<String> safeArgNames, {
-                  required String apiVarName,
-                }) {
-                  return 'let _: AnyObject? = try instanceManager.removeInstance(${safeArgNames.single})';
-                },
+            onCreateCall: (List<String> safeArgNames, {required String apiVarName}) {
+              return 'let _: AnyObject? = try instanceManager.removeInstance(${safeArgNames.single})';
+            },
           );
           _writeHostMethodMessageHandler(
             indent,
@@ -1309,13 +1211,9 @@ if (wrapped == nil) {
             returnType: const TypeDeclaration.voidDeclaration(),
             setHandlerCondition: setHandlerCondition,
             swiftFunction: null,
-            onCreateCall:
-                (
-                  List<String> safeArgNames, {
-                  required String apiVarName,
-                }) {
-                  return 'try instanceManager.removeAllObjects()';
-                },
+            onCreateCall: (List<String> safeArgNames, {required String apiVarName}) {
+              return 'try instanceManager.removeAllObjects()';
+            },
           );
         },
       );
@@ -1342,22 +1240,12 @@ if (wrapped == nil) {
   }
 
   @override
-  void writeProxyApiBaseCodec(
-    InternalSwiftOptions generatorOptions,
-    Root root,
-    Indent indent,
-  ) {
-    final Iterable<AstProxyApi> allProxyApis = root.apis
-        .whereType<AstProxyApi>();
+  void writeProxyApiBaseCodec(InternalSwiftOptions generatorOptions, Root root, Indent indent) {
+    final Iterable<AstProxyApi> allProxyApis = root.apis.whereType<AstProxyApi>();
 
-    _writeProxyApiRegistrar(
-      indent,
-      generatorOptions: generatorOptions,
-      allProxyApis: allProxyApis,
-    );
+    _writeProxyApiRegistrar(indent, generatorOptions: generatorOptions, allProxyApis: allProxyApis);
 
-    final String filePrefix =
-        generatorOptions.fileSpecificClassNameComponent ?? '';
+    final String filePrefix = generatorOptions.fileSpecificClassNameComponent ?? '';
 
     final String registrarName = proxyApiRegistrarName(generatorOptions);
 
@@ -1375,21 +1263,14 @@ if (wrapped == nil) {
             indent.writeln('unowned let golubetsRegistrar: $registrarName');
             indent.newln();
 
-            indent.writeScoped(
-              'init(data: Data, golubetsRegistrar: $registrarName) {',
-              '}',
-              () {
-                indent.writeln('self.golubetsRegistrar = golubetsRegistrar');
-                indent.writeln('super.init(data: data)');
-              },
-            );
+            indent.writeScoped('init(data: Data, golubetsRegistrar: $registrarName) {', '}', () {
+              indent.writeln('self.golubetsRegistrar = golubetsRegistrar');
+              indent.writeln('super.init(data: data)');
+            });
             indent.newln();
 
-            indent.writeScoped(
-              'override func readValue(ofType type: UInt8) -> Any? {',
-              '}',
-              () {
-                indent.format('''
+            indent.writeScoped('override func readValue(ofType type: UInt8) -> Any? {', '}', () {
+              indent.format('''
                   switch type {
                   case $proxyApiCodecInstanceManagerKey:
                     let identifier = self.readValue()
@@ -1402,8 +1283,7 @@ if (wrapped == nil) {
                   default:
                     return super.readValue(ofType: type)
                   }''');
-              },
-            );
+            });
           },
         );
         indent.newln();
@@ -1463,19 +1343,15 @@ if (wrapped == nil) {
               // class SomeClass {
               //   Shape giveMeAShape() => Circle();
               // }
-              final List<AstProxyApi> sortedApis = topologicalSort(
-                allProxyApis,
-                (AstProxyApi api) {
-                  return <AstProxyApi>[
-                    if (api.superClass?.associatedProxyApi != null)
-                      api.superClass!.associatedProxyApi!,
-                    ...api.interfaces.map(
-                      (TypeDeclaration interface) =>
-                          interface.associatedProxyApi!,
-                    ),
-                  ];
-                },
-              );
+              final List<AstProxyApi> sortedApis = topologicalSort(allProxyApis, (AstProxyApi api) {
+                return <AstProxyApi>[
+                  if (api.superClass?.associatedProxyApi != null)
+                    api.superClass!.associatedProxyApi!,
+                  ...api.interfaces.map(
+                    (TypeDeclaration interface) => interface.associatedProxyApi!,
+                  ),
+                ];
+              });
 
               enumerate(sortedApis, (int index, AstProxyApi api) {
                 final apiAsTypeDecl = TypeDeclaration(
@@ -1483,13 +1359,12 @@ if (wrapped == nil) {
                   isNullable: false,
                   associatedProxyApi: api,
                 );
-                final String? availability = _tryGetAvailabilityAnnotation(
+                final String? availability = _tryGetAvailabilityAnnotation(<TypeDeclaration>[
+                  apiAsTypeDecl,
+                ]);
+                final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(
                   <TypeDeclaration>[apiAsTypeDecl],
                 );
-                final String? unsupportedPlatforms =
-                    _tryGetUnsupportedPlatformsCondition(<TypeDeclaration>[
-                      apiAsTypeDecl,
-                    ]);
                 final String className = api.swiftOptions?.name ?? api.name;
                 indent.format('''
                       ${unsupportedPlatforms != null ? '#if $unsupportedPlatforms' : ''}
@@ -1557,9 +1432,7 @@ if (wrapped == nil) {
     );
 
     final swiftApiDelegateName = '${hostProxyApiPrefix}Delegate${api.name}';
-    final type = api.hasMethodsRequiringImplementation()
-        ? 'protocol'
-        : 'open class';
+    final type = api.hasMethodsRequiringImplementation() ? 'protocol' : 'open class';
     indent.writeScoped('$type $swiftApiDelegateName {', '}', () {
       _writeProxyApiConstructorDelegateMethods(
         indent,
@@ -1600,56 +1473,50 @@ if (wrapped == nil) {
     indent.newln();
 
     final swiftApiName = '$hostProxyApiPrefix${api.name}';
-    indent.writeScoped(
-      'final class $swiftApiName: $swiftApiProtocolName  {',
-      '}',
-      () {
-        indent.writeln(
-          'unowned let golubetsRegistrar: ${proxyApiRegistrarName(generatorOptions)}',
-        );
-        indent.writeln('let golubetsDelegate: $swiftApiDelegateName');
+    indent.writeScoped('final class $swiftApiName: $swiftApiProtocolName  {', '}', () {
+      indent.writeln('unowned let golubetsRegistrar: ${proxyApiRegistrarName(generatorOptions)}');
+      indent.writeln('let golubetsDelegate: $swiftApiDelegateName');
 
-        _writeProxyApiInheritedApiMethods(indent, api);
+      _writeProxyApiInheritedApiMethods(indent, api);
 
-        indent.writeScoped(
-          'init(golubetsRegistrar: ${proxyApiRegistrarName(generatorOptions)}, delegate: $swiftApiDelegateName) {',
-          '}',
-          () {
-            indent.writeln('self.golubetsRegistrar = golubetsRegistrar');
-            indent.writeln('self.golubetsDelegate = delegate');
-          },
-        );
+      indent.writeScoped(
+        'init(golubetsRegistrar: ${proxyApiRegistrarName(generatorOptions)}, delegate: $swiftApiDelegateName) {',
+        '}',
+        () {
+          indent.writeln('self.golubetsRegistrar = golubetsRegistrar');
+          indent.writeln('self.golubetsDelegate = delegate');
+        },
+      );
 
-        if (api.hasAnyHostMessageCalls()) {
-          _writeProxyApiMessageHandlerMethod(
-            indent,
-            api,
-            generatorOptions: generatorOptions,
-            apiAsTypeDeclaration: apiAsTypeDeclaration,
-            swiftApiName: swiftApiName,
-            dartPackageName: dartPackageName,
-          );
-          indent.newln();
-        }
-
-        _writeProxyApiNewInstanceMethod(
+      if (api.hasAnyHostMessageCalls()) {
+        _writeProxyApiMessageHandlerMethod(
           indent,
           api,
           generatorOptions: generatorOptions,
           apiAsTypeDeclaration: apiAsTypeDeclaration,
-          newInstanceMethodName: '${classMemberNamePrefix}newInstance',
+          swiftApiName: swiftApiName,
           dartPackageName: dartPackageName,
         );
+        indent.newln();
+      }
 
-        _writeProxyApiFlutterMethods(
-          indent,
-          api,
-          generatorOptions: generatorOptions,
-          apiAsTypeDeclaration: apiAsTypeDeclaration,
-          dartPackageName: dartPackageName,
-        );
-      },
-    );
+      _writeProxyApiNewInstanceMethod(
+        indent,
+        api,
+        generatorOptions: generatorOptions,
+        apiAsTypeDeclaration: apiAsTypeDeclaration,
+        newInstanceMethodName: '${classMemberNamePrefix}newInstance',
+        dartPackageName: dartPackageName,
+      );
+
+      _writeProxyApiFlutterMethods(
+        indent,
+        api,
+        generatorOptions: generatorOptions,
+        apiAsTypeDeclaration: apiAsTypeDeclaration,
+        dartPackageName: dartPackageName,
+      );
+    });
   }
 
   String _castForceUnwrap(String value, TypeDeclaration type) {
@@ -1676,9 +1543,7 @@ if (wrapped == nil) {
     required TypeDeclaration type,
   }) {
     if (type.isNullable) {
-      indent.writeln(
-        'let $variableName: $fieldType? = ${_castForceUnwrap(value, type)}',
-      );
+      indent.writeln('let $variableName: $fieldType? = ${_castForceUnwrap(value, type)}');
     } else {
       indent.writeln('let $variableName = ${_castForceUnwrap(value, type)}');
     }
@@ -1704,9 +1569,7 @@ if (wrapped == nil) {
     indent.newln();
     indent.write('private func wrapError(_ error: Any) -> [Any?] ');
     indent.addScoped('{', '}', () {
-      indent.write(
-        'if let golubetsError = error as? ${_getErrorClassName(generatorOptions)} ',
-      );
+      indent.write('if let golubetsError = error as? ${_getErrorClassName(generatorOptions)} ');
       indent.addScoped('{', '}', () {
         indent.write('return ');
         indent.addScoped('[', ']', () {
@@ -1727,7 +1590,7 @@ if (wrapped == nil) {
       indent.write('return ');
       indent.addScoped('[', ']', () {
         indent.writeln(r'"\(error)",');
-        indent.writeln(r'"\(type(of: error))",');
+        indent.writeln(r'"\(Swift.type(of: error))",');
         indent.writeln(r'"Stacktrace: \(Thread.callStackSymbols)",');
       });
     });
@@ -1743,10 +1606,7 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
 ''');
   }
 
-  void _writeCreateConnectionError(
-    InternalSwiftOptions generatorOptions,
-    Indent indent,
-  ) {
+  void _writeCreateConnectionError(InternalSwiftOptions generatorOptions, Indent indent) {
     indent.newln();
     indent.writeScoped(
       'private func createConnectionError(withChannelName channelName: String) -> ${_getErrorClassName(generatorOptions)} {',
@@ -1760,8 +1620,25 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
   }
 
   void _writeDeepEquals(InternalSwiftOptions generatorOptions, Indent indent) {
+    final deepEqualsName = 'deepEquals${generatorOptions.fileSpecificClassNameComponent ?? ''}';
+    final deepHashName = 'deepHash${generatorOptions.fileSpecificClassNameComponent ?? ''}';
+    final doubleEqualsName = 'doubleEquals${generatorOptions.fileSpecificClassNameComponent ?? ''}';
+    final doubleHashName = 'doubleHash${generatorOptions.fileSpecificClassNameComponent ?? ''}';
     indent.format('''
-func deepEquals${generatorOptions.fileSpecificClassNameComponent}(_ lhs: Any?, _ rhs: Any?) -> Bool {
+private func $doubleEqualsName(_ lhs: Double, _ rhs: Double) -> Bool {
+  return (lhs.isNaN && rhs.isNaN) || lhs == rhs
+}
+
+private func $doubleHashName(_ value: Double, _ hasher: inout Hasher) {
+  if value.isNaN {
+    hasher.combine(0x7FF8000000000000)
+  } else {
+    // Normalize -0.0 to 0.0
+    hasher.combine(value == 0 ? 0 : value)
+  }
+}
+
+func $deepEqualsName(_ lhs: Any?, _ rhs: Any?) -> Bool {
   let cleanLhs = nilOrValue(lhs) as Any?
   let cleanRhs = nilOrValue(rhs) as Any?
   switch (cleanLhs, cleanRhs) {
@@ -1771,30 +1648,53 @@ func deepEquals${generatorOptions.fileSpecificClassNameComponent}(_ lhs: Any?, _
   case (nil, _), (_, nil):
     return false
 
+  case (let lhs as AnyObject, let rhs as AnyObject) where lhs === rhs:
+    return true
+
   case is (Void, Void):
     return true
 
-  case let (cleanLhsHashable, cleanRhsHashable) as (AnyHashable, AnyHashable):
-    return cleanLhsHashable == cleanRhsHashable
-
-  case let (cleanLhsArray, cleanRhsArray) as ([Any?], [Any?]):
-    guard cleanLhsArray.count == cleanRhsArray.count else { return false }
-    for (index, element) in cleanLhsArray.enumerated() {
-      if !deepEquals${generatorOptions.fileSpecificClassNameComponent}(element, cleanRhsArray[index]) {
+  case (let lhsArray, let rhsArray) as ([Any?], [Any?]):
+    guard lhsArray.count == rhsArray.count else { return false }
+    for (index, element) in lhsArray.enumerated() {
+      if !$deepEqualsName(element, rhsArray[index]) {
         return false
       }
     }
     return true
 
-  case let (cleanLhsDictionary, cleanRhsDictionary) as ([AnyHashable: Any?], [AnyHashable: Any?]):
-    guard cleanLhsDictionary.count == cleanRhsDictionary.count else { return false }
-    for (key, cleanLhsValue) in cleanLhsDictionary {
-      guard cleanRhsDictionary.index(forKey: key) != nil else { return false }
-      if !deepEquals${generatorOptions.fileSpecificClassNameComponent}(cleanLhsValue, cleanRhsDictionary[key]!) {
+  case (let lhsArray, let rhsArray) as ([Double], [Double]):
+    guard lhsArray.count == rhsArray.count else { return false }
+    for (index, element) in lhsArray.enumerated() {
+      if !$doubleEqualsName(element, rhsArray[index]) {
         return false
       }
     }
     return true
+
+  case (let lhsDictionary, let rhsDictionary) as ([AnyHashable: Any?], [AnyHashable: Any?]):
+    guard lhsDictionary.count == rhsDictionary.count else { return false }
+    for (lhsKey, lhsValue) in lhsDictionary {
+      var found = false
+      for (rhsKey, rhsValue) in rhsDictionary {
+        if $deepEqualsName(lhsKey, rhsKey) {
+          if $deepEqualsName(lhsValue, rhsValue) {
+            found = true
+            break
+          } else {
+            return false
+          }
+        }
+      }
+      if !found { return false }
+    }
+    return true
+
+  case (let lhs as Double, let rhs as Double):
+    return $doubleEqualsName(lhs, rhs)
+
+  case (let lhsHashable, let rhsHashable) as (AnyHashable, AnyHashable):
+    return lhsHashable == rhsHashable
 
   default:
     // Any other type shouldn't be able to be used with golubetsets. File an issue if you find this to be untrue.
@@ -1802,28 +1702,39 @@ func deepEquals${generatorOptions.fileSpecificClassNameComponent}(_ lhs: Any?, _
   }
 }
 
-func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, hasher: inout Hasher) {
-  if let valueList = value as? [AnyHashable] {
-     for item in valueList { deepHash${generatorOptions.fileSpecificClassNameComponent}(value: item, hasher: &hasher) }
-     return
-  }
-
-  if let valueDict = value as? [AnyHashable: AnyHashable] {
-    for key in valueDict.keys { 
-      hasher.combine(key)
-      deepHash${generatorOptions.fileSpecificClassNameComponent}(value: valueDict[key]!, hasher: &hasher)
+func $deepHashName(value: Any?, hasher: inout Hasher) {
+  let cleanValue = nilOrValue(value) as Any?
+  if let cleanValue = cleanValue {
+    if let doubleValue = cleanValue as? Double {
+      $doubleHashName(doubleValue, &hasher)
+    } else if let valueList = cleanValue as? [Any?] {
+      for item in valueList {
+        $deepHashName(value: item, hasher: &hasher)
+      }
+    } else if let valueList = cleanValue as? [Double] {
+      for item in valueList {
+        $doubleHashName(item, &hasher)
+      }
+    } else if let valueDict = cleanValue as? [AnyHashable: Any?] {
+      var result = 0
+      for (key, value) in valueDict {
+        var entryKeyHasher = Hasher()
+        $deepHashName(value: key, hasher: &entryKeyHasher)
+        var entryValueHasher = Hasher()
+        $deepHashName(value: value, hasher: &entryValueHasher)
+        result = result &+ ((entryKeyHasher.finalize() &* 31) ^ entryValueHasher.finalize())
+      }
+      hasher.combine(result)
+    } else if let hashableValue = cleanValue as? AnyHashable {
+      hasher.combine(hashableValue)
+    } else {
+      hasher.combine(String(describing: cleanValue))
     }
-    return
+  } else {
+    hasher.combine(0)
   }
-
-  if let hashableValue = value as? AnyHashable {
-    hasher.combine(hashableValue.hashValue)
-  }
-
-  return hasher.combine(String(describing: value))
 }
-
-    ''');
+''');
   }
 
   @override
@@ -1914,11 +1825,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       }
       ''');
     }
-    addDocumentationComments(
-      indent,
-      api.documentationComments,
-      _docCommentSpec,
-    );
+    addDocumentationComments(indent, api.documentationComments, _docCommentSpec);
     for (final Method func in api.methods) {
       indent.format('''
         class ${toUpperCamelCase(func.name)}StreamHandler: GolubetsEventChannelWrapper<${_swiftTypeForDartType(func.returnType)}> {
@@ -1982,12 +1889,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     }
 
     final Iterable<String> enumSafeArgNames = parameters.asMap().entries.map(
-      (MapEntry<int, NamedType> e) =>
-          getEnumSafeArgumentExpression(e.key, e.value),
+      (MapEntry<int, NamedType> e) => getEnumSafeArgumentExpression(e.key, e.value),
     );
-    final sendArgument = parameters.isEmpty
-        ? 'nil'
-        : '[${enumSafeArgNames.join(', ')}] as [Any?]';
+    final sendArgument = parameters.isEmpty ? 'nil' : '[${enumSafeArgNames.join(', ')}] as [Any?]';
     const channel = 'channel';
     indent.writeln('let channelName: String = "$channelName"');
     indent.writeln(
@@ -1996,16 +1900,10 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     indent.write('$channel.sendMessage($sendArgument) ');
 
     indent.addScoped('{ response in', '}', () {
-      indent.writeScoped(
-        'guard let listResponse = response as? [Any?] else {',
-        '}',
-        () {
-          indent.writeln(
-            'completion(.failure(createConnectionError(withChannelName: channelName)))',
-          );
-          indent.writeln('return');
-        },
-      );
+      indent.writeScoped('guard let listResponse = response as? [Any?] else {', '}', () {
+        indent.writeln('completion(.failure(createConnectionError(withChannelName: channelName)))');
+        indent.writeln('return');
+      });
       indent.writeScoped('if listResponse.count > 1 {', '} ', () {
         indent.writeln('let code: String = listResponse[0] as! String');
         indent.writeln('let message: String? = nilOrValue(listResponse[1])');
@@ -2036,9 +1934,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           // There is a swift bug with unwrapping maps of nullable Enums;
           final enumMapForceUnwrap =
               returnType.baseName == 'Map' &&
-                  returnType.typeArguments.any(
-                    (TypeDeclaration type) => type.isEnum,
-                  )
+                  returnType.typeArguments.any((TypeDeclaration type) => type.isEnum)
               ? '!'
               : '';
           indent.writeln('completion(.success(result$enumMapForceUnwrap))');
@@ -2058,8 +1954,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     String setHandlerCondition = 'let api = api',
     List<String> documentationComments = const <String>[],
     AsynchronousType asynchronousType = AsynchronousType.none,
-    String Function(List<String> safeArgNames, {required String apiVarName})?
-    onCreateCall,
+    String Function(List<String> safeArgNames, {required String apiVarName})? onCreateCall,
   }) {
     final components = _SwiftFunctionComponents(
       name: name,
@@ -2080,8 +1975,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     // queue variable not being nil because the earlier code to set it will
     // return nil on macOS where the optional parts of the protocol are not
     // implemented.
-    final channelCreationWithoutTaskQueue =
-        'FlutterBasicMessageChannel($baseArgs)';
+    final channelCreationWithoutTaskQueue = 'FlutterBasicMessageChannel($baseArgs)';
     if (serialBackgroundQueue == null) {
       indent.writeln('let $varChannelName = $channelCreationWithoutTaskQueue');
     } else {
@@ -2103,19 +1997,14 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         final methodArgument = <String>[];
         if (components.arguments.isNotEmpty) {
           indent.writeln('let args = message as! [Any?]');
-          enumerate(components.arguments, (
-            int index,
-            _SwiftFunctionArgument arg,
-          ) {
+          enumerate(components.arguments, (int index, _SwiftFunctionArgument arg) {
             final String argName = _getSafeArgumentName(index, arg.namedType);
             final argIndex = 'args[$index]';
             final String fieldType = _swiftTypeForDartType(arg.type);
             // There is a swift bug with unwrapping maps of nullable Enums;
             final enumMapForceUnwrap =
                 arg.type.baseName == 'Map' &&
-                    arg.type.typeArguments.any(
-                      (TypeDeclaration type) => type.isEnum,
-                    )
+                    arg.type.typeArguments.any((TypeDeclaration type) => type.isEnum)
                 ? '!'
                 : '';
 
@@ -2130,17 +2019,13 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
             if (arg.label == '_') {
               methodArgument.add('$argName$enumMapForceUnwrap');
             } else {
-              methodArgument.add(
-                '${arg.label ?? arg.name}: $argName$enumMapForceUnwrap',
-              );
+              methodArgument.add('${arg.label ?? arg.name}: $argName$enumMapForceUnwrap');
             }
           });
         }
         final bool throws = switch (asynchronousType) {
           CallbackAsynchronous() => false,
-          AwaitAsynchronous(
-            :final SwiftAwaitAsynchronousOptions swiftOptions,
-          ) =>
+          AwaitAsynchronous(:final SwiftAwaitAsynchronousOptions swiftOptions) =>
             swiftOptions.throws,
           NoAsynchronous() => true,
         };
@@ -2150,12 +2035,10 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         if (onCreateCall == null) {
           // Empty parens are not required when calling a method whose only
           // argument is a trailing closure.
-          final argumentString =
-              methodArgument.isEmpty && asynchronousType.isCallback
+          final argumentString = methodArgument.isEmpty && asynchronousType.isCallback
               ? ''
               : '(${methodArgument.join(', ')})';
-          call =
-              '$tryStatement${awaitKeyword}api.${components.name}$argumentString';
+          call = '$tryStatement${awaitKeyword}api.${components.name}$argumentString';
         } else {
           call = onCreateCall(methodArgument, apiVarName: 'api');
         }
@@ -2183,12 +2066,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
               return body();
             }
 
-            indent.writeScoped(
-              'do {',
-              '}',
-              () => body(),
-              addTrailingNewline: false,
-            );
+            indent.writeScoped('do {', '}', () => body(), addTrailingNewline: false);
             indent.addScoped(' catch {', '}', () {
               indent.writeln('reply(wrapError(error))');
             });
@@ -2246,14 +2124,14 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     // Some APIs don't have any methods to implement,
     // so this creates an extension of the GolubetsProxyApiDelegate that adds
     // default implementations for these APIs.
-    final Iterable<AstProxyApi> apisThatCanHaveADefaultImpl = allProxyApis
-        .where((AstProxyApi api) => !api.hasMethodsRequiringImplementation());
+    final Iterable<AstProxyApi> apisThatCanHaveADefaultImpl = allProxyApis.where(
+      (AstProxyApi api) => !api.hasMethodsRequiringImplementation(),
+    );
     if (apisThatCanHaveADefaultImpl.isNotEmpty) {
       indent.writeScoped('extension $delegateName {', '}', () {
         for (final api in apisThatCanHaveADefaultImpl) {
           final hostApiName = '$hostProxyApiPrefix${api.name}';
-          final swiftApiDelegateName =
-              '${hostProxyApiPrefix}Delegate${api.name}';
+          final swiftApiDelegateName = '${hostProxyApiPrefix}Delegate${api.name}';
           indent.format('''
             func golubetsApi${api.name}(_ registrar: ${proxyApiRegistrarName(generatorOptions)}) -> $hostApiName {
               return $hostApiName(golubetsRegistrar: registrar, delegate: $swiftApiDelegateName())
@@ -2263,26 +2141,20 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       indent.newln();
     }
 
-    final instanceManagerApiName =
-        '${swiftInstanceManagerClassName(generatorOptions)}Api';
+    final instanceManagerApiName = '${swiftInstanceManagerClassName(generatorOptions)}Api';
 
-    indent.writeScoped(
-      'open class ${proxyApiRegistrarName(generatorOptions)} {',
-      '}',
-      () {
-        indent.writeln('let binaryMessenger: FlutterBinaryMessenger');
-        indent.writeln('let apiDelegate: $delegateName');
-        indent.writeln(
-          'let instanceManager: ${swiftInstanceManagerClassName(generatorOptions)}',
-        );
+    indent.writeScoped('open class ${proxyApiRegistrarName(generatorOptions)} {', '}', () {
+      indent.writeln('let binaryMessenger: FlutterBinaryMessenger');
+      indent.writeln('let apiDelegate: $delegateName');
+      indent.writeln('let instanceManager: ${swiftInstanceManagerClassName(generatorOptions)}');
 
-        addDocumentationComments(indent, <String>[
-          ' Whether APIs should ignore calling to Dart.',
-        ], _docCommentSpec);
-        indent.writeln('public var ignoreCallsToDart = false');
+      addDocumentationComments(indent, <String>[
+        ' Whether APIs should ignore calling to Dart.',
+      ], _docCommentSpec);
+      indent.writeln('public var ignoreCallsToDart = false');
 
-        indent.writeln('private var _codec: FlutterStandardMessageCodec?');
-        indent.format('''
+      indent.writeln('private var _codec: FlutterStandardMessageCodec?');
+      indent.format('''
         var codec: FlutterStandardMessageCodec {
           if _codec == nil {
             _codec = FlutterStandardMessageCodec(
@@ -2290,9 +2162,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           }
           return _codec!
         }''');
-        indent.newln();
+      indent.newln();
 
-        indent.format('''
+      indent.format('''
         private class InstanceManagerApiFinalizerDelegate: ${instanceManagerFinalizerDelegateName(generatorOptions)} {
           let api: $instanceManagerApiName
 
@@ -2306,9 +2178,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
             }
           }
         }''');
-        indent.newln();
+      indent.newln();
 
-        indent.format('''
+      indent.format('''
         init(binaryMessenger: FlutterBinaryMessenger, apiDelegate: $delegateName) {
           self.binaryMessenger = binaryMessenger
           self.apiDelegate = apiDelegate
@@ -2316,35 +2188,34 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
             finalizerDelegate: InstanceManagerApiFinalizerDelegate(
               $instanceManagerApiName(binaryMessenger: binaryMessenger)))
         }''');
-        indent.newln();
+      indent.newln();
 
-        indent.writeScoped('func setUp() {', '}', () {
-          indent.writeln(
-            '$instanceManagerApiName.setUpMessageHandlers(binaryMessenger: binaryMessenger, instanceManager: instanceManager)',
-          );
-          for (final api in allProxyApis) {
-            if (api.hasAnyHostMessageCalls()) {
-              indent.writeln(
-                '$hostProxyApiPrefix${api.name}.setUpMessageHandlers(binaryMessenger: binaryMessenger, api: apiDelegate.golubetsApi${api.name}(self))',
-              );
-            }
+      indent.writeScoped('func setUp() {', '}', () {
+        indent.writeln(
+          '$instanceManagerApiName.setUpMessageHandlers(binaryMessenger: binaryMessenger, instanceManager: instanceManager)',
+        );
+        for (final api in allProxyApis) {
+          if (api.hasAnyHostMessageCalls()) {
+            indent.writeln(
+              '$hostProxyApiPrefix${api.name}.setUpMessageHandlers(binaryMessenger: binaryMessenger, api: apiDelegate.golubetsApi${api.name}(self))',
+            );
           }
-        });
+        }
+      });
 
-        indent.writeScoped('func tearDown() {', '}', () {
-          indent.writeln(
-            '$instanceManagerApiName.setUpMessageHandlers(binaryMessenger: binaryMessenger, instanceManager: nil)',
-          );
-          for (final api in allProxyApis) {
-            if (api.hasAnyHostMessageCalls()) {
-              indent.writeln(
-                '$hostProxyApiPrefix${api.name}.setUpMessageHandlers(binaryMessenger: binaryMessenger, api: nil)',
-              );
-            }
+      indent.writeScoped('func tearDown() {', '}', () {
+        indent.writeln(
+          '$instanceManagerApiName.setUpMessageHandlers(binaryMessenger: binaryMessenger, instanceManager: nil)',
+        );
+        for (final api in allProxyApis) {
+          if (api.hasAnyHostMessageCalls()) {
+            indent.writeln(
+              '$hostProxyApiPrefix${api.name}.setUpMessageHandlers(binaryMessenger: binaryMessenger, api: nil)',
+            );
           }
-        });
-      },
-    );
+        }
+      });
+    });
   }
 
   // Writes the delegate method that instantiates a new instance of the Kotlin
@@ -2361,37 +2232,24 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         ...constructor.parameters.map((Parameter parameter) => parameter.type),
       ];
 
-      final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(
-        allReferencedTypes,
-      );
+      final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
       if (unsupportedPlatforms != null) {
         indent.writeln('#if $unsupportedPlatforms');
       }
 
-      addDocumentationComments(
-        indent,
-        constructor.documentationComments,
-        _docCommentSpec,
-      );
+      addDocumentationComments(indent, constructor.documentationComments, _docCommentSpec);
 
-      final String? availableAnnotation = _tryGetAvailabilityAnnotation(
-        allReferencedTypes,
-      );
+      final String? availableAnnotation = _tryGetAvailabilityAnnotation(allReferencedTypes);
       if (availableAnnotation != null) {
         indent.writeln('@$availableAnnotation');
       }
 
       final String methodSignature = _getMethodSignature(
-        name: constructor.name.isNotEmpty
-            ? constructor.name
-            : 'golubetsDefaultConstructor',
+        name: constructor.name.isNotEmpty ? constructor.name : 'golubetsDefaultConstructor',
         parameters: <Parameter>[
           Parameter(
             name: 'golubetsApi',
-            type: TypeDeclaration(
-              baseName: '$hostProxyApiPrefix${api.name}',
-              isNullable: false,
-            ),
+            type: TypeDeclaration(baseName: '$hostProxyApiPrefix${api.name}', isNullable: false),
           ),
           ...api.unattachedFields.map((ApiField field) {
             return Parameter(name: field.name, type: field.type);
@@ -2417,27 +2275,16 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     required TypeDeclaration apiAsTypeDeclaration,
   }) {
     for (final ApiField field in api.attachedFields) {
-      final allReferencedTypes = <TypeDeclaration>[
-        apiAsTypeDeclaration,
-        field.type,
-      ];
+      final allReferencedTypes = <TypeDeclaration>[apiAsTypeDeclaration, field.type];
 
-      final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(
-        allReferencedTypes,
-      );
+      final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
       if (unsupportedPlatforms != null) {
         indent.writeln('#if $unsupportedPlatforms');
       }
 
-      addDocumentationComments(
-        indent,
-        field.documentationComments,
-        _docCommentSpec,
-      );
+      addDocumentationComments(indent, field.documentationComments, _docCommentSpec);
 
-      final String? availableAnnotation = _tryGetAvailabilityAnnotation(
-        allReferencedTypes,
-      );
+      final String? availableAnnotation = _tryGetAvailabilityAnnotation(allReferencedTypes);
       if (availableAnnotation != null) {
         indent.writeln('@$availableAnnotation');
       }
@@ -2447,13 +2294,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         parameters: <Parameter>[
           Parameter(
             name: 'golubetsApi',
-            type: TypeDeclaration(
-              baseName: '$hostProxyApiPrefix${api.name}',
-              isNullable: false,
-            ),
+            type: TypeDeclaration(baseName: '$hostProxyApiPrefix${api.name}', isNullable: false),
           ),
-          if (!field.isStatic)
-            Parameter(name: 'golubetsInstance', type: apiAsTypeDeclaration),
+          if (!field.isStatic) Parameter(name: 'golubetsInstance', type: apiAsTypeDeclaration),
         ],
         returnType: field.type,
         errorTypeName: '',
@@ -2474,27 +2317,16 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     required TypeDeclaration apiAsTypeDeclaration,
   }) {
     for (final ApiField field in api.unattachedFields) {
-      final allReferencedTypes = <TypeDeclaration>[
-        apiAsTypeDeclaration,
-        field.type,
-      ];
+      final allReferencedTypes = <TypeDeclaration>[apiAsTypeDeclaration, field.type];
 
-      final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(
-        allReferencedTypes,
-      );
+      final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
       if (unsupportedPlatforms != null) {
         indent.writeln('#if $unsupportedPlatforms');
       }
 
-      addDocumentationComments(
-        indent,
-        field.documentationComments,
-        _docCommentSpec,
-      );
+      addDocumentationComments(indent, field.documentationComments, _docCommentSpec);
 
-      final String? availableAnnotation = _tryGetAvailabilityAnnotation(
-        allReferencedTypes,
-      );
+      final String? availableAnnotation = _tryGetAvailabilityAnnotation(allReferencedTypes);
       if (availableAnnotation != null) {
         indent.writeln('@$availableAnnotation');
       }
@@ -2504,10 +2336,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         parameters: <Parameter>[
           Parameter(
             name: 'golubetsApi',
-            type: TypeDeclaration(
-              baseName: '$hostProxyApiPrefix${api.name}',
-              isNullable: false,
-            ),
+            type: TypeDeclaration(baseName: '$hostProxyApiPrefix${api.name}', isNullable: false),
           ),
           Parameter(name: 'golubetsInstance', type: apiAsTypeDeclaration),
         ],
@@ -2537,22 +2366,14 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         ...method.parameters.map((Parameter p) => p.type),
       ];
 
-      final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(
-        allReferencedTypes,
-      );
+      final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
       if (unsupportedPlatforms != null) {
         indent.writeln('#if $unsupportedPlatforms');
       }
 
-      addDocumentationComments(
-        indent,
-        method.documentationComments,
-        _docCommentSpec,
-      );
+      addDocumentationComments(indent, method.documentationComments, _docCommentSpec);
 
-      final String? availableAnnotation = _tryGetAvailabilityAnnotation(
-        allReferencedTypes,
-      );
+      final String? availableAnnotation = _tryGetAvailabilityAnnotation(allReferencedTypes);
       if (availableAnnotation != null) {
         indent.writeln('@$availableAnnotation');
       }
@@ -2562,13 +2383,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         parameters: <Parameter>[
           Parameter(
             name: 'golubetsApi',
-            type: TypeDeclaration(
-              baseName: '$hostProxyApiPrefix${api.name}',
-              isNullable: false,
-            ),
+            type: TypeDeclaration(baseName: '$hostProxyApiPrefix${api.name}', isNullable: false),
           ),
-          if (!method.isStatic)
-            Parameter(name: 'golubetsInstance', type: apiAsTypeDeclaration),
+          if (!method.isStatic) Parameter(name: 'golubetsInstance', type: apiAsTypeDeclaration),
           ...method.parameters,
         ],
         returnType: method.returnType,
@@ -2596,15 +2413,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       addDocumentationComments(indent, <String>[
         'An implementation of [$name] used to access callback methods',
       ], _docCommentSpec);
-      indent.writeScoped(
-        'var golubetsApi$name: $hostProxyApiPrefix$name {',
-        '}',
-        () {
-          indent.writeln(
-            'return golubetsRegistrar.apiDelegate.golubetsApi$name(golubetsRegistrar)',
-          );
-        },
-      );
+      indent.writeScoped('var golubetsApi$name: $hostProxyApiPrefix$name {', '}', () {
+        indent.writeln('return golubetsRegistrar.apiDelegate.golubetsApi$name(golubetsRegistrar)');
+      });
       indent.newln();
     }
   }
@@ -2635,15 +2446,12 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
           required String channelName,
           required void Function() onWrite,
         }) {
-          final String? unsupportedPlatforms =
-              _tryGetUnsupportedPlatformsCondition(types);
+          final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(types);
           if (unsupportedPlatforms != null) {
             indent.writeln('#if $unsupportedPlatforms');
           }
 
-          final String? availableAnnotation = _tryGetAvailabilityAnnotation(
-            types,
-          );
+          final String? availableAnnotation = _tryGetAvailabilityAnnotation(types);
           if (availableAnnotation != null) {
             indent.writeScoped(
               'if #$availableAnnotation {',
@@ -2703,27 +2511,20 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                 channelName: channelName,
                 returnType: const TypeDeclaration.voidDeclaration(),
                 swiftFunction: null,
-                onCreateCall:
-                    (
-                      List<String> methodParameters, {
-                      required String apiVarName,
-                    }) {
-                      final parameters = <String>[
-                        'golubetsApi: $apiVarName',
-                        // Skip the identifier used by the InstanceManager.
-                        ...methodParameters.skip(1),
-                      ];
-                      return '$apiVarName.golubetsRegistrar.instanceManager.addDartCreatedInstance(\n'
-                          'try $apiVarName.golubetsDelegate.$name(${parameters.join(', ')}),\n'
-                          'withIdentifier: golubetsIdentifierArg)';
-                    },
+                onCreateCall: (List<String> methodParameters, {required String apiVarName}) {
+                  final parameters = <String>[
+                    'golubetsApi: $apiVarName',
+                    // Skip the identifier used by the InstanceManager.
+                    ...methodParameters.skip(1),
+                  ];
+                  return '$apiVarName.golubetsRegistrar.instanceManager.addDartCreatedInstance(\n'
+                      'try $apiVarName.golubetsDelegate.$name(${parameters.join(', ')}),\n'
+                      'withIdentifier: golubetsIdentifierArg)';
+                },
                 parameters: <Parameter>[
                   Parameter(
                     name: 'golubetsIdentifier',
-                    type: const TypeDeclaration(
-                      baseName: 'int',
-                      isNullable: false,
-                    ),
+                    type: const TypeDeclaration(baseName: 'int', isNullable: false),
                   ),
                   ...api.unattachedFields.map((ApiField field) {
                     return Parameter(name: field.name, type: field.type);
@@ -2752,30 +2553,20 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                 channelName: channelName,
                 swiftFunction: null,
                 returnType: const TypeDeclaration.voidDeclaration(),
-                onCreateCall:
-                    (
-                      List<String> methodParameters, {
-                      required String apiVarName,
-                    }) {
-                      final instanceArg = field.isStatic
-                          ? ''
-                          : ', golubetsInstance: golubetsInstanceArg';
-                      return '$apiVarName.golubetsRegistrar.instanceManager.addDartCreatedInstance('
-                          'try $apiVarName.golubetsDelegate.${field.name}(golubetsApi: api$instanceArg), '
-                          'withIdentifier: golubetsIdentifierArg)';
-                    },
+                onCreateCall: (List<String> methodParameters, {required String apiVarName}) {
+                  final instanceArg = field.isStatic
+                      ? ''
+                      : ', golubetsInstance: golubetsInstanceArg';
+                  return '$apiVarName.golubetsRegistrar.instanceManager.addDartCreatedInstance('
+                      'try $apiVarName.golubetsDelegate.${field.name}(golubetsApi: api$instanceArg), '
+                      'withIdentifier: golubetsIdentifierArg)';
+                },
                 parameters: <Parameter>[
                   if (!field.isStatic)
-                    Parameter(
-                      name: 'golubetsInstance',
-                      type: apiAsTypeDeclaration,
-                    ),
+                    Parameter(name: 'golubetsInstance', type: apiAsTypeDeclaration),
                   Parameter(
                     name: 'golubetsIdentifier',
-                    type: const TypeDeclaration(
-                      baseName: 'int',
-                      isNullable: false,
-                    ),
+                    type: const TypeDeclaration(baseName: 'int', isNullable: false),
                   ),
                 ],
               );
@@ -2784,11 +2575,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         }
 
         for (final Method method in api.hostMethods) {
-          final String channelName = makeChannelName(
-            api,
-            method,
-            dartPackageName,
-          );
+          final String channelName = makeChannelName(api, method, dartPackageName);
           writeWithApiCheckIfNecessary(
             <TypeDeclaration>[
               apiAsTypeDeclaration,
@@ -2805,28 +2592,19 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
                 returnType: method.returnType,
                 asynchronousType: method.asynchronousType,
                 swiftFunction: null,
-                onCreateCall:
-                    (
-                      List<String> methodParameters, {
-                      required String apiVarName,
-                    }) {
-                      final tryStatement = method.asynchronousType.isCallback
-                          ? ''
-                          : 'try ';
-                      final parameters = <String>[
-                        'golubetsApi: $apiVarName',
-                        // Skip the identifier used by the InstanceManager.
-                        ...methodParameters,
-                      ];
+                onCreateCall: (List<String> methodParameters, {required String apiVarName}) {
+                  final tryStatement = method.asynchronousType.isCallback ? '' : 'try ';
+                  final parameters = <String>[
+                    'golubetsApi: $apiVarName',
+                    // Skip the identifier used by the InstanceManager.
+                    ...methodParameters,
+                  ];
 
-                      return '$tryStatement$apiVarName.golubetsDelegate.${method.name}(${parameters.join(', ')})';
-                    },
+                  return '$tryStatement$apiVarName.golubetsDelegate.${method.name}(${parameters.join(', ')})';
+                },
                 parameters: <Parameter>[
                   if (!method.isStatic)
-                    Parameter(
-                      name: 'golubetsInstance',
-                      type: apiAsTypeDeclaration,
-                    ),
+                    Parameter(name: 'golubetsInstance', type: apiAsTypeDeclaration),
                   ...method.parameters,
                 ],
               );
@@ -2851,9 +2629,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       ...api.unattachedFields.map((ApiField field) => field.type),
     ];
 
-    final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(
-      allReferencedTypes,
-    );
+    final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
     if (unsupportedPlatforms != null) {
       indent.writeln('#if $unsupportedPlatforms');
     }
@@ -2862,18 +2638,14 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       'Creates a Dart instance of ${api.name} and attaches it to [golubetsInstance].',
     ], _docCommentSpec);
 
-    final String? availableAnnotation = _tryGetAvailabilityAnnotation(
-      allReferencedTypes,
-    );
+    final String? availableAnnotation = _tryGetAvailabilityAnnotation(allReferencedTypes);
     if (availableAnnotation != null) {
       indent.writeln('@$availableAnnotation');
     }
 
     final String methodSignature = _getMethodSignature(
       name: 'golubetsNewInstance',
-      parameters: <Parameter>[
-        Parameter(name: 'golubetsInstance', type: apiAsTypeDeclaration),
-      ],
+      parameters: <Parameter>[Parameter(name: 'golubetsInstance', type: apiAsTypeDeclaration)],
       returnType: const TypeDeclaration.voidDeclaration(),
       errorTypeName: _getErrorClassName(generatorOptions),
       asynchronousType: AsynchronousType.callback,
@@ -2881,14 +2653,12 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     );
     indent.writeScoped('$methodSignature {', '}', () {
       indent.writeScoped('if golubetsRegistrar.ignoreCallsToDart {', '}', () {
-        indent.format(
-          '''
+        indent.format('''
             completion(
               .failure(
                 ${_getErrorClassName(generatorOptions)}(
                   code: "ignore-calls-error",
-                  message: "Calls to Dart are being ignored.", details: "")))''',
-        );
+                  message: "Calls to Dart are being ignored.", details: "")))''');
       }, addTrailingNewline: false);
 
       indent.writeScoped(
@@ -2910,9 +2680,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
               'let $argName = try! golubetsDelegate.${field.name}(golubetsApi: self, golubetsInstance: golubetsInstance)',
             );
           });
-          indent.writeln(
-            'let binaryMessenger = golubetsRegistrar.binaryMessenger',
-          );
+          indent.writeln('let binaryMessenger = golubetsRegistrar.binaryMessenger');
           indent.writeln('let codec = golubetsRegistrar.codec');
           _writeFlutterMethodMessageCall(
             indent,
@@ -2968,22 +2736,14 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         method.returnType,
       ];
 
-      final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(
-        allReferencedTypes,
-      );
+      final String? unsupportedPlatforms = _tryGetUnsupportedPlatformsCondition(allReferencedTypes);
       if (unsupportedPlatforms != null) {
         indent.writeln('#if $unsupportedPlatforms');
       }
 
-      addDocumentationComments(
-        indent,
-        method.documentationComments,
-        _docCommentSpec,
-      );
+      addDocumentationComments(indent, method.documentationComments, _docCommentSpec);
 
-      final String? availableAnnotation = _tryGetAvailabilityAnnotation(
-        allReferencedTypes,
-      );
+      final String? availableAnnotation = _tryGetAvailabilityAnnotation(allReferencedTypes);
       if (availableAnnotation != null) {
         indent.writeln('@$availableAnnotation');
       }
@@ -3004,20 +2764,15 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       indent.write(methodSignature);
       if (writeBody) {
         indent.writeScoped(' {', '}', () {
-          indent.writeScoped(
-            'if golubetsRegistrar.ignoreCallsToDart {',
-            '}',
-            () {
-              indent.format('''
+          indent.writeScoped('if golubetsRegistrar.ignoreCallsToDart {', '}', () {
+            indent.format('''
                 completion(
                   .failure(
                     ${_getErrorClassName(generatorOptions)}(
                       code: "ignore-calls-error",
                       message: "Calls to Dart are being ignored.", details: "")))
                 return''');
-            },
-            addTrailingNewline: false,
-          );
+          }, addTrailingNewline: false);
 
           final String instanceArgName = _getSafeArgumentName(
             0,
@@ -3037,9 +2792,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
             },
           );
 
-          indent.writeln(
-            'let binaryMessenger = golubetsRegistrar.binaryMessenger',
-          );
+          indent.writeln('let binaryMessenger = golubetsRegistrar.binaryMessenger');
           indent.writeln('let codec = golubetsRegistrar.codec');
 
           _writeFlutterMethodMessageCall(
@@ -3063,9 +2816,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
 
   void _writePigeonError(InternalSwiftOptions generatorOptions, Indent indent) {
     indent.newln();
-    indent.writeln(
-      '/// Error class for passing custom error details to Dart side.',
-    );
+    indent.writeln('/// Error class for passing custom error details to Dart side.');
     indent.writeScoped(
       'public final class ${_getErrorClassName(generatorOptions)}: Error {',
       '}',
@@ -3112,9 +2863,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
       // If every ProxyApi that shares an import excludes a platform for
       // support, surround the import with `#if !os(...) #endif`.
       final unsupportedPlatforms = <String>[
-        if (!apisOfImports[import]!.any(
-          (AstProxyApi api) => api.swiftOptions?.supportsIos ?? true,
-        ))
+        if (!apisOfImports[import]!.any((AstProxyApi api) => api.swiftOptions?.supportsIos ?? true))
           '!os(iOS)',
         if (!apisOfImports[import]!.any(
           (AstProxyApi api) => api.swiftOptions?.supportsMacos ?? true,
@@ -3143,12 +2892,9 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     indent.addScoped(' {', '}', () {
       indent.writeScoped('switch self {', '}', () {
         for (final Class child in classDefinition.children) {
-          final Iterable<NamedType> orderedFields =
-              getFieldsInSerializationOrder(child);
+          final Iterable<NamedType> orderedFields = getFieldsInSerializationOrder(child);
           final String childName =
-              (generatorOptions.usePureSealedSubclasses
-                      ? child.pureName
-                      : child.name)
+              (generatorOptions.usePureSealedSubclasses ? child.pureName : child.name)
                   .toLowFirstLetter();
           indent.write('case .$childName');
           if (orderedFields.isNotEmpty) {
@@ -3195,9 +2941,7 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
     final List<Class> children = classDefinition.children;
 
     if (children.isEmpty) {
-      throw Exception(
-        'Sealed class ${classDefinition.name} has no children.',
-      );
+      throw Exception('Sealed class ${classDefinition.name} has no children.');
     }
     final privateString = private ? 'private' : 'public';
     final Set<String> hashableTypeParams = _getTypeParametersRequiringHashable(
@@ -3209,60 +2953,40 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
         ? ''
         : '<${_flattenTypeArgumentsWithSelectiveHashableConstraints(classDefinition.typeArguments, hashableTypeParams)}>';
 
-    indent.write(
-      '$privateString enum ${classDefinition.name}$typeArguments$extendsString',
-    );
+    indent.write('$privateString enum ${classDefinition.name}$typeArguments$extendsString');
 
     indent.writeScoped(' {', '', () {
       // Generate the cases for each child
       for (final child in children) {
-        final Iterable<NamedType> childFields = getFieldsInSerializationOrder(
-          child,
-        );
+        final Iterable<NamedType> childFields = getFieldsInSerializationOrder(child);
 
         // Generate the enum case with associated values
-        addDocumentationComments(
-          indent,
-          child.documentationComments,
-          _docCommentSpec,
-        );
+        addDocumentationComments(indent, child.documentationComments, _docCommentSpec);
         final String childName =
-            (generatorOptions.usePureSealedSubclasses
-                    ? child.pureName
-                    : child.name)
+            (generatorOptions.usePureSealedSubclasses ? child.pureName : child.name)
                 .toLowFirstLetter();
         indent.write('case $childName');
 
         if (childFields.isNotEmpty) {
-          indent.addScoped(
-            '(',
-            ')',
-            () {
-              for (final field in childFields) {
-                addDocumentationComments(
+          indent.addScoped('(', ')', () {
+            for (final field in childFields) {
+              addDocumentationComments(indent, field.documentationComments, _docCommentSpec);
+              indent.write('${field.name}: ${_nullSafeSwiftTypeForDartType(field.type)}');
+              final DefaultValue? defaultValue = field.defaultValue;
+
+              if (defaultValue != null) {
+                indent.add(' = ');
+                defaultValue.write(
                   indent,
-                  field.documentationComments,
-                  _docCommentSpec,
+                  prefix: '',
+                  classLookup: classLookup,
+                  generatorOptions: generatorOptions,
                 );
-                indent.write(
-                  '${field.name}: ${_nullSafeSwiftTypeForDartType(field.type)}',
-                );
-                final DefaultValue? defaultValue = field.defaultValue;
-
-                if (defaultValue != null) {
-                  indent.add(' = ');
-                  defaultValue.write(
-                    indent,
-                    prefix: '',
-                    classLookup: classLookup,
-                    generatorOptions: generatorOptions,
-                  );
-                }
-
-                childFields.last != field ? indent.addln(',') : indent.newln();
               }
-            },
-          );
+
+              childFields.last != field ? indent.addln(',') : indent.newln();
+            }
+          });
         }
 
         if (children.last != child) {
@@ -3274,37 +2998,34 @@ func deepHash${generatorOptions.fileSpecificClassNameComponent}(value: Any?, has
 }
 
 typedef _VersionRequirement = ({TypeDeclaration type, Version version});
-({_VersionRequirement? ios, _VersionRequirement? macos})
-_findHighestVersionRequirement(Iterable<TypeDeclaration> types) {
-  final _VersionRequirement? iosApiRequirement =
-      findHighestApiRequirement<Version>(
-        types,
-        onGetApiRequirement: (TypeDeclaration type) {
-          final String? apiRequirement =
-              type.associatedProxyApi?.swiftOptions?.minIosApi;
-          if (apiRequirement != null) {
-            return Version.parse(apiRequirement);
-          }
+({_VersionRequirement? ios, _VersionRequirement? macos}) _findHighestVersionRequirement(
+  Iterable<TypeDeclaration> types,
+) {
+  final _VersionRequirement? iosApiRequirement = findHighestApiRequirement<Version>(
+    types,
+    onGetApiRequirement: (TypeDeclaration type) {
+      final String? apiRequirement = type.associatedProxyApi?.swiftOptions?.minIosApi;
+      if (apiRequirement != null) {
+        return Version.parse(apiRequirement);
+      }
 
-          return null;
-        },
-        onCompare: (Version one, Version two) => one.compareTo(two),
-      );
+      return null;
+    },
+    onCompare: (Version one, Version two) => one.compareTo(two),
+  );
 
-  final _VersionRequirement? macosApiRequirement =
-      findHighestApiRequirement<Version>(
-        types,
-        onGetApiRequirement: (TypeDeclaration type) {
-          final String? apiRequirement =
-              type.associatedProxyApi?.swiftOptions?.minMacosApi;
-          if (apiRequirement != null) {
-            return Version.parse(apiRequirement);
-          }
+  final _VersionRequirement? macosApiRequirement = findHighestApiRequirement<Version>(
+    types,
+    onGetApiRequirement: (TypeDeclaration type) {
+      final String? apiRequirement = type.associatedProxyApi?.swiftOptions?.minMacosApi;
+      if (apiRequirement != null) {
+        return Version.parse(apiRequirement);
+      }
 
-          return null;
-        },
-        onCompare: (Version one, Version two) => one.compareTo(two),
-      );
+      return null;
+    },
+    onCompare: (Version one, Version two) => one.compareTo(two),
+  );
 
   return (ios: iosApiRequirement, macos: macosApiRequirement);
 }
@@ -3314,14 +3035,12 @@ _findHighestVersionRequirement(Iterable<TypeDeclaration> types) {
 ///
 /// Returns `null` if there is not api requirement in [types].
 String? _tryGetAvailabilityAnnotation(Iterable<TypeDeclaration> types) {
-  final ({_VersionRequirement? ios, _VersionRequirement? macos})
-  versionRequirement = _findHighestVersionRequirement(types);
+  final ({_VersionRequirement? ios, _VersionRequirement? macos}) versionRequirement =
+      _findHighestVersionRequirement(types);
 
   final apis = <String>[
-    if (versionRequirement.ios != null)
-      'iOS ${versionRequirement.ios!.version}',
-    if (versionRequirement.macos != null)
-      'macOS ${versionRequirement.macos!.version}',
+    if (versionRequirement.ios != null) 'iOS ${versionRequirement.ios!.version}',
+    if (versionRequirement.macos != null) 'macOS ${versionRequirement.macos!.version}',
   ];
 
   return apis.isNotEmpty ? 'available(${apis.join(', ')}, *)' : null;
@@ -3343,9 +3062,7 @@ String? _tryGetUnsupportedPlatformsCondition(Iterable<TypeDeclaration> types) {
     }
   }
 
-  final Iterable<TypeDeclaration> allReferencedTypes = types.expand(
-    addAllRecursive,
-  );
+  final Iterable<TypeDeclaration> allReferencedTypes = types.expand(addAllRecursive);
 
   final unsupportedPlatforms = <String>[
     if (!allReferencedTypes.every((TypeDeclaration type) {
@@ -3358,16 +3075,12 @@ String? _tryGetUnsupportedPlatformsCondition(Iterable<TypeDeclaration> types) {
       '!os(macOS)',
   ];
 
-  return unsupportedPlatforms.isNotEmpty
-      ? unsupportedPlatforms.join(' || ')
-      : null;
+  return unsupportedPlatforms.isNotEmpty ? unsupportedPlatforms.join(' || ') : null;
 }
 
 /// Calculates the name of the codec that will be generated for [api].
 String _getMessageCodecName(InternalSwiftOptions options) {
-  return toUpperCamelCase(
-    '${options.fileSpecificClassNameComponent}GolubetsCodec',
-  );
+  return toUpperCamelCase('${options.fileSpecificClassNameComponent}GolubetsCodec');
 }
 
 /// Calculates the name of the codec that will be generated for [api].
@@ -3398,9 +3111,7 @@ String _camelCase(String text) {
 /// Converts a [List] of [TypeDeclaration]s to a comma separated [String] to be
 /// used in Swift code.
 String _flattenTypeArguments(List<TypeDeclaration> args) {
-  return args
-      .map((TypeDeclaration e) => _nullSafeSwiftTypeForDartType(e))
-      .join(', ');
+  return args.map((TypeDeclaration e) => _nullSafeSwiftTypeForDartType(e)).join(', ');
 }
 
 /// Analyzes class fields to determine which type parameters need Hashable constraints.
@@ -3479,22 +3190,16 @@ void _collectHashableTypeParameters(
     final Class? customClass = classLookup[type.baseName];
     if (customClass != null && type.typeArguments.isNotEmpty) {
       // Get the Hashable requirements for this custom class
-      final Set<String> customClassHashableParams =
-          _getTypeParametersRequiringHashable(
-            customClass,
-            classLookup: classLookup,
-            visitedClasses: visitedClasses,
-          );
+      final Set<String> customClassHashableParams = _getTypeParametersRequiringHashable(
+        customClass,
+        classLookup: classLookup,
+        visitedClasses: visitedClasses,
+      );
 
       // Map the custom class's type parameter requirements to our context
-      for (
-        var i = 0;
-        i < type.typeArguments.length && i < customClass.typeArguments.length;
-        i++
-      ) {
+      for (var i = 0; i < type.typeArguments.length && i < customClass.typeArguments.length; i++) {
         final TypeDeclaration currentTypeArg = type.typeArguments[i];
-        final String customClassTypeParam =
-            customClass.typeArguments[i].baseName;
+        final String customClassTypeParam = customClass.typeArguments[i].baseName;
 
         // If the custom class's type parameter needs Hashable, then our type argument needs it too
         if (customClassHashableParams.contains(customClassTypeParam)) {
@@ -3542,9 +3247,7 @@ String _flattenTypeArgumentsWithSelectiveHashableConstraints(
   return args
       .map((TypeDeclaration e) {
         final String typeName = _nullSafeSwiftTypeForDartType(e);
-        return hashableTypeParams.contains(e.baseName)
-            ? '$typeName: Hashable'
-            : typeName;
+        return hashableTypeParams.contains(e.baseName) ? '$typeName: Hashable' : typeName;
       })
       .join(', ');
 }
@@ -3569,10 +3272,7 @@ String _swiftTypeForBuiltinGenericDartType(TypeDeclaration type) {
   }
 }
 
-String? _swiftTypeForBuiltinDartType(
-  TypeDeclaration type, {
-  bool mapKey = false,
-}) {
+String? _swiftTypeForBuiltinDartType(TypeDeclaration type, {bool mapKey = false}) {
   const swiftTypeForDartTypeMap = <String, String>{
     'void': 'Void',
     'bool': 'Bool',
@@ -3599,8 +3299,7 @@ String? _swiftTypeForBuiltinDartType(
 
 String? _swiftTypeForProxyApiType(TypeDeclaration type) {
   if (type.isProxyApi) {
-    return type.associatedProxyApi!.swiftOptions?.name ??
-        type.associatedProxyApi!.name;
+    return type.associatedProxyApi!.swiftOptions?.name ?? type.associatedProxyApi!.name;
   }
 
   return null;
@@ -3614,10 +3313,7 @@ String _swiftTypeForDartType(TypeDeclaration type, {bool mapKey = false}) {
           : '${type.baseName}<${_flattenTypeArguments(type.typeArguments)}>');
 }
 
-String _nullSafeSwiftTypeForDartType(
-  TypeDeclaration type, {
-  bool mapKey = false,
-}) {
+String _nullSafeSwiftTypeForDartType(TypeDeclaration type, {bool mapKey = false}) {
   final nullSafe = type.isNullable ? '?' : '';
   return '${_swiftTypeForDartType(type, mapKey: mapKey)}$nullSafe';
 }
@@ -3628,8 +3324,7 @@ String _getMethodSignature({
   required TypeDeclaration returnType,
   required String errorTypeName,
   String? swiftFunction,
-  String Function(int index, NamedType argument) getParameterName =
-      _getArgumentName,
+  String Function(int index, NamedType argument) getParameterName = _getArgumentName,
   AsynchronousType asynchronousType = AsynchronousType.none,
   required bool isPublic,
 }) {
@@ -3724,11 +3419,8 @@ class _SwiftFunctionComponents {
         returnType: returnType,
         arguments: parameters
             .map(
-              (NamedType field) => _SwiftFunctionArgument(
-                name: field.name,
-                type: field.type,
-                namedType: field,
-              ),
+              (NamedType field) =>
+                  _SwiftFunctionArgument(name: field.name, type: field.type, namedType: field),
             )
             .toList(),
       );
@@ -3787,104 +3479,71 @@ extension on DefaultValue {
       ListLiteral(:final List<DefaultValue> elements) =>
         elements.isEmpty
             ? indent.add('$prefix[]')
-            : indent.addScoped(
-                '$prefix[',
-                ']',
-                () {
-                  for (final element in elements) {
-                    element.write(
-                      indent,
-                      classLookup: classLookup,
-                      generatorOptions: generatorOptions,
-                    );
-                    indent.addln(', ');
-                  }
-                },
-                addTrailingNewline: false,
-              ),
+            : indent.addScoped('$prefix[', ']', () {
+                for (final element in elements) {
+                  element.write(
+                    indent,
+                    classLookup: classLookup,
+                    generatorOptions: generatorOptions,
+                  );
+                  indent.addln(', ');
+                }
+              }, addTrailingNewline: false),
       MapLiteral(:final Map<DefaultValue, DefaultValue> entries) =>
         entries.isEmpty
             ? indent.add('$prefix[:]')
-            : indent.addScoped(
-                '$prefix[',
-                ']',
-                () {
-                  for (final MapEntry<DefaultValue, DefaultValue> entry
-                      in entries.entries) {
-                    entry.key.write(
-                      indent,
-                      classLookup: classLookup,
-                      generatorOptions: generatorOptions,
-                    );
-                    indent.add(': ');
-                    entry.value.write(
-                      indent,
-                      prefix: '',
-                      classLookup: classLookup,
-                      generatorOptions: generatorOptions,
-                    );
-                    indent.addln(', ');
-                  }
-                },
-                addTrailingNewline: false,
-              ),
-      EnumLiteral(:final String name, :final String value) => indent.add(
-        '$prefix$name.$value',
-      ),
-      ObjectCreation(
-        :final TypeDeclaration type,
-        :final List<DefaultValue> arguments,
-      ) =>
-        () {
-          final Class? classDefenition = classLookup[type.baseName];
-          final bool isSealedChild =
-              classDefenition?.superClass?.isSealed ?? false;
+            : indent.addScoped('$prefix[', ']', () {
+                for (final MapEntry<DefaultValue, DefaultValue> entry in entries.entries) {
+                  entry.key.write(
+                    indent,
+                    classLookup: classLookup,
+                    generatorOptions: generatorOptions,
+                  );
+                  indent.add(': ');
+                  entry.value.write(
+                    indent,
+                    prefix: '',
+                    classLookup: classLookup,
+                    generatorOptions: generatorOptions,
+                  );
+                  indent.addln(', ');
+                }
+              }, addTrailingNewline: false),
+      EnumLiteral(:final String name, :final String value) => indent.add('$prefix$name.$value'),
+      ObjectCreation(:final TypeDeclaration type, :final List<DefaultValue> arguments) => () {
+        final Class? classDefenition = classLookup[type.baseName];
+        final bool isSealedChild = classDefenition?.superClass?.isSealed ?? false;
 
-          final String name = switch (isSealedChild) {
-            true when generatorOptions.usePureSealedSubclasses =>
-              '.${classDefenition?.pureName.toLowFirstLetter()}',
-            true => '.${type.baseName.toLowFirstLetter()}',
-            false => type.baseName,
-          };
+        final String name = switch (isSealedChild) {
+          true when generatorOptions.usePureSealedSubclasses =>
+            '.${classDefenition?.pureName.toLowFirstLetter()}',
+          true => '.${type.baseName.toLowFirstLetter()}',
+          false => type.baseName,
+        };
 
-          indent.add('$prefix$name');
+        indent.add('$prefix$name');
 
-          if (arguments.isEmpty) {
-            indent.add(isSealedChild ? '' : '()');
-            return;
+        if (arguments.isEmpty) {
+          indent.add(isSealedChild ? '' : '()');
+          return;
+        }
+
+        indent.addScoped('(', ')', () {
+          for (final argument in arguments) {
+            argument.write(indent, classLookup: classLookup, generatorOptions: generatorOptions);
+            argument == arguments.last ? indent.newln() : indent.addln(', ');
           }
-
-          indent.addScoped(
-            '(',
-            ')',
-            () {
-              for (final argument in arguments) {
-                argument.write(
-                  indent,
-                  classLookup: classLookup,
-                  generatorOptions: generatorOptions,
-                );
-                argument == arguments.last
-                    ? indent.newln()
-                    : indent.addln(', ');
-              }
-            },
-            addTrailingNewline: false,
-          );
-        }(),
-      NamedDefaultValue(
-        :final String name,
-        :final DefaultValue value,
-      ) =>
-        () {
-          indent.add('$prefix$name: ');
-          value.write(
-            indent,
-            prefix: '',
-            classLookup: classLookup,
-            generatorOptions: generatorOptions,
-          );
-        }(),
+        }, addTrailingNewline: false);
+      }(),
+      NamedDefaultValue(:final String name, :final DefaultValue value) => () {
+        indent.add('$prefix$name: ');
+        value.write(
+          indent,
+          prefix: '',
+          classLookup: classLookup,
+          generatorOptions: generatorOptions,
+        );
+      }(),
     };
   }
 }

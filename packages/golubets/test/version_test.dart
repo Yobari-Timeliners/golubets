@@ -17,8 +17,7 @@ void main() {
     expect(
       golubetsVersion,
       match?.group(1)?.trim(),
-      reason:
-          'Update lib/src/generator_tools.dart golubetsVersion to the value in the pubspec',
+      reason: 'Update lib/src/generator_tools.dart golubetsVersion to the value in the pubspec',
     );
   });
 }

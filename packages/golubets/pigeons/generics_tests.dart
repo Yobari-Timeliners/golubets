@@ -2,10 +2,7 @@ import 'package:golubets/golubets.dart';
 
 /// A simple generic container class.
 class GenericContainer<T> {
-  const GenericContainer({
-    required this.value,
-    required this.values,
-  });
+  const GenericContainer({required this.value, required this.values});
 
   final T? value;
   final List<T> values;
@@ -13,11 +10,7 @@ class GenericContainer<T> {
 
 /// A generic class with two type parameters.
 class GenericPair<T, K> {
-  const GenericPair({
-    required this.first,
-    required this.second,
-    required this.map,
-  });
+  const GenericPair({required this.first, required this.second, required this.map});
 
   final T first;
   final K? second;
@@ -42,10 +35,7 @@ class NestedGeneric<T, K, V> {
 }
 
 class SimpleStringContainer {
-  const SimpleStringContainer({
-    required this.id,
-    required this.name,
-  });
+  const SimpleStringContainer({required this.id, required this.name});
 
   final String id;
   final String name;
@@ -312,10 +302,7 @@ class Right<L, R> extends Either<L, R> {
 
 class GenericDefaults {
   GenericDefaults({
-    this.genericInt = const GenericContainer<int>(
-      value: 42,
-      values: <int>[1, 2, 3],
-    ),
+    this.genericInt = const GenericContainer<int>(value: 42, values: <int>[1, 2, 3]),
     this.genericString = const GenericContainer<String>(
       value: 'default',
       values: <String>['a', 'b', 'c'],
@@ -324,10 +311,7 @@ class GenericDefaults {
       value: 3.14,
       values: <double>[1.0, 2.0, 3.0],
     ),
-    this.genericBool = const GenericContainer<bool>(
-      value: true,
-      values: <bool>[true, false, true],
-    ),
+    this.genericBool = const GenericContainer<bool>(value: true, values: <bool>[true, false, true]),
     this.genericPairStringInt = const GenericPair<String, int>(
       first: 'default',
       second: 42,
@@ -339,22 +323,12 @@ class GenericDefaults {
       map: <int, String>{1: 'one', 2: 'two'},
     ),
     this.nestedGenericDefault = const NestedGeneric<String, int, double>(
-      container: GenericContainer<String>(
-        value: 'nested',
-        values: <String>['x', 'y', 'z'],
-      ),
+      container: GenericContainer<String>(value: 'nested', values: <String>['x', 'y', 'z']),
       pairs: <GenericPair<int, double>>[
-        GenericPair<int, double>(
-          first: 1,
-          second: 1.1,
-          map: <int, double>{1: 1.1, 2: 2.2},
-        ),
+        GenericPair<int, double>(first: 1, second: 1.1, map: <int, double>{1: 1.1, 2: 2.2}),
       ],
       nestedMap: <String, GenericContainer<int>>{
-        'nested': GenericContainer<int>(
-          value: 99,
-          values: <int>[9, 8, 7],
-        ),
+        'nested': GenericContainer<int>(value: 99, values: <int>[9, 8, 7]),
       },
       listOfMaps: <Map<int, double>>[
         <int, double>{10: 10.0, 20: 20.0},
@@ -385,42 +359,25 @@ class GenericDefaults {
 abstract class HostGenericApi {
   // Simple generic echoing
   GenericContainer<int> echoGenericInt(GenericContainer<int> container);
-  GenericContainer<String> echoGenericString(
-    GenericContainer<String> container,
-  );
-  GenericContainer<double> echoGenericDouble(
-    GenericContainer<double> container,
-  );
+  GenericContainer<String> echoGenericString(GenericContainer<String> container);
+  GenericContainer<double> echoGenericDouble(GenericContainer<double> container);
   GenericContainer<bool> echoGenericBool(GenericContainer<bool> container);
-  GenericContainer<GenericsAnEnum> echoGenericEnum(
-    GenericContainer<GenericsAnEnum> container,
-  );
+  GenericContainer<GenericsAnEnum> echoGenericEnum(GenericContainer<GenericsAnEnum> container);
 
   // Nullable generic types
-  GenericContainer<int?> echoGenericNullableInt(
-    GenericContainer<int?> container,
-  );
-  GenericContainer<String?> echoGenericNullableString(
-    GenericContainer<String?> container,
-  );
+  GenericContainer<int?> echoGenericNullableInt(GenericContainer<int?> container);
+  GenericContainer<String?> echoGenericNullableString(GenericContainer<String?> container);
 
   // Generic pairs with different type combinations
-  GenericPair<String, int> echoGenericPairStringInt(
-    GenericPair<String, int> pair,
-  );
-  GenericPair<int, String> echoGenericPairIntString(
-    GenericPair<int, String> pair,
-  );
-  GenericPair<double, bool> echoGenericPairDoubleBool(
-    GenericPair<double, bool> pair,
-  );
+  GenericPair<String, int> echoGenericPairStringInt(GenericPair<String, int> pair);
+  GenericPair<int, String> echoGenericPairIntString(GenericPair<int, String> pair);
+  GenericPair<double, bool> echoGenericPairDoubleBool(GenericPair<double, bool> pair);
 
   // Nested generics with classes
   GenericContainer<GenericsAllTypes> echoGenericContainerAllTypes(
     GenericContainer<GenericsAllTypes> container,
   );
-  GenericPair<GenericsAllTypes, GenericsAllNullableTypes>
-  echoGenericPairClasses(
+  GenericPair<GenericsAllTypes, GenericsAllNullableTypes> echoGenericPairClasses(
     GenericPair<GenericsAllTypes, GenericsAllNullableTypes> pair,
   );
 
@@ -433,12 +390,8 @@ abstract class HostGenericApi {
   );
 
   // Lists of generic types
-  List<GenericContainer<int>> echoListGenericContainer(
-    List<GenericContainer<int>> list,
-  );
-  List<GenericPair<String, int>> echoListGenericPair(
-    List<GenericPair<String, int>> list,
-  );
+  List<GenericContainer<int>> echoListGenericContainer(List<GenericContainer<int>> list);
+  List<GenericPair<String, int>> echoListGenericPair(List<GenericPair<String, int>> list);
 
   // Maps with generic values
   Map<String, GenericContainer<int>> echoMapGenericContainer(
@@ -456,8 +409,7 @@ abstract class HostGenericApi {
     NestedGeneric<String, int, double> nested,
   );
 
-  Either<GenericContainer<int>, GenericContainer<String>>
-  echoEitherGenericIntOrString(
+  Either<GenericContainer<int>, GenericContainer<String>> echoEitherGenericIntOrString(
     Either<GenericContainer<int>, GenericContainer<String>> input,
   );
 
@@ -466,39 +418,28 @@ abstract class HostGenericApi {
     Either<GenericPair<String, int>, GenericPair<int, String>> input,
   );
 
-  Either<
-    NestedGeneric<String, int, double>,
-    NestedGeneric<GenericsAllTypes, String, int>
-  >
+  Either<NestedGeneric<String, int, double>, NestedGeneric<GenericsAllTypes, String, int>>
   echoEitherNestedGenericStringIntDoubleOrClasses(
-    Either<
-      NestedGeneric<String, int, double>,
-      NestedGeneric<GenericsAllTypes, String, int>
-    >
-    input,
+    Either<NestedGeneric<String, int, double>, NestedGeneric<GenericsAllTypes, String, int>> input,
   );
 
   // GenericsAllNullableTypesTyped echo methods with complex generic combinations
-  GenericsAllNullableTypesTyped<String, int, double>
-  echoTypedNullableStringIntDouble(
+  GenericsAllNullableTypesTyped<String, int, double> echoTypedNullableStringIntDouble(
     GenericsAllNullableTypesTyped<String, int, double> typed,
   );
 
-  GenericsAllNullableTypesTyped<int, String, bool>
-  echoTypedNullableIntStringBool(
+  GenericsAllNullableTypesTyped<int, String, bool> echoTypedNullableIntStringBool(
     GenericsAllNullableTypesTyped<int, String, bool> typed,
   );
 
-  GenericsAllNullableTypesTyped<GenericsAnEnum, double, String>
-  echoTypedNullableEnumDoubleString(
+  GenericsAllNullableTypesTyped<GenericsAnEnum, double, String> echoTypedNullableEnumDoubleString(
     GenericsAllNullableTypesTyped<GenericsAnEnum, double, String> typed,
   );
 
   // Container wrapping typed classes
   GenericContainer<GenericsAllNullableTypesTyped<String, int, double>>
   echoGenericContainerTypedNullable(
-    GenericContainer<GenericsAllNullableTypesTyped<String, int, double>>
-    container,
+    GenericContainer<GenericsAllNullableTypesTyped<String, int, double>> container,
   );
 
   // Pair with typed classes
@@ -515,29 +456,25 @@ abstract class HostGenericApi {
   );
 
   // Lists of typed classes
-  List<GenericsAllNullableTypesTyped<String, int, double>>
-  echoListTypedNullable(
+  List<GenericsAllNullableTypesTyped<String, int, double>> echoListTypedNullable(
     List<GenericsAllNullableTypesTyped<String, int, double>> list,
   );
 
   // Maps with typed classes
-  Map<String, GenericsAllNullableTypesTyped<int, String, double>>
-  echoMapTypedNullable(
+  Map<String, GenericsAllNullableTypesTyped<int, String, double>> echoMapTypedNullable(
     Map<String, GenericsAllNullableTypesTyped<int, String, double>> map,
   );
 
   // Async versions for complex typed generics
   @async
-  GenericsAllNullableTypesTyped<String, int, double>
-  echoAsyncTypedNullableStringIntDouble(
+  GenericsAllNullableTypesTyped<String, int, double> echoAsyncTypedNullableStringIntDouble(
     GenericsAllNullableTypesTyped<String, int, double> typed,
   );
 
   @async
   GenericContainer<GenericsAllNullableTypesTyped<String, int, double>>
   echoAsyncGenericContainerTypedNullable(
-    GenericContainer<GenericsAllNullableTypesTyped<String, int, double>>
-    container,
+    GenericContainer<GenericsAllNullableTypesTyped<String, int, double>> container,
   );
 
   // GenericDefaults echo methods
@@ -553,51 +490,36 @@ abstract class HostGenericApi {
   @async
   GenericContainer<GenericsAllNullableTypesTyped<String, int, double>>
   callFlutterEchoGenericContainerTypedNullable(
-    GenericContainer<GenericsAllNullableTypesTyped<String, int, double>>
-    container,
+    GenericContainer<GenericsAllNullableTypesTyped<String, int, double>> container,
   );
   @async
   GenericDefaults callFlutterEchoGenericDefaults(GenericDefaults defaults);
 
   @async
-  GenericContainer<int> callFlutterEchoGenericDefaultsInt(
+  GenericContainer<int> callFlutterEchoGenericDefaultsInt(GenericDefaults defaults);
+
+  @async
+  NestedGeneric<String, int, double> callFlutterEchoGenericDefaultsNested(GenericDefaults defaults);
+
+  @async
+  GenericPair<int, Either<String, int>> callFlutterEchoGenericDefaultsPairEither(
     GenericDefaults defaults,
   );
 
   @async
-  NestedGeneric<String, int, double> callFlutterEchoGenericDefaultsNested(
-    GenericDefaults defaults,
-  );
+  GenericContainer<int> callFlutterEchoGenericInt(GenericContainer<int> container);
 
   @async
-  GenericPair<int, Either<String, int>>
-  callFlutterEchoGenericDefaultsPairEither(
-    GenericDefaults defaults,
-  );
+  GenericPair<String, int> callFlutterEchoGenericPairStringInt(GenericPair<String, int> pair);
 
   @async
-  GenericContainer<int> callFlutterEchoGenericInt(
-    GenericContainer<int> container,
-  );
+  GenericContainer<String> callFlutterEchoGenericString(GenericContainer<String> container);
 
   @async
-  GenericPair<String, int> callFlutterEchoGenericPairStringInt(
-    GenericPair<String, int> pair,
-  );
+  List<GenericContainer<int>> callFlutterEchoListGenericContainer(List<GenericContainer<int>> list);
 
   @async
-  GenericContainer<String> callFlutterEchoGenericString(
-    GenericContainer<String> container,
-  );
-
-  @async
-  List<GenericContainer<int>> callFlutterEchoListGenericContainer(
-    List<GenericContainer<int>> list,
-  );
-
-  @async
-  List<GenericsAllNullableTypesTyped<String, int, double>>
-  callFlutterEchoListTypedNullable(
+  List<GenericsAllNullableTypesTyped<String, int, double>> callFlutterEchoListTypedNullable(
     List<GenericsAllNullableTypesTyped<String, int, double>> list,
   );
 
@@ -607,36 +529,30 @@ abstract class HostGenericApi {
   );
 
   @async
-  Map<String, GenericsAllNullableTypesTyped<int, String, double>>
-  callFlutterEchoMapTypedNullable(
+  Map<String, GenericsAllNullableTypesTyped<int, String, double>> callFlutterEchoMapTypedNullable(
     Map<String, GenericsAllNullableTypesTyped<int, String, double>> map,
   );
 
   @async
-  NestedGeneric<String, int, double>
-  callFlutterEchoNestedGenericStringIntDouble(
+  NestedGeneric<String, int, double> callFlutterEchoNestedGenericStringIntDouble(
     NestedGeneric<String, int, double> nested,
   );
 
   @async
-  GenericsAllNullableTypesTyped<int, String, bool>
-  callFlutterEchoTypedNullableIntStringBool(
+  GenericsAllNullableTypesTyped<int, String, bool> callFlutterEchoTypedNullableIntStringBool(
     GenericsAllNullableTypesTyped<int, String, bool> typed,
   );
 
   @async
-  GenericsAllNullableTypesTyped<String, int, double>
-  callFlutterEchoTypedNullableStringIntDouble(
+  GenericsAllNullableTypesTyped<String, int, double> callFlutterEchoTypedNullableStringIntDouble(
     GenericsAllNullableTypesTyped<String, int, double> typed,
   );
 
   @async
-  GenericContainer<Either<String, int>>
-  callFlutterReturnGenericDefaultsEitherLeft();
+  GenericContainer<Either<String, int>> callFlutterReturnGenericDefaultsEitherLeft();
 
   @async
-  GenericContainer<Either<String, int>>
-  callFlutterReturnGenericDefaultsEitherRight();
+  GenericContainer<Either<String, int>> callFlutterReturnGenericDefaultsEitherRight();
 
   Either<GenericsAnEnum, List<SimpleStringContainer>>
   echoFlutterReturnEitherGenericEnumOrListStringContainer(
@@ -649,14 +565,10 @@ abstract class HostGenericApi {
 abstract class FlutterGenericApi {
   // Simple generic echoing
   GenericContainer<int> echoGenericInt(GenericContainer<int> container);
-  GenericContainer<String> echoGenericString(
-    GenericContainer<String> container,
-  );
+  GenericContainer<String> echoGenericString(GenericContainer<String> container);
 
   // Generic pairs
-  GenericPair<String, int> echoGenericPairStringInt(
-    GenericPair<String, int> pair,
-  );
+  GenericPair<String, int> echoGenericPairStringInt(GenericPair<String, int> pair);
 
   // Complex nested generics
   NestedGeneric<String, int, double> echoNestedGenericStringIntDouble(
@@ -664,39 +576,32 @@ abstract class FlutterGenericApi {
   );
 
   // Lists and maps
-  List<GenericContainer<int>> echoListGenericContainer(
-    List<GenericContainer<int>> list,
-  );
+  List<GenericContainer<int>> echoListGenericContainer(List<GenericContainer<int>> list);
   Map<String, GenericContainer<int>> echoMapGenericContainer(
     Map<String, GenericContainer<int>> map,
   );
 
   // GenericsAllNullableTypesTyped echo methods for Flutter API
-  GenericsAllNullableTypesTyped<String, int, double>
-  echoTypedNullableStringIntDouble(
+  GenericsAllNullableTypesTyped<String, int, double> echoTypedNullableStringIntDouble(
     GenericsAllNullableTypesTyped<String, int, double> typed,
   );
 
-  GenericsAllNullableTypesTyped<int, String, bool>
-  echoTypedNullableIntStringBool(
+  GenericsAllNullableTypesTyped<int, String, bool> echoTypedNullableIntStringBool(
     GenericsAllNullableTypesTyped<int, String, bool> typed,
   );
 
   // Container and pair with typed classes for Flutter API
   GenericContainer<GenericsAllNullableTypesTyped<String, int, double>>
   echoGenericContainerTypedNullable(
-    GenericContainer<GenericsAllNullableTypesTyped<String, int, double>>
-    container,
+    GenericContainer<GenericsAllNullableTypesTyped<String, int, double>> container,
   );
 
   // Lists and maps with typed classes for Flutter API
-  List<GenericsAllNullableTypesTyped<String, int, double>>
-  echoListTypedNullable(
+  List<GenericsAllNullableTypesTyped<String, int, double>> echoListTypedNullable(
     List<GenericsAllNullableTypesTyped<String, int, double>> list,
   );
 
-  Map<String, GenericsAllNullableTypesTyped<int, String, double>>
-  echoMapTypedNullable(
+  Map<String, GenericsAllNullableTypesTyped<int, String, double>> echoMapTypedNullable(
     Map<String, GenericsAllNullableTypesTyped<int, String, double>> map,
   );
 
@@ -706,13 +611,9 @@ abstract class FlutterGenericApi {
   // Individual field access methods for Flutter API
   GenericContainer<int> echoGenericDefaultsInt(GenericDefaults defaults);
 
-  GenericPair<int, Either<String, int>> echoGenericDefaultsPairEither(
-    GenericDefaults defaults,
-  );
+  GenericPair<int, Either<String, int>> echoGenericDefaultsPairEither(GenericDefaults defaults);
 
-  NestedGeneric<String, int, double> echoGenericDefaultsNested(
-    GenericDefaults defaults,
-  );
+  NestedGeneric<String, int, double> echoGenericDefaultsNested(GenericDefaults defaults);
 
   GenericContainer<Either<String, int>> returnGenericDefaultsEitherLeft();
 
