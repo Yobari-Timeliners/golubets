@@ -42,7 +42,7 @@ class MessageData {
   });
 
   String? name;
-  String? description;
+  String? messageDescription;
   Code code;
   Map<String, String> data;
 }
@@ -81,3 +81,10 @@ abstract class MessageFlutterApi {
 }
 
 // #enddocregion flutter-definitions
+
+// #docregion constants
+const String aStringConstant = 'stringConstantValue';
+const int anIntConstant = 42;
+const double aDoubleConstant = 3.14;
+const bool aBoolConstant = true;
+// #enddocregion constants

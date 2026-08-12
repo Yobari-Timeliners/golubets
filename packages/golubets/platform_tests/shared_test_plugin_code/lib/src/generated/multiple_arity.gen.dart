@@ -70,8 +70,8 @@ class _GolubetsCodec extends StandardMessageCodec {
 }
 
 class MultipleArityHostApi {
-  /// Constructor for [MultipleArityHostApi].  The [binaryMessenger] named argument is
-  /// available for dependency injection.  If it is left null, the default
+  /// Constructor for [MultipleArityHostApi]. The [binaryMessenger] named argument is
+  /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
   MultipleArityHostApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
     : golubetsVar_binaryMessenger = binaryMessenger,

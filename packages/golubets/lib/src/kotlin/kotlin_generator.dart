@@ -340,6 +340,31 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
   }
 
   @override
+  void writeConstants(
+    InternalKotlinOptions generatorOptions,
+    Root root,
+    Indent indent, {
+    required String dartPackageName,
+  }) {
+    if (root.constants.isEmpty) {
+      return;
+    }
+    indent.newln();
+    for (final Constant constant in root.constants) {
+      addDocumentationComments(indent, constant.documentationComments, _docCommentSpec);
+      final String kotlinType = _kotlinTypeForBuiltinDartType(constant.type) ?? 'Any';
+      final String formattedValue = _formatKotlinValue(constant.type.baseName, constant.value);
+      indent.writeln('const val ${constant.name}: $kotlinType = $formattedValue');
+    }
+  }
+
+  String _formatKotlinValue(String type, Object value) => switch (type) {
+    'String' => '"${escapeStringDoubleQuotes(value.toString()).replaceAll(r'$', r'\$')}"',
+    'int' => '${value}L',
+    _ => value.toString(),
+  };
+
+  @override
   void writeEnum(
     InternalKotlinOptions generatorOptions,
     Root root,
@@ -452,6 +477,13 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         classDefinition,
         dartPackageName: dartPackageName,
       );
+      writeClassToString(
+        generatorOptions,
+        root,
+        indent,
+        classDefinition,
+        dartPackageName: dartPackageName,
+      );
     });
   }
 
@@ -485,6 +517,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       if (fields.isEmpty) {
         indent.writeln('return true');
       } else {
+        indent.writeln('val other = other as ${classDefinition.name}');
         final String utils = _getUtilsClassName(generatorOptions);
         final String comparisons = fields
             .map((NamedType field) => '$utils.deepEquals(this.${field.name}, other.${field.name})')
@@ -505,6 +538,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     });
   }
 
+<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
   void _writeDataClassSignature(
     Indent indent,
     Class classDefinition, {
@@ -563,6 +597,63 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         indent.writeln('internal val ${type.baseName.toLowFirstLetter()}Type: KType,');
       }
     });
+=======
+  /// Writes the `toString` method for a class.
+  void writeClassToString(
+    InternalKotlinOptions generatorOptions,
+    Root root,
+    Indent indent,
+    Class classDefinition, {
+    required String dartPackageName,
+  }) {
+    indent.writeScoped('override fun toString(): String {', '}', () {
+      final Iterable<String> fieldStrings = classDefinition.fields.map((NamedType field) {
+        final String name = field.name;
+        if (field.type.baseName == 'Uint8List' ||
+            field.type.baseName == 'Int32List' ||
+            field.type.baseName == 'Int64List' ||
+            field.type.baseName == 'Float64List') {
+          final nullSafe = field.type.isNullable ? '?' : '';
+          return '$name=\${$name$nullSafe.contentToString()}';
+        }
+        return '$name=\$$name';
+      });
+      indent.writeln('return "${classDefinition.name}(${fieldStrings.join(', ')})"');
+    });
+  }
+
+  void _writeDataClassSignature(Indent indent, Class classDefinition, {bool private = false}) {
+    final privateString = private ? 'private ' : '';
+    final String classType;
+    if (classDefinition.isSealed) {
+      classType = 'sealed ';
+    } else if (classDefinition.fields.isEmpty) {
+      classType = '';
+    } else {
+      classType = 'data ';
+    }
+    final inheritance = classDefinition.superClass != null
+        ? ' : ${classDefinition.superClassName}()'
+        : '';
+    indent.write('$privateString${classType}class ${classDefinition.name} ');
+    if (classDefinition.isSealed) {
+      return;
+    }
+    if (classDefinition.fields.isEmpty) {
+      indent.add(inheritance);
+    } else {
+      indent.addScoped('(', ')$inheritance', () {
+        for (final NamedType element in getFieldsInSerializationOrder(classDefinition)) {
+          _writeClassField(indent, element);
+          if (getFieldsInSerializationOrder(classDefinition).last != element) {
+            indent.addln(',');
+          } else {
+            indent.newln();
+          }
+        }
+      });
+    }
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
   }
 
   @override

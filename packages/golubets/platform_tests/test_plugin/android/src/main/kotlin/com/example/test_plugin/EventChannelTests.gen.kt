@@ -440,6 +440,10 @@ data class EventAllNullableTypes(
     result = 31 * result + EventChannelTestsGolubetsUtils.deepHash(this.recursiveClassMap)
     return result
   }
+
+  override fun toString(): String {
+    return "EventAllNullableTypes(aNullableBool=$aNullableBool, aNullableInt=$aNullableInt, aNullableInt64=$aNullableInt64, aNullableDouble=$aNullableDouble, aNullableByteArray=${aNullableByteArray?.contentToString()}, aNullable4ByteArray=${aNullable4ByteArray?.contentToString()}, aNullable8ByteArray=${aNullable8ByteArray?.contentToString()}, aNullableFloatArray=${aNullableFloatArray?.contentToString()}, aNullableEnum=$aNullableEnum, anotherNullableEnum=$anotherNullableEnum, aNullableString=$aNullableString, aNullableObject=$aNullableObject, allNullableTypes=$allNullableTypes, list=$list, stringList=$stringList, intList=$intList, doubleList=$doubleList, boolList=$boolList, enumList=$enumList, objectList=$objectList, listList=$listList, mapList=$mapList, recursiveClassList=$recursiveClassList, map=$map, stringMap=$stringMap, intMap=$intMap, enumMap=$enumMap, objectMap=$objectMap, listMap=$listMap, mapMap=$mapMap, recursiveClassMap=$recursiveClassMap)"
+  }
 }
 
 /**
@@ -477,6 +481,10 @@ data class IntEvent(val value: Long) : PlatformEvent() {
     result = 31 * result + EventChannelTestsGolubetsUtils.deepHash(this.value)
     return result
   }
+
+  override fun toString(): String {
+    return "IntEvent(value=$value)"
+  }
 }
 
 /** Generated class from Golubets that represents data sent in messages. */
@@ -508,6 +516,10 @@ data class StringEvent(val value: String) : PlatformEvent() {
     var result = javaClass.hashCode()
     result = 31 * result + EventChannelTestsGolubetsUtils.deepHash(this.value)
     return result
+  }
+
+  override fun toString(): String {
+    return "StringEvent(value=$value)"
   }
 }
 
@@ -541,6 +553,10 @@ data class BoolEvent(val value: Boolean) : PlatformEvent() {
     result = 31 * result + EventChannelTestsGolubetsUtils.deepHash(this.value)
     return result
   }
+
+  override fun toString(): String {
+    return "BoolEvent(value=$value)"
+  }
 }
 
 /** Generated class from Golubets that represents data sent in messages. */
@@ -572,6 +588,10 @@ data class DoubleEvent(val value: Double) : PlatformEvent() {
     var result = javaClass.hashCode()
     result = 31 * result + EventChannelTestsGolubetsUtils.deepHash(this.value)
     return result
+  }
+
+  override fun toString(): String {
+    return "DoubleEvent(value=$value)"
   }
 }
 
@@ -605,6 +625,10 @@ data class ObjectsEvent(val value: Any) : PlatformEvent() {
     result = 31 * result + EventChannelTestsGolubetsUtils.deepHash(this.value)
     return result
   }
+
+  override fun toString(): String {
+    return "ObjectsEvent(value=$value)"
+  }
 }
 
 /** Generated class from Golubets that represents data sent in messages. */
@@ -637,6 +661,10 @@ data class EnumEvent(val value: EventEnum) : PlatformEvent() {
     result = 31 * result + EventChannelTestsGolubetsUtils.deepHash(this.value)
     return result
   }
+
+  override fun toString(): String {
+    return "EnumEvent(value=$value)"
+  }
 }
 
 /** Generated class from Golubets that represents data sent in messages. */
@@ -668,6 +696,42 @@ data class ClassEvent(val value: EventAllNullableTypes) : PlatformEvent() {
     var result = javaClass.hashCode()
     result = 31 * result + EventChannelTestsGolubetsUtils.deepHash(this.value)
     return result
+  }
+
+  override fun toString(): String {
+    return "ClassEvent(value=$value)"
+  }
+}
+
+/** Generated class from Pigeon that represents data sent in messages. */
+class EmptyEvent : PlatformEvent() {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): EmptyEvent {
+      return EmptyEvent()
+    }
+  }
+
+  fun toList(): List<Any?> {
+    return listOf()
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    return result
+  }
+
+  override fun toString(): String {
+    return "EmptyEvent()"
   }
 }
 

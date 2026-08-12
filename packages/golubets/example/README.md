@@ -70,7 +70,7 @@ class MessageData {
   });
 
   String? name;
-  String? description;
+  String? messageDescription;
   Code code;
   Map<String, String> data;
 }
@@ -127,7 +127,7 @@ Future<bool> sendMessage(String messageText) {
   final message = MessageData(
     code: Code.one,
     data: <String, String>{'header': 'this is a header'},
-    description: 'uri text',
+    messageDescription: 'uri text',
   );
   try {
     return _api.sendMessage(message);
@@ -521,8 +521,7 @@ Register the handler with the generated method.
 <?code-excerpt "ios/Runner/AppDelegate.swift (swift-init-event)"?>
 ```swift
 let eventListener = EventListener()
-StreamEventsStreamHandler.register(
-  with: controller.binaryMessenger, streamHandler: eventListener)
+StreamEventsStreamHandler.register(with: binaryMessenger, streamHandler: eventListener)
 ```
 
 ### Kotlin

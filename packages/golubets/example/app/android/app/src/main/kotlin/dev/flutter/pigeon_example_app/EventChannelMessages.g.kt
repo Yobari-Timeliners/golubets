@@ -193,6 +193,10 @@ data class IntEvent(val data: Long) : PlatformEvent() {
     result = 31 * result + EventChannelMessagesGolubetsUtils.deepHash(this.data)
     return result
   }
+
+  override fun toString(): String {
+    return "IntEvent(data=$data)"
+  }
 }
 
 /** Generated class from Golubets that represents data sent in messages. */
@@ -224,6 +228,10 @@ data class StringEvent(val data: String) : PlatformEvent() {
     var result = javaClass.hashCode()
     result = 31 * result + EventChannelMessagesGolubetsUtils.deepHash(this.data)
     return result
+  }
+
+  override fun toString(): String {
+    return "StringEvent(data=$data)"
   }
 }
 

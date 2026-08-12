@@ -27,6 +27,12 @@ import java.util.Map;
 /** Generated class from Golubets. */
 @SuppressWarnings({"unused", "unchecked", "CodeBlock2Expr", "RedundantSuppression", "serial"})
 public class Messages {
+
+  public static final String aStringConstant = "stringConstantValue";
+  public static final long anIntConstant = 42L;
+  public static final double aDoubleConstant = 3.14;
+  public static final boolean aBoolConstant = true;
+
   static boolean pigeonDoubleEquals(double a, double b) {
     // Normalize -0.0 to 0.0 and handle NaN equality.
     return (a == 0.0 ? 0.0 : a) == (b == 0.0 ? 0.0 : b) || (Double.isNaN(a) && Double.isNaN(b));
@@ -251,14 +257,14 @@ public class Messages {
       this.name = setterArg;
     }
 
-    private @Nullable String description;
+    private @Nullable String messageDescription;
 
-    public @Nullable String getDescription() {
-      return description;
+    public @Nullable String getMessageDescription() {
+      return messageDescription;
     }
 
-    public void setDescription(@Nullable String setterArg) {
-      this.description = setterArg;
+    public void setMessageDescription(@Nullable String setterArg) {
+      this.messageDescription = setterArg;
     }
 
     private @NonNull Code code;
@@ -300,15 +306,32 @@ public class Messages {
       }
       MessageData that = (MessageData) o;
       return pigeonDeepEquals(name, that.name)
-          && pigeonDeepEquals(description, that.description)
+          && pigeonDeepEquals(messageDescription, that.messageDescription)
           && pigeonDeepEquals(code, that.code)
           && pigeonDeepEquals(data, that.data);
     }
 
     @Override
     public int hashCode() {
-      Object[] fields = new Object[] {getClass(), name, description, code, data};
+      Object[] fields = new Object[] {getClass(), name, messageDescription, code, data};
       return pigeonDeepHashCode(fields);
+    }
+
+    @Override
+    public String toString() {
+      return "MessageData{"
+          + "name="
+          + name
+          + ", "
+          + "messageDescription="
+          + messageDescription
+          + ", "
+          + "code="
+          + code
+          + ", "
+          + "data="
+          + data
+          + "}";
     }
 
     public static final class Builder {
@@ -321,11 +344,11 @@ public class Messages {
         return this;
       }
 
-      private @Nullable String description;
+      private @Nullable String messageDescription;
 
       @CanIgnoreReturnValue
-      public @NonNull Builder setDescription(@Nullable String setterArg) {
-        this.description = setterArg;
+      public @NonNull Builder setMessageDescription(@Nullable String setterArg) {
+        this.messageDescription = setterArg;
         return this;
       }
 
@@ -346,12 +369,21 @@ public class Messages {
       }
 
       public @NonNull MessageData build() {
+<<<<<<< HEAD:packages/golubets/example/app/android/app/src/main/java/io/flutter/plugins/Messages.java
         MessageData golubetsReturn = new MessageData();
         golubetsReturn.setName(name);
         golubetsReturn.setDescription(description);
         golubetsReturn.setCode(code);
         golubetsReturn.setData(data);
         return golubetsReturn;
+=======
+        MessageData pigeonReturn = new MessageData();
+        pigeonReturn.setName(name);
+        pigeonReturn.setMessageDescription(messageDescription);
+        pigeonReturn.setCode(code);
+        pigeonReturn.setData(data);
+        return pigeonReturn;
+>>>>>>> filtered-upstream/main:packages/pigeon/example/app/android/app/src/main/java/io/flutter/plugins/Messages.java
       }
     }
 
@@ -359,12 +391,13 @@ public class Messages {
     ArrayList<Object> toList() {
       ArrayList<Object> toListResult = new ArrayList<>(4);
       toListResult.add(name);
-      toListResult.add(description);
+      toListResult.add(messageDescription);
       toListResult.add(code);
       toListResult.add(data);
       return toListResult;
     }
 
+<<<<<<< HEAD:packages/golubets/example/app/android/app/src/main/java/io/flutter/plugins/Messages.java
     static @NonNull MessageData fromList(@NonNull ArrayList<Object> golubetsVar_list) {
       MessageData golubetsResult = new MessageData();
       Object name = golubetsVar_list.get(0);
@@ -376,6 +409,19 @@ public class Messages {
       Object data = golubetsVar_list.get(3);
       golubetsResult.setData((Map<String, String>) data);
       return golubetsResult;
+=======
+    static @NonNull MessageData fromList(@NonNull ArrayList<Object> pigeonVar_list) {
+      MessageData pigeonResult = new MessageData();
+      Object name = pigeonVar_list.get(0);
+      pigeonResult.setName((String) name);
+      Object messageDescription = pigeonVar_list.get(1);
+      pigeonResult.setMessageDescription((String) messageDescription);
+      Object code = pigeonVar_list.get(2);
+      pigeonResult.setCode((Code) code);
+      Object data = pigeonVar_list.get(3);
+      pigeonResult.setData((Map<String, String>) data);
+      return pigeonResult;
+>>>>>>> filtered-upstream/main:packages/pigeon/example/app/android/app/src/main/java/io/flutter/plugins/Messages.java
     }
   }
 
