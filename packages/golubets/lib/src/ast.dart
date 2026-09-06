@@ -919,17 +919,14 @@ class Root extends Node {
 
   /// Factory function for generating an empty root, usually used when early errors are encountered.
   factory Root.makeEmpty() {
-<<<<<<< HEAD:packages/golubets/lib/src/ast.dart
     return Root(
       apis: <Api>[],
       classes: <Class>[],
       enums: <Enum>[],
       genericTypeNames: <String>{},
       genericUsage: <String, Set<TypeArgumentCombination>>{},
+      constants: <Constant>[],
     );
-=======
-    return Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[], constants: <Constant>[]);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/ast.dart
   }
 
   // TODO(tarrinneal): Ensure classes are sorted in topological dependency order; see

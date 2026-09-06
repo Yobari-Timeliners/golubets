@@ -144,6 +144,11 @@ class GenericContainer<T> {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'GenericContainer(value: $value, values: $values)';
+  }
 }
 
 /// A generic class with two type parameters.
@@ -181,6 +186,11 @@ class GenericPair<T, K> {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'GenericPair(first: $first, second: $second, map: $map)';
+  }
 }
 
 /// A complex nested generic class.
@@ -226,6 +236,11 @@ class NestedGeneric<T, K, V> {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'NestedGeneric(container: $container, pairs: $pairs, nestedMap: $nestedMap, listOfMaps: $listOfMaps)';
+  }
 }
 
 class SimpleStringContainer {
@@ -263,6 +278,11 @@ class SimpleStringContainer {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'SimpleStringContainer(id: $id, name: $name)';
+  }
 }
 
 /// A class containing all supported types.
@@ -467,6 +487,11 @@ class GenericsAllTypes {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'GenericsAllTypes(aBool: $aBool, anInt: $anInt, anInt64: $anInt64, aDouble: $aDouble, aByteArray: $aByteArray, a4ByteArray: $a4ByteArray, a8ByteArray: $a8ByteArray, aFloatArray: $aFloatArray, anEnum: $anEnum, anotherEnum: $anotherEnum, aString: $aString, anObject: $anObject, list: $list, stringList: $stringList, intList: $intList, doubleList: $doubleList, boolList: $boolList, enumList: $enumList, objectList: $objectList, listList: $listList, mapList: $mapList, map: $map, stringMap: $stringMap, intMap: $intMap, enumMap: $enumMap, objectMap: $objectMap, listMap: $listMap, mapMap: $mapMap)';
+  }
 }
 
 /// A class containing all supported nullable types.
@@ -690,6 +715,11 @@ class GenericsAllNullableTypes {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'GenericsAllNullableTypes(aNullableBool: $aNullableBool, aNullableInt: $aNullableInt, aNullableInt64: $aNullableInt64, aNullableDouble: $aNullableDouble, aNullableByteArray: $aNullableByteArray, aNullable4ByteArray: $aNullable4ByteArray, aNullable8ByteArray: $aNullable8ByteArray, aNullableFloatArray: $aNullableFloatArray, aNullableEnum: $aNullableEnum, anotherNullableEnum: $anotherNullableEnum, aNullableString: $aNullableString, aNullableObject: $aNullableObject, allNullableTypes: $allNullableTypes, list: $list, stringList: $stringList, intList: $intList, doubleList: $doubleList, boolList: $boolList, enumList: $enumList, objectList: $objectList, listList: $listList, mapList: $mapList, recursiveClassList: $recursiveClassList, map: $map, stringMap: $stringMap, intMap: $intMap, enumMap: $enumMap, objectMap: $objectMap, listMap: $listMap, mapMap: $mapMap, recursiveClassMap: $recursiveClassMap)';
+  }
 }
 
 /// A class containing all supported nullable types.
@@ -875,6 +905,11 @@ class GenericsAllNullableTypesTyped<T, K, V> {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'GenericsAllNullableTypesTyped(aNullableBool: $aNullableBool, aNullableInt: $aNullableInt, aNullableInt64: $aNullableInt64, aNullableDouble: $aNullableDouble, aNullableByteArray: $aNullableByteArray, aNullable4ByteArray: $aNullable4ByteArray, aNullable8ByteArray: $aNullable8ByteArray, aNullableFloatArray: $aNullableFloatArray, aNullableEnum: $aNullableEnum, anotherNullableEnum: $anotherNullableEnum, aNullableString: $aNullableString, aNullableObject: $aNullableObject, allNullableTypes: $allNullableTypes, list: $list, stringList: $stringList, intList: $intList, doubleList: $doubleList, boolList: $boolList, enumList: $enumList, objectList: $objectList, listList: $listList, mapList: $mapList, recursiveClassList: $recursiveClassList, map: $map, stringMap: $stringMap, intMap: $intMap, enumMap: $enumMap, objectMap: $objectMap, listMap: $listMap, mapMap: $mapMap, recursiveClassMap: $recursiveClassMap)';
+  }
 }
 
 sealed class Either<L, R> {
@@ -909,6 +944,11 @@ class Left<L, R> extends Either<L, R> {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'Left(value: $value)';
+  }
 }
 
 class Right<L, R> extends Either<L, R> {
@@ -939,6 +979,11 @@ class Right<L, R> extends Either<L, R> {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'Right(value: $value)';
+  }
 }
 
 class GenericDefaults {
@@ -1064,6 +1109,11 @@ class GenericDefaults {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'GenericDefaults(genericInt: $genericInt, genericString: $genericString, genericDouble: $genericDouble, genericBool: $genericBool, genericPairStringInt: $genericPairStringInt, genericPairIntString: $genericPairIntString, nestedGenericDefault: $nestedGenericDefault, genericPairEither: $genericPairEither)';
+  }
 }
 
 class _GolubetsCodec extends StandardMessageCodec {
@@ -1587,8 +1637,8 @@ class _GolubetsCodec extends StandardMessageCodec {
 
 /// Generic API for testing various generic type combinations.
 class HostGenericApi {
-  /// Constructor for [HostGenericApi].  The [binaryMessenger] named argument is
-  /// available for dependency injection.  If it is left null, the default
+  /// Constructor for [HostGenericApi]. The [binaryMessenger] named argument is
+  /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
   HostGenericApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
     : golubetsVar_binaryMessenger = binaryMessenger,

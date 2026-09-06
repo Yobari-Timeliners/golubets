@@ -2,13 +2,8 @@
 
 ## Description
 
-<<<<<<< HEAD:packages/golubets/CONTRIBUTING.md
 Golub is a code generation tool that adds type safety to Flutter’s Platform
 Channels.  This document serves as an overview of how it functions to help
-=======
-Pigeon is a code generation tool that adds type safety to Flutter’s Platform
-Channels. This document serves as an overview of how it functions to help
->>>>>>> filtered-upstream/main:packages/pigeon/CONTRIBUTING.md
 people who would like to contribute to the project.
 
 ## Source Index

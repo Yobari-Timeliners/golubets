@@ -369,21 +369,12 @@ public class Messages {
       }
 
       public @NonNull MessageData build() {
-<<<<<<< HEAD:packages/golubets/example/app/android/app/src/main/java/io/flutter/plugins/Messages.java
         MessageData golubetsReturn = new MessageData();
         golubetsReturn.setName(name);
-        golubetsReturn.setDescription(description);
+        golubetsReturn.setMessageDescription(messageDescription);
         golubetsReturn.setCode(code);
         golubetsReturn.setData(data);
         return golubetsReturn;
-=======
-        MessageData pigeonReturn = new MessageData();
-        pigeonReturn.setName(name);
-        pigeonReturn.setMessageDescription(messageDescription);
-        pigeonReturn.setCode(code);
-        pigeonReturn.setData(data);
-        return pigeonReturn;
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/android/app/src/main/java/io/flutter/plugins/Messages.java
       }
     }
 
@@ -397,31 +388,17 @@ public class Messages {
       return toListResult;
     }
 
-<<<<<<< HEAD:packages/golubets/example/app/android/app/src/main/java/io/flutter/plugins/Messages.java
     static @NonNull MessageData fromList(@NonNull ArrayList<Object> golubetsVar_list) {
       MessageData golubetsResult = new MessageData();
       Object name = golubetsVar_list.get(0);
       golubetsResult.setName((String) name);
-      Object description = golubetsVar_list.get(1);
-      golubetsResult.setDescription((String) description);
+      Object messageDescription = golubetsVar_list.get(1);
+      golubetsResult.setMessageDescription((String) messageDescription);
       Object code = golubetsVar_list.get(2);
       golubetsResult.setCode((Code) code);
       Object data = golubetsVar_list.get(3);
       golubetsResult.setData((Map<String, String>) data);
       return golubetsResult;
-=======
-    static @NonNull MessageData fromList(@NonNull ArrayList<Object> pigeonVar_list) {
-      MessageData pigeonResult = new MessageData();
-      Object name = pigeonVar_list.get(0);
-      pigeonResult.setName((String) name);
-      Object messageDescription = pigeonVar_list.get(1);
-      pigeonResult.setMessageDescription((String) messageDescription);
-      Object code = pigeonVar_list.get(2);
-      pigeonResult.setCode((Code) code);
-      Object data = pigeonVar_list.get(3);
-      pigeonResult.setData((Map<String, String>) data);
-      return pigeonResult;
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/android/app/src/main/java/io/flutter/plugins/Messages.java
     }
   }
 

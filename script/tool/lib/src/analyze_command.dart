@@ -100,14 +100,8 @@ class AnalyzeCommand extends PackageLoopingCommand {
       'Analyzes all packages using dart analyze.\n\n'
       'This command requires "dart" and "flutter" to be in your path.';
 
-<<<<<<< HEAD
-  /// Checks that there are no unexpected analysis_options.yaml files.
-  // ignore: unused_element
-  bool _hasUnexpectedAnalysisOptions(RepositoryPackage package) {
-=======
   /// Checks that there are no package-local analysis_options.yaml files.
   bool _hasLocalAnalysisOptions(RepositoryPackage package) {
->>>>>>> filtered-upstream/main
     final List<FileSystemEntity> files = package.directory.listSync(
       recursive: true,
       followLinks: false,

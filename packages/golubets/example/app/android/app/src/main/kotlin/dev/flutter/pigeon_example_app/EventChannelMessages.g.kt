@@ -262,6 +262,10 @@ class EmptyEvent() : PlatformEvent() {
     var result = javaClass.hashCode()
     return result
   }
+
+  override fun toString(): String {
+    return "EmptyEvent()"
+  }
 }
 
 private open class EventChannelMessagesGolubetsCodec : StandardMessageCodec() {

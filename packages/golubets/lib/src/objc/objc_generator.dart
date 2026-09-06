@@ -1822,15 +1822,9 @@ Iterable<String> _getSelectorComponents(Method func, String lastSelectorComponen
 /// the return value of method, this may not match the return value in [func]
 /// since [func] may be asynchronous. The function requires you specify a
 /// [lastArgType] and [lastArgName] for arguments that aren't represented in
-<<<<<<< HEAD:packages/golubets/lib/src/objc/objc_generator.dart
 /// [func].  This is typically used for passing in 'error' or 'completion'
 /// arguments that don't exist in the golubets file but are required in the objc
 /// output.  [argNameFunc] is the function used to generate the argument name
-=======
-/// [func]. This is typically used for passing in 'error' or 'completion'
-/// arguments that don't exist in the pigeon file but are required in the objc
-/// output. [argNameFunc] is the function used to generate the argument name
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/objc/objc_generator.dart
 /// [func.parameters].
 String _makeObjcSignature({
   required Method func,

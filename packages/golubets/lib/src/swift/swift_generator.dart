@@ -303,11 +303,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     indent.newln();
     addDocumentationComments(indent, anEnum.documentationComments, _docCommentSpec);
 
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-    indent.write('public enum ${anEnum.name}: Int ');
-=======
-    indent.write('enum ${anEnum.name}: Int, CaseIterable ');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+    indent.write('public enum ${anEnum.name}: Int, CaseIterable ');
     indent.addScoped('{', '}', () {
       enumerate(anEnum.members, (int index, EnumMember member) {
         addDocumentationComments(indent, member.documentationComments, _docCommentSpec);
@@ -499,9 +495,9 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     Class classDefinition, {
     bool private = false,
     bool hashable = true,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
     required Root root,
     required InternalSwiftOptions generatorOptions,
+    bool customStringConvertible = true,
   }) {
     final classLookup = <String, Class>{
       for (final Class classDefinition in root.classes) classDefinition.name: classDefinition,
@@ -528,15 +524,6 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     final typeArguments = classDefinition.typeArguments.isEmpty
         ? ''
         : '<${_flattenTypeArgumentsWithSelectiveHashableConstraints(classDefinition.typeArguments, hashableTypeParams)}>';
-    final extendsString = classDefinition.superClass != null
-        ? ': ${classDefinition.superClass!.name}'
-        : hashable
-        ? ': Hashable'
-        : '';
-=======
-    bool customStringConvertible = true,
-  }) {
-    final privateString = private ? 'private ' : '';
     final protocols = <String>[];
     if (classDefinition.superClass != null) {
       protocols.add(classDefinition.superClass!.name);
@@ -549,7 +536,6 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       }
     }
     final extendsString = protocols.isEmpty ? '' : ': ${protocols.join(', ')}';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
     if (classDefinition.isSwiftClass) {
       indent.write('${privateString}class ${classDefinition.name}$typeArguments$extendsString ');
     } else if (classDefinition.isSealed) {
@@ -617,12 +603,9 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       overflowClass,
       private: true,
       hashable: false,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
       root: root,
       generatorOptions: generatorOptions,
-=======
       customStringConvertible: false,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
     );
     indent.addScoped('', '}', () {
       writeClassEncode(
@@ -851,13 +834,14 @@ if (wrapped == nil) {
     Class classDefinition, {
     required String dartPackageName,
   }) {
-    final String component = generatorOptions.fileSpecificClassNameComponent ?? '';
     indent.writeScoped(
       'public static func == (lhs: ${classDefinition.name}, rhs: ${classDefinition.name}) -> Bool {',
       '}',
       () {
         if (classDefinition.isSealed) {
-          indent.writeln('return deepEquals$component(lhs.toList(), rhs.toList())');
+          indent.writeln(
+            'return ${generatorOptions.fileSpecificClassNameComponent ?? ''}GolubetsInternal.deepEquals(lhs.toList(), rhs.toList())',
+          );
           return;
         }
         indent.writeScoped('if Swift.type(of: lhs) != Swift.type(of: rhs) {', '}', () {
@@ -874,12 +858,8 @@ if (wrapped == nil) {
         } else {
           final String comparisons = fields
               .map(
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-                (NamedType field) => 'deepEquals$component(lhs.${field.name}, rhs.${field.name})',
-=======
                 (NamedType field) =>
-                    '${generatorOptions.fileSpecificClassNameComponent ?? ''}PigeonInternal.deepEquals(lhs.${field.name}, rhs.${field.name})',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+                    '${generatorOptions.fileSpecificClassNameComponent ?? ''}GolubetsInternal.deepEquals(lhs.${field.name}, rhs.${field.name})',
               )
               .join(' && ');
           indent.writeln('return $comparisons');
@@ -890,19 +870,17 @@ if (wrapped == nil) {
     indent.newln();
     indent.writeScoped('public func hash(into hasher: inout Hasher) {', '}', () {
       if (classDefinition.isSealed) {
-        indent.writeln('deepHash$component(value: toList(), hasher: &hasher)');
+        indent.writeln(
+          '${generatorOptions.fileSpecificClassNameComponent ?? ''}GolubetsInternal.deepHash(value: toList(), hasher: &hasher)',
+        );
         return;
       }
       indent.writeln('hasher.combine("${classDefinition.name}")');
       final Iterable<NamedType> fields = getFieldsInSerializationOrder(classDefinition);
       for (final field in fields) {
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-        indent.writeln('deepHash$component(value: ${field.name}, hasher: &hasher)');
-=======
         indent.writeln(
-          '${generatorOptions.fileSpecificClassNameComponent ?? ''}PigeonInternal.deepHash(value: ${field.name}, hasher: &hasher)',
+          '${generatorOptions.fileSpecificClassNameComponent ?? ''}GolubetsInternal.deepHash(value: ${field.name}, hasher: &hasher)',
         );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
       }
     });
   }
@@ -1836,7 +1814,7 @@ static func deepHash(value: Any?, hasher: inout Hasher) {
   void _writePigeonInternal(InternalSwiftOptions generatorOptions, Root root, Indent indent) {
     indent.newln();
     final String uniqueComponent = generatorOptions.fileSpecificClassNameComponent ?? '';
-    indent.writeScoped('enum ${uniqueComponent}PigeonInternal {', '}', () {
+    indent.writeScoped('enum ${uniqueComponent}GolubetsInternal {', '}', () {
       _writeIsNullish(generatorOptions, indent);
       if (root.classes.isNotEmpty) {
         _writeDeepEquals(generatorOptions, indent);

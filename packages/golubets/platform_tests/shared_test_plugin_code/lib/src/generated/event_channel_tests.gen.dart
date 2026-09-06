@@ -614,41 +614,6 @@ class ClassEvent extends PlatformEvent {
 }
 
 class EmptyEvent extends PlatformEvent {
-  EmptyEvent();
-
-  List<Object?> _toList() {
-    return <Object?>[];
-  }
-
-  Object encode() {
-    return _toList();
-  }
-
-  static EmptyEvent decode(Object result) {
-    result as List<Object?>;
-    return EmptyEvent();
-  }
-
-  @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
-  bool operator ==(Object other) {
-    if (other is! EmptyEvent || other.runtimeType != runtimeType) {
-      return false;
-    }
-    return true;
-  }
-
-  @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
-  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
-
-  @override
-  String toString() {
-    return 'EmptyEvent()';
-  }
-}
-
-class EmptyEvent extends PlatformEvent {
   List<Object?> _toList() {
     return <Object?>[];
   }
@@ -673,6 +638,11 @@ class EmptyEvent extends PlatformEvent {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'EmptyEvent()';
+  }
 }
 
 class _GolubetsCodec extends StandardMessageCodec {
@@ -813,8 +783,8 @@ Stream<int> streamConsistentNumbers({String instanceName = ''}) {
 }
 
 class SealedClassApi {
-  /// Constructor for [SealedClassApi].  The [binaryMessenger] named argument is
-  /// available for dependency injection.  If it is left null, the default
+  /// Constructor for [SealedClassApi]. The [binaryMessenger] named argument is
+  /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
   SealedClassApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
     : golubetsVar_binaryMessenger = binaryMessenger,

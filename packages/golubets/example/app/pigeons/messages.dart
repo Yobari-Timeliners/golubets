@@ -38,7 +38,7 @@ class MessageData {
     this.code = Code.one,
     this.data = const <String, String>{'hello': 'world', 'lorem': 'ipsum', 'golubets': 'rocks'},
     this.name = 'Golub',
-    this.description = 'Example description',
+    this.messageDescription = 'Example description',
   });
 
   String? name;

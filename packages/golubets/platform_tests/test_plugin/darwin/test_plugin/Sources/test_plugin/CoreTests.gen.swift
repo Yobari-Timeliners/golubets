@@ -15,6 +15,12 @@ import Foundation
   #error("Unsupported platform.")
 #endif
 
+public let aStringConstant: String = "stringConstantValue"
+public let aStringConstantWithEscapes: String = "string\\'\\\"\\$ConstantValue"
+public let anIntConstant: Int64 = 42
+public let aDoubleConstant: Double = 3.14
+public let aBoolConstant: Bool = true
+
 /// Error class for passing custom error details to Dart side.
 public final class GolubetsError: Error {
   let code: String
@@ -65,8 +71,128 @@ private func createConnectionError(withChannelName channelName: String) -> Golub
     details: "")
 }
 
-private func isNullish(_ value: Any?) -> Bool {
-  return value is NSNull || value == nil
+enum CoreTestsGolubetsInternal {
+  static func isNullish(_ value: Any?) -> Bool {
+    guard let innerValue = value else {
+      return true
+    }
+
+    if case Optional<Any>.some(Optional<Any>.none) = value {
+      return true
+    }
+
+    return innerValue is NSNull
+  }
+  static func doubleEquals(_ lhs: Double, _ rhs: Double) -> Bool {
+    return (lhs.isNaN && rhs.isNaN) || lhs == rhs
+  }
+
+  static func doubleHash(_ value: Double, _ hasher: inout Hasher) {
+    if value.isNaN {
+      hasher.combine(0x7FF8_0000_0000_0000)
+    } else {
+      // Normalize -0.0 to 0.0
+      hasher.combine(value == 0 ? 0 : value)
+    }
+  }
+
+  static func deepEquals(_ lhs: Any?, _ rhs: Any?) -> Bool {
+    let cleanLhs = nilOrValue(lhs) as Any?
+    let cleanRhs = nilOrValue(rhs) as Any?
+    switch (cleanLhs, cleanRhs) {
+    case (nil, nil):
+      return true
+
+    case (nil, _), (_, nil):
+      return false
+
+    case (let lhs as AnyObject, let rhs as AnyObject) where lhs === rhs:
+      return true
+
+    case is (Void, Void):
+      return true
+
+    case (let lhsArray, let rhsArray) as ([Any?], [Any?]):
+      guard lhsArray.count == rhsArray.count else { return false }
+      for (index, element) in lhsArray.enumerated() {
+        if !deepEquals(element, rhsArray[index]) {
+          return false
+        }
+      }
+      return true
+
+    case (let lhsArray, let rhsArray) as ([Double], [Double]):
+      guard lhsArray.count == rhsArray.count else { return false }
+      for (index, element) in lhsArray.enumerated() {
+        if !doubleEquals(element, rhsArray[index]) {
+          return false
+        }
+      }
+      return true
+
+    case (let lhsDictionary, let rhsDictionary) as ([AnyHashable: Any?], [AnyHashable: Any?]):
+      guard lhsDictionary.count == rhsDictionary.count else { return false }
+      for (lhsKey, lhsValue) in lhsDictionary {
+        var found = false
+        for (rhsKey, rhsValue) in rhsDictionary {
+          if deepEquals(lhsKey, rhsKey) {
+            if deepEquals(lhsValue, rhsValue) {
+              found = true
+              break
+            } else {
+              return false
+            }
+          }
+        }
+        if !found { return false }
+      }
+      return true
+
+    case (let lhs as Double, let rhs as Double):
+      return doubleEquals(lhs, rhs)
+
+    case (let lhsHashable, let rhsHashable) as (AnyHashable, AnyHashable):
+      return lhsHashable == rhsHashable
+
+    default:
+      // Any other type shouldn't be able to be used with golubetsets. File an issue if you find this to be untrue.
+      return false
+    }
+  }
+
+  static func deepHash(value: Any?, hasher: inout Hasher) {
+    let cleanValue = nilOrValue(value) as Any?
+    if let cleanValue = cleanValue {
+      if let doubleValue = cleanValue as? Double {
+        doubleHash(doubleValue, &hasher)
+      } else if let valueList = cleanValue as? [Any?] {
+        for item in valueList {
+          deepHash(value: item, hasher: &hasher)
+        }
+      } else if let valueList = cleanValue as? [Double] {
+        for item in valueList {
+          doubleHash(item, &hasher)
+        }
+      } else if let valueDict = cleanValue as? [AnyHashable: Any?] {
+        var result = 0
+        for (key, value) in valueDict {
+          var entryKeyHasher = Hasher()
+          deepHash(value: key, hasher: &entryKeyHasher)
+          var entryValueHasher = Hasher()
+          deepHash(value: value, hasher: &entryValueHasher)
+          result = result &+ ((entryKeyHasher.finalize() &* 31) ^ entryValueHasher.finalize())
+        }
+        hasher.combine(result)
+      } else if let hashableValue = cleanValue as? AnyHashable {
+        hasher.combine(hashableValue)
+      } else {
+        hasher.combine(String(describing: cleanValue))
+      }
+    } else {
+      hasher.combine(0)
+    }
+  }
+
 }
 
 private func nilOrValue<T>(_ value: Any?) -> T? {
@@ -74,117 +200,7 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
   return value as! T?
 }
 
-private func doubleEqualsCoreTests(_ lhs: Double, _ rhs: Double) -> Bool {
-  return (lhs.isNaN && rhs.isNaN) || lhs == rhs
-}
-
-private func doubleHashCoreTests(_ value: Double, _ hasher: inout Hasher) {
-  if value.isNaN {
-    hasher.combine(0x7FF8_0000_0000_0000)
-  } else {
-    // Normalize -0.0 to 0.0
-    hasher.combine(value == 0 ? 0 : value)
-  }
-}
-
-func deepEqualsCoreTests(_ lhs: Any?, _ rhs: Any?) -> Bool {
-  let cleanLhs = nilOrValue(lhs) as Any?
-  let cleanRhs = nilOrValue(rhs) as Any?
-  switch (cleanLhs, cleanRhs) {
-  case (nil, nil):
-    return true
-
-  case (nil, _), (_, nil):
-    return false
-
-  case (let lhs as AnyObject, let rhs as AnyObject) where lhs === rhs:
-    return true
-
-  case is (Void, Void):
-    return true
-
-  case (let lhsArray, let rhsArray) as ([Any?], [Any?]):
-    guard lhsArray.count == rhsArray.count else { return false }
-    for (index, element) in lhsArray.enumerated() {
-      if !deepEqualsCoreTests(element, rhsArray[index]) {
-        return false
-      }
-    }
-    return true
-
-  case (let lhsArray, let rhsArray) as ([Double], [Double]):
-    guard lhsArray.count == rhsArray.count else { return false }
-    for (index, element) in lhsArray.enumerated() {
-      if !doubleEqualsCoreTests(element, rhsArray[index]) {
-        return false
-      }
-    }
-    return true
-
-  case (let lhsDictionary, let rhsDictionary) as ([AnyHashable: Any?], [AnyHashable: Any?]):
-    guard lhsDictionary.count == rhsDictionary.count else { return false }
-    for (lhsKey, lhsValue) in lhsDictionary {
-      var found = false
-      for (rhsKey, rhsValue) in rhsDictionary {
-        if deepEqualsCoreTests(lhsKey, rhsKey) {
-          if deepEqualsCoreTests(lhsValue, rhsValue) {
-            found = true
-            break
-          } else {
-            return false
-          }
-        }
-      }
-      if !found { return false }
-    }
-    return true
-
-  case (let lhs as Double, let rhs as Double):
-    return doubleEqualsCoreTests(lhs, rhs)
-
-  case (let lhsHashable, let rhsHashable) as (AnyHashable, AnyHashable):
-    return lhsHashable == rhsHashable
-
-  default:
-    // Any other type shouldn't be able to be used with golubetsets. File an issue if you find this to be untrue.
-    return false
-  }
-}
-
-func deepHashCoreTests(value: Any?, hasher: inout Hasher) {
-  let cleanValue = nilOrValue(value) as Any?
-  if let cleanValue = cleanValue {
-    if let doubleValue = cleanValue as? Double {
-      doubleHashCoreTests(doubleValue, &hasher)
-    } else if let valueList = cleanValue as? [Any?] {
-      for item in valueList {
-        deepHashCoreTests(value: item, hasher: &hasher)
-      }
-    } else if let valueList = cleanValue as? [Double] {
-      for item in valueList {
-        doubleHashCoreTests(item, &hasher)
-      }
-    } else if let valueDict = cleanValue as? [AnyHashable: Any?] {
-      var result = 0
-      for (key, value) in valueDict {
-        var entryKeyHasher = Hasher()
-        deepHashCoreTests(value: key, hasher: &entryKeyHasher)
-        var entryValueHasher = Hasher()
-        deepHashCoreTests(value: value, hasher: &entryValueHasher)
-        result = result &+ ((entryKeyHasher.finalize() &* 31) ^ entryValueHasher.finalize())
-      }
-      hasher.combine(result)
-    } else if let hashableValue = cleanValue as? AnyHashable {
-      hasher.combine(hashableValue)
-    } else {
-      hasher.combine(String(describing: cleanValue))
-    }
-  } else {
-    hasher.combine(0)
-  }
-}
-
-public enum AnEnum: Int {
+public enum AnEnum: Int, CaseIterable {
   case one = 0
   case two = 1
   case three = 2
@@ -192,12 +208,12 @@ public enum AnEnum: Int {
   case fourHundredTwentyTwo = 4
 }
 
-public enum AnotherEnum: Int {
+public enum AnotherEnum: Int, CaseIterable {
   case justInCase = 0
 }
 
 /// Generated class from Golubets that represents data sent in messages.
-public struct UnusedClass: Hashable {
+public struct UnusedClass: Hashable, CustomStringConvertible {
   public init(
     aField: Any? = nil
   ) {
@@ -222,19 +238,23 @@ public struct UnusedClass: Hashable {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return deepEqualsCoreTests(lhs.aField, rhs.aField)
+    return CoreTestsGolubetsInternal.deepEquals(lhs.aField, rhs.aField)
   }
 
   public func hash(into hasher: inout Hasher) {
     hasher.combine("UnusedClass")
-    deepHashCoreTests(value: aField, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aField, hasher: &hasher)
+  }
+
+  public var description: String {
+    return "UnusedClass(aField: \(String(describing: aField)))"
   }
 }
 
 /// A class containing all supported types.
 ///
 /// Generated class from Golubets that represents data sent in messages.
-public struct AllTypes: Hashable {
+public struct AllTypes: Hashable, CustomStringConvertible {
   public init(
     aBool: Bool = false,
     anInt: Int64 = 0,
@@ -421,70 +441,78 @@ public struct AllTypes: Hashable {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return deepEqualsCoreTests(lhs.aBool, rhs.aBool) && deepEqualsCoreTests(lhs.anInt, rhs.anInt)
-      && deepEqualsCoreTests(lhs.anInt64, rhs.anInt64)
-      && deepEqualsCoreTests(lhs.aDouble, rhs.aDouble)
-      && deepEqualsCoreTests(lhs.aByteArray, rhs.aByteArray)
-      && deepEqualsCoreTests(lhs.a4ByteArray, rhs.a4ByteArray)
-      && deepEqualsCoreTests(lhs.a8ByteArray, rhs.a8ByteArray)
-      && deepEqualsCoreTests(lhs.aFloatArray, rhs.aFloatArray)
-      && deepEqualsCoreTests(lhs.anEnum, rhs.anEnum)
-      && deepEqualsCoreTests(lhs.anotherEnum, rhs.anotherEnum)
-      && deepEqualsCoreTests(lhs.aString, rhs.aString)
-      && deepEqualsCoreTests(lhs.anObject, rhs.anObject) && deepEqualsCoreTests(lhs.list, rhs.list)
-      && deepEqualsCoreTests(lhs.stringList, rhs.stringList)
-      && deepEqualsCoreTests(lhs.intList, rhs.intList)
-      && deepEqualsCoreTests(lhs.doubleList, rhs.doubleList)
-      && deepEqualsCoreTests(lhs.boolList, rhs.boolList)
-      && deepEqualsCoreTests(lhs.enumList, rhs.enumList)
-      && deepEqualsCoreTests(lhs.objectList, rhs.objectList)
-      && deepEqualsCoreTests(lhs.listList, rhs.listList)
-      && deepEqualsCoreTests(lhs.mapList, rhs.mapList) && deepEqualsCoreTests(lhs.map, rhs.map)
-      && deepEqualsCoreTests(lhs.stringMap, rhs.stringMap)
-      && deepEqualsCoreTests(lhs.intMap, rhs.intMap)
-      && deepEqualsCoreTests(lhs.enumMap, rhs.enumMap)
-      && deepEqualsCoreTests(lhs.objectMap, rhs.objectMap)
-      && deepEqualsCoreTests(lhs.listMap, rhs.listMap)
-      && deepEqualsCoreTests(lhs.mapMap, rhs.mapMap)
+    return CoreTestsGolubetsInternal.deepEquals(lhs.aBool, rhs.aBool)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anInt, rhs.anInt)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anInt64, rhs.anInt64)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aDouble, rhs.aDouble)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aByteArray, rhs.aByteArray)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.a4ByteArray, rhs.a4ByteArray)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.a8ByteArray, rhs.a8ByteArray)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aFloatArray, rhs.aFloatArray)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anEnum, rhs.anEnum)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anotherEnum, rhs.anotherEnum)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aString, rhs.aString)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anObject, rhs.anObject)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.list, rhs.list)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.stringList, rhs.stringList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.intList, rhs.intList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.doubleList, rhs.doubleList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.boolList, rhs.boolList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.enumList, rhs.enumList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.objectList, rhs.objectList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.listList, rhs.listList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.mapList, rhs.mapList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.map, rhs.map)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.stringMap, rhs.stringMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.intMap, rhs.intMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.enumMap, rhs.enumMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.objectMap, rhs.objectMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.listMap, rhs.listMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.mapMap, rhs.mapMap)
   }
 
   public func hash(into hasher: inout Hasher) {
     hasher.combine("AllTypes")
-    deepHashCoreTests(value: aBool, hasher: &hasher)
-    deepHashCoreTests(value: anInt, hasher: &hasher)
-    deepHashCoreTests(value: anInt64, hasher: &hasher)
-    deepHashCoreTests(value: aDouble, hasher: &hasher)
-    deepHashCoreTests(value: aByteArray, hasher: &hasher)
-    deepHashCoreTests(value: a4ByteArray, hasher: &hasher)
-    deepHashCoreTests(value: a8ByteArray, hasher: &hasher)
-    deepHashCoreTests(value: aFloatArray, hasher: &hasher)
-    deepHashCoreTests(value: anEnum, hasher: &hasher)
-    deepHashCoreTests(value: anotherEnum, hasher: &hasher)
-    deepHashCoreTests(value: aString, hasher: &hasher)
-    deepHashCoreTests(value: anObject, hasher: &hasher)
-    deepHashCoreTests(value: list, hasher: &hasher)
-    deepHashCoreTests(value: stringList, hasher: &hasher)
-    deepHashCoreTests(value: intList, hasher: &hasher)
-    deepHashCoreTests(value: doubleList, hasher: &hasher)
-    deepHashCoreTests(value: boolList, hasher: &hasher)
-    deepHashCoreTests(value: enumList, hasher: &hasher)
-    deepHashCoreTests(value: objectList, hasher: &hasher)
-    deepHashCoreTests(value: listList, hasher: &hasher)
-    deepHashCoreTests(value: mapList, hasher: &hasher)
-    deepHashCoreTests(value: map, hasher: &hasher)
-    deepHashCoreTests(value: stringMap, hasher: &hasher)
-    deepHashCoreTests(value: intMap, hasher: &hasher)
-    deepHashCoreTests(value: enumMap, hasher: &hasher)
-    deepHashCoreTests(value: objectMap, hasher: &hasher)
-    deepHashCoreTests(value: listMap, hasher: &hasher)
-    deepHashCoreTests(value: mapMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aBool, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anInt, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anInt64, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aDouble, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aByteArray, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: a4ByteArray, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: a8ByteArray, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aFloatArray, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anEnum, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anotherEnum, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aString, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anObject, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: list, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: stringList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: intList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: doubleList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: boolList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: enumList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: objectList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: listList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: mapList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: map, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: stringMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: intMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: enumMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: objectMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: listMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: mapMap, hasher: &hasher)
+  }
+
+  public var description: String {
+    return
+      "AllTypes(aBool: \(String(describing: aBool)), anInt: \(String(describing: anInt)), anInt64: \(String(describing: anInt64)), aDouble: \(String(describing: aDouble)), aByteArray: \(String(describing: aByteArray)), a4ByteArray: \(String(describing: a4ByteArray)), a8ByteArray: \(String(describing: a8ByteArray)), aFloatArray: \(String(describing: aFloatArray)), anEnum: \(String(describing: anEnum)), anotherEnum: \(String(describing: anotherEnum)), aString: \(String(describing: aString)), anObject: \(String(describing: anObject)), list: \(String(describing: list)), stringList: \(String(describing: stringList)), intList: \(String(describing: intList)), doubleList: \(String(describing: doubleList)), boolList: \(String(describing: boolList)), enumList: \(String(describing: enumList)), objectList: \(String(describing: objectList)), listList: \(String(describing: listList)), mapList: \(String(describing: mapList)), map: \(String(describing: map)), stringMap: \(String(describing: stringMap)), intMap: \(String(describing: intMap)), enumMap: \(String(describing: enumMap)), objectMap: \(String(describing: objectMap)), listMap: \(String(describing: listMap)), mapMap: \(String(describing: mapMap)))"
   }
 }
 
 /// A class containing all supported nullable types.
 ///
 /// Generated class from Golubets that represents data sent in messages.
-public class AllNullableTypes: Hashable {
+public class AllNullableTypes: Hashable, CustomStringConvertible {
   public init(
     aNullableBool: Bool? = nil,
     aNullableInt: Int64? = nil,
@@ -692,71 +720,77 @@ public class AllNullableTypes: Hashable {
     if lhs === rhs {
       return true
     }
-    return deepEqualsCoreTests(lhs.aNullableBool, rhs.aNullableBool)
-      && deepEqualsCoreTests(lhs.aNullableInt, rhs.aNullableInt)
-      && deepEqualsCoreTests(lhs.aNullableInt64, rhs.aNullableInt64)
-      && deepEqualsCoreTests(lhs.aNullableDouble, rhs.aNullableDouble)
-      && deepEqualsCoreTests(lhs.aNullableByteArray, rhs.aNullableByteArray)
-      && deepEqualsCoreTests(lhs.aNullable4ByteArray, rhs.aNullable4ByteArray)
-      && deepEqualsCoreTests(lhs.aNullable8ByteArray, rhs.aNullable8ByteArray)
-      && deepEqualsCoreTests(lhs.aNullableFloatArray, rhs.aNullableFloatArray)
-      && deepEqualsCoreTests(lhs.aNullableEnum, rhs.aNullableEnum)
-      && deepEqualsCoreTests(lhs.anotherNullableEnum, rhs.anotherNullableEnum)
-      && deepEqualsCoreTests(lhs.aNullableString, rhs.aNullableString)
-      && deepEqualsCoreTests(lhs.aNullableObject, rhs.aNullableObject)
-      && deepEqualsCoreTests(lhs.allNullableTypes, rhs.allNullableTypes)
-      && deepEqualsCoreTests(lhs.list, rhs.list)
-      && deepEqualsCoreTests(lhs.stringList, rhs.stringList)
-      && deepEqualsCoreTests(lhs.intList, rhs.intList)
-      && deepEqualsCoreTests(lhs.doubleList, rhs.doubleList)
-      && deepEqualsCoreTests(lhs.boolList, rhs.boolList)
-      && deepEqualsCoreTests(lhs.enumList, rhs.enumList)
-      && deepEqualsCoreTests(lhs.objectList, rhs.objectList)
-      && deepEqualsCoreTests(lhs.listList, rhs.listList)
-      && deepEqualsCoreTests(lhs.mapList, rhs.mapList)
-      && deepEqualsCoreTests(lhs.recursiveClassList, rhs.recursiveClassList)
-      && deepEqualsCoreTests(lhs.map, rhs.map) && deepEqualsCoreTests(lhs.stringMap, rhs.stringMap)
-      && deepEqualsCoreTests(lhs.intMap, rhs.intMap)
-      && deepEqualsCoreTests(lhs.enumMap, rhs.enumMap)
-      && deepEqualsCoreTests(lhs.objectMap, rhs.objectMap)
-      && deepEqualsCoreTests(lhs.listMap, rhs.listMap)
-      && deepEqualsCoreTests(lhs.mapMap, rhs.mapMap)
-      && deepEqualsCoreTests(lhs.recursiveClassMap, rhs.recursiveClassMap)
+    return CoreTestsGolubetsInternal.deepEquals(lhs.aNullableBool, rhs.aNullableBool)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullableInt, rhs.aNullableInt)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullableInt64, rhs.aNullableInt64)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullableDouble, rhs.aNullableDouble)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullableByteArray, rhs.aNullableByteArray)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullable4ByteArray, rhs.aNullable4ByteArray)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullable8ByteArray, rhs.aNullable8ByteArray)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullableFloatArray, rhs.aNullableFloatArray)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullableEnum, rhs.aNullableEnum)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anotherNullableEnum, rhs.anotherNullableEnum)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullableString, rhs.aNullableString)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullableObject, rhs.aNullableObject)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.allNullableTypes, rhs.allNullableTypes)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.list, rhs.list)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.stringList, rhs.stringList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.intList, rhs.intList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.doubleList, rhs.doubleList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.boolList, rhs.boolList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.enumList, rhs.enumList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.objectList, rhs.objectList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.listList, rhs.listList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.mapList, rhs.mapList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.recursiveClassList, rhs.recursiveClassList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.map, rhs.map)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.stringMap, rhs.stringMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.intMap, rhs.intMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.enumMap, rhs.enumMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.objectMap, rhs.objectMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.listMap, rhs.listMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.mapMap, rhs.mapMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.recursiveClassMap, rhs.recursiveClassMap)
   }
 
   public func hash(into hasher: inout Hasher) {
     hasher.combine("AllNullableTypes")
-    deepHashCoreTests(value: aNullableBool, hasher: &hasher)
-    deepHashCoreTests(value: aNullableInt, hasher: &hasher)
-    deepHashCoreTests(value: aNullableInt64, hasher: &hasher)
-    deepHashCoreTests(value: aNullableDouble, hasher: &hasher)
-    deepHashCoreTests(value: aNullableByteArray, hasher: &hasher)
-    deepHashCoreTests(value: aNullable4ByteArray, hasher: &hasher)
-    deepHashCoreTests(value: aNullable8ByteArray, hasher: &hasher)
-    deepHashCoreTests(value: aNullableFloatArray, hasher: &hasher)
-    deepHashCoreTests(value: aNullableEnum, hasher: &hasher)
-    deepHashCoreTests(value: anotherNullableEnum, hasher: &hasher)
-    deepHashCoreTests(value: aNullableString, hasher: &hasher)
-    deepHashCoreTests(value: aNullableObject, hasher: &hasher)
-    deepHashCoreTests(value: allNullableTypes, hasher: &hasher)
-    deepHashCoreTests(value: list, hasher: &hasher)
-    deepHashCoreTests(value: stringList, hasher: &hasher)
-    deepHashCoreTests(value: intList, hasher: &hasher)
-    deepHashCoreTests(value: doubleList, hasher: &hasher)
-    deepHashCoreTests(value: boolList, hasher: &hasher)
-    deepHashCoreTests(value: enumList, hasher: &hasher)
-    deepHashCoreTests(value: objectList, hasher: &hasher)
-    deepHashCoreTests(value: listList, hasher: &hasher)
-    deepHashCoreTests(value: mapList, hasher: &hasher)
-    deepHashCoreTests(value: recursiveClassList, hasher: &hasher)
-    deepHashCoreTests(value: map, hasher: &hasher)
-    deepHashCoreTests(value: stringMap, hasher: &hasher)
-    deepHashCoreTests(value: intMap, hasher: &hasher)
-    deepHashCoreTests(value: enumMap, hasher: &hasher)
-    deepHashCoreTests(value: objectMap, hasher: &hasher)
-    deepHashCoreTests(value: listMap, hasher: &hasher)
-    deepHashCoreTests(value: mapMap, hasher: &hasher)
-    deepHashCoreTests(value: recursiveClassMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableBool, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableInt, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableInt64, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableDouble, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableByteArray, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullable4ByteArray, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullable8ByteArray, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableFloatArray, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableEnum, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anotherNullableEnum, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableString, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableObject, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: allNullableTypes, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: list, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: stringList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: intList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: doubleList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: boolList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: enumList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: objectList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: listList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: mapList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: recursiveClassList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: map, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: stringMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: intMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: enumMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: objectMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: listMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: mapMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: recursiveClassMap, hasher: &hasher)
+  }
+
+  public var description: String {
+    return
+      "AllNullableTypes(aNullableBool: \(String(describing: aNullableBool)), aNullableInt: \(String(describing: aNullableInt)), aNullableInt64: \(String(describing: aNullableInt64)), aNullableDouble: \(String(describing: aNullableDouble)), aNullableByteArray: \(String(describing: aNullableByteArray)), aNullable4ByteArray: \(String(describing: aNullable4ByteArray)), aNullable8ByteArray: \(String(describing: aNullable8ByteArray)), aNullableFloatArray: \(String(describing: aNullableFloatArray)), aNullableEnum: \(String(describing: aNullableEnum)), anotherNullableEnum: \(String(describing: anotherNullableEnum)), aNullableString: \(String(describing: aNullableString)), aNullableObject: \(String(describing: aNullableObject)), allNullableTypes: \(String(describing: allNullableTypes)), list: \(String(describing: list)), stringList: \(String(describing: stringList)), intList: \(String(describing: intList)), doubleList: \(String(describing: doubleList)), boolList: \(String(describing: boolList)), enumList: \(String(describing: enumList)), objectList: \(String(describing: objectList)), listList: \(String(describing: listList)), mapList: \(String(describing: mapList)), recursiveClassList: \(String(describing: recursiveClassList)), map: \(String(describing: map)), stringMap: \(String(describing: stringMap)), intMap: \(String(describing: intMap)), enumMap: \(String(describing: enumMap)), objectMap: \(String(describing: objectMap)), listMap: \(String(describing: listMap)), mapMap: \(String(describing: mapMap)), recursiveClassMap: \(String(describing: recursiveClassMap)))"
   }
 }
 
@@ -765,7 +799,7 @@ public class AllNullableTypes: Hashable {
 /// test Swift classes.
 ///
 /// Generated class from Golubets that represents data sent in messages.
-public struct AllNullableTypesWithoutRecursion: Hashable {
+public struct AllNullableTypesWithoutRecursion: Hashable, CustomStringConvertible {
   public init(
     aNullableBool: Bool? = nil,
     aNullableInt: Int64? = nil,
@@ -954,65 +988,102 @@ public struct AllNullableTypesWithoutRecursion: Hashable {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return deepEqualsCoreTests(lhs.aNullableBool, rhs.aNullableBool)
-      && deepEqualsCoreTests(lhs.aNullableInt, rhs.aNullableInt)
-      && deepEqualsCoreTests(lhs.aNullableInt64, rhs.aNullableInt64)
-      && deepEqualsCoreTests(lhs.aNullableDouble, rhs.aNullableDouble)
-      && deepEqualsCoreTests(lhs.aNullableByteArray, rhs.aNullableByteArray)
-      && deepEqualsCoreTests(lhs.aNullable4ByteArray, rhs.aNullable4ByteArray)
-      && deepEqualsCoreTests(lhs.aNullable8ByteArray, rhs.aNullable8ByteArray)
-      && deepEqualsCoreTests(lhs.aNullableFloatArray, rhs.aNullableFloatArray)
-      && deepEqualsCoreTests(lhs.aNullableEnum, rhs.aNullableEnum)
-      && deepEqualsCoreTests(lhs.anotherNullableEnum, rhs.anotherNullableEnum)
-      && deepEqualsCoreTests(lhs.aNullableString, rhs.aNullableString)
-      && deepEqualsCoreTests(lhs.aNullableObject, rhs.aNullableObject)
-      && deepEqualsCoreTests(lhs.list, rhs.list)
-      && deepEqualsCoreTests(lhs.stringList, rhs.stringList)
-      && deepEqualsCoreTests(lhs.intList, rhs.intList)
-      && deepEqualsCoreTests(lhs.doubleList, rhs.doubleList)
-      && deepEqualsCoreTests(lhs.boolList, rhs.boolList)
-      && deepEqualsCoreTests(lhs.enumList, rhs.enumList)
-      && deepEqualsCoreTests(lhs.objectList, rhs.objectList)
-      && deepEqualsCoreTests(lhs.listList, rhs.listList)
-      && deepEqualsCoreTests(lhs.mapList, rhs.mapList) && deepEqualsCoreTests(lhs.map, rhs.map)
-      && deepEqualsCoreTests(lhs.stringMap, rhs.stringMap)
-      && deepEqualsCoreTests(lhs.intMap, rhs.intMap)
-      && deepEqualsCoreTests(lhs.enumMap, rhs.enumMap)
-      && deepEqualsCoreTests(lhs.objectMap, rhs.objectMap)
-      && deepEqualsCoreTests(lhs.listMap, rhs.listMap)
-      && deepEqualsCoreTests(lhs.mapMap, rhs.mapMap)
+    return CoreTestsGolubetsInternal.deepEquals(lhs.aNullableBool, rhs.aNullableBool)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullableInt, rhs.aNullableInt)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullableInt64, rhs.aNullableInt64)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullableDouble, rhs.aNullableDouble)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullableByteArray, rhs.aNullableByteArray)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullable4ByteArray, rhs.aNullable4ByteArray)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullable8ByteArray, rhs.aNullable8ByteArray)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullableFloatArray, rhs.aNullableFloatArray)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullableEnum, rhs.aNullableEnum)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anotherNullableEnum, rhs.anotherNullableEnum)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullableString, rhs.aNullableString)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aNullableObject, rhs.aNullableObject)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.list, rhs.list)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.stringList, rhs.stringList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.intList, rhs.intList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.doubleList, rhs.doubleList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.boolList, rhs.boolList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.enumList, rhs.enumList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.objectList, rhs.objectList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.listList, rhs.listList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.mapList, rhs.mapList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.map, rhs.map)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.stringMap, rhs.stringMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.intMap, rhs.intMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.enumMap, rhs.enumMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.objectMap, rhs.objectMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.listMap, rhs.listMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.mapMap, rhs.mapMap)
   }
 
   public func hash(into hasher: inout Hasher) {
     hasher.combine("AllNullableTypesWithoutRecursion")
-    deepHashCoreTests(value: aNullableBool, hasher: &hasher)
-    deepHashCoreTests(value: aNullableInt, hasher: &hasher)
-    deepHashCoreTests(value: aNullableInt64, hasher: &hasher)
-    deepHashCoreTests(value: aNullableDouble, hasher: &hasher)
-    deepHashCoreTests(value: aNullableByteArray, hasher: &hasher)
-    deepHashCoreTests(value: aNullable4ByteArray, hasher: &hasher)
-    deepHashCoreTests(value: aNullable8ByteArray, hasher: &hasher)
-    deepHashCoreTests(value: aNullableFloatArray, hasher: &hasher)
-    deepHashCoreTests(value: aNullableEnum, hasher: &hasher)
-    deepHashCoreTests(value: anotherNullableEnum, hasher: &hasher)
-    deepHashCoreTests(value: aNullableString, hasher: &hasher)
-    deepHashCoreTests(value: aNullableObject, hasher: &hasher)
-    deepHashCoreTests(value: list, hasher: &hasher)
-    deepHashCoreTests(value: stringList, hasher: &hasher)
-    deepHashCoreTests(value: intList, hasher: &hasher)
-    deepHashCoreTests(value: doubleList, hasher: &hasher)
-    deepHashCoreTests(value: boolList, hasher: &hasher)
-    deepHashCoreTests(value: enumList, hasher: &hasher)
-    deepHashCoreTests(value: objectList, hasher: &hasher)
-    deepHashCoreTests(value: listList, hasher: &hasher)
-    deepHashCoreTests(value: mapList, hasher: &hasher)
-    deepHashCoreTests(value: map, hasher: &hasher)
-    deepHashCoreTests(value: stringMap, hasher: &hasher)
-    deepHashCoreTests(value: intMap, hasher: &hasher)
-    deepHashCoreTests(value: enumMap, hasher: &hasher)
-    deepHashCoreTests(value: objectMap, hasher: &hasher)
-    deepHashCoreTests(value: listMap, hasher: &hasher)
-    deepHashCoreTests(value: mapMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableBool, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableInt, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableInt64, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableDouble, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableByteArray, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullable4ByteArray, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullable8ByteArray, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableFloatArray, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableEnum, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anotherNullableEnum, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableString, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aNullableObject, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: list, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: stringList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: intList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: doubleList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: boolList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: enumList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: objectList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: listList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: mapList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: map, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: stringMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: intMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: enumMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: objectMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: listMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: mapMap, hasher: &hasher)
+  }
+
+  public var description: String {
+    return
+      "AllNullableTypesWithoutRecursion(aNullableBool: \(String(describing: aNullableBool)), aNullableInt: \(String(describing: aNullableInt)), aNullableInt64: \(String(describing: aNullableInt64)), aNullableDouble: \(String(describing: aNullableDouble)), aNullableByteArray: \(String(describing: aNullableByteArray)), aNullable4ByteArray: \(String(describing: aNullable4ByteArray)), aNullable8ByteArray: \(String(describing: aNullable8ByteArray)), aNullableFloatArray: \(String(describing: aNullableFloatArray)), aNullableEnum: \(String(describing: aNullableEnum)), anotherNullableEnum: \(String(describing: anotherNullableEnum)), aNullableString: \(String(describing: aNullableString)), aNullableObject: \(String(describing: aNullableObject)), list: \(String(describing: list)), stringList: \(String(describing: stringList)), intList: \(String(describing: intList)), doubleList: \(String(describing: doubleList)), boolList: \(String(describing: boolList)), enumList: \(String(describing: enumList)), objectList: \(String(describing: objectList)), listList: \(String(describing: listList)), mapList: \(String(describing: mapList)), map: \(String(describing: map)), stringMap: \(String(describing: stringMap)), intMap: \(String(describing: intMap)), enumMap: \(String(describing: enumMap)), objectMap: \(String(describing: objectMap)), listMap: \(String(describing: listMap)), mapMap: \(String(describing: mapMap)))"
+  }
+}
+
+/// A data class without fields for testing empty classes.
+///
+/// Generated class from Golubets that represents data sent in messages.
+public struct AnEmptyClass: Hashable, CustomStringConvertible {
+  public init() {
+  }
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ golubetsVar_list: [Any?]) -> AnEmptyClass? {
+
+    return AnEmptyClass()
+  }
+  func toList() -> [Any?] {
+    return []
+  }
+  public static func == (lhs: AnEmptyClass, rhs: AnEmptyClass) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return true
+  }
+
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine("AnEmptyClass")
+  }
+
+  public var description: String {
+    return "AnEmptyClass()"
   }
 }
 
@@ -1023,7 +1094,7 @@ public struct AllNullableTypesWithoutRecursion: Hashable {
 /// than `AllTypes` when testing doesn't require both (ie. testing null classes).
 ///
 /// Generated class from Golubets that represents data sent in messages.
-public struct AllClassesWrapper: Hashable {
+public struct AllClassesWrapper: Hashable, CustomStringConvertible {
   public init(
     allNullableTypes: AllNullableTypes,
     allNullableTypesWithoutRecursion: AllNullableTypesWithoutRecursion? = nil,
@@ -1031,7 +1102,8 @@ public struct AllClassesWrapper: Hashable {
     classList: [AllTypes?],
     nullableClassList: [AllNullableTypesWithoutRecursion?]? = nil,
     classMap: [Int64?: AllTypes?],
-    nullableClassMap: [Int64?: AllNullableTypesWithoutRecursion?]? = nil
+    nullableClassMap: [Int64?: AllNullableTypesWithoutRecursion?]? = nil,
+    anEmptyClass: AnEmptyClass? = nil
   ) {
     self.allNullableTypes = allNullableTypes
     self.allNullableTypesWithoutRecursion = allNullableTypesWithoutRecursion
@@ -1040,6 +1112,7 @@ public struct AllClassesWrapper: Hashable {
     self.nullableClassList = nullableClassList
     self.classMap = classMap
     self.nullableClassMap = nullableClassMap
+    self.anEmptyClass = anEmptyClass
   }
   public var allNullableTypes: AllNullableTypes
   public var allNullableTypesWithoutRecursion: AllNullableTypesWithoutRecursion? = nil
@@ -1048,6 +1121,7 @@ public struct AllClassesWrapper: Hashable {
   public var nullableClassList: [AllNullableTypesWithoutRecursion?]? = nil
   public var classMap: [Int64?: AllTypes?]
   public var nullableClassMap: [Int64?: AllNullableTypesWithoutRecursion?]? = nil
+  public var anEmptyClass: AnEmptyClass? = nil
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> AllClassesWrapper? {
@@ -1060,6 +1134,7 @@ public struct AllClassesWrapper: Hashable {
     let classMap = golubetsVar_list[5] as! [Int64?: AllTypes?]
     let nullableClassMap: [Int64?: AllNullableTypesWithoutRecursion?]? = nilOrValue(
       golubetsVar_list[6])
+    let anEmptyClass: AnEmptyClass? = nilOrValue(golubetsVar_list[7])
 
     return AllClassesWrapper(
       allNullableTypes: allNullableTypes,
@@ -1068,7 +1143,8 @@ public struct AllClassesWrapper: Hashable {
       classList: classList,
       nullableClassList: nullableClassList,
       classMap: classMap,
-      nullableClassMap: nullableClassMap
+      nullableClassMap: nullableClassMap,
+      anEmptyClass: anEmptyClass
     )
   }
   func toList() -> [Any?] {
@@ -1080,38 +1156,46 @@ public struct AllClassesWrapper: Hashable {
       nullableClassList,
       classMap,
       nullableClassMap,
+      anEmptyClass,
     ]
   }
   public static func == (lhs: AllClassesWrapper, rhs: AllClassesWrapper) -> Bool {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return deepEqualsCoreTests(lhs.allNullableTypes, rhs.allNullableTypes)
-      && deepEqualsCoreTests(
+    return CoreTestsGolubetsInternal.deepEquals(lhs.allNullableTypes, rhs.allNullableTypes)
+      && CoreTestsGolubetsInternal.deepEquals(
         lhs.allNullableTypesWithoutRecursion, rhs.allNullableTypesWithoutRecursion)
-      && deepEqualsCoreTests(lhs.allTypes, rhs.allTypes)
-      && deepEqualsCoreTests(lhs.classList, rhs.classList)
-      && deepEqualsCoreTests(lhs.nullableClassList, rhs.nullableClassList)
-      && deepEqualsCoreTests(lhs.classMap, rhs.classMap)
-      && deepEqualsCoreTests(lhs.nullableClassMap, rhs.nullableClassMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.allTypes, rhs.allTypes)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.classList, rhs.classList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.nullableClassList, rhs.nullableClassList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.classMap, rhs.classMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.nullableClassMap, rhs.nullableClassMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anEmptyClass, rhs.anEmptyClass)
   }
 
   public func hash(into hasher: inout Hasher) {
     hasher.combine("AllClassesWrapper")
-    deepHashCoreTests(value: allNullableTypes, hasher: &hasher)
-    deepHashCoreTests(value: allNullableTypesWithoutRecursion, hasher: &hasher)
-    deepHashCoreTests(value: allTypes, hasher: &hasher)
-    deepHashCoreTests(value: classList, hasher: &hasher)
-    deepHashCoreTests(value: nullableClassList, hasher: &hasher)
-    deepHashCoreTests(value: classMap, hasher: &hasher)
-    deepHashCoreTests(value: nullableClassMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: allNullableTypes, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: allNullableTypesWithoutRecursion, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: allTypes, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: classList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: nullableClassList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: classMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: nullableClassMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anEmptyClass, hasher: &hasher)
+  }
+
+  public var description: String {
+    return
+      "AllClassesWrapper(allNullableTypes: \(String(describing: allNullableTypes)), allNullableTypesWithoutRecursion: \(String(describing: allNullableTypesWithoutRecursion)), allTypes: \(String(describing: allTypes)), classList: \(String(describing: classList)), nullableClassList: \(String(describing: nullableClassList)), classMap: \(String(describing: classMap)), nullableClassMap: \(String(describing: nullableClassMap)), anEmptyClass: \(String(describing: anEmptyClass)))"
   }
 }
 
 /// A class containing all supported types but immutable.
 ///
 /// Generated class from Golubets that represents data sent in messages.
-public struct ImmutableAllTypes: Hashable {
+public struct ImmutableAllTypes: Hashable, CustomStringConvertible {
   public init(
     aBool: Bool,
     anInt: Int64,
@@ -1274,62 +1358,70 @@ public struct ImmutableAllTypes: Hashable {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return deepEqualsCoreTests(lhs.aBool, rhs.aBool) && deepEqualsCoreTests(lhs.anInt, rhs.anInt)
-      && deepEqualsCoreTests(lhs.anInt64, rhs.anInt64)
-      && deepEqualsCoreTests(lhs.aDouble, rhs.aDouble)
-      && deepEqualsCoreTests(lhs.anEnum, rhs.anEnum)
-      && deepEqualsCoreTests(lhs.anotherEnum, rhs.anotherEnum)
-      && deepEqualsCoreTests(lhs.aString, rhs.aString)
-      && deepEqualsCoreTests(lhs.anObject, rhs.anObject) && deepEqualsCoreTests(lhs.list, rhs.list)
-      && deepEqualsCoreTests(lhs.stringList, rhs.stringList)
-      && deepEqualsCoreTests(lhs.intList, rhs.intList)
-      && deepEqualsCoreTests(lhs.doubleList, rhs.doubleList)
-      && deepEqualsCoreTests(lhs.boolList, rhs.boolList)
-      && deepEqualsCoreTests(lhs.enumList, rhs.enumList)
-      && deepEqualsCoreTests(lhs.objectList, rhs.objectList)
-      && deepEqualsCoreTests(lhs.listList, rhs.listList)
-      && deepEqualsCoreTests(lhs.mapList, rhs.mapList) && deepEqualsCoreTests(lhs.map, rhs.map)
-      && deepEqualsCoreTests(lhs.stringMap, rhs.stringMap)
-      && deepEqualsCoreTests(lhs.intMap, rhs.intMap)
-      && deepEqualsCoreTests(lhs.enumMap, rhs.enumMap)
-      && deepEqualsCoreTests(lhs.objectMap, rhs.objectMap)
-      && deepEqualsCoreTests(lhs.listMap, rhs.listMap)
-      && deepEqualsCoreTests(lhs.mapMap, rhs.mapMap)
+    return CoreTestsGolubetsInternal.deepEquals(lhs.aBool, rhs.aBool)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anInt, rhs.anInt)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anInt64, rhs.anInt64)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aDouble, rhs.aDouble)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anEnum, rhs.anEnum)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anotherEnum, rhs.anotherEnum)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aString, rhs.aString)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anObject, rhs.anObject)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.list, rhs.list)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.stringList, rhs.stringList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.intList, rhs.intList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.doubleList, rhs.doubleList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.boolList, rhs.boolList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.enumList, rhs.enumList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.objectList, rhs.objectList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.listList, rhs.listList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.mapList, rhs.mapList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.map, rhs.map)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.stringMap, rhs.stringMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.intMap, rhs.intMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.enumMap, rhs.enumMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.objectMap, rhs.objectMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.listMap, rhs.listMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.mapMap, rhs.mapMap)
   }
 
   public func hash(into hasher: inout Hasher) {
     hasher.combine("ImmutableAllTypes")
-    deepHashCoreTests(value: aBool, hasher: &hasher)
-    deepHashCoreTests(value: anInt, hasher: &hasher)
-    deepHashCoreTests(value: anInt64, hasher: &hasher)
-    deepHashCoreTests(value: aDouble, hasher: &hasher)
-    deepHashCoreTests(value: anEnum, hasher: &hasher)
-    deepHashCoreTests(value: anotherEnum, hasher: &hasher)
-    deepHashCoreTests(value: aString, hasher: &hasher)
-    deepHashCoreTests(value: anObject, hasher: &hasher)
-    deepHashCoreTests(value: list, hasher: &hasher)
-    deepHashCoreTests(value: stringList, hasher: &hasher)
-    deepHashCoreTests(value: intList, hasher: &hasher)
-    deepHashCoreTests(value: doubleList, hasher: &hasher)
-    deepHashCoreTests(value: boolList, hasher: &hasher)
-    deepHashCoreTests(value: enumList, hasher: &hasher)
-    deepHashCoreTests(value: objectList, hasher: &hasher)
-    deepHashCoreTests(value: listList, hasher: &hasher)
-    deepHashCoreTests(value: mapList, hasher: &hasher)
-    deepHashCoreTests(value: map, hasher: &hasher)
-    deepHashCoreTests(value: stringMap, hasher: &hasher)
-    deepHashCoreTests(value: intMap, hasher: &hasher)
-    deepHashCoreTests(value: enumMap, hasher: &hasher)
-    deepHashCoreTests(value: objectMap, hasher: &hasher)
-    deepHashCoreTests(value: listMap, hasher: &hasher)
-    deepHashCoreTests(value: mapMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aBool, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anInt, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anInt64, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aDouble, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anEnum, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anotherEnum, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aString, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anObject, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: list, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: stringList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: intList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: doubleList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: boolList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: enumList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: objectList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: listList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: mapList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: map, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: stringMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: intMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: enumMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: objectMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: listMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: mapMap, hasher: &hasher)
+  }
+
+  public var description: String {
+    return
+      "ImmutableAllTypes(aBool: \(String(describing: aBool)), anInt: \(String(describing: anInt)), anInt64: \(String(describing: anInt64)), aDouble: \(String(describing: aDouble)), anEnum: \(String(describing: anEnum)), anotherEnum: \(String(describing: anotherEnum)), aString: \(String(describing: aString)), anObject: \(String(describing: anObject)), list: \(String(describing: list)), stringList: \(String(describing: stringList)), intList: \(String(describing: intList)), doubleList: \(String(describing: doubleList)), boolList: \(String(describing: boolList)), enumList: \(String(describing: enumList)), objectList: \(String(describing: objectList)), listList: \(String(describing: listList)), mapList: \(String(describing: mapList)), map: \(String(describing: map)), stringMap: \(String(describing: stringMap)), intMap: \(String(describing: intMap)), enumMap: \(String(describing: enumMap)), objectMap: \(String(describing: objectMap)), listMap: \(String(describing: listMap)), mapMap: \(String(describing: mapMap)))"
   }
 }
 
 /// A class containing all supported types but with default values.
 ///
 /// Generated class from Golubets that represents data sent in messages.
-public struct AllTypesWithDefaults: Hashable {
+public struct AllTypesWithDefaults: Hashable, CustomStringConvertible {
   public init(
     aBool: Bool = false,
     anInt: Int64 = 0,
@@ -2063,64 +2155,72 @@ public struct AllTypesWithDefaults: Hashable {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return deepEqualsCoreTests(lhs.aBool, rhs.aBool) && deepEqualsCoreTests(lhs.anInt, rhs.anInt)
-      && deepEqualsCoreTests(lhs.anInt64, rhs.anInt64)
-      && deepEqualsCoreTests(lhs.aDouble, rhs.aDouble)
-      && deepEqualsCoreTests(lhs.anEnum, rhs.anEnum)
-      && deepEqualsCoreTests(lhs.anotherEnum, rhs.anotherEnum)
-      && deepEqualsCoreTests(lhs.aString, rhs.aString)
-      && deepEqualsCoreTests(lhs.anObject, rhs.anObject) && deepEqualsCoreTests(lhs.list, rhs.list)
-      && deepEqualsCoreTests(lhs.stringList, rhs.stringList)
-      && deepEqualsCoreTests(lhs.intList, rhs.intList)
-      && deepEqualsCoreTests(lhs.doubleList, rhs.doubleList)
-      && deepEqualsCoreTests(lhs.boolList, rhs.boolList)
-      && deepEqualsCoreTests(lhs.enumList, rhs.enumList)
-      && deepEqualsCoreTests(lhs.objectList, rhs.objectList)
-      && deepEqualsCoreTests(lhs.listList, rhs.listList)
-      && deepEqualsCoreTests(lhs.mapList, rhs.mapList) && deepEqualsCoreTests(lhs.map, rhs.map)
-      && deepEqualsCoreTests(lhs.stringMap, rhs.stringMap)
-      && deepEqualsCoreTests(lhs.intMap, rhs.intMap)
-      && deepEqualsCoreTests(lhs.enumMap, rhs.enumMap)
-      && deepEqualsCoreTests(lhs.objectMap, rhs.objectMap)
-      && deepEqualsCoreTests(lhs.listMap, rhs.listMap)
-      && deepEqualsCoreTests(lhs.mapMap, rhs.mapMap)
-      && deepEqualsCoreTests(lhs.allTypes, rhs.allTypes)
+    return CoreTestsGolubetsInternal.deepEquals(lhs.aBool, rhs.aBool)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anInt, rhs.anInt)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anInt64, rhs.anInt64)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aDouble, rhs.aDouble)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anEnum, rhs.anEnum)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anotherEnum, rhs.anotherEnum)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.aString, rhs.aString)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.anObject, rhs.anObject)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.list, rhs.list)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.stringList, rhs.stringList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.intList, rhs.intList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.doubleList, rhs.doubleList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.boolList, rhs.boolList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.enumList, rhs.enumList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.objectList, rhs.objectList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.listList, rhs.listList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.mapList, rhs.mapList)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.map, rhs.map)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.stringMap, rhs.stringMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.intMap, rhs.intMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.enumMap, rhs.enumMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.objectMap, rhs.objectMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.listMap, rhs.listMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.mapMap, rhs.mapMap)
+      && CoreTestsGolubetsInternal.deepEquals(lhs.allTypes, rhs.allTypes)
   }
 
   public func hash(into hasher: inout Hasher) {
     hasher.combine("AllTypesWithDefaults")
-    deepHashCoreTests(value: aBool, hasher: &hasher)
-    deepHashCoreTests(value: anInt, hasher: &hasher)
-    deepHashCoreTests(value: anInt64, hasher: &hasher)
-    deepHashCoreTests(value: aDouble, hasher: &hasher)
-    deepHashCoreTests(value: anEnum, hasher: &hasher)
-    deepHashCoreTests(value: anotherEnum, hasher: &hasher)
-    deepHashCoreTests(value: aString, hasher: &hasher)
-    deepHashCoreTests(value: anObject, hasher: &hasher)
-    deepHashCoreTests(value: list, hasher: &hasher)
-    deepHashCoreTests(value: stringList, hasher: &hasher)
-    deepHashCoreTests(value: intList, hasher: &hasher)
-    deepHashCoreTests(value: doubleList, hasher: &hasher)
-    deepHashCoreTests(value: boolList, hasher: &hasher)
-    deepHashCoreTests(value: enumList, hasher: &hasher)
-    deepHashCoreTests(value: objectList, hasher: &hasher)
-    deepHashCoreTests(value: listList, hasher: &hasher)
-    deepHashCoreTests(value: mapList, hasher: &hasher)
-    deepHashCoreTests(value: map, hasher: &hasher)
-    deepHashCoreTests(value: stringMap, hasher: &hasher)
-    deepHashCoreTests(value: intMap, hasher: &hasher)
-    deepHashCoreTests(value: enumMap, hasher: &hasher)
-    deepHashCoreTests(value: objectMap, hasher: &hasher)
-    deepHashCoreTests(value: listMap, hasher: &hasher)
-    deepHashCoreTests(value: mapMap, hasher: &hasher)
-    deepHashCoreTests(value: allTypes, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aBool, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anInt, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anInt64, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aDouble, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anEnum, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anotherEnum, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: aString, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: anObject, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: list, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: stringList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: intList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: doubleList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: boolList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: enumList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: objectList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: listList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: mapList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: map, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: stringMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: intMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: enumMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: objectMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: listMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: mapMap, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: allTypes, hasher: &hasher)
+  }
+
+  public var description: String {
+    return
+      "AllTypesWithDefaults(aBool: \(String(describing: aBool)), anInt: \(String(describing: anInt)), anInt64: \(String(describing: anInt64)), aDouble: \(String(describing: aDouble)), anEnum: \(String(describing: anEnum)), anotherEnum: \(String(describing: anotherEnum)), aString: \(String(describing: aString)), anObject: \(String(describing: anObject)), list: \(String(describing: list)), stringList: \(String(describing: stringList)), intList: \(String(describing: intList)), doubleList: \(String(describing: doubleList)), boolList: \(String(describing: boolList)), enumList: \(String(describing: enumList)), objectList: \(String(describing: objectList)), listList: \(String(describing: listList)), mapList: \(String(describing: mapList)), map: \(String(describing: map)), stringMap: \(String(describing: stringMap)), intMap: \(String(describing: intMap)), enumMap: \(String(describing: enumMap)), objectMap: \(String(describing: objectMap)), listMap: \(String(describing: listMap)), mapMap: \(String(describing: mapMap)), allTypes: \(String(describing: allTypes)))"
   }
 }
 
 /// A data class containing a List, used in unit tests.
 ///
 /// Generated class from Golubets that represents data sent in messages.
-public struct TestMessage: Hashable {
+public struct TestMessage: Hashable, CustomStringConvertible {
   public init(
     testList: [Any?]? = nil
   ) {
@@ -2145,12 +2245,16 @@ public struct TestMessage: Hashable {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return deepEqualsCoreTests(lhs.testList, rhs.testList)
+    return CoreTestsGolubetsInternal.deepEquals(lhs.testList, rhs.testList)
   }
 
   public func hash(into hasher: inout Hasher) {
     hasher.combine("TestMessage")
-    deepHashCoreTests(value: testList, hasher: &hasher)
+    CoreTestsGolubetsInternal.deepHash(value: testList, hasher: &hasher)
+  }
+
+  public var description: String {
+    return "TestMessage(testList: \(String(describing: testList)))"
   }
 }
 
@@ -2178,12 +2282,14 @@ private class CoreTestsGolubetsCodecReader: FlutterStandardReader {
     case 134:
       return AllNullableTypesWithoutRecursion.fromList(self.readValue() as! [Any?])
     case 135:
-      return AllClassesWrapper.fromList(self.readValue() as! [Any?])
+      return AnEmptyClass.fromList(self.readValue() as! [Any?])
     case 136:
-      return ImmutableAllTypes.fromList(self.readValue() as! [Any?])
+      return AllClassesWrapper.fromList(self.readValue() as! [Any?])
     case 137:
-      return AllTypesWithDefaults.fromList(self.readValue() as! [Any?])
+      return ImmutableAllTypes.fromList(self.readValue() as! [Any?])
     case 138:
+      return AllTypesWithDefaults.fromList(self.readValue() as! [Any?])
+    case 139:
       return TestMessage.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
@@ -2211,17 +2317,20 @@ private class CoreTestsGolubetsCodecWriter: FlutterStandardWriter {
     } else if let value = value as? AllNullableTypesWithoutRecursion {
       super.writeByte(134)
       super.writeValue(value.toList())
-    } else if let value = value as? AllClassesWrapper {
+    } else if let value = value as? AnEmptyClass {
       super.writeByte(135)
       super.writeValue(value.toList())
-    } else if let value = value as? ImmutableAllTypes {
+    } else if let value = value as? AllClassesWrapper {
       super.writeByte(136)
       super.writeValue(value.toList())
-    } else if let value = value as? AllTypesWithDefaults {
+    } else if let value = value as? ImmutableAllTypes {
       super.writeByte(137)
       super.writeValue(value.toList())
-    } else if let value = value as? TestMessage {
+    } else if let value = value as? AllTypesWithDefaults {
       super.writeByte(138)
+      super.writeValue(value.toList())
+    } else if let value = value as? TestMessage {
+      super.writeByte(139)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -2273,6 +2382,14 @@ public protocol HostIntegrationCoreApi {
   func echo(_ anObject: Any) throws -> Any
   /// Returns the passed list, to test serialization and deserialization.
   func echo(_ list: [Any?]) throws -> [Any?]
+  /// Returns the passed list, to test serialization and deserialization.
+  func echo(stringList: [String?]) throws -> [String?]
+  /// Returns the passed list, to test serialization and deserialization.
+  func echo(intList: [Int64?]) throws -> [Int64?]
+  /// Returns the passed list, to test serialization and deserialization.
+  func echo(doubleList: [Double?]) throws -> [Double?]
+  /// Returns the passed list, to test serialization and deserialization.
+  func echo(boolList: [Bool?]) throws -> [Bool?]
   /// Returns the passed list, to test serialization and deserialization.
   func echo(enumList: [AnEnum?]) throws -> [AnEnum?]
   /// Returns the passed list, to test serialization and deserialization.
@@ -2865,6 +2982,82 @@ public class HostIntegrationCoreApiSetup {
       }
     } else {
       echoListChannel.setMessageHandler(nil)
+    }
+    /// Returns the passed list, to test serialization and deserialization.
+    let echoStringListChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoStringList\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      echoStringListChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let stringListArg = args[0] as! [String?]
+        do {
+          let result = try api.echo(stringList: stringListArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      echoStringListChannel.setMessageHandler(nil)
+    }
+    /// Returns the passed list, to test serialization and deserialization.
+    let echoIntListChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoIntList\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      echoIntListChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let intListArg = args[0] as! [Int64?]
+        do {
+          let result = try api.echo(intList: intListArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      echoIntListChannel.setMessageHandler(nil)
+    }
+    /// Returns the passed list, to test serialization and deserialization.
+    let echoDoubleListChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoDoubleList\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      echoDoubleListChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let doubleListArg = args[0] as! [Double?]
+        do {
+          let result = try api.echo(doubleList: doubleListArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      echoDoubleListChannel.setMessageHandler(nil)
+    }
+    /// Returns the passed list, to test serialization and deserialization.
+    let echoBoolListChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoBoolList\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      echoBoolListChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let boolListArg = args[0] as! [Bool?]
+        do {
+          let result = try api.echo(boolList: boolListArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      echoBoolListChannel.setMessageHandler(nil)
     }
     /// Returns the passed list, to test serialization and deserialization.
     let echoEnumListChannel = FlutterBasicMessageChannel(
@@ -5880,6 +6073,7 @@ public class HostIntegrationCoreApiSetup {
     }
   }
 }
+
 /// The core interface that the Dart platform_test code implements for host
 /// integration tests to call into.
 ///
@@ -7595,6 +7789,7 @@ public class HostSmallApiSetup {
     }
   }
 }
+
 /// A simple API called in some unit tests.
 ///
 /// Generated protocol from Golubets that represents Flutter messages that can be called from Swift.

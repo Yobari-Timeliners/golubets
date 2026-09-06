@@ -11,6 +11,11 @@
 
 G_BEGIN_DECLS
 
+#define GOLUBETS_EXAMPLE_PACKAGE_A_STRING_CONSTANT "stringConstantValue"
+#define GOLUBETS_EXAMPLE_PACKAGE_AN_INT_CONSTANT 42
+#define GOLUBETS_EXAMPLE_PACKAGE_A_DOUBLE_CONSTANT 3.14
+#define GOLUBETS_EXAMPLE_PACKAGE_A_BOOL_CONSTANT TRUE
+
 /**
  * GolubetsExamplePackageCode:
  * GOLUBETS_EXAMPLE_PACKAGE_CODE_ONE:
@@ -34,7 +39,7 @@ G_DECLARE_FINAL_TYPE(GolubetsExamplePackageMessageData,
 /**
  * golubets_example_package_message_data_new:
  * name: field in this object.
- * description: field in this object.
+ * message_description: field in this object.
  * code: field in this object.
  * data: field in this object.
  *
@@ -43,7 +48,7 @@ G_DECLARE_FINAL_TYPE(GolubetsExamplePackageMessageData,
  * Returns: a new #GolubetsExamplePackageMessageData
  */
 GolubetsExamplePackageMessageData* golubets_example_package_message_data_new(
-    const gchar* name, const gchar* description,
+    const gchar* name, const gchar* message_description,
     GolubetsExamplePackageCode code, FlValue* data);
 
 /**
@@ -58,14 +63,14 @@ const gchar* golubets_example_package_message_data_get_name(
     GolubetsExamplePackageMessageData* object);
 
 /**
- * golubets_example_package_message_data_get_description
+ * golubets_example_package_message_data_get_message_description
  * @object: a #GolubetsExamplePackageMessageData.
  *
- * Gets the value of the description field of @object.
+ * Gets the value of the messageDescription field of @object.
  *
  * Returns: the field value.
  */
-const gchar* golubets_example_package_message_data_get_description(
+const gchar* golubets_example_package_message_data_get_message_description(
     GolubetsExamplePackageMessageData* object);
 
 /**
@@ -111,6 +116,18 @@ gboolean golubets_example_package_message_data_equals(
  * Returns: the hash code.
  */
 guint golubets_example_package_message_data_hash(
+    GolubetsExamplePackageMessageData* object);
+
+/**
+ * golubets_example_package_message_data_to_string:
+ * @object: a #GolubetsExamplePackageMessageData.
+ *
+ * Returns a string representation of a #GolubetsExamplePackageMessageData
+ * object.
+ *
+ * Returns: (transfer full): a new string, free with g_free().
+ */
+gchar* golubets_example_package_message_data_to_string(
     GolubetsExamplePackageMessageData* object);
 
 G_DECLARE_FINAL_TYPE(GolubetsExamplePackageGolubMessageCodec,

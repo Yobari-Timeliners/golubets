@@ -1885,8 +1885,8 @@ abstract class Api {
 ''';
       withTempFile('foo.dart', (File input) async {
         input.writeAsStringSync(code);
-        final int result = await Pigeon.runWithOptions(
-          PigeonOptions(input: input.path, swiftOut: 'Foo.swift', dartOut: 'foo.dart'),
+        final int result = await Golubets.runWithOptions(
+          GolubetsOptions(input: input.path, swiftOut: 'Foo.swift', dartOut: 'foo.dart'),
         );
         expect(result, isNot(0));
         completer.complete();

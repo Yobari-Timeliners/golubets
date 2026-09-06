@@ -338,7 +338,6 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     }
 
     indent.addScoped('{', '}', () {
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
       if (classDefinition.fields.isNotEmpty || classDefinition.isImmutable) {
         _writeConstructor(indent, classDefinition);
         indent.newln();
@@ -355,22 +354,6 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
         return;
       }
 
-=======
-      if (classDefinition.isSealed) {
-        return;
-      }
-      _writeConstructor(indent, classDefinition);
-      indent.newln();
-      if (classDefinition.fields.isNotEmpty) {
-        for (final NamedType field in getFieldsInSerializationOrder(classDefinition)) {
-          addDocumentationComments(indent, field.documentationComments, docCommentSpec);
-
-          final String datatype = addGenericTypes(field.type);
-          indent.writeln('$datatype ${field.name};');
-          indent.newln();
-        }
-      }
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
       _writeToList(indent, classDefinition);
       indent.newln();
       writeClassEncode(
@@ -400,7 +383,6 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
   }
 
   void _writeConstructor(Indent indent, Class classDefinition) {
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
     final constKeyword = classDefinition.isImmutable ? 'const ' : '';
 
     indent.write('$constKeyword${classDefinition.name}');
@@ -410,13 +392,6 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       return;
     }
 
-=======
-    indent.write(classDefinition.name);
-    if (classDefinition.fields.isEmpty) {
-      indent.addln('();');
-      return;
-    }
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
     indent.addScoped('({', '});', () {
       for (final NamedType field in getFieldsInSerializationOrder(classDefinition)) {
         final DefaultValue? defaultValue = field.defaultValue;

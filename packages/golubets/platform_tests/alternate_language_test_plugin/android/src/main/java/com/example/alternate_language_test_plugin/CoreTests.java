@@ -2925,7 +2925,7 @@ public class CoreTests {
   /**
    * A data class without fields for testing empty classes.
    *
-   * <p>Generated class from Pigeon that represents data sent in messages.
+   * <p>Generated class from Golubets that represents data sent in messages.
    */
   public static final class AnEmptyClass {
     @Override
@@ -2952,8 +2952,8 @@ public class CoreTests {
     public static final class Builder {
 
       public @NonNull AnEmptyClass build() {
-        AnEmptyClass pigeonReturn = new AnEmptyClass();
-        return pigeonReturn;
+        AnEmptyClass golubetsReturn = new AnEmptyClass();
+        return golubetsReturn;
       }
     }
 
@@ -2963,9 +2963,9 @@ public class CoreTests {
       return toListResult;
     }
 
-    static @NonNull AnEmptyClass fromList(@NonNull ArrayList<Object> pigeonVar_list) {
-      AnEmptyClass pigeonResult = new AnEmptyClass();
-      return pigeonResult;
+    static @NonNull AnEmptyClass fromList(@NonNull ArrayList<Object> golubetsVar_list) {
+      AnEmptyClass golubetsResult = new AnEmptyClass();
+      return golubetsResult;
     }
   }
 
@@ -3209,7 +3209,6 @@ public class CoreTests {
       }
 
       public @NonNull AllClassesWrapper build() {
-<<<<<<< HEAD:packages/golubets/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
         AllClassesWrapper golubetsReturn = new AllClassesWrapper();
         golubetsReturn.setAllNullableTypes(allNullableTypes);
         golubetsReturn.setAllNullableTypesWithoutRecursion(allNullableTypesWithoutRecursion);
@@ -3218,19 +3217,8 @@ public class CoreTests {
         golubetsReturn.setNullableClassList(nullableClassList);
         golubetsReturn.setClassMap(classMap);
         golubetsReturn.setNullableClassMap(nullableClassMap);
+        golubetsReturn.setAnEmptyClass(anEmptyClass);
         return golubetsReturn;
-=======
-        AllClassesWrapper pigeonReturn = new AllClassesWrapper();
-        pigeonReturn.setAllNullableTypes(allNullableTypes);
-        pigeonReturn.setAllNullableTypesWithoutRecursion(allNullableTypesWithoutRecursion);
-        pigeonReturn.setAllTypes(allTypes);
-        pigeonReturn.setClassList(classList);
-        pigeonReturn.setNullableClassList(nullableClassList);
-        pigeonReturn.setClassMap(classMap);
-        pigeonReturn.setNullableClassMap(nullableClassMap);
-        pigeonReturn.setAnEmptyClass(anEmptyClass);
-        return pigeonReturn;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
       }
     }
 
@@ -3267,7 +3255,8 @@ public class CoreTests {
       Object nullableClassMap = golubetsVar_list.get(6);
       golubetsResult.setNullableClassMap(
           (Map<Long, AllNullableTypesWithoutRecursion>) nullableClassMap);
-<<<<<<< HEAD:packages/golubets/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
+      Object anEmptyClass = golubetsVar_list.get(7);
+      golubetsResult.setAnEmptyClass((AnEmptyClass) anEmptyClass);
       return golubetsResult;
     }
   }
@@ -3659,6 +3648,83 @@ public class CoreTests {
             mapMap
           };
       return pigeonDeepHashCode(fields);
+    }
+
+    @Override
+    public String toString() {
+      return "ImmutableAllTypes{"
+          + "aBool="
+          + aBool
+          + ", "
+          + "anInt="
+          + anInt
+          + ", "
+          + "anInt64="
+          + anInt64
+          + ", "
+          + "aDouble="
+          + aDouble
+          + ", "
+          + "anEnum="
+          + anEnum
+          + ", "
+          + "anotherEnum="
+          + anotherEnum
+          + ", "
+          + "aString="
+          + aString
+          + ", "
+          + "anObject="
+          + anObject
+          + ", "
+          + "list="
+          + list
+          + ", "
+          + "stringList="
+          + stringList
+          + ", "
+          + "intList="
+          + intList
+          + ", "
+          + "doubleList="
+          + doubleList
+          + ", "
+          + "boolList="
+          + boolList
+          + ", "
+          + "enumList="
+          + enumList
+          + ", "
+          + "objectList="
+          + objectList
+          + ", "
+          + "listList="
+          + listList
+          + ", "
+          + "mapList="
+          + mapList
+          + ", "
+          + "map="
+          + map
+          + ", "
+          + "stringMap="
+          + stringMap
+          + ", "
+          + "intMap="
+          + intMap
+          + ", "
+          + "enumMap="
+          + enumMap
+          + ", "
+          + "objectMap="
+          + objectMap
+          + ", "
+          + "listMap="
+          + listMap
+          + ", "
+          + "mapMap="
+          + mapMap
+          + "}";
     }
 
     public static final class Builder {
@@ -4373,6 +4439,86 @@ public class CoreTests {
       return pigeonDeepHashCode(fields);
     }
 
+    @Override
+    public String toString() {
+      return "AllTypesWithDefaults{"
+          + "aBool="
+          + aBool
+          + ", "
+          + "anInt="
+          + anInt
+          + ", "
+          + "anInt64="
+          + anInt64
+          + ", "
+          + "aDouble="
+          + aDouble
+          + ", "
+          + "anEnum="
+          + anEnum
+          + ", "
+          + "anotherEnum="
+          + anotherEnum
+          + ", "
+          + "aString="
+          + aString
+          + ", "
+          + "anObject="
+          + anObject
+          + ", "
+          + "list="
+          + list
+          + ", "
+          + "stringList="
+          + stringList
+          + ", "
+          + "intList="
+          + intList
+          + ", "
+          + "doubleList="
+          + doubleList
+          + ", "
+          + "boolList="
+          + boolList
+          + ", "
+          + "enumList="
+          + enumList
+          + ", "
+          + "objectList="
+          + objectList
+          + ", "
+          + "listList="
+          + listList
+          + ", "
+          + "mapList="
+          + mapList
+          + ", "
+          + "map="
+          + map
+          + ", "
+          + "stringMap="
+          + stringMap
+          + ", "
+          + "intMap="
+          + intMap
+          + ", "
+          + "enumMap="
+          + enumMap
+          + ", "
+          + "objectMap="
+          + objectMap
+          + ", "
+          + "listMap="
+          + listMap
+          + ", "
+          + "mapMap="
+          + mapMap
+          + ", "
+          + "allTypes="
+          + allTypes
+          + "}";
+    }
+
     public static final class Builder {
 
       private @Nullable Boolean aBool;
@@ -4690,11 +4836,6 @@ public class CoreTests {
       Object allTypes = golubetsVar_list.get(24);
       golubetsResult.setAllTypes((ImmutableAllTypes) allTypes);
       return golubetsResult;
-=======
-      Object anEmptyClass = pigeonVar_list.get(7);
-      pigeonResult.setAnEmptyClass((AnEmptyClass) anEmptyClass);
-      return pigeonResult;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
     }
   }
 
@@ -4798,15 +4939,12 @@ public class CoreTests {
         case (byte) 135:
           return AnEmptyClass.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 136:
-<<<<<<< HEAD:packages/golubets/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
-          return ImmutableAllTypes.fromList((ArrayList<Object>) readValue(buffer));
-        case (byte) 137:
-          return AllTypesWithDefaults.fromList((ArrayList<Object>) readValue(buffer));
-        case (byte) 138:
-=======
           return AllClassesWrapper.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 137:
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
+          return ImmutableAllTypes.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 138:
+          return AllTypesWithDefaults.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 139:
           return TestMessage.fromList((ArrayList<Object>) readValue(buffer));
         default:
           return super.readValueOfType(type, buffer);
@@ -4839,19 +4977,14 @@ public class CoreTests {
       } else if (value instanceof AllClassesWrapper) {
         stream.write(136);
         writeValue(stream, ((AllClassesWrapper) value).toList());
-<<<<<<< HEAD:packages/golubets/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
       } else if (value instanceof ImmutableAllTypes) {
-        stream.write(136);
+        stream.write(137);
         writeValue(stream, ((ImmutableAllTypes) value).toList());
       } else if (value instanceof AllTypesWithDefaults) {
-        stream.write(137);
+        stream.write(138);
         writeValue(stream, ((AllTypesWithDefaults) value).toList());
       } else if (value instanceof TestMessage) {
-        stream.write(138);
-=======
-      } else if (value instanceof TestMessage) {
-        stream.write(137);
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
+        stream.write(139);
         writeValue(stream, ((TestMessage) value).toList());
       } else {
         super.writeValue(stream, value);
@@ -5842,10 +5975,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-<<<<<<< HEAD:packages/golubets/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
-                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoEnumList"
-=======
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoStringList"
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoStringList"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -5870,7 +6000,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoIntList"
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoIntList"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -5895,7 +6025,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoDoubleList"
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoDoubleList"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -5920,7 +6050,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoBoolList"
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoBoolList"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -5945,8 +6075,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.echoEnumList"
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoEnumList"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {

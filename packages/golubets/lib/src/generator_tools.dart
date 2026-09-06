@@ -17,11 +17,7 @@ import 'generator.dart';
 /// The current version of golubets.
 ///
 /// This must match the version in pubspec.yaml.
-<<<<<<< HEAD:packages/golubets/lib/src/generator_tools.dart
-const String golubetsVersion = '1.3.4';
-=======
-const String pigeonVersion = '27.3.1';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/generator_tools.dart
+const String golubetsVersion = '2.0.0';
 
 /// Default plugin package name.
 const String defaultPluginPackageName = 'dev.bayori.golubets';
@@ -1138,7 +1134,6 @@ bool isCollectionType(TypeDeclaration type) {
       (type.baseName.contains('List') || type.baseName == 'Map');
 }
 
-<<<<<<< HEAD:packages/golubets/lib/src/generator_tools.dart
 /// String manipulation extensions.
 extension StringExtension on String {
   /// Converts the first letter of the string to lowercase.
@@ -1195,7 +1190,8 @@ extension ClassExtension on Class {
     }
     return name.purify(superClass.name);
   }
-=======
+}
+
 /// Escapes special characters in a string for use in double-quoted string literals.
 String escapeStringDoubleQuotes(String value) {
   return value
@@ -1213,5 +1209,4 @@ String escapeStringSingleQuotes(String value) {
       .replaceAll('\n', r'\n')
       .replaceAll('\r', r'\r')
       .replaceAll(r'$', r'\$');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/generator_tools.dart
 }

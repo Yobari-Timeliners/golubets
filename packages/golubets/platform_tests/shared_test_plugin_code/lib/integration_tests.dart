@@ -3119,10 +3119,6 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
           count++;
         case EmptyEvent():
           expect(count, 7);
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/integration_tests.dart
-=======
-          count++;
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/integration_tests.dart
           completer.complete();
       }
     });
@@ -3151,7 +3147,6 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     await completer2.future;
   }, skip: !eventChannelSupported.contains(targetGenerator));
 
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/integration_tests.dart
   testWidgets('sealed subclasses serialize and deserialize correctly', (WidgetTester _) async {
     final events = <PlatformEvent>[
       IntEvent(value: regularInt),
@@ -3173,6 +3168,14 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       expect(receivedEvent, equals(sentEvent));
     }
   }, skip: !eventChannelSupported.contains(targetGenerator));
+
+  testWidgets('constants are generated correctly', (WidgetTester _) async {
+    expect(aStringConstant, 'stringConstantValue');
+    expect(aStringConstantWithEscapes, r'''string\'\"\$ConstantValue''');
+    expect(anIntConstant, 42);
+    expect(aDoubleConstant, 3.14);
+    expect(aBoolConstant, true);
+  });
 
   test('nested kotlin sealed classes serialize and deserialize correctly', () async {
     final api = KotlinNestedSealedApi();
@@ -4079,14 +4082,6 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
       expect(result.value, predicate((Right<String, int> v) => v.value == 2));
       expect(result.values.length, 2);
     });
-=======
-  testWidgets('constants are generated correctly', (WidgetTester _) async {
-    expect(aStringConstant, 'stringConstantValue');
-    expect(aStringConstantWithEscapes, r'''string\'\"\$ConstantValue''');
-    expect(anIntConstant, 42);
-    expect(aDoubleConstant, 3.14);
-    expect(aBoolConstant, true);
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/integration_tests.dart
   });
 }
 

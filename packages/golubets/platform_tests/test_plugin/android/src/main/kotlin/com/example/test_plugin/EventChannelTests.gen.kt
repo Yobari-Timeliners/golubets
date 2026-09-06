@@ -703,38 +703,6 @@ data class ClassEvent(val value: EventAllNullableTypes) : PlatformEvent() {
   }
 }
 
-/** Generated class from Pigeon that represents data sent in messages. */
-class EmptyEvent : PlatformEvent() {
-  companion object {
-    fun fromList(pigeonVar_list: List<Any?>): EmptyEvent {
-      return EmptyEvent()
-    }
-  }
-
-  fun toList(): List<Any?> {
-    return listOf()
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (other == null || other.javaClass != javaClass) {
-      return false
-    }
-    if (this === other) {
-      return true
-    }
-    return true
-  }
-
-  override fun hashCode(): Int {
-    var result = javaClass.hashCode()
-    return result
-  }
-
-  override fun toString(): String {
-    return "EmptyEvent()"
-  }
-}
-
 /** Generated class from Golubets that represents data sent in messages. */
 class EmptyEvent() : PlatformEvent() {
   companion object {
@@ -761,6 +729,10 @@ class EmptyEvent() : PlatformEvent() {
   override fun hashCode(): Int {
     var result = javaClass.hashCode()
     return result
+  }
+
+  override fun toString(): String {
+    return "EmptyEvent()"
   }
 }
 

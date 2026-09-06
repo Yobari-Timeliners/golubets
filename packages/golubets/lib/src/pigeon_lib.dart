@@ -664,11 +664,7 @@ ${_argParser.usage}''';
   /// Convert command-line arguments to [GolubetsOptions].
   static GolubetsOptions parseArgs(List<String> args) {
     // Note: This function shouldn't perform any logic, just translate the args
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
     // to GolubetsOptions.  Synthesized values inside of the GolubetsOptions should
-=======
-    // to PigeonOptions. Synthesized values inside of the PigeonOption should
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
     // get set in the `run` function to accommodate users that are using the
     // `configureGolubets` function.
     final ArgResults results = _argParser.parse(args);
@@ -725,30 +721,18 @@ ${_argParser.usage}''';
     }
   }
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
   /// The 'main' entrypoint used by the command-line tool.  [args] are the
   /// command-line arguments.  The optional parameter [adapters] allows you to
   /// customize the generators that golubets will use. The optional parameter
-=======
-  /// The 'main' entrypoint used by the command-line tool. [args] are the
-  /// command-line arguments. The optional parameter [adapters] allows you to
-  /// customize the generators that pigeon will use. The optional parameter
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
   /// [sdkPath] allows you to specify the Dart SDK path.
   static Future<int> run(List<String> args, {List<GeneratorAdapter>? adapters, String? sdkPath}) {
     final GolubetsOptions options = Golubets.parseArgs(args);
     return runWithOptions(options, adapters: adapters, sdkPath: sdkPath);
   }
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
   /// The 'main' entrypoint used by external packages.  [options] is
   /// used when running the code generator.  The optional parameter [adapters] allows you to
   /// customize the generators that golubets will use. The optional parameter
-=======
-  /// The 'main' entrypoint used by external packages. [options] is
-  /// used when running the code generator. The optional parameter [adapters] allows you to
-  /// customize the generators that pigeon will use. The optional parameter
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
   /// [sdkPath] allows you to specify the Dart SDK path.
   static Future<int> runWithOptions(
     GolubetsOptions options, {

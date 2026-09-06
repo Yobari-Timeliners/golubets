@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final message = MessageData(
       code: Code.two,
       data: <String, String>{'header': 'this is a header'},
-      description: 'uri text',
+      messageDescription: 'uri text',
     );
 
     return _api.sendMessageModernAsync(message);
@@ -101,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final message = MessageData(
       code: Code.two,
       data: <String, String>{'header': 'this is a header'},
-      description: 'uri text',
+      messageDescription: 'uri text',
     );
 
     return _api.sendMessageModernAsyncThrows(message);

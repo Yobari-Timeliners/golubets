@@ -123,12 +123,8 @@ func sendEvents(_ eventListener: EventListener) {
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
 
-<<<<<<< HEAD:packages/golubets/example/app/ios/Runner/AppDelegate.swift
     let api = GolubetsApiImplementation()
-=======
-    let api = PigeonApiImplementation()
     let binaryMessenger = engineBridge.applicationRegistrar.messenger()
->>>>>>> filtered-upstream/main:packages/pigeon/example/app/ios/Runner/AppDelegate.swift
     ExampleHostApiSetup.setUp(binaryMessenger: binaryMessenger, api: api)
     // #docregion swift-init-event
     let eventListener = EventListener()

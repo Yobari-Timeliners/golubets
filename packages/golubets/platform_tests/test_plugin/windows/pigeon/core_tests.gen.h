@@ -706,7 +706,7 @@ class AllNullableTypesWithoutRecursion {
 
 // A data class without fields for testing empty classes.
 //
-// Generated class from Pigeon that represents data sent in messages.
+// Generated class from Golubets that represents data sent in messages.
 class AnEmptyClass {
  public:
   // Constructs an object setting all fields.
@@ -729,7 +729,7 @@ class AnEmptyClass {
   friend class HostTrivialApi;
   friend class HostSmallApi;
   friend class FlutterSmallApi;
-  friend class PigeonInternalCodecSerializer;
+  friend class GolubetsCodecSerializer;
   friend class CoreTestsTest;
 };
 
@@ -931,6 +931,9 @@ class ImmutableAllTypes {
   /// Returns a hash code value for the object. This method is supported for the
   /// benefit of hash tables.
   size_t Hash() const;
+  /// Stream output operator for formatted string representation.
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const ImmutableAllTypes& obj);
 
  private:
   static ImmutableAllTypes FromEncodableList(
@@ -1085,6 +1088,9 @@ class AllTypesWithDefaults {
   /// Returns a hash code value for the object. This method is supported for the
   /// benefit of hash tables.
   size_t Hash() const;
+  /// Stream output operator for formatted string representation.
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const AllTypesWithDefaults& obj);
 
  private:
   static AllTypesWithDefaults FromEncodableList(

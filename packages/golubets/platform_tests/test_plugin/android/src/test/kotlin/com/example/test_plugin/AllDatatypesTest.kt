@@ -15,7 +15,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-internal class DataClassMethodsTest {
+internal class AllDatatypesTest {
 
   @Test
   fun testNullValues() {

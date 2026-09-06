@@ -18,6 +18,12 @@ import java.nio.ByteBuffer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+const val aStringConstant: String = "stringConstantValue"
+const val aStringConstantWithEscapes: String = "string\\'\\\"\\\$ConstantValue"
+const val anIntConstant: Long = 42L
+const val aDoubleConstant: Double = 3.14
+const val aBoolConstant: Boolean = true
+
 private object CoreTestsGolubetsUtils {
 
   fun createConnectionError(channelName: String): FlutterError {
@@ -252,6 +258,10 @@ data class UnusedClass(val aField: Any? = null) {
     result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.aField)
     return result
   }
+
+  override fun toString(): String {
+    return "UnusedClass(aField=$aField)"
+  }
 }
 
 /**
@@ -452,6 +462,10 @@ data class AllTypes(
     result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.listMap)
     result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.mapMap)
     return result
+  }
+
+  override fun toString(): String {
+    return "AllTypes(aBool=$aBool, anInt=$anInt, anInt64=$anInt64, aDouble=$aDouble, aByteArray=${aByteArray.contentToString()}, a4ByteArray=${a4ByteArray.contentToString()}, a8ByteArray=${a8ByteArray.contentToString()}, aFloatArray=${aFloatArray.contentToString()}, anEnum=$anEnum, anotherEnum=$anotherEnum, aString=$aString, anObject=$anObject, list=$list, stringList=$stringList, intList=$intList, doubleList=$doubleList, boolList=$boolList, enumList=$enumList, objectList=$objectList, listList=$listList, mapList=$mapList, map=$map, stringMap=$stringMap, intMap=$intMap, enumMap=$enumMap, objectMap=$objectMap, listMap=$listMap, mapMap=$mapMap)"
   }
 }
 
@@ -672,6 +686,10 @@ data class AllNullableTypes(
     result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.recursiveClassMap)
     return result
   }
+
+  override fun toString(): String {
+    return "AllNullableTypes(aNullableBool=$aNullableBool, aNullableInt=$aNullableInt, aNullableInt64=$aNullableInt64, aNullableDouble=$aNullableDouble, aNullableByteArray=${aNullableByteArray?.contentToString()}, aNullable4ByteArray=${aNullable4ByteArray?.contentToString()}, aNullable8ByteArray=${aNullable8ByteArray?.contentToString()}, aNullableFloatArray=${aNullableFloatArray?.contentToString()}, aNullableEnum=$aNullableEnum, anotherNullableEnum=$anotherNullableEnum, aNullableString=$aNullableString, aNullableObject=$aNullableObject, allNullableTypes=$allNullableTypes, list=$list, stringList=$stringList, intList=$intList, doubleList=$doubleList, boolList=$boolList, enumList=$enumList, objectList=$objectList, listList=$listList, mapList=$mapList, recursiveClassList=$recursiveClassList, map=$map, stringMap=$stringMap, intMap=$intMap, enumMap=$enumMap, objectMap=$objectMap, listMap=$listMap, mapMap=$mapMap, recursiveClassMap=$recursiveClassMap)"
+  }
 }
 
 /**
@@ -874,6 +892,47 @@ data class AllNullableTypesWithoutRecursion(
     result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.mapMap)
     return result
   }
+
+  override fun toString(): String {
+    return "AllNullableTypesWithoutRecursion(aNullableBool=$aNullableBool, aNullableInt=$aNullableInt, aNullableInt64=$aNullableInt64, aNullableDouble=$aNullableDouble, aNullableByteArray=${aNullableByteArray?.contentToString()}, aNullable4ByteArray=${aNullable4ByteArray?.contentToString()}, aNullable8ByteArray=${aNullable8ByteArray?.contentToString()}, aNullableFloatArray=${aNullableFloatArray?.contentToString()}, aNullableEnum=$aNullableEnum, anotherNullableEnum=$anotherNullableEnum, aNullableString=$aNullableString, aNullableObject=$aNullableObject, list=$list, stringList=$stringList, intList=$intList, doubleList=$doubleList, boolList=$boolList, enumList=$enumList, objectList=$objectList, listList=$listList, mapList=$mapList, map=$map, stringMap=$stringMap, intMap=$intMap, enumMap=$enumMap, objectMap=$objectMap, listMap=$listMap, mapMap=$mapMap)"
+  }
+}
+
+/**
+ * A data class without fields for testing empty classes.
+ *
+ * Generated class from Golubets that represents data sent in messages.
+ */
+class AnEmptyClass() {
+  companion object {
+    @Suppress("UNUSED_PARAMETER")
+    fun fromList(golubetsVar_list: List<Any?>): AnEmptyClass {
+      return AnEmptyClass()
+    }
+  }
+
+  fun toList(): List<Any?> {
+    return listOf()
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (other !is AnEmptyClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    return result
+  }
+
+  override fun toString(): String {
+    return "AnEmptyClass()"
+  }
 }
 
 /**
@@ -892,7 +951,8 @@ data class AllClassesWrapper(
     val classList: List<AllTypes?>,
     val nullableClassList: List<AllNullableTypesWithoutRecursion?>? = null,
     val classMap: Map<Long?, AllTypes?>,
-    val nullableClassMap: Map<Long?, AllNullableTypesWithoutRecursion?>? = null
+    val nullableClassMap: Map<Long?, AllNullableTypesWithoutRecursion?>? = null,
+    val anEmptyClass: AnEmptyClass? = null
 ) {
   companion object {
     fun fromList(golubetsVar_list: List<Any?>): AllClassesWrapper {
@@ -904,6 +964,7 @@ data class AllClassesWrapper(
       val nullableClassList = golubetsVar_list[4] as List<AllNullableTypesWithoutRecursion?>?
       val classMap = golubetsVar_list[5] as Map<Long?, AllTypes?>
       val nullableClassMap = golubetsVar_list[6] as Map<Long?, AllNullableTypesWithoutRecursion?>?
+      val anEmptyClass = golubetsVar_list[7] as AnEmptyClass?
       return AllClassesWrapper(
           allNullableTypes,
           allNullableTypesWithoutRecursion,
@@ -911,7 +972,8 @@ data class AllClassesWrapper(
           classList,
           nullableClassList,
           classMap,
-          nullableClassMap)
+          nullableClassMap,
+          anEmptyClass)
     }
   }
 
@@ -924,6 +986,7 @@ data class AllClassesWrapper(
         nullableClassList,
         classMap,
         nullableClassMap,
+        anEmptyClass,
     )
   }
 
@@ -941,7 +1004,8 @@ data class AllClassesWrapper(
         CoreTestsGolubetsUtils.deepEquals(this.classList, other.classList) &&
         CoreTestsGolubetsUtils.deepEquals(this.nullableClassList, other.nullableClassList) &&
         CoreTestsGolubetsUtils.deepEquals(this.classMap, other.classMap) &&
-        CoreTestsGolubetsUtils.deepEquals(this.nullableClassMap, other.nullableClassMap)
+        CoreTestsGolubetsUtils.deepEquals(this.nullableClassMap, other.nullableClassMap) &&
+        CoreTestsGolubetsUtils.deepEquals(this.anEmptyClass, other.anEmptyClass)
   }
 
   override fun hashCode(): Int {
@@ -953,7 +1017,12 @@ data class AllClassesWrapper(
     result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.nullableClassList)
     result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.classMap)
     result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.nullableClassMap)
+    result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.anEmptyClass)
     return result
+  }
+
+  override fun toString(): String {
+    return "AllClassesWrapper(allNullableTypes=$allNullableTypes, allNullableTypesWithoutRecursion=$allNullableTypesWithoutRecursion, allTypes=$allTypes, classList=$classList, nullableClassList=$nullableClassList, classMap=$classMap, nullableClassMap=$nullableClassMap, anEmptyClass=$anEmptyClass)"
   }
 }
 
@@ -1131,6 +1200,10 @@ data class ImmutableAllTypes(
     result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.listMap)
     result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.mapMap)
     return result
+  }
+
+  override fun toString(): String {
+    return "ImmutableAllTypes(aBool=$aBool, anInt=$anInt, anInt64=$anInt64, aDouble=$aDouble, anEnum=$anEnum, anotherEnum=$anotherEnum, aString=$aString, anObject=$anObject, list=$list, stringList=$stringList, intList=$intList, doubleList=$doubleList, boolList=$boolList, enumList=$enumList, objectList=$objectList, listList=$listList, mapList=$mapList, map=$map, stringMap=$stringMap, intMap=$intMap, enumMap=$enumMap, objectMap=$objectMap, listMap=$listMap, mapMap=$mapMap)"
   }
 }
 
@@ -1722,6 +1795,10 @@ data class AllTypesWithDefaults(
     result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.allTypes)
     return result
   }
+
+  override fun toString(): String {
+    return "AllTypesWithDefaults(aBool=$aBool, anInt=$anInt, anInt64=$anInt64, aDouble=$aDouble, anEnum=$anEnum, anotherEnum=$anotherEnum, aString=$aString, anObject=$anObject, list=$list, stringList=$stringList, intList=$intList, doubleList=$doubleList, boolList=$boolList, enumList=$enumList, objectList=$objectList, listList=$listList, mapList=$mapList, map=$map, stringMap=$stringMap, intMap=$intMap, enumMap=$enumMap, objectMap=$objectMap, listMap=$listMap, mapMap=$mapMap, allTypes=$allTypes)"
+  }
 }
 
 /**
@@ -1758,6 +1835,10 @@ data class TestMessage(val testList: List<Any?>? = null) {
     result = 31 * result + CoreTestsGolubetsUtils.deepHash(this.testList)
     return result
   }
+
+  override fun toString(): String {
+    return "TestMessage(testList=$testList)"
+  }
 }
 
 private open class CoreTestsGolubetsCodec : StandardMessageCodec() {
@@ -1784,15 +1865,18 @@ private open class CoreTestsGolubetsCodec : StandardMessageCodec() {
         }
       }
       135.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let { AllClassesWrapper.fromList(it) }
+        return (readValue(buffer) as? List<Any?>)?.let { AnEmptyClass.fromList(it) }
       }
       136.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let { ImmutableAllTypes.fromList(it) }
+        return (readValue(buffer) as? List<Any?>)?.let { AllClassesWrapper.fromList(it) }
       }
       137.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let { AllTypesWithDefaults.fromList(it) }
+        return (readValue(buffer) as? List<Any?>)?.let { ImmutableAllTypes.fromList(it) }
       }
       138.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let { AllTypesWithDefaults.fromList(it) }
+      }
+      139.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let { TestMessage.fromList(it) }
       }
       else -> super.readValueOfType(type, buffer)
@@ -1825,20 +1909,24 @@ private open class CoreTestsGolubetsCodec : StandardMessageCodec() {
         stream.write(134)
         writeValue(stream, value.toList())
       }
-      is AllClassesWrapper -> {
+      is AnEmptyClass -> {
         stream.write(135)
         writeValue(stream, value.toList())
       }
-      is ImmutableAllTypes -> {
+      is AllClassesWrapper -> {
         stream.write(136)
         writeValue(stream, value.toList())
       }
-      is AllTypesWithDefaults -> {
+      is ImmutableAllTypes -> {
         stream.write(137)
         writeValue(stream, value.toList())
       }
-      is TestMessage -> {
+      is AllTypesWithDefaults -> {
         stream.write(138)
+        writeValue(stream, value.toList())
+      }
+      is TestMessage -> {
+        stream.write(139)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)
@@ -1877,6 +1965,14 @@ interface HostIntegrationCoreApi {
   fun echoObject(anObject: Any): Any
   /** Returns the passed list, to test serialization and deserialization. */
   fun echoList(list: List<Any?>): List<Any?>
+  /** Returns the passed list, to test serialization and deserialization. */
+  fun echoStringList(stringList: List<String?>): List<String?>
+  /** Returns the passed list, to test serialization and deserialization. */
+  fun echoIntList(intList: List<Long?>): List<Long?>
+  /** Returns the passed list, to test serialization and deserialization. */
+  fun echoDoubleList(doubleList: List<Double?>): List<Double?>
+  /** Returns the passed list, to test serialization and deserialization. */
+  fun echoBoolList(boolList: List<Boolean?>): List<Boolean?>
   /** Returns the passed list, to test serialization and deserialization. */
   fun echoEnumList(enumList: List<AnEnum?>): List<AnEnum?>
   /** Returns the passed list, to test serialization and deserialization. */
@@ -2616,6 +2712,94 @@ interface HostIntegrationCoreApi {
             val wrapped: List<Any?> =
                 try {
                   listOf(api.echoList(listArg))
+                } catch (exception: Throwable) {
+                  CoreTestsGolubetsUtils.wrapError(exception)
+                }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoStringList$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val stringListArg = args[0] as List<String?>
+            val wrapped: List<Any?> =
+                try {
+                  listOf(api.echoStringList(stringListArg))
+                } catch (exception: Throwable) {
+                  CoreTestsGolubetsUtils.wrapError(exception)
+                }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoIntList$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val intListArg = args[0] as List<Long?>
+            val wrapped: List<Any?> =
+                try {
+                  listOf(api.echoIntList(intListArg))
+                } catch (exception: Throwable) {
+                  CoreTestsGolubetsUtils.wrapError(exception)
+                }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoDoubleList$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val doubleListArg = args[0] as List<Double?>
+            val wrapped: List<Any?> =
+                try {
+                  listOf(api.echoDoubleList(doubleListArg))
+                } catch (exception: Throwable) {
+                  CoreTestsGolubetsUtils.wrapError(exception)
+                }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoBoolList$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val boolListArg = args[0] as List<Boolean?>
+            val wrapped: List<Any?> =
+                try {
+                  listOf(api.echoBoolList(boolListArg))
                 } catch (exception: Throwable) {
                   CoreTestsGolubetsUtils.wrapError(exception)
                 }

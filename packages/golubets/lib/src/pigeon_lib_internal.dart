@@ -413,26 +413,9 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
       _openSink(options.swiftOptions?.swiftOut, basePath: options.basePath ?? '');
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
   List<Error> validate(InternalGolubetsOptions options, Root root) {
-    final result = <Error>[];
-
-    for (final Class classDefinition in root.classes) {
-      for (final NamedType field in classDefinition.fields) {
-        final Class? associatedClass = field.type.associatedClass;
-        final Class? superClass = associatedClass?.superClass;
-        final bool isSealedChild =
-            associatedClass != null && superClass != null && superClass.isSealed;
-
-        if (isSealedChild) {
-          result.add(
-            Error(
-              message:
-                  'Swift generator does not support concrete sealed types due to Swift enum nature. '
-                  'Class "${associatedClass.name}" is a child of sealed class "${superClass.name}".',
-=======
-  List<Error> validate(InternalPigeonOptions options, Root root) {
     final errors = <Error>[];
+
     for (final Class classDefinition in root.classes) {
       for (final NamedType field in classDefinition.fields) {
         if (field.name == 'description') {
@@ -440,13 +423,26 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
             Error(
               message:
                   'Field "description" is not allowed in class "${classDefinition.name}" because it conflicts with Swift\'s NSObject/CustomStringConvertible.description property.',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+            ),
+          );
+        }
+
+        final Class? associatedClass = field.type.associatedClass;
+        final Class? superClass = associatedClass?.superClass;
+        final bool isSealedChild =
+            associatedClass != null && superClass != null && superClass.isSealed;
+
+        if (isSealedChild) {
+          errors.add(
+            Error(
+              message:
+                  'Swift generator does not support concrete sealed types due to Swift enum nature. '
+                  'Class "${associatedClass.name}" is a child of sealed class "${superClass.name}".',
             ),
           );
         }
       }
     }
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
 
     for (final Method method in root.apis.expand((Api api) => api.methods)) {
       final Class? associatedClass = method.returnType.associatedClass;
@@ -455,7 +451,7 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
           associatedClass != null && superClass != null && superClass.isSealed;
 
       if (isSealedChild) {
-        result.add(
+        errors.add(
           Error(
             message:
                 'Swift generator does not support concrete sealed types due to Swift enum nature. '
@@ -472,7 +468,7 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
             associatedClass != null && superClass != null && superClass.isSealed;
 
         if (isSealedChild) {
-          result.add(
+          errors.add(
             Error(
               message:
                   'Swift generator does not support concrete sealed types due to Swift enum nature. '
@@ -484,10 +480,7 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
       }
     }
 
-    return result;
-=======
     return errors;
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
   }
 }
 
@@ -1218,20 +1211,6 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       }
     }
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-=======
-    final completeRoot = Root(
-      apis: _apis,
-      classes: _classes,
-      enums: referencedEnums,
-      constants: _constants,
-      containsHostApi: containsHostApi,
-      containsFlutterApi: containsFlutterApi,
-      containsProxyApi: containsProxyApi,
-      containsEventChannel: containsEventChannel,
-    );
-
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
     final totalErrors = List<Error>.from(_errors);
 
     for (final MapEntry<TypeDeclaration, List<int>> element in referencedTypes.entries) {
@@ -1297,6 +1276,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       genericUsage: _genericTypeNames.isEmpty
           ? const <String, Set<TypeArgumentCombination>>{}
           : collectGenericTypeUsage(classes: _classes, apis: _apis),
+      constants: _constants,
     );
 
     final List<Error> validateErrors = _validateAst(completeRoot, source);
@@ -1607,31 +1587,19 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
 
   @override
   Object? visitAnnotation(dart_ast.Annotation node) {
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
     if (node.name.name == 'ConfigureGolubets') {
       if (node.arguments == null) {
-=======
-    if (node.name.name == 'ConfigurePigeon') {
-      final dart_ast.ArgumentList? arguments = node.arguments;
-      if (arguments == null) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
         _errors.add(
           Error(
             message: 'ConfigureGolubets expects a GolubetsOptions() call.',
             lineNumber: calculateLineNumber(source, node.offset),
           ),
         );
-      } else {
-        final pigeonOptionsMap =
-            _expressionToMap(arguments.arguments.first.argumentExpression) as Map<String, Object>;
-        _pigeonOptions = pigeonOptionsMap;
       }
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
       final golubetsOptionsMap =
-          _expressionToMap(node.arguments!.arguments.first) as Map<String, Object>;
+          _expressionToMap(node.arguments!.arguments.first.argumentExpression)
+              as Map<String, Object>;
       _golubetsOptions = golubetsOptionsMap;
-=======
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
     }
     node.visitChildren(this);
     return null;
@@ -1869,12 +1837,27 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     DefaultValue? defaultValue,
   }) {
     final dart_ast.NamedType? parameter = _getFirstChildOfType<dart_ast.NamedType>(formalParameter);
+
     if (parameter != null) {
       final String argTypeBaseName = _getNamedTypeQualifiedName(parameter);
       final isNullable = parameter.question != null;
       final List<TypeDeclaration> argTypeArguments = _typeAnnotationsToTypeArguments(
         parameter.typeArguments,
       );
+
+      if (defaultValue == null) {
+        try {
+          defaultValue = formalParameter.defaultClause?.value.accept(const _DefaultValueVisitor());
+        } catch (e) {
+          _errors.add(
+            Error(
+              message: e.toString(),
+              lineNumber: calculateLineNumber(source, formalParameter.offset),
+            ),
+          );
+        }
+      }
+
       return Parameter(
         type: TypeDeclaration(
           baseName: argTypeBaseName,
@@ -1887,34 +1870,9 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         isOptional: isOptional ?? formalParameter.isOptional,
         isPositional: isPositional ?? formalParameter.isPositional,
         isRequired: isRequired ?? formalParameter.isRequired,
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-        defaultValue: defaultValue,
-      );
-    } else if (simpleFormalParameter != null) {
-      DefaultValue? defaultValue;
-      if (formalParameter is dart_ast.DefaultFormalParameter) {
-        try {
-          defaultValue = formalParameter.defaultValue?.accept(const _DefaultValueVisitor());
-        } on Object catch (e) {
-          _errors.add(
-            Error(
-              message: e.toString(),
-              lineNumber: calculateLineNumber(source, formalParameter.offset),
-            ),
-          );
-        }
-      }
-
-      return _formalParameterToPigeonParameter(
-        simpleFormalParameter,
-        isNamed: simpleFormalParameter.isNamed,
-        isOptional: simpleFormalParameter.isOptional,
-        isPositional: simpleFormalParameter.isPositional,
-        isRequired: simpleFormalParameter.isRequired,
-        defaultValue: defaultValue,
-=======
-        defaultValue: defaultValue ?? formalParameter.defaultClause?.value.toString(),
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+        defaultValue:
+            defaultValue ??
+            formalParameter.defaultClause?.value.accept(const _DefaultValueVisitor()),
       );
     } else {
       return Parameter(
@@ -2228,13 +2186,12 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         }
 
         for (final dart_ast.FormalParameter param in node.parameters.parameters) {
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-          if (param is dart_ast.DefaultFormalParameter) {
+          if (param.defaultClause != null) {
             final Token? name = param.name;
 
-            final dart_ast.Expression? defaultValue = param.defaultValue;
+            final dart_ast.Expression defaultValue = param.defaultClause!.value;
 
-            if (name == null || defaultValue == null) {
+            if (name == null) {
               continue;
             }
 
@@ -2258,10 +2215,6 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
                 Error(message: e.toString(), lineNumber: calculateLineNumber(source, node.offset)),
               );
             }
-=======
-          if (param.name != null && param.defaultClause != null) {
-            _currentClassDefaultValues[param.name!.lexeme] = param.defaultClause!.value.toString();
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
           }
         }
       }
@@ -2368,14 +2321,14 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       return AsynchronousType.none;
     }
 
-    final dart_ast.Expression? type = meta.arguments?.arguments.firstOrNull;
+    final dart_ast.Argument? type = meta.arguments?.arguments.firstOrNull;
 
-    if (type is! dart_ast.NamedExpression) {
+    if (type is! dart_ast.NamedArgument) {
       return AsynchronousType.callback;
     }
 
-    if (type.expression.toSource().contains('AsyncType.await')) {
-      final options = _expressionToMap(type.expression) as Map<String, Object>;
+    if (type.argumentExpression.toSource().contains('AsyncType.await')) {
+      final options = _expressionToMap(type.argumentExpression) as Map<String, Object>;
 
       return AwaitAsynchronous(
         swiftOptions: SwiftAwaitAsynchronousOptions(
@@ -2507,9 +2460,9 @@ class _DefaultValueVisitor extends dart_ast_visitor.SimpleAstVisitor<DefaultValu
   DefaultValue? visitInstanceCreationExpression(dart_ast.InstanceCreationExpression node) {
     final List<DefaultValue> args = node.argumentList.arguments
         .map(
-          (dart_ast.Expression e) => e is! dart_ast.NamedExpression
+          (dart_ast.Argument e) => e is! dart_ast.NamedArgument
               // https://github.com/Yobari-Timeliners/golub/issues/8
-              ? throw Exception('NamedExpression expected')
+              ? throw Exception('NamedArgument expected')
               : e.accept(this),
         )
         .whereNotNull()
@@ -2526,23 +2479,23 @@ class _DefaultValueVisitor extends dart_ast_visitor.SimpleAstVisitor<DefaultValu
   }
 
   @override
-  DefaultValue? visitNamedExpression(dart_ast.NamedExpression node) {
-    final DefaultValue? defaultValue = node.expression.accept(this);
+  DefaultValue? visitNamedArgument(dart_ast.NamedArgument node) {
+    final DefaultValue? defaultValue = node.argumentExpression.accept(this);
 
     if (defaultValue == null) {
       return null;
     }
 
-    return NamedDefaultValue(value: defaultValue, name: node.name.label.name);
+    return NamedDefaultValue(value: defaultValue, name: node.name.lexeme);
   }
 
   @override
   DefaultValue? visitMethodInvocation(dart_ast.MethodInvocation node) {
     final List<DefaultValue> args = node.argumentList.arguments
         .map(
-          (dart_ast.Expression e) => e is! dart_ast.NamedExpression
+          (dart_ast.Argument e) => e is! dart_ast.NamedArgument
               // https://github.com/Yobari-Timeliners/golub/issues/8
-              ? throw Exception('NamedExpression expected')
+              ? throw Exception('NamedArgument expected')
               : e.accept(this),
         )
         .whereNotNull()
