@@ -12,7 +12,7 @@
 namespace test_plugin {
 namespace test {
 
-using namespace core_tests_pigeontest;
+using namespace core_tests_golubetstest;
 
 TEST(EqualityTests, NaNEquality) {
   AllNullableTypes all1;
