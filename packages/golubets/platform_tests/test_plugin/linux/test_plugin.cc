@@ -326,7 +326,8 @@ create_nested_nullable_string(const gchar* nullable_string,
   FlValue* classMap = fl_value_new_map();
   g_autoptr(CoreTestsGolubetsTestAllClassesWrapper) wrapper =
       core_tests_golubets_test_all_classes_wrapper_new(
-          types, nullptr, nullptr, classList, nullptr, classMap, nullptr);
+          types, nullptr, nullptr, classList, nullptr, classMap, nullptr,
+          nullptr);
   return core_tests_golubets_test_host_integration_core_api_create_nested_nullable_string_response_new(
       wrapper);
 }
