@@ -14,6 +14,11 @@ import Foundation
   #error("Unsupported platform.")
 #endif
 
+public let aStringConstant: String = "stringConstantValue"
+public let anIntConstant: Int64 = 42
+public let aDoubleConstant: Double = 3.14
+public let aBoolConstant: Bool = true
+
 /// Error class for passing custom error details to Dart side.
 public final class GolubetsError: Error {
   let code: String
@@ -64,8 +69,128 @@ private func createConnectionError(withChannelName channelName: String) -> Golub
     details: "")
 }
 
-private func isNullish(_ value: Any?) -> Bool {
-  return value is NSNull || value == nil
+enum MessagesGolubetsInternal {
+  static func isNullish(_ value: Any?) -> Bool {
+    guard let innerValue = value else {
+      return true
+    }
+
+    if case Optional<Any>.some(Optional<Any>.none) = value {
+      return true
+    }
+
+    return innerValue is NSNull
+  }
+  static func doubleEquals(_ lhs: Double, _ rhs: Double) -> Bool {
+    return (lhs.isNaN && rhs.isNaN) || lhs == rhs
+  }
+
+  static func doubleHash(_ value: Double, _ hasher: inout Hasher) {
+    if value.isNaN {
+      hasher.combine(0x7FF8_0000_0000_0000)
+    } else {
+      // Normalize -0.0 to 0.0
+      hasher.combine(value == 0 ? 0 : value)
+    }
+  }
+
+  static func deepEquals(_ lhs: Any?, _ rhs: Any?) -> Bool {
+    let cleanLhs = nilOrValue(lhs) as Any?
+    let cleanRhs = nilOrValue(rhs) as Any?
+    switch (cleanLhs, cleanRhs) {
+    case (nil, nil):
+      return true
+
+    case (nil, _), (_, nil):
+      return false
+
+    case (let lhs as AnyObject, let rhs as AnyObject) where lhs === rhs:
+      return true
+
+    case is (Void, Void):
+      return true
+
+    case (let lhsArray, let rhsArray) as ([Any?], [Any?]):
+      guard lhsArray.count == rhsArray.count else { return false }
+      for (index, element) in lhsArray.enumerated() {
+        if !deepEquals(element, rhsArray[index]) {
+          return false
+        }
+      }
+      return true
+
+    case (let lhsArray, let rhsArray) as ([Double], [Double]):
+      guard lhsArray.count == rhsArray.count else { return false }
+      for (index, element) in lhsArray.enumerated() {
+        if !doubleEquals(element, rhsArray[index]) {
+          return false
+        }
+      }
+      return true
+
+    case (let lhsDictionary, let rhsDictionary) as ([AnyHashable: Any?], [AnyHashable: Any?]):
+      guard lhsDictionary.count == rhsDictionary.count else { return false }
+      for (lhsKey, lhsValue) in lhsDictionary {
+        var found = false
+        for (rhsKey, rhsValue) in rhsDictionary {
+          if deepEquals(lhsKey, rhsKey) {
+            if deepEquals(lhsValue, rhsValue) {
+              found = true
+              break
+            } else {
+              return false
+            }
+          }
+        }
+        if !found { return false }
+      }
+      return true
+
+    case (let lhs as Double, let rhs as Double):
+      return doubleEquals(lhs, rhs)
+
+    case (let lhsHashable, let rhsHashable) as (AnyHashable, AnyHashable):
+      return lhsHashable == rhsHashable
+
+    default:
+      // Any other type shouldn't be able to be used with golubetsets. File an issue if you find this to be untrue.
+      return false
+    }
+  }
+
+  static func deepHash(value: Any?, hasher: inout Hasher) {
+    let cleanValue = nilOrValue(value) as Any?
+    if let cleanValue = cleanValue {
+      if let doubleValue = cleanValue as? Double {
+        doubleHash(doubleValue, &hasher)
+      } else if let valueList = cleanValue as? [Any?] {
+        for item in valueList {
+          deepHash(value: item, hasher: &hasher)
+        }
+      } else if let valueList = cleanValue as? [Double] {
+        for item in valueList {
+          doubleHash(item, &hasher)
+        }
+      } else if let valueDict = cleanValue as? [AnyHashable: Any?] {
+        var result = 0
+        for (key, value) in valueDict {
+          var entryKeyHasher = Hasher()
+          deepHash(value: key, hasher: &entryKeyHasher)
+          var entryValueHasher = Hasher()
+          deepHash(value: value, hasher: &entryValueHasher)
+          result = result &+ ((entryKeyHasher.finalize() &* 31) ^ entryValueHasher.finalize())
+        }
+        hasher.combine(result)
+      } else if let hashableValue = cleanValue as? AnyHashable {
+        hasher.combine(hashableValue)
+      } else {
+        hasher.combine(String(describing: cleanValue))
+      }
+    } else {
+      hasher.combine(0)
+    }
+  }
+
 }
 
 private func nilOrValue<T>(_ value: Any?) -> T? {
@@ -73,126 +198,16 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
   return value as! T?
 }
 
-private func doubleEqualsMessages(_ lhs: Double, _ rhs: Double) -> Bool {
-  return (lhs.isNaN && rhs.isNaN) || lhs == rhs
-}
-
-private func doubleHashMessages(_ value: Double, _ hasher: inout Hasher) {
-  if value.isNaN {
-    hasher.combine(0x7FF8_0000_0000_0000)
-  } else {
-    // Normalize -0.0 to 0.0
-    hasher.combine(value == 0 ? 0 : value)
-  }
-}
-
-func deepEqualsMessages(_ lhs: Any?, _ rhs: Any?) -> Bool {
-  let cleanLhs = nilOrValue(lhs) as Any?
-  let cleanRhs = nilOrValue(rhs) as Any?
-  switch (cleanLhs, cleanRhs) {
-  case (nil, nil):
-    return true
-
-  case (nil, _), (_, nil):
-    return false
-
-  case (let lhs as AnyObject, let rhs as AnyObject) where lhs === rhs:
-    return true
-
-  case is (Void, Void):
-    return true
-
-  case (let lhsArray, let rhsArray) as ([Any?], [Any?]):
-    guard lhsArray.count == rhsArray.count else { return false }
-    for (index, element) in lhsArray.enumerated() {
-      if !deepEqualsMessages(element, rhsArray[index]) {
-        return false
-      }
-    }
-    return true
-
-  case (let lhsArray, let rhsArray) as ([Double], [Double]):
-    guard lhsArray.count == rhsArray.count else { return false }
-    for (index, element) in lhsArray.enumerated() {
-      if !doubleEqualsMessages(element, rhsArray[index]) {
-        return false
-      }
-    }
-    return true
-
-  case (let lhsDictionary, let rhsDictionary) as ([AnyHashable: Any?], [AnyHashable: Any?]):
-    guard lhsDictionary.count == rhsDictionary.count else { return false }
-    for (lhsKey, lhsValue) in lhsDictionary {
-      var found = false
-      for (rhsKey, rhsValue) in rhsDictionary {
-        if deepEqualsMessages(lhsKey, rhsKey) {
-          if deepEqualsMessages(lhsValue, rhsValue) {
-            found = true
-            break
-          } else {
-            return false
-          }
-        }
-      }
-      if !found { return false }
-    }
-    return true
-
-  case (let lhs as Double, let rhs as Double):
-    return doubleEqualsMessages(lhs, rhs)
-
-  case (let lhsHashable, let rhsHashable) as (AnyHashable, AnyHashable):
-    return lhsHashable == rhsHashable
-
-  default:
-    // Any other type shouldn't be able to be used with golubetsets. File an issue if you find this to be untrue.
-    return false
-  }
-}
-
-func deepHashMessages(value: Any?, hasher: inout Hasher) {
-  let cleanValue = nilOrValue(value) as Any?
-  if let cleanValue = cleanValue {
-    if let doubleValue = cleanValue as? Double {
-      doubleHashMessages(doubleValue, &hasher)
-    } else if let valueList = cleanValue as? [Any?] {
-      for item in valueList {
-        deepHashMessages(value: item, hasher: &hasher)
-      }
-    } else if let valueList = cleanValue as? [Double] {
-      for item in valueList {
-        doubleHashMessages(item, &hasher)
-      }
-    } else if let valueDict = cleanValue as? [AnyHashable: Any?] {
-      var result = 0
-      for (key, value) in valueDict {
-        var entryKeyHasher = Hasher()
-        deepHashMessages(value: key, hasher: &entryKeyHasher)
-        var entryValueHasher = Hasher()
-        deepHashMessages(value: value, hasher: &entryValueHasher)
-        result = result &+ ((entryKeyHasher.finalize() &* 31) ^ entryValueHasher.finalize())
-      }
-      hasher.combine(result)
-    } else if let hashableValue = cleanValue as? AnyHashable {
-      hasher.combine(hashableValue)
-    } else {
-      hasher.combine(String(describing: cleanValue))
-    }
-  } else {
-    hasher.combine(0)
-  }
-}
-
-public enum Code: Int {
+public enum Code: Int, CaseIterable {
   case one = 0
   case two = 1
 }
 
 /// Generated class from Golubets that represents data sent in messages.
-public struct MessageData: Hashable {
+public struct MessageData: Hashable, CustomStringConvertible {
   public init(
     name: String? = "Golub",
-    description: String? = "Example description",
+    messageDescription: String? = "Example description",
     code: Code = Code.one,
     data: [String: String] = [
       "hello": "world",
@@ -201,25 +216,25 @@ public struct MessageData: Hashable {
     ]
   ) {
     self.name = name
-    self.description = description
+    self.messageDescription = messageDescription
     self.code = code
     self.data = data
   }
   public var name: String?
-  public var description: String?
+  public var messageDescription: String?
   public var code: Code
   public var data: [String: String]
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> MessageData? {
     let name: String? = nilOrValue(golubetsVar_list[0])
-    let description: String? = nilOrValue(golubetsVar_list[1])
+    let messageDescription: String? = nilOrValue(golubetsVar_list[1])
     let code = golubetsVar_list[2] as! Code
     let data = golubetsVar_list[3] as! [String: String]
 
     return MessageData(
       name: name,
-      description: description,
+      messageDescription: messageDescription,
       code: code,
       data: data
     )
@@ -227,7 +242,7 @@ public struct MessageData: Hashable {
   func toList() -> [Any?] {
     return [
       name,
-      description,
+      messageDescription,
       code,
       data,
     ]
@@ -236,17 +251,23 @@ public struct MessageData: Hashable {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return deepEqualsMessages(lhs.name, rhs.name)
-      && deepEqualsMessages(lhs.description, rhs.description)
-      && deepEqualsMessages(lhs.code, rhs.code) && deepEqualsMessages(lhs.data, rhs.data)
+    return MessagesGolubetsInternal.deepEquals(lhs.name, rhs.name)
+      && MessagesGolubetsInternal.deepEquals(lhs.messageDescription, rhs.messageDescription)
+      && MessagesGolubetsInternal.deepEquals(lhs.code, rhs.code)
+      && MessagesGolubetsInternal.deepEquals(lhs.data, rhs.data)
   }
 
   public func hash(into hasher: inout Hasher) {
     hasher.combine("MessageData")
-    deepHashMessages(value: name, hasher: &hasher)
-    deepHashMessages(value: description, hasher: &hasher)
-    deepHashMessages(value: code, hasher: &hasher)
-    deepHashMessages(value: data, hasher: &hasher)
+    MessagesGolubetsInternal.deepHash(value: name, hasher: &hasher)
+    MessagesGolubetsInternal.deepHash(value: messageDescription, hasher: &hasher)
+    MessagesGolubetsInternal.deepHash(value: code, hasher: &hasher)
+    MessagesGolubetsInternal.deepHash(value: data, hasher: &hasher)
+  }
+
+  public var description: String {
+    return
+      "MessageData(name: \(String(describing: name)), messageDescription: \(String(describing: messageDescription)), code: \(String(describing: code)), data: \(String(describing: data)))"
   }
 }
 
@@ -421,6 +442,7 @@ public class ExampleHostApiSetup {
     }
   }
 }
+
 /// Generated protocol from Golubets that represents Flutter messages that can be called from Swift.
 public protocol MessageFlutterApiProtocol {
   func flutterMethod(

@@ -17,7 +17,7 @@ import 'generator.dart';
 /// The current version of golubets.
 ///
 /// This must match the version in pubspec.yaml.
-const String golubetsVersion = '1.3.4';
+const String golubetsVersion = '2.0.0';
 
 /// Default plugin package name.
 const String defaultPluginPackageName = 'dev.bayori.golubets';
@@ -1190,4 +1190,23 @@ extension ClassExtension on Class {
     }
     return name.purify(superClass.name);
   }
+}
+
+/// Escapes special characters in a string for use in double-quoted string literals.
+String escapeStringDoubleQuotes(String value) {
+  return value
+      .replaceAll(r'\', r'\\')
+      .replaceAll('"', r'\"')
+      .replaceAll('\n', r'\n')
+      .replaceAll('\r', r'\r');
+}
+
+/// Escapes special characters in a string for use in single-quoted string literals.
+String escapeStringSingleQuotes(String value) {
+  return value
+      .replaceAll(r'\', r'\\')
+      .replaceAll("'", r"\'")
+      .replaceAll('\n', r'\n')
+      .replaceAll('\r', r'\r')
+      .replaceAll(r'$', r'\$');
 }

@@ -3169,6 +3169,14 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
     }
   }, skip: !eventChannelSupported.contains(targetGenerator));
 
+  testWidgets('constants are generated correctly', (WidgetTester _) async {
+    expect(aStringConstant, 'stringConstantValue');
+    expect(aStringConstantWithEscapes, r'''string\'\"\$ConstantValue''');
+    expect(anIntConstant, 42);
+    expect(aDoubleConstant, 3.14);
+    expect(aBoolConstant, true);
+  });
+
   test('nested kotlin sealed classes serialize and deserialize correctly', () async {
     final api = KotlinNestedSealedApi();
 

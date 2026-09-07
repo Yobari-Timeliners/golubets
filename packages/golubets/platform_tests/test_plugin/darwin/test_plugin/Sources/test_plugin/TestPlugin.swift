@@ -157,6 +157,22 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, Sealed
     return list
   }
 
+  public func echo(stringList: [String?]) throws -> [String?] {
+    return stringList
+  }
+
+  public func echo(intList: [Int64?]) throws -> [Int64?] {
+    return intList
+  }
+
+  public func echo(doubleList: [Double?]) throws -> [Double?] {
+    return doubleList
+  }
+
+  public func echo(boolList: [Bool?]) throws -> [Bool?] {
+    return boolList
+  }
+
   public func echo(enumList: [AnEnum?]) throws -> [AnEnum?] {
     return enumList
   }

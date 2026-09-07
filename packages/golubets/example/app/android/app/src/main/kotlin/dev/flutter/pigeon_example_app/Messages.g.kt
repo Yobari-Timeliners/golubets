@@ -15,6 +15,11 @@ import java.nio.ByteBuffer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+const val aStringConstant: String = "stringConstantValue"
+const val anIntConstant: Long = 42L
+const val aDoubleConstant: Double = 3.14
+const val aBoolConstant: Boolean = true
+
 private object MessagesGolubetsUtils {
 
   fun createConnectionError(channelName: String): FlutterError {
@@ -209,7 +214,7 @@ enum class Code(val raw: Int) {
 /** Generated class from Golubets that represents data sent in messages. */
 data class MessageData(
     val name: String? = "Golub",
-    val description: String? = "Example description",
+    val messageDescription: String? = "Example description",
     val code: Code = Code.ONE,
     val data: Map<String, String> =
         mapOf(
@@ -221,17 +226,17 @@ data class MessageData(
   companion object {
     fun fromList(golubetsVar_list: List<Any?>): MessageData {
       val name = golubetsVar_list[0] as String?
-      val description = golubetsVar_list[1] as String?
+      val messageDescription = golubetsVar_list[1] as String?
       val code = golubetsVar_list[2] as Code
       val data = golubetsVar_list[3] as Map<String, String>
-      return MessageData(name, description, code, data)
+      return MessageData(name, messageDescription, code, data)
     }
   }
 
   fun toList(): List<Any?> {
     return listOf(
         name,
-        description,
+        messageDescription,
         code,
         data,
     )
@@ -245,7 +250,7 @@ data class MessageData(
       return true
     }
     return MessagesGolubetsUtils.deepEquals(this.name, other.name) &&
-        MessagesGolubetsUtils.deepEquals(this.description, other.description) &&
+        MessagesGolubetsUtils.deepEquals(this.messageDescription, other.messageDescription) &&
         MessagesGolubetsUtils.deepEquals(this.code, other.code) &&
         MessagesGolubetsUtils.deepEquals(this.data, other.data)
   }
@@ -253,10 +258,14 @@ data class MessageData(
   override fun hashCode(): Int {
     var result = javaClass.hashCode()
     result = 31 * result + MessagesGolubetsUtils.deepHash(this.name)
-    result = 31 * result + MessagesGolubetsUtils.deepHash(this.description)
+    result = 31 * result + MessagesGolubetsUtils.deepHash(this.messageDescription)
     result = 31 * result + MessagesGolubetsUtils.deepHash(this.code)
     result = 31 * result + MessagesGolubetsUtils.deepHash(this.data)
     return result
+  }
+
+  override fun toString(): String {
+    return "MessageData(name=$name, messageDescription=$messageDescription, code=$code, data=$data)"
   }
 }
 

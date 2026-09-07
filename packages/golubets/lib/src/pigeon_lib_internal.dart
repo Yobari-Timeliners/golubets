@@ -414,17 +414,26 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
 
   @override
   List<Error> validate(InternalGolubetsOptions options, Root root) {
-    final result = <Error>[];
+    final errors = <Error>[];
 
     for (final Class classDefinition in root.classes) {
       for (final NamedType field in classDefinition.fields) {
+        if (field.name == 'description') {
+          errors.add(
+            Error(
+              message:
+                  'Field "description" is not allowed in class "${classDefinition.name}" because it conflicts with Swift\'s NSObject/CustomStringConvertible.description property.',
+            ),
+          );
+        }
+
         final Class? associatedClass = field.type.associatedClass;
         final Class? superClass = associatedClass?.superClass;
         final bool isSealedChild =
             associatedClass != null && superClass != null && superClass.isSealed;
 
         if (isSealedChild) {
-          result.add(
+          errors.add(
             Error(
               message:
                   'Swift generator does not support concrete sealed types due to Swift enum nature. '
@@ -442,7 +451,7 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
           associatedClass != null && superClass != null && superClass.isSealed;
 
       if (isSealedChild) {
-        result.add(
+        errors.add(
           Error(
             message:
                 'Swift generator does not support concrete sealed types due to Swift enum nature. '
@@ -459,7 +468,7 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
             associatedClass != null && superClass != null && superClass.isSealed;
 
         if (isSealedChild) {
-          result.add(
+          errors.add(
             Error(
               message:
                   'Swift generator does not support concrete sealed types due to Swift enum nature. '
@@ -471,7 +480,7 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
       }
     }
 
-    return result;
+    return errors;
   }
 }
 
@@ -1140,6 +1149,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
   final List<Api> _apis = <Api>[];
   final List<Enum> _enums = <Enum>[];
   final List<Class> _classes = <Class>[];
+  final List<Constant> _constants = <Constant>[];
   final List<Error> _errors = <Error>[];
   final Set<String> _genericTypeNames = <String>{};
 
@@ -1266,10 +1276,43 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       genericUsage: _genericTypeNames.isEmpty
           ? const <String, Set<TypeArgumentCombination>>{}
           : collectGenericTypeUsage(classes: _classes, apis: _apis),
+      constants: _constants,
     );
 
     final List<Error> validateErrors = _validateAst(completeRoot, source);
     totalErrors.addAll(validateErrors);
+
+    final allowedValueValidators = <String, bool Function(Object?)>{
+      'String': (Object? v) => v is String,
+      'int': (Object? v) => v is int,
+      'double': (Object? v) => v is num,
+      'bool': (Object? v) => v is bool,
+    };
+    for (final Constant constant in _constants) {
+      final String typeName = constant.type.baseName;
+      final bool Function(Object?)? validator = allowedValueValidators[typeName];
+      if (validator == null) {
+        totalErrors.add(
+          Error(
+            message:
+                'Unsupported constant type: "$typeName". Only String, int, double, and bool are supported.',
+            lineNumber: constant.offset != null
+                ? calculateLineNumber(source, constant.offset!)
+                : null,
+          ),
+        );
+      } else if (!validator(constant.value)) {
+        totalErrors.add(
+          Error(
+            message:
+                'Constant "${constant.name}" type is $typeName but value is ${constant.value.runtimeType}.',
+            lineNumber: constant.offset != null
+                ? calculateLineNumber(source, constant.offset!)
+                : null,
+          ),
+        );
+      }
+    }
 
     return ParseResults(
       root: totalErrors.isEmpty
@@ -1339,13 +1382,13 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
   Object _expressionToMap(dart_ast.Expression expression) {
     if (expression is dart_ast.MethodInvocation) {
       final result = <String, Object>{};
-      for (final dart_ast.Expression argument in expression.argumentList.arguments) {
-        if (argument is dart_ast.NamedExpression) {
-          result[argument.name.label.name] = _expressionToMap(argument.expression);
+      for (final dart_ast.Argument argument in expression.argumentList.arguments) {
+        if (argument is dart_ast.NamedArgument) {
+          result[argument.name.lexeme] = _expressionToMap(argument.argumentExpression);
         } else {
           _errors.add(
             Error(
-              message: 'expected NamedExpression but found $expression',
+              message: 'expected NamedArgument but found $argument',
               lineNumber: calculateLineNumber(source, argument.offset),
             ),
           );
@@ -1416,6 +1459,133 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
   }
 
   @override
+  Object? visitTopLevelVariableDeclaration(dart_ast.TopLevelVariableDeclaration node) {
+    if (node.variables.isConst) {
+      final dart_ast.TypeAnnotation? typeAnnotation = node.variables.type;
+      if (typeAnnotation == null) {
+        _errors.add(
+          Error(
+            message: 'Top-level constants must have an explicit type annotation.',
+            lineNumber: calculateLineNumber(source, node.offset),
+          ),
+        );
+        return null;
+      }
+      if (typeAnnotation is! dart_ast.NamedType) {
+        _errors.add(
+          Error(
+            message: 'Top-level constants must have a named type annotation.',
+            lineNumber: calculateLineNumber(source, node.offset),
+          ),
+        );
+        return null;
+      }
+      for (final dart_ast.VariableDeclaration variable in node.variables.variables) {
+        final dart_ast.Expression? initializer = variable.initializer;
+        if (initializer == null) {
+          _errors.add(
+            Error(
+              message: 'Top-level constant "${variable.name.lexeme}" must have an initializer.',
+              lineNumber: calculateLineNumber(source, variable.offset),
+            ),
+          );
+          continue;
+        }
+
+        Object? value = _evaluateExpression(initializer);
+        if (value == null) {
+          continue;
+        }
+
+        if (_getNamedTypeQualifiedName(typeAnnotation) == 'double' && value is num) {
+          value = value.toDouble();
+        }
+
+        final type = TypeDeclaration(
+          baseName: _getNamedTypeQualifiedName(typeAnnotation),
+          isNullable: typeAnnotation.question != null,
+          typeArguments: _typeAnnotationsToTypeArguments(typeAnnotation.typeArguments),
+        );
+
+        _constants.add(
+          Constant(
+            name: variable.name.lexeme,
+            type: type,
+            value: value,
+            offset: variable.offset,
+            documentationComments: _documentationCommentsParser(node.documentationComment?.tokens),
+          ),
+        );
+      }
+    }
+    node.visitChildren(this);
+    return null;
+  }
+
+  Object? _evaluateExpression(dart_ast.Expression expression) {
+    if (expression is dart_ast.SimpleStringLiteral) {
+      return expression.value;
+    } else if (expression is dart_ast.IntegerLiteral) {
+      return expression.value!;
+    } else if (expression is dart_ast.DoubleLiteral) {
+      return expression.value;
+    } else if (expression is dart_ast.BooleanLiteral) {
+      return expression.value;
+    } else if (expression is dart_ast.PrefixExpression) {
+      final Object? operandValue = _evaluateExpression(expression.operand);
+      if (operandValue == null) {
+        return null;
+      }
+      final String operator = expression.operator.lexeme;
+      if (operator == '-') {
+        if (operandValue is int) {
+          return -operandValue;
+        } else if (operandValue is double) {
+          return -operandValue;
+        }
+      } else if (operator == '!') {
+        if (operandValue is bool) {
+          return !operandValue;
+        }
+      }
+      _errors.add(
+        Error(
+          message: 'Unsupported prefix operator "$operator" on type "${operandValue.runtimeType}".',
+          lineNumber: calculateLineNumber(source, expression.offset),
+        ),
+      );
+      return null;
+    } else if (expression is dart_ast.AdjacentStrings) {
+      final buffer = StringBuffer();
+      for (final dart_ast.StringLiteral literal in expression.strings) {
+        final Object? val = _evaluateExpression(literal);
+        if (val is! String) {
+          return null;
+        }
+        buffer.write(val);
+      }
+      return buffer.toString();
+    } else if (expression is dart_ast.StringInterpolation) {
+      _errors.add(
+        Error(
+          message: 'String interpolation is not supported in Pigeon constants.',
+          lineNumber: calculateLineNumber(source, expression.offset),
+        ),
+      );
+      return null;
+    } else {
+      _errors.add(
+        Error(
+          message:
+              'Unsupported expression type ${expression.runtimeType} for constant initializer.',
+          lineNumber: calculateLineNumber(source, expression.offset),
+        ),
+      );
+      return null;
+    }
+  }
+
+  @override
   Object? visitAnnotation(dart_ast.Annotation node) {
     if (node.name.name == 'ConfigureGolubets') {
       if (node.arguments == null) {
@@ -1427,7 +1597,8 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         );
       }
       final golubetsOptionsMap =
-          _expressionToMap(node.arguments!.arguments.first) as Map<String, Object>;
+          _expressionToMap(node.arguments!.arguments.first.argumentExpression)
+              as Map<String, Object>;
       _golubetsOptions = golubetsOptionsMap;
     }
     node.visitChildren(this);
@@ -1455,11 +1626,13 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
           (dart_ast.Annotation element) => element.name.name == 'HostApi',
         );
         String? dartHostTestHandler;
-        if (hostApi.arguments != null) {
-          for (final dart_ast.Expression expression in hostApi.arguments!.arguments) {
-            if (expression is dart_ast.NamedExpression) {
-              if (expression.name.label.name == 'dartHostTestHandler') {
-                final dart_ast.Expression dartHostTestHandlerExpression = expression.expression;
+        final dart_ast.ArgumentList? arguments = hostApi.arguments;
+        if (arguments != null) {
+          for (final dart_ast.Argument argument in arguments.arguments) {
+            if (argument is dart_ast.NamedArgument) {
+              if (argument.name.lexeme == 'dartHostTestHandler') {
+                final dart_ast.Expression dartHostTestHandlerExpression =
+                    argument.argumentExpression;
                 if (dartHostTestHandlerExpression is dart_ast.SimpleStringLiteral) {
                   dartHostTestHandler = dartHostTestHandlerExpression.value;
                 }
@@ -1486,9 +1659,12 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         );
 
         final annotationMap = <String, Object?>{};
-        for (final dart_ast.Expression expression in proxyApiAnnotation.arguments!.arguments) {
-          if (expression is dart_ast.NamedExpression) {
-            annotationMap[expression.name.label.name] = _expressionToMap(expression.expression);
+        final dart_ast.ArgumentList? arguments = proxyApiAnnotation.arguments;
+        if (arguments != null) {
+          for (final dart_ast.Argument argument in arguments.arguments) {
+            if (argument is dart_ast.NamedArgument) {
+              annotationMap[argument.name.lexeme] = _expressionToMap(argument.argumentExpression);
+            }
           }
         }
 
@@ -1577,9 +1753,12 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         );
 
         final annotationMap = <String, Object?>{};
-        for (final dart_ast.Expression expression in annotation.arguments!.arguments) {
-          if (expression is dart_ast.NamedExpression) {
-            annotationMap[expression.name.label.name] = _expressionToMap(expression.expression);
+        final dart_ast.ArgumentList? arguments = annotation.arguments;
+        if (arguments != null) {
+          for (final dart_ast.Argument argument in arguments.arguments) {
+            if (argument is dart_ast.NamedArgument) {
+              annotationMap[argument.name.lexeme] = _expressionToMap(argument.argumentExpression);
+            }
           }
         }
 
@@ -1658,14 +1837,27 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     DefaultValue? defaultValue,
   }) {
     final dart_ast.NamedType? parameter = _getFirstChildOfType<dart_ast.NamedType>(formalParameter);
-    final dart_ast.SimpleFormalParameter? simpleFormalParameter =
-        _getFirstChildOfType<dart_ast.SimpleFormalParameter>(formalParameter);
+
     if (parameter != null) {
       final String argTypeBaseName = _getNamedTypeQualifiedName(parameter);
       final isNullable = parameter.question != null;
       final List<TypeDeclaration> argTypeArguments = _typeAnnotationsToTypeArguments(
         parameter.typeArguments,
       );
+
+      if (defaultValue == null) {
+        try {
+          defaultValue = formalParameter.defaultClause?.value.accept(const _DefaultValueVisitor());
+        } catch (e) {
+          _errors.add(
+            Error(
+              message: e.toString(),
+              lineNumber: calculateLineNumber(source, formalParameter.offset),
+            ),
+          );
+        }
+      }
+
       return Parameter(
         type: TypeDeclaration(
           baseName: argTypeBaseName,
@@ -1678,30 +1870,9 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         isOptional: isOptional ?? formalParameter.isOptional,
         isPositional: isPositional ?? formalParameter.isPositional,
         isRequired: isRequired ?? formalParameter.isRequired,
-        defaultValue: defaultValue,
-      );
-    } else if (simpleFormalParameter != null) {
-      DefaultValue? defaultValue;
-      if (formalParameter is dart_ast.DefaultFormalParameter) {
-        try {
-          defaultValue = formalParameter.defaultValue?.accept(const _DefaultValueVisitor());
-        } on Object catch (e) {
-          _errors.add(
-            Error(
-              message: e.toString(),
-              lineNumber: calculateLineNumber(source, formalParameter.offset),
-            ),
-          );
-        }
-      }
-
-      return _formalParameterToPigeonParameter(
-        simpleFormalParameter,
-        isNamed: simpleFormalParameter.isNamed,
-        isOptional: simpleFormalParameter.isOptional,
-        isPositional: simpleFormalParameter.isPositional,
-        isRequired: simpleFormalParameter.isRequired,
-        defaultValue: defaultValue,
+        defaultValue:
+            defaultValue ??
+            formalParameter.defaultClause?.value.accept(const _DefaultValueVisitor()),
       );
     } else {
       return Parameter(
@@ -1759,9 +1930,9 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     )?.arguments;
     final String? taskQueueTypeName = taskQueueArguments == null
         ? null
-        : _getFirstChildOfType<dart_ast.NamedExpression>(
+        : _getFirstChildOfType<dart_ast.NamedArgument>(
             taskQueueArguments,
-          )?.expression.asNullable<dart_ast.PrefixedIdentifier>()?.name;
+          )?.argumentExpression.asNullable<dart_ast.PrefixedIdentifier>()?.name;
     final TaskQueueType taskQueueType =
         _stringToEnum(TaskQueueType.values, taskQueueTypeName) ?? TaskQueueType.serial;
 
@@ -1840,6 +2011,26 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
 
   @override
   Object? visitEnumDeclaration(dart_ast.EnumDeclaration node) {
+    // Enhanced enums (those with a constructor, fields, methods, or arguments
+    // on their values) aren't supported by Pigeon.
+    final bool isEnhancedEnum =
+        node.body.members.isNotEmpty ||
+        node.body.constants.any((dart_ast.EnumConstantDeclaration e) => e.arguments != null) ||
+        node.namePart.typeParameters != null ||
+        node.namePart is dart_ast.PrimaryConstructorDeclaration ||
+        node.withClause != null ||
+        node.implementsClause != null;
+    if (isEnhancedEnum) {
+      _errors.add(
+        Error(
+          message:
+              'Pigeon doesn\'t support enhanced enums ("${node.namePart.typeName.lexeme}"). '
+              'Use a plain enum without a constructor, fields, methods, type parameters, '
+              'mixins, interfaces, or arguments on its values.',
+          lineNumber: calculateLineNumber(source, node.offset),
+        ),
+      );
+    }
     _enums.add(
       Enum(
         name: node.namePart.typeName.lexeme,
@@ -1854,7 +2045,12 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         documentationComments: _documentationCommentsParser(node.documentationComment?.tokens),
       ),
     );
-    node.visitChildren(this);
+    // Don't visit the children of an enhanced enum: the declaration is
+    // already reported as unsupported, and the visitor doesn't expect
+    // class-like members outside of a class.
+    if (!isEnhancedEnum) {
+      node.visitChildren(this);
+    }
     return null;
   }
 
@@ -1990,12 +2186,12 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
         }
 
         for (final dart_ast.FormalParameter param in node.parameters.parameters) {
-          if (param is dart_ast.DefaultFormalParameter) {
+          if (param.defaultClause != null) {
             final Token? name = param.name;
 
-            final dart_ast.Expression? defaultValue = param.defaultValue;
+            final dart_ast.Expression defaultValue = param.defaultClause!.value;
 
-            if (name == null || defaultValue == null) {
+            if (name == null) {
               continue;
             }
 
@@ -2053,9 +2249,9 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       )?.arguments;
       final String? taskQueueTypeName = taskQueueArguments == null
           ? null
-          : _getFirstChildOfType<dart_ast.NamedExpression>(
+          : _getFirstChildOfType<dart_ast.NamedArgument>(
               taskQueueArguments,
-            )?.expression.asNullable<dart_ast.PrefixedIdentifier>()?.name;
+            )?.argumentExpression.asNullable<dart_ast.PrefixedIdentifier>()?.name;
       final TaskQueueType taskQueueType =
           _stringToEnum(TaskQueueType.values, taskQueueTypeName) ?? TaskQueueType.serial;
       final AsynchronousType asynchronousType = _parseAsynchronousType(node.metadata);
@@ -2125,14 +2321,14 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       return AsynchronousType.none;
     }
 
-    final dart_ast.Expression? type = meta.arguments?.arguments.firstOrNull;
+    final dart_ast.Argument? type = meta.arguments?.arguments.firstOrNull;
 
-    if (type is! dart_ast.NamedExpression) {
+    if (type is! dart_ast.NamedArgument) {
       return AsynchronousType.callback;
     }
 
-    if (type.expression.toSource().contains('AsyncType.await')) {
-      final options = _expressionToMap(type.expression) as Map<String, Object>;
+    if (type.argumentExpression.toSource().contains('AsyncType.await')) {
+      final options = _expressionToMap(type.argumentExpression) as Map<String, Object>;
 
       return AwaitAsynchronous(
         swiftOptions: SwiftAwaitAsynchronousOptions(
@@ -2264,9 +2460,9 @@ class _DefaultValueVisitor extends dart_ast_visitor.SimpleAstVisitor<DefaultValu
   DefaultValue? visitInstanceCreationExpression(dart_ast.InstanceCreationExpression node) {
     final List<DefaultValue> args = node.argumentList.arguments
         .map(
-          (dart_ast.Expression e) => e is! dart_ast.NamedExpression
+          (dart_ast.Argument e) => e is! dart_ast.NamedArgument
               // https://github.com/Yobari-Timeliners/golub/issues/8
-              ? throw Exception('NamedExpression expected')
+              ? throw Exception('NamedArgument expected')
               : e.accept(this),
         )
         .whereNotNull()
@@ -2283,23 +2479,23 @@ class _DefaultValueVisitor extends dart_ast_visitor.SimpleAstVisitor<DefaultValu
   }
 
   @override
-  DefaultValue? visitNamedExpression(dart_ast.NamedExpression node) {
-    final DefaultValue? defaultValue = node.expression.accept(this);
+  DefaultValue? visitNamedArgument(dart_ast.NamedArgument node) {
+    final DefaultValue? defaultValue = node.argumentExpression.accept(this);
 
     if (defaultValue == null) {
       return null;
     }
 
-    return NamedDefaultValue(value: defaultValue, name: node.name.label.name);
+    return NamedDefaultValue(value: defaultValue, name: node.name.lexeme);
   }
 
   @override
   DefaultValue? visitMethodInvocation(dart_ast.MethodInvocation node) {
     final List<DefaultValue> args = node.argumentList.arguments
         .map(
-          (dart_ast.Expression e) => e is! dart_ast.NamedExpression
+          (dart_ast.Argument e) => e is! dart_ast.NamedArgument
               // https://github.com/Yobari-Timeliners/golub/issues/8
-              ? throw Exception('NamedExpression expected')
+              ? throw Exception('NamedArgument expected')
               : e.accept(this),
         )
         .whereNotNull()

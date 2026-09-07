@@ -1,3 +1,17 @@
+## 2.0.0
+* [dart] Fixes lint warning from unused codec variable in Dart proxy classes.
+* Updates analyzer dependency to support versions 13 and 14.
+* Updates minimum Dart SDK constraint to 3.11.0.
+* Adds support for sharing constants across platforms.
+* Reports a clear error when an input file uses an enhanced enum (one with a constructor, fields, methods, or arguments on its values), instead of silently generating incorrect output.
+* [dart] Adds usage documentation to generated event channel methods, and emits the user's documentation comments on them.
+* [swift] Adds CaseIterable conformance to generated enums.
+* Updates minimum supported SDK version to Flutter 3.38/Dart 3.10.
+* Breaking Change Overrides toString (or equivalent) methods on generated data classes
+  * This can conflict with custom description implementations in Swift.
+* [swift] Updates isNullish to handle double nested Any? values.
+* [kotlin] Updates generated error class to inherit from RuntimeException instead of Throwable, for better Java interoperability.
+
 ## 1.3.4
 * [kotlin] Updates generated error class to inherit from RuntimeException instead of Throwable, for better Java interoperability.
 * Updates analyzer dependency to support versions 10 through 12.

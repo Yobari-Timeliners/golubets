@@ -184,7 +184,7 @@ class HostApi {
   /// to specify where to generate the test file.
   ///
   /// Prefer to use a mock of the real [HostApi] with a mocking library for unit
-  /// tests.  Generating this Dart handler is sometimes useful in integration
+  /// tests. Generating this Dart handler is sometimes useful in integration
   /// testing.
   ///
   /// Defaults to `null` in which case no handler will be generated.

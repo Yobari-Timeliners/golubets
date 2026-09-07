@@ -265,6 +265,34 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
   }
 
   @override
+  void writeConstants(
+    InternalSwiftOptions generatorOptions,
+    Root root,
+    Indent indent, {
+    required String dartPackageName,
+  }) {
+    if (root.constants.isEmpty) {
+      return;
+    }
+    indent.newln();
+    for (final Constant constant in root.constants) {
+      addDocumentationComments(indent, constant.documentationComments, _docCommentSpec);
+      final String swiftType = _swiftTypeForDartType(constant.type);
+      final String formattedValue = _formatSwiftValue(constant.type.baseName, constant.value);
+      indent.writeln('public let ${constant.name}: $swiftType = $formattedValue');
+    }
+  }
+
+  String _formatSwiftValue(String type, Object value) {
+    if (type == 'String') {
+      final String escaped = escapeStringDoubleQuotes(value.toString());
+      return '"$escaped"';
+    } else {
+      return value.toString();
+    }
+  }
+
+  @override
   void writeEnum(
     InternalSwiftOptions generatorOptions,
     Root root,
@@ -275,7 +303,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     indent.newln();
     addDocumentationComments(indent, anEnum.documentationComments, _docCommentSpec);
 
-    indent.write('public enum ${anEnum.name}: Int ');
+    indent.write('public enum ${anEnum.name}: Int, CaseIterable ');
     indent.addScoped('{', '}', () {
       enumerate(anEnum.members, (int index, EnumMember member) {
         addDocumentationComments(indent, member.documentationComments, _docCommentSpec);
@@ -469,6 +497,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     bool hashable = true,
     required Root root,
     required InternalSwiftOptions generatorOptions,
+    bool customStringConvertible = true,
   }) {
     final classLookup = <String, Class>{
       for (final Class classDefinition in root.classes) classDefinition.name: classDefinition,
@@ -495,11 +524,18 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     final typeArguments = classDefinition.typeArguments.isEmpty
         ? ''
         : '<${_flattenTypeArgumentsWithSelectiveHashableConstraints(classDefinition.typeArguments, hashableTypeParams)}>';
-    final extendsString = classDefinition.superClass != null
-        ? ': ${classDefinition.superClass!.name}'
-        : hashable
-        ? ': Hashable'
-        : '';
+    final protocols = <String>[];
+    if (classDefinition.superClass != null) {
+      protocols.add(classDefinition.superClass!.name);
+    } else {
+      if (hashable) {
+        protocols.add('Hashable');
+      }
+      if (customStringConvertible) {
+        protocols.add('CustomStringConvertible');
+      }
+    }
+    final extendsString = protocols.isEmpty ? '' : ': ${protocols.join(', ')}';
     if (classDefinition.isSwiftClass) {
       indent.write('${privateString}class ${classDefinition.name}$typeArguments$extendsString ');
     } else if (classDefinition.isSealed) {
@@ -569,6 +605,7 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
       hashable: false,
       root: root,
       generatorOptions: generatorOptions,
+      customStringConvertible: false,
     );
     indent.addScoped('', '}', () {
       writeClassEncode(
@@ -688,6 +725,14 @@ if (wrapped == nil) {
         classDefinition,
         dartPackageName: dartPackageName,
       );
+      indent.newln();
+      writeClassToString(
+        generatorOptions,
+        root,
+        indent,
+        classDefinition,
+        dartPackageName: dartPackageName,
+      );
     });
   }
 
@@ -789,13 +834,14 @@ if (wrapped == nil) {
     Class classDefinition, {
     required String dartPackageName,
   }) {
-    final String component = generatorOptions.fileSpecificClassNameComponent ?? '';
     indent.writeScoped(
       'public static func == (lhs: ${classDefinition.name}, rhs: ${classDefinition.name}) -> Bool {',
       '}',
       () {
         if (classDefinition.isSealed) {
-          indent.writeln('return deepEquals$component(lhs.toList(), rhs.toList())');
+          indent.writeln(
+            'return ${generatorOptions.fileSpecificClassNameComponent ?? ''}GolubetsInternal.deepEquals(lhs.toList(), rhs.toList())',
+          );
           return;
         }
         indent.writeScoped('if Swift.type(of: lhs) != Swift.type(of: rhs) {', '}', () {
@@ -812,7 +858,8 @@ if (wrapped == nil) {
         } else {
           final String comparisons = fields
               .map(
-                (NamedType field) => 'deepEquals$component(lhs.${field.name}, rhs.${field.name})',
+                (NamedType field) =>
+                    '${generatorOptions.fileSpecificClassNameComponent ?? ''}GolubetsInternal.deepEquals(lhs.${field.name}, rhs.${field.name})',
               )
               .join(' && ');
           indent.writeln('return $comparisons');
@@ -823,14 +870,37 @@ if (wrapped == nil) {
     indent.newln();
     indent.writeScoped('public func hash(into hasher: inout Hasher) {', '}', () {
       if (classDefinition.isSealed) {
-        indent.writeln('deepHash$component(value: toList(), hasher: &hasher)');
+        indent.writeln(
+          '${generatorOptions.fileSpecificClassNameComponent ?? ''}GolubetsInternal.deepHash(value: toList(), hasher: &hasher)',
+        );
         return;
       }
       indent.writeln('hasher.combine("${classDefinition.name}")');
       final Iterable<NamedType> fields = getFieldsInSerializationOrder(classDefinition);
       for (final field in fields) {
-        indent.writeln('deepHash$component(value: ${field.name}, hasher: &hasher)');
+        indent.writeln(
+          '${generatorOptions.fileSpecificClassNameComponent ?? ''}GolubetsInternal.deepHash(value: ${field.name}, hasher: &hasher)',
+        );
       }
+    });
+  }
+
+  /// Writes the `CustomStringConvertible` conformance for a class.
+  void writeClassToString(
+    InternalSwiftOptions generatorOptions,
+    Root root,
+    Indent indent,
+    Class classDefinition, {
+    required String dartPackageName,
+  }) {
+    final overrideString = (classDefinition.superClass != null && classDefinition.isSwiftClass)
+        ? 'override '
+        : '';
+    indent.writeScoped('${overrideString}public var description: String {', '}', () {
+      final Iterable<String> fieldStrings = classDefinition.fields.map((NamedType field) {
+        return '${field.name}: \\(String(describing: ${field.name}))';
+      });
+      indent.writeln('return "${classDefinition.name}(${fieldStrings.join(', ')})"');
     });
   }
 
@@ -975,6 +1045,7 @@ if (wrapped == nil) {
     AstFlutterApi api, {
     required String dartPackageName,
   }) {
+    indent.newln();
     const generatedComments = <String>[
       ' Generated protocol from Golubets that represents Flutter messages that can be called from Swift.',
     ];
@@ -1549,12 +1620,19 @@ if (wrapped == nil) {
     }
   }
 
-  void _writeIsNullish(Indent indent) {
-    indent.newln();
-    indent.write('private func isNullish(_ value: Any?) -> Bool ');
-    indent.addScoped('{', '}', () {
-      indent.writeln('return value is NSNull || value == nil');
-    });
+  void _writeIsNullish(InternalSwiftOptions generatorOptions, Indent indent) {
+    indent.format('''
+static func isNullish(_ value: Any?) -> Bool {
+  guard let innerValue = value else {
+    return true
+  }
+
+  if case Optional<Any>.some(Optional<Any>.none) = value {
+    return true
+  }
+
+  return innerValue is NSNull
+}''');
   }
 
   void _writeWrapResult(Indent indent) {
@@ -1620,16 +1698,12 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
   }
 
   void _writeDeepEquals(InternalSwiftOptions generatorOptions, Indent indent) {
-    final deepEqualsName = 'deepEquals${generatorOptions.fileSpecificClassNameComponent ?? ''}';
-    final deepHashName = 'deepHash${generatorOptions.fileSpecificClassNameComponent ?? ''}';
-    final doubleEqualsName = 'doubleEquals${generatorOptions.fileSpecificClassNameComponent ?? ''}';
-    final doubleHashName = 'doubleHash${generatorOptions.fileSpecificClassNameComponent ?? ''}';
     indent.format('''
-private func $doubleEqualsName(_ lhs: Double, _ rhs: Double) -> Bool {
+static func doubleEquals(_ lhs: Double, _ rhs: Double) -> Bool {
   return (lhs.isNaN && rhs.isNaN) || lhs == rhs
 }
 
-private func $doubleHashName(_ value: Double, _ hasher: inout Hasher) {
+static func doubleHash(_ value: Double, _ hasher: inout Hasher) {
   if value.isNaN {
     hasher.combine(0x7FF8000000000000)
   } else {
@@ -1638,7 +1712,7 @@ private func $doubleHashName(_ value: Double, _ hasher: inout Hasher) {
   }
 }
 
-func $deepEqualsName(_ lhs: Any?, _ rhs: Any?) -> Bool {
+static func deepEquals(_ lhs: Any?, _ rhs: Any?) -> Bool {
   let cleanLhs = nilOrValue(lhs) as Any?
   let cleanRhs = nilOrValue(rhs) as Any?
   switch (cleanLhs, cleanRhs) {
@@ -1657,7 +1731,7 @@ func $deepEqualsName(_ lhs: Any?, _ rhs: Any?) -> Bool {
   case (let lhsArray, let rhsArray) as ([Any?], [Any?]):
     guard lhsArray.count == rhsArray.count else { return false }
     for (index, element) in lhsArray.enumerated() {
-      if !$deepEqualsName(element, rhsArray[index]) {
+      if !deepEquals(element, rhsArray[index]) {
         return false
       }
     }
@@ -1666,7 +1740,7 @@ func $deepEqualsName(_ lhs: Any?, _ rhs: Any?) -> Bool {
   case (let lhsArray, let rhsArray) as ([Double], [Double]):
     guard lhsArray.count == rhsArray.count else { return false }
     for (index, element) in lhsArray.enumerated() {
-      if !$doubleEqualsName(element, rhsArray[index]) {
+      if !doubleEquals(element, rhsArray[index]) {
         return false
       }
     }
@@ -1677,8 +1751,8 @@ func $deepEqualsName(_ lhs: Any?, _ rhs: Any?) -> Bool {
     for (lhsKey, lhsValue) in lhsDictionary {
       var found = false
       for (rhsKey, rhsValue) in rhsDictionary {
-        if $deepEqualsName(lhsKey, rhsKey) {
-          if $deepEqualsName(lhsValue, rhsValue) {
+        if deepEquals(lhsKey, rhsKey) {
+          if deepEquals(lhsValue, rhsValue) {
             found = true
             break
           } else {
@@ -1691,7 +1765,7 @@ func $deepEqualsName(_ lhs: Any?, _ rhs: Any?) -> Bool {
     return true
 
   case (let lhs as Double, let rhs as Double):
-    return $doubleEqualsName(lhs, rhs)
+    return doubleEquals(lhs, rhs)
 
   case (let lhsHashable, let rhsHashable) as (AnyHashable, AnyHashable):
     return lhsHashable == rhsHashable
@@ -1702,26 +1776,26 @@ func $deepEqualsName(_ lhs: Any?, _ rhs: Any?) -> Bool {
   }
 }
 
-func $deepHashName(value: Any?, hasher: inout Hasher) {
+static func deepHash(value: Any?, hasher: inout Hasher) {
   let cleanValue = nilOrValue(value) as Any?
   if let cleanValue = cleanValue {
     if let doubleValue = cleanValue as? Double {
-      $doubleHashName(doubleValue, &hasher)
+      doubleHash(doubleValue, &hasher)
     } else if let valueList = cleanValue as? [Any?] {
       for item in valueList {
-        $deepHashName(value: item, hasher: &hasher)
+        deepHash(value: item, hasher: &hasher)
       }
     } else if let valueList = cleanValue as? [Double] {
       for item in valueList {
-        $doubleHashName(item, &hasher)
+        doubleHash(item, &hasher)
       }
     } else if let valueDict = cleanValue as? [AnyHashable: Any?] {
       var result = 0
       for (key, value) in valueDict {
         var entryKeyHasher = Hasher()
-        $deepHashName(value: key, hasher: &entryKeyHasher)
+        deepHash(value: key, hasher: &entryKeyHasher)
         var entryValueHasher = Hasher()
-        $deepHashName(value: value, hasher: &entryValueHasher)
+        deepHash(value: value, hasher: &entryValueHasher)
         result = result &+ ((entryKeyHasher.finalize() &* 31) ^ entryValueHasher.finalize())
       }
       hasher.combine(result)
@@ -1735,6 +1809,17 @@ func $deepHashName(value: Any?, hasher: inout Hasher) {
   }
 }
 ''');
+  }
+
+  void _writePigeonInternal(InternalSwiftOptions generatorOptions, Root root, Indent indent) {
+    indent.newln();
+    final String uniqueComponent = generatorOptions.fileSpecificClassNameComponent ?? '';
+    indent.writeScoped('enum ${uniqueComponent}GolubetsInternal {', '}', () {
+      _writeIsNullish(generatorOptions, indent);
+      if (root.classes.isNotEmpty) {
+        _writeDeepEquals(generatorOptions, indent);
+      }
+    });
   }
 
   @override
@@ -1756,11 +1841,8 @@ func $deepHashName(value: Any?, hasher: inout Hasher) {
       _writeCreateConnectionError(generatorOptions, indent);
     }
 
-    _writeIsNullish(indent);
+    _writePigeonInternal(generatorOptions, root, indent);
     _writeNilOrValue(indent);
-    if (root.classes.isNotEmpty) {
-      _writeDeepEquals(generatorOptions, indent);
-    }
   }
 
   @override

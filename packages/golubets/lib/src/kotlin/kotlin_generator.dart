@@ -340,6 +340,31 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
   }
 
   @override
+  void writeConstants(
+    InternalKotlinOptions generatorOptions,
+    Root root,
+    Indent indent, {
+    required String dartPackageName,
+  }) {
+    if (root.constants.isEmpty) {
+      return;
+    }
+    indent.newln();
+    for (final Constant constant in root.constants) {
+      addDocumentationComments(indent, constant.documentationComments, _docCommentSpec);
+      final String kotlinType = _kotlinTypeForBuiltinDartType(constant.type) ?? 'Any';
+      final String formattedValue = _formatKotlinValue(constant.type.baseName, constant.value);
+      indent.writeln('const val ${constant.name}: $kotlinType = $formattedValue');
+    }
+  }
+
+  String _formatKotlinValue(String type, Object value) => switch (type) {
+    'String' => '"${escapeStringDoubleQuotes(value.toString()).replaceAll(r'$', r'\$')}"',
+    'int' => '${value}L',
+    _ => value.toString(),
+  };
+
+  @override
   void writeEnum(
     InternalKotlinOptions generatorOptions,
     Root root,
@@ -452,6 +477,13 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         classDefinition,
         dartPackageName: dartPackageName,
       );
+      writeClassToString(
+        generatorOptions,
+        root,
+        indent,
+        classDefinition,
+        dartPackageName: dartPackageName,
+      );
     });
   }
 
@@ -502,6 +534,30 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         indent.writeln('result = 31 * result + $utils.deepHash(this.${field.name})');
       }
       indent.writeln('return result');
+    });
+  }
+
+  /// Writes the `toString` method for a class.
+  void writeClassToString(
+    InternalKotlinOptions generatorOptions,
+    Root root,
+    Indent indent,
+    Class classDefinition, {
+    required String dartPackageName,
+  }) {
+    indent.writeScoped('override fun toString(): String {', '}', () {
+      final Iterable<String> fieldStrings = classDefinition.fields.map((NamedType field) {
+        final String name = field.name;
+        if (field.type.baseName == 'Uint8List' ||
+            field.type.baseName == 'Int32List' ||
+            field.type.baseName == 'Int64List' ||
+            field.type.baseName == 'Float64List') {
+          final nullSafe = field.type.isNullable ? '?' : '';
+          return '$name=\${$name$nullSafe.contentToString()}';
+        }
+        return '$name=\$$name';
+      });
+      indent.writeln('return "${classDefinition.name}(${fieldStrings.join(', ')})"');
     });
   }
 

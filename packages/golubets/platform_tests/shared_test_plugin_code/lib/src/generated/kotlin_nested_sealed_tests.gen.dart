@@ -134,6 +134,11 @@ class Loading extends SomeState {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'Loading(progress: $progress)';
+  }
 }
 
 class Success extends SomeState {
@@ -169,6 +174,11 @@ class Success extends SomeState {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'Success(data: $data)';
+  }
 }
 
 class Error extends SomeState {
@@ -204,6 +214,11 @@ class Error extends SomeState {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'Error(code: $code)';
+  }
 }
 
 class _GolubetsCodec extends StandardMessageCodec {
@@ -243,8 +258,8 @@ class _GolubetsCodec extends StandardMessageCodec {
 }
 
 class KotlinNestedSealedApi {
-  /// Constructor for [KotlinNestedSealedApi].  The [binaryMessenger] named argument is
-  /// available for dependency injection.  If it is left null, the default
+  /// Constructor for [KotlinNestedSealedApi]. The [binaryMessenger] named argument is
+  /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
   KotlinNestedSealedApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
     : golubetsVar_binaryMessenger = binaryMessenger,

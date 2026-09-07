@@ -27,6 +27,12 @@ import java.util.Map;
 /** Generated class from Golubets. */
 @SuppressWarnings({"unused", "unchecked", "CodeBlock2Expr", "RedundantSuppression", "serial"})
 public class Messages {
+
+  public static final String aStringConstant = "stringConstantValue";
+  public static final long anIntConstant = 42L;
+  public static final double aDoubleConstant = 3.14;
+  public static final boolean aBoolConstant = true;
+
   static boolean pigeonDoubleEquals(double a, double b) {
     // Normalize -0.0 to 0.0 and handle NaN equality.
     return (a == 0.0 ? 0.0 : a) == (b == 0.0 ? 0.0 : b) || (Double.isNaN(a) && Double.isNaN(b));
@@ -251,14 +257,14 @@ public class Messages {
       this.name = setterArg;
     }
 
-    private @Nullable String description;
+    private @Nullable String messageDescription;
 
-    public @Nullable String getDescription() {
-      return description;
+    public @Nullable String getMessageDescription() {
+      return messageDescription;
     }
 
-    public void setDescription(@Nullable String setterArg) {
-      this.description = setterArg;
+    public void setMessageDescription(@Nullable String setterArg) {
+      this.messageDescription = setterArg;
     }
 
     private @NonNull Code code;
@@ -300,15 +306,32 @@ public class Messages {
       }
       MessageData that = (MessageData) o;
       return pigeonDeepEquals(name, that.name)
-          && pigeonDeepEquals(description, that.description)
+          && pigeonDeepEquals(messageDescription, that.messageDescription)
           && pigeonDeepEquals(code, that.code)
           && pigeonDeepEquals(data, that.data);
     }
 
     @Override
     public int hashCode() {
-      Object[] fields = new Object[] {getClass(), name, description, code, data};
+      Object[] fields = new Object[] {getClass(), name, messageDescription, code, data};
       return pigeonDeepHashCode(fields);
+    }
+
+    @Override
+    public String toString() {
+      return "MessageData{"
+          + "name="
+          + name
+          + ", "
+          + "messageDescription="
+          + messageDescription
+          + ", "
+          + "code="
+          + code
+          + ", "
+          + "data="
+          + data
+          + "}";
     }
 
     public static final class Builder {
@@ -321,11 +344,11 @@ public class Messages {
         return this;
       }
 
-      private @Nullable String description;
+      private @Nullable String messageDescription;
 
       @CanIgnoreReturnValue
-      public @NonNull Builder setDescription(@Nullable String setterArg) {
-        this.description = setterArg;
+      public @NonNull Builder setMessageDescription(@Nullable String setterArg) {
+        this.messageDescription = setterArg;
         return this;
       }
 
@@ -348,7 +371,7 @@ public class Messages {
       public @NonNull MessageData build() {
         MessageData golubetsReturn = new MessageData();
         golubetsReturn.setName(name);
-        golubetsReturn.setDescription(description);
+        golubetsReturn.setMessageDescription(messageDescription);
         golubetsReturn.setCode(code);
         golubetsReturn.setData(data);
         return golubetsReturn;
@@ -359,7 +382,7 @@ public class Messages {
     ArrayList<Object> toList() {
       ArrayList<Object> toListResult = new ArrayList<>(4);
       toListResult.add(name);
-      toListResult.add(description);
+      toListResult.add(messageDescription);
       toListResult.add(code);
       toListResult.add(data);
       return toListResult;
@@ -369,8 +392,8 @@ public class Messages {
       MessageData golubetsResult = new MessageData();
       Object name = golubetsVar_list.get(0);
       golubetsResult.setName((String) name);
-      Object description = golubetsVar_list.get(1);
-      golubetsResult.setDescription((String) description);
+      Object messageDescription = golubetsVar_list.get(1);
+      golubetsResult.setMessageDescription((String) messageDescription);
       Object code = golubetsVar_list.get(2);
       golubetsResult.setCode((Code) code);
       Object data = golubetsVar_list.get(3);

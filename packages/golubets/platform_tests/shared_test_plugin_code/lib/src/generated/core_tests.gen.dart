@@ -13,6 +13,12 @@ import 'dart:typed_data' show Float64List, Int32List, Int64List;
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart' show immutable, protected, visibleForTesting;
 
+const String aStringConstant = 'stringConstantValue';
+const String aStringConstantWithEscapes = 'string\\\'\\"\\\$ConstantValue';
+const int anIntConstant = 42;
+const double aDoubleConstant = 3.14;
+const bool aBoolConstant = true;
+
 Object? _extractReplyValueOrThrow(
   List<Object?>? replyList,
   String channelName, {
@@ -146,6 +152,11 @@ class UnusedClass {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'UnusedClass(aField: $aField)';
+  }
 }
 
 /// A class containing all supported types.
@@ -350,6 +361,11 @@ class AllTypes {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'AllTypes(aBool: $aBool, anInt: $anInt, anInt64: $anInt64, aDouble: $aDouble, aByteArray: $aByteArray, a4ByteArray: $a4ByteArray, a8ByteArray: $a8ByteArray, aFloatArray: $aFloatArray, anEnum: $anEnum, anotherEnum: $anotherEnum, aString: $aString, anObject: $anObject, list: $list, stringList: $stringList, intList: $intList, doubleList: $doubleList, boolList: $boolList, enumList: $enumList, objectList: $objectList, listList: $listList, mapList: $mapList, map: $map, stringMap: $stringMap, intMap: $intMap, enumMap: $enumMap, objectMap: $objectMap, listMap: $listMap, mapMap: $mapMap)';
+  }
 }
 
 /// A class containing all supported nullable types.
@@ -572,6 +588,11 @@ class AllNullableTypes {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'AllNullableTypes(aNullableBool: $aNullableBool, aNullableInt: $aNullableInt, aNullableInt64: $aNullableInt64, aNullableDouble: $aNullableDouble, aNullableByteArray: $aNullableByteArray, aNullable4ByteArray: $aNullable4ByteArray, aNullable8ByteArray: $aNullable8ByteArray, aNullableFloatArray: $aNullableFloatArray, aNullableEnum: $aNullableEnum, anotherNullableEnum: $anotherNullableEnum, aNullableString: $aNullableString, aNullableObject: $aNullableObject, allNullableTypes: $allNullableTypes, list: $list, stringList: $stringList, intList: $intList, doubleList: $doubleList, boolList: $boolList, enumList: $enumList, objectList: $objectList, listList: $listList, mapList: $mapList, recursiveClassList: $recursiveClassList, map: $map, stringMap: $stringMap, intMap: $intMap, enumMap: $enumMap, objectMap: $objectMap, listMap: $listMap, mapMap: $mapMap, recursiveClassMap: $recursiveClassMap)';
+  }
 }
 
 /// The primary purpose for this class is to ensure coverage of Swift structs
@@ -778,6 +799,44 @@ class AllNullableTypesWithoutRecursion {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'AllNullableTypesWithoutRecursion(aNullableBool: $aNullableBool, aNullableInt: $aNullableInt, aNullableInt64: $aNullableInt64, aNullableDouble: $aNullableDouble, aNullableByteArray: $aNullableByteArray, aNullable4ByteArray: $aNullable4ByteArray, aNullable8ByteArray: $aNullable8ByteArray, aNullableFloatArray: $aNullableFloatArray, aNullableEnum: $aNullableEnum, anotherNullableEnum: $anotherNullableEnum, aNullableString: $aNullableString, aNullableObject: $aNullableObject, list: $list, stringList: $stringList, intList: $intList, doubleList: $doubleList, boolList: $boolList, enumList: $enumList, objectList: $objectList, listList: $listList, mapList: $mapList, map: $map, stringMap: $stringMap, intMap: $intMap, enumMap: $enumMap, objectMap: $objectMap, listMap: $listMap, mapMap: $mapMap)';
+  }
+}
+
+/// A data class without fields for testing empty classes.
+class AnEmptyClass {
+  List<Object?> _toList() {
+    return <Object?>[];
+  }
+
+  Object encode() {
+    return _toList();
+  }
+
+  static AnEmptyClass decode(Object _) {
+    return AnEmptyClass();
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! AnEmptyClass || other.runtimeType != runtimeType) {
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'AnEmptyClass()';
+  }
 }
 
 /// A class for testing nested class handling.
@@ -794,6 +853,7 @@ class AllClassesWrapper {
     this.nullableClassList,
     required this.classMap,
     this.nullableClassMap,
+    this.anEmptyClass,
   });
 
   AllNullableTypes allNullableTypes;
@@ -810,6 +870,8 @@ class AllClassesWrapper {
 
   Map<int?, AllNullableTypesWithoutRecursion?>? nullableClassMap;
 
+  AnEmptyClass? anEmptyClass;
+
   List<Object?> _toList() {
     return <Object?>[
       allNullableTypes,
@@ -819,6 +881,7 @@ class AllClassesWrapper {
       nullableClassList,
       classMap,
       nullableClassMap,
+      anEmptyClass,
     ];
   }
 
@@ -837,6 +900,7 @@ class AllClassesWrapper {
       classMap: (result[5]! as Map<Object?, Object?>).cast<int?, AllTypes?>(),
       nullableClassMap: (result[6] as Map<Object?, Object?>?)
           ?.cast<int?, AllNullableTypesWithoutRecursion?>(),
+      anEmptyClass: result[7] as AnEmptyClass?,
     );
   }
 
@@ -855,12 +919,18 @@ class AllClassesWrapper {
         _deepEquals(classList, other.classList) &&
         _deepEquals(nullableClassList, other.nullableClassList) &&
         _deepEquals(classMap, other.classMap) &&
-        _deepEquals(nullableClassMap, other.nullableClassMap);
+        _deepEquals(nullableClassMap, other.nullableClassMap) &&
+        _deepEquals(anEmptyClass, other.anEmptyClass);
   }
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'AllClassesWrapper(allNullableTypes: $allNullableTypes, allNullableTypesWithoutRecursion: $allNullableTypesWithoutRecursion, allTypes: $allTypes, classList: $classList, nullableClassList: $nullableClassList, classMap: $classMap, nullableClassMap: $nullableClassMap, anEmptyClass: $anEmptyClass)';
+  }
 }
 
 /// A class containing all supported types but immutable.
@@ -1041,6 +1111,11 @@ class ImmutableAllTypes {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'ImmutableAllTypes(aBool: $aBool, anInt: $anInt, anInt64: $anInt64, aDouble: $aDouble, anEnum: $anEnum, anotherEnum: $anotherEnum, aString: $aString, anObject: $anObject, list: $list, stringList: $stringList, intList: $intList, doubleList: $doubleList, boolList: $boolList, enumList: $enumList, objectList: $objectList, listList: $listList, mapList: $mapList, map: $map, stringMap: $stringMap, intMap: $intMap, enumMap: $enumMap, objectMap: $objectMap, listMap: $listMap, mapMap: $mapMap)';
+  }
 }
 
 /// A class containing all supported types but with default values.
@@ -1468,6 +1543,11 @@ class AllTypesWithDefaults {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'AllTypesWithDefaults(aBool: $aBool, anInt: $anInt, anInt64: $anInt64, aDouble: $aDouble, anEnum: $anEnum, anotherEnum: $anotherEnum, aString: $aString, anObject: $anObject, list: $list, stringList: $stringList, intList: $intList, doubleList: $doubleList, boolList: $boolList, enumList: $enumList, objectList: $objectList, listList: $listList, mapList: $mapList, map: $map, stringMap: $stringMap, intMap: $intMap, enumMap: $enumMap, objectMap: $objectMap, listMap: $listMap, mapMap: $mapMap, allTypes: $allTypes)';
+  }
 }
 
 /// A data class containing a List, used in unit tests.
@@ -1504,6 +1584,11 @@ class TestMessage {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'TestMessage(testList: $testList)';
+  }
 }
 
 class _GolubetsCodec extends StandardMessageCodec {
@@ -1531,17 +1616,20 @@ class _GolubetsCodec extends StandardMessageCodec {
     } else if (value is AllNullableTypesWithoutRecursion) {
       buffer.putUint8(134);
       writeValue(buffer, value.encode());
-    } else if (value is AllClassesWrapper) {
+    } else if (value is AnEmptyClass) {
       buffer.putUint8(135);
       writeValue(buffer, value.encode());
-    } else if (value is ImmutableAllTypes) {
+    } else if (value is AllClassesWrapper) {
       buffer.putUint8(136);
       writeValue(buffer, value.encode());
-    } else if (value is AllTypesWithDefaults) {
+    } else if (value is ImmutableAllTypes) {
       buffer.putUint8(137);
       writeValue(buffer, value.encode());
-    } else if (value is TestMessage) {
+    } else if (value is AllTypesWithDefaults) {
       buffer.putUint8(138);
+      writeValue(buffer, value.encode());
+    } else if (value is TestMessage) {
+      buffer.putUint8(139);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -1566,12 +1654,14 @@ class _GolubetsCodec extends StandardMessageCodec {
       case 134:
         return AllNullableTypesWithoutRecursion.decode(readValue(buffer)!);
       case 135:
-        return AllClassesWrapper.decode(readValue(buffer)!);
+        return AnEmptyClass.decode(readValue(buffer)!);
       case 136:
-        return ImmutableAllTypes.decode(readValue(buffer)!);
+        return AllClassesWrapper.decode(readValue(buffer)!);
       case 137:
-        return AllTypesWithDefaults.decode(readValue(buffer)!);
+        return ImmutableAllTypes.decode(readValue(buffer)!);
       case 138:
+        return AllTypesWithDefaults.decode(readValue(buffer)!);
+      case 139:
         return TestMessage.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -1582,8 +1672,8 @@ class _GolubetsCodec extends StandardMessageCodec {
 /// The core interface that each host language plugin must implement in
 /// platform_test integration tests.
 class HostIntegrationCoreApi {
-  /// Constructor for [HostIntegrationCoreApi].  The [binaryMessenger] named argument is
-  /// available for dependency injection.  If it is left null, the default
+  /// Constructor for [HostIntegrationCoreApi]. The [binaryMessenger] named argument is
+  /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
   HostIntegrationCoreApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
     : golubetsVar_binaryMessenger = binaryMessenger,
@@ -1825,6 +1915,86 @@ class HostIntegrationCoreApi {
       isNullValid: false,
     );
     return golubetsVar_replyValue! as List<Object?>;
+  }
+
+  /// Returns the passed list, to test serialization and deserialization.
+  Future<List<String?>> echoStringList(List<String?> stringList) async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoStringList$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[stringList]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return (golubetsVar_replyValue! as List<Object?>).cast<String?>();
+  }
+
+  /// Returns the passed list, to test serialization and deserialization.
+  Future<List<int?>> echoIntList(List<int?> intList) async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoIntList$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[intList]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return (golubetsVar_replyValue! as List<Object?>).cast<int?>();
+  }
+
+  /// Returns the passed list, to test serialization and deserialization.
+  Future<List<double?>> echoDoubleList(List<double?> doubleList) async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoDoubleList$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[doubleList]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return (golubetsVar_replyValue! as List<Object?>).cast<double?>();
+  }
+
+  /// Returns the passed list, to test serialization and deserialization.
+  Future<List<bool?>> echoBoolList(List<bool?> boolList) async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.echoBoolList$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[boolList]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return (golubetsVar_replyValue! as List<Object?>).cast<bool?>();
   }
 
   /// Returns the passed list, to test serialization and deserialization.
@@ -6380,8 +6550,8 @@ abstract class FlutterIntegrationCoreApi {
 
 /// An API that can be implemented for minimal, compile-only tests.
 class HostTrivialApi {
-  /// Constructor for [HostTrivialApi].  The [binaryMessenger] named argument is
-  /// available for dependency injection.  If it is left null, the default
+  /// Constructor for [HostTrivialApi]. The [binaryMessenger] named argument is
+  /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
   HostTrivialApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
     : golubetsVar_binaryMessenger = binaryMessenger,
@@ -6411,8 +6581,8 @@ class HostTrivialApi {
 
 /// A simple API implemented in some unit tests.
 class HostSmallApi {
-  /// Constructor for [HostSmallApi].  The [binaryMessenger] named argument is
-  /// available for dependency injection.  If it is left null, the default
+  /// Constructor for [HostSmallApi]. The [binaryMessenger] named argument is
+  /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
   HostSmallApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
     : golubetsVar_binaryMessenger = binaryMessenger,

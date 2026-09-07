@@ -108,6 +108,11 @@ class IntEvent extends PlatformEvent {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'IntEvent(data: $data)';
+  }
 }
 
 class StringEvent extends PlatformEvent {
@@ -143,6 +148,11 @@ class StringEvent extends PlatformEvent {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'StringEvent(data: $data)';
+  }
 }
 
 class EmptyEvent extends PlatformEvent {
@@ -170,6 +180,11 @@ class EmptyEvent extends PlatformEvent {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'EmptyEvent()';
+  }
 }
 
 class _GolubetsCodec extends StandardMessageCodec {
@@ -210,6 +225,12 @@ class _GolubetsCodec extends StandardMessageCodec {
 
 const StandardMethodCodec golubetsMethodCodec = StandardMethodCodec(_GolubetsCodec());
 
+/// Returns a broadcast [Stream] of events from the `streamEvents` event channel.
+///
+/// Each call to this method creates a new [EventChannel], so it should
+/// not be called multiple times for the same `instanceName`. To deliver
+/// events to multiple listeners, call this method once and listen to the
+/// returned broadcast stream multiple times instead.
 Stream<PlatformEvent> streamEvents({String instanceName = ''}) {
   if (instanceName.isNotEmpty) {
     instanceName = '.$instanceName';

@@ -12,6 +12,13 @@
 
 G_BEGIN_DECLS
 
+#define CORE_TESTS_GOLUBETS_TEST_A_STRING_CONSTANT "stringConstantValue"
+#define CORE_TESTS_GOLUBETS_TEST_A_STRING_CONSTANT_WITH_ESCAPES \
+  "string\\'\\\"\\$ConstantValue"
+#define CORE_TESTS_GOLUBETS_TEST_AN_INT_CONSTANT 42
+#define CORE_TESTS_GOLUBETS_TEST_A_DOUBLE_CONSTANT 3.14
+#define CORE_TESTS_GOLUBETS_TEST_A_BOOL_CONSTANT TRUE
+
 /**
  * CoreTestsGolubetsTestAnEnum:
  * GOLUBETS_INTEGRATION_TESTS_AN_ENUM_ONE:
@@ -90,6 +97,18 @@ gboolean core_tests_golubets_test_unused_class_equals(
  * Returns: the hash code.
  */
 guint core_tests_golubets_test_unused_class_hash(
+    CoreTestsGolubetsTestUnusedClass* object);
+
+/**
+ * core_tests_golubets_test_unused_class_to_string:
+ * @object: a #CoreTestsGolubetsTestUnusedClass.
+ *
+ * Returns a string representation of a #CoreTestsGolubetsTestUnusedClass
+ * object.
+ *
+ * Returns: (transfer full): a new string, free with g_free().
+ */
+gchar* core_tests_golubets_test_unused_class_to_string(
     CoreTestsGolubetsTestUnusedClass* object);
 
 /**
@@ -489,6 +508,17 @@ gboolean core_tests_golubets_test_all_types_equals(
  * Returns: the hash code.
  */
 guint core_tests_golubets_test_all_types_hash(
+    CoreTestsGolubetsTestAllTypes* object);
+
+/**
+ * core_tests_golubets_test_all_types_to_string:
+ * @object: a #CoreTestsGolubetsTestAllTypes.
+ *
+ * Returns a string representation of a #CoreTestsGolubetsTestAllTypes object.
+ *
+ * Returns: (transfer full): a new string, free with g_free().
+ */
+gchar* core_tests_golubets_test_all_types_to_string(
     CoreTestsGolubetsTestAllTypes* object);
 
 /**
@@ -939,6 +969,18 @@ guint core_tests_golubets_test_all_nullable_types_hash(
     CoreTestsGolubetsTestAllNullableTypes* object);
 
 /**
+ * core_tests_golubets_test_all_nullable_types_to_string:
+ * @object: a #CoreTestsGolubetsTestAllNullableTypes.
+ *
+ * Returns a string representation of a #CoreTestsGolubetsTestAllNullableTypes
+ * object.
+ *
+ * Returns: (transfer full): a new string, free with g_free().
+ */
+gchar* core_tests_golubets_test_all_nullable_types_to_string(
+    CoreTestsGolubetsTestAllNullableTypes* object);
+
+/**
  * CoreTestsGolubetsTestAllNullableTypesWithoutRecursion:
  *
  * The primary purpose for this class is to ensure coverage of Swift structs
@@ -1376,6 +1418,73 @@ guint core_tests_golubets_test_all_nullable_types_without_recursion_hash(
     CoreTestsGolubetsTestAllNullableTypesWithoutRecursion* object);
 
 /**
+ * core_tests_golubets_test_all_nullable_types_without_recursion_to_string:
+ * @object: a #CoreTestsGolubetsTestAllNullableTypesWithoutRecursion.
+ *
+ * Returns a string representation of a
+ * #CoreTestsGolubetsTestAllNullableTypesWithoutRecursion object.
+ *
+ * Returns: (transfer full): a new string, free with g_free().
+ */
+gchar* core_tests_golubets_test_all_nullable_types_without_recursion_to_string(
+    CoreTestsGolubetsTestAllNullableTypesWithoutRecursion* object);
+
+/**
+ * CoreTestsGolubetsTestAnEmptyClass:
+ *
+ * A data class without fields for testing empty classes.
+ */
+
+G_DECLARE_FINAL_TYPE(CoreTestsGolubetsTestAnEmptyClass,
+                     core_tests_golubets_test_an_empty_class,
+                     CORE_TESTS_GOLUBETS_TEST, AN_EMPTY_CLASS, GObject)
+
+/**
+ * core_tests_golubets_test_an_empty_class_new:
+ *
+ * Creates a new #AnEmptyClass object.
+ *
+ * Returns: a new #CoreTestsGolubetsTestAnEmptyClass
+ */
+CoreTestsGolubetsTestAnEmptyClass*
+core_tests_golubets_test_an_empty_class_new();
+
+/**
+ * core_tests_golubets_test_an_empty_class_equals:
+ * @a: a #CoreTestsGolubetsTestAnEmptyClass.
+ * @b: another #CoreTestsGolubetsTestAnEmptyClass.
+ *
+ * Checks if two #CoreTestsGolubetsTestAnEmptyClass objects are equal.
+ *
+ * Returns: TRUE if @a and @b are equal.
+ */
+gboolean core_tests_golubets_test_an_empty_class_equals(
+    CoreTestsGolubetsTestAnEmptyClass* a, CoreTestsGolubetsTestAnEmptyClass* b);
+
+/**
+ * core_tests_golubets_test_an_empty_class_hash:
+ * @object: a #CoreTestsGolubetsTestAnEmptyClass.
+ *
+ * Calculates a hash code for a #CoreTestsGolubetsTestAnEmptyClass object.
+ *
+ * Returns: the hash code.
+ */
+guint core_tests_golubets_test_an_empty_class_hash(
+    CoreTestsGolubetsTestAnEmptyClass* object);
+
+/**
+ * core_tests_golubets_test_an_empty_class_to_string:
+ * @object: a #CoreTestsGolubetsTestAnEmptyClass.
+ *
+ * Returns a string representation of a #CoreTestsGolubetsTestAnEmptyClass
+ * object.
+ *
+ * Returns: (transfer full): a new string, free with g_free().
+ */
+gchar* core_tests_golubets_test_an_empty_class_to_string(
+    CoreTestsGolubetsTestAnEmptyClass* object);
+
+/**
  * CoreTestsGolubetsTestAllClassesWrapper:
  *
  * A class for testing nested class handling.
@@ -1398,6 +1507,7 @@ G_DECLARE_FINAL_TYPE(CoreTestsGolubetsTestAllClassesWrapper,
  * nullable_class_list: field in this object.
  * class_map: field in this object.
  * nullable_class_map: field in this object.
+ * an_empty_class: field in this object.
  *
  * Creates a new #AllClassesWrapper object.
  *
@@ -1410,7 +1520,8 @@ core_tests_golubets_test_all_classes_wrapper_new(
         all_nullable_types_without_recursion,
     CoreTestsGolubetsTestAllTypes* all_types, FlValue* class_list,
     FlValue* nullable_class_list, FlValue* class_map,
-    FlValue* nullable_class_map);
+    FlValue* nullable_class_map,
+    CoreTestsGolubetsTestAnEmptyClass* an_empty_class);
 
 /**
  * core_tests_golubets_test_all_classes_wrapper_get_all_nullable_types
@@ -1493,6 +1604,18 @@ FlValue* core_tests_golubets_test_all_classes_wrapper_get_nullable_class_map(
     CoreTestsGolubetsTestAllClassesWrapper* object);
 
 /**
+ * core_tests_golubets_test_all_classes_wrapper_get_an_empty_class
+ * @object: a #CoreTestsGolubetsTestAllClassesWrapper.
+ *
+ * Gets the value of the anEmptyClass field of @object.
+ *
+ * Returns: the field value.
+ */
+CoreTestsGolubetsTestAnEmptyClass*
+core_tests_golubets_test_all_classes_wrapper_get_an_empty_class(
+    CoreTestsGolubetsTestAllClassesWrapper* object);
+
+/**
  * core_tests_golubets_test_all_classes_wrapper_equals:
  * @a: a #CoreTestsGolubetsTestAllClassesWrapper.
  * @b: another #CoreTestsGolubetsTestAllClassesWrapper.
@@ -1514,6 +1637,18 @@ gboolean core_tests_golubets_test_all_classes_wrapper_equals(
  * Returns: the hash code.
  */
 guint core_tests_golubets_test_all_classes_wrapper_hash(
+    CoreTestsGolubetsTestAllClassesWrapper* object);
+
+/**
+ * core_tests_golubets_test_all_classes_wrapper_to_string:
+ * @object: a #CoreTestsGolubetsTestAllClassesWrapper.
+ *
+ * Returns a string representation of a #CoreTestsGolubetsTestAllClassesWrapper
+ * object.
+ *
+ * Returns: (transfer full): a new string, free with g_free().
+ */
+gchar* core_tests_golubets_test_all_classes_wrapper_to_string(
     CoreTestsGolubetsTestAllClassesWrapper* object);
 
 /**
@@ -1856,6 +1991,18 @@ gboolean core_tests_golubets_test_immutable_all_types_equals(
  * Returns: the hash code.
  */
 guint core_tests_golubets_test_immutable_all_types_hash(
+    CoreTestsGolubetsTestImmutableAllTypes* object);
+
+/**
+ * core_tests_golubets_test_immutable_all_types_to_string:
+ * @object: a #CoreTestsGolubetsTestImmutableAllTypes.
+ *
+ * Returns a string representation of a #CoreTestsGolubetsTestImmutableAllTypes
+ * object.
+ *
+ * Returns: (transfer full): a new string, free with g_free().
+ */
+gchar* core_tests_golubets_test_immutable_all_types_to_string(
     CoreTestsGolubetsTestImmutableAllTypes* object);
 
 /**
@@ -2216,6 +2363,18 @@ guint core_tests_golubets_test_all_types_with_defaults_hash(
     CoreTestsGolubetsTestAllTypesWithDefaults* object);
 
 /**
+ * core_tests_golubets_test_all_types_with_defaults_to_string:
+ * @object: a #CoreTestsGolubetsTestAllTypesWithDefaults.
+ *
+ * Returns a string representation of a
+ * #CoreTestsGolubetsTestAllTypesWithDefaults object.
+ *
+ * Returns: (transfer full): a new string, free with g_free().
+ */
+gchar* core_tests_golubets_test_all_types_with_defaults_to_string(
+    CoreTestsGolubetsTestAllTypesWithDefaults* object);
+
+/**
  * CoreTestsGolubetsTestTestMessage:
  *
  * A data class containing a List, used in unit tests.
@@ -2270,6 +2429,18 @@ gboolean core_tests_golubets_test_test_message_equals(
 guint core_tests_golubets_test_test_message_hash(
     CoreTestsGolubetsTestTestMessage* object);
 
+/**
+ * core_tests_golubets_test_test_message_to_string:
+ * @object: a #CoreTestsGolubetsTestTestMessage.
+ *
+ * Returns a string representation of a #CoreTestsGolubetsTestTestMessage
+ * object.
+ *
+ * Returns: (transfer full): a new string, free with g_free().
+ */
+gchar* core_tests_golubets_test_test_message_to_string(
+    CoreTestsGolubetsTestTestMessage* object);
+
 G_DECLARE_FINAL_TYPE(CoreTestsGolubetsTestGolubMessageCodec,
                      core_tests_golubets_test_golub_message_codec,
                      CORE_TESTS_GOLUBETS_TEST, GOLUB_MESSAGE_CODEC,
@@ -2289,6 +2460,7 @@ extern const int core_tests_golubets_test_all_types_type_id;
 extern const int core_tests_golubets_test_all_nullable_types_type_id;
 extern const int
     core_tests_golubets_test_all_nullable_types_without_recursion_type_id;
+extern const int core_tests_golubets_test_an_empty_class_type_id;
 extern const int core_tests_golubets_test_all_classes_wrapper_type_id;
 extern const int core_tests_golubets_test_immutable_all_types_type_id;
 extern const int core_tests_golubets_test_all_types_with_defaults_type_id;
@@ -2680,6 +2852,138 @@ core_tests_golubets_test_host_integration_core_api_echo_list_response_new(
  */
 CoreTestsGolubetsTestHostIntegrationCoreApiEchoListResponse*
 core_tests_golubets_test_host_integration_core_api_echo_list_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details);
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiEchoStringListResponse,
+    core_tests_golubets_test_host_integration_core_api_echo_string_list_response,
+    CORE_TESTS_GOLUBETS_TEST,
+    HOST_INTEGRATION_CORE_API_ECHO_STRING_LIST_RESPONSE, GObject)
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_echo_string_list_response_new:
+ *
+ * Creates a new response to HostIntegrationCoreApi.echoStringList.
+ *
+ * Returns: a new
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiEchoStringListResponse
+ */
+CoreTestsGolubetsTestHostIntegrationCoreApiEchoStringListResponse*
+core_tests_golubets_test_host_integration_core_api_echo_string_list_response_new(
+    FlValue* return_value);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_echo_string_list_response_new_error:
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Creates a new error response to HostIntegrationCoreApi.echoStringList.
+ *
+ * Returns: a new
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiEchoStringListResponse
+ */
+CoreTestsGolubetsTestHostIntegrationCoreApiEchoStringListResponse*
+core_tests_golubets_test_host_integration_core_api_echo_string_list_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details);
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiEchoIntListResponse,
+    core_tests_golubets_test_host_integration_core_api_echo_int_list_response,
+    CORE_TESTS_GOLUBETS_TEST, HOST_INTEGRATION_CORE_API_ECHO_INT_LIST_RESPONSE,
+    GObject)
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_echo_int_list_response_new:
+ *
+ * Creates a new response to HostIntegrationCoreApi.echoIntList.
+ *
+ * Returns: a new
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiEchoIntListResponse
+ */
+CoreTestsGolubetsTestHostIntegrationCoreApiEchoIntListResponse*
+core_tests_golubets_test_host_integration_core_api_echo_int_list_response_new(
+    FlValue* return_value);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_echo_int_list_response_new_error:
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Creates a new error response to HostIntegrationCoreApi.echoIntList.
+ *
+ * Returns: a new
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiEchoIntListResponse
+ */
+CoreTestsGolubetsTestHostIntegrationCoreApiEchoIntListResponse*
+core_tests_golubets_test_host_integration_core_api_echo_int_list_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details);
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiEchoDoubleListResponse,
+    core_tests_golubets_test_host_integration_core_api_echo_double_list_response,
+    CORE_TESTS_GOLUBETS_TEST,
+    HOST_INTEGRATION_CORE_API_ECHO_DOUBLE_LIST_RESPONSE, GObject)
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_echo_double_list_response_new:
+ *
+ * Creates a new response to HostIntegrationCoreApi.echoDoubleList.
+ *
+ * Returns: a new
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiEchoDoubleListResponse
+ */
+CoreTestsGolubetsTestHostIntegrationCoreApiEchoDoubleListResponse*
+core_tests_golubets_test_host_integration_core_api_echo_double_list_response_new(
+    FlValue* return_value);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_echo_double_list_response_new_error:
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Creates a new error response to HostIntegrationCoreApi.echoDoubleList.
+ *
+ * Returns: a new
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiEchoDoubleListResponse
+ */
+CoreTestsGolubetsTestHostIntegrationCoreApiEchoDoubleListResponse*
+core_tests_golubets_test_host_integration_core_api_echo_double_list_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details);
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiEchoBoolListResponse,
+    core_tests_golubets_test_host_integration_core_api_echo_bool_list_response,
+    CORE_TESTS_GOLUBETS_TEST, HOST_INTEGRATION_CORE_API_ECHO_BOOL_LIST_RESPONSE,
+    GObject)
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_echo_bool_list_response_new:
+ *
+ * Creates a new response to HostIntegrationCoreApi.echoBoolList.
+ *
+ * Returns: a new
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiEchoBoolListResponse
+ */
+CoreTestsGolubetsTestHostIntegrationCoreApiEchoBoolListResponse*
+core_tests_golubets_test_host_integration_core_api_echo_bool_list_response_new(
+    FlValue* return_value);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_echo_bool_list_response_new_error:
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Creates a new error response to HostIntegrationCoreApi.echoBoolList.
+ *
+ * Returns: a new
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiEchoBoolListResponse
+ */
+CoreTestsGolubetsTestHostIntegrationCoreApiEchoBoolListResponse*
+core_tests_golubets_test_host_integration_core_api_echo_bool_list_response_new_error(
     const gchar* code, const gchar* message, FlValue* details);
 
 G_DECLARE_FINAL_TYPE(
@@ -4591,6 +4895,14 @@ typedef struct {
       FlValue* an_object, gpointer user_data);
   CoreTestsGolubetsTestHostIntegrationCoreApiEchoListResponse* (*echo_list)(
       FlValue* list, gpointer user_data);
+  CoreTestsGolubetsTestHostIntegrationCoreApiEchoStringListResponse* (
+      *echo_string_list)(FlValue* string_list, gpointer user_data);
+  CoreTestsGolubetsTestHostIntegrationCoreApiEchoIntListResponse* (
+      *echo_int_list)(FlValue* int_list, gpointer user_data);
+  CoreTestsGolubetsTestHostIntegrationCoreApiEchoDoubleListResponse* (
+      *echo_double_list)(FlValue* double_list, gpointer user_data);
+  CoreTestsGolubetsTestHostIntegrationCoreApiEchoBoolListResponse* (
+      *echo_bool_list)(FlValue* bool_list, gpointer user_data);
   CoreTestsGolubetsTestHostIntegrationCoreApiEchoEnumListResponse* (
       *echo_enum_list)(FlValue* enum_list, gpointer user_data);
   CoreTestsGolubetsTestHostIntegrationCoreApiEchoClassListResponse* (
