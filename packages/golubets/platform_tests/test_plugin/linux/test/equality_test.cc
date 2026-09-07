@@ -239,10 +239,10 @@ TEST(Equality, SignedZeroMapValue) {
 }
 
 TEST(Equality, ToStringSnapshot) {
-  g_autoptr(CoreTestsPigeonTestAllNullableTypes) empty_obj =
+  g_autoptr(CoreTestsGolubetsTestAllNullableTypes) empty_obj =
       create_empty_all_nullable_types();
 
-  gchar* str = core_tests_pigeon_test_all_nullable_types_to_string(empty_obj);
+  gchar* str = core_tests_golubets_test_all_nullable_types_to_string(empty_obj);
   ASSERT_NE(str, nullptr);
 
   // Verify structural validation across all 31 serialized fields.
@@ -306,10 +306,11 @@ TEST(Equality, ToStringSnapshot) {
 }
 
 TEST(Constants, VerifyConstants) {
-  EXPECT_STREQ(CORE_TESTS_PIGEON_TEST_A_STRING_CONSTANT, "stringConstantValue");
-  EXPECT_STREQ(CORE_TESTS_PIGEON_TEST_A_STRING_CONSTANT_WITH_ESCAPES,
+  EXPECT_STREQ(CORE_TESTS_GOLUBETS_TEST_A_STRING_CONSTANT,
+               "stringConstantValue");
+  EXPECT_STREQ(CORE_TESTS_GOLUBETS_TEST_A_STRING_CONSTANT_WITH_ESCAPES,
                "string\\'\\\"\\$ConstantValue");
-  EXPECT_EQ(CORE_TESTS_PIGEON_TEST_AN_INT_CONSTANT, 42);
-  EXPECT_DOUBLE_EQ(CORE_TESTS_PIGEON_TEST_A_DOUBLE_CONSTANT, 3.14);
-  EXPECT_TRUE(CORE_TESTS_PIGEON_TEST_A_BOOL_CONSTANT);
+  EXPECT_EQ(CORE_TESTS_GOLUBETS_TEST_AN_INT_CONSTANT, 42);
+  EXPECT_DOUBLE_EQ(CORE_TESTS_GOLUBETS_TEST_A_DOUBLE_CONSTANT, 3.14);
+  EXPECT_TRUE(CORE_TESTS_GOLUBETS_TEST_A_BOOL_CONSTANT);
 }
