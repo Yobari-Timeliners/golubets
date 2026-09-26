@@ -17,12 +17,16 @@ private class GolubApiImplementation: ExampleHostApi {
     return a + b
   }
 
-  func sendMessage(message: MessageData, completion: @escaping (Result<Bool, Error>) -> Void) {
+  func sendMessage(message: MessageData) async throws -> Bool {
     if message.code == Code.one {
+<<<<<<< HEAD:packages/golubets/example/app/macos/Runner/MainFlutterWindow.swift
       completion(.failure(GolubetsError(code: "code", message: "message", details: "details")))
       return
+=======
+      throw PigeonError(code: "code", message: "message", details: "details")
+>>>>>>> filtered-upstream/main:packages/pigeon/example/app/macos/Runner/MainFlutterWindow.swift
     }
-    completion(.success(true))
+    return true
   }
 
   /// Unlike implementations on other platforms, this function does not throw any exceptions
