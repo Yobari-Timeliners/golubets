@@ -91,6 +91,11 @@ class Method extends Node {
     required this.parameters,
     required this.location,
     this.isRequired = true,
+<<<<<<< HEAD:packages/golubets/lib/src/ast.dart
+=======
+    this.isAsynchronous = false,
+    this.isAsynchronousCallback = false,
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/ast.dart
     this.isStatic = false,
     this.offset,
     this.objcSelector = '',
@@ -109,6 +114,15 @@ class Method extends Node {
   /// The parameters passed into the [Method].
   List<Parameter> parameters;
 
+<<<<<<< HEAD:packages/golubets/lib/src/ast.dart
+=======
+  /// Whether the receiver of this method is expected to return synchronously or not.
+  bool isAsynchronous;
+
+  /// Whether this asynchronous method uses callback-based completions instead of native async/await or suspend functions.
+  bool isAsynchronousCallback;
+
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/ast.dart
   /// The offset in the source file where the field appears.
   int? offset;
 
@@ -552,6 +566,25 @@ class TypeDeclaration {
   /// Associated [AstProxyApi], if any.
   final AstProxyApi? associatedProxyApi;
 
+  /// Returns the full annotated name of the type.
+  String getFullName({bool withNullable = true}) {
+    return '$baseName$typeArgumentsString${isNullable && withNullable ? '?' : ''}';
+  }
+
+  /// Returns the Type Arguments in annotation form.
+  String get typeArgumentsString {
+    final String typeArgumentString;
+    if (baseName == 'List') {
+      typeArgumentString = typeArguments.firstOrNull?.getFullName() ?? 'Object?';
+    } else if (baseName == 'Map') {
+      typeArgumentString =
+          '${typeArguments.firstOrNull?.getFullName() ?? 'Object?'}, ${typeArguments.lastOrNull?.getFullName() ?? 'Object?'}';
+    } else {
+      return '';
+    }
+    return '<$typeArgumentString>';
+  }
+
   @override
   int get hashCode {
     // This has to be implemented because TypeDeclaration is used as a Key to a
@@ -908,6 +941,8 @@ class Root extends Node {
     required this.classes,
     required this.apis,
     required this.enums,
+    this.lists = const <String, TypeDeclaration>{},
+    this.maps = const <String, TypeDeclaration>{},
     this.constants = const <Constant>[],
     this.containsHostApi = false,
     this.containsFlutterApi = false,
@@ -923,8 +958,13 @@ class Root extends Node {
       apis: <Api>[],
       classes: <Class>[],
       enums: <Enum>[],
+<<<<<<< HEAD:packages/golubets/lib/src/ast.dart
       genericTypeNames: <String>{},
       genericUsage: <String, Set<TypeArgumentCombination>>{},
+=======
+      lists: <String, TypeDeclaration>{},
+      maps: <String, TypeDeclaration>{},
+>>>>>>> filtered-upstream/main:packages/pigeon/lib/src/ast.dart
       constants: <Constant>[],
     );
   }
@@ -939,6 +979,12 @@ class Root extends Node {
 
   /// All of the enums contained in the AST.
   List<Enum> enums;
+
+  /// All of the lists contained in the AST.
+  Map<String, TypeDeclaration> lists;
+
+  /// All of the maps contained in the AST.
+  Map<String, TypeDeclaration> maps;
 
   /// All of the constants contained in the AST.
   List<Constant> constants;
@@ -971,7 +1017,7 @@ class Root extends Node {
 
   @override
   String toString() {
-    return '(Root classes:$classes apis:$apis enums:$enums constants:$constants)';
+    return '(Root classes:$classes apis:$apis enums:$enums lists:$lists maps:$maps containsHostApi:$containsHostApi containsFlutterApi:$containsFlutterApi containsProxyApi:$containsProxyApi constants:$constants)';
   }
 }
 

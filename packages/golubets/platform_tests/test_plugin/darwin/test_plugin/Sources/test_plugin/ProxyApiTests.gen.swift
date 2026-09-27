@@ -29,7 +29,7 @@ public final class ProxyApiTestsError: Error {
 
   var localizedDescription: String {
     return
-      "ProxyApiTestsError(code: \(code), message: \(message ?? "<nil>"), details: \(details ?? "<nil>")"
+      "ProxyApiTestsError(code: \(code), message: \(message ?? "<nil>"), details: \(details ?? "<nil>"))"
   }
 }
 
@@ -3067,7 +3067,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if ProxyApiTestsPigeonInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             ProxyApiTestsError(
@@ -3119,7 +3119,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if ProxyApiTestsPigeonInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             ProxyApiTestsError(
@@ -3171,7 +3171,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if ProxyApiTestsPigeonInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             ProxyApiTestsError(
@@ -3223,7 +3223,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if ProxyApiTestsPigeonInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             ProxyApiTestsError(
@@ -3276,7 +3276,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if ProxyApiTestsPigeonInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             ProxyApiTestsError(
@@ -3328,7 +3328,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if ProxyApiTestsPigeonInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             ProxyApiTestsError(
@@ -3381,7 +3381,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if ProxyApiTestsPigeonInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             ProxyApiTestsError(
@@ -3433,7 +3433,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if ProxyApiTestsPigeonInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             ProxyApiTestsError(
@@ -3487,7 +3487,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if ProxyApiTestsPigeonInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             ProxyApiTestsError(
@@ -3539,7 +3539,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if ProxyApiTestsPigeonInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             ProxyApiTestsError(
@@ -3592,7 +3592,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if ProxyApiTestsPigeonInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             ProxyApiTestsError(
@@ -4106,7 +4106,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if ProxyApiTestsPigeonInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             ProxyApiTestsError(

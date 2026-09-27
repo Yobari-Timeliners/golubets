@@ -1,0 +1,256 @@
+<?code-excerpt path-base="example/app"?>
+# Pigeon
+
+Pigeon is a code generator tool to make communication between Flutter and the
+host platform type-safe, easier, and faster.
+
+Pigeon removes the necessity to manage strings across multiple platforms and languages.
+It also improves efficiency over common method channel patterns. Most importantly though,
+it removes the need to write custom platform channel or native interop code, since Pigeon generates it for you.
+
+For usage examples, see the [Example README](./example/README.md).
+
+## Features
+
+### Supported Platforms
+
+Currently pigeon supports generating:
+* Kotlin and Java code for Android
+* Swift and Objective-C code for iOS and macOS
+* C++ code for Windows
+* GObject code for Linux
+
+### Supported Datatypes
+
+Pigeon uses the `StandardMessageCodec` so it supports
+[any datatype platform channels support](https://flutter.dev/to/platform-channels-codec).
+
+Custom classes, nested datatypes, and enums are also supported.
+
+Basic inheritance with empty `sealed` parent classes is allowed only in the Swift, Kotlin, and Dart generators.
+
+Nullable enums in Objective-C generated code will be wrapped in a class to allow for nullability.
+
+By default, custom classes in Swift are defined as structs.
+Structs don't support some features - recursive data, or Objective-C interop.
+Use the @SwiftClass annotation when defining the class to generate the data
+as a Swift class instead.
+
+### Synchronous and Asynchronous methods
+
+While all calls across platform channel APIs (such as pigeon methods) are asynchronous
+from Flutter's perspective, pigeon methods can be written on the native side as synchronous
+methods to make it simpler to always reply exactly once.
+
+If asynchronous methods are needed, two annotations are available:
+* `@async`: Generates modern concurrency signatures (`suspend` functions in Kotlin and
+  `async` methods in Swift). This is the default style for asynchronous methods.
+* `@asyncCallback`: Generates completion callback-based asynchronous methods (e.g.
+  accepting a `(Result<T>) -> Unit` or completion closure parameter).
+
+> [!NOTE]
+> Currently, only the Kotlin and Swift generators distinguish between `@async` and
+> `@asyncCallback`. In other generators (Java, Objective-C, C++, and GObject), both annotations
+> generate identical callback-based asynchronous method signatures.
+
+[Example](./example/README.md#HostApi_Example).
+
+### Error Handling
+
+#### Kotlin and Swift
+
+All Host API exceptions are translated into Flutter `PlatformException`.
+* For synchronous methods and modern `@async` methods, thrown exceptions (`FlutterError` in
+  Kotlin, `PigeonError` in Swift) will be caught and translated automatically.
+* For callback-style `@asyncCallback` methods, errors should be returned via the provided
+  result callback (e.g., `Result.failure(...)`).
+
+To pass custom details into `PlatformException` for error handling, use `FlutterError` in
+Kotlin and `PigeonError` in Swift. [Example](./example/README.md#HostApi_Example).
+
+#### Java
+
+All Host API exceptions are translated into Flutter `PlatformException`.
+* For synchronous methods, thrown exceptions (`FlutterError`) will be caught and translated.
+* For asynchronous methods (`@async` and `@asyncCallback`), errors should be returned via
+  the provided callback.
+
+#### Objective-C and C++
+
+Host API errors can be sent using the provided `FlutterError` class (translated into `PlatformException`).
+
+For synchronous methods:
+* Objective-C - Set the `error` argument to a `FlutterError` reference.
+* C++ - Return a `FlutterError`.
+
+For async methods (`@async` and `@asyncCallback`):
+* Return a `FlutterError` through the provided callback.
+
+
+### Task Queue
+
+When targeting a Flutter version that supports the
+[TaskQueue API](https://docs.flutter.dev/development/platform-integration/platform-channels?tab=type-mappings-kotlin-tab#channels-and-platform-threading)
+the threading model for handling HostApi methods can be selected with the
+`TaskQueue` annotation.
+
+> **Note**: `TaskQueue` is only supported with platform channels. Native Interop (FFI/JNI) calls execute directly on the caller's thread; specifying `@TaskQueue` with Native Interop will result in a code generation error.
+
+### Multi-Instance Support
+
+Host and Flutter APIs support the ability to provide a unique message channel suffix string
+to the api to allow for multiple instances to be created and operate in parallel.
+
+### Communication Options: Platform Channels vs. Native Interop
+
+Pigeon supports two distinct models for communication between Dart and native code:
+
+1. **Platform Channels**: The standard Flutter communication model. It serializes data into binary buffers via `StandardMessageCodec` and transmits them asynchronously over platform channels.
+2. **Native Interop (Direct FFI & JNI) \*Experimental\***: A direct, memory-bound function call model utilizing Dart FFI (for Swift/Objective-C on iOS/macOS) and JNI (for Kotlin/Java on Android).
+
+#### Quick Comparison
+
+| Feature | Platform Channels | Native Interop |
+| :--- | :--- | :--- |
+| **Communication Mechanism** | Asynchronous message passing over platform channels | Direct memory-bound function calls (Dart FFI / JNI) |
+| **Platform Support** | All supported platforms (Android, iOS, macOS, Windows, Linux) | Android, iOS, and macOS |
+| **Threading Model** | Main UI thread or custom background `TaskQueue` | Direct execution on caller thread (`TaskQueue` is not supported) |
+| **Dart Isolate Support** | Requires `BackgroundIsolateBinaryMessenger` | Supported for Host APIs |
+| **Serialization Overhead** | High (serialization and multiple copies) | Low (minimal copying) |
+| **Latency** | Higher (requires message loop scheduling) | Extremely low (direct execution) |
+| **Synchronous Host Calls** | Not supported | Fully supported |
+| **Setup Complexity** | Simple | Complex (requires external tools) |
+| **Code Generation Steps** | Single-step (running Pigeon generates everything) | Multi-step (running Pigeon automatically runs the generated config scripts) |
+
+#### When to Choose Which Model
+
+- **Consider Platform Channels if**:
+  - Your plugin targets Windows or Linux (Native Interop is not supported on these platforms, though you can generate platform channel code for them from the same pigeon file alongside Native Interop).
+  - Your plugin primarily passes simple data objects or has low-frequency communication.
+  - You want a simpler setup with no external dependencies or additional command-line tools.
+  - Your data classes contain many nested fields or custom collections where conversion overhead might offset performance gains. There are plans to address this issue in the future.
+- **Consider Native Interop if**:
+  - Your plugin handles high-frequency messaging, large typed arrays (e.g., image processing, sensor data streams), or latency-sensitive communication where serialization overhead is a bottleneck.
+  - You need synchronous execution for platform APIs on the host thread.
+  - You want to call Host APIs directly from background Dart isolates without Flutter Engine channel initialization.
+
+For detailed information on setup, prerequisites, and instructions on how to use Native Interop, see the [Native Interop Guide](./native_interop_guide.md).
+
+### Constants
+
+Pigeon supports generating top-level constants in the generated files. Constants can be defined at the top level of the Pigeon file:
+
+<?code-excerpt "pigeons/messages.dart (constants)"?>
+```dart
+const String aStringConstant = 'stringConstantValue';
+const int anIntConstant = 42;
+const double aDoubleConstant = 3.14;
+const bool aBoolConstant = true;
+```
+
+These constants will be translated into static constants or final variables in the target languages (e.g., `public static final` in Java, `let` in Swift, `const` in Dart, etc.). Only `String`, `int`, `double`, and `bool` constant types are supported.
+
+## Usage
+
+1) Add pigeon as a `dev_dependency`.
+1) Make a ".dart" file outside of your "lib" directory for defining the
+   communication interface.
+1) Run pigeon on your ".dart" file to generate the required Dart and
+   host-language code: `flutter pub get` then `dart run pigeon`
+   with suitable arguments. [Example](./example/README.md#Invocation).
+1) Add the generated Dart code to `./lib` for compilation.
+1) Implement the host-language code and add it to your build (see below).
+1) Call the generated Dart methods.
+
+### Rules for defining your communication interface
+[Example](./example/README.md#HostApi_Example)
+
+1) The file should contain no method or function definitions, only declarations.
+1) Custom classes used by APIs are defined as classes with fields of the
+   supported datatypes (see the supported Datatypes section).
+1) APIs should be defined as an `abstract class` with either `@HostApi()` or
+   `@FlutterApi()` as metadata. `@HostApi()` being for procedures that are defined
+   on the host platform and the `@FlutterApi()` for procedures that are defined in Dart.
+1) Method declarations on the API classes should have arguments and a return
+   value whose types are defined in the file, are supported datatypes, or are
+   `void`.
+1) Event channels are supported only on the Swift, Kotlin, and Dart generators.
+1) Event channel methods should be wrapped in an `abstract class` with the metadata `@EventChannelApi`.
+1) Event channel definitions should not include the `Stream` return type, just the type that is being streamed.
+1) Objective-C and Swift have special naming conventions that can be utilized with the
+   `@ObjCSelector` and `@SwiftFunction` respectively.
+
+### Flutter calling into iOS steps
+
+1) Add the generated Objective-C or Swift code to your Xcode project for compilation
+   (e.g. `ios/Runner.xcworkspace` or `.podspec`).
+1) Implement the generated protocol for handling the calls on iOS, set it up
+   as the handler for the messages.
+
+### Flutter calling into Android Steps
+
+1) Add the generated Java or Kotlin code to your `./android/app/src/main/java` directory
+   for compilation.
+1) Implement the generated Java or Kotlin interface for handling the calls on Android, set
+   it up as the handler for the messages.
+
+### Flutter calling into Windows Steps
+
+1) Add the generated C++ code to your `./windows` directory for compilation, and
+   to your `windows/CMakeLists.txt` file.
+1) Implement the generated C++ abstract class for handling the calls on Windows,
+   set it up as the handler for the messages.
+
+### Flutter calling into macOS steps
+
+1) Add the generated Objective-C or Swift code to your Xcode project for compilation
+   (e.g. `macos/Runner.xcworkspace` or `.podspec`).
+1) Implement the generated protocol for handling the calls on macOS, set it up
+   as the handler for the messages.
+
+### Flutter calling into Linux steps
+
+1) Add the generated GObject code to your `./linux` directory for compilation, and
+   to your `linux/CMakeLists.txt` file.
+1) Implement the generated protocol for handling the calls on Linux, set it up
+   as the vtable for the API object.
+
+### Calling into Flutter from the host platform
+
+Pigeon also supports calling in the opposite direction. The steps are similar
+but reversed. For more information look at the annotation `@FlutterApi()` which
+denotes APIs that live in Flutter but are invoked from the host platform.
+[Example](./example/README.md#FlutterApi_Example).
+
+## Stability of generated code
+
+Pigeon is intended to replace direct use of method channels in the internal
+implementation of plugins and applications. Because the expected use of Pigeon
+is as an internal implementation detail, its development strongly favors
+improvements to generated code over consistency with previous generated code,
+so breaking changes in generated code are common.
+
+As a result, using Pigeon-generated code in public APIs is
+**strongy discouraged**, as doing so will likely create situations where you are
+unable to update to a new version of Pigeon without causing breaking changes
+for your clients.
+
+### Inter-version compatibility
+
+The generated message channel code used for Pigeon communication is an
+internal implementation detail of Pigeon that is subject to change without
+warning, and changes to the communication are *not* considered breaking changes.
+Both sides of the communication (the Dart code and the host-language code)
+must be generated with the **same version** of Pigeon. Using code generated with
+different versions has undefined behavior, including potentially crashing the
+application.
+
+This means that Pigeon-generated code **should not** be split across packages.
+For example, putting the generated Dart code in a platform interface package
+and the generated host-language code in a platform implementation package is
+very likely to cause crashes for some plugin clients after updates.
+
+## Feedback
+
+File an issue in [flutter/flutter](https://github.com/flutter/flutter) with
+"[pigeon]" at the start of the title.

@@ -36,12 +36,11 @@ private class PigeonApiImplementation : ExampleHostApi {
     return a + b
   }
 
-  override fun sendMessage(message: MessageData, callback: (Result<Boolean>) -> Unit) {
+  override suspend fun sendMessage(message: MessageData): Boolean {
     if (message.code == Code.ONE) {
-      callback(Result.failure(FlutterError("code", "message", "details")))
-      return
+      throw FlutterError("code", "message", "details")
     }
-    callback(Result.success(true))
+    return true
   }
 
   override suspend fun sendMessageModernAsync(message: MessageData): Boolean {
@@ -70,8 +69,8 @@ private class PigeonFlutterApi(binding: FlutterPlugin.FlutterPluginBinding) {
     flutterApi = MessageFlutterApi(binding.binaryMessenger)
   }
 
-  fun callFlutterMethod(aString: String, callback: (Result<String>) -> Unit) {
-    flutterApi!!.flutterMethod(aString) { echo -> callback(echo) }
+  suspend fun callFlutterMethod(aString: String): String {
+    return flutterApi!!.flutterMethod(aString)
   }
 }
 // #enddocregion kotlin-class-flutter
