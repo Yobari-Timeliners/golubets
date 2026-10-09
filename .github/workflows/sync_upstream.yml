@@ -17,7 +17,11 @@ permissions:
 # are produced by `tool/generate.dart`, so any conflict in them is throwaway:
 # we take our side just to clear the markers and then regenerate on top.
 env:
-  GENERATED_FILE_REGEX: '\.gen\.(dart|swift|kt|kts|java|h|m|mm|cc|cpp)$|[^/]+\.g\.(dart|swift|kt|java|h|m|mm)$'
+  # Java has no `.gen` suffix; AlternateLanguageTestPlugin.java is excluded in the loop.
+  GENERATED_FILE_REGEX: '/alternate_language_test_plugin/android/src/main/java/.*\.java$|\.gen\.(dart|swift|kt|kts|java|h|m|mm|cc|cpp)$|\.gen\.(ffi|jni)\.dart$|[^/]+\.g\.(dart|swift|kt|java|h|m|mm)$|\.g\.(ffi|jni)\.dart$|/tool/golubets/[^/]+_(ffigen|jnigen)_config\.dart$'
+  # Fork-owned files: upstream edits to them are never wanted verbatim; the PR
+  # report lists upstream CHANGELOG entries so they can be ported by hand.
+  OURS_FILE_REGEX: '^packages/golubets/(README|CHANGELOG)\.md$'
 
 jobs:
   sync-upstream:
@@ -105,13 +109,37 @@ jobs:
           git remote add filtered-upstream /tmp/upstream-temp
           git fetch filtered-upstream main
 
+      # Three-way merge with *both* the merge base and upstream rewritten into
+      # golubets layout/naming (see prepare_upstream.sh). Ours vs base then only
+      # differs by real fork changes, so rename noise doesn't conflict and new
+      # upstream code arrives already renamed. The commit still records the
+      # original upstream commit as parent, so the next merge base stays correct.
       - name: Merge filtered upstream changes
         id: merge
         continue-on-error: true
         run: |
-          git merge filtered-upstream/main --no-commit --no-ff || true
-          # Full list of conflicted files (status code UU/AA/DD/etc.).
-          git diff --name-only --diff-filter=U > /tmp/all_conflicts.txt || true
+          BASE=$(git merge-base HEAD filtered-upstream/main)
+          echo "base=$BASE" >> "$GITHUB_OUTPUT"
+          normalize() {
+            git worktree add -q --detach "$1" "$2"
+            bash .github/scripts/prepare_upstream.sh "$1"
+            git -C "$1" rev-parse HEAD
+          }
+          NORM_BASE=$(normalize /tmp/norm-base "$BASE")
+          echo "norm_base=$NORM_BASE" >> "$GITHUB_OUTPUT"
+          NORM_UP=$(normalize /tmp/norm-up filtered-upstream/main)
+          echo "norm_up=$NORM_UP" >> "$GITHUB_OUTPUT"
+
+          git -c merge.conflictStyle=zdiff3 merge-tree --write-tree --name-only \
+            --merge-base="$NORM_BASE" HEAD "$NORM_UP" > /tmp/merge_tree.txt || true
+          TREE=$(head -n1 /tmp/merge_tree.txt)
+          # Conflicted paths follow the tree id, up to the first blank line.
+          awk 'NR>1 && NF==0 {exit} NR>1' /tmp/merge_tree.txt | sort -u > /tmp/all_conflicts.txt
+
+          # Record upstream as second parent, then take the merged tree.
+          git merge --no-commit --no-ff -s ours filtered-upstream/main
+          git read-tree -u --reset "$TREE"
+
           if [ -s /tmp/all_conflicts.txt ]; then
             echo "raw_conflicts=true" >> "$GITHUB_OUTPUT"
           else
@@ -130,9 +158,19 @@ jobs:
           if [ -s /tmp/all_conflicts.txt ]; then
             while IFS= read -r file; do
               [ -z "$file" ] && continue
-              if echo "$file" | grep -Eq "$GENERATED_FILE_REGEX"; then
-                git checkout --ours -- "$file" 2>/dev/null || true
-                git add -- "$file" 2>/dev/null || true
+              # Deleted by us, modified upstream: keep it deleted.
+              if ! git cat-file -e "HEAD:$file" 2>/dev/null \
+                && git cat-file -e "${{ steps.merge.outputs.norm_base }}:$file" 2>/dev/null; then
+                git rm -q --ignore-unmatch -- "$file"
+                echo "$file (kept deleted)" >> /tmp/generated_conflicts.txt
+                continue
+              fi
+              if echo "$file" | grep -Eq "$GENERATED_FILE_REGEX|$OURS_FILE_REGEX" \
+                && [[ "$file" != */AlternateLanguageTestPlugin.java ]]; then
+                # Index is clean after merge-tree; markers live in the file.
+                git checkout HEAD -- "$file" 2>/dev/null \
+                  || git checkout "${{ steps.merge.outputs.norm_up }}" -- "$file" 2>/dev/null \
+                  || true
                 echo "$file" >> /tmp/generated_conflicts.txt
               else
                 echo "$file" >> /tmp/source_conflicts.txt
@@ -230,11 +268,32 @@ jobs:
             fi
 
             if [ -s /tmp/generated_conflicts.txt ]; then
-              echo "## 🔁 Generated files auto-resolved by regeneration"
+              echo "## 🔁 Auto-resolved (generated files regenerated, fork-owned docs kept)"
               echo ""
-              echo "<details><summary>$(wc -l < /tmp/generated_conflicts.txt) generated file(s) regenerated via \`tool/generate.dart\`</summary>"
+              echo "<details><summary>$(wc -l < /tmp/generated_conflicts.txt) file(s)</summary>"
               echo ""
               sed 's/^/- `/; s/$/`/' /tmp/generated_conflicts.txt
+              echo ""
+              echo "</details>"
+              echo ""
+            fi
+
+            BASE="${{ steps.merge.outputs.base }}"
+            if [ -n "$BASE" ]; then
+              echo "## 📜 Upstream pigeon changes in this sync"
+              echo ""
+              echo "<details><summary>Commits</summary>"
+              echo ""
+              git log --format='- %s' "$BASE..filtered-upstream/main" -- packages/pigeon
+              echo ""
+              echo "</details>"
+              echo ""
+              echo "<details><summary>New upstream CHANGELOG entries (port to ours)</summary>"
+              echo ""
+              echo '```'
+              git diff "$BASE" filtered-upstream/main -- packages/pigeon/CHANGELOG.md \
+                | grep '^+' | grep -v '^+++' | sed 's/^+//'
+              echo '```'
               echo ""
               echo "</details>"
               echo ""
@@ -273,6 +332,7 @@ jobs:
             echo "- [ ] Gradle wrapper versions (\`gradle-wrapper.properties\`) match upstream AGP requirements."
             echo "- [ ] JDK / Kotlin / Gradle plugin version bumps from upstream are reflected in our build config."
             echo "- [ ] Brittle test assertions (e.g. broad \`isNot(contains('try'))\`) didn't regress."
+            echo "- [ ] Auto-merged hunks didn't silently adopt upstream behaviour we diverge from (e.g. pigeon 28 made async/suspend the default; check test expectations and \`TestPlugin\` signatures)."
           } > "$REPORT"
 
           if [ "${{ steps.autoresolve.outputs.source_conflicts }}" = "true" ]; then
@@ -322,4 +382,7 @@ jobs:
 
       - name: Clean up temporary upstream
         if: always()
-        run: rm -rf /tmp/upstream-temp
+        run: |
+          git worktree remove --force /tmp/norm-base 2>/dev/null || true
+          git worktree remove --force /tmp/norm-up 2>/dev/null || true
+          rm -rf /tmp/upstream-temp

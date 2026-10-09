@@ -13,15 +13,12 @@ import 'package:integration_test/integration_test.dart';
 
 import 'event_test_types.dart';
 import 'generated.dart';
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/integration_tests.dart
-import 'src/generated/generics_tests.gen.dart';
-import 'src/generated/kotlin_nested_sealed_tests.gen.dart';
-=======
 import 'native_interop_integration_tests.dart'
     as ffi_tests
     show TargetGenerator, runPigeonNativeInteropIntegrationTests;
 import 'proxy_api_integration_tests.dart';
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/integration_tests.dart
+import 'src/generated/generics_tests.gen.dart';
+import 'src/generated/kotlin_nested_sealed_tests.gen.dart';
 import 'test_types.dart';
 
 /// Possible host languages that test can target.
@@ -3947,92 +3944,6 @@ class _SmallFlutterApi implements FlutterSmallApi {
     return msg;
   }
 }
-<<<<<<< HEAD:packages/golubets/platform_tests/shared_test_plugin_code/lib/integration_tests.dart
-
-ProxyApiTestClass _createGenericProxyApiTestClass({
-  void Function(ProxyApiTestClass instance)? flutterNoop,
-  Object? Function(ProxyApiTestClass instance)? flutterThrowError,
-  void Function(ProxyApiTestClass instance)? flutterThrowErrorFromVoid,
-  bool Function(ProxyApiTestClass instance, bool aBool)? flutterEchoBool,
-  int Function(ProxyApiTestClass instance, int anInt)? flutterEchoInt,
-  double Function(ProxyApiTestClass instance, double aDouble)? flutterEchoDouble,
-  String Function(ProxyApiTestClass instance, String aString)? flutterEchoString,
-  Uint8List Function(ProxyApiTestClass instance, Uint8List aList)? flutterEchoUint8List,
-  List<Object?> Function(ProxyApiTestClass instance, List<Object?> aList)? flutterEchoList,
-  List<ProxyApiTestClass?> Function(ProxyApiTestClass instance, List<ProxyApiTestClass?> aList)?
-  flutterEchoProxyApiList,
-  Map<String?, Object?> Function(ProxyApiTestClass instance, Map<String?, Object?> aMap)?
-  flutterEchoMap,
-  Map<String?, ProxyApiTestClass?> Function(
-    ProxyApiTestClass instance,
-    Map<String?, ProxyApiTestClass?> aMap,
-  )?
-  flutterEchoProxyApiMap,
-  ProxyApiTestEnum Function(ProxyApiTestClass instance, ProxyApiTestEnum anEnum)? flutterEchoEnum,
-  ProxyApiSuperClass Function(ProxyApiTestClass instance, ProxyApiSuperClass aProxyApi)?
-  flutterEchoProxyApi,
-  bool? Function(ProxyApiTestClass instance, bool? aBool)? flutterEchoNullableBool,
-  int? Function(ProxyApiTestClass instance, int? anInt)? flutterEchoNullableInt,
-  double? Function(ProxyApiTestClass instance, double? aDouble)? flutterEchoNullableDouble,
-  String? Function(ProxyApiTestClass instance, String? aString)? flutterEchoNullableString,
-  Uint8List? Function(ProxyApiTestClass instance, Uint8List? aList)? flutterEchoNullableUint8List,
-  List<Object?>? Function(ProxyApiTestClass instance, List<Object?>? aList)?
-  flutterEchoNullableList,
-  Map<String?, Object?>? Function(ProxyApiTestClass instance, Map<String?, Object?>? aMap)?
-  flutterEchoNullableMap,
-  ProxyApiTestEnum? Function(ProxyApiTestClass instance, ProxyApiTestEnum? anEnum)?
-  flutterEchoNullableEnum,
-  ProxyApiSuperClass? Function(ProxyApiTestClass instance, ProxyApiSuperClass? aProxyApi)?
-  flutterEchoNullableProxyApi,
-  Future<void> Function(ProxyApiTestClass instance)? flutterNoopAsync,
-  Future<String> Function(ProxyApiTestClass instance, String aString)? flutterEchoAsyncString,
-}) {
-  return ProxyApiTestClass(
-    aBool: true,
-    anInt: 0,
-    aDouble: 0.0,
-    aString: '',
-    aUint8List: Uint8List(0),
-    aList: const <Object?>[],
-    aMap: const <String?, Object?>{},
-    anEnum: ProxyApiTestEnum.one,
-    aProxyApi: ProxyApiSuperClass(),
-    boolParam: true,
-    intParam: 0,
-    doubleParam: 0.0,
-    stringParam: '',
-    aUint8ListParam: Uint8List(0),
-    listParam: const <Object?>[],
-    mapParam: const <String?, Object?>{},
-    enumParam: ProxyApiTestEnum.one,
-    proxyApiParam: ProxyApiSuperClass(),
-    flutterNoop: flutterNoop,
-    flutterThrowError: flutterThrowError,
-    flutterThrowErrorFromVoid: flutterThrowErrorFromVoid,
-    flutterEchoBool: flutterEchoBool ?? (ProxyApiTestClass instance, bool aBool) => true,
-    flutterEchoInt: flutterEchoInt ?? (_, _) => 3,
-    flutterEchoDouble: flutterEchoDouble ?? (_, _) => 1.0,
-    flutterEchoString: flutterEchoString ?? (_, _) => '',
-    flutterEchoUint8List: flutterEchoUint8List ?? (_, _) => Uint8List(0),
-    flutterEchoList: flutterEchoList ?? (_, _) => <Object?>[],
-    flutterEchoProxyApiList: flutterEchoProxyApiList ?? (_, _) => <ProxyApiTestClass?>[],
-    flutterEchoMap: flutterEchoMap ?? (_, _) => <String?, Object?>{},
-    flutterEchoEnum: flutterEchoEnum ?? (_, _) => ProxyApiTestEnum.one,
-    flutterEchoProxyApi: flutterEchoProxyApi ?? (_, _) => ProxyApiSuperClass(),
-    flutterEchoNullableBool: flutterEchoNullableBool,
-    flutterEchoNullableInt: flutterEchoNullableInt,
-    flutterEchoNullableDouble: flutterEchoNullableDouble,
-    flutterEchoNullableString: flutterEchoNullableString,
-    flutterEchoNullableUint8List: flutterEchoNullableUint8List,
-    flutterEchoNullableList: flutterEchoNullableList,
-    flutterEchoNullableMap: flutterEchoNullableMap,
-    flutterEchoNullableEnum: flutterEchoNullableEnum,
-    flutterEchoNullableProxyApi: flutterEchoNullableProxyApi,
-    flutterNoopAsync: flutterNoopAsync,
-    flutterEchoAsyncString: flutterEchoAsyncString ?? (_, _) async => '',
-    flutterEchoProxyApiMap: flutterEchoProxyApiMap ?? (_, _) => <String?, ProxyApiTestClass?>{},
-  );
-}
 
 class _FlutterGenericApiTestImplementation implements FlutterGenericApi {
   @override
@@ -4155,5 +4066,3 @@ class _FlutterGenericApiTestImplementation implements FlutterGenericApi {
     return arg;
   }
 }
-=======
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/shared_test_plugin_code/lib/integration_tests.dart

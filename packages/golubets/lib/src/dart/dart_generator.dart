@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:code_builder/code_builder.dart' as cb;
-import 'package:collection/collection.dart';
+import 'package:collection/collection.dart' hide mergeMaps;
 import 'package:dart_style/dart_style.dart';
 import 'package:path/path.dart' as path;
 import 'package:pub_semver/pub_semver.dart';
@@ -34,11 +34,7 @@ const DocumentCommentSpecification docCommentSpec = DocumentCommentSpecification
 const String _golubetsMessageCodec = '_GolubetsCodec';
 
 /// Name of field used for host API codec.
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
 const String _golubetsMethodChannelCodec = 'golubetsMethodCodec';
-=======
-const String _pigeonMethodCodec = 'pigeonMethodCodec';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
 
 const String _overflowClassName = '_GolubetsCodecOverflow';
 
@@ -148,7 +144,7 @@ class DartOptions {
   /// Overrides any non-null parameters from [options] into this to make a new
   /// [DartOptions].
   DartOptions merge(DartOptions options) {
-    return DartOptions.fromMap(mergePigeonMaps(toMap(), options.toMap()));
+    return DartOptions.fromMap(mergeMaps(toMap(), options.toMap()));
   }
 }
 
@@ -301,7 +297,7 @@ class _FfiType extends _NativeInteropType<_FfiType> {
       'Uint8List' ||
       'Int32List' ||
       'Int64List' ||
-      'Float64List' => '$prefix${_classNamePrefix}PigeonTypedData',
+      'Float64List' => '$prefix${_classNamePrefix}GolubetsTypedData',
       'Object' => 'NSObject',
       'List' => 'NSMutableArray',
       'Map' => 'NSDictionary',
@@ -376,7 +372,7 @@ class _FfiType extends _NativeInteropType<_FfiType> {
     }
 
     final codecCall =
-        '_PigeonFfiCodec.readValue($varName$typeArg)${getForceNonNullSymbol(!type.isNullable)}';
+        '_GolubetsFfiCodec.readValue($varName$typeArg)${getForceNonNullSymbol(!type.isNullable)}';
     String primitiveGetter(String converter, bool classField) {
       return classField && !type.isNullable && isPrimitiveType(type)
           ? varName
@@ -415,7 +411,7 @@ class _FfiType extends _NativeInteropType<_FfiType> {
     if (!type.isNullable && isPrimitiveType(type)) {
       return name;
     }
-    return '_PigeonFfiCodec.writeValue<${ffiType.getFfiName()}${getNullabilitySymbol(type.isNullable && type.baseName != 'Object')}>($name${type.baseName == 'Object' ? ', generic: true' : ''})';
+    return '_GolubetsFfiCodec.writeValue<${ffiType.getFfiName()}${getNullabilitySymbol(type.isNullable && type.baseName != 'Object')}>($name${type.baseName == 'Object' ? ', generic: true' : ''})';
   }
 
   /// Returns the FFI type signature string for native function calls or completion blocks.
@@ -523,7 +519,7 @@ class _JniType extends _NativeInteropType<_JniType> {
     var asType = ' as ${getDartReturnType(true)}';
     var castCall = '';
     final codecCall =
-        '_PigeonJniCodec.readValue($varName)${getForceNonNullSymbol(!type.isNullable)}';
+        '_GolubetsJniCodec.readValue($varName)${getForceNonNullSymbol(!type.isNullable)}';
     String primitiveGetter(String converter, bool unwrap) {
       return unwrap
           ? '$varName${getNullabilitySymbol(type.isNullable)}.$converter${'(releaseOriginal: true)'}'
@@ -560,7 +556,7 @@ class _JniType extends _NativeInteropType<_JniType> {
     } else if (!type.isNullable && isPrimitiveType(type)) {
       return name;
     }
-    return '_PigeonJniCodec.writeValue<${getJniCallReturnType(true)}>($name)';
+    return '_GolubetsJniCodec.writeValue<${getJniCallReturnType(true)}>($name)';
   }
 
   /// Returns the JNI type signature string for method return types or parameter signatures.
@@ -884,7 +880,7 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
         final _FfiType ffiType = _FfiType.fromEnum(anEnum);
         indent.newln();
         indent.writeScoped('${ffiType.getFfiName()} toFfi() {', '}', () {
-          indent.writeln('return _PigeonFfiCodec.writeValue<NSNumber>(index);');
+          indent.writeln('return _GolubetsFfiCodec.writeValue<NSNumber>(index);');
         });
 
         indent.newln();
@@ -1114,9 +1110,17 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     Class classDefinition, {
     required String dartPackageName,
   }) {
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
     if (classDefinition.typeArguments.isNotEmpty) {
       return;
+    }
+
+    if (generatorOptions.useJni) {
+      _writeFromJni(indent, classDefinition);
+      indent.newln();
+    }
+    if (generatorOptions.useFfi) {
+      _writeFromFfi(indent, classDefinition);
+      indent.newln();
     }
 
     final bool isResultUsed = classDefinition.fields.isNotEmpty;
@@ -1127,19 +1131,6 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       if (isResultUsed) {
         indent.writeln('result as List<Object?>;');
       }
-=======
-    if (generatorOptions.useJni) {
-      _writeFromJni(indent, classDefinition);
-      indent.newln();
-    }
-    if (generatorOptions.useFfi) {
-      _writeFromFfi(indent, classDefinition);
-      indent.newln();
-    }
-
-    indent.writeScoped('static ${classDefinition.name} decode(Object result) {', '}', () {
-      indent.writeln('result as List<Object?>;');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
       indent.write('return ${classDefinition.name}');
       indent.addScoped('(', ');', () {
         enumerate(getFieldsInSerializationOrder(classDefinition), (int index, NamedType field) {
@@ -1318,11 +1309,7 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     if (root.containsEventChannel) {
       indent.newln();
       indent.writeln(
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
         'const StandardMethodCodec $_golubetsMethodChannelCodec = StandardMethodCodec($_golubetsMessageCodec());',
-=======
-        'const StandardMethodCodec $_pigeonMethodCodec = StandardMethodCodec($_pigeonMessageCodec());',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
       );
     }
   }
@@ -1392,7 +1379,7 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
                             if (!method.returnType.isNullable &&
                                 (isPrimitiveType(method.returnType) || method.returnType.isEnum)) {
                               toFfiCall =
-                                  '_PigeonFfiCodec.writeValue<${ffiReturnType.getFfiName()}>(response)';
+                                  '_GolubetsFfiCodec.writeValue<${ffiReturnType.getFfiName()}>(response)';
                             } else {
                               toFfiCall = ffiReturnType.getToFfiCall(
                                 method.returnType,
@@ -1433,7 +1420,7 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
                           if (!method.returnType.isNullable &&
                               (isPrimitiveType(method.returnType) || method.returnType.isEnum)) {
                             toFfiCall =
-                                '_PigeonFfiCodec.writeValue<${ffiReturnType.getFfiName()}>(response)';
+                                '_GolubetsFfiCodec.writeValue<${ffiReturnType.getFfiName()}>(response)';
                           } else {
                             toFfiCall = ffiReturnType.getToFfiCall(
                               method.returnType,
@@ -1516,11 +1503,12 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
               if (method.isAsynchronous) {
                 indent.writeScoped('return $methodCall.then((response) {', '});', () {
                   if (method.returnType.isVoid) {
-                    indent.writeln('return _PigeonJniCodec._kotlinUnit;');
+                    indent.writeln('return _GolubetsJniCodec._kotlinUnit;');
                   } else {
                     String toJniCall;
                     if (!method.returnType.isNullable && isPrimitiveType(method.returnType)) {
-                      toJniCall = '_PigeonJniCodec.writeValue<${jniReturnType.jniName}>(response)';
+                      toJniCall =
+                          '_GolubetsJniCodec.writeValue<${jniReturnType.jniName}>(response)';
                     } else {
                       toJniCall = jniReturnType.getToJniCall(
                         method.returnType,
@@ -1986,13 +1974,13 @@ return ${generatorOptions.useJni ? 'await ' : ''}completer.future;
       indent.format('''
   PlatformException _wrapJniException(JThrowable e) {
     if (e.isA<$_jniBridgePrefix.${generatorOptions.jniErrorClassName}>($_jniBridgePrefix.${generatorOptions.jniErrorClassName}.type)) {
-      final $_jniBridgePrefix.${generatorOptions.jniErrorClassName} pigeonError = e.as($_jniBridgePrefix.${generatorOptions.jniErrorClassName}.type);
+      final $_jniBridgePrefix.${generatorOptions.jniErrorClassName} golubetsError = e.as($_jniBridgePrefix.${generatorOptions.jniErrorClassName}.type);
       return PlatformException(
-        code: pigeonError.code.toDartString(),
-        message: pigeonError.message?.toDartString(),
-        details: pigeonError.details?.isA<JString>(JString.type) ?? false
-            ? pigeonError.details!.as(JString.type).toDartString()
-            : pigeonError.details,
+        code: golubetsError.code.toDartString(),
+        message: golubetsError.message?.toDartString(),
+        details: golubetsError.details?.isA<JString>(JString.type) ?? false
+            ? golubetsError.details!.as(JString.type).toDartString()
+            : golubetsError.details,
         stacktrace: e.javaStackTrace,
       );
     }
@@ -2075,6 +2063,7 @@ return ${generatorOptions.useJni ? 'await ' : ''}completer.future;
     final String name = api.name;
     String? interfaceName;
     if (generatorOptions.useApiInterface) {
+      var first = true;
       interfaceName = 'I$name';
       indent.write('abstract interface class $interfaceName ');
       indent.addScoped('{', '}', () {
@@ -2093,7 +2082,6 @@ return ${generatorOptions.useJni ? 'await ' : ''}completer.future;
       indent.newln();
     }
     final inheritance = interfaceName == null ? '' : ' implements $interfaceName';
-    first = true;
     indent.write('class $name$inheritance ');
     indent.addScoped('{', '}', () {
       indent.format('''
@@ -2213,11 +2201,7 @@ ${api.name}({
           instanceName = '.\$instanceName';
         }
         final EventChannel ${func.name}Channel =
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
             EventChannel('${makeChannelName(api, func, dartPackageName)}\$instanceName', $_golubetsMethodChannelCodec);
-=======
-            EventChannel('${makeChannelName(api, func, dartPackageName)}\$instanceName', $_pigeonMethodCodec);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
         return ${func.name}Channel.receiveBroadcastStream().map((dynamic event) {
           return event as ${func.returnType.baseName};
         });
@@ -2649,7 +2633,7 @@ ${api.name}({
   void _writeJniCodec(Indent indent, Root root) {
     indent.newln();
     indent.format('''
-class _PigeonJniCodec {
+class _GolubetsJniCodec {
   static JObject get _kotlinUnit {
     final JClass unitClass = JClass.forName('kotlin/Unit');
     try {
@@ -2874,9 +2858,9 @@ class _PigeonJniCodec {
   void _writeFfiCodec(Indent indent, Root root) {
     indent.newln();
     indent.format('''
-class _PigeonFfiCodec {
+class _GolubetsFfiCodec {
   static Object? readValue(ObjCObject? value, [Type? type, Type? type2]) {
-    if (value == null || $_ffiBridgePrefix.${_classNamePrefix}PigeonInternalNull.isA(value)) {
+    if (value == null || $_ffiBridgePrefix.${_classNamePrefix}GolubetsInternalNull.isA(value)) {
       return null;
     } else if (NSNumber.isA(value)) {
       final NSNumber numValue = NSNumber.as(value);
@@ -2893,8 +2877,8 @@ class _PigeonFfiCodec {
       return numValue.longValue;
     } else if (NSString.isA(value)) {
       return NSString.as(value).toDartString();
-    } else if ($_ffiBridgePrefix.${_classNamePrefix}PigeonTypedData.isA(value)) {
-      return _getValueFromPigeonTypedData(value as $_ffiBridgePrefix.${_classNamePrefix}PigeonTypedData);
+    } else if ($_ffiBridgePrefix.${_classNamePrefix}GolubetsTypedData.isA(value)) {
+      return _getValueFromGolubetsTypedData(value as $_ffiBridgePrefix.${_classNamePrefix}GolubetsTypedData);
     } else if (NSArray.isA(value)) {
       final NSArray array = NSArray.as(value);
       final List<Object?> res = <Object?>[];
@@ -2931,7 +2915,7 @@ class _PigeonFfiCodec {
   }) {
     if (value == null) {
       if (_isTypeOrNullableType<T>(ObjCObject) || _isTypeOrNullableType<T>(NSObject)) {
-        return $_ffiBridgePrefix.${_classNamePrefix}PigeonInternalNull() as T;
+        return $_ffiBridgePrefix.${_classNamePrefix}GolubetsInternalNull() as T;
       }
       return null as T;
     }
@@ -2955,7 +2939,7 @@ class _PigeonFfiCodec {
     } else if (value is String) {
       return NSString(value) as T;
     } else if (value is TypedData) {
-      return _toPigeonTypedData(value) as T;
+      return _toGolubetsTypedData(value) as T;
     ${root.lists.values.sorted(sortByObjectCount).map((TypeDeclaration list) {
       if (list.typeArguments.isEmpty || list.typeArguments.first.baseName == 'Object') {
         return '';
@@ -2965,7 +2949,7 @@ class _PigeonFfiCodec {
     } else if (value is ${ffiType.type.getFullName(withNullable: false)} && _isTypeOrNullableType<${ffiType.getFfiName()}>(T)) {
       final NSMutableArray res = NSMutableArray();
       for (final ${ffiType.dartCollectionTypes} entry in value) {
-        res.addObject(${ffiType.subTypeOne!.type.isNullable ? 'entry == null ? $_ffiBridgePrefix.${_classNamePrefix}PigeonInternalNull() : ' : ''}writeValue<${ffiType.subTypeOne?.getFfiCallReturnType(forceNonNullable: true) ?? 'ObjCObject'}>(entry, generic: true));
+        res.addObject(${ffiType.subTypeOne!.type.isNullable ? 'entry == null ? $_ffiBridgePrefix.${_classNamePrefix}GolubetsInternalNull() : ' : ''}writeValue<${ffiType.subTypeOne?.getFfiCallReturnType(forceNonNullable: true) ?? 'ObjCObject'}>(entry, generic: true));
       }
       return res as T;
         ''';
@@ -2974,7 +2958,7 @@ class _PigeonFfiCodec {
       final NSMutableArray res = NSMutableArray();
       for (final Object? entry in value) {
         res.addObject(entry == null
-            ? $_ffiBridgePrefix.${_classNamePrefix}PigeonInternalNull()
+            ? $_ffiBridgePrefix.${_classNamePrefix}GolubetsInternalNull()
             : writeValue(entry, generic: true));
       }
       return res as T;
@@ -3011,7 +2995,7 @@ class _PigeonFfiCodec {
   }
 }
 
-$_ffiBridgePrefix.${_classNamePrefix}PigeonTypedData _toPigeonTypedData(TypedData value) {
+$_ffiBridgePrefix.${_classNamePrefix}GolubetsTypedData _toGolubetsTypedData(TypedData value) {
   final int lengthInBytes = value.lengthInBytes;
   if (value is Uint8List) {
     final int length = value.length;
@@ -3020,7 +3004,7 @@ $_ffiBridgePrefix.${_classNamePrefix}PigeonTypedData _toPigeonTypedData(TypedDat
     final NSData nsData =
         NSData.dataWithBytes(ptr.cast<Void>(), length: lengthInBytes);
     calloc.free(ptr);
-    return $_ffiBridgePrefix.${_classNamePrefix}PigeonTypedData.alloc().initWithData(nsData, type: 0);
+    return $_ffiBridgePrefix.${_classNamePrefix}GolubetsTypedData.alloc().initWithData(nsData, type: 0);
   } else if (value is Int32List) {
     final int length = value.length;
     final Pointer<Int32> ptr = calloc<Int32>(length);
@@ -3028,7 +3012,7 @@ $_ffiBridgePrefix.${_classNamePrefix}PigeonTypedData _toPigeonTypedData(TypedDat
     final NSData nsData =
         NSData.dataWithBytes(ptr.cast<Void>(), length: lengthInBytes);
     calloc.free(ptr);
-    return $_ffiBridgePrefix.${_classNamePrefix}PigeonTypedData.alloc().initWithData(nsData, type: 1);
+    return $_ffiBridgePrefix.${_classNamePrefix}GolubetsTypedData.alloc().initWithData(nsData, type: 1);
   } else if (value is Int64List) {
     final int length = value.length;
     final Pointer<Int64> ptr = calloc<Int64>(length);
@@ -3036,7 +3020,7 @@ $_ffiBridgePrefix.${_classNamePrefix}PigeonTypedData _toPigeonTypedData(TypedDat
     final NSData nsData =
         NSData.dataWithBytes(ptr.cast<Void>(), length: lengthInBytes);
     calloc.free(ptr);
-    return $_ffiBridgePrefix.${_classNamePrefix}PigeonTypedData.alloc().initWithData(nsData, type: 2);
+    return $_ffiBridgePrefix.${_classNamePrefix}GolubetsTypedData.alloc().initWithData(nsData, type: 2);
   } else if (value is Float32List) {
     final int length = value.length;
     final Pointer<Float> ptr = calloc<Float>(length);
@@ -3044,7 +3028,7 @@ $_ffiBridgePrefix.${_classNamePrefix}PigeonTypedData _toPigeonTypedData(TypedDat
     final NSData nsData =
         NSData.dataWithBytes(ptr.cast<Void>(), length: lengthInBytes);
     calloc.free(ptr);
-    return $_ffiBridgePrefix.${_classNamePrefix}PigeonTypedData.alloc().initWithData(nsData, type: 3);
+    return $_ffiBridgePrefix.${_classNamePrefix}GolubetsTypedData.alloc().initWithData(nsData, type: 3);
   } else if (value is Float64List) {
     final int length = value.length;
     final Pointer<Double> ptr = calloc<Double>(length);
@@ -3052,13 +3036,13 @@ $_ffiBridgePrefix.${_classNamePrefix}PigeonTypedData _toPigeonTypedData(TypedDat
     final NSData nsData =
         NSData.dataWithBytes(ptr.cast<Void>(), length: lengthInBytes);
     calloc.free(ptr);
-    return $_ffiBridgePrefix.${_classNamePrefix}PigeonTypedData.alloc().initWithData(nsData, type: 4);
+    return $_ffiBridgePrefix.${_classNamePrefix}GolubetsTypedData.alloc().initWithData(nsData, type: 4);
   }
   throw ArgumentError.value(value);
 }
 
 
-Object? _getValueFromPigeonTypedData($_ffiBridgePrefix.${_classNamePrefix}PigeonTypedData value) {
+Object? _getValueFromGolubetsTypedData($_ffiBridgePrefix.${_classNamePrefix}GolubetsTypedData value) {
   final NSData data = value.data;
   final Pointer<Void> bytes = data.bytes;
   return switch (value.type) {
@@ -3685,18 +3669,14 @@ String addGenericTypes(TypeDeclaration type, {bool useJni = false, bool useFfi =
       typeArguments.isEmpty
           ? 'Map<Object?, Object?>'
           : 'Map<${_flattenTypeArguments(typeArguments)}>',
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
     _ when type.typeArguments.isNotEmpty =>
       '${type.baseName}<${_flattenTypeArguments(type.typeArguments)}>',
-    _ => type.baseName,
-=======
     _ =>
       useJni
           ? _JniType.fromTypeDeclaration(type).jniName
           : useFfi
           ? _FfiType.fromTypeDeclaration(type).getFfiName()
           : type.baseName,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
   };
 
   return type.isNullable ? '$genericType?' : genericType;
@@ -3708,7 +3688,6 @@ String _posixify(String inputPath) {
   return context.fromUri(path.toUri(path.absolute(inputPath)));
 }
 
-<<<<<<< HEAD:packages/golubets/lib/src/dart/dart_generator.dart
 extension on DefaultValue {
   /// [prefix] - used for pretty formatting.
   void write(Indent indent, {String? prefix}) {
@@ -3775,7 +3754,8 @@ extension on DefaultValue {
       }(),
     };
   }
-=======
+}
+
 String? _getArgumentsForMethodCall(Iterable<Parameter> parameters) {
   if (parameters.isNotEmpty) {
     return indexMap(parameters, (int index, NamedType type) {
@@ -3789,5 +3769,4 @@ String? _getArgumentsForMethodCall(Iterable<Parameter> parameters) {
 /// Returns true if the generated code should use native interop (FFI or JNI).
 bool usesNativeInterop(InternalDartOptions options) {
   return options.useFfi || options.useJni;
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/dart/dart_generator.dart
 }

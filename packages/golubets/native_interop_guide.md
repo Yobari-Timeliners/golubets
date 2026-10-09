@@ -1,14 +1,14 @@
 <?code-excerpt path-base="."?>
-# Pigeon Native Interop (FFI & JNI) Guide
+# Golubets Native Interop (FFI & JNI) Guide
 
-This guide describes Pigeon's Native Interop feature, which allows for direct, high-performance communication between Dart and native code using **FFI (Foreign Function Interface)** for Swift (iOS/macOS) and **JNI (Java Native Interface)** for Kotlin (Android).
+This guide describes Golubets's Native Interop feature, which allows for direct, high-performance communication between Dart and native code using **FFI (Foreign Function Interface)** for Swift (iOS/macOS) and **JNI (Java Native Interface)** for Kotlin (Android).
 
 ---
 
 ## 1. Overview
 
-Pigeon Native Interop allows Dart code to make direct function calls into native platform code, and vice versa, without the overhead of platform-channel-based message passing. Instead of serializing data into binary buffers, Native Interop establishes direct memory-bound bridges using native pointers and JVM references.
-For a detailed comparison between platform-channel-based communication and Native Interop—including advantages, limitations, and recommended use cases—see the [Pigeon README](./README.md#communication-options-platform-channels-vs-native-interop).
+Golubets Native Interop allows Dart code to make direct function calls into native platform code, and vice versa, without the overhead of platform-channel-based message passing. Instead of serializing data into binary buffers, Native Interop establishes direct memory-bound bridges using native pointers and JVM references.
+For a detailed comparison between platform-channel-based communication and Native Interop—including advantages, limitations, and recommended use cases—see the [Golubets README](./README.md#communication-options-platform-channels-vs-native-interop).
 
 ### Threading & Isolates Model
 
@@ -23,19 +23,19 @@ Native Interop calls are direct in-process function calls across the C ABI (FFI)
   * Synchronous callbacks into Dart are isolate-local and must be invoked from the isolate that registered them.
 * **`@TaskQueue` Not Supported**:
   * Platform channels queue work onto engine background threads; Native Interop executes directly on the caller thread. Specifying `@TaskQueue` results in a code generation error.
-  * To run host operations on background threads, annotate the method with `@async` in the Pigeon file and implement it using Swift `async` or Kotlin `suspend` functions (with `DispatchQueue.global` or `Dispatchers.IO`).
+  * To run host operations on background threads, annotate the method with `@async` in the Golubets file and implement it using Swift `async` or Kotlin `suspend` functions (with `DispatchQueue.global` or `Dispatchers.IO`).
 
 ---
 
 ## 2. End-to-End Workflow
 
-Using Native Interop in pigeon follows the standard pigeon workflow, with a few additional configuration and compilation steps. The complete end-to-end process is:
+Using Native Interop in golubets follows the standard golubets workflow, with a few additional configuration and compilation steps. The complete end-to-end process is:
 
 1. **Add Dependencies**: Add required interop packages to your `pubspec.yaml` (see [Step 1: Add Dependencies](#step-1-add-dependencies) below).
-2. **Define the Interface**: Create a Dart definition file outlining your `HostApi` and `FlutterApi` declarations (refer to the [Pigeon README](./README.md#rules-for-defining-your-communication-interface) for syntax and rules).
-3. **Configure Options**: Configure `kotlinOptions.useJni` or `swiftOptions.useFfi` in your `PigeonOptions` (see [Step 2: Configure Pigeon Options](#step-2-configure-pigeon-options) below).
+2. **Define the Interface**: Create a Dart definition file outlining your `HostApi` and `FlutterApi` declarations (refer to the [Golubets README](./README.md#rules-for-defining-your-communication-interface) for syntax and rules).
+3. **Configure Options**: Configure `kotlinOptions.useJni` or `swiftOptions.useFfi` in your `GolubetsOptions` (see [Step 2: Configure Golubets Options](#step-2-configure-golubets-options) below).
 4. **Prerequisites**: Ensure your local environment meets the toolchain prerequisites for `jnigen` and `ffigen` (see [Section 3: Prerequisites](#3-prerequisites) below).
-5. **Run Code Generation**: Run the `pigeon` tool to generate the native bridge code and interop bindings (see [Step 3: Run Code Generation](#step-3-run-code-generation) below).
+5. **Run Code Generation**: Run the `golubets` tool to generate the native bridge code and interop bindings (see [Step 3: Run Code Generation](#step-3-run-code-generation) below).
 6. **Configure Build Systems**: For Swift FFI, configure CocoaPods or Swift Package Manager (SwiftPM) to compile the intermediate Objective-C bridge files (see [Step 4: iOS/macOS Build System Configuration (FFI)](#step-4-iosmacos-build-system-configuration-ffi) below).
 7. **Implement and Call**: Implement the generated protocol/class interface in your native codebase and call the generated Dart methods from your Flutter application.
 
@@ -65,29 +65,29 @@ To use Native Interop, your development environment and the corresponding extern
 Add the required runtime dependencies to `dependencies` and code generators to `dev_dependencies`. Using `flutter pub add` ensures runtime packages resolve to the latest compatible versions:
 
 ```bash
-# Add Pigeon:
-flutter pub add dev:pigeon
+# Add Golubets:
+flutter pub add dev:golubets
 
 # For iOS/macOS Swift FFI:
 flutter pub add ffi
 flutter pub add objective_c
-# Pigeon requires this specific version for compatibility with its generated FFIgen configuration:
+# Golubets requires this specific version for compatibility with its generated FFIgen configuration:
 flutter pub add dev:ffigen@21.0.0
 
 # For Android Kotlin JNI:
 flutter pub add jni
-# Pigeon requires this specific version for compatibility with its generated JNIgen configuration:
+# Golubets requires this specific version for compatibility with its generated JNIgen configuration:
 flutter pub add dev:jnigen@1.0.0
 ```
 
-### Step 2: Configure Pigeon Options
+### Step 2: Configure Golubets Options
 
-Enable Native Interop for your target platforms by setting the configuration options in your Pigeon file:
+Enable Native Interop for your target platforms by setting the configuration options in your Golubets file:
 
 <?code-excerpt "example/native_interop_app/pigeons/native_interop_example.dart (config)"?>
 ```dart
-@ConfigurePigeon(
-  PigeonOptions(
+@ConfigureGolubets(
+  GolubetsOptions(
     // (Recommended) Path to the compiled application directory (where pubspec.yaml resides)
     appDirectory: './',
     dartOptions: DartOptions(),
@@ -102,7 +102,7 @@ Enable Native Interop for your target platforms by setting the configuration opt
 ```
 
 #### General Options
-* **`appDirectory`**: The path to the compiled Flutter **application** directory (e.g., `example/` when developing a plugin, or `./` for a standalone application). FFIgen and JNIgen require a compiled application context to locate class files and build outputs. If omitted when running Pigeon from an app root, it defaults to `./`.
+* **`appDirectory`**: The path to the compiled Flutter **application** directory (e.g., `example/` when developing a plugin, or `./` for a standalone application). FFIgen and JNIgen require a compiled application context to locate class files and build outputs. If omitted when running Golubets from an app root, it defaults to `./`.
   - *CLI Equivalent*: `--app_directory <path>`.
 
 #### Kotlin Options for JNI
@@ -122,24 +122,24 @@ Enable Native Interop for your target platforms by setting the configuration opt
 
 ### Step 3: Run Code Generation
 
-Run the `pigeon` tool to generate the native bridge code and interop bindings:
+Run the `golubets` tool to generate the native bridge code and interop bindings:
 
 ```bash
-dart run pigeon --input <path/to/pigeon_file.dart>
+dart run golubets --input <path/to/golubets_file.dart>
 ```
 
 #### How Automated Interop Generation Works
 
-When Native Interop options (`useJni` or `useFfi`) are enabled, Pigeon automatically orchestrates running `jnigen` and `ffigen` as part of the generation process:
+When Native Interop options (`useJni` or `useFfi`) are enabled, Golubets automatically orchestrates running `jnigen` and `ffigen` as part of the generation process:
 
 - **Android (JNI)**: When `kotlinOptions.useJni` is enabled:
-  1. Generates the JNI-compatible Kotlin bridge and the `jnigen_config.dart` script in `tool/pigeon/`.
+  1. Generates the JNI-compatible Kotlin bridge and the `jnigen_config.dart` script in `tool/golubets/`.
   2. Runs `jnigen` via the config script to parse the Kotlin bridge and produce Dart JNI bindings.
-  3. Generates the final pigeon Dart output that wraps and imports those JNI bindings.
+  3. Generates the final golubets Dart output that wraps and imports those JNI bindings.
 - **iOS/macOS (FFI)**: When `swiftOptions.useFfi` is enabled:
-  1. Generates the Objective-C compatible Swift bridge and the `ffigen_config.dart` script in `tool/pigeon/`.
+  1. Generates the Objective-C compatible Swift bridge and the `ffigen_config.dart` script in `tool/golubets/`.
   2. Runs `ffigen` via the config script to parse the Objective-C bridge and produce Dart FFI bindings.
-  3. Generates the final pigeon Dart output that wraps and imports those FFI bindings.
+  3. Generates the final golubets Dart output that wraps and imports those FFI bindings.
 
 ### Step 4: iOS/macOS Build System Configuration (FFI)
 
@@ -189,14 +189,14 @@ When implementing Native Interop host APIs directly in an application target rat
   ```xcconfig
   PRODUCT_MODULE_NAME = Runner // or your custom ffiModuleName
   ```
-  *(Note: If iOS and macOS use separate Pigeon generation outputs or you only target one platform, unifying module names between platforms is not required.)*
+  *(Note: If iOS and macOS use separate Golubets generation outputs or you only target one platform, unifying module names between platforms is not required.)*
 
 * **Native Registration in macOS (`MainFlutterWindow.swift`)**:
   While iOS registers the host implementation in `AppDelegate.swift` within `didInitializeImplicitFlutterEngine`, macOS applications should register it in `MainFlutterWindow.swift` within `awakeFromNib()`:
   ```swift
   RegisterGeneratedPlugins(registry: flutterViewController)
 
-  let api = PigeonApiImplementation()
+  let api = GolubetsApiImplementation()
   MyApiSetup.register(api: api)
   ```
   Calling `register(api:)` in native code also prevents the Xcode linker (`-dead_strip`) from stripping the setup class from the compiled binary.
@@ -205,17 +205,17 @@ When implementing Native Interop host APIs directly in an application target rat
 
 ## 5. Troubleshooting Automated Generation
 
-If `dart run pigeon` encounters errors while running `jnigen` or `ffigen`, review the following troubleshooting steps:
+If `dart run golubets` encounters errors while running `jnigen` or `ffigen`, review the following troubleshooting steps:
 
 ### 5.1 Unupdated Native Implementation or Uncompiled Code (JNI)
 
-JNIgen parses compiled bytecode (`.class` files). If you changed your Pigeon schema and haven't yet updated or compiled your native Kotlin/Java code, JNIgen will fail.
+JNIgen parses compiled bytecode (`.class` files). If you changed your Golubets schema and haven't yet updated or compiled your native Kotlin/Java code, JNIgen will fail.
 
 - **Solution**: Build/compile your native code first so that the compiled class files are up-to-date:
   ```bash
   cd android && ./gradlew compileReleaseKotlin
   ```
-  Then re-run `dart run pigeon --input <path/to/pigeon_file.dart>`.
+  Then re-run `dart run golubets --input <path/to/golubets_file.dart>`.
 
 ### 5.2 Missing Class Files or Non-Standard Build Directory (JNI)
 
@@ -231,15 +231,15 @@ For standalone Flutter Applications, JNIgen defaults to searching `build/app/tmp
 
 ### 5.3 Manual Configuration Script Execution
 
-Pigeon writes the interop configuration scripts to `tool/pigeon/jnigen_config.dart` and `tool/pigeon/ffigen_config.dart`.
+Golubets writes the interop configuration scripts to `tool/golubets/jnigen_config.dart` and `tool/golubets/ffigen_config.dart`.
 
 - **Solution**: Run the generated config scripts directly to view verbose stderr logs and diagnose toolchain errors:
   ```bash
   # Debug JNIgen (Android):
-  dart run tool/pigeon/jnigen_config.dart
+  dart run tool/golubets/jnigen_config.dart
 
   # Debug FFIgen (iOS/macOS):
-  dart run tool/pigeon/ffigen_config.dart
+  dart run tool/golubets/ffigen_config.dart
   ```
 
 ### 5.4 Failed to Load Objective-C Class (`<ffiModuleName>.<Api>Setup`)
@@ -252,4 +252,4 @@ If your app crashes at startup with `FailedToLoadClassException: Failed to load 
 
 ## 6. Migration from Platform Channels
 
-If you are migrating an existing Pigeon plugin from the platform-channel-based model to the Native Interop model, see the [Native Interop Migration Guide](./native_interop_migration_guide.md) for a complete comparison of the API models and transition examples.
+If you are migrating an existing Golubets plugin from the platform-channel-based model to the Native Interop model, see the [Native Interop Migration Guide](./native_interop_migration_guide.md) for a complete comparison of the API models and transition examples.

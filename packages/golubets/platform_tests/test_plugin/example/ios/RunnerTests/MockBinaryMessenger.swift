@@ -6,7 +6,7 @@ import Flutter
 
 @testable import test_plugin
 
-final class MockBinaryMessenger<T>: NSObject, FlutterBinaryMessenger, @unchecked Sendable {
+class MockBinaryMessenger<T>: NSObject, FlutterBinaryMessenger {
   let codec: FlutterMessageCodec
   var result: T?
   private(set) var handlers: [String: FlutterBinaryMessageHandler] = [:]

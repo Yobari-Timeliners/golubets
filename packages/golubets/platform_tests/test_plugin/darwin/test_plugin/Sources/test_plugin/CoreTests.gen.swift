@@ -35,7 +35,7 @@ public final class GolubetsError: Error {
 
   var localizedDescription: String {
     return
-      "GolubetsError(code: \(code), message: \(message ?? "<nil>"), details: \(details ?? "<nil>")"
+      "GolubetsError(code: \(code), message: \(message ?? "<nil>"), details: \(details ?? "<nil>"))"
   }
 }
 
@@ -112,19 +112,19 @@ enum CoreTestsGolubetsInternal {
     case is (Void, Void):
       return true
 
-    case (let lhsArray, let rhsArray) as ([Any?], [Any?]):
+    case (let lhsArray, let rhsArray) as ([Double], [Double]):
       guard lhsArray.count == rhsArray.count else { return false }
       for (index, element) in lhsArray.enumerated() {
-        if !deepEquals(element, rhsArray[index]) {
+        if !doubleEquals(element, rhsArray[index]) {
           return false
         }
       }
       return true
 
-    case (let lhsArray, let rhsArray) as ([Double], [Double]):
+    case (let lhsArray, let rhsArray) as ([Any?], [Any?]):
       guard lhsArray.count == rhsArray.count else { return false }
       for (index, element) in lhsArray.enumerated() {
-        if !doubleEquals(element, rhsArray[index]) {
+        if !deepEquals(element, rhsArray[index]) {
           return false
         }
       }
@@ -2635,6 +2635,9 @@ public protocol HostIntegrationCoreApi {
   /// Returns true if the handler is run on a non-main thread, which should be
   /// true for any platform with TaskQueue support.
   func taskQueueIsBackgroundThread() throws -> Bool
+  /// Returns true if the handler is run on a non-main thread, which should be
+  /// true for any platform with TaskQueue support.
+  func asyncTaskQueueIsBackgroundThread(completion: @escaping (Result<Bool, Error>) -> Void)
   func callFlutterNoop(completion: @escaping (Result<Void, Error>) -> Void)
   func callFlutterThrowError(completion: @escaping (Result<Any?, Error>) -> Void)
   func callFlutterThrowErrorFromVoid(completion: @escaping (Result<Void, Error>) -> Void)
@@ -2746,6 +2749,12 @@ public protocol HostIntegrationCoreApi {
     _ anotherEnum: AnotherEnum?, completion: @escaping (Result<AnotherEnum?, Error>) -> Void)
   func callFlutterSmallApiEcho(
     _ aString: String, completion: @escaping (Result<String, Error>) -> Void)
+  func callFlutterCallbackNoop(completion: @escaping (Result<Void, Error>) -> Void)
+  func callFlutterCallbackEcho(
+    _ aString: String, completion: @escaping (Result<String, Error>) -> Void)
+  func callFlutterCallbackThrowError(completion: @escaping (Result<Any?, Error>) -> Void)
+  func callFlutterCallbackThrowErrorFromVoid(completion: @escaping (Result<Void, Error>) -> Void)
+  func callFlutterIsAsyncFlutterApiOnRoot(completion: @escaping (Result<Bool, Error>) -> Void)
 }
 
 /// Generated setup class from Golubets to handle messages through the `binaryMessenger`.
@@ -5048,6 +5057,32 @@ public class HostIntegrationCoreApiSetup {
     } else {
       taskQueueIsBackgroundThreadChannel.setMessageHandler(nil)
     }
+    /// Returns true if the handler is run on a non-main thread, which should be
+    /// true for any platform with TaskQueue support.
+    let asyncTaskQueueIsBackgroundThreadChannel =
+      taskQueue == nil
+      ? FlutterBasicMessageChannel(
+        name:
+          "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.asyncTaskQueueIsBackgroundThread\(channelSuffix)",
+        binaryMessenger: binaryMessenger, codec: codec)
+      : FlutterBasicMessageChannel(
+        name:
+          "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.asyncTaskQueueIsBackgroundThread\(channelSuffix)",
+        binaryMessenger: binaryMessenger, codec: codec, taskQueue: taskQueue)
+    if let api = api {
+      asyncTaskQueueIsBackgroundThreadChannel.setMessageHandler { _, reply in
+        api.asyncTaskQueueIsBackgroundThread { result in
+          switch result {
+          case .success(let res):
+            reply(wrapResult(res))
+          case .failure(let error):
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      asyncTaskQueueIsBackgroundThreadChannel.setMessageHandler(nil)
+    }
     let callFlutterNoopChannel = FlutterBasicMessageChannel(
       name:
         "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterNoop\(channelSuffix)",
@@ -6071,6 +6106,210 @@ public class HostIntegrationCoreApiSetup {
     } else {
       callFlutterSmallApiEchoStringChannel.setMessageHandler(nil)
     }
+    let callFlutterCallbackNoopChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterCallbackNoop\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      callFlutterCallbackNoopChannel.setMessageHandler { _, reply in
+        api.callFlutterCallbackNoop { result in
+          switch result {
+          case .success:
+            reply(wrapResult(nil))
+          case .failure(let error):
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      callFlutterCallbackNoopChannel.setMessageHandler(nil)
+    }
+    let callFlutterCallbackEchoStringChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterCallbackEchoString\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      callFlutterCallbackEchoStringChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let aStringArg = args[0] as! String
+        api.callFlutterCallbackEcho(aStringArg) { result in
+          switch result {
+          case .success(let res):
+            reply(wrapResult(res))
+          case .failure(let error):
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      callFlutterCallbackEchoStringChannel.setMessageHandler(nil)
+    }
+    let callFlutterCallbackThrowErrorChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterCallbackThrowError\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      callFlutterCallbackThrowErrorChannel.setMessageHandler { _, reply in
+        api.callFlutterCallbackThrowError { result in
+          switch result {
+          case .success(let res):
+            reply(wrapResult(res))
+          case .failure(let error):
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      callFlutterCallbackThrowErrorChannel.setMessageHandler(nil)
+    }
+    let callFlutterCallbackThrowErrorFromVoidChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterCallbackThrowErrorFromVoid\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      callFlutterCallbackThrowErrorFromVoidChannel.setMessageHandler { _, reply in
+        api.callFlutterCallbackThrowErrorFromVoid { result in
+          switch result {
+          case .success:
+            reply(wrapResult(nil))
+          case .failure(let error):
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      callFlutterCallbackThrowErrorFromVoidChannel.setMessageHandler(nil)
+    }
+    let callFlutterIsAsyncFlutterApiOnRootChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterIsAsyncFlutterApiOnRoot\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      callFlutterIsAsyncFlutterApiOnRootChannel.setMessageHandler { _, reply in
+        api.callFlutterIsAsyncFlutterApiOnRoot { result in
+          switch result {
+          case .success(let res):
+            reply(wrapResult(res))
+          case .failure(let error):
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      callFlutterIsAsyncFlutterApiOnRootChannel.setMessageHandler(nil)
+    }
+  }
+}
+
+/// A Flutter API using callback-based asynchronous methods (@asyncCallback).
+///
+/// Generated protocol from Golubets that represents Flutter messages that can be called from Swift.
+public protocol FlutterCallbackCoreApiProtocol {
+  func noop(completion: @escaping (Result<Void, GolubetsError>) -> Void)
+  func echo(
+    string aStringArg: String, completion: @escaping (Result<String, GolubetsError>) -> Void)
+  func throwError(completion: @escaping (Result<Any?, GolubetsError>) -> Void)
+  func throwErrorFromVoid(completion: @escaping (Result<Void, GolubetsError>) -> Void)
+}
+public class FlutterCallbackCoreApi: FlutterCallbackCoreApiProtocol {
+  private let binaryMessenger: FlutterBinaryMessenger
+  private let messageChannelSuffix: String
+  public init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "") {
+    self.binaryMessenger = binaryMessenger
+    self.messageChannelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
+  }
+  var codec: CoreTestsGolubetsCodec {
+    return CoreTestsGolubetsCodec.shared
+  }
+  public func noop(completion: @escaping (Result<Void, GolubetsError>) -> Void) {
+    let channelName: String =
+      "dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.noop\(messageChannelSuffix)"
+    let channel = FlutterBasicMessageChannel(
+      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    channel.sendMessage(nil) { response in
+      guard let listResponse = response as? [Any?] else {
+        completion(.failure(createConnectionError(withChannelName: channelName)))
+        return
+      }
+      if listResponse.count > 1 {
+        let code: String = listResponse[0] as! String
+        let message: String? = nilOrValue(listResponse[1])
+        let details: String? = nilOrValue(listResponse[2])
+        completion(.failure(GolubetsError(code: code, message: message, details: details)))
+      } else {
+        completion(.success(()))
+      }
+    }
+  }
+  public func echo(
+    string aStringArg: String, completion: @escaping (Result<String, GolubetsError>) -> Void
+  ) {
+    let channelName: String =
+      "dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.echoString\(messageChannelSuffix)"
+    let channel = FlutterBasicMessageChannel(
+      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    channel.sendMessage([aStringArg] as [Any?]) { response in
+      guard let listResponse = response as? [Any?] else {
+        completion(.failure(createConnectionError(withChannelName: channelName)))
+        return
+      }
+      if listResponse.count > 1 {
+        let code: String = listResponse[0] as! String
+        let message: String? = nilOrValue(listResponse[1])
+        let details: String? = nilOrValue(listResponse[2])
+        completion(.failure(GolubetsError(code: code, message: message, details: details)))
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
+        completion(
+          .failure(
+            GolubetsError(
+              code: "null-error",
+              message: "Flutter api returned null value for non-null return value.", details: "")))
+      } else {
+        let result = listResponse[0] as! String
+        completion(.success(result))
+      }
+    }
+  }
+  public func throwError(completion: @escaping (Result<Any?, GolubetsError>) -> Void) {
+    let channelName: String =
+      "dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.throwError\(messageChannelSuffix)"
+    let channel = FlutterBasicMessageChannel(
+      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    channel.sendMessage(nil) { response in
+      guard let listResponse = response as? [Any?] else {
+        completion(.failure(createConnectionError(withChannelName: channelName)))
+        return
+      }
+      if listResponse.count > 1 {
+        let code: String = listResponse[0] as! String
+        let message: String? = nilOrValue(listResponse[1])
+        let details: String? = nilOrValue(listResponse[2])
+        completion(.failure(GolubetsError(code: code, message: message, details: details)))
+      } else {
+        let result: Any? = listResponse[0]
+        completion(.success(result))
+      }
+    }
+  }
+  public func throwErrorFromVoid(completion: @escaping (Result<Void, GolubetsError>) -> Void) {
+    let channelName: String =
+      "dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.throwErrorFromVoid\(messageChannelSuffix)"
+    let channel = FlutterBasicMessageChannel(
+      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    channel.sendMessage(nil) { response in
+      guard let listResponse = response as? [Any?] else {
+        completion(.failure(createConnectionError(withChannelName: channelName)))
+        return
+      }
+      if listResponse.count > 1 {
+        let code: String = listResponse[0] as! String
+        let message: String? = nilOrValue(listResponse[1])
+        let details: String? = nilOrValue(listResponse[2])
+        completion(.failure(GolubetsError(code: code, message: message, details: details)))
+      } else {
+        completion(.success(()))
+      }
+    }
   }
 }
 
@@ -6265,6 +6504,8 @@ public protocol FlutterIntegrationCoreApiProtocol {
   /// Returns the passed in generic Object asynchronously.
   func echoAsync(
     _ aStringArg: String, completion: @escaping (Result<String, GolubetsError>) -> Void)
+  /// Returns true if the async FlutterApi method is run on the root isolate.
+  func isAsyncFlutterApiOnRoot(completion: @escaping (Result<Bool, GolubetsError>) -> Void)
 }
 public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
   private let binaryMessenger: FlutterBinaryMessenger
@@ -6359,7 +6600,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6419,7 +6660,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6479,7 +6720,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6507,7 +6748,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6536,7 +6777,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6566,7 +6807,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6596,7 +6837,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6627,7 +6868,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6656,7 +6897,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6687,7 +6928,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6718,7 +6959,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6748,7 +6989,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6779,7 +7020,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6810,7 +7051,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6841,7 +7082,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6872,7 +7113,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6903,7 +7144,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6934,7 +7175,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6965,7 +7206,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -6996,7 +7237,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -7027,7 +7268,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -7058,7 +7299,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -7088,7 +7329,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -7119,7 +7360,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -7690,7 +7931,7 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -7700,6 +7941,201 @@ public class FlutterIntegrationCoreApi: FlutterIntegrationCoreApiProtocol {
         let result = listResponse[0] as! String
         completion(.success(result))
       }
+    }
+  }
+  /// Returns true if the async FlutterApi method is run on the root isolate.
+  public func isAsyncFlutterApiOnRoot(completion: @escaping (Result<Bool, GolubetsError>) -> Void) {
+    let channelName: String =
+      "dev.bayori.golubets.golubets_integration_tests.FlutterIntegrationCoreApi.isAsyncFlutterApiOnRoot\(messageChannelSuffix)"
+    let channel = FlutterBasicMessageChannel(
+      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    channel.sendMessage(nil) { response in
+      guard let listResponse = response as? [Any?] else {
+        completion(.failure(createConnectionError(withChannelName: channelName)))
+        return
+      }
+      if listResponse.count > 1 {
+        let code: String = listResponse[0] as! String
+        let message: String? = nilOrValue(listResponse[1])
+        let details: String? = nilOrValue(listResponse[2])
+        completion(.failure(GolubetsError(code: code, message: message, details: details)))
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
+        completion(
+          .failure(
+            GolubetsError(
+              code: "null-error",
+              message: "Flutter api returned null value for non-null return value.", details: "")))
+      } else {
+        let result = listResponse[0] as! Bool
+        completion(.success(result))
+      }
+    }
+  }
+}
+/// A Host API using callback-based asynchronous methods (@asyncCallback).
+///
+/// Generated protocol from Golubets that represents a handler of messages from Flutter.
+public protocol HostCallbackCoreApi {
+  func noop(completion: @escaping (Result<Void, Error>) -> Void)
+  func echo(_ aString: String, completion: @escaping (Result<String, Error>) -> Void)
+  func echo(_ everything: AllTypes, completion: @escaping (Result<AllTypes, Error>) -> Void)
+  func echoNullable(_ aString: String?, completion: @escaping (Result<String?, Error>) -> Void)
+  func throwError(completion: @escaping (Result<Any?, Error>) -> Void)
+  func throwErrorFromVoid(completion: @escaping (Result<Void, Error>) -> Void)
+  func taskQueueIsBackgroundThread(completion: @escaping (Result<Bool, Error>) -> Void)
+}
+
+/// Generated setup class from Golubets to handle messages through the `binaryMessenger`.
+public class HostCallbackCoreApiSetup {
+  static var codec: FlutterStandardMessageCodec { CoreTestsGolubetsCodec.shared }
+  /// Sets up an instance of `HostCallbackCoreApi` to handle messages through the `binaryMessenger`.
+  public static func setUp(
+    binaryMessenger: FlutterBinaryMessenger, api: HostCallbackCoreApi?,
+    messageChannelSuffix: String = ""
+  ) {
+    let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
+    #if os(iOS)
+      let taskQueue = binaryMessenger.makeBackgroundTaskQueue?()
+    #else
+      let taskQueue: FlutterTaskQueue? = nil
+    #endif
+    let noopChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.noop\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      noopChannel.setMessageHandler { _, reply in
+        api.noop { result in
+          switch result {
+          case .success:
+            reply(wrapResult(nil))
+          case .failure(let error):
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      noopChannel.setMessageHandler(nil)
+    }
+    let echoStringChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.echoString\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      echoStringChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let aStringArg = args[0] as! String
+        api.echo(aStringArg) { result in
+          switch result {
+          case .success(let res):
+            reply(wrapResult(res))
+          case .failure(let error):
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      echoStringChannel.setMessageHandler(nil)
+    }
+    let echoAllTypesChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.echoAllTypes\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      echoAllTypesChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let everythingArg = args[0] as! AllTypes
+        api.echo(everythingArg) { result in
+          switch result {
+          case .success(let res):
+            reply(wrapResult(res))
+          case .failure(let error):
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      echoAllTypesChannel.setMessageHandler(nil)
+    }
+    let echoNullableStringChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.echoNullableString\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      echoNullableStringChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let aStringArg: String? = nilOrValue(args[0])
+        api.echoNullable(aStringArg) { result in
+          switch result {
+          case .success(let res):
+            reply(wrapResult(res))
+          case .failure(let error):
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      echoNullableStringChannel.setMessageHandler(nil)
+    }
+    let throwErrorChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.throwError\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      throwErrorChannel.setMessageHandler { _, reply in
+        api.throwError { result in
+          switch result {
+          case .success(let res):
+            reply(wrapResult(res))
+          case .failure(let error):
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      throwErrorChannel.setMessageHandler(nil)
+    }
+    let throwErrorFromVoidChannel = FlutterBasicMessageChannel(
+      name:
+        "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.throwErrorFromVoid\(channelSuffix)",
+      binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      throwErrorFromVoidChannel.setMessageHandler { _, reply in
+        api.throwErrorFromVoid { result in
+          switch result {
+          case .success:
+            reply(wrapResult(nil))
+          case .failure(let error):
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      throwErrorFromVoidChannel.setMessageHandler(nil)
+    }
+    let taskQueueIsBackgroundThreadChannel =
+      taskQueue == nil
+      ? FlutterBasicMessageChannel(
+        name:
+          "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.taskQueueIsBackgroundThread\(channelSuffix)",
+        binaryMessenger: binaryMessenger, codec: codec)
+      : FlutterBasicMessageChannel(
+        name:
+          "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.taskQueueIsBackgroundThread\(channelSuffix)",
+        binaryMessenger: binaryMessenger, codec: codec, taskQueue: taskQueue)
+    if let api = api {
+      taskQueueIsBackgroundThreadChannel.setMessageHandler { _, reply in
+        api.taskQueueIsBackgroundThread { result in
+          switch result {
+          case .success(let res):
+            reply(wrapResult(res))
+          case .failure(let error):
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      taskQueueIsBackgroundThreadChannel.setMessageHandler(nil)
     }
   }
 }
@@ -7826,7 +8262,7 @@ public class FlutterSmallApi: FlutterSmallApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(
@@ -7855,7 +8291,7 @@ public class FlutterSmallApi: FlutterSmallApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if CoreTestsGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(

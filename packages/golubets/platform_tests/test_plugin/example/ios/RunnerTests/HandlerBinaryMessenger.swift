@@ -7,7 +7,7 @@ import Foundation
 
 typealias HandlerBinaryMessengerHandler = ([Any?]) -> Any
 
-final class HandlerBinaryMessenger: NSObject, FlutterBinaryMessenger, @unchecked Sendable {
+class HandlerBinaryMessenger: NSObject, FlutterBinaryMessenger {
   let codec: FlutterMessageCodec
   let handler: HandlerBinaryMessengerHandler
   private var count = 0

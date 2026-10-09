@@ -34,7 +34,6 @@ const Map<String, Set<GeneratorLanguage>> _unsupportedFiles = <String, Set<Gener
     GeneratorLanguage.java,
     GeneratorLanguage.objc,
   },
-<<<<<<< HEAD:packages/golubets/tool/shared/generation.dart
   'kotlin_nested_sealed_tests': <GeneratorLanguage>{
     GeneratorLanguage.cpp,
     GeneratorLanguage.gobject,
@@ -43,9 +42,12 @@ const Map<String, Set<GeneratorLanguage>> _unsupportedFiles = <String, Set<Gener
     GeneratorLanguage.swift,
   },
   'generics_tests': <GeneratorLanguage>{
-=======
+    GeneratorLanguage.cpp,
+    GeneratorLanguage.gobject,
+    GeneratorLanguage.java,
+    GeneratorLanguage.objc,
+  },
   'native_interop_tests': <GeneratorLanguage>{
->>>>>>> filtered-upstream/main:packages/pigeon/tool/shared/generation.dart
     GeneratorLanguage.cpp,
     GeneratorLanguage.gobject,
     GeneratorLanguage.java,
@@ -186,7 +188,7 @@ Future<int> generateExamplePigeons() async {
     return compileResult;
   }
 
-  success += await runPigeon(
+  success += await runGolubets(
     input: './example/native_interop_app/pigeons/native_interop_example.dart',
     appDirectory: './example/native_interop_app',
     swiftAppDirectory: './example/native_interop_app',
@@ -218,14 +220,11 @@ Future<int> generateTestPigeons({required String baseDir, bool includeOverflow =
     'nullable_returns',
     'primitive',
     'proxy_api_tests',
-<<<<<<< HEAD:packages/golubets/tool/shared/generation.dart
     'kotlin_nested_sealed_tests',
     'generics_tests',
-=======
     // native_interop_tests runs JNIgen which compiles test_plugin; all other
     // Kotlin files must be generated first.
     'native_interop_tests',
->>>>>>> filtered-upstream/main:packages/pigeon/tool/shared/generation.dart
   };
 
   const testPluginName = 'test_plugin';
@@ -438,11 +437,8 @@ Future<int> runGolubets({
         package: kotlinPackage,
         errorClassName: kotlinErrorClassName,
         includeErrorClass: kotlinIncludeErrorClass,
-<<<<<<< HEAD:packages/golubets/tool/shared/generation.dart
         nestSealedClasses: kotlinNestSealedClasses,
-=======
         useJni: kotlinUseJni,
->>>>>>> filtered-upstream/main:packages/pigeon/tool/shared/generation.dart
         useGeneratedAnnotation: kotlinUseGeneratedAnnotation,
         appDirectory: kotlinAppDirectory.isNotEmpty ? kotlinAppDirectory : null,
         configDirectory: kotlinAppDirectory.isNotEmpty ? kotlinAppDirectory : null,
@@ -493,7 +489,7 @@ Future<int> formatAllFiles({
     'run',
     'script/tool/bin/flutter_plugin_tools.dart',
     'format',
-    '--packages=pigeon',
+    '--packages=golubets',
     if (languages.contains(GeneratorLanguage.cpp) ||
         languages.contains(GeneratorLanguage.gobject) ||
         languages.contains(GeneratorLanguage.objc)) ...<String>[
@@ -509,26 +505,7 @@ Future<int> formatAllFiles({
 
   int exitCode = await runProcess(
     dartCommand,
-<<<<<<< HEAD:packages/golubets/tool/shared/generation.dart
-    <String>[
-      'run',
-      'script/tool/bin/flutter_plugin_tools.dart',
-      'format',
-      '--packages=golubets',
-      if (languages.contains(GeneratorLanguage.cpp) ||
-          languages.contains(GeneratorLanguage.gobject) ||
-          languages.contains(GeneratorLanguage.objc))
-        '--clang-format'
-      else
-        '--no-clang-format',
-      if (languages.contains(GeneratorLanguage.java)) '--java' else '--no-java',
-      if (languages.contains(GeneratorLanguage.dart)) '--dart' else '--no-dart',
-      if (languages.contains(GeneratorLanguage.kotlin)) '--kotlin' else '--no-kotlin',
-      if (languages.contains(GeneratorLanguage.swift)) '--swift' else '--no-swift',
-    ],
-=======
     args,
->>>>>>> filtered-upstream/main:packages/pigeon/tool/shared/generation.dart
     workingDirectory: repositoryRoot,
     logFailure: true,
   );

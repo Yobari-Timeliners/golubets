@@ -91,11 +91,6 @@ class Method extends Node {
     required this.parameters,
     required this.location,
     this.isRequired = true,
-<<<<<<< HEAD:packages/golubets/lib/src/ast.dart
-=======
-    this.isAsynchronous = false,
-    this.isAsynchronousCallback = false,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/ast.dart
     this.isStatic = false,
     this.offset,
     this.objcSelector = '',
@@ -114,15 +109,6 @@ class Method extends Node {
   /// The parameters passed into the [Method].
   List<Parameter> parameters;
 
-<<<<<<< HEAD:packages/golubets/lib/src/ast.dart
-=======
-  /// Whether the receiver of this method is expected to return synchronously or not.
-  bool isAsynchronous;
-
-  /// Whether this asynchronous method uses callback-based completions instead of native async/await or suspend functions.
-  bool isAsynchronousCallback;
-
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/ast.dart
   /// The offset in the source file where the field appears.
   int? offset;
 
@@ -159,6 +145,9 @@ class Method extends Node {
 
   /// Whether this method is asynchronous.
   bool get isAsynchronous => !asynchronousType.isNone;
+
+  /// Whether this asynchronous method uses callback-based completions instead of native async/await or suspend functions.
+  bool get isAsynchronousCallback => asynchronousType.isCallback;
 
   @override
   String toString() {
@@ -958,13 +947,10 @@ class Root extends Node {
       apis: <Api>[],
       classes: <Class>[],
       enums: <Enum>[],
-<<<<<<< HEAD:packages/golubets/lib/src/ast.dart
       genericTypeNames: <String>{},
       genericUsage: <String, Set<TypeArgumentCombination>>{},
-=======
       lists: <String, TypeDeclaration>{},
       maps: <String, TypeDeclaration>{},
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/ast.dart
       constants: <Constant>[],
     );
   }

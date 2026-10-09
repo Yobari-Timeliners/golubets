@@ -1680,8 +1680,8 @@ class HostIntegrationCoreApi {
       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
 
+  final BinaryMessenger? golubetsVar_binaryMessenger;
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
   final String golubetsVar_messageChannelSuffix;
@@ -4034,6 +4034,27 @@ class HostIntegrationCoreApi {
     return golubetsVar_replyValue! as bool;
   }
 
+  /// Returns true if the handler is run on a non-main thread, which should be
+  /// true for any platform with TaskQueue support.
+  Future<bool> asyncTaskQueueIsBackgroundThread() async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.asyncTaskQueueIsBackgroundThread$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as bool;
+  }
+
   Future<void> callFlutterNoop() async {
     final golubetsVar_channelName =
         'dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterNoop$golubetsVar_messageChannelSuffix';
@@ -5034,6 +5055,206 @@ class HostIntegrationCoreApi {
     );
     return golubetsVar_replyValue! as String;
   }
+
+  Future<void> callFlutterCallbackNoop() async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterCallbackNoop$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
+  }
+
+  Future<String> callFlutterCallbackEchoString(String aString) async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterCallbackEchoString$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aString]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+
+  Future<Object?> callFlutterCallbackThrowError() async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterCallbackThrowError$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: true,
+    );
+    return golubetsVar_replyValue;
+  }
+
+  Future<void> callFlutterCallbackThrowErrorFromVoid() async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterCallbackThrowErrorFromVoid$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
+  }
+
+  Future<bool> callFlutterIsAsyncFlutterApiOnRoot() async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterIsAsyncFlutterApiOnRoot$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as bool;
+  }
+}
+
+/// A Flutter API using callback-based asynchronous methods (@asyncCallback).
+abstract class FlutterCallbackCoreApi {
+  static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
+
+  Future<void> noop();
+
+  Future<String> echoString(String aString);
+
+  Future<Object?> throwError();
+
+  Future<void> throwErrorFromVoid();
+
+  static void setUp(
+    FlutterCallbackCoreApi? api, {
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+  }) {
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+    {
+      final golubetsVar_channel = BasicMessageChannel<Object?>(
+        'dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.noop$messageChannelSuffix',
+        golubetsChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        golubetsVar_channel.setMessageHandler(null);
+      } else {
+        golubetsVar_channel.setMessageHandler((Object? message) async {
+          try {
+            await api.noop();
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+    {
+      final golubetsVar_channel = BasicMessageChannel<Object?>(
+        'dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.echoString$messageChannelSuffix',
+        golubetsChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        golubetsVar_channel.setMessageHandler(null);
+      } else {
+        golubetsVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final String arg_aString = args[0]! as String;
+          try {
+            final String output = await api.echoString(arg_aString);
+            return wrapResponse(result: output);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+    {
+      final golubetsVar_channel = BasicMessageChannel<Object?>(
+        'dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.throwError$messageChannelSuffix',
+        golubetsChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        golubetsVar_channel.setMessageHandler(null);
+      } else {
+        golubetsVar_channel.setMessageHandler((Object? message) async {
+          try {
+            final Object? output = await api.throwError();
+            return wrapResponse(result: output);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+    {
+      final golubetsVar_channel = BasicMessageChannel<Object?>(
+        'dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.throwErrorFromVoid$messageChannelSuffix',
+        golubetsChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        golubetsVar_channel.setMessageHandler(null);
+      } else {
+        golubetsVar_channel.setMessageHandler((Object? message) async {
+          try {
+            await api.throwErrorFromVoid();
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+  }
 }
 
 /// The core interface that the Dart platform_test code implements for host
@@ -5212,6 +5433,9 @@ abstract class FlutterIntegrationCoreApi {
 
   /// Returns the passed in generic Object asynchronously.
   Future<String> echoAsyncString(String aString);
+
+  /// Returns true if the async FlutterApi method is run on the root isolate.
+  Future<bool> isAsyncFlutterApiOnRoot();
 
   static void setUp(
     FlutterIntegrationCoreApi? api, {
@@ -6545,6 +6769,169 @@ abstract class FlutterIntegrationCoreApi {
         });
       }
     }
+    {
+      final golubetsVar_channel = BasicMessageChannel<Object?>(
+        'dev.bayori.golubets.golubets_integration_tests.FlutterIntegrationCoreApi.isAsyncFlutterApiOnRoot$messageChannelSuffix',
+        golubetsChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        golubetsVar_channel.setMessageHandler(null);
+      } else {
+        golubetsVar_channel.setMessageHandler((Object? message) async {
+          try {
+            final bool output = await api.isAsyncFlutterApiOnRoot();
+            return wrapResponse(result: output);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+  }
+}
+
+/// A Host API using callback-based asynchronous methods (@asyncCallback).
+class HostCallbackCoreApi {
+  /// Constructor for [HostCallbackCoreApi]. The [binaryMessenger] named argument is
+  /// available for dependency injection. If it is left null, the default
+  /// BinaryMessenger will be used which routes to the host platform.
+  HostCallbackCoreApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
+    : golubetsVar_binaryMessenger = binaryMessenger,
+      golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+          ? '.$messageChannelSuffix'
+          : '';
+
+  final BinaryMessenger? golubetsVar_binaryMessenger;
+  static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
+
+  final String golubetsVar_messageChannelSuffix;
+
+  Future<void> noop() async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.noop$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
+  }
+
+  Future<String> echoString(String aString) async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.echoString$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aString]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+
+  Future<AllTypes> echoAllTypes(AllTypes everything) async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.echoAllTypes$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[everything]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as AllTypes;
+  }
+
+  Future<String?> echoNullableString(String? aString) async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.echoNullableString$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aString]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: true,
+    );
+    return golubetsVar_replyValue as String?;
+  }
+
+  Future<Object?> throwError() async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.throwError$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: true,
+    );
+    return golubetsVar_replyValue;
+  }
+
+  Future<void> throwErrorFromVoid() async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.throwErrorFromVoid$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
+  }
+
+  Future<bool> taskQueueIsBackgroundThread() async {
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.taskQueueIsBackgroundThread$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as bool;
   }
 }
 
@@ -6558,8 +6945,8 @@ class HostTrivialApi {
       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
 
+  final BinaryMessenger? golubetsVar_binaryMessenger;
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
   final String golubetsVar_messageChannelSuffix;
@@ -6589,8 +6976,8 @@ class HostSmallApi {
       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
 
+  final BinaryMessenger? golubetsVar_binaryMessenger;
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
   final String golubetsVar_messageChannelSuffix;

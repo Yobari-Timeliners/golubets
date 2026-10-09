@@ -33,7 +33,6 @@ import 'types/task_queue.dart';
 
 export 'types/task_queue.dart' show TaskQueueType;
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
 /// {@macro pigeon_lib.async}
 class Async {
   /// Constructor for [Async].
@@ -43,11 +42,6 @@ class Async {
   ///
   /// [AsyncType.callback] is used by default.
   final AsyncType? type;
-=======
-class _Asynchronous {
-  const _Asynchronous({this.useCallback = false});
-  final bool useCallback;
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
 }
 
 /// {@template pigeon_lib.async_type}
@@ -122,6 +116,11 @@ class _AwaitAsyncType extends AsyncType {
 /// {@endtemplate}
 const Object async = Async();
 
+/// Metadata to annotate an Api method as asynchronous using callback-based completions.
+///
+/// Same as [async]; kept for compatibility with Pigeon definitions.
+const Object asyncCallback = Async(type: AsyncType.callback());
+
 class _Attached {
   const _Attached();
 }
@@ -130,15 +129,6 @@ class _Static {
   const _Static();
 }
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
-=======
-/// Metadata to annotate an Api method as asynchronous using native coroutines/async-await.
-const Object async = _Asynchronous();
-
-/// Metadata to annotate an Api method as asynchronous using callback-based completions.
-const Object asyncCallback = _Asynchronous(useCallback: true);
-
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
 /// Metadata to annotate the field of a ProxyApi as an Attached Field.
 ///
 /// Attached fields provide a synchronous [ProxyApi] instance as a field for
@@ -178,11 +168,7 @@ class ConfigureGolubets {
   final GolubetsOptions options;
 }
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
 /// Metadata to annotate a Golubets API implemented by the host-platform.
-=======
-/// Metadata to annotate a pigeon API implemented by the host-platform.
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
 ///
 /// The abstract class with this annotation groups a collection of Dart↔host
 /// interop methods. These methods are invoked by Dart and are received by a
@@ -211,11 +197,7 @@ class HostApi {
   final String? dartHostTestHandler;
 }
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
 /// Metadata to annotate a Golubets API implemented by Flutter.
-=======
-/// Metadata to annotate a pigeon API implemented by Flutter.
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
 ///
 /// The abstract class with this annotation groups a collection of Dart↔host
 /// interop methods. These methods are invoked by the host-platform (such as in
@@ -333,17 +315,10 @@ class TaskQueue {
   final TaskQueueType type;
 }
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
 /// Options used when configuring Golub.
 class GolubetsOptions {
   /// Creates a instance of GolubetsOptions
   const GolubetsOptions({
-=======
-/// Options used when configuring pigeon.
-class PigeonOptions {
-  /// Creates a instance of PigeonOptions
-  const PigeonOptions({
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
     this.input,
     this.appDirectory,
     this.configDirectory,
@@ -471,20 +446,13 @@ class PigeonOptions {
   /// Whether to ignore lint violations in generated Dart code.
   final bool ignoreLints;
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
+  /// A String to augment class names to avoid cross-file collisions.
+  final String? fileSpecificClassNameComponent;
+
   /// Creates a [GolubetsOptions] from a Map representation where:
   /// `x = GolubetsOptions.fromMap(x.toMap())`.
   static GolubetsOptions fromMap(Map<String, Object> map) {
     return GolubetsOptions(
-=======
-  /// A String to augment class names to avoid cross-file collisions.
-  final String? fileSpecificClassNameComponent;
-
-  /// Creates a [PigeonOptions] from a Map representation where:
-  /// `x = PigeonOptions.fromMap(x.toMap())`.
-  static PigeonOptions fromMap(Map<String, Object> map) {
-    return PigeonOptions(
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
       input: map['input'] as String?,
       appDirectory: map['appDirectory'] as String?,
       configDirectory: map['configDirectory'] as String?,
@@ -568,15 +536,9 @@ class PigeonOptions {
   }
 
   /// Overrides any non-null parameters from [options] into this to make a new
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
   /// [GolubetsOptions].
   GolubetsOptions merge(GolubetsOptions options) {
     return GolubetsOptions.fromMap(mergeMaps(toMap(), options.toMap()));
-=======
-  /// [PigeonOptions].
-  PigeonOptions merge(PigeonOptions options) {
-    return PigeonOptions.fromMap(mergePigeonMaps(toMap(), options.toMap()));
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
   }
 
   /// Returns provided or deduced package name, throws `Exception` if none found.
@@ -641,11 +603,7 @@ class Golubets {
   /// String that describes how the tool is used.
   static String get usage {
     return '''
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
 Golubets is a tool for generating type-safe communication code between Flutter
-=======
-pigeon is a tool for generating type-safe communication code between Flutter
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
 and the host platform.
 
 usage: golubets --input <golubets path> --dart_out <dart path> [option]*
@@ -973,15 +931,8 @@ ${_argParser.usage}''';
       }
     }
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib.dart
     if (parseResults.golubetsOptions != null && mergeDefinitionFileOptions) {
       options = GolubetsOptions.fromMap(mergeMaps(options.toMap(), parseResults.golubetsOptions!));
-=======
-    if (parseResults.pigeonOptions != null && mergeDefinitionFileOptions) {
-      options = PigeonOptions.fromMap(
-        mergePigeonMaps(options.toMap(), parseResults.pigeonOptions!),
-      );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib.dart
     }
 
     final InternalGolubetsOptions internalOptions = InternalGolubetsOptions.fromGolubetsOptions(
@@ -1215,9 +1166,9 @@ ${_argParser.usage}''';
 
 ================================================================================
 
-PIGEON USERS: If you have changed your pigeon api surface and haven't updated your native code that uses it, you may need to do that before running JNIgen.
+GOLUBETS USERS: If you have changed your golubets api surface and haven't updated your native code that uses it, you may need to do that before running JNIgen.
 
-Once you have updated the code to use the newly generated API surface, re-run Pigeon and JNIgen will be run as well.
+Once you have updated the code to use the newly generated API surface, re-run Golubets and JNIgen will be run as well.
 
 If you have updated the native code and JNIgen still fails to run, review the error output above.
 

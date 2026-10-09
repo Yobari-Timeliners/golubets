@@ -33,11 +33,7 @@ const DocumentCommentSpecification _docCommentSpec = DocumentCommentSpecificatio
 const String _codecName = 'GolubetsCodec';
 
 /// Name of field used for host API codec.
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
 const String _golubetsMethodChannelCodec = 'GolubetsMethodCodec';
-=======
-const String _pigeonMethodCodec = 'PigeonMethodCodec';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
 
 const String _overflowClassName = 'GolubetsCodecOverflow';
 
@@ -58,11 +54,8 @@ class KotlinOptions {
     this.fileSpecificClassNameComponent,
     this.nestSealedClasses = false,
     this.useGeneratedAnnotation = false,
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
     this.usePureSealedSubclasses = false,
-=======
     this.jniClassPaths,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
   });
 
   /// The package where the generated class will live.
@@ -131,7 +124,6 @@ class KotlinOptions {
   /// default.
   final bool useGeneratedAnnotation;
 
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
   /// {@template kotlin_options.sealed_names_purified}
   /// Whether the names of sealed classes are purified.
   ///
@@ -166,11 +158,10 @@ class KotlinOptions {
   /// It will be purified if [KotlinOptions.nestSealedClasses] is true.
   /// {@endtemplate}
   final bool usePureSealedSubclasses;
-=======
+
   /// Paths to directories or JAR files containing compiled Kotlin/Java classes.
   /// Used for JNIgen to locate class definitions during summarization.
   final List<String>? jniClassPaths;
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
 
   /// Creates a [KotlinOptions] from a Map representation where:
   /// `x = KotlinOptions.fromMap(x.toMap())`.
@@ -186,11 +177,8 @@ class KotlinOptions {
       fileSpecificClassNameComponent: map['fileSpecificClassNameComponent'] as String?,
       nestSealedClasses: map['nestSealedClasses'] as bool? ?? false,
       useGeneratedAnnotation: map['useGeneratedAnnotation'] as bool? ?? false,
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
       usePureSealedSubclasses: map['usePureSealedSubclasses'] as bool? ?? false,
-=======
       jniClassPaths: (map['jniClassPaths'] as List<dynamic>?)?.cast<String>(),
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
     );
   }
 
@@ -209,11 +197,8 @@ class KotlinOptions {
         'fileSpecificClassNameComponent': fileSpecificClassNameComponent!,
       'nestSealedClasses': nestSealedClasses,
       'useGeneratedAnnotation': useGeneratedAnnotation,
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
       'usePureSealedSubclasses': usePureSealedSubclasses,
-=======
       if (jniClassPaths != null) 'jniClassPaths': jniClassPaths!,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
     };
     return result;
   }
@@ -221,7 +206,7 @@ class KotlinOptions {
   /// Overrides any non-null parameters from [options] into this to make a new
   /// [KotlinOptions].
   KotlinOptions merge(KotlinOptions options) {
-    return KotlinOptions.fromMap(mergePigeonMaps(toMap(), options.toMap()));
+    return KotlinOptions.fromMap(mergeMaps(toMap(), options.toMap()));
   }
 }
 
@@ -240,11 +225,8 @@ class InternalKotlinOptions extends InternalOptions {
     this.fileSpecificClassNameComponent,
     this.nestSealedClasses = false,
     this.useGeneratedAnnotation = false,
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
     this.usePureSealedSubclasses = false,
-=======
     this.jniClassPaths,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
   });
 
   /// Creates InternalKotlinOptions from KotlinOptions.
@@ -261,21 +243,15 @@ class InternalKotlinOptions extends InternalOptions {
        appDirectory = options.appDirectory,
        configDirectory = options.configDirectory,
        useGeneratedAnnotation = options.useGeneratedAnnotation,
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
-       fileSpecificClassNameComponent =
-           options.fileSpecificClassNameComponent ??
-           kotlinOut.split('/').lastOrNull?.split('.').first,
-       nestSealedClasses = options.nestSealedClasses,
-       usePureSealedSubclasses = options.usePureSealedSubclasses;
-=======
        jniClassPaths = options.jniClassPaths,
        fileSpecificClassNameComponent = toUpperCamelCase(
          (options.useJni
                  ? fileSpecificClassNameComponent ?? options.fileSpecificClassNameComponent
                  : options.fileSpecificClassNameComponent ?? fileSpecificClassNameComponent) ??
              deduceClassNameComponent(kotlinOut),
-       );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
+       ),
+       nestSealedClasses = options.nestSealedClasses,
+       usePureSealedSubclasses = options.usePureSealedSubclasses;
 
   /// The package where the generated class will live.
   final String? package;
@@ -315,13 +291,11 @@ class InternalKotlinOptions extends InternalOptions {
   /// default.
   final bool useGeneratedAnnotation;
 
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
   /// {@macro kotlin_options.sealed_names_purified}
   final bool usePureSealedSubclasses;
-=======
+
   /// Paths to directories or JAR files containing compiled Kotlin/Java classes.
   final List<String>? jniClassPaths;
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
 }
 
 /// Options that control how Kotlin code will be generated for a specific
@@ -389,30 +363,6 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     }
     indent.newln();
     indent.writeln('import android.util.Log');
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
-    indent.writeln('import io.flutter.plugin.common.BasicMessageChannel');
-    indent.writeln('import io.flutter.plugin.common.BinaryMessenger');
-    indent.writeln('import io.flutter.plugin.common.EventChannel');
-    indent.writeln('import io.flutter.plugin.common.MessageCodec');
-    indent.writeln('import io.flutter.plugin.common.StandardMethodCodec');
-    indent.writeln('import io.flutter.plugin.common.StandardMessageCodec');
-    indent.writeln('import java.io.ByteArrayOutputStream');
-    indent.writeln('import java.nio.ByteBuffer');
-    if (root.apis.any(
-      (Api api) => api.methods.any(
-        (Method it) => it.asynchronousType.isAwait && it.location == ApiLocation.host,
-      ),
-    )) {
-      indent.writeln('import kotlinx.coroutines.launch');
-      indent.writeln('import kotlinx.coroutines.CoroutineScope');
-    }
-
-    if (root.genericTypeNames.isNotEmpty) {
-      indent.writeln('import kotlin.reflect.typeOf');
-      indent.writeln('import kotlin.reflect.KType');
-    }
-
-=======
     if (generatorOptions.useJni) {
       indent.writeln('import androidx.annotation.Keep');
     }
@@ -426,22 +376,28 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       indent.writeln('import java.io.ByteArrayOutputStream');
       indent.writeln('import java.nio.ByteBuffer');
     }
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
+
+    if (root.genericTypeNames.isNotEmpty) {
+      indent.writeln('import kotlin.reflect.typeOf');
+      indent.writeln('import kotlin.reflect.KType');
+    }
+
     if (generatorOptions.useGeneratedAnnotation) {
       indent.writeln('import javax.annotation.Generated');
     }
-    final bool hasSuspendHostApiMethods = root.apis.whereType<AstHostApi>().any(
-      (AstHostApi api) => api.methods.any(
-        (Method method) => method.isAsynchronous && !method.isAsynchronousCallback,
+    final bool hasSuspendHostApiMethods = root.apis.any(
+      (Api api) => api.methods.any(
+        (Method method) => method.asynchronousType.isAwait && method.location == ApiLocation.host,
       ),
     );
     final bool hasSuspendFlutterApiMethods = root.apis.whereType<AstFlutterApi>().any(
-      (AstFlutterApi api) => api.methods.any((Method method) => !method.isAsynchronousCallback),
+      (AstFlutterApi api) => api.methods.any((Method method) => method.asynchronousType.isAwait),
     );
-    if (hasSuspendHostApiMethods || hasSuspendFlutterApiMethods) {
+    if (hasSuspendHostApiMethods) {
       indent.writeln('import kotlinx.coroutines.CoroutineScope');
-      indent.writeln('import kotlinx.coroutines.Dispatchers');
       indent.writeln('import kotlinx.coroutines.launch');
+    }
+    if (hasSuspendFlutterApiMethods) {
       indent.writeln('import kotlinx.coroutines.suspendCancellableCoroutine');
       indent.writeln('import kotlin.coroutines.resume');
       indent.writeln('import kotlin.coroutines.resumeWithException');
@@ -898,11 +854,6 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     Indent indent, {
     required String dartPackageName,
   }) {
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
-    final classLookup = <String, Class>{
-      for (final Class classDefinition in root.classes) classDefinition.name: classDefinition,
-    };
-=======
     if (generatorOptions.useJni &&
         !root.containsEventChannel &&
         !root.containsFlutterApi &&
@@ -912,7 +863,9 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     if (generatorOptions.useJni && !root.containsEventChannel && !root.containsProxyApi) {
       return;
     }
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
+    final classLookup = <String, Class>{
+      for (final Class classDefinition in root.classes) classDefinition.name: classDefinition,
+    };
     final List<EnumeratedType> enumeratedTypes = getEnumeratedTypes(
       root,
       excludeSealedClasses: true,
@@ -1059,11 +1012,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
     indent.newln();
     if (root.containsEventChannel) {
       indent.writeln(
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
         'val ${generatorOptions.fileSpecificClassNameComponent}$_golubetsMethodChannelCodec = StandardMethodCodec(${generatorOptions.fileSpecificClassNameComponent}$_codecName())',
-=======
-        'val ${generatorOptions.fileSpecificClassNameComponent}$_pigeonMethodCodec = StandardMethodCodec(${generatorOptions.fileSpecificClassNameComponent}$_codecName())',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
       );
       indent.newln();
     }
@@ -1254,7 +1203,8 @@ class ${api.name}Registrar() {
           channelName: makeChannelName(api, method, dartPackageName),
           documentationComments: method.documentationComments,
           dartPackageName: dartPackageName,
-          isAsynchronousCallback: method.isAsynchronousCallback,
+          // FlutterApi methods use callbacks unless explicitly annotated with `AsyncType.await()`.
+          isAsynchronousCallback: !method.asynchronousType.isAwait,
           onWriteBody:
               (
                 Indent indent, {
@@ -1402,12 +1352,8 @@ class ${api.name}Registrar() {
           documentationComments: method.documentationComments,
           returnType: method.returnType,
           parameters: method.parameters,
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
-          asynchronousType: method.asynchronousType,
-=======
           isAsynchronous: method.isAsynchronous,
           isAsynchronousCallback: method.isAsynchronousCallback,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
         );
       }
 
@@ -1452,12 +1398,7 @@ class ${api.name}Registrar() {
               taskQueueType: method.taskQueueType,
               parameters: method.parameters,
               returnType: method.returnType,
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
               asynchronousType: method.asynchronousType,
-=======
-              isAsynchronous: method.isAsynchronous,
-              isAsynchronousCallback: method.isAsynchronousCallback,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
               serialBackgroundQueue: method.taskQueueType == TaskQueueType.serialBackgroundThread
                   ? serialBackgroundQueue
                   : null,
@@ -1845,16 +1786,11 @@ class ${api.name}Registrar() {
               if (instanceName.isNotEmpty()) {
                 channelName += ".\$instanceName"
               }
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
               val internalStreamHandler = ${generatorOptions.fileSpecificClassNameComponent}GolubetsStreamHandler<${_kotlinTypeForDartType(func.returnType)}>(streamHandler)
               EventChannel(messenger, channelName, ${generatorOptions.fileSpecificClassNameComponent}$_golubetsMethodChannelCodec).setStreamHandler(internalStreamHandler)
-=======
-              val internalStreamHandler = ${generatorOptions.fileSpecificClassNameComponent}PigeonStreamHandler<${_kotlinTypeForDartType(func.returnType)}>(streamHandler)
-              EventChannel(messenger, channelName, ${generatorOptions.fileSpecificClassNameComponent}$_pigeonMethodCodec).setStreamHandler(internalStreamHandler)
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
             }
           }
-        // Implement methods from ${generatorOptions.fileSpecificClassNameComponent}PigeonEventChannelWrapper
+        // Implement methods from ${generatorOptions.fileSpecificClassNameComponent}GolubetsEventChannelWrapper
         override fun onListen(p0: Any?, sink: GolubetsEventSink<${_kotlinTypeForDartType(func.returnType)}>) {}
 
         override fun onCancel(p0: Any?) {}
@@ -2120,17 +2056,13 @@ fun floatHash(f: Float): Int {
     required List<Parameter> parameters,
     List<String> documentationComments = const <String>[],
     int? minApiRequirement,
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
-=======
     bool isAsynchronous = false,
     bool isAsynchronousCallback = false,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
     bool isOpen = false,
     bool isAbstract = false,
     bool isOverride = false,
     bool useJni = false,
     String Function(int index, NamedType type) getArgumentName = _getArgumentName,
-    AsynchronousType asynchronousType = AsynchronousType.none,
   }) {
     final bool useSuspend = isAsynchronous && !isAsynchronousCallback;
     final argSignature = <String>[];
@@ -2158,12 +2090,6 @@ fun floatHash(f: Float): Int {
     }
 
     final openKeyword = isOpen ? 'open ' : '';
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
-    final abstractKeyword = isAbstract ? 'abstract ' : '';
-    final suspendKeyword = asynchronousType.isAwait ? 'suspend ' : '';
-
-    if (asynchronousType.isCallback) {
-=======
     final abstractKeyword = isAbstract
         ? 'abstract '
         : isOverride
@@ -2171,23 +2097,8 @@ fun floatHash(f: Float): Int {
         : '';
 
     if (isAsynchronous && !useSuspend) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
       argSignature.add('callback: (Result<$resultType>) -> Unit');
-      indent.writeln(
-        '$openKeyword$abstractKeyword${suspendKeyword}fun $name(${argSignature.join(', ')})',
-      );
-    } else if (returnType.isVoid && !asynchronousType.isAwait) {
       indent.writeln('$openKeyword${abstractKeyword}fun $name(${argSignature.join(', ')})');
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
-    } else if (returnType.isVoid) {
-      indent.writeln(
-        '$openKeyword$abstractKeyword${suspendKeyword}fun $name(${argSignature.join(', ')})',
-      );
-    } else {
-      indent.writeln(
-        '$openKeyword$abstractKeyword${suspendKeyword}fun $name(${argSignature.join(', ')}): $returnTypeString',
-      );
-=======
     } else {
       final suspendKeyword = isAsynchronous && useSuspend ? 'suspend ' : '';
       if (returnType.isVoid) {
@@ -2199,7 +2110,6 @@ fun floatHash(f: Float): Int {
           '$openKeyword$abstractKeyword${suspendKeyword}fun $name(${argSignature.join(', ')}): $returnTypeString',
         );
       }
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
     }
   }
 
@@ -2212,11 +2122,6 @@ fun floatHash(f: Float): Int {
     required List<Parameter> parameters,
     required TypeDeclaration returnType,
     String setHandlerCondition = 'api != null',
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
-=======
-    bool isAsynchronous = false,
-    bool isAsynchronousCallback = false,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
     String? serialBackgroundQueue,
     String Function(List<String> safeArgNames, {required String apiVarName})? onCreateCall,
     AsynchronousType asynchronousType = AsynchronousType.none,
@@ -2253,30 +2158,7 @@ fun floatHash(f: Float): Int {
               ? onCreateCall(methodArguments, apiVarName: 'api')
               : 'api.$name(${methodArguments.join(', ')})';
 
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
           if (asynchronousType.isCallback) {
-=======
-          if (isAsynchronous && !isAsynchronousCallback) {
-            final scope = serialBackgroundQueue != null
-                ? 'CoroutineScope(Dispatchers.Unconfined)'
-                : 'CoroutineScope(Dispatchers.Main)';
-            indent.writeScoped('$scope.launch {', '}', () {
-              indent.writeScoped('val wrapped: List<Any?> = try {', '}', () {
-                if (returnType.isVoid) {
-                  indent.writeln(call);
-                  indent.writeln('listOf(null)');
-                } else {
-                  indent.writeln('listOf($call)');
-                }
-              }, addTrailingNewline: false);
-              indent.add(' catch (exception: Throwable) ');
-              indent.addScoped('{', '}', () {
-                indent.writeln('${_getUtilsClassName(generatorOptions)}.wrapError(exception)');
-              });
-              indent.writeln('reply.reply(wrapped)');
-            });
-          } else if (isAsynchronous) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
             final String resultType = returnType.isVoid
                 ? 'Unit'
                 : _nullSafeKotlinTypeForDartType(returnType);
@@ -2362,12 +2244,8 @@ fun floatHash(f: Float): Int {
       returnType: returnType,
       parameters: parameters,
       documentationComments: documentationComments,
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
-      asynchronousType: AsynchronousType.callback,
-=======
       isAsynchronous: isAsynchronous,
       isAsynchronousCallback: isAsynchronousCallback,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
       minApiRequirement: minApiRequirement,
       getArgumentName: _getSafeArgumentName,
     );
@@ -2668,12 +2546,8 @@ fun floatHash(f: Float): Int {
         name: method.name,
         returnType: method.returnType,
         documentationComments: method.documentationComments,
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
-        asynchronousType: method.asynchronousType,
-=======
         isAsynchronous: method.isAsynchronous,
-        isAsynchronousCallback: true,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
+        isAsynchronousCallback: method.isAsynchronousCallback,
         isAbstract: true,
         minApiRequirement: _findAndroidHighestApiRequirement(<TypeDeclaration>[
           if (!method.isStatic) apiAsTypeDeclaration,
@@ -2844,12 +2718,7 @@ fun floatHash(f: Float): Int {
                 channelName: makeChannelName(api, method, dartPackageName),
                 taskQueueType: method.taskQueueType,
                 returnType: method.returnType,
-<<<<<<< HEAD:packages/golubets/lib/src/kotlin/kotlin_generator.dart
                 asynchronousType: method.asynchronousType,
-=======
-                isAsynchronous: method.isAsynchronous,
-                isAsynchronousCallback: true,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/kotlin/kotlin_generator.dart
                 parameters: <Parameter>[
                   if (!method.isStatic)
                     Parameter(

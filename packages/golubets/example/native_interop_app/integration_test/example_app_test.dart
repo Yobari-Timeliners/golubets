@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:golubets_native_interop_app/main.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:pigeon_native_interop_app/main.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();

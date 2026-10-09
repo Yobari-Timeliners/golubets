@@ -2647,7 +2647,7 @@ name: foobar
       expect(code, contains('this.field1 = TestEnum.firstValue'));
       expect(code, contains('enum TestEnum {'));
       expect(code, contains('firstValue,'));
-      expect(code, contains('secondValue,'));
+      expect(code, contains('secondValue;'));
     });
 
     test('gen class with object creation default value', () {

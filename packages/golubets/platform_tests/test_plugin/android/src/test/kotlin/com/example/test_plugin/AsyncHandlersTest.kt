@@ -5,41 +5,21 @@
 package com.example.test_plugin
 
 import io.flutter.plugin.common.BinaryMessenger
-import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import java.nio.ByteBuffer
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
-import org.junit.Before
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class AsyncHandlersTest {
 
-  @Before
-  fun setUp() {
-    Dispatchers.setMain(UnconfinedTestDispatcher())
-  }
-
-  @After
-  fun tearDown() {
-    Dispatchers.resetMain()
-  }
-
   @Test
-  fun testAsyncHost2Flutter() = runTest {
+  fun testAsyncHost2Flutter() {
     val binaryMessenger = mockk<BinaryMessenger>()
     val api = FlutterIntegrationCoreApi(binaryMessenger)
 
@@ -56,8 +36,13 @@ internal class AsyncHandlersTest {
           reply.reply(replyData)
         }
 
-    val res = api.echoAsyncString(value)
-    assertEquals(value, res)
+    var didCall = false
+    api.echoAsyncString(value) {
+      didCall = true
+      assertEquals(it.getOrNull(), value)
+    }
+
+    assertTrue(didCall)
 
     verify {
       binaryMessenger.send(
@@ -82,7 +67,11 @@ internal class AsyncHandlersTest {
           "dev.bayori.golubets.golubets_integration_tests.HostSmallApi.voidVoid", any())
     } returns Unit
     every { binaryMessenger.setMessageHandler(channelName, capture(handlerSlot)) } returns Unit
-    coEvery { api.echo(any()) } returns input
+    every { api.echo(any(), any()) } answers
+        {
+          val callback = arg<(Result<String>) -> Unit>(1)
+          callback(Result.success(input))
+        }
 
     HostSmallApi.setUp(binaryMessenger, api)
 
@@ -98,7 +87,7 @@ internal class AsyncHandlersTest {
     }
 
     verify { binaryMessenger.setMessageHandler(channelName, handlerSlot.captured) }
-    coVerify { api.echo(input) }
+    verify { api.echo(input, any()) }
   }
 
   @Test
@@ -115,7 +104,11 @@ internal class AsyncHandlersTest {
       binaryMessenger.setMessageHandler(
           "dev.bayori.golubets.golubets_integration_tests.HostSmallApi.echo", any())
     } returns Unit
-    coEvery { api.voidVoid() } returns Unit
+    every { api.voidVoid(any()) } answers
+        {
+          val callback = arg<() -> Unit>(0)
+          callback()
+        }
 
     HostSmallApi.setUp(binaryMessenger, api)
 
@@ -124,11 +117,10 @@ internal class AsyncHandlersTest {
     handlerSlot.captured.onMessage(message) {
       it?.rewind()
       @Suppress("UNCHECKED_CAST") val wrapped = codec.decodeMessage(it) as MutableList<Any>?
-      assertNotNull(wrapped)
-      assertNull(wrapped?.first())
+      assertNull(wrapped)
     }
 
     verify { binaryMessenger.setMessageHandler(channelName, handlerSlot.captured) }
-    coVerify { api.voidVoid() }
+    verify { api.voidVoid(any()) }
   }
 }

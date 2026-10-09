@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:pigeon/pigeon.dart';
+import 'package:golubets/golubets.dart';
 
 // #docregion config
-@ConfigurePigeon(
-  PigeonOptions(
+@ConfigureGolubets(
+  GolubetsOptions(
     // (Recommended) Path to the compiled application directory (where pubspec.yaml resides)
     appDirectory: './',
     dartOptions: DartOptions(),

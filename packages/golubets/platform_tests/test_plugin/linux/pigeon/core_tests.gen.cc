@@ -14445,6 +14445,81 @@ core_tests_golubets_test_host_integration_core_api_task_queue_is_background_thre
 }
 
 G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiAsyncTaskQueueIsBackgroundThreadResponse,
+    core_tests_golubets_test_host_integration_core_api_async_task_queue_is_background_thread_response,
+    CORE_TESTS_GOLUBETS_TEST,
+    HOST_INTEGRATION_CORE_API_ASYNC_TASK_QUEUE_IS_BACKGROUND_THREAD_RESPONSE,
+    GObject)
+
+struct
+    _CoreTestsGolubetsTestHostIntegrationCoreApiAsyncTaskQueueIsBackgroundThreadResponse {
+  GObject parent_instance;
+
+  FlValue* value;
+};
+
+G_DEFINE_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiAsyncTaskQueueIsBackgroundThreadResponse,
+    core_tests_golubets_test_host_integration_core_api_async_task_queue_is_background_thread_response,
+    G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_host_integration_core_api_async_task_queue_is_background_thread_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestHostIntegrationCoreApiAsyncTaskQueueIsBackgroundThreadResponse*
+      self =
+          CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_ASYNC_TASK_QUEUE_IS_BACKGROUND_THREAD_RESPONSE(
+              object);
+  g_clear_pointer(&self->value, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_host_integration_core_api_async_task_queue_is_background_thread_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_host_integration_core_api_async_task_queue_is_background_thread_response_init(
+    CoreTestsGolubetsTestHostIntegrationCoreApiAsyncTaskQueueIsBackgroundThreadResponse*
+        self) {}
+
+static void
+core_tests_golubets_test_host_integration_core_api_async_task_queue_is_background_thread_response_class_init(
+    CoreTestsGolubetsTestHostIntegrationCoreApiAsyncTaskQueueIsBackgroundThreadResponseClass*
+        klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_host_integration_core_api_async_task_queue_is_background_thread_response_dispose;
+}
+
+static CoreTestsGolubetsTestHostIntegrationCoreApiAsyncTaskQueueIsBackgroundThreadResponse*
+core_tests_golubets_test_host_integration_core_api_async_task_queue_is_background_thread_response_new(
+    gboolean return_value) {
+  CoreTestsGolubetsTestHostIntegrationCoreApiAsyncTaskQueueIsBackgroundThreadResponse*
+      self = CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_ASYNC_TASK_QUEUE_IS_BACKGROUND_THREAD_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_integration_core_api_async_task_queue_is_background_thread_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_bool(return_value));
+  return self;
+}
+
+static CoreTestsGolubetsTestHostIntegrationCoreApiAsyncTaskQueueIsBackgroundThreadResponse*
+core_tests_golubets_test_host_integration_core_api_async_task_queue_is_background_thread_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details) {
+  CoreTestsGolubetsTestHostIntegrationCoreApiAsyncTaskQueueIsBackgroundThreadResponse*
+      self = CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_ASYNC_TASK_QUEUE_IS_BACKGROUND_THREAD_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_integration_core_api_async_task_queue_is_background_thread_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(code));
+  fl_value_append_take(self->value,
+                       fl_value_new_string(message != nullptr ? message : ""));
+  fl_value_append_take(self->value, details != nullptr ? fl_value_ref(details)
+                                                       : fl_value_new_null());
+  return self;
+}
+
+G_DECLARE_FINAL_TYPE(
     CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterNoopResponse,
     core_tests_golubets_test_host_integration_core_api_call_flutter_noop_response,
     CORE_TESTS_GOLUBETS_TEST,
@@ -18303,6 +18378,379 @@ core_tests_golubets_test_host_integration_core_api_call_flutter_small_api_echo_s
   return self;
 }
 
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackNoopResponse,
+    core_tests_golubets_test_host_integration_core_api_call_flutter_callback_noop_response,
+    CORE_TESTS_GOLUBETS_TEST,
+    HOST_INTEGRATION_CORE_API_CALL_FLUTTER_CALLBACK_NOOP_RESPONSE, GObject)
+
+struct
+    _CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackNoopResponse {
+  GObject parent_instance;
+
+  FlValue* value;
+};
+
+G_DEFINE_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackNoopResponse,
+    core_tests_golubets_test_host_integration_core_api_call_flutter_callback_noop_response,
+    G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_noop_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackNoopResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_CALL_FLUTTER_CALLBACK_NOOP_RESPONSE(
+          object);
+  g_clear_pointer(&self->value, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_host_integration_core_api_call_flutter_callback_noop_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_noop_response_init(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackNoopResponse*
+        self) {}
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_noop_response_class_init(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackNoopResponseClass*
+        klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_host_integration_core_api_call_flutter_callback_noop_response_dispose;
+}
+
+static CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackNoopResponse*
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_noop_response_new() {
+  CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackNoopResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_CALL_FLUTTER_CALLBACK_NOOP_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_integration_core_api_call_flutter_callback_noop_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_null());
+  return self;
+}
+
+static CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackNoopResponse*
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_noop_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details) {
+  CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackNoopResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_CALL_FLUTTER_CALLBACK_NOOP_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_integration_core_api_call_flutter_callback_noop_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(code));
+  fl_value_append_take(self->value,
+                       fl_value_new_string(message != nullptr ? message : ""));
+  fl_value_append_take(self->value, details != nullptr ? fl_value_ref(details)
+                                                       : fl_value_new_null());
+  return self;
+}
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackEchoStringResponse,
+    core_tests_golubets_test_host_integration_core_api_call_flutter_callback_echo_string_response,
+    CORE_TESTS_GOLUBETS_TEST,
+    HOST_INTEGRATION_CORE_API_CALL_FLUTTER_CALLBACK_ECHO_STRING_RESPONSE,
+    GObject)
+
+struct
+    _CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackEchoStringResponse {
+  GObject parent_instance;
+
+  FlValue* value;
+};
+
+G_DEFINE_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackEchoStringResponse,
+    core_tests_golubets_test_host_integration_core_api_call_flutter_callback_echo_string_response,
+    G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_echo_string_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackEchoStringResponse*
+      self =
+          CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_CALL_FLUTTER_CALLBACK_ECHO_STRING_RESPONSE(
+              object);
+  g_clear_pointer(&self->value, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_host_integration_core_api_call_flutter_callback_echo_string_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_echo_string_response_init(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackEchoStringResponse*
+        self) {}
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_echo_string_response_class_init(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackEchoStringResponseClass*
+        klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_host_integration_core_api_call_flutter_callback_echo_string_response_dispose;
+}
+
+static CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackEchoStringResponse*
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_echo_string_response_new(
+    const gchar* return_value) {
+  CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackEchoStringResponse*
+      self = CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_CALL_FLUTTER_CALLBACK_ECHO_STRING_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_integration_core_api_call_flutter_callback_echo_string_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(return_value));
+  return self;
+}
+
+static CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackEchoStringResponse*
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_echo_string_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details) {
+  CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackEchoStringResponse*
+      self = CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_CALL_FLUTTER_CALLBACK_ECHO_STRING_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_integration_core_api_call_flutter_callback_echo_string_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(code));
+  fl_value_append_take(self->value,
+                       fl_value_new_string(message != nullptr ? message : ""));
+  fl_value_append_take(self->value, details != nullptr ? fl_value_ref(details)
+                                                       : fl_value_new_null());
+  return self;
+}
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorResponse,
+    core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_response,
+    CORE_TESTS_GOLUBETS_TEST,
+    HOST_INTEGRATION_CORE_API_CALL_FLUTTER_CALLBACK_THROW_ERROR_RESPONSE,
+    GObject)
+
+struct
+    _CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorResponse {
+  GObject parent_instance;
+
+  FlValue* value;
+};
+
+G_DEFINE_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorResponse,
+    core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_response,
+    G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorResponse*
+      self =
+          CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_CALL_FLUTTER_CALLBACK_THROW_ERROR_RESPONSE(
+              object);
+  g_clear_pointer(&self->value, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_response_init(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorResponse*
+        self) {}
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_response_class_init(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorResponseClass*
+        klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_response_dispose;
+}
+
+static CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorResponse*
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_response_new(
+    FlValue* return_value) {
+  CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorResponse*
+      self = CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_CALL_FLUTTER_CALLBACK_THROW_ERROR_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, return_value != nullptr
+                                        ? fl_value_ref(return_value)
+                                        : fl_value_new_null());
+  return self;
+}
+
+static CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorResponse*
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details) {
+  CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorResponse*
+      self = CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_CALL_FLUTTER_CALLBACK_THROW_ERROR_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(code));
+  fl_value_append_take(self->value,
+                       fl_value_new_string(message != nullptr ? message : ""));
+  fl_value_append_take(self->value, details != nullptr ? fl_value_ref(details)
+                                                       : fl_value_new_null());
+  return self;
+}
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorFromVoidResponse,
+    core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_from_void_response,
+    CORE_TESTS_GOLUBETS_TEST,
+    HOST_INTEGRATION_CORE_API_CALL_FLUTTER_CALLBACK_THROW_ERROR_FROM_VOID_RESPONSE,
+    GObject)
+
+struct
+    _CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorFromVoidResponse {
+  GObject parent_instance;
+
+  FlValue* value;
+};
+
+G_DEFINE_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorFromVoidResponse,
+    core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_from_void_response,
+    G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_from_void_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorFromVoidResponse*
+      self =
+          CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_CALL_FLUTTER_CALLBACK_THROW_ERROR_FROM_VOID_RESPONSE(
+              object);
+  g_clear_pointer(&self->value, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_from_void_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_from_void_response_init(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorFromVoidResponse*
+        self) {}
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_from_void_response_class_init(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorFromVoidResponseClass*
+        klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_from_void_response_dispose;
+}
+
+static CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorFromVoidResponse*
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_from_void_response_new() {
+  CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorFromVoidResponse*
+      self = CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_CALL_FLUTTER_CALLBACK_THROW_ERROR_FROM_VOID_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_from_void_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_null());
+  return self;
+}
+
+static CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorFromVoidResponse*
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_from_void_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details) {
+  CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorFromVoidResponse*
+      self = CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_CALL_FLUTTER_CALLBACK_THROW_ERROR_FROM_VOID_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_from_void_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(code));
+  fl_value_append_take(self->value,
+                       fl_value_new_string(message != nullptr ? message : ""));
+  fl_value_append_take(self->value, details != nullptr ? fl_value_ref(details)
+                                                       : fl_value_new_null());
+  return self;
+}
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterIsAsyncFlutterApiOnRootResponse,
+    core_tests_golubets_test_host_integration_core_api_call_flutter_is_async_flutter_api_on_root_response,
+    CORE_TESTS_GOLUBETS_TEST,
+    HOST_INTEGRATION_CORE_API_CALL_FLUTTER_IS_ASYNC_FLUTTER_API_ON_ROOT_RESPONSE,
+    GObject)
+
+struct
+    _CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterIsAsyncFlutterApiOnRootResponse {
+  GObject parent_instance;
+
+  FlValue* value;
+};
+
+G_DEFINE_TYPE(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterIsAsyncFlutterApiOnRootResponse,
+    core_tests_golubets_test_host_integration_core_api_call_flutter_is_async_flutter_api_on_root_response,
+    G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_is_async_flutter_api_on_root_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterIsAsyncFlutterApiOnRootResponse*
+      self =
+          CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_CALL_FLUTTER_IS_ASYNC_FLUTTER_API_ON_ROOT_RESPONSE(
+              object);
+  g_clear_pointer(&self->value, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_host_integration_core_api_call_flutter_is_async_flutter_api_on_root_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_is_async_flutter_api_on_root_response_init(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterIsAsyncFlutterApiOnRootResponse*
+        self) {}
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_is_async_flutter_api_on_root_response_class_init(
+    CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterIsAsyncFlutterApiOnRootResponseClass*
+        klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_host_integration_core_api_call_flutter_is_async_flutter_api_on_root_response_dispose;
+}
+
+static CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterIsAsyncFlutterApiOnRootResponse*
+core_tests_golubets_test_host_integration_core_api_call_flutter_is_async_flutter_api_on_root_response_new(
+    gboolean return_value) {
+  CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterIsAsyncFlutterApiOnRootResponse*
+      self = CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_CALL_FLUTTER_IS_ASYNC_FLUTTER_API_ON_ROOT_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_integration_core_api_call_flutter_is_async_flutter_api_on_root_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_bool(return_value));
+  return self;
+}
+
+static CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterIsAsyncFlutterApiOnRootResponse*
+core_tests_golubets_test_host_integration_core_api_call_flutter_is_async_flutter_api_on_root_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details) {
+  CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterIsAsyncFlutterApiOnRootResponse*
+      self = CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API_CALL_FLUTTER_IS_ASYNC_FLUTTER_API_ON_ROOT_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_integration_core_api_call_flutter_is_async_flutter_api_on_root_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(code));
+  fl_value_append_take(self->value,
+                       fl_value_new_string(message != nullptr ? message : ""));
+  fl_value_append_take(self->value, details != nullptr ? fl_value_ref(details)
+                                                       : fl_value_new_null());
+  return self;
+}
+
 struct _CoreTestsGolubetsTestHostIntegrationCoreApi {
   GObject parent_instance;
 
@@ -21530,6 +21978,24 @@ core_tests_golubets_test_host_integration_core_api_task_queue_is_background_thre
 }
 
 static void
+core_tests_golubets_test_host_integration_core_api_async_task_queue_is_background_thread_cb(
+    FlBasicMessageChannel* channel, FlValue* message_,
+    FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
+  CoreTestsGolubetsTestHostIntegrationCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API(user_data);
+
+  if (self->vtable == nullptr ||
+      self->vtable->async_task_queue_is_background_thread == nullptr) {
+    return;
+  }
+
+  g_autoptr(CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle) handle =
+      core_tests_golubets_test_host_integration_core_api_response_handle_new(
+          channel, response_handle);
+  self->vtable->async_task_queue_is_background_thread(handle, self->user_data);
+}
+
+static void
 core_tests_golubets_test_host_integration_core_api_call_flutter_noop_cb(
     FlBasicMessageChannel* channel, FlValue* message_,
     FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
@@ -22650,6 +23116,101 @@ core_tests_golubets_test_host_integration_core_api_call_flutter_small_api_echo_s
           channel, response_handle);
   self->vtable->call_flutter_small_api_echo_string(a_string, handle,
                                                    self->user_data);
+}
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_noop_cb(
+    FlBasicMessageChannel* channel, FlValue* message_,
+    FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
+  CoreTestsGolubetsTestHostIntegrationCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API(user_data);
+
+  if (self->vtable == nullptr ||
+      self->vtable->call_flutter_callback_noop == nullptr) {
+    return;
+  }
+
+  g_autoptr(CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle) handle =
+      core_tests_golubets_test_host_integration_core_api_response_handle_new(
+          channel, response_handle);
+  self->vtable->call_flutter_callback_noop(handle, self->user_data);
+}
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_echo_string_cb(
+    FlBasicMessageChannel* channel, FlValue* message_,
+    FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
+  CoreTestsGolubetsTestHostIntegrationCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API(user_data);
+
+  if (self->vtable == nullptr ||
+      self->vtable->call_flutter_callback_echo_string == nullptr) {
+    return;
+  }
+
+  FlValue* value0 = fl_value_get_list_value(message_, 0);
+  const gchar* a_string = fl_value_get_string(value0);
+  g_autoptr(CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle) handle =
+      core_tests_golubets_test_host_integration_core_api_response_handle_new(
+          channel, response_handle);
+  self->vtable->call_flutter_callback_echo_string(a_string, handle,
+                                                  self->user_data);
+}
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_cb(
+    FlBasicMessageChannel* channel, FlValue* message_,
+    FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
+  CoreTestsGolubetsTestHostIntegrationCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API(user_data);
+
+  if (self->vtable == nullptr ||
+      self->vtable->call_flutter_callback_throw_error == nullptr) {
+    return;
+  }
+
+  g_autoptr(CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle) handle =
+      core_tests_golubets_test_host_integration_core_api_response_handle_new(
+          channel, response_handle);
+  self->vtable->call_flutter_callback_throw_error(handle, self->user_data);
+}
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_from_void_cb(
+    FlBasicMessageChannel* channel, FlValue* message_,
+    FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
+  CoreTestsGolubetsTestHostIntegrationCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API(user_data);
+
+  if (self->vtable == nullptr ||
+      self->vtable->call_flutter_callback_throw_error_from_void == nullptr) {
+    return;
+  }
+
+  g_autoptr(CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle) handle =
+      core_tests_golubets_test_host_integration_core_api_response_handle_new(
+          channel, response_handle);
+  self->vtable->call_flutter_callback_throw_error_from_void(handle,
+                                                            self->user_data);
+}
+
+static void
+core_tests_golubets_test_host_integration_core_api_call_flutter_is_async_flutter_api_on_root_cb(
+    FlBasicMessageChannel* channel, FlValue* message_,
+    FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
+  CoreTestsGolubetsTestHostIntegrationCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_INTEGRATION_CORE_API(user_data);
+
+  if (self->vtable == nullptr ||
+      self->vtable->call_flutter_is_async_flutter_api_on_root == nullptr) {
+    return;
+  }
+
+  g_autoptr(CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle) handle =
+      core_tests_golubets_test_host_integration_core_api_response_handle_new(
+          channel, response_handle);
+  self->vtable->call_flutter_is_async_flutter_api_on_root(handle,
+                                                          self->user_data);
 }
 
 void core_tests_golubets_test_host_integration_core_api_set_method_handlers(
@@ -24033,6 +24594,20 @@ void core_tests_golubets_test_host_integration_core_api_set_method_handlers(
       task_queue_is_background_thread_channel,
       core_tests_golubets_test_host_integration_core_api_task_queue_is_background_thread_cb,
       g_object_ref(api_data), g_object_unref);
+  g_autofree gchar* async_task_queue_is_background_thread_channel_name =
+      g_strdup_printf(
+          "dev.bayori.golubets.golubets_integration_tests."
+          "HostIntegrationCoreApi.asyncTaskQueueIsBackgroundThread%s",
+          dot_suffix);
+  g_autoptr(FlBasicMessageChannel)
+      async_task_queue_is_background_thread_channel =
+          fl_basic_message_channel_new(
+              messenger, async_task_queue_is_background_thread_channel_name,
+              FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      async_task_queue_is_background_thread_channel,
+      core_tests_golubets_test_host_integration_core_api_async_task_queue_is_background_thread_cb,
+      g_object_ref(api_data), g_object_unref);
   g_autofree gchar* call_flutter_noop_channel_name = g_strdup_printf(
       "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi."
       "callFlutterNoop%s",
@@ -24713,6 +25288,73 @@ void core_tests_golubets_test_host_integration_core_api_set_method_handlers(
   fl_basic_message_channel_set_message_handler(
       call_flutter_small_api_echo_string_channel,
       core_tests_golubets_test_host_integration_core_api_call_flutter_small_api_echo_string_cb,
+      g_object_ref(api_data), g_object_unref);
+  g_autofree gchar* call_flutter_callback_noop_channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi."
+      "callFlutterCallbackNoop%s",
+      dot_suffix);
+  g_autoptr(FlBasicMessageChannel) call_flutter_callback_noop_channel =
+      fl_basic_message_channel_new(messenger,
+                                   call_flutter_callback_noop_channel_name,
+                                   FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      call_flutter_callback_noop_channel,
+      core_tests_golubets_test_host_integration_core_api_call_flutter_callback_noop_cb,
+      g_object_ref(api_data), g_object_unref);
+  g_autofree gchar* call_flutter_callback_echo_string_channel_name =
+      g_strdup_printf(
+          "dev.bayori.golubets.golubets_integration_tests."
+          "HostIntegrationCoreApi.callFlutterCallbackEchoString%s",
+          dot_suffix);
+  g_autoptr(FlBasicMessageChannel) call_flutter_callback_echo_string_channel =
+      fl_basic_message_channel_new(
+          messenger, call_flutter_callback_echo_string_channel_name,
+          FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      call_flutter_callback_echo_string_channel,
+      core_tests_golubets_test_host_integration_core_api_call_flutter_callback_echo_string_cb,
+      g_object_ref(api_data), g_object_unref);
+  g_autofree gchar* call_flutter_callback_throw_error_channel_name =
+      g_strdup_printf(
+          "dev.bayori.golubets.golubets_integration_tests."
+          "HostIntegrationCoreApi.callFlutterCallbackThrowError%s",
+          dot_suffix);
+  g_autoptr(FlBasicMessageChannel) call_flutter_callback_throw_error_channel =
+      fl_basic_message_channel_new(
+          messenger, call_flutter_callback_throw_error_channel_name,
+          FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      call_flutter_callback_throw_error_channel,
+      core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_cb,
+      g_object_ref(api_data), g_object_unref);
+  g_autofree gchar* call_flutter_callback_throw_error_from_void_channel_name =
+      g_strdup_printf(
+          "dev.bayori.golubets.golubets_integration_tests."
+          "HostIntegrationCoreApi.callFlutterCallbackThrowErrorFromVoid%s",
+          dot_suffix);
+  g_autoptr(FlBasicMessageChannel)
+      call_flutter_callback_throw_error_from_void_channel =
+          fl_basic_message_channel_new(
+              messenger,
+              call_flutter_callback_throw_error_from_void_channel_name,
+              FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      call_flutter_callback_throw_error_from_void_channel,
+      core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_from_void_cb,
+      g_object_ref(api_data), g_object_unref);
+  g_autofree gchar* call_flutter_is_async_flutter_api_on_root_channel_name =
+      g_strdup_printf(
+          "dev.bayori.golubets.golubets_integration_tests."
+          "HostIntegrationCoreApi.callFlutterIsAsyncFlutterApiOnRoot%s",
+          dot_suffix);
+  g_autoptr(FlBasicMessageChannel)
+      call_flutter_is_async_flutter_api_on_root_channel =
+          fl_basic_message_channel_new(
+              messenger, call_flutter_is_async_flutter_api_on_root_channel_name,
+              FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      call_flutter_is_async_flutter_api_on_root_channel,
+      core_tests_golubets_test_host_integration_core_api_call_flutter_is_async_flutter_api_on_root_cb,
       g_object_ref(api_data), g_object_unref);
 }
 
@@ -25870,6 +26512,18 @@ void core_tests_golubets_test_host_integration_core_api_clear_method_handlers(
                                    FL_MESSAGE_CODEC(codec));
   fl_basic_message_channel_set_message_handler(
       task_queue_is_background_thread_channel, nullptr, nullptr, nullptr);
+  g_autofree gchar* async_task_queue_is_background_thread_channel_name =
+      g_strdup_printf(
+          "dev.bayori.golubets.golubets_integration_tests."
+          "HostIntegrationCoreApi.asyncTaskQueueIsBackgroundThread%s",
+          dot_suffix);
+  g_autoptr(FlBasicMessageChannel)
+      async_task_queue_is_background_thread_channel =
+          fl_basic_message_channel_new(
+              messenger, async_task_queue_is_background_thread_channel_name,
+              FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      async_task_queue_is_background_thread_channel, nullptr, nullptr, nullptr);
   g_autofree gchar* call_flutter_noop_channel_name = g_strdup_printf(
       "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi."
       "callFlutterNoop%s",
@@ -26459,6 +27113,65 @@ void core_tests_golubets_test_host_integration_core_api_clear_method_handlers(
           FL_MESSAGE_CODEC(codec));
   fl_basic_message_channel_set_message_handler(
       call_flutter_small_api_echo_string_channel, nullptr, nullptr, nullptr);
+  g_autofree gchar* call_flutter_callback_noop_channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi."
+      "callFlutterCallbackNoop%s",
+      dot_suffix);
+  g_autoptr(FlBasicMessageChannel) call_flutter_callback_noop_channel =
+      fl_basic_message_channel_new(messenger,
+                                   call_flutter_callback_noop_channel_name,
+                                   FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      call_flutter_callback_noop_channel, nullptr, nullptr, nullptr);
+  g_autofree gchar* call_flutter_callback_echo_string_channel_name =
+      g_strdup_printf(
+          "dev.bayori.golubets.golubets_integration_tests."
+          "HostIntegrationCoreApi.callFlutterCallbackEchoString%s",
+          dot_suffix);
+  g_autoptr(FlBasicMessageChannel) call_flutter_callback_echo_string_channel =
+      fl_basic_message_channel_new(
+          messenger, call_flutter_callback_echo_string_channel_name,
+          FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      call_flutter_callback_echo_string_channel, nullptr, nullptr, nullptr);
+  g_autofree gchar* call_flutter_callback_throw_error_channel_name =
+      g_strdup_printf(
+          "dev.bayori.golubets.golubets_integration_tests."
+          "HostIntegrationCoreApi.callFlutterCallbackThrowError%s",
+          dot_suffix);
+  g_autoptr(FlBasicMessageChannel) call_flutter_callback_throw_error_channel =
+      fl_basic_message_channel_new(
+          messenger, call_flutter_callback_throw_error_channel_name,
+          FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      call_flutter_callback_throw_error_channel, nullptr, nullptr, nullptr);
+  g_autofree gchar* call_flutter_callback_throw_error_from_void_channel_name =
+      g_strdup_printf(
+          "dev.bayori.golubets.golubets_integration_tests."
+          "HostIntegrationCoreApi.callFlutterCallbackThrowErrorFromVoid%s",
+          dot_suffix);
+  g_autoptr(FlBasicMessageChannel)
+      call_flutter_callback_throw_error_from_void_channel =
+          fl_basic_message_channel_new(
+              messenger,
+              call_flutter_callback_throw_error_from_void_channel_name,
+              FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      call_flutter_callback_throw_error_from_void_channel, nullptr, nullptr,
+      nullptr);
+  g_autofree gchar* call_flutter_is_async_flutter_api_on_root_channel_name =
+      g_strdup_printf(
+          "dev.bayori.golubets.golubets_integration_tests."
+          "HostIntegrationCoreApi.callFlutterIsAsyncFlutterApiOnRoot%s",
+          dot_suffix);
+  g_autoptr(FlBasicMessageChannel)
+      call_flutter_is_async_flutter_api_on_root_channel =
+          fl_basic_message_channel_new(
+              messenger, call_flutter_is_async_flutter_api_on_root_channel_name,
+              FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      call_flutter_is_async_flutter_api_on_root_channel, nullptr, nullptr,
+      nullptr);
 }
 
 void core_tests_golubets_test_host_integration_core_api_respond_noop_async(
@@ -27896,6 +28609,40 @@ void core_tests_golubets_test_host_integration_core_api_respond_error_echo_anoth
                                         response->value, &error)) {
     g_warning("Failed to send response to %s.%s: %s", "HostIntegrationCoreApi",
               "echoAnotherAsyncNullableEnum", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_integration_core_api_respond_async_task_queue_is_background_thread(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    gboolean return_value) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostIntegrationCoreApiAsyncTaskQueueIsBackgroundThreadResponse)
+      response =
+          core_tests_golubets_test_host_integration_core_api_async_task_queue_is_background_thread_response_new(
+              return_value);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostIntegrationCoreApi",
+              "asyncTaskQueueIsBackgroundThread", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_integration_core_api_respond_error_async_task_queue_is_background_thread(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostIntegrationCoreApiAsyncTaskQueueIsBackgroundThreadResponse)
+      response =
+          core_tests_golubets_test_host_integration_core_api_async_task_queue_is_background_thread_response_new_error(
+              code, message, details);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostIntegrationCoreApi",
+              "asyncTaskQueueIsBackgroundThread", error->message);
   }
 }
 
@@ -29631,6 +30378,818 @@ void core_tests_golubets_test_host_integration_core_api_respond_error_call_flutt
     g_warning("Failed to send response to %s.%s: %s", "HostIntegrationCoreApi",
               "callFlutterSmallApiEchoString", error->message);
   }
+}
+
+void core_tests_golubets_test_host_integration_core_api_respond_call_flutter_callback_noop(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle*
+        response_handle) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackNoopResponse)
+      response =
+          core_tests_golubets_test_host_integration_core_api_call_flutter_callback_noop_response_new();
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostIntegrationCoreApi",
+              "callFlutterCallbackNoop", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_integration_core_api_respond_error_call_flutter_callback_noop(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackNoopResponse)
+      response =
+          core_tests_golubets_test_host_integration_core_api_call_flutter_callback_noop_response_new_error(
+              code, message, details);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostIntegrationCoreApi",
+              "callFlutterCallbackNoop", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_integration_core_api_respond_call_flutter_callback_echo_string(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    const gchar* return_value) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackEchoStringResponse)
+      response =
+          core_tests_golubets_test_host_integration_core_api_call_flutter_callback_echo_string_response_new(
+              return_value);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostIntegrationCoreApi",
+              "callFlutterCallbackEchoString", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_integration_core_api_respond_error_call_flutter_callback_echo_string(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackEchoStringResponse)
+      response =
+          core_tests_golubets_test_host_integration_core_api_call_flutter_callback_echo_string_response_new_error(
+              code, message, details);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostIntegrationCoreApi",
+              "callFlutterCallbackEchoString", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_integration_core_api_respond_call_flutter_callback_throw_error(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    FlValue* return_value) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorResponse)
+      response =
+          core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_response_new(
+              return_value);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostIntegrationCoreApi",
+              "callFlutterCallbackThrowError", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_integration_core_api_respond_error_call_flutter_callback_throw_error(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorResponse)
+      response =
+          core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_response_new_error(
+              code, message, details);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostIntegrationCoreApi",
+              "callFlutterCallbackThrowError", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_integration_core_api_respond_call_flutter_callback_throw_error_from_void(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle*
+        response_handle) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorFromVoidResponse)
+      response =
+          core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_from_void_response_new();
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostIntegrationCoreApi",
+              "callFlutterCallbackThrowErrorFromVoid", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_integration_core_api_respond_error_call_flutter_callback_throw_error_from_void(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterCallbackThrowErrorFromVoidResponse)
+      response =
+          core_tests_golubets_test_host_integration_core_api_call_flutter_callback_throw_error_from_void_response_new_error(
+              code, message, details);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostIntegrationCoreApi",
+              "callFlutterCallbackThrowErrorFromVoid", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_integration_core_api_respond_call_flutter_is_async_flutter_api_on_root(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    gboolean return_value) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterIsAsyncFlutterApiOnRootResponse)
+      response =
+          core_tests_golubets_test_host_integration_core_api_call_flutter_is_async_flutter_api_on_root_response_new(
+              return_value);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostIntegrationCoreApi",
+              "callFlutterIsAsyncFlutterApiOnRoot", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_integration_core_api_respond_error_call_flutter_is_async_flutter_api_on_root(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostIntegrationCoreApiCallFlutterIsAsyncFlutterApiOnRootResponse)
+      response =
+          core_tests_golubets_test_host_integration_core_api_call_flutter_is_async_flutter_api_on_root_response_new_error(
+              code, message, details);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostIntegrationCoreApi",
+              "callFlutterIsAsyncFlutterApiOnRoot", error->message);
+  }
+}
+
+struct _CoreTestsGolubetsTestFlutterCallbackCoreApi {
+  GObject parent_instance;
+
+  FlBinaryMessenger* messenger;
+  gchar* suffix;
+};
+
+G_DEFINE_TYPE(CoreTestsGolubetsTestFlutterCallbackCoreApi,
+              core_tests_golubets_test_flutter_callback_core_api, G_TYPE_OBJECT)
+
+static void core_tests_golubets_test_flutter_callback_core_api_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestFlutterCallbackCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_FLUTTER_CALLBACK_CORE_API(object);
+  g_clear_object(&self->messenger);
+  g_clear_pointer(&self->suffix, g_free);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_flutter_callback_core_api_parent_class)
+      ->dispose(object);
+}
+
+static void core_tests_golubets_test_flutter_callback_core_api_init(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* self) {}
+
+static void core_tests_golubets_test_flutter_callback_core_api_class_init(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiClass* klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_flutter_callback_core_api_dispose;
+}
+
+CoreTestsGolubetsTestFlutterCallbackCoreApi*
+core_tests_golubets_test_flutter_callback_core_api_new(
+    FlBinaryMessenger* messenger, const gchar* suffix) {
+  CoreTestsGolubetsTestFlutterCallbackCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_FLUTTER_CALLBACK_CORE_API(g_object_new(
+          core_tests_golubets_test_flutter_callback_core_api_get_type(),
+          nullptr));
+  self->messenger = FL_BINARY_MESSENGER(g_object_ref(messenger));
+  self->suffix =
+      suffix != nullptr ? g_strdup_printf(".%s", suffix) : g_strdup("");
+  return self;
+}
+
+struct _CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse {
+  GObject parent_instance;
+
+  FlValue* error;
+};
+
+G_DEFINE_TYPE(CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse,
+              core_tests_golubets_test_flutter_callback_core_api_noop_response,
+              G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_flutter_callback_core_api_noop_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_FLUTTER_CALLBACK_CORE_API_NOOP_RESPONSE(object);
+  g_clear_pointer(&self->error, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_flutter_callback_core_api_noop_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_flutter_callback_core_api_noop_response_init(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse* self) {}
+
+static void
+core_tests_golubets_test_flutter_callback_core_api_noop_response_class_init(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponseClass* klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_flutter_callback_core_api_noop_response_dispose;
+}
+
+static CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse*
+core_tests_golubets_test_flutter_callback_core_api_noop_response_new(
+    FlValue* response) {
+  CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_FLUTTER_CALLBACK_CORE_API_NOOP_RESPONSE(g_object_new(
+          core_tests_golubets_test_flutter_callback_core_api_noop_response_get_type(),
+          nullptr));
+  if (fl_value_get_length(response) > 1) {
+    self->error = fl_value_ref(response);
+  }
+  return self;
+}
+
+gboolean
+core_tests_golubets_test_flutter_callback_core_api_noop_response_is_error(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse* self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_NOOP_RESPONSE(self),
+      FALSE);
+  return self->error != nullptr;
+}
+
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_noop_response_get_error_code(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse* self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_NOOP_RESPONSE(self),
+      nullptr);
+  g_assert(
+      core_tests_golubets_test_flutter_callback_core_api_noop_response_is_error(
+          self));
+  return fl_value_get_string(fl_value_get_list_value(self->error, 0));
+}
+
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_noop_response_get_error_message(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse* self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_NOOP_RESPONSE(self),
+      nullptr);
+  g_assert(
+      core_tests_golubets_test_flutter_callback_core_api_noop_response_is_error(
+          self));
+  return fl_value_get_string(fl_value_get_list_value(self->error, 1));
+}
+
+FlValue*
+core_tests_golubets_test_flutter_callback_core_api_noop_response_get_error_details(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse* self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_NOOP_RESPONSE(self),
+      nullptr);
+  g_assert(
+      core_tests_golubets_test_flutter_callback_core_api_noop_response_is_error(
+          self));
+  return fl_value_get_list_value(self->error, 2);
+}
+
+static void core_tests_golubets_test_flutter_callback_core_api_noop_cb(
+    GObject* object, GAsyncResult* result, gpointer user_data) {
+  GTask* task = G_TASK(user_data);
+  g_task_return_pointer(task, result, g_object_unref);
+}
+
+void core_tests_golubets_test_flutter_callback_core_api_noop(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* self,
+    GCancellable* cancellable, GAsyncReadyCallback callback,
+    gpointer user_data) {
+  g_autoptr(FlValue) args = fl_value_new_list();
+  g_autofree gchar* channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi."
+      "noop%s",
+      self->suffix);
+  g_autoptr(CoreTestsGolubetsTestGolubMessageCodec) codec =
+      core_tests_golubets_test_golub_message_codec_new();
+  FlBasicMessageChannel* channel = fl_basic_message_channel_new(
+      self->messenger, channel_name, FL_MESSAGE_CODEC(codec));
+  GTask* task = g_task_new(self, cancellable, callback, user_data);
+  g_task_set_task_data(task, channel, g_object_unref);
+  fl_basic_message_channel_send(
+      channel, args, cancellable,
+      core_tests_golubets_test_flutter_callback_core_api_noop_cb, task);
+}
+
+CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse*
+core_tests_golubets_test_flutter_callback_core_api_noop_finish(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* self, GAsyncResult* result,
+    GError** error) {
+  g_autoptr(GTask) task = G_TASK(result);
+  GAsyncResult* r = G_ASYNC_RESULT(g_task_propagate_pointer(task, nullptr));
+  FlBasicMessageChannel* channel =
+      FL_BASIC_MESSAGE_CHANNEL(g_task_get_task_data(task));
+  g_autoptr(FlValue) response =
+      fl_basic_message_channel_send_finish(channel, r, error);
+  if (response == nullptr) {
+    return nullptr;
+  }
+  return core_tests_golubets_test_flutter_callback_core_api_noop_response_new(
+      response);
+}
+
+struct _CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse {
+  GObject parent_instance;
+
+  FlValue* error;
+  FlValue* return_value;
+};
+
+G_DEFINE_TYPE(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse,
+    core_tests_golubets_test_flutter_callback_core_api_echo_string_response,
+    G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_flutter_callback_core_api_echo_string_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_FLUTTER_CALLBACK_CORE_API_ECHO_STRING_RESPONSE(
+          object);
+  g_clear_pointer(&self->error, fl_value_unref);
+  g_clear_pointer(&self->return_value, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_flutter_callback_core_api_echo_string_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_flutter_callback_core_api_echo_string_response_init(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse* self) {}
+
+static void
+core_tests_golubets_test_flutter_callback_core_api_echo_string_response_class_init(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponseClass* klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_flutter_callback_core_api_echo_string_response_dispose;
+}
+
+static CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse*
+core_tests_golubets_test_flutter_callback_core_api_echo_string_response_new(
+    FlValue* response) {
+  CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_FLUTTER_CALLBACK_CORE_API_ECHO_STRING_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_flutter_callback_core_api_echo_string_response_get_type(),
+              nullptr));
+  if (fl_value_get_length(response) > 1) {
+    self->error = fl_value_ref(response);
+  } else {
+    FlValue* value = fl_value_get_list_value(response, 0);
+    self->return_value = fl_value_ref(value);
+  }
+  return self;
+}
+
+gboolean
+core_tests_golubets_test_flutter_callback_core_api_echo_string_response_is_error(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse* self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_ECHO_STRING_RESPONSE(
+          self),
+      FALSE);
+  return self->error != nullptr;
+}
+
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_echo_string_response_get_error_code(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse* self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_ECHO_STRING_RESPONSE(
+          self),
+      nullptr);
+  g_assert(
+      core_tests_golubets_test_flutter_callback_core_api_echo_string_response_is_error(
+          self));
+  return fl_value_get_string(fl_value_get_list_value(self->error, 0));
+}
+
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_echo_string_response_get_error_message(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse* self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_ECHO_STRING_RESPONSE(
+          self),
+      nullptr);
+  g_assert(
+      core_tests_golubets_test_flutter_callback_core_api_echo_string_response_is_error(
+          self));
+  return fl_value_get_string(fl_value_get_list_value(self->error, 1));
+}
+
+FlValue*
+core_tests_golubets_test_flutter_callback_core_api_echo_string_response_get_error_details(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse* self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_ECHO_STRING_RESPONSE(
+          self),
+      nullptr);
+  g_assert(
+      core_tests_golubets_test_flutter_callback_core_api_echo_string_response_is_error(
+          self));
+  return fl_value_get_list_value(self->error, 2);
+}
+
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_echo_string_response_get_return_value(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse* self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_ECHO_STRING_RESPONSE(
+          self),
+      nullptr);
+  g_assert(
+      !core_tests_golubets_test_flutter_callback_core_api_echo_string_response_is_error(
+          self));
+  return fl_value_get_string(self->return_value);
+}
+
+static void core_tests_golubets_test_flutter_callback_core_api_echo_string_cb(
+    GObject* object, GAsyncResult* result, gpointer user_data) {
+  GTask* task = G_TASK(user_data);
+  g_task_return_pointer(task, result, g_object_unref);
+}
+
+void core_tests_golubets_test_flutter_callback_core_api_echo_string(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* self, const gchar* a_string,
+    GCancellable* cancellable, GAsyncReadyCallback callback,
+    gpointer user_data) {
+  g_autoptr(FlValue) args = fl_value_new_list();
+  fl_value_append_take(args, fl_value_new_string(a_string));
+  g_autofree gchar* channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi."
+      "echoString%s",
+      self->suffix);
+  g_autoptr(CoreTestsGolubetsTestGolubMessageCodec) codec =
+      core_tests_golubets_test_golub_message_codec_new();
+  FlBasicMessageChannel* channel = fl_basic_message_channel_new(
+      self->messenger, channel_name, FL_MESSAGE_CODEC(codec));
+  GTask* task = g_task_new(self, cancellable, callback, user_data);
+  g_task_set_task_data(task, channel, g_object_unref);
+  fl_basic_message_channel_send(
+      channel, args, cancellable,
+      core_tests_golubets_test_flutter_callback_core_api_echo_string_cb, task);
+}
+
+CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse*
+core_tests_golubets_test_flutter_callback_core_api_echo_string_finish(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* self, GAsyncResult* result,
+    GError** error) {
+  g_autoptr(GTask) task = G_TASK(result);
+  GAsyncResult* r = G_ASYNC_RESULT(g_task_propagate_pointer(task, nullptr));
+  FlBasicMessageChannel* channel =
+      FL_BASIC_MESSAGE_CHANNEL(g_task_get_task_data(task));
+  g_autoptr(FlValue) response =
+      fl_basic_message_channel_send_finish(channel, r, error);
+  if (response == nullptr) {
+    return nullptr;
+  }
+  return core_tests_golubets_test_flutter_callback_core_api_echo_string_response_new(
+      response);
+}
+
+struct _CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse {
+  GObject parent_instance;
+
+  FlValue* error;
+  FlValue* return_value;
+};
+
+G_DEFINE_TYPE(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse,
+    core_tests_golubets_test_flutter_callback_core_api_throw_error_response,
+    G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_flutter_callback_core_api_throw_error_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_FLUTTER_CALLBACK_CORE_API_THROW_ERROR_RESPONSE(
+          object);
+  g_clear_pointer(&self->error, fl_value_unref);
+  g_clear_pointer(&self->return_value, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_flutter_callback_core_api_throw_error_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_flutter_callback_core_api_throw_error_response_init(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse* self) {}
+
+static void
+core_tests_golubets_test_flutter_callback_core_api_throw_error_response_class_init(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponseClass* klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_flutter_callback_core_api_throw_error_response_dispose;
+}
+
+static CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_response_new(
+    FlValue* response) {
+  CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_FLUTTER_CALLBACK_CORE_API_THROW_ERROR_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_flutter_callback_core_api_throw_error_response_get_type(),
+              nullptr));
+  if (fl_value_get_length(response) > 1) {
+    self->error = fl_value_ref(response);
+  } else {
+    FlValue* value = fl_value_get_list_value(response, 0);
+    self->return_value = fl_value_ref(value);
+  }
+  return self;
+}
+
+gboolean
+core_tests_golubets_test_flutter_callback_core_api_throw_error_response_is_error(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse* self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_THROW_ERROR_RESPONSE(
+          self),
+      FALSE);
+  return self->error != nullptr;
+}
+
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_response_get_error_code(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse* self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_THROW_ERROR_RESPONSE(
+          self),
+      nullptr);
+  g_assert(
+      core_tests_golubets_test_flutter_callback_core_api_throw_error_response_is_error(
+          self));
+  return fl_value_get_string(fl_value_get_list_value(self->error, 0));
+}
+
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_response_get_error_message(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse* self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_THROW_ERROR_RESPONSE(
+          self),
+      nullptr);
+  g_assert(
+      core_tests_golubets_test_flutter_callback_core_api_throw_error_response_is_error(
+          self));
+  return fl_value_get_string(fl_value_get_list_value(self->error, 1));
+}
+
+FlValue*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_response_get_error_details(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse* self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_THROW_ERROR_RESPONSE(
+          self),
+      nullptr);
+  g_assert(
+      core_tests_golubets_test_flutter_callback_core_api_throw_error_response_is_error(
+          self));
+  return fl_value_get_list_value(self->error, 2);
+}
+
+FlValue*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_response_get_return_value(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse* self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_THROW_ERROR_RESPONSE(
+          self),
+      nullptr);
+  g_assert(
+      !core_tests_golubets_test_flutter_callback_core_api_throw_error_response_is_error(
+          self));
+  if (fl_value_get_type(self->return_value) == FL_VALUE_TYPE_NULL) {
+    return nullptr;
+  }
+  return self->return_value;
+}
+
+static void core_tests_golubets_test_flutter_callback_core_api_throw_error_cb(
+    GObject* object, GAsyncResult* result, gpointer user_data) {
+  GTask* task = G_TASK(user_data);
+  g_task_return_pointer(task, result, g_object_unref);
+}
+
+void core_tests_golubets_test_flutter_callback_core_api_throw_error(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* self,
+    GCancellable* cancellable, GAsyncReadyCallback callback,
+    gpointer user_data) {
+  g_autoptr(FlValue) args = fl_value_new_list();
+  g_autofree gchar* channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi."
+      "throwError%s",
+      self->suffix);
+  g_autoptr(CoreTestsGolubetsTestGolubMessageCodec) codec =
+      core_tests_golubets_test_golub_message_codec_new();
+  FlBasicMessageChannel* channel = fl_basic_message_channel_new(
+      self->messenger, channel_name, FL_MESSAGE_CODEC(codec));
+  GTask* task = g_task_new(self, cancellable, callback, user_data);
+  g_task_set_task_data(task, channel, g_object_unref);
+  fl_basic_message_channel_send(
+      channel, args, cancellable,
+      core_tests_golubets_test_flutter_callback_core_api_throw_error_cb, task);
+}
+
+CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_finish(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* self, GAsyncResult* result,
+    GError** error) {
+  g_autoptr(GTask) task = G_TASK(result);
+  GAsyncResult* r = G_ASYNC_RESULT(g_task_propagate_pointer(task, nullptr));
+  FlBasicMessageChannel* channel =
+      FL_BASIC_MESSAGE_CHANNEL(g_task_get_task_data(task));
+  g_autoptr(FlValue) response =
+      fl_basic_message_channel_send_finish(channel, r, error);
+  if (response == nullptr) {
+    return nullptr;
+  }
+  return core_tests_golubets_test_flutter_callback_core_api_throw_error_response_new(
+      response);
+}
+
+struct _CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse {
+  GObject parent_instance;
+
+  FlValue* error;
+};
+
+G_DEFINE_TYPE(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse,
+    core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response,
+    G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_FLUTTER_CALLBACK_CORE_API_THROW_ERROR_FROM_VOID_RESPONSE(
+          object);
+  g_clear_pointer(&self->error, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_init(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse*
+        self) {}
+
+static void
+core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_class_init(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponseClass*
+        klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_dispose;
+}
+
+static CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_new(
+    FlValue* response) {
+  CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_FLUTTER_CALLBACK_CORE_API_THROW_ERROR_FROM_VOID_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_get_type(),
+              nullptr));
+  if (fl_value_get_length(response) > 1) {
+    self->error = fl_value_ref(response);
+  }
+  return self;
+}
+
+gboolean
+core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_is_error(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse*
+        self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_THROW_ERROR_FROM_VOID_RESPONSE(
+          self),
+      FALSE);
+  return self->error != nullptr;
+}
+
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_get_error_code(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse*
+        self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_THROW_ERROR_FROM_VOID_RESPONSE(
+          self),
+      nullptr);
+  g_assert(
+      core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_is_error(
+          self));
+  return fl_value_get_string(fl_value_get_list_value(self->error, 0));
+}
+
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_get_error_message(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse*
+        self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_THROW_ERROR_FROM_VOID_RESPONSE(
+          self),
+      nullptr);
+  g_assert(
+      core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_is_error(
+          self));
+  return fl_value_get_string(fl_value_get_list_value(self->error, 1));
+}
+
+FlValue*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_get_error_details(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse*
+        self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_CALLBACK_CORE_API_THROW_ERROR_FROM_VOID_RESPONSE(
+          self),
+      nullptr);
+  g_assert(
+      core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_is_error(
+          self));
+  return fl_value_get_list_value(self->error, 2);
+}
+
+static void
+core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_cb(
+    GObject* object, GAsyncResult* result, gpointer user_data) {
+  GTask* task = G_TASK(user_data);
+  g_task_return_pointer(task, result, g_object_unref);
+}
+
+void core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* self,
+    GCancellable* cancellable, GAsyncReadyCallback callback,
+    gpointer user_data) {
+  g_autoptr(FlValue) args = fl_value_new_list();
+  g_autofree gchar* channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi."
+      "throwErrorFromVoid%s",
+      self->suffix);
+  g_autoptr(CoreTestsGolubetsTestGolubMessageCodec) codec =
+      core_tests_golubets_test_golub_message_codec_new();
+  FlBasicMessageChannel* channel = fl_basic_message_channel_new(
+      self->messenger, channel_name, FL_MESSAGE_CODEC(codec));
+  GTask* task = g_task_new(self, cancellable, callback, user_data);
+  g_task_set_task_data(task, channel, g_object_unref);
+  fl_basic_message_channel_send(
+      channel, args, cancellable,
+      core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_cb,
+      task);
+}
+
+CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_finish(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* self, GAsyncResult* result,
+    GError** error) {
+  g_autoptr(GTask) task = G_TASK(result);
+  GAsyncResult* r = G_ASYNC_RESULT(g_task_propagate_pointer(task, nullptr));
+  FlBasicMessageChannel* channel =
+      FL_BASIC_MESSAGE_CHANNEL(g_task_get_task_data(task));
+  g_autoptr(FlValue) response =
+      fl_basic_message_channel_send_finish(channel, r, error);
+  if (response == nullptr) {
+    return nullptr;
+  }
+  return core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_new(
+      response);
 }
 
 struct _CoreTestsGolubetsTestFlutterIntegrationCoreApi {
@@ -38440,6 +39999,1270 @@ core_tests_golubets_test_flutter_integration_core_api_echo_async_string_finish(
   }
   return core_tests_golubets_test_flutter_integration_core_api_echo_async_string_response_new(
       response);
+}
+
+struct
+    _CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse {
+  GObject parent_instance;
+
+  FlValue* error;
+  FlValue* return_value;
+};
+
+G_DEFINE_TYPE(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse,
+    core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response,
+    G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse*
+      self =
+          CORE_TESTS_GOLUBETS_TEST_FLUTTER_INTEGRATION_CORE_API_IS_ASYNC_FLUTTER_API_ON_ROOT_RESPONSE(
+              object);
+  g_clear_pointer(&self->error, fl_value_unref);
+  g_clear_pointer(&self->return_value, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_init(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse*
+        self) {}
+
+static void
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_class_init(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponseClass*
+        klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_dispose;
+}
+
+static CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse*
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_new(
+    FlValue* response) {
+  CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_FLUTTER_INTEGRATION_CORE_API_IS_ASYNC_FLUTTER_API_ON_ROOT_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_get_type(),
+              nullptr));
+  if (fl_value_get_length(response) > 1) {
+    self->error = fl_value_ref(response);
+  } else {
+    FlValue* value = fl_value_get_list_value(response, 0);
+    self->return_value = fl_value_ref(value);
+  }
+  return self;
+}
+
+gboolean
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_is_error(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse*
+        self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_INTEGRATION_CORE_API_IS_ASYNC_FLUTTER_API_ON_ROOT_RESPONSE(
+          self),
+      FALSE);
+  return self->error != nullptr;
+}
+
+const gchar*
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_get_error_code(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse*
+        self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_INTEGRATION_CORE_API_IS_ASYNC_FLUTTER_API_ON_ROOT_RESPONSE(
+          self),
+      nullptr);
+  g_assert(
+      core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_is_error(
+          self));
+  return fl_value_get_string(fl_value_get_list_value(self->error, 0));
+}
+
+const gchar*
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_get_error_message(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse*
+        self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_INTEGRATION_CORE_API_IS_ASYNC_FLUTTER_API_ON_ROOT_RESPONSE(
+          self),
+      nullptr);
+  g_assert(
+      core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_is_error(
+          self));
+  return fl_value_get_string(fl_value_get_list_value(self->error, 1));
+}
+
+FlValue*
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_get_error_details(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse*
+        self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_INTEGRATION_CORE_API_IS_ASYNC_FLUTTER_API_ON_ROOT_RESPONSE(
+          self),
+      nullptr);
+  g_assert(
+      core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_is_error(
+          self));
+  return fl_value_get_list_value(self->error, 2);
+}
+
+gboolean
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_get_return_value(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse*
+        self) {
+  g_return_val_if_fail(
+      CORE_TESTS_GOLUBETS_TEST_IS_FLUTTER_INTEGRATION_CORE_API_IS_ASYNC_FLUTTER_API_ON_ROOT_RESPONSE(
+          self),
+      FALSE);
+  g_assert(
+      !core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_is_error(
+          self));
+  return fl_value_get_bool(self->return_value);
+}
+
+static void
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_cb(
+    GObject* object, GAsyncResult* result, gpointer user_data) {
+  GTask* task = G_TASK(user_data);
+  g_task_return_pointer(task, result, g_object_unref);
+}
+
+void core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApi* self,
+    GCancellable* cancellable, GAsyncReadyCallback callback,
+    gpointer user_data) {
+  g_autoptr(FlValue) args = fl_value_new_list();
+  g_autofree gchar* channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests."
+      "FlutterIntegrationCoreApi.isAsyncFlutterApiOnRoot%s",
+      self->suffix);
+  g_autoptr(CoreTestsGolubetsTestGolubMessageCodec) codec =
+      core_tests_golubets_test_golub_message_codec_new();
+  FlBasicMessageChannel* channel = fl_basic_message_channel_new(
+      self->messenger, channel_name, FL_MESSAGE_CODEC(codec));
+  GTask* task = g_task_new(self, cancellable, callback, user_data);
+  g_task_set_task_data(task, channel, g_object_unref);
+  fl_basic_message_channel_send(
+      channel, args, cancellable,
+      core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_cb,
+      task);
+}
+
+CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse*
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_finish(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApi* self, GAsyncResult* result,
+    GError** error) {
+  g_autoptr(GTask) task = G_TASK(result);
+  GAsyncResult* r = G_ASYNC_RESULT(g_task_propagate_pointer(task, nullptr));
+  FlBasicMessageChannel* channel =
+      FL_BASIC_MESSAGE_CHANNEL(g_task_get_task_data(task));
+  g_autoptr(FlValue) response =
+      fl_basic_message_channel_send_finish(channel, r, error);
+  if (response == nullptr) {
+    return nullptr;
+  }
+  return core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_new(
+      response);
+}
+
+struct _CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle {
+  GObject parent_instance;
+
+  FlBasicMessageChannel* channel;
+  FlBasicMessageChannelResponseHandle* response_handle;
+};
+
+G_DEFINE_TYPE(CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle,
+              core_tests_golubets_test_host_callback_core_api_response_handle,
+              G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_host_callback_core_api_response_handle_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_RESPONSE_HANDLE(object);
+  g_clear_object(&self->channel);
+  g_clear_object(&self->response_handle);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_host_callback_core_api_response_handle_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_host_callback_core_api_response_handle_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* self) {}
+
+static void
+core_tests_golubets_test_host_callback_core_api_response_handle_class_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandleClass* klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_host_callback_core_api_response_handle_dispose;
+}
+
+static CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle*
+core_tests_golubets_test_host_callback_core_api_response_handle_new(
+    FlBasicMessageChannel* channel,
+    FlBasicMessageChannelResponseHandle* response_handle) {
+  CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_RESPONSE_HANDLE(g_object_new(
+          core_tests_golubets_test_host_callback_core_api_response_handle_get_type(),
+          nullptr));
+  self->channel = FL_BASIC_MESSAGE_CHANNEL(g_object_ref(channel));
+  self->response_handle =
+      FL_BASIC_MESSAGE_CHANNEL_RESPONSE_HANDLE(g_object_ref(response_handle));
+  return self;
+}
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostCallbackCoreApiNoopResponse,
+    core_tests_golubets_test_host_callback_core_api_noop_response,
+    CORE_TESTS_GOLUBETS_TEST, HOST_CALLBACK_CORE_API_NOOP_RESPONSE, GObject)
+
+struct _CoreTestsGolubetsTestHostCallbackCoreApiNoopResponse {
+  GObject parent_instance;
+
+  FlValue* value;
+};
+
+G_DEFINE_TYPE(CoreTestsGolubetsTestHostCallbackCoreApiNoopResponse,
+              core_tests_golubets_test_host_callback_core_api_noop_response,
+              G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_host_callback_core_api_noop_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestHostCallbackCoreApiNoopResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_NOOP_RESPONSE(object);
+  g_clear_pointer(&self->value, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_host_callback_core_api_noop_response_parent_class)
+      ->dispose(object);
+}
+
+static void core_tests_golubets_test_host_callback_core_api_noop_response_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiNoopResponse* self) {}
+
+static void
+core_tests_golubets_test_host_callback_core_api_noop_response_class_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiNoopResponseClass* klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_host_callback_core_api_noop_response_dispose;
+}
+
+static CoreTestsGolubetsTestHostCallbackCoreApiNoopResponse*
+core_tests_golubets_test_host_callback_core_api_noop_response_new() {
+  CoreTestsGolubetsTestHostCallbackCoreApiNoopResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_NOOP_RESPONSE(g_object_new(
+          core_tests_golubets_test_host_callback_core_api_noop_response_get_type(),
+          nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_null());
+  return self;
+}
+
+static CoreTestsGolubetsTestHostCallbackCoreApiNoopResponse*
+core_tests_golubets_test_host_callback_core_api_noop_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details) {
+  CoreTestsGolubetsTestHostCallbackCoreApiNoopResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_NOOP_RESPONSE(g_object_new(
+          core_tests_golubets_test_host_callback_core_api_noop_response_get_type(),
+          nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(code));
+  fl_value_append_take(self->value,
+                       fl_value_new_string(message != nullptr ? message : ""));
+  fl_value_append_take(self->value, details != nullptr ? fl_value_ref(details)
+                                                       : fl_value_new_null());
+  return self;
+}
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostCallbackCoreApiEchoStringResponse,
+    core_tests_golubets_test_host_callback_core_api_echo_string_response,
+    CORE_TESTS_GOLUBETS_TEST, HOST_CALLBACK_CORE_API_ECHO_STRING_RESPONSE,
+    GObject)
+
+struct _CoreTestsGolubetsTestHostCallbackCoreApiEchoStringResponse {
+  GObject parent_instance;
+
+  FlValue* value;
+};
+
+G_DEFINE_TYPE(
+    CoreTestsGolubetsTestHostCallbackCoreApiEchoStringResponse,
+    core_tests_golubets_test_host_callback_core_api_echo_string_response,
+    G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_host_callback_core_api_echo_string_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestHostCallbackCoreApiEchoStringResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_ECHO_STRING_RESPONSE(
+          object);
+  g_clear_pointer(&self->value, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_host_callback_core_api_echo_string_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_host_callback_core_api_echo_string_response_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiEchoStringResponse* self) {}
+
+static void
+core_tests_golubets_test_host_callback_core_api_echo_string_response_class_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiEchoStringResponseClass* klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_host_callback_core_api_echo_string_response_dispose;
+}
+
+static CoreTestsGolubetsTestHostCallbackCoreApiEchoStringResponse*
+core_tests_golubets_test_host_callback_core_api_echo_string_response_new(
+    const gchar* return_value) {
+  CoreTestsGolubetsTestHostCallbackCoreApiEchoStringResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_ECHO_STRING_RESPONSE(g_object_new(
+          core_tests_golubets_test_host_callback_core_api_echo_string_response_get_type(),
+          nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(return_value));
+  return self;
+}
+
+static CoreTestsGolubetsTestHostCallbackCoreApiEchoStringResponse*
+core_tests_golubets_test_host_callback_core_api_echo_string_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details) {
+  CoreTestsGolubetsTestHostCallbackCoreApiEchoStringResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_ECHO_STRING_RESPONSE(g_object_new(
+          core_tests_golubets_test_host_callback_core_api_echo_string_response_get_type(),
+          nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(code));
+  fl_value_append_take(self->value,
+                       fl_value_new_string(message != nullptr ? message : ""));
+  fl_value_append_take(self->value, details != nullptr ? fl_value_ref(details)
+                                                       : fl_value_new_null());
+  return self;
+}
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostCallbackCoreApiEchoAllTypesResponse,
+    core_tests_golubets_test_host_callback_core_api_echo_all_types_response,
+    CORE_TESTS_GOLUBETS_TEST, HOST_CALLBACK_CORE_API_ECHO_ALL_TYPES_RESPONSE,
+    GObject)
+
+struct _CoreTestsGolubetsTestHostCallbackCoreApiEchoAllTypesResponse {
+  GObject parent_instance;
+
+  FlValue* value;
+};
+
+G_DEFINE_TYPE(
+    CoreTestsGolubetsTestHostCallbackCoreApiEchoAllTypesResponse,
+    core_tests_golubets_test_host_callback_core_api_echo_all_types_response,
+    G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_host_callback_core_api_echo_all_types_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestHostCallbackCoreApiEchoAllTypesResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_ECHO_ALL_TYPES_RESPONSE(
+          object);
+  g_clear_pointer(&self->value, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_host_callback_core_api_echo_all_types_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_host_callback_core_api_echo_all_types_response_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiEchoAllTypesResponse* self) {}
+
+static void
+core_tests_golubets_test_host_callback_core_api_echo_all_types_response_class_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiEchoAllTypesResponseClass* klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_host_callback_core_api_echo_all_types_response_dispose;
+}
+
+static CoreTestsGolubetsTestHostCallbackCoreApiEchoAllTypesResponse*
+core_tests_golubets_test_host_callback_core_api_echo_all_types_response_new(
+    CoreTestsGolubetsTestAllTypes* return_value) {
+  CoreTestsGolubetsTestHostCallbackCoreApiEchoAllTypesResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_ECHO_ALL_TYPES_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_callback_core_api_echo_all_types_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(
+      self->value,
+      fl_value_new_custom_object(core_tests_golubets_test_all_types_type_id,
+                                 G_OBJECT(return_value)));
+  return self;
+}
+
+static CoreTestsGolubetsTestHostCallbackCoreApiEchoAllTypesResponse*
+core_tests_golubets_test_host_callback_core_api_echo_all_types_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details) {
+  CoreTestsGolubetsTestHostCallbackCoreApiEchoAllTypesResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_ECHO_ALL_TYPES_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_callback_core_api_echo_all_types_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(code));
+  fl_value_append_take(self->value,
+                       fl_value_new_string(message != nullptr ? message : ""));
+  fl_value_append_take(self->value, details != nullptr ? fl_value_ref(details)
+                                                       : fl_value_new_null());
+  return self;
+}
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostCallbackCoreApiEchoNullableStringResponse,
+    core_tests_golubets_test_host_callback_core_api_echo_nullable_string_response,
+    CORE_TESTS_GOLUBETS_TEST,
+    HOST_CALLBACK_CORE_API_ECHO_NULLABLE_STRING_RESPONSE, GObject)
+
+struct _CoreTestsGolubetsTestHostCallbackCoreApiEchoNullableStringResponse {
+  GObject parent_instance;
+
+  FlValue* value;
+};
+
+G_DEFINE_TYPE(
+    CoreTestsGolubetsTestHostCallbackCoreApiEchoNullableStringResponse,
+    core_tests_golubets_test_host_callback_core_api_echo_nullable_string_response,
+    G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_host_callback_core_api_echo_nullable_string_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestHostCallbackCoreApiEchoNullableStringResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_ECHO_NULLABLE_STRING_RESPONSE(
+          object);
+  g_clear_pointer(&self->value, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_host_callback_core_api_echo_nullable_string_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_host_callback_core_api_echo_nullable_string_response_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiEchoNullableStringResponse* self) {}
+
+static void
+core_tests_golubets_test_host_callback_core_api_echo_nullable_string_response_class_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiEchoNullableStringResponseClass*
+        klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_host_callback_core_api_echo_nullable_string_response_dispose;
+}
+
+static CoreTestsGolubetsTestHostCallbackCoreApiEchoNullableStringResponse*
+core_tests_golubets_test_host_callback_core_api_echo_nullable_string_response_new(
+    const gchar* return_value) {
+  CoreTestsGolubetsTestHostCallbackCoreApiEchoNullableStringResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_ECHO_NULLABLE_STRING_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_callback_core_api_echo_nullable_string_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, return_value != nullptr
+                                        ? fl_value_new_string(return_value)
+                                        : fl_value_new_null());
+  return self;
+}
+
+static CoreTestsGolubetsTestHostCallbackCoreApiEchoNullableStringResponse*
+core_tests_golubets_test_host_callback_core_api_echo_nullable_string_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details) {
+  CoreTestsGolubetsTestHostCallbackCoreApiEchoNullableStringResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_ECHO_NULLABLE_STRING_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_callback_core_api_echo_nullable_string_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(code));
+  fl_value_append_take(self->value,
+                       fl_value_new_string(message != nullptr ? message : ""));
+  fl_value_append_take(self->value, details != nullptr ? fl_value_ref(details)
+                                                       : fl_value_new_null());
+  return self;
+}
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorResponse,
+    core_tests_golubets_test_host_callback_core_api_throw_error_response,
+    CORE_TESTS_GOLUBETS_TEST, HOST_CALLBACK_CORE_API_THROW_ERROR_RESPONSE,
+    GObject)
+
+struct _CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorResponse {
+  GObject parent_instance;
+
+  FlValue* value;
+};
+
+G_DEFINE_TYPE(
+    CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorResponse,
+    core_tests_golubets_test_host_callback_core_api_throw_error_response,
+    G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_host_callback_core_api_throw_error_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_THROW_ERROR_RESPONSE(
+          object);
+  g_clear_pointer(&self->value, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_host_callback_core_api_throw_error_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_host_callback_core_api_throw_error_response_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorResponse* self) {}
+
+static void
+core_tests_golubets_test_host_callback_core_api_throw_error_response_class_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorResponseClass* klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_host_callback_core_api_throw_error_response_dispose;
+}
+
+static CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorResponse*
+core_tests_golubets_test_host_callback_core_api_throw_error_response_new(
+    FlValue* return_value) {
+  CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_THROW_ERROR_RESPONSE(g_object_new(
+          core_tests_golubets_test_host_callback_core_api_throw_error_response_get_type(),
+          nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, return_value != nullptr
+                                        ? fl_value_ref(return_value)
+                                        : fl_value_new_null());
+  return self;
+}
+
+static CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorResponse*
+core_tests_golubets_test_host_callback_core_api_throw_error_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details) {
+  CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_THROW_ERROR_RESPONSE(g_object_new(
+          core_tests_golubets_test_host_callback_core_api_throw_error_response_get_type(),
+          nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(code));
+  fl_value_append_take(self->value,
+                       fl_value_new_string(message != nullptr ? message : ""));
+  fl_value_append_take(self->value, details != nullptr ? fl_value_ref(details)
+                                                       : fl_value_new_null());
+  return self;
+}
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorFromVoidResponse,
+    core_tests_golubets_test_host_callback_core_api_throw_error_from_void_response,
+    CORE_TESTS_GOLUBETS_TEST,
+    HOST_CALLBACK_CORE_API_THROW_ERROR_FROM_VOID_RESPONSE, GObject)
+
+struct _CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorFromVoidResponse {
+  GObject parent_instance;
+
+  FlValue* value;
+};
+
+G_DEFINE_TYPE(
+    CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorFromVoidResponse,
+    core_tests_golubets_test_host_callback_core_api_throw_error_from_void_response,
+    G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_host_callback_core_api_throw_error_from_void_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorFromVoidResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_THROW_ERROR_FROM_VOID_RESPONSE(
+          object);
+  g_clear_pointer(&self->value, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_host_callback_core_api_throw_error_from_void_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_host_callback_core_api_throw_error_from_void_response_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorFromVoidResponse* self) {}
+
+static void
+core_tests_golubets_test_host_callback_core_api_throw_error_from_void_response_class_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorFromVoidResponseClass*
+        klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_host_callback_core_api_throw_error_from_void_response_dispose;
+}
+
+static CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorFromVoidResponse*
+core_tests_golubets_test_host_callback_core_api_throw_error_from_void_response_new() {
+  CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorFromVoidResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_THROW_ERROR_FROM_VOID_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_callback_core_api_throw_error_from_void_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_null());
+  return self;
+}
+
+static CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorFromVoidResponse*
+core_tests_golubets_test_host_callback_core_api_throw_error_from_void_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details) {
+  CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorFromVoidResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_THROW_ERROR_FROM_VOID_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_callback_core_api_throw_error_from_void_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(code));
+  fl_value_append_take(self->value,
+                       fl_value_new_string(message != nullptr ? message : ""));
+  fl_value_append_take(self->value, details != nullptr ? fl_value_ref(details)
+                                                       : fl_value_new_null());
+  return self;
+}
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostCallbackCoreApiTaskQueueIsBackgroundThreadResponse,
+    core_tests_golubets_test_host_callback_core_api_task_queue_is_background_thread_response,
+    CORE_TESTS_GOLUBETS_TEST,
+    HOST_CALLBACK_CORE_API_TASK_QUEUE_IS_BACKGROUND_THREAD_RESPONSE, GObject)
+
+struct
+    _CoreTestsGolubetsTestHostCallbackCoreApiTaskQueueIsBackgroundThreadResponse {
+  GObject parent_instance;
+
+  FlValue* value;
+};
+
+G_DEFINE_TYPE(
+    CoreTestsGolubetsTestHostCallbackCoreApiTaskQueueIsBackgroundThreadResponse,
+    core_tests_golubets_test_host_callback_core_api_task_queue_is_background_thread_response,
+    G_TYPE_OBJECT)
+
+static void
+core_tests_golubets_test_host_callback_core_api_task_queue_is_background_thread_response_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestHostCallbackCoreApiTaskQueueIsBackgroundThreadResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_TASK_QUEUE_IS_BACKGROUND_THREAD_RESPONSE(
+          object);
+  g_clear_pointer(&self->value, fl_value_unref);
+  G_OBJECT_CLASS(
+      core_tests_golubets_test_host_callback_core_api_task_queue_is_background_thread_response_parent_class)
+      ->dispose(object);
+}
+
+static void
+core_tests_golubets_test_host_callback_core_api_task_queue_is_background_thread_response_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiTaskQueueIsBackgroundThreadResponse*
+        self) {}
+
+static void
+core_tests_golubets_test_host_callback_core_api_task_queue_is_background_thread_response_class_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiTaskQueueIsBackgroundThreadResponseClass*
+        klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_host_callback_core_api_task_queue_is_background_thread_response_dispose;
+}
+
+static CoreTestsGolubetsTestHostCallbackCoreApiTaskQueueIsBackgroundThreadResponse*
+core_tests_golubets_test_host_callback_core_api_task_queue_is_background_thread_response_new(
+    gboolean return_value) {
+  CoreTestsGolubetsTestHostCallbackCoreApiTaskQueueIsBackgroundThreadResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_TASK_QUEUE_IS_BACKGROUND_THREAD_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_callback_core_api_task_queue_is_background_thread_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_bool(return_value));
+  return self;
+}
+
+static CoreTestsGolubetsTestHostCallbackCoreApiTaskQueueIsBackgroundThreadResponse*
+core_tests_golubets_test_host_callback_core_api_task_queue_is_background_thread_response_new_error(
+    const gchar* code, const gchar* message, FlValue* details) {
+  CoreTestsGolubetsTestHostCallbackCoreApiTaskQueueIsBackgroundThreadResponse* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API_TASK_QUEUE_IS_BACKGROUND_THREAD_RESPONSE(
+          g_object_new(
+              core_tests_golubets_test_host_callback_core_api_task_queue_is_background_thread_response_get_type(),
+              nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(code));
+  fl_value_append_take(self->value,
+                       fl_value_new_string(message != nullptr ? message : ""));
+  fl_value_append_take(self->value, details != nullptr ? fl_value_ref(details)
+                                                       : fl_value_new_null());
+  return self;
+}
+
+struct _CoreTestsGolubetsTestHostCallbackCoreApi {
+  GObject parent_instance;
+
+  const CoreTestsGolubetsTestHostCallbackCoreApiVTable* vtable;
+  gpointer user_data;
+  GDestroyNotify user_data_free_func;
+};
+
+G_DEFINE_TYPE(CoreTestsGolubetsTestHostCallbackCoreApi,
+              core_tests_golubets_test_host_callback_core_api, G_TYPE_OBJECT)
+
+static void core_tests_golubets_test_host_callback_core_api_dispose(
+    GObject* object) {
+  CoreTestsGolubetsTestHostCallbackCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API(object);
+  if (self->user_data != nullptr) {
+    self->user_data_free_func(self->user_data);
+  }
+  self->user_data = nullptr;
+  G_OBJECT_CLASS(core_tests_golubets_test_host_callback_core_api_parent_class)
+      ->dispose(object);
+}
+
+static void core_tests_golubets_test_host_callback_core_api_init(
+    CoreTestsGolubetsTestHostCallbackCoreApi* self) {}
+
+static void core_tests_golubets_test_host_callback_core_api_class_init(
+    CoreTestsGolubetsTestHostCallbackCoreApiClass* klass) {
+  G_OBJECT_CLASS(klass)->dispose =
+      core_tests_golubets_test_host_callback_core_api_dispose;
+}
+
+static CoreTestsGolubetsTestHostCallbackCoreApi*
+core_tests_golubets_test_host_callback_core_api_new(
+    const CoreTestsGolubetsTestHostCallbackCoreApiVTable* vtable,
+    gpointer user_data, GDestroyNotify user_data_free_func) {
+  CoreTestsGolubetsTestHostCallbackCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API(g_object_new(
+          core_tests_golubets_test_host_callback_core_api_get_type(), nullptr));
+  self->vtable = vtable;
+  self->user_data = user_data;
+  self->user_data_free_func = user_data_free_func;
+  return self;
+}
+
+static void core_tests_golubets_test_host_callback_core_api_noop_cb(
+    FlBasicMessageChannel* channel, FlValue* message_,
+    FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
+  CoreTestsGolubetsTestHostCallbackCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API(user_data);
+
+  if (self->vtable == nullptr || self->vtable->noop == nullptr) {
+    return;
+  }
+
+  g_autoptr(CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle) handle =
+      core_tests_golubets_test_host_callback_core_api_response_handle_new(
+          channel, response_handle);
+  self->vtable->noop(handle, self->user_data);
+}
+
+static void core_tests_golubets_test_host_callback_core_api_echo_string_cb(
+    FlBasicMessageChannel* channel, FlValue* message_,
+    FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
+  CoreTestsGolubetsTestHostCallbackCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API(user_data);
+
+  if (self->vtable == nullptr || self->vtable->echo_string == nullptr) {
+    return;
+  }
+
+  FlValue* value0 = fl_value_get_list_value(message_, 0);
+  const gchar* a_string = fl_value_get_string(value0);
+  g_autoptr(CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle) handle =
+      core_tests_golubets_test_host_callback_core_api_response_handle_new(
+          channel, response_handle);
+  self->vtable->echo_string(a_string, handle, self->user_data);
+}
+
+static void core_tests_golubets_test_host_callback_core_api_echo_all_types_cb(
+    FlBasicMessageChannel* channel, FlValue* message_,
+    FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
+  CoreTestsGolubetsTestHostCallbackCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API(user_data);
+
+  if (self->vtable == nullptr || self->vtable->echo_all_types == nullptr) {
+    return;
+  }
+
+  FlValue* value0 = fl_value_get_list_value(message_, 0);
+  CoreTestsGolubetsTestAllTypes* everything =
+      CORE_TESTS_GOLUBETS_TEST_ALL_TYPES(
+          fl_value_get_custom_value_object(value0));
+  g_autoptr(CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle) handle =
+      core_tests_golubets_test_host_callback_core_api_response_handle_new(
+          channel, response_handle);
+  self->vtable->echo_all_types(everything, handle, self->user_data);
+}
+
+static void
+core_tests_golubets_test_host_callback_core_api_echo_nullable_string_cb(
+    FlBasicMessageChannel* channel, FlValue* message_,
+    FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
+  CoreTestsGolubetsTestHostCallbackCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API(user_data);
+
+  if (self->vtable == nullptr ||
+      self->vtable->echo_nullable_string == nullptr) {
+    return;
+  }
+
+  FlValue* value0 = fl_value_get_list_value(message_, 0);
+  const gchar* a_string = fl_value_get_string(value0);
+  g_autoptr(CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle) handle =
+      core_tests_golubets_test_host_callback_core_api_response_handle_new(
+          channel, response_handle);
+  self->vtable->echo_nullable_string(a_string, handle, self->user_data);
+}
+
+static void core_tests_golubets_test_host_callback_core_api_throw_error_cb(
+    FlBasicMessageChannel* channel, FlValue* message_,
+    FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
+  CoreTestsGolubetsTestHostCallbackCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API(user_data);
+
+  if (self->vtable == nullptr || self->vtable->throw_error == nullptr) {
+    return;
+  }
+
+  g_autoptr(CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle) handle =
+      core_tests_golubets_test_host_callback_core_api_response_handle_new(
+          channel, response_handle);
+  self->vtable->throw_error(handle, self->user_data);
+}
+
+static void
+core_tests_golubets_test_host_callback_core_api_throw_error_from_void_cb(
+    FlBasicMessageChannel* channel, FlValue* message_,
+    FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
+  CoreTestsGolubetsTestHostCallbackCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API(user_data);
+
+  if (self->vtable == nullptr ||
+      self->vtable->throw_error_from_void == nullptr) {
+    return;
+  }
+
+  g_autoptr(CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle) handle =
+      core_tests_golubets_test_host_callback_core_api_response_handle_new(
+          channel, response_handle);
+  self->vtable->throw_error_from_void(handle, self->user_data);
+}
+
+static void
+core_tests_golubets_test_host_callback_core_api_task_queue_is_background_thread_cb(
+    FlBasicMessageChannel* channel, FlValue* message_,
+    FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
+  CoreTestsGolubetsTestHostCallbackCoreApi* self =
+      CORE_TESTS_GOLUBETS_TEST_HOST_CALLBACK_CORE_API(user_data);
+
+  if (self->vtable == nullptr ||
+      self->vtable->task_queue_is_background_thread == nullptr) {
+    return;
+  }
+
+  g_autoptr(CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle) handle =
+      core_tests_golubets_test_host_callback_core_api_response_handle_new(
+          channel, response_handle);
+  self->vtable->task_queue_is_background_thread(handle, self->user_data);
+}
+
+void core_tests_golubets_test_host_callback_core_api_set_method_handlers(
+    FlBinaryMessenger* messenger, const gchar* suffix,
+    const CoreTestsGolubetsTestHostCallbackCoreApiVTable* vtable,
+    gpointer user_data, GDestroyNotify user_data_free_func) {
+  g_autofree gchar* dot_suffix =
+      suffix != nullptr ? g_strdup_printf(".%s", suffix) : g_strdup("");
+  g_autoptr(CoreTestsGolubetsTestHostCallbackCoreApi) api_data =
+      core_tests_golubets_test_host_callback_core_api_new(vtable, user_data,
+                                                          user_data_free_func);
+
+  g_autoptr(CoreTestsGolubetsTestGolubMessageCodec) codec =
+      core_tests_golubets_test_golub_message_codec_new();
+  g_autofree gchar* noop_channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.noop%"
+      "s",
+      dot_suffix);
+  g_autoptr(FlBasicMessageChannel) noop_channel = fl_basic_message_channel_new(
+      messenger, noop_channel_name, FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      noop_channel, core_tests_golubets_test_host_callback_core_api_noop_cb,
+      g_object_ref(api_data), g_object_unref);
+  g_autofree gchar* echo_string_channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi."
+      "echoString%s",
+      dot_suffix);
+  g_autoptr(FlBasicMessageChannel) echo_string_channel =
+      fl_basic_message_channel_new(messenger, echo_string_channel_name,
+                                   FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      echo_string_channel,
+      core_tests_golubets_test_host_callback_core_api_echo_string_cb,
+      g_object_ref(api_data), g_object_unref);
+  g_autofree gchar* echo_all_types_channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi."
+      "echoAllTypes%s",
+      dot_suffix);
+  g_autoptr(FlBasicMessageChannel) echo_all_types_channel =
+      fl_basic_message_channel_new(messenger, echo_all_types_channel_name,
+                                   FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      echo_all_types_channel,
+      core_tests_golubets_test_host_callback_core_api_echo_all_types_cb,
+      g_object_ref(api_data), g_object_unref);
+  g_autofree gchar* echo_nullable_string_channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi."
+      "echoNullableString%s",
+      dot_suffix);
+  g_autoptr(FlBasicMessageChannel) echo_nullable_string_channel =
+      fl_basic_message_channel_new(messenger, echo_nullable_string_channel_name,
+                                   FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      echo_nullable_string_channel,
+      core_tests_golubets_test_host_callback_core_api_echo_nullable_string_cb,
+      g_object_ref(api_data), g_object_unref);
+  g_autofree gchar* throw_error_channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi."
+      "throwError%s",
+      dot_suffix);
+  g_autoptr(FlBasicMessageChannel) throw_error_channel =
+      fl_basic_message_channel_new(messenger, throw_error_channel_name,
+                                   FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      throw_error_channel,
+      core_tests_golubets_test_host_callback_core_api_throw_error_cb,
+      g_object_ref(api_data), g_object_unref);
+  g_autofree gchar* throw_error_from_void_channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi."
+      "throwErrorFromVoid%s",
+      dot_suffix);
+  g_autoptr(FlBasicMessageChannel) throw_error_from_void_channel =
+      fl_basic_message_channel_new(messenger,
+                                   throw_error_from_void_channel_name,
+                                   FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      throw_error_from_void_channel,
+      core_tests_golubets_test_host_callback_core_api_throw_error_from_void_cb,
+      g_object_ref(api_data), g_object_unref);
+  g_autofree gchar* task_queue_is_background_thread_channel_name =
+      g_strdup_printf(
+          "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi."
+          "taskQueueIsBackgroundThread%s",
+          dot_suffix);
+  g_autoptr(FlBasicMessageChannel) task_queue_is_background_thread_channel =
+      fl_basic_message_channel_new(messenger,
+                                   task_queue_is_background_thread_channel_name,
+                                   FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      task_queue_is_background_thread_channel,
+      core_tests_golubets_test_host_callback_core_api_task_queue_is_background_thread_cb,
+      g_object_ref(api_data), g_object_unref);
+}
+
+void core_tests_golubets_test_host_callback_core_api_clear_method_handlers(
+    FlBinaryMessenger* messenger, const gchar* suffix) {
+  g_autofree gchar* dot_suffix =
+      suffix != nullptr ? g_strdup_printf(".%s", suffix) : g_strdup("");
+
+  g_autoptr(CoreTestsGolubetsTestGolubMessageCodec) codec =
+      core_tests_golubets_test_golub_message_codec_new();
+  g_autofree gchar* noop_channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.noop%"
+      "s",
+      dot_suffix);
+  g_autoptr(FlBasicMessageChannel) noop_channel = fl_basic_message_channel_new(
+      messenger, noop_channel_name, FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(noop_channel, nullptr, nullptr,
+                                               nullptr);
+  g_autofree gchar* echo_string_channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi."
+      "echoString%s",
+      dot_suffix);
+  g_autoptr(FlBasicMessageChannel) echo_string_channel =
+      fl_basic_message_channel_new(messenger, echo_string_channel_name,
+                                   FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(echo_string_channel, nullptr,
+                                               nullptr, nullptr);
+  g_autofree gchar* echo_all_types_channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi."
+      "echoAllTypes%s",
+      dot_suffix);
+  g_autoptr(FlBasicMessageChannel) echo_all_types_channel =
+      fl_basic_message_channel_new(messenger, echo_all_types_channel_name,
+                                   FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(echo_all_types_channel, nullptr,
+                                               nullptr, nullptr);
+  g_autofree gchar* echo_nullable_string_channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi."
+      "echoNullableString%s",
+      dot_suffix);
+  g_autoptr(FlBasicMessageChannel) echo_nullable_string_channel =
+      fl_basic_message_channel_new(messenger, echo_nullable_string_channel_name,
+                                   FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(echo_nullable_string_channel,
+                                               nullptr, nullptr, nullptr);
+  g_autofree gchar* throw_error_channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi."
+      "throwError%s",
+      dot_suffix);
+  g_autoptr(FlBasicMessageChannel) throw_error_channel =
+      fl_basic_message_channel_new(messenger, throw_error_channel_name,
+                                   FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(throw_error_channel, nullptr,
+                                               nullptr, nullptr);
+  g_autofree gchar* throw_error_from_void_channel_name = g_strdup_printf(
+      "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi."
+      "throwErrorFromVoid%s",
+      dot_suffix);
+  g_autoptr(FlBasicMessageChannel) throw_error_from_void_channel =
+      fl_basic_message_channel_new(messenger,
+                                   throw_error_from_void_channel_name,
+                                   FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(throw_error_from_void_channel,
+                                               nullptr, nullptr, nullptr);
+  g_autofree gchar* task_queue_is_background_thread_channel_name =
+      g_strdup_printf(
+          "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi."
+          "taskQueueIsBackgroundThread%s",
+          dot_suffix);
+  g_autoptr(FlBasicMessageChannel) task_queue_is_background_thread_channel =
+      fl_basic_message_channel_new(messenger,
+                                   task_queue_is_background_thread_channel_name,
+                                   FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(
+      task_queue_is_background_thread_channel, nullptr, nullptr, nullptr);
+}
+
+void core_tests_golubets_test_host_callback_core_api_respond_noop(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle) {
+  g_autoptr(CoreTestsGolubetsTestHostCallbackCoreApiNoopResponse) response =
+      core_tests_golubets_test_host_callback_core_api_noop_response_new();
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostCallbackCoreApi",
+              "noop", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_callback_core_api_respond_error_noop(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details) {
+  g_autoptr(CoreTestsGolubetsTestHostCallbackCoreApiNoopResponse) response =
+      core_tests_golubets_test_host_callback_core_api_noop_response_new_error(
+          code, message, details);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostCallbackCoreApi",
+              "noop", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_callback_core_api_respond_echo_string(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* return_value) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostCallbackCoreApiEchoStringResponse) response =
+      core_tests_golubets_test_host_callback_core_api_echo_string_response_new(
+          return_value);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostCallbackCoreApi",
+              "echoString", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_callback_core_api_respond_error_echo_string(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostCallbackCoreApiEchoStringResponse) response =
+      core_tests_golubets_test_host_callback_core_api_echo_string_response_new_error(
+          code, message, details);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostCallbackCoreApi",
+              "echoString", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_callback_core_api_respond_echo_all_types(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    CoreTestsGolubetsTestAllTypes* return_value) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostCallbackCoreApiEchoAllTypesResponse) response =
+      core_tests_golubets_test_host_callback_core_api_echo_all_types_response_new(
+          return_value);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostCallbackCoreApi",
+              "echoAllTypes", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_callback_core_api_respond_error_echo_all_types(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostCallbackCoreApiEchoAllTypesResponse) response =
+      core_tests_golubets_test_host_callback_core_api_echo_all_types_response_new_error(
+          code, message, details);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostCallbackCoreApi",
+              "echoAllTypes", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_callback_core_api_respond_echo_nullable_string(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* return_value) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostCallbackCoreApiEchoNullableStringResponse) response =
+      core_tests_golubets_test_host_callback_core_api_echo_nullable_string_response_new(
+          return_value);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostCallbackCoreApi",
+              "echoNullableString", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_callback_core_api_respond_error_echo_nullable_string(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostCallbackCoreApiEchoNullableStringResponse) response =
+      core_tests_golubets_test_host_callback_core_api_echo_nullable_string_response_new_error(
+          code, message, details);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostCallbackCoreApi",
+              "echoNullableString", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_callback_core_api_respond_throw_error(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    FlValue* return_value) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorResponse) response =
+      core_tests_golubets_test_host_callback_core_api_throw_error_response_new(
+          return_value);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostCallbackCoreApi",
+              "throwError", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_callback_core_api_respond_error_throw_error(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorResponse) response =
+      core_tests_golubets_test_host_callback_core_api_throw_error_response_new_error(
+          code, message, details);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostCallbackCoreApi",
+              "throwError", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_callback_core_api_respond_throw_error_from_void(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorFromVoidResponse) response =
+      core_tests_golubets_test_host_callback_core_api_throw_error_from_void_response_new();
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostCallbackCoreApi",
+              "throwErrorFromVoid", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_callback_core_api_respond_error_throw_error_from_void(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostCallbackCoreApiThrowErrorFromVoidResponse) response =
+      core_tests_golubets_test_host_callback_core_api_throw_error_from_void_response_new_error(
+          code, message, details);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostCallbackCoreApi",
+              "throwErrorFromVoid", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_callback_core_api_respond_task_queue_is_background_thread(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    gboolean return_value) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostCallbackCoreApiTaskQueueIsBackgroundThreadResponse)
+      response =
+          core_tests_golubets_test_host_callback_core_api_task_queue_is_background_thread_response_new(
+              return_value);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostCallbackCoreApi",
+              "taskQueueIsBackgroundThread", error->message);
+  }
+}
+
+void core_tests_golubets_test_host_callback_core_api_respond_error_task_queue_is_background_thread(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details) {
+  g_autoptr(
+      CoreTestsGolubetsTestHostCallbackCoreApiTaskQueueIsBackgroundThreadResponse)
+      response =
+          core_tests_golubets_test_host_callback_core_api_task_queue_is_background_thread_response_new_error(
+              code, message, details);
+  g_autoptr(GError) error = nullptr;
+  if (!fl_basic_message_channel_respond(response_handle->channel,
+                                        response_handle->response_handle,
+                                        response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "HostCallbackCoreApi",
+              "taskQueueIsBackgroundThread", error->message);
+  }
 }
 
 struct _CoreTestsGolubetsTestHostTrivialApiNoopResponse {

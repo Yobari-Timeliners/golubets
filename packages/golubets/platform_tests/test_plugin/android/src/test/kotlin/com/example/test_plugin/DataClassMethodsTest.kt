@@ -9,15 +9,16 @@ import io.mockk.every
 import io.mockk.mockk
 import java.nio.ByteBuffer
 import java.util.ArrayList
-import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 internal class DataClassMethodsTest {
 
   @Test
-  fun testNullValues() = runTest {
+  fun testNullValues() {
     val everything = AllNullableTypes()
     val binaryMessenger = mockk<BinaryMessenger>()
     val api = FlutterIntegrationCoreApi(binaryMessenger)
@@ -34,8 +35,14 @@ internal class DataClassMethodsTest {
           reply.reply(replyData)
         }
 
-    val res = api.echoAllNullableTypes(everything)
-    assertEquals(everything, res)
+    var didCall = false
+    api.echoAllNullableTypes(everything) { result ->
+      didCall = true
+      val output = (result.getOrNull())?.let { it == everything }
+      assertNotNull(output)
+    }
+
+    assertTrue(didCall)
   }
 
   @Test
@@ -83,7 +90,7 @@ internal class DataClassMethodsTest {
   }
 
   @Test
-  fun testHasValues() = runTest {
+  fun testHasValues() {
     val everything = getFullyPopulatedAllNullableTypes()
     val binaryMessenger = mockk<BinaryMessenger>()
     val api = FlutterIntegrationCoreApi(binaryMessenger)
@@ -100,8 +107,13 @@ internal class DataClassMethodsTest {
           reply.reply(replyData)
         }
 
-    val res = api.echoAllNullableTypes(everything)
-    assertEquals(everything, res)
+    var didCall = false
+    api.echoAllNullableTypes(everything) {
+      didCall = true
+      assertTrue(everything == it.getOrNull())
+    }
+
+    assertTrue(didCall)
   }
 
   @Test

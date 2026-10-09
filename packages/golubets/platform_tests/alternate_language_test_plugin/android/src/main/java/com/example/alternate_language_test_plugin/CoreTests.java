@@ -8872,10 +8872,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-<<<<<<< HEAD:packages/golubets/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
-                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterNoop"
-=======
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.asyncTaskQueueIsBackgroundThread"
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.asyncTaskQueueIsBackgroundThread"
                     + messageChannelSuffix,
                 getCodec(),
                 taskQueue);
@@ -8906,8 +8903,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.callFlutterNoop"
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/alternate_language_test_plugin/android/src/main/java/com/example/alternate_language_test_plugin/CoreTests.java
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterNoop"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -10540,7 +10536,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.callFlutterCallbackNoop"
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterCallbackNoop"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -10570,7 +10566,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.callFlutterCallbackEchoString"
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterCallbackEchoString"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -10602,7 +10598,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.callFlutterCallbackThrowError"
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterCallbackThrowError"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -10632,7 +10628,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.callFlutterCallbackThrowErrorFromVoid"
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterCallbackThrowErrorFromVoid"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -10662,7 +10658,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostIntegrationCoreApi.callFlutterIsAsyncFlutterApiOnRoot"
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterIsAsyncFlutterApiOnRoot"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -10694,7 +10690,7 @@ public class CoreTests {
   /**
    * A Flutter API using callback-based asynchronous methods (@asyncCallback).
    *
-   * <p>Generated class from Pigeon that represents Flutter messages that can be called from Java.
+   * <p>Generated class from Golubets that represents Flutter messages that can be called from Java.
    */
   public static class FlutterCallbackCoreApi {
     private final @NonNull BinaryMessenger binaryMessenger;
@@ -10712,12 +10708,12 @@ public class CoreTests {
 
     /** Public interface for sending reply. The codec used by FlutterCallbackCoreApi. */
     static @NonNull MessageCodec<Object> getCodec() {
-      return PigeonCodec.INSTANCE;
+      return GolubetsCodec.INSTANCE;
     }
 
     public void noop(@NonNull VoidResult result) {
       final String channelName =
-          "dev.flutter.pigeon.pigeon_integration_tests.FlutterCallbackCoreApi.noop"
+          "dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.noop"
               + messageChannelSuffix;
       BasicMessageChannel<Object> channel =
           new BasicMessageChannel<>(binaryMessenger, channelName, getCodec());
@@ -10741,7 +10737,7 @@ public class CoreTests {
 
     public void echoString(@NonNull String aStringArg, @NonNull Result<String> result) {
       final String channelName =
-          "dev.flutter.pigeon.pigeon_integration_tests.FlutterCallbackCoreApi.echoString"
+          "dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.echoString"
               + messageChannelSuffix;
       BasicMessageChannel<Object> channel =
           new BasicMessageChannel<>(binaryMessenger, channelName, getCodec());
@@ -10773,7 +10769,7 @@ public class CoreTests {
 
     public void throwError(@NonNull NullableResult<Object> result) {
       final String channelName =
-          "dev.flutter.pigeon.pigeon_integration_tests.FlutterCallbackCoreApi.throwError"
+          "dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.throwError"
               + messageChannelSuffix;
       BasicMessageChannel<Object> channel =
           new BasicMessageChannel<>(binaryMessenger, channelName, getCodec());
@@ -10799,7 +10795,7 @@ public class CoreTests {
 
     public void throwErrorFromVoid(@NonNull VoidResult result) {
       final String channelName =
-          "dev.flutter.pigeon.pigeon_integration_tests.FlutterCallbackCoreApi.throwErrorFromVoid"
+          "dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.throwErrorFromVoid"
               + messageChannelSuffix;
       BasicMessageChannel<Object> channel =
           new BasicMessageChannel<>(binaryMessenger, channelName, getCodec());
@@ -12471,7 +12467,7 @@ public class CoreTests {
     /** Returns true if the async FlutterApi method is run on the root isolate. */
     public void isAsyncFlutterApiOnRoot(@NonNull Result<Boolean> result) {
       final String channelName =
-          "dev.flutter.pigeon.pigeon_integration_tests.FlutterIntegrationCoreApi.isAsyncFlutterApiOnRoot"
+          "dev.bayori.golubets.golubets_integration_tests.FlutterIntegrationCoreApi.isAsyncFlutterApiOnRoot"
               + messageChannelSuffix;
       BasicMessageChannel<Object> channel =
           new BasicMessageChannel<>(binaryMessenger, channelName, getCodec());
@@ -12505,7 +12501,7 @@ public class CoreTests {
   /**
    * A Host API using callback-based asynchronous methods (@asyncCallback).
    *
-   * <p>Generated interface from Pigeon that represents a handler of messages from Flutter.
+   * <p>Generated interface from Golubets that represents a handler of messages from Flutter.
    */
   public interface HostCallbackCoreApi {
 
@@ -12525,7 +12521,7 @@ public class CoreTests {
 
     /** The codec used by HostCallbackCoreApi. */
     static @NonNull MessageCodec<Object> getCodec() {
-      return PigeonCodec.INSTANCE;
+      return GolubetsCodec.INSTANCE;
     }
 
     /**
@@ -12546,7 +12542,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostCallbackCoreApi.noop"
+                "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.noop"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -12576,7 +12572,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostCallbackCoreApi.echoString"
+                "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.echoString"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -12608,7 +12604,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostCallbackCoreApi.echoAllTypes"
+                "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.echoAllTypes"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -12640,7 +12636,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostCallbackCoreApi.echoNullableString"
+                "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.echoNullableString"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -12672,7 +12668,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostCallbackCoreApi.throwError"
+                "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.throwError"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -12702,7 +12698,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostCallbackCoreApi.throwErrorFromVoid"
+                "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.throwErrorFromVoid"
                     + messageChannelSuffix,
                 getCodec());
         if (api != null) {
@@ -12732,7 +12728,7 @@ public class CoreTests {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
                 binaryMessenger,
-                "dev.flutter.pigeon.pigeon_integration_tests.HostCallbackCoreApi.taskQueueIsBackgroundThread"
+                "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.taskQueueIsBackgroundThread"
                     + messageChannelSuffix,
                 getCodec(),
                 taskQueue);

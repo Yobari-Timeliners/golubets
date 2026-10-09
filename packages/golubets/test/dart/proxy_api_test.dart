@@ -1065,7 +1065,7 @@ void main() {
         final String collapsedCode = _collapseNewlineAndIndentation(sink.toString());
         expect(
           collapsedCode,
-          contains('late final _PigeonInternalProxyApiBaseCodec _pigeonVar_codecApi'),
+          contains('late final _GolubetsInternalProxyApiBaseCodec _golubetsVar_codecApi'),
         );
       });
 
@@ -1102,7 +1102,7 @@ void main() {
         final String collapsedCode = _collapseNewlineAndIndentation(sink.toString());
         expect(
           collapsedCode,
-          isNot(contains('late final _PigeonInternalProxyApiBaseCodec _pigeonVar_codecApi')),
+          isNot(contains('late final _GolubetsInternalProxyApiBaseCodec _golubetsVar_codecApi')),
         );
       });
     });

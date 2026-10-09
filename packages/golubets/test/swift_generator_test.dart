@@ -2,14 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-<<<<<<< HEAD:packages/golubets/test/swift_generator_test.dart
 import 'package:golubets/src/ast.dart';
 import 'package:golubets/src/swift/swift_generator.dart';
-=======
-import 'package:pigeon/pigeon.dart' show TaskQueueType;
-import 'package:pigeon/src/ast.dart';
-import 'package:pigeon/src/swift/swift_generator.dart';
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
 import 'package:test/test.dart';
 
 import 'dart_generator_test.dart';
@@ -434,13 +428,8 @@ void main() {
     const generator = SwiftGenerator();
     generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-<<<<<<< HEAD:packages/golubets/test/swift_generator_test.dart
     expect(code, contains('completion: @escaping (Result<Void, GolubetsError>) -> Void'));
     expect(code, contains('completion(.success(()))'));
-=======
-    expect(code, contains('func doSomething(arg0 arg0Arg: Input) async throws'));
-    expect(code, contains('continuation.resume()'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
     expect(code, isNot(contains('if (')));
   });
 
@@ -524,14 +513,10 @@ void main() {
     const generator = SwiftGenerator();
     generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-<<<<<<< HEAD:packages/golubets/test/swift_generator_test.dart
     expect(
       code,
       contains('func doSomething(completion: @escaping (Result<Output, GolubetsError>) -> Void)'),
     );
-=======
-    expect(code, contains('func doSomething() async throws -> Output'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
     expect(code, contains('channel.sendMessage(nil'));
     expect(code, isNot(contains('if (')));
   });
@@ -685,16 +670,12 @@ void main() {
     generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('protocol Api'));
-    expect(code, contains('func doSomething(arg: Input) async throws -> Output'));
-    expect(
-      code,
-      contains(
-        'Task { @MainActor in\n          do {\n            let result = try await api.doSomething(arg: argArg)\n            reply(wrapResult(result))',
-      ),
-    );
+    expect(code, contains('api.doSomething(arg: argArg) { result in'));
+    expect(code, contains('reply(wrapResult(res))'));
+    expect(code, isNot(contains('if (')));
   });
 
-  test('async method with TaskQueue generates Task without @MainActor', () {
+  test('callback async emits callback-based host api method', () {
     final root = Root(
       apis: <Api>[
         AstHostApi(
@@ -704,68 +685,7 @@ void main() {
               name: 'doSomething',
               location: ApiLocation.host,
               returnType: const TypeDeclaration(baseName: 'Output', isNullable: false),
-              isAsynchronous: true,
-              taskQueueType: TaskQueueType.serialBackgroundThread,
-              parameters: <Parameter>[
-                Parameter(
-                  name: 'arg',
-                  type: const TypeDeclaration(baseName: 'Input', isNullable: false),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-      classes: <Class>[
-        Class(
-          name: 'Input',
-          fields: <NamedType>[
-            NamedType(
-              type: const TypeDeclaration(baseName: 'String', isNullable: true),
-              name: 'input',
-            ),
-          ],
-        ),
-        Class(
-          name: 'Output',
-          fields: <NamedType>[
-            NamedType(
-              type: const TypeDeclaration(baseName: 'String', isNullable: true),
-              name: 'output',
-            ),
-          ],
-        ),
-      ],
-      enums: <Enum>[],
-    );
-    final sink = StringBuffer();
-    const swiftOptions = InternalSwiftOptions(swiftOut: '');
-    const generator = SwiftGenerator();
-    generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
-    final code = sink.toString();
-    expect(code, contains('protocol Api'));
-    expect(code, contains('func doSomething(arg: Input) async throws -> Output'));
-    expect(
-      code,
-      contains(
-        'Task {\n          do {\n            let result = try await api.doSomething(arg: argArg)\n            reply(wrapResult(result))',
-      ),
-    );
-    expect(code, isNot(contains('Task { @MainActor in')));
-  });
-
-  test('asyncCallback emits callback-based host api method', () {
-    final root = Root(
-      apis: <Api>[
-        AstHostApi(
-          name: 'Api',
-          methods: <Method>[
-            Method(
-              name: 'doSomething',
-              location: ApiLocation.host,
-              returnType: const TypeDeclaration(baseName: 'Output', isNullable: false),
-              isAsynchronous: true,
-              isAsynchronousCallback: true,
+              asynchronousType: AsynchronousType.callback,
               parameters: <Parameter>[
                 Parameter(
                   name: 'arg',
@@ -1003,11 +923,11 @@ void main() {
     generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('class Api'));
-    expect(code, matches(r'@MainActor func doSomething.*Input.*async throws -> Output'));
+    expect(code, matches('func doSomething.*Input.*completion.*Output.*Void'));
     expect(code, isNot(contains('if (')));
   });
 
-  test('flutter api methods use @MainActor for async but not callback', () {
+  test('flutter api methods use @MainActor for await async but not callback', () {
     final root = Root(
       apis: <Api>[
         AstFlutterApi(
@@ -1018,15 +938,16 @@ void main() {
               location: ApiLocation.flutter,
               parameters: <Parameter>[],
               returnType: const TypeDeclaration.voidDeclaration(),
-              isAsynchronous: true,
+              asynchronousType: const AwaitAsynchronous(
+                swiftOptions: SwiftAwaitAsynchronousOptions(throws: true),
+              ),
             ),
             Method(
               name: 'callbackMethod',
               location: ApiLocation.flutter,
               parameters: <Parameter>[],
               returnType: const TypeDeclaration.voidDeclaration(),
-              isAsynchronous: true,
-              isAsynchronousCallback: true,
+              asynchronousType: AsynchronousType.callback,
             ),
           ],
         ),
@@ -1042,7 +963,7 @@ void main() {
     expect(code, contains('@MainActor func asyncMethod() async throws'));
     expect(
       code,
-      contains('func callbackMethod(completion: @escaping (Result<Void, PigeonError>) -> Void)'),
+      contains('func callbackMethod(completion: @escaping (Result<Void, GolubetsError>) -> Void)'),
     );
     expect(code, isNot(contains('@MainActor func callbackMethod')));
   });
@@ -1279,16 +1200,12 @@ void main() {
     const generator = SwiftGenerator();
     generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-<<<<<<< HEAD:packages/golubets/test/swift_generator_test.dart
     expect(
       code,
       contains('func doit(completion: @escaping (Result<[Int64?], GolubetsError>) -> Void)'),
     );
-=======
-    expect(code, contains('func doit() async throws -> [Int64?]'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
     expect(code, contains('let result = listResponse[0] as! [Int64?]'));
-    expect(code, contains('continuation.resume(returning: result)'));
+    expect(code, contains('completion(.success(result))'));
   });
 
   test('generic class with single type parameter', () {
@@ -1563,7 +1480,6 @@ void main() {
     final code = sink.toString();
     expect(code, contains('let channel = FlutterBasicMessageChannel'));
     expect(code, contains('let result = listResponse[0] as! Int64'));
-<<<<<<< HEAD:packages/golubets/test/swift_generator_test.dart
     expect(code, contains('completion(.success(result))'));
     expect(
       code,
@@ -1571,10 +1487,6 @@ void main() {
         'func add(x xArg: Int64, y yArg: Int64, completion: @escaping (Result<Int64, GolubetsError>) -> Void)',
       ),
     );
-=======
-    expect(code, contains('continuation.resume(returning: result)'));
-    expect(code, contains('func add(x xArg: Int64, y yArg: Int64) async throws -> Int64'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
     expect(code, contains('channel.sendMessage([xArg, yArg] as [Any?]) { response in'));
   });
 
@@ -1601,7 +1513,7 @@ void main() {
     const generator = SwiftGenerator();
     generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-    expect(code, contains('else if PigeonInternal.isNullish(listResponse[0]) {'));
+    expect(code, contains('else if GolubetsInternal.isNullish(listResponse[0]) {'));
   });
 
   test('return nullable host', () {
@@ -1654,7 +1566,7 @@ void main() {
     const generator = SwiftGenerator();
     generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-    expect(code, contains('func doit() async throws -> Int64?'));
+    expect(code, contains('func doit(completion: @escaping (Result<Int64?, Error>) -> Void'));
   });
 
   test('nullable argument host', () {
@@ -1716,16 +1628,12 @@ void main() {
     const generator = SwiftGenerator();
     generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-<<<<<<< HEAD:packages/golubets/test/swift_generator_test.dart
     expect(
       code,
       contains(
         'func doit(foo fooArg: Int64?, completion: @escaping (Result<Void, GolubetsError>) -> Void)',
       ),
     );
-=======
-    expect(code, contains('func doit(foo fooArg: Int64?) async throws'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/swift_generator_test.dart
   });
 
   test('nonnull fields', () {
@@ -2035,9 +1943,7 @@ void main() {
     final code = sink.toString();
     expect(
       code,
-      contains(
-        'continuation.resume(throwing: createConnectionError(withChannelName: channelName))',
-      ),
+      contains('completion(.failure(createConnectionError(withChannelName: channelName)))'),
     );
     expect(
       code,

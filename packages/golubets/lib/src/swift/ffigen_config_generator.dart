@@ -142,8 +142,8 @@ import 'package:swiftgen/swiftgen.dart';
 ''');
       final String prefix = generatorOptions.swiftOptions.fileSpecificClassNameComponent ?? '';
       indent.writeScoped('final classes = <String>{', '};', nestCount: 2, () {
-        indent.writeln("'${prefix}PigeonInternalNull',");
-        indent.writeln("'${prefix}PigeonTypedData',");
+        indent.writeln("'${prefix}GolubetsInternalNull',");
+        indent.writeln("'${prefix}GolubetsTypedData',");
         indent.writeln("'${prefix}NumberWrapper',");
         if (hasAsyncFlutterApi) {
           indent.writeln("'NSURLCredential',");
@@ -161,7 +161,7 @@ import 'package:swiftgen/swiftgen.dart';
         for (final Class dataClass in root.classes) {
           indent.writeln("'${dataClass.name}Bridge',");
         }
-        indent.writeln("'${generatorOptions.swiftOptions.errorClassName ?? 'PigeonError'}'");
+        indent.writeln("'${generatorOptions.swiftOptions.errorClassName ?? 'GolubetsError'}'");
       });
       indent.writeScoped('final enums = <String>{', '};', nestCount: 2, () {
         for (final Enum enumType in root.enums) {
@@ -170,7 +170,7 @@ import 'package:swiftgen/swiftgen.dart';
         if (hasAsyncFlutterApi) {
           indent.writeln("'NSURLSessionAuthChallengeDisposition',");
         }
-        indent.writeln("'${prefix}PigeonInternalNumberType',");
+        indent.writeln("'${prefix}GolubetsInternalNumberType',");
       });
 
       final copyrightPreamble = generatorOptions.swiftOptions.copyrightHeader != null

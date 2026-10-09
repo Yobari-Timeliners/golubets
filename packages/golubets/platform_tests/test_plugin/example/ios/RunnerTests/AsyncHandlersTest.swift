@@ -9,11 +9,13 @@ import Testing
 class MockHostSmallApi: HostSmallApi {
   var output: String?
 
-  func echo(aString: String) async throws -> String {
-    return output!
+  func echo(aString: String, completion: @escaping (Result<String, Error>) -> Void) {
+    completion(.success(output!))
   }
 
-  func voidVoid() async throws {}
+  func voidVoid(completion: @escaping (Result<Void, Error>) -> Void) {
+    completion(.success(()))
+  }
 }
 
 @MainActor
@@ -26,8 +28,17 @@ struct AsyncHandlersTest {
     binaryMessenger.result = value
     let flutterApi = FlutterIntegrationCoreApi(binaryMessenger: binaryMessenger)
 
-    let res = try await flutterApi.echo(value)
-    #expect(res == value)
+    await confirmation { confirmed in
+      flutterApi.echo(value) { result in
+        switch result {
+        case .success(let res):
+          #expect(res == value)
+          confirmed()
+        case .failure(let error):
+          Issue.record("Failed with error: \(error)")
+        }
+      }
+    }
   }
 
   @Test
@@ -39,13 +50,13 @@ struct AsyncHandlersTest {
     let channelName = "dev.bayori.golubets.golubets_integration_tests.HostSmallApi.voidVoid"
     #expect(binaryMessenger.handlers[channelName] != nil)
 
-    let data = await withCheckedContinuation { continuation in
-      binaryMessenger.handlers[channelName]?(nil) { replyData in
-        continuation.resume(returning: replyData)
+    await confirmation { confirmed in
+      binaryMessenger.handlers[channelName]?(nil) { data in
+        let outputList = binaryMessenger.codec.decode(data) as? [Any]
+        #expect(outputList?.first is NSNull)
+        confirmed()
       }
     }
-    let outputList = binaryMessenger.codec.decode(data) as? [Any]
-    #expect(outputList?.first is NSNull)
   }
 
   @Test
@@ -61,13 +72,13 @@ struct AsyncHandlersTest {
 
     let inputEncoded = binaryMessenger.codec.encode([value])
 
-    let data = await withCheckedContinuation { continuation in
-      binaryMessenger.handlers[channelName]?(inputEncoded) { replyData in
-        continuation.resume(returning: replyData)
+    await confirmation { confirmed in
+      binaryMessenger.handlers[channelName]?(inputEncoded) { data in
+        let outputList = binaryMessenger.codec.decode(data) as? [Any]
+        let output = outputList?.first as? String
+        #expect(output == value)
+        confirmed()
       }
     }
-    let outputList = binaryMessenger.codec.decode(data) as? [Any]
-    let output = outputList?.first as? String
-    #expect(output == value)
   }
 }

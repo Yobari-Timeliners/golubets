@@ -4,10 +4,10 @@
 
 // ignore_for_file: always_specify_types, strict_raw_type
 
-import 'package:pigeon/pigeon.dart';
+import 'package:golubets/golubets.dart';
 
-@ConfigurePigeon(
-  PigeonOptions(
+@ConfigureGolubets(
+  GolubetsOptions(
     dartOptions: DartOptions(),
     kotlinOptions: KotlinOptions(useJni: true, appDirectory: 'platform_tests/test_plugin/example/'),
     swiftOptions: SwiftOptions(

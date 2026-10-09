@@ -8,60 +8,33 @@ import android.os.Handler
 import android.os.Looper
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/TestPlugin.kt
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.withContext
 
 /** This plugin handles the native side of the integration tests in example/integration_test/. */
 class TestPlugin :
-    FlutterPlugin, HostIntegrationCoreApi, SealedClassApi, KotlinNestedSealedApi, HostGenericApi {
-=======
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
-
-/**
- * Helper to adapt callback-based Flutter API calls into Kotlin coroutines, allowing integration
- * tests and host handlers to `await` Flutter API calls.
- */
-internal suspend inline fun <T> suspendFlutterApi(
-    crossinline block: ((Result<T>) -> Unit) -> Unit
-): T = suspendCancellableCoroutine { continuation ->
-  block { result ->
-    if (result.isSuccess) {
-      @Suppress("UNCHECKED_CAST") continuation.resume(result.getOrNull() as T)
-    } else {
-      continuation.resumeWithException(result.exceptionOrNull()!!)
-    }
-  }
-}
-
-/** This plugin handles the native side of the integration tests in example/integration_test/. */
-class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, HostCallbackCoreApi {
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/TestPlugin.kt
+    FlutterPlugin,
+    HostIntegrationCoreApi,
+    HostCallbackCoreApi,
+    SealedClassApi,
+    KotlinNestedSealedApi,
+    HostGenericApi {
   private var flutterApi: FlutterIntegrationCoreApi? = null
   private var flutterCallbackApi: FlutterCallbackCoreApi? = null
   private var flutterSmallApiOne: FlutterSmallApi? = null
   private var flutterSmallApiTwo: FlutterSmallApi? = null
   private var proxyApiRegistrar: ProxyApiRegistrar? = null
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/TestPlugin.kt
   private var coroutineScope: CoroutineScope? = null
   private var flutterGenericApi: FlutterGenericApi? = null
+  private var niMessageApi: NativeInteropHostIntegrationCoreApiRegistrar? = null
 
   override fun onAttachedToEngine(binding: FlutterPluginBinding) {
     coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     HostIntegrationCoreApi.setUp(binding.binaryMessenger, this, coroutineScope = coroutineScope!!)
-=======
-  private var niMessageApi: NativeInteropHostIntegrationCoreApiRegistrar? = null
-
-  override fun onAttachedToEngine(binding: FlutterPluginBinding) {
-    HostIntegrationCoreApi.setUp(binding.binaryMessenger, this)
     HostCallbackCoreApi.setUp(binding.binaryMessenger, this)
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/TestPlugin.kt
     val testSuffixApiOne = TestPluginWithSuffix()
     testSuffixApiOne.setUp(binding, "suffixOne")
     val testSuffixApiTwo = TestPluginWithSuffix()
@@ -88,14 +61,14 @@ class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, HostCallbackCoreApi {
     HostGenericApi.setUp(binding.binaryMessenger, this)
   }
 
-  override fun onDetachedFromEngine(binding: FlutterPluginBinding) {
-    HostIntegrationCoreApi.setUp(binding.binaryMessenger, null)
+  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
     HostCallbackCoreApi.setUp(binding.binaryMessenger, null)
     proxyApiRegistrar?.tearDown()
     coroutineScope?.cancel()
   }
 
   // HostCallbackCoreApi
+
   override fun noop(callback: (Result<Unit>) -> Unit) {
     callback(Result.success(Unit))
   }
@@ -156,7 +129,7 @@ class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, HostCallbackCoreApi {
     return everything
   }
 
-  override fun throwError(): Any {
+  override fun throwError(): Any? {
     throw Exception("An error")
   }
 
@@ -164,7 +137,7 @@ class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, HostCallbackCoreApi {
     throw Exception("An error")
   }
 
-  override fun throwFlutterError(): Any {
+  override fun throwFlutterError(): Any? {
     throw FlutterError("code", "message", "details")
   }
 
@@ -437,31 +410,26 @@ class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, HostCallbackCoreApi {
     return aNullableString
   }
 
-  override suspend fun noopAsync() {}
-
-  override suspend fun throwAsyncError(): Any? {
-    throw Exception("except")
+  override fun noopAsync(callback: (Result<Unit>) -> Unit) {
+    callback(Result.success(Unit))
   }
 
-  override suspend fun throwAsyncErrorFromVoid() {
-    throw Exception("except")
+  override fun throwAsyncError(callback: (Result<Any?>) -> Unit) {
+    callback(Result.failure(Exception("except")))
   }
 
-  override suspend fun throwAsyncFlutterError(): Any? {
-    throw FlutterError("code", "message", "details")
+  override fun throwAsyncErrorFromVoid(callback: (Result<Unit>) -> Unit) {
+    callback(Result.failure(Exception("except")))
   }
 
-  override suspend fun echoAsyncAllTypes(everything: AllTypes): AllTypes {
-    return everything
+  override fun throwAsyncFlutterError(callback: (Result<Any?>) -> Unit) {
+    callback(Result.failure(FlutterError("code", "message", "details")))
   }
 
-  override suspend fun echoAsyncNullableAllNullableTypes(
-      everything: AllNullableTypes?
-  ): AllNullableTypes? {
-    return everything
+  override fun echoAsyncAllTypes(everything: AllTypes, callback: (Result<AllTypes>) -> Unit) {
+    callback(Result.success(everything))
   }
 
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/TestPlugin.kt
   override suspend fun echoModernAsyncAllTypes(everything: AllTypes): AllTypes {
     return everything
   }
@@ -492,152 +460,182 @@ class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, HostCallbackCoreApi {
       callback: (Result<AllNullableTypesWithoutRecursion?>) -> Unit
   ) {
     callback(Result.success(everything))
-=======
-  override suspend fun echoAsyncNullableAllNullableTypesWithoutRecursion(
-      everything: AllNullableTypesWithoutRecursion?
-  ): AllNullableTypesWithoutRecursion? {
-    return everything
   }
 
-  override suspend fun echoAsyncInt(anInt: Long): Long {
-    return anInt
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/TestPlugin.kt
+  override fun echoAsyncInt(anInt: Long, callback: (Result<Long>) -> Unit) {
+    callback(Result.success(anInt))
   }
 
-  override suspend fun echoAsyncDouble(aDouble: Double): Double {
-    return aDouble
+  override fun echoAsyncDouble(aDouble: Double, callback: (Result<Double>) -> Unit) {
+    callback(Result.success(aDouble))
   }
 
-  override suspend fun echoAsyncBool(aBool: Boolean): Boolean {
-    return aBool
+  override fun echoAsyncBool(aBool: Boolean, callback: (Result<Boolean>) -> Unit) {
+    callback(Result.success(aBool))
   }
 
-  override suspend fun echoAsyncString(aString: String): String {
-    return aString
+  override fun echoAsyncString(aString: String, callback: (Result<String>) -> Unit) {
+    callback(Result.success(aString))
   }
 
-  override suspend fun echoAsyncUint8List(aUint8List: ByteArray): ByteArray {
-    return aUint8List
+  override fun echoAsyncUint8List(aUint8List: ByteArray, callback: (Result<ByteArray>) -> Unit) {
+    callback(Result.success(aUint8List))
   }
 
-  override suspend fun echoAsyncObject(anObject: Any): Any {
-    return anObject
+  override fun echoAsyncObject(anObject: Any, callback: (Result<Any>) -> Unit) {
+    callback(Result.success(anObject))
   }
 
-  override suspend fun echoAsyncList(list: List<Any?>): List<Any?> {
-    return list
+  override fun echoAsyncList(list: List<Any?>, callback: (Result<List<Any?>>) -> Unit) {
+    callback(Result.success(list))
   }
 
-  override suspend fun echoAsyncEnumList(enumList: List<AnEnum?>): List<AnEnum?> {
-    return enumList
+  override fun echoAsyncEnumList(
+      enumList: List<AnEnum?>,
+      callback: (Result<List<AnEnum?>>) -> Unit
+  ) {
+    callback(Result.success(enumList))
   }
 
-  override suspend fun echoAsyncClassList(
-      classList: List<AllNullableTypes?>
-  ): List<AllNullableTypes?> {
-    return classList
+  override fun echoAsyncClassList(
+      classList: List<AllNullableTypes?>,
+      callback: (Result<List<AllNullableTypes?>>) -> Unit
+  ) {
+    callback(Result.success(classList))
   }
 
-  override suspend fun echoAsyncMap(map: Map<Any?, Any?>): Map<Any?, Any?> {
-    return map
+  override fun echoAsyncMap(map: Map<Any?, Any?>, callback: (Result<Map<Any?, Any?>>) -> Unit) {
+    callback(Result.success(map))
   }
 
-  override suspend fun echoAsyncStringMap(stringMap: Map<String?, String?>): Map<String?, String?> {
-    return stringMap
+  override fun echoAsyncStringMap(
+      stringMap: Map<String?, String?>,
+      callback: (Result<Map<String?, String?>>) -> Unit
+  ) {
+    callback(Result.success(stringMap))
   }
 
-  override suspend fun echoAsyncIntMap(intMap: Map<Long?, Long?>): Map<Long?, Long?> {
-    return intMap
+  override fun echoAsyncIntMap(
+      intMap: Map<Long?, Long?>,
+      callback: (Result<Map<Long?, Long?>>) -> Unit
+  ) {
+    callback(Result.success(intMap))
   }
 
-  override suspend fun echoAsyncEnumMap(enumMap: Map<AnEnum?, AnEnum?>): Map<AnEnum?, AnEnum?> {
-    return enumMap
+  override fun echoAsyncEnumMap(
+      enumMap: Map<AnEnum?, AnEnum?>,
+      callback: (Result<Map<AnEnum?, AnEnum?>>) -> Unit
+  ) {
+    callback(Result.success(enumMap))
   }
 
-  override suspend fun echoAsyncClassMap(
-      classMap: Map<Long?, AllNullableTypes?>
-  ): Map<Long?, AllNullableTypes?> {
-    return classMap
+  override fun echoAsyncClassMap(
+      classMap: Map<Long?, AllNullableTypes?>,
+      callback: (Result<Map<Long?, AllNullableTypes?>>) -> Unit
+  ) {
+    callback(Result.success(classMap))
   }
 
-  override suspend fun echoAsyncEnum(anEnum: AnEnum): AnEnum {
-    return anEnum
+  override fun echoAsyncEnum(anEnum: AnEnum, callback: (Result<AnEnum>) -> Unit) {
+    callback(Result.success(anEnum))
   }
 
-  override suspend fun echoAnotherAsyncEnum(anotherEnum: AnotherEnum): AnotherEnum {
-    return anotherEnum
+  override fun echoAnotherAsyncEnum(
+      anotherEnum: AnotherEnum,
+      callback: (Result<AnotherEnum>) -> Unit
+  ) {
+    callback(Result.success(anotherEnum))
   }
 
-  override suspend fun echoAsyncNullableInt(anInt: Long?): Long? {
-    return anInt
+  override fun echoAsyncNullableInt(anInt: Long?, callback: (Result<Long?>) -> Unit) {
+    callback(Result.success(anInt))
   }
 
-  override suspend fun echoAsyncNullableDouble(aDouble: Double?): Double? {
-    return aDouble
+  override fun echoAsyncNullableDouble(aDouble: Double?, callback: (Result<Double?>) -> Unit) {
+    callback(Result.success(aDouble))
   }
 
-  override suspend fun echoAsyncNullableBool(aBool: Boolean?): Boolean? {
-    return aBool
+  override fun echoAsyncNullableBool(aBool: Boolean?, callback: (Result<Boolean?>) -> Unit) {
+    callback(Result.success(aBool))
   }
 
-  override suspend fun echoAsyncNullableString(aString: String?): String? {
-    return aString
+  override fun echoAsyncNullableString(aString: String?, callback: (Result<String?>) -> Unit) {
+    callback(Result.success(aString))
   }
 
-  override suspend fun echoAsyncNullableUint8List(aUint8List: ByteArray?): ByteArray? {
-    return aUint8List
+  override fun echoAsyncNullableUint8List(
+      aUint8List: ByteArray?,
+      callback: (Result<ByteArray?>) -> Unit
+  ) {
+    callback(Result.success(aUint8List))
   }
 
-  override suspend fun echoAsyncNullableObject(anObject: Any?): Any? {
-    return anObject
+  override fun echoAsyncNullableObject(anObject: Any?, callback: (Result<Any?>) -> Unit) {
+    callback(Result.success(anObject))
   }
 
-  override suspend fun echoAsyncNullableList(list: List<Any?>?): List<Any?>? {
-    return list
+  override fun echoAsyncNullableList(list: List<Any?>?, callback: (Result<List<Any?>?>) -> Unit) {
+    callback(Result.success(list))
   }
 
-  override suspend fun echoAsyncNullableEnumList(enumList: List<AnEnum?>?): List<AnEnum?>? {
-    return enumList
+  override fun echoAsyncNullableEnumList(
+      enumList: List<AnEnum?>?,
+      callback: (Result<List<AnEnum?>?>) -> Unit
+  ) {
+    callback(Result.success(enumList))
   }
 
-  override suspend fun echoAsyncNullableClassList(
-      classList: List<AllNullableTypes?>?
-  ): List<AllNullableTypes?>? {
-    return classList
+  override fun echoAsyncNullableClassList(
+      classList: List<AllNullableTypes?>?,
+      callback: (Result<List<AllNullableTypes?>?>) -> Unit
+  ) {
+    callback(Result.success(classList))
   }
 
-  override suspend fun echoAsyncNullableMap(map: Map<Any?, Any?>?): Map<Any?, Any?>? {
-    return map
+  override fun echoAsyncNullableMap(
+      map: Map<Any?, Any?>?,
+      callback: (Result<Map<Any?, Any?>?>) -> Unit
+  ) {
+    callback(Result.success(map))
   }
 
-  override suspend fun echoAsyncNullableStringMap(
-      stringMap: Map<String?, String?>?
-  ): Map<String?, String?>? {
-    return stringMap
+  override fun echoAsyncNullableStringMap(
+      stringMap: Map<String?, String?>?,
+      callback: (Result<Map<String?, String?>?>) -> Unit
+  ) {
+    callback(Result.success(stringMap))
   }
 
-  override suspend fun echoAsyncNullableIntMap(intMap: Map<Long?, Long?>?): Map<Long?, Long?>? {
-    return intMap
+  override fun echoAsyncNullableIntMap(
+      intMap: Map<Long?, Long?>?,
+      callback: (Result<Map<Long?, Long?>?>) -> Unit
+  ) {
+    callback(Result.success(intMap))
   }
 
-  override suspend fun echoAsyncNullableEnumMap(
-      enumMap: Map<AnEnum?, AnEnum?>?
-  ): Map<AnEnum?, AnEnum?>? {
-    return enumMap
+  override fun echoAsyncNullableEnumMap(
+      enumMap: Map<AnEnum?, AnEnum?>?,
+      callback: (Result<Map<AnEnum?, AnEnum?>?>) -> Unit
+  ) {
+    callback(Result.success(enumMap))
   }
 
-  override suspend fun echoAsyncNullableClassMap(
-      classMap: Map<Long?, AllNullableTypes?>?
-  ): Map<Long?, AllNullableTypes?>? {
-    return classMap
+  override fun echoAsyncNullableClassMap(
+      classMap: Map<Long?, AllNullableTypes?>?,
+      callback: (Result<Map<Long?, AllNullableTypes?>?>) -> Unit
+  ) {
+    callback(Result.success(classMap))
   }
 
-  override suspend fun echoAsyncNullableEnum(anEnum: AnEnum?): AnEnum? {
-    return anEnum
+  override fun echoAsyncNullableEnum(anEnum: AnEnum?, callback: (Result<AnEnum?>) -> Unit) {
+    callback(Result.success(anEnum))
   }
 
-  override suspend fun echoAnotherAsyncNullableEnum(anotherEnum: AnotherEnum?): AnotherEnum? {
-    return anotherEnum
+  override fun echoAnotherAsyncNullableEnum(
+      anotherEnum: AnotherEnum?,
+      callback: (Result<AnotherEnum?>) -> Unit
+  ) {
+    callback(Result.success(anotherEnum))
   }
 
   override fun defaultIsMainThread(): Boolean {
@@ -648,296 +646,365 @@ class TestPlugin : FlutterPlugin, HostIntegrationCoreApi, HostCallbackCoreApi {
     return Thread.currentThread() != Looper.getMainLooper().getThread()
   }
 
-  override suspend fun asyncTaskQueueIsBackgroundThread(): Boolean {
-    return Thread.currentThread() != Looper.getMainLooper().getThread()
+  override fun asyncTaskQueueIsBackgroundThread(callback: (Result<Boolean>) -> Unit) {
+    callback(Result.success(Thread.currentThread() != Looper.getMainLooper().getThread()))
   }
 
-  override suspend fun callFlutterNoop() {
-    flutterApi!!.noop()
+  override fun callFlutterCallbackNoop(callback: (Result<Unit>) -> Unit) {
+    flutterCallbackApi!!.noop(callback)
   }
 
-  override suspend fun callFlutterThrowError(): Any? {
-    return flutterApi!!.throwError()
+  override fun callFlutterCallbackEchoString(aString: String, callback: (Result<String>) -> Unit) {
+    flutterCallbackApi!!.echoString(aString, callback)
   }
 
-  override suspend fun callFlutterThrowErrorFromVoid() {
-    flutterApi!!.throwErrorFromVoid()
+  override fun callFlutterCallbackThrowError(callback: (Result<Any?>) -> Unit) {
+    flutterCallbackApi!!.throwError(callback)
   }
 
-  override suspend fun callFlutterEchoAllTypes(everything: AllTypes): AllTypes {
-    return flutterApi!!.echoAllTypes(everything)
+  override fun callFlutterCallbackThrowErrorFromVoid(callback: (Result<Unit>) -> Unit) {
+    flutterCallbackApi!!.throwErrorFromVoid(callback)
   }
 
-  override suspend fun callFlutterSendMultipleNullableTypes(
+  override fun callFlutterIsAsyncFlutterApiOnRoot(callback: (Result<Boolean>) -> Unit) {
+    if (Looper.myLooper() != Looper.getMainLooper()) {
+      callback(Result.success(false))
+      return
+    }
+    flutterApi!!.isAsyncFlutterApiOnRoot { result ->
+      callback(result.map { it && Looper.myLooper() == Looper.getMainLooper() })
+    }
+  }
+
+  override fun callFlutterNoop(callback: (Result<Unit>) -> Unit) {
+    flutterApi!!.noop { callback(Result.success(Unit)) }
+  }
+
+  override fun callFlutterThrowError(callback: (Result<Any?>) -> Unit) {
+    flutterApi!!.throwError { result -> callback(result) }
+  }
+
+  override fun callFlutterThrowErrorFromVoid(callback: (Result<Unit>) -> Unit) {
+    flutterApi!!.throwErrorFromVoid { result -> callback(result) }
+  }
+
+  override fun callFlutterEchoAllTypes(everything: AllTypes, callback: (Result<AllTypes>) -> Unit) {
+    flutterApi!!.echoAllTypes(everything) { echo -> callback(echo) }
+  }
+
+  override fun callFlutterSendMultipleNullableTypes(
       aNullableBool: Boolean?,
       aNullableInt: Long?,
-      aNullableString: String?
-  ): AllNullableTypes {
-    return flutterApi!!.sendMultipleNullableTypes(aNullableBool, aNullableInt, aNullableString)
+      aNullableString: String?,
+      callback: (Result<AllNullableTypes>) -> Unit
+  ) {
+    flutterApi!!.sendMultipleNullableTypes(aNullableBool, aNullableInt, aNullableString) { echo ->
+      callback(echo)
+    }
   }
 
-  override suspend fun callFlutterEchoAllNullableTypesWithoutRecursion(
-      everything: AllNullableTypesWithoutRecursion?
-  ): AllNullableTypesWithoutRecursion? {
-    return flutterApi!!.echoAllNullableTypesWithoutRecursion(everything)
+  override fun callFlutterEchoAllNullableTypesWithoutRecursion(
+      everything: AllNullableTypesWithoutRecursion?,
+      callback: (Result<AllNullableTypesWithoutRecursion?>) -> Unit
+  ) {
+    flutterApi!!.echoAllNullableTypesWithoutRecursion(everything) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterSendMultipleNullableTypesWithoutRecursion(
+  override fun callFlutterSendMultipleNullableTypesWithoutRecursion(
       aNullableBool: Boolean?,
       aNullableInt: Long?,
-      aNullableString: String?
-  ): AllNullableTypesWithoutRecursion {
-    return flutterApi!!.sendMultipleNullableTypesWithoutRecursion(
-        aNullableBool, aNullableInt, aNullableString)
+      aNullableString: String?,
+      callback: (Result<AllNullableTypesWithoutRecursion>) -> Unit
+  ) {
+    flutterApi!!.sendMultipleNullableTypesWithoutRecursion(
+        aNullableBool, aNullableInt, aNullableString) { echo ->
+          callback(echo)
+        }
   }
 
-  override suspend fun callFlutterEchoBool(aBool: Boolean): Boolean {
-    return flutterApi!!.echoBool(aBool)
+  override fun callFlutterEchoBool(aBool: Boolean, callback: (Result<Boolean>) -> Unit) {
+    flutterApi!!.echoBool(aBool) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoInt(anInt: Long): Long {
-    return flutterApi!!.echoInt(anInt)
+  override fun callFlutterEchoInt(anInt: Long, callback: (Result<Long>) -> Unit) {
+    flutterApi!!.echoInt(anInt) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoDouble(aDouble: Double): Double {
-    return flutterApi!!.echoDouble(aDouble)
+  override fun callFlutterEchoDouble(aDouble: Double, callback: (Result<Double>) -> Unit) {
+    flutterApi!!.echoDouble(aDouble) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoString(aString: String): String {
-    return flutterApi!!.echoString(aString)
+  override fun callFlutterEchoString(aString: String, callback: (Result<String>) -> Unit) {
+    flutterApi!!.echoString(aString) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoUint8List(list: ByteArray): ByteArray {
-    return flutterApi!!.echoUint8List(list)
+  override fun callFlutterEchoUint8List(list: ByteArray, callback: (Result<ByteArray>) -> Unit) {
+    flutterApi!!.echoUint8List(list) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoList(list: List<Any?>): List<Any?> {
-    return flutterApi!!.echoList(list)
+  override fun callFlutterEchoList(list: List<Any?>, callback: (Result<List<Any?>>) -> Unit) {
+    flutterApi!!.echoList(list) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoEnumList(enumList: List<AnEnum?>): List<AnEnum?> {
-    return flutterApi!!.echoEnumList(enumList)
+  override fun callFlutterEchoEnumList(
+      enumList: List<AnEnum?>,
+      callback: (Result<List<AnEnum?>>) -> Unit
+  ) {
+    flutterApi!!.echoEnumList(enumList) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoClassList(
-      classList: List<AllNullableTypes?>
-  ): List<AllNullableTypes?> {
-    return flutterApi!!.echoClassList(classList)
+  override fun callFlutterEchoClassList(
+      classList: List<AllNullableTypes?>,
+      callback: (Result<List<AllNullableTypes?>>) -> Unit
+  ) {
+    flutterApi!!.echoClassList(classList) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNonNullEnumList(enumList: List<AnEnum>): List<AnEnum> {
-    return flutterApi!!.echoNonNullEnumList(enumList)
+  override fun callFlutterEchoNonNullEnumList(
+      enumList: List<AnEnum>,
+      callback: (Result<List<AnEnum>>) -> Unit
+  ) {
+    flutterApi!!.echoNonNullEnumList(enumList) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNonNullClassList(
-      classList: List<AllNullableTypes>
-  ): List<AllNullableTypes> {
-    return flutterApi!!.echoNonNullClassList(classList)
+  override fun callFlutterEchoNonNullClassList(
+      classList: List<AllNullableTypes>,
+      callback: (Result<List<AllNullableTypes>>) -> Unit
+  ) {
+    flutterApi!!.echoNonNullClassList(classList) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoMap(map: Map<Any?, Any?>): Map<Any?, Any?> {
-    return flutterApi!!.echoMap(map)
+  override fun callFlutterEchoMap(
+      map: Map<Any?, Any?>,
+      callback: (Result<Map<Any?, Any?>>) -> Unit
+  ) {
+    flutterApi!!.echoMap(map) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoStringMap(
-      stringMap: Map<String?, String?>
-  ): Map<String?, String?> {
-    return flutterApi!!.echoStringMap(stringMap)
+  override fun callFlutterEchoStringMap(
+      stringMap: Map<String?, String?>,
+      callback: (Result<Map<String?, String?>>) -> Unit
+  ) {
+    flutterApi!!.echoStringMap(stringMap) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoIntMap(intMap: Map<Long?, Long?>): Map<Long?, Long?> {
-    return flutterApi!!.echoIntMap(intMap)
+  override fun callFlutterEchoIntMap(
+      intMap: Map<Long?, Long?>,
+      callback: (Result<Map<Long?, Long?>>) -> Unit
+  ) {
+    flutterApi!!.echoIntMap(intMap) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoEnumMap(
-      enumMap: Map<AnEnum?, AnEnum?>
-  ): Map<AnEnum?, AnEnum?> {
-    return flutterApi!!.echoEnumMap(enumMap)
+  override fun callFlutterEchoEnumMap(
+      enumMap: Map<AnEnum?, AnEnum?>,
+      callback: (Result<Map<AnEnum?, AnEnum?>>) -> Unit
+  ) {
+    flutterApi!!.echoEnumMap(enumMap) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoClassMap(
-      classMap: Map<Long?, AllNullableTypes?>
-  ): Map<Long?, AllNullableTypes?> {
-    return flutterApi!!.echoClassMap(classMap)
+  override fun callFlutterEchoClassMap(
+      classMap: Map<Long?, AllNullableTypes?>,
+      callback: (Result<Map<Long?, AllNullableTypes?>>) -> Unit
+  ) {
+    flutterApi!!.echoClassMap(classMap) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNonNullStringMap(
-      stringMap: Map<String, String>
-  ): Map<String, String> {
-    return flutterApi!!.echoNonNullStringMap(stringMap)
+  override fun callFlutterEchoNonNullStringMap(
+      stringMap: Map<String, String>,
+      callback: (Result<Map<String, String>>) -> Unit
+  ) {
+    flutterApi!!.echoNonNullStringMap(stringMap) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNonNullIntMap(intMap: Map<Long, Long>): Map<Long, Long> {
-    return flutterApi!!.echoNonNullIntMap(intMap)
+  override fun callFlutterEchoNonNullIntMap(
+      intMap: Map<Long, Long>,
+      callback: (Result<Map<Long, Long>>) -> Unit
+  ) {
+    flutterApi!!.echoNonNullIntMap(intMap) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNonNullEnumMap(
-      enumMap: Map<AnEnum, AnEnum>
-  ): Map<AnEnum, AnEnum> {
-    return flutterApi!!.echoNonNullEnumMap(enumMap)
+  override fun callFlutterEchoNonNullEnumMap(
+      enumMap: Map<AnEnum, AnEnum>,
+      callback: (Result<Map<AnEnum, AnEnum>>) -> Unit
+  ) {
+    flutterApi!!.echoNonNullEnumMap(enumMap) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNonNullClassMap(
-      classMap: Map<Long, AllNullableTypes>
-  ): Map<Long, AllNullableTypes> {
-    return flutterApi!!.echoNonNullClassMap(classMap)
+  override fun callFlutterEchoNonNullClassMap(
+      classMap: Map<Long, AllNullableTypes>,
+      callback: (Result<Map<Long, AllNullableTypes>>) -> Unit
+  ) {
+    flutterApi!!.echoNonNullClassMap(classMap) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoEnum(anEnum: AnEnum): AnEnum {
-    return flutterApi!!.echoEnum(anEnum)
+  override fun callFlutterEchoEnum(anEnum: AnEnum, callback: (Result<AnEnum>) -> Unit) {
+    flutterApi!!.echoEnum(anEnum) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoAnotherEnum(anotherEnum: AnotherEnum): AnotherEnum {
-    return flutterApi!!.echoAnotherEnum(anotherEnum)
+  override fun callFlutterEchoAnotherEnum(
+      anotherEnum: AnotherEnum,
+      callback: (Result<AnotherEnum>) -> Unit
+  ) {
+    flutterApi!!.echoAnotherEnum(anotherEnum) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoAllNullableTypes(
-      everything: AllNullableTypes?
-  ): AllNullableTypes? {
-    return flutterApi!!.echoAllNullableTypes(everything)
+  override fun callFlutterEchoAllNullableTypes(
+      everything: AllNullableTypes?,
+      callback: (Result<AllNullableTypes?>) -> Unit
+  ) {
+    flutterApi!!.echoAllNullableTypes(everything) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableBool(aBool: Boolean?): Boolean? {
-    return flutterApi!!.echoNullableBool(aBool)
+  override fun callFlutterEchoNullableBool(aBool: Boolean?, callback: (Result<Boolean?>) -> Unit) {
+    flutterApi!!.echoNullableBool(aBool) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableInt(anInt: Long?): Long? {
-    return flutterApi!!.echoNullableInt(anInt)
+  override fun callFlutterEchoNullableInt(anInt: Long?, callback: (Result<Long?>) -> Unit) {
+    flutterApi!!.echoNullableInt(anInt) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableDouble(aDouble: Double?): Double? {
-    return flutterApi!!.echoNullableDouble(aDouble)
+  override fun callFlutterEchoNullableDouble(
+      aDouble: Double?,
+      callback: (Result<Double?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableDouble(aDouble) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableString(aString: String?): String? {
-    return flutterApi!!.echoNullableString(aString)
+  override fun callFlutterEchoNullableString(
+      aString: String?,
+      callback: (Result<String?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableString(aString) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableUint8List(list: ByteArray?): ByteArray? {
-    return flutterApi!!.echoNullableUint8List(list)
+  override fun callFlutterEchoNullableUint8List(
+      list: ByteArray?,
+      callback: (Result<ByteArray?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableUint8List(list) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableList(list: List<Any?>?): List<Any?>? {
-    return flutterApi!!.echoNullableList(list)
+  override fun callFlutterEchoNullableList(
+      list: List<Any?>?,
+      callback: (Result<List<Any?>?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableList(list) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableEnumList(enumList: List<AnEnum?>?): List<AnEnum?>? {
-    return flutterApi!!.echoNullableEnumList(enumList)
+  override fun callFlutterEchoNullableEnumList(
+      enumList: List<AnEnum?>?,
+      callback: (Result<List<AnEnum?>?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableEnumList(enumList) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableClassList(
-      classList: List<AllNullableTypes?>?
-  ): List<AllNullableTypes?>? {
-    return flutterApi!!.echoNullableClassList(classList)
+  override fun callFlutterEchoNullableClassList(
+      classList: List<AllNullableTypes?>?,
+      callback: (Result<List<AllNullableTypes?>?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableClassList(classList) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableNonNullEnumList(
-      enumList: List<AnEnum>?
-  ): List<AnEnum>? {
-    return flutterApi!!.echoNullableNonNullEnumList(enumList)
+  override fun callFlutterEchoNullableNonNullEnumList(
+      enumList: List<AnEnum>?,
+      callback: (Result<List<AnEnum>?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableNonNullEnumList(enumList) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableNonNullClassList(
-      classList: List<AllNullableTypes>?
-  ): List<AllNullableTypes>? {
-    return flutterApi!!.echoNullableNonNullClassList(classList)
+  override fun callFlutterEchoNullableNonNullClassList(
+      classList: List<AllNullableTypes>?,
+      callback: (Result<List<AllNullableTypes>?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableNonNullClassList(classList) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableMap(map: Map<Any?, Any?>?): Map<Any?, Any?>? {
-    return flutterApi!!.echoNullableMap(map)
+  override fun callFlutterEchoNullableMap(
+      map: Map<Any?, Any?>?,
+      callback: (Result<Map<Any?, Any?>?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableMap(map) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableStringMap(
-      stringMap: Map<String?, String?>?
-  ): Map<String?, String?>? {
-    return flutterApi!!.echoNullableStringMap(stringMap)
+  override fun callFlutterEchoNullableStringMap(
+      stringMap: Map<String?, String?>?,
+      callback: (Result<Map<String?, String?>?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableStringMap(stringMap) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableIntMap(
-      intMap: Map<Long?, Long?>?
-  ): Map<Long?, Long?>? {
-    return flutterApi!!.echoNullableIntMap(intMap)
+  override fun callFlutterEchoNullableIntMap(
+      intMap: Map<Long?, Long?>?,
+      callback: (Result<Map<Long?, Long?>?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableIntMap(intMap) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableEnumMap(
-      enumMap: Map<AnEnum?, AnEnum?>?
-  ): Map<AnEnum?, AnEnum?>? {
-    return flutterApi!!.echoNullableEnumMap(enumMap)
+  override fun callFlutterEchoNullableEnumMap(
+      enumMap: Map<AnEnum?, AnEnum?>?,
+      callback: (Result<Map<AnEnum?, AnEnum?>?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableEnumMap(enumMap) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableClassMap(
-      classMap: Map<Long?, AllNullableTypes?>?
-  ): Map<Long?, AllNullableTypes?>? {
-    return flutterApi!!.echoNullableClassMap(classMap)
+  override fun callFlutterEchoNullableClassMap(
+      classMap: Map<Long?, AllNullableTypes?>?,
+      callback: (Result<Map<Long?, AllNullableTypes?>?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableClassMap(classMap) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableNonNullStringMap(
-      stringMap: Map<String, String>?
-  ): Map<String, String>? {
-    return flutterApi!!.echoNullableNonNullStringMap(stringMap)
+  override fun callFlutterEchoNullableNonNullStringMap(
+      stringMap: Map<String, String>?,
+      callback: (Result<Map<String, String>?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableNonNullStringMap(stringMap) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableNonNullIntMap(
-      intMap: Map<Long, Long>?
-  ): Map<Long, Long>? {
-    return flutterApi!!.echoNullableNonNullIntMap(intMap)
+  override fun callFlutterEchoNullableNonNullIntMap(
+      intMap: Map<Long, Long>?,
+      callback: (Result<Map<Long, Long>?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableNonNullIntMap(intMap) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableNonNullEnumMap(
-      enumMap: Map<AnEnum, AnEnum>?
-  ): Map<AnEnum, AnEnum>? {
-    return flutterApi!!.echoNullableNonNullEnumMap(enumMap)
+  override fun callFlutterEchoNullableNonNullEnumMap(
+      enumMap: Map<AnEnum, AnEnum>?,
+      callback: (Result<Map<AnEnum, AnEnum>?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableNonNullEnumMap(enumMap) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableNonNullClassMap(
-      classMap: Map<Long, AllNullableTypes>?
-  ): Map<Long, AllNullableTypes>? {
-    return flutterApi!!.echoNullableNonNullClassMap(classMap)
+  override fun callFlutterEchoNullableNonNullClassMap(
+      classMap: Map<Long, AllNullableTypes>?,
+      callback: (Result<Map<Long, AllNullableTypes>?>) -> Unit
+  ) {
+    flutterApi!!.echoNullableNonNullClassMap(classMap) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoNullableEnum(anEnum: AnEnum?): AnEnum? {
-    return flutterApi!!.echoNullableEnum(anEnum)
+  override fun callFlutterEchoNullableEnum(anEnum: AnEnum?, callback: (Result<AnEnum?>) -> Unit) {
+    flutterApi!!.echoNullableEnum(anEnum) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterEchoAnotherNullableEnum(anotherEnum: AnotherEnum?): AnotherEnum? {
-    return flutterApi!!.echoAnotherNullableEnum(anotherEnum)
+  override fun callFlutterEchoAnotherNullableEnum(
+      anotherEnum: AnotherEnum?,
+      callback: (Result<AnotherEnum?>) -> Unit
+  ) {
+    flutterApi!!.echoAnotherNullableEnum(anotherEnum) { echo -> callback(echo) }
   }
 
-  override suspend fun callFlutterSmallApiEchoString(aString: String): String {
-    val echoOne = flutterSmallApiOne!!.echoString(aString)
-    val echoTwo = flutterSmallApiTwo!!.echoString(aString)
-    if (echoOne == echoTwo) {
-      return echoTwo
-    } else {
-      throw Exception("Multi-instance responses were not matching: $echoOne, $echoTwo")
+  override fun callFlutterSmallApiEchoString(aString: String, callback: (Result<String>) -> Unit) {
+    flutterSmallApiOne!!.echoString(aString) { echoOne ->
+      flutterSmallApiTwo!!.echoString(aString) { echoTwo ->
+        if (echoOne == echoTwo) {
+          callback(echoTwo)
+        } else {
+          callback(
+              Result.failure(
+                  Exception("Multi-instance responses were not matching: $echoOne, $echoTwo")))
+        }
+      }
     }
-  }
-
-  override suspend fun callFlutterCallbackNoop() {
-    return suspendFlutterApi { flutterCallbackApi!!.noop(it) }
-  }
-
-  override suspend fun callFlutterCallbackEchoString(aString: String): String {
-    return suspendFlutterApi { flutterCallbackApi!!.echoString(aString, it) }
-  }
-
-  override suspend fun callFlutterCallbackThrowError(): Any? {
-    return suspendFlutterApi { flutterCallbackApi!!.throwError(it) }
-  }
-
-  override suspend fun callFlutterCallbackThrowErrorFromVoid() {
-    return suspendFlutterApi { flutterCallbackApi!!.throwErrorFromVoid(it) }
-  }
-
-  override suspend fun callFlutterIsAsyncFlutterApiOnRoot(): Boolean {
-    if (Looper.myLooper() != Looper.getMainLooper()) {
-      return false
-    }
-    val result = flutterApi!!.isAsyncFlutterApiOnRoot()
-    if (Looper.myLooper() != Looper.getMainLooper()) {
-      return false
-    }
-    return result
   }
 
   fun testUnusedClassesGenerate(): UnusedClass {
@@ -1319,11 +1386,13 @@ class TestPluginWithSuffix : HostSmallApi {
     HostSmallApi.setUp(binding.binaryMessenger, this, suffix)
   }
 
-  override suspend fun echo(aString: String): String {
-    return aString
+  override fun echo(aString: String, callback: (Result<String>) -> Unit) {
+    callback(Result.success(aString))
   }
 
-  override suspend fun voidVoid() {}
+  override fun voidVoid(callback: (Result<Unit>) -> Unit) {
+    callback(Result.success(Unit))
+  }
 }
 
 class NativeInteropIntegrationTests : NativeInteropHostIntegrationCoreApi {
@@ -2628,13 +2697,8 @@ object SendClass : StreamEventsStreamHandler() {
           ClassEvent(EventAllNullableTypes(aNullableInt = 0)),
           EmptyEvent())
 
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/TestPlugin.kt
   override fun onListen(p0: Any?, sink: GolubetsEventSink<PlatformEvent>) {
     var count: Int = 0
-=======
-  override fun onListen(p0: Any?, sink: PigeonEventSink<PlatformEvent>) {
-    var count = 0
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/TestPlugin.kt
     val r: Runnable =
         object : Runnable {
           override fun run() {
@@ -2657,13 +2721,8 @@ class SendConsistentNumbers(private val numberToSend: Long) :
     StreamConsistentNumbersStreamHandler() {
   private val handler = Handler(Looper.getMainLooper())
 
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/TestPlugin.kt
   override fun onListen(p0: Any?, sink: GolubetsEventSink<Long>) {
     var count: Int = 0
-=======
-  override fun onListen(p0: Any?, sink: PigeonEventSink<Long>) {
-    var count = 0
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/android/src/main/kotlin/com/example/test_plugin/TestPlugin.kt
     val r: Runnable =
         object : Runnable {
           override fun run() {

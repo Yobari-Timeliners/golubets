@@ -486,7 +486,7 @@ enum NSURLSessionAuthChallengeDisposition {
 /// This is needed to test nested nullable and non-nullable classes,
 /// <code>NativeInteropAllNullableTypes</code> is non-nullable here as it is easier to instantiate
 /// than <code>NativeInteropAllTypes</code> when testing doesn’t require both (ie. testing null classes).
-/// Generated bridge class from Pigeon that moves data from Swift to Objective-C.
+/// Generated bridge class from Golubets that moves data from Swift to Objective-C.
 extension type NativeInteropAllClassesWrapperBridge._(objc.ObjCObject object$)
     implements objc.ObjCObject, objc.NSObject {
   /// Constructs a [NativeInteropAllClassesWrapperBridge] that points to the same underlying object as [other].
@@ -684,7 +684,7 @@ extension NativeInteropAllClassesWrapperBridge$Methods on NativeInteropAllClasse
 }
 
 /// A class containing all supported nullable types.
-/// Generated bridge class from Pigeon that moves data from Swift to Objective-C.
+/// Generated bridge class from Golubets that moves data from Swift to Objective-C.
 extension type NativeInteropAllNullableTypesBridge._(objc.ObjCObject object$)
     implements objc.ObjCObject, objc.NSObject {
   /// Constructs a [NativeInteropAllNullableTypesBridge] that points to the same underlying object as [other].
@@ -729,21 +729,21 @@ extension type NativeInteropAllNullableTypesBridge._(objc.ObjCObject object$)
 
 extension NativeInteropAllNullableTypesBridge$Methods on NativeInteropAllNullableTypesBridge {
   /// aNullable4ByteArray
-  NativeInteropTestsPigeonTypedData? get aNullable4ByteArray {
+  NativeInteropTestsGolubetsTypedData? get aNullable4ByteArray {
     final _$$ref = object$.ref;
     final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_aNullable4ByteArray);
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// aNullable8ByteArray
-  NativeInteropTestsPigeonTypedData? get aNullable8ByteArray {
+  NativeInteropTestsGolubetsTypedData? get aNullable8ByteArray {
     final _$$ref = object$.ref;
     final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_aNullable8ByteArray);
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// aNullableBool
@@ -754,12 +754,12 @@ extension NativeInteropAllNullableTypesBridge$Methods on NativeInteropAllNullabl
   }
 
   /// aNullableByteArray
-  NativeInteropTestsPigeonTypedData? get aNullableByteArray {
+  NativeInteropTestsGolubetsTypedData? get aNullableByteArray {
     final _$$ref = object$.ref;
     final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_aNullableByteArray);
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// aNullableDouble
@@ -777,12 +777,12 @@ extension NativeInteropAllNullableTypesBridge$Methods on NativeInteropAllNullabl
   }
 
   /// aNullableFloatArray
-  NativeInteropTestsPigeonTypedData? get aNullableFloatArray {
+  NativeInteropTestsGolubetsTypedData? get aNullableFloatArray {
     final _$$ref = object$.ref;
     final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_aNullableFloatArray);
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// aNullableInt
@@ -865,10 +865,10 @@ extension NativeInteropAllNullableTypesBridge$Methods on NativeInteropAllNullabl
     objc.NSNumber? aNullableInt,
     objc.NSNumber? aNullableInt64,
     objc.NSNumber? aNullableDouble,
-    NativeInteropTestsPigeonTypedData? aNullableByteArray,
-    NativeInteropTestsPigeonTypedData? aNullable4ByteArray,
-    NativeInteropTestsPigeonTypedData? aNullable8ByteArray,
-    NativeInteropTestsPigeonTypedData? aNullableFloatArray,
+    NativeInteropTestsGolubetsTypedData? aNullableByteArray,
+    NativeInteropTestsGolubetsTypedData? aNullable4ByteArray,
+    NativeInteropTestsGolubetsTypedData? aNullable8ByteArray,
+    NativeInteropTestsGolubetsTypedData? aNullableFloatArray,
     objc.NSNumber? aNullableEnum,
     objc.NSNumber? anotherNullableEnum,
     objc.NSString? aNullableString,
@@ -1060,7 +1060,7 @@ extension NativeInteropAllNullableTypesBridge$Methods on NativeInteropAllNullabl
   }
 
   /// setANullable4ByteArray:
-  set aNullable4ByteArray(NativeInteropTestsPigeonTypedData? value) {
+  set aNullable4ByteArray(NativeInteropTestsGolubetsTypedData? value) {
     final _$$ref = object$.ref;
     final _$$ref$1 = value?.ref;
     _objc_msgSend_xtuoz7(
@@ -1071,7 +1071,7 @@ extension NativeInteropAllNullableTypesBridge$Methods on NativeInteropAllNullabl
   }
 
   /// setANullable8ByteArray:
-  set aNullable8ByteArray(NativeInteropTestsPigeonTypedData? value) {
+  set aNullable8ByteArray(NativeInteropTestsGolubetsTypedData? value) {
     final _$$ref = object$.ref;
     final _$$ref$1 = value?.ref;
     _objc_msgSend_xtuoz7(
@@ -1089,7 +1089,7 @@ extension NativeInteropAllNullableTypesBridge$Methods on NativeInteropAllNullabl
   }
 
   /// setANullableByteArray:
-  set aNullableByteArray(NativeInteropTestsPigeonTypedData? value) {
+  set aNullableByteArray(NativeInteropTestsGolubetsTypedData? value) {
     final _$$ref = object$.ref;
     final _$$ref$1 = value?.ref;
     _objc_msgSend_xtuoz7(
@@ -1118,7 +1118,7 @@ extension NativeInteropAllNullableTypesBridge$Methods on NativeInteropAllNullabl
   }
 
   /// setANullableFloatArray:
-  set aNullableFloatArray(NativeInteropTestsPigeonTypedData? value) {
+  set aNullableFloatArray(NativeInteropTestsGolubetsTypedData? value) {
     final _$$ref = object$.ref;
     final _$$ref$1 = value?.ref;
     _objc_msgSend_xtuoz7(
@@ -1340,7 +1340,7 @@ extension NativeInteropAllNullableTypesBridge$Methods on NativeInteropAllNullabl
 /// The primary purpose for this class is to ensure coverage of Swift structs
 /// with nullable items, as the primary [NativeInteropAllNullableTypes] class is being used to
 /// test Swift classes.
-/// Generated bridge class from Pigeon that moves data from Swift to Objective-C.
+/// Generated bridge class from Golubets that moves data from Swift to Objective-C.
 extension type NativeInteropAllNullableTypesWithoutRecursionBridge._(objc.ObjCObject object$)
     implements objc.ObjCObject, objc.NSObject {
   /// Constructs a [NativeInteropAllNullableTypesWithoutRecursionBridge] that points to the same underlying object as [other].
@@ -1399,21 +1399,21 @@ extension type NativeInteropAllNullableTypesWithoutRecursionBridge._(objc.ObjCOb
 extension NativeInteropAllNullableTypesWithoutRecursionBridge$Methods
     on NativeInteropAllNullableTypesWithoutRecursionBridge {
   /// aNullable4ByteArray
-  NativeInteropTestsPigeonTypedData? get aNullable4ByteArray {
+  NativeInteropTestsGolubetsTypedData? get aNullable4ByteArray {
     final _$$ref = object$.ref;
     final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_aNullable4ByteArray);
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// aNullable8ByteArray
-  NativeInteropTestsPigeonTypedData? get aNullable8ByteArray {
+  NativeInteropTestsGolubetsTypedData? get aNullable8ByteArray {
     final _$$ref = object$.ref;
     final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_aNullable8ByteArray);
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// aNullableBool
@@ -1424,12 +1424,12 @@ extension NativeInteropAllNullableTypesWithoutRecursionBridge$Methods
   }
 
   /// aNullableByteArray
-  NativeInteropTestsPigeonTypedData? get aNullableByteArray {
+  NativeInteropTestsGolubetsTypedData? get aNullableByteArray {
     final _$$ref = object$.ref;
     final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_aNullableByteArray);
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// aNullableDouble
@@ -1447,12 +1447,12 @@ extension NativeInteropAllNullableTypesWithoutRecursionBridge$Methods
   }
 
   /// aNullableFloatArray
-  NativeInteropTestsPigeonTypedData? get aNullableFloatArray {
+  NativeInteropTestsGolubetsTypedData? get aNullableFloatArray {
     final _$$ref = object$.ref;
     final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_aNullableFloatArray);
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// aNullableInt
@@ -1526,10 +1526,10 @@ extension NativeInteropAllNullableTypesWithoutRecursionBridge$Methods
     objc.NSNumber? aNullableInt,
     objc.NSNumber? aNullableInt64,
     objc.NSNumber? aNullableDouble,
-    NativeInteropTestsPigeonTypedData? aNullableByteArray,
-    NativeInteropTestsPigeonTypedData? aNullable4ByteArray,
-    NativeInteropTestsPigeonTypedData? aNullable8ByteArray,
-    NativeInteropTestsPigeonTypedData? aNullableFloatArray,
+    NativeInteropTestsGolubetsTypedData? aNullableByteArray,
+    NativeInteropTestsGolubetsTypedData? aNullable4ByteArray,
+    NativeInteropTestsGolubetsTypedData? aNullable8ByteArray,
+    NativeInteropTestsGolubetsTypedData? aNullableFloatArray,
     objc.NSNumber? aNullableEnum,
     objc.NSNumber? anotherNullableEnum,
     objc.NSString? aNullableString,
@@ -1703,7 +1703,7 @@ extension NativeInteropAllNullableTypesWithoutRecursionBridge$Methods
   }
 
   /// setANullable4ByteArray:
-  set aNullable4ByteArray(NativeInteropTestsPigeonTypedData? value) {
+  set aNullable4ByteArray(NativeInteropTestsGolubetsTypedData? value) {
     final _$$ref = object$.ref;
     final _$$ref$1 = value?.ref;
     _objc_msgSend_xtuoz7(
@@ -1714,7 +1714,7 @@ extension NativeInteropAllNullableTypesWithoutRecursionBridge$Methods
   }
 
   /// setANullable8ByteArray:
-  set aNullable8ByteArray(NativeInteropTestsPigeonTypedData? value) {
+  set aNullable8ByteArray(NativeInteropTestsGolubetsTypedData? value) {
     final _$$ref = object$.ref;
     final _$$ref$1 = value?.ref;
     _objc_msgSend_xtuoz7(
@@ -1732,7 +1732,7 @@ extension NativeInteropAllNullableTypesWithoutRecursionBridge$Methods
   }
 
   /// setANullableByteArray:
-  set aNullableByteArray(NativeInteropTestsPigeonTypedData? value) {
+  set aNullableByteArray(NativeInteropTestsGolubetsTypedData? value) {
     final _$$ref = object$.ref;
     final _$$ref$1 = value?.ref;
     _objc_msgSend_xtuoz7(
@@ -1761,7 +1761,7 @@ extension NativeInteropAllNullableTypesWithoutRecursionBridge$Methods
   }
 
   /// setANullableFloatArray:
-  set aNullableFloatArray(NativeInteropTestsPigeonTypedData? value) {
+  set aNullableFloatArray(NativeInteropTestsGolubetsTypedData? value) {
     final _$$ref = object$.ref;
     final _$$ref$1 = value?.ref;
     _objc_msgSend_xtuoz7(
@@ -1962,7 +1962,7 @@ extension NativeInteropAllNullableTypesWithoutRecursionBridge$Methods
 }
 
 /// A class containing all supported types.
-/// Generated bridge class from Pigeon that moves data from Swift to Objective-C.
+/// Generated bridge class from Golubets that moves data from Swift to Objective-C.
 extension type NativeInteropAllTypesBridge._(objc.ObjCObject object$)
     implements objc.ObjCObject, objc.NSObject {
   /// Constructs a [NativeInteropAllTypesBridge] that points to the same underlying object as [other].
@@ -2007,17 +2007,17 @@ extension type NativeInteropAllTypesBridge._(objc.ObjCObject object$)
 
 extension NativeInteropAllTypesBridge$Methods on NativeInteropAllTypesBridge {
   /// a4ByteArray
-  NativeInteropTestsPigeonTypedData get a4ByteArray {
+  NativeInteropTestsGolubetsTypedData get a4ByteArray {
     final _$$ref = object$.ref;
     final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_a4ByteArray);
-    return NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+    return NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// a8ByteArray
-  NativeInteropTestsPigeonTypedData get a8ByteArray {
+  NativeInteropTestsGolubetsTypedData get a8ByteArray {
     final _$$ref = object$.ref;
     final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_a8ByteArray);
-    return NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+    return NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// aBool
@@ -2027,10 +2027,10 @@ extension NativeInteropAllTypesBridge$Methods on NativeInteropAllTypesBridge {
   }
 
   /// aByteArray
-  NativeInteropTestsPigeonTypedData get aByteArray {
+  NativeInteropTestsGolubetsTypedData get aByteArray {
     final _$$ref = object$.ref;
     final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_aByteArray);
-    return NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+    return NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// aDouble
@@ -2042,10 +2042,10 @@ extension NativeInteropAllTypesBridge$Methods on NativeInteropAllTypesBridge {
   }
 
   /// aFloatArray
-  NativeInteropTestsPigeonTypedData get aFloatArray {
+  NativeInteropTestsGolubetsTypedData get aFloatArray {
     final _$$ref = object$.ref;
     final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_aFloatArray);
-    return NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+    return NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// aString
@@ -2122,10 +2122,10 @@ extension NativeInteropAllTypesBridge$Methods on NativeInteropAllTypesBridge {
     required int anInt,
     required int anInt64,
     required double aDouble,
-    required NativeInteropTestsPigeonTypedData aByteArray,
-    required NativeInteropTestsPigeonTypedData a4ByteArray,
-    required NativeInteropTestsPigeonTypedData a8ByteArray,
-    required NativeInteropTestsPigeonTypedData aFloatArray,
+    required NativeInteropTestsGolubetsTypedData aByteArray,
+    required NativeInteropTestsGolubetsTypedData a4ByteArray,
+    required NativeInteropTestsGolubetsTypedData a8ByteArray,
+    required NativeInteropTestsGolubetsTypedData aFloatArray,
     required NativeInteropAnEnum anEnum,
     required NativeInteropAnotherEnum anotherEnum,
     required objc.NSString aString,
@@ -2276,14 +2276,14 @@ extension NativeInteropAllTypesBridge$Methods on NativeInteropAllTypesBridge {
   }
 
   /// setA4ByteArray:
-  set a4ByteArray(NativeInteropTestsPigeonTypedData value) {
+  set a4ByteArray(NativeInteropTestsGolubetsTypedData value) {
     final _$$ref = object$.ref;
     final _$$ref$1 = value.ref;
     _objc_msgSend_xtuoz7(_$$ref.pointer, _sel_setA4ByteArray_, _$$ref$1.pointer);
   }
 
   /// setA8ByteArray:
-  set a8ByteArray(NativeInteropTestsPigeonTypedData value) {
+  set a8ByteArray(NativeInteropTestsGolubetsTypedData value) {
     final _$$ref = object$.ref;
     final _$$ref$1 = value.ref;
     _objc_msgSend_xtuoz7(_$$ref.pointer, _sel_setA8ByteArray_, _$$ref$1.pointer);
@@ -2296,7 +2296,7 @@ extension NativeInteropAllTypesBridge$Methods on NativeInteropAllTypesBridge {
   }
 
   /// setAByteArray:
-  set aByteArray(NativeInteropTestsPigeonTypedData value) {
+  set aByteArray(NativeInteropTestsGolubetsTypedData value) {
     final _$$ref = object$.ref;
     final _$$ref$1 = value.ref;
     _objc_msgSend_xtuoz7(_$$ref.pointer, _sel_setAByteArray_, _$$ref$1.pointer);
@@ -2309,7 +2309,7 @@ extension NativeInteropAllTypesBridge$Methods on NativeInteropAllTypesBridge {
   }
 
   /// setAFloatArray:
-  set aFloatArray(NativeInteropTestsPigeonTypedData value) {
+  set aFloatArray(NativeInteropTestsGolubetsTypedData value) {
     final _$$ref = object$.ref;
     final _$$ref$1 = value.ref;
     _objc_msgSend_xtuoz7(_$$ref.pointer, _sel_setAFloatArray_, _$$ref$1.pointer);
@@ -2514,7 +2514,7 @@ enum NativeInteropAnotherEnum {
 
 /// The core interface that the Dart platform_test code implements for host
 /// integration tests to call into.
-/// Generated protocol from Pigeon that represents Flutter messages that can be called from Swift.
+/// Generated protocol from Golubets that represents Flutter messages that can be called from Swift.
 extension type NativeInteropFlutterIntegrationCoreApiBridge._(objc.ObjCProtocol object$)
     implements objc.ObjCProtocol {
   /// Constructs a [NativeInteropFlutterIntegrationCoreApiBridge] that points to the same underlying object as [other].
@@ -2729,9 +2729,9 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
 
   /// echoAsyncFloat64ListWithList:error:completionHandler:
   void echoAsyncFloat64ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError error,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -2749,9 +2749,9 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
 
   /// echoAsyncInt32ListWithList:error:completionHandler:
   void echoAsyncInt32ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError error,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -2769,9 +2769,9 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
 
   /// echoAsyncInt64ListWithList:error:completionHandler:
   void echoAsyncInt64ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError error,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -3055,9 +3055,9 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
 
   /// echoAsyncNullableFloat64ListWithList:error:completionHandler:
   void echoAsyncNullableFloat64ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError error,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -3075,9 +3075,9 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
 
   /// echoAsyncNullableInt32ListWithList:error:completionHandler:
   void echoAsyncNullableInt32ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError error,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -3095,9 +3095,9 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
 
   /// echoAsyncNullableInt64ListWithList:error:completionHandler:
   void echoAsyncNullableInt64ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError error,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -3326,9 +3326,9 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
 
   /// echoAsyncNullableUint8ListWithList:error:completionHandler:
   void echoAsyncNullableUint8ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError error,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -3403,9 +3403,9 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
 
   /// echoAsyncUint8ListWithList:error:completionHandler:
   void echoAsyncUint8ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError error,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -3542,8 +3542,8 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
   }
 
   /// Returns the passed float64 list, to test serialization and deserialization.
-  NativeInteropTestsPigeonTypedData? echoFloat64ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+  NativeInteropTestsGolubetsTypedData? echoFloat64ListWithList(
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError error,
   }) {
     final _$$ref = object$.ref;
@@ -3557,12 +3557,12 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// Returns the passed int32 list, to test serialization and deserialization.
-  NativeInteropTestsPigeonTypedData? echoInt32ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+  NativeInteropTestsGolubetsTypedData? echoInt32ListWithList(
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError error,
   }) {
     final _$$ref = object$.ref;
@@ -3576,12 +3576,12 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// Returns the passed int64 list, to test serialization and deserialization.
-  NativeInteropTestsPigeonTypedData? echoInt64ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+  NativeInteropTestsGolubetsTypedData? echoInt64ListWithList(
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError error,
   }) {
     final _$$ref = object$.ref;
@@ -3595,7 +3595,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// Returns the passed map, to test serialization and deserialization.
@@ -3977,8 +3977,8 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
   }
 
   /// Returns the passed float64 list, to test serialization and deserialization.
-  NativeInteropTestsPigeonTypedData? echoNullableFloat64ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+  NativeInteropTestsGolubetsTypedData? echoNullableFloat64ListWithList(
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError error,
   }) {
     final _$$ref = object$.ref;
@@ -3992,12 +3992,12 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// Returns the passed int32 list, to test serialization and deserialization.
-  NativeInteropTestsPigeonTypedData? echoNullableInt32ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+  NativeInteropTestsGolubetsTypedData? echoNullableInt32ListWithList(
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError error,
   }) {
     final _$$ref = object$.ref;
@@ -4011,12 +4011,12 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// Returns the passed int64 list, to test serialization and deserialization.
-  NativeInteropTestsPigeonTypedData? echoNullableInt64ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+  NativeInteropTestsGolubetsTypedData? echoNullableInt64ListWithList(
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError error,
   }) {
     final _$$ref = object$.ref;
@@ -4030,7 +4030,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// Returns the passed map, to test serialization and deserialization.
@@ -4252,8 +4252,8 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
   }
 
   /// Returns the passed byte list, to test serialization and deserialization.
-  NativeInteropTestsPigeonTypedData? echoNullableUint8ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+  NativeInteropTestsGolubetsTypedData? echoNullableUint8ListWithList(
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError error,
   }) {
     final _$$ref = object$.ref;
@@ -4267,7 +4267,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// Returns the passed map, to test serialization and deserialization.
@@ -4307,8 +4307,8 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
   }
 
   /// Returns the passed byte list, to test serialization and deserialization.
-  NativeInteropTestsPigeonTypedData? echoUint8ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+  NativeInteropTestsGolubetsTypedData? echoUint8ListWithList(
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError error,
   }) {
     final _$$ref = object$.ref;
@@ -4322,7 +4322,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// A no-op function taking no arguments and returning no value, to sanity
@@ -4519,21 +4519,21 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncEnumWithAnEnum_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncFloat64ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncInt32ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncInt64ListWithList_error_completionHandler_,
     required void Function(
@@ -4621,21 +4621,21 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncNullableEnumWithAnEnum_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableFloat64ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableInt32ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableInt64ListWithList_error_completionHandler_,
     required void Function(
@@ -4705,9 +4705,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncNullableStringWithAString_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableUint8ListWithList_error_completionHandler_,
     required void Function(
@@ -4729,9 +4729,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncStringWithAString_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncUint8ListWithList_error_completionHandler_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
@@ -4748,18 +4748,18 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoEnumMapWithEnumMap_error_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
     echoEnumWithAnEnum_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoFloat64ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoInt32ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoInt64ListWithList_error_,
@@ -4813,18 +4813,18 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoNullableEnumMapWithEnumMap_error_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
     echoNullableEnumWithAnEnum_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableFloat64ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableInt32ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableInt64ListWithList_error_,
@@ -4852,8 +4852,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoNullableStringMapWithStringMap_error_,
     required objc.NSString? Function(objc.NSString?, NativeInteropTestsError)
     echoNullableStringWithAString_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableUint8ListWithList_error_,
@@ -4861,8 +4861,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoStringMapWithStringMap_error_,
     required objc.NSString? Function(objc.NSString?, NativeInteropTestsError)
     echoStringWithAString_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoUint8ListWithList_error_,
@@ -5292,21 +5292,21 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncEnumWithAnEnum_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncFloat64ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncInt32ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncInt64ListWithList_error_completionHandler_,
     required void Function(
@@ -5394,21 +5394,21 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncNullableEnumWithAnEnum_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableFloat64ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableInt32ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableInt64ListWithList_error_completionHandler_,
     required void Function(
@@ -5478,9 +5478,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncNullableStringWithAString_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableUint8ListWithList_error_completionHandler_,
     required void Function(
@@ -5502,9 +5502,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncStringWithAString_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncUint8ListWithList_error_completionHandler_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
@@ -5521,18 +5521,18 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoEnumMapWithEnumMap_error_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
     echoEnumWithAnEnum_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoFloat64ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoInt32ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoInt64ListWithList_error_,
@@ -5586,18 +5586,18 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoNullableEnumMapWithEnumMap_error_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
     echoNullableEnumWithAnEnum_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableFloat64ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableInt32ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableInt64ListWithList_error_,
@@ -5625,8 +5625,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoNullableStringMapWithStringMap_error_,
     required objc.NSString? Function(objc.NSString?, NativeInteropTestsError)
     echoNullableStringWithAString_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableUint8ListWithList_error_,
@@ -5634,8 +5634,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoStringMapWithStringMap_error_,
     required objc.NSString? Function(objc.NSString?, NativeInteropTestsError)
     echoStringWithAString_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoUint8ListWithList_error_,
@@ -6060,21 +6060,21 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncEnumWithAnEnum_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncFloat64ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncInt32ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncInt64ListWithList_error_completionHandler_,
     required void Function(
@@ -6162,21 +6162,21 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncNullableEnumWithAnEnum_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableFloat64ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableInt32ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableInt64ListWithList_error_completionHandler_,
     required void Function(
@@ -6246,9 +6246,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncNullableStringWithAString_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableUint8ListWithList_error_completionHandler_,
     required void Function(
@@ -6270,9 +6270,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncStringWithAString_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncUint8ListWithList_error_completionHandler_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
@@ -6289,18 +6289,18 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoEnumMapWithEnumMap_error_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
     echoEnumWithAnEnum_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoFloat64ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoInt32ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoInt64ListWithList_error_,
@@ -6354,18 +6354,18 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoNullableEnumMapWithEnumMap_error_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
     echoNullableEnumWithAnEnum_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableFloat64ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableInt32ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableInt64ListWithList_error_,
@@ -6393,8 +6393,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoNullableStringMapWithStringMap_error_,
     required objc.NSString? Function(objc.NSString?, NativeInteropTestsError)
     echoNullableStringWithAString_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableUint8ListWithList_error_,
@@ -6402,8 +6402,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoStringMapWithStringMap_error_,
     required objc.NSString? Function(objc.NSString?, NativeInteropTestsError)
     echoStringWithAString_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoUint8ListWithList_error_,
@@ -6862,21 +6862,21 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncEnumWithAnEnum_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncFloat64ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncInt32ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncInt64ListWithList_error_completionHandler_,
     required void Function(
@@ -6964,21 +6964,21 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncNullableEnumWithAnEnum_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableFloat64ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableInt32ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableInt64ListWithList_error_completionHandler_,
     required void Function(
@@ -7048,9 +7048,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncNullableStringWithAString_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableUint8ListWithList_error_completionHandler_,
     required void Function(
@@ -7072,9 +7072,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncStringWithAString_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncUint8ListWithList_error_completionHandler_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
@@ -7091,18 +7091,18 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoEnumMapWithEnumMap_error_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
     echoEnumWithAnEnum_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoFloat64ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoInt32ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoInt64ListWithList_error_,
@@ -7156,18 +7156,18 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoNullableEnumMapWithEnumMap_error_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
     echoNullableEnumWithAnEnum_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableFloat64ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableInt32ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableInt64ListWithList_error_,
@@ -7195,8 +7195,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoNullableStringMapWithStringMap_error_,
     required objc.NSString? Function(objc.NSString?, NativeInteropTestsError)
     echoNullableStringWithAString_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableUint8ListWithList_error_,
@@ -7204,8 +7204,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoStringMapWithStringMap_error_,
     required objc.NSString? Function(objc.NSString?, NativeInteropTestsError)
     echoStringWithAString_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoUint8ListWithList_error_,
@@ -7658,21 +7658,21 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncEnumWithAnEnum_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncFloat64ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncInt32ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncInt64ListWithList_error_completionHandler_,
     required void Function(
@@ -7760,21 +7760,21 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncNullableEnumWithAnEnum_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableFloat64ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableInt32ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableInt64ListWithList_error_completionHandler_,
     required void Function(
@@ -7844,9 +7844,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncNullableStringWithAString_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableUint8ListWithList_error_completionHandler_,
     required void Function(
@@ -7868,9 +7868,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncStringWithAString_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncUint8ListWithList_error_completionHandler_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
@@ -7887,18 +7887,18 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoEnumMapWithEnumMap_error_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
     echoEnumWithAnEnum_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoFloat64ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoInt32ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoInt64ListWithList_error_,
@@ -7952,18 +7952,18 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoNullableEnumMapWithEnumMap_error_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
     echoNullableEnumWithAnEnum_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableFloat64ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableInt32ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableInt64ListWithList_error_,
@@ -7991,8 +7991,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoNullableStringMapWithStringMap_error_,
     required objc.NSString? Function(objc.NSString?, NativeInteropTestsError)
     echoNullableStringWithAString_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableUint8ListWithList_error_,
@@ -8000,8 +8000,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoStringMapWithStringMap_error_,
     required objc.NSString? Function(objc.NSString?, NativeInteropTestsError)
     echoStringWithAString_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoUint8ListWithList_error_,
@@ -8460,21 +8460,21 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncEnumWithAnEnum_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncFloat64ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncInt32ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncInt64ListWithList_error_completionHandler_,
     required void Function(
@@ -8562,21 +8562,21 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncNullableEnumWithAnEnum_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableFloat64ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableInt32ListWithList_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableInt64ListWithList_error_completionHandler_,
     required void Function(
@@ -8646,9 +8646,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncNullableStringWithAString_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncNullableUint8ListWithList_error_completionHandler_,
     required void Function(
@@ -8670,9 +8670,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     )
     echoAsyncStringWithAString_error_completionHandler_,
     required void Function(
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     echoAsyncUint8ListWithList_error_completionHandler_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
@@ -8689,18 +8689,18 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoEnumMapWithEnumMap_error_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
     echoEnumWithAnEnum_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoFloat64ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoInt32ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoInt64ListWithList_error_,
@@ -8754,18 +8754,18 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoNullableEnumMapWithEnumMap_error_,
     required objc.NSNumber? Function(objc.NSNumber?, NativeInteropTestsError)
     echoNullableEnumWithAnEnum_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableFloat64ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableInt32ListWithList_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableInt64ListWithList_error_,
@@ -8793,8 +8793,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoNullableStringMapWithStringMap_error_,
     required objc.NSString? Function(objc.NSString?, NativeInteropTestsError)
     echoNullableStringWithAString_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoNullableUint8ListWithList_error_,
@@ -8802,8 +8802,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
     echoStringMapWithStringMap_error_,
     required objc.NSString? Function(objc.NSString?, NativeInteropTestsError)
     echoStringWithAString_error_,
-    required NativeInteropTestsPigeonTypedData? Function(
-      NativeInteropTestsPigeonTypedData?,
+    required NativeInteropTestsGolubetsTypedData? Function(
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     echoUint8ListWithList_error_,
@@ -9920,9 +9920,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
   static final echoAsyncFloat64ListWithList_error_completionHandler_ =
       objc.ObjCProtocolListenableMethod<
         void Function(
-          NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
-          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
         )
       >(
         _protocol_NativeInteropFlutterIntegrationCoreApiBridge,
@@ -9947,50 +9947,50 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
         ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.fromFunction(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.fromFunction(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.listener(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.listener(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.blocking(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.blocking(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
       );
@@ -9999,9 +9999,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
   static final echoAsyncInt32ListWithList_error_completionHandler_ =
       objc.ObjCProtocolListenableMethod<
         void Function(
-          NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
-          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
         )
       >(
         _protocol_NativeInteropFlutterIntegrationCoreApiBridge,
@@ -10026,50 +10026,50 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
         ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.fromFunction(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.fromFunction(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.listener(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.listener(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.blocking(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.blocking(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
       );
@@ -10078,9 +10078,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
   static final echoAsyncInt64ListWithList_error_completionHandler_ =
       objc.ObjCProtocolListenableMethod<
         void Function(
-          NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
-          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
         )
       >(
         _protocol_NativeInteropFlutterIntegrationCoreApiBridge,
@@ -10105,50 +10105,50 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
         ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.fromFunction(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.fromFunction(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.listener(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.listener(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.blocking(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.blocking(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
       );
@@ -11240,9 +11240,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
   static final echoAsyncNullableFloat64ListWithList_error_completionHandler_ =
       objc.ObjCProtocolListenableMethod<
         void Function(
-          NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
-          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
         )
       >(
         _protocol_NativeInteropFlutterIntegrationCoreApiBridge,
@@ -11267,50 +11267,50 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
         ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.fromFunction(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.fromFunction(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.listener(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.listener(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.blocking(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.blocking(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
       );
@@ -11319,9 +11319,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
   static final echoAsyncNullableInt32ListWithList_error_completionHandler_ =
       objc.ObjCProtocolListenableMethod<
         void Function(
-          NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
-          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
         )
       >(
         _protocol_NativeInteropFlutterIntegrationCoreApiBridge,
@@ -11346,50 +11346,50 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
         ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.fromFunction(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.fromFunction(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.listener(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.listener(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.blocking(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.blocking(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
       );
@@ -11398,9 +11398,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
   static final echoAsyncNullableInt64ListWithList_error_completionHandler_ =
       objc.ObjCProtocolListenableMethod<
         void Function(
-          NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
-          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
         )
       >(
         _protocol_NativeInteropFlutterIntegrationCoreApiBridge,
@@ -11425,50 +11425,50 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
         ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.fromFunction(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.fromFunction(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.listener(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.listener(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.blocking(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.blocking(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
       );
@@ -12342,9 +12342,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
   static final echoAsyncNullableUint8ListWithList_error_completionHandler_ =
       objc.ObjCProtocolListenableMethod<
         void Function(
-          NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
-          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
         )
       >(
         _protocol_NativeInteropFlutterIntegrationCoreApiBridge,
@@ -12369,50 +12369,50 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
         ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.fromFunction(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.fromFunction(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.listener(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.listener(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.blocking(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.blocking(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
       );
@@ -12656,9 +12656,9 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
   static final echoAsyncUint8ListWithList_error_completionHandler_ =
       objc.ObjCProtocolListenableMethod<
         void Function(
-          NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
-          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
         )
       >(
         _protocol_NativeInteropFlutterIntegrationCoreApiBridge,
@@ -12683,50 +12683,50 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
         ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.fromFunction(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.fromFunction(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.listener(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.listener(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
         (
           void Function(
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
           func,
         ) =>
-            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData.blocking(
+            ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData.blocking(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
-                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+                objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
               ) => func(arg1, arg2, arg3),
             ),
       );
@@ -12941,8 +12941,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
   /// Returns the passed float64 list, to test serialization and deserialization.
   static final echoFloat64ListWithList_error_ =
       objc.ObjCProtocolMethod<
-        NativeInteropTestsPigeonTypedData? Function(
-          NativeInteropTestsPigeonTypedData?,
+        NativeInteropTestsGolubetsTypedData? Function(
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
         )
       >(
@@ -12966,16 +12966,16 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
           isInstanceMethod: true,
         ),
         (
-          NativeInteropTestsPigeonTypedData? Function(
-            NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData? Function(
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
           )
           func,
         ) =>
-            ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError.fromFunction(
+            ObjCBlock_NativeInteropTestsGolubetsTypedData_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError.fromFunction(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
               ) => func(arg1, arg2),
             ),
@@ -12984,8 +12984,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
   /// Returns the passed int32 list, to test serialization and deserialization.
   static final echoInt32ListWithList_error_ =
       objc.ObjCProtocolMethod<
-        NativeInteropTestsPigeonTypedData? Function(
-          NativeInteropTestsPigeonTypedData?,
+        NativeInteropTestsGolubetsTypedData? Function(
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
         )
       >(
@@ -13009,16 +13009,16 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
           isInstanceMethod: true,
         ),
         (
-          NativeInteropTestsPigeonTypedData? Function(
-            NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData? Function(
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
           )
           func,
         ) =>
-            ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError.fromFunction(
+            ObjCBlock_NativeInteropTestsGolubetsTypedData_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError.fromFunction(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
               ) => func(arg1, arg2),
             ),
@@ -13027,8 +13027,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
   /// Returns the passed int64 list, to test serialization and deserialization.
   static final echoInt64ListWithList_error_ =
       objc.ObjCProtocolMethod<
-        NativeInteropTestsPigeonTypedData? Function(
-          NativeInteropTestsPigeonTypedData?,
+        NativeInteropTestsGolubetsTypedData? Function(
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
         )
       >(
@@ -13052,16 +13052,16 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
           isInstanceMethod: true,
         ),
         (
-          NativeInteropTestsPigeonTypedData? Function(
-            NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData? Function(
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
           )
           func,
         ) =>
-            ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError.fromFunction(
+            ObjCBlock_NativeInteropTestsGolubetsTypedData_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError.fromFunction(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
               ) => func(arg1, arg2),
             ),
@@ -13734,8 +13734,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
   /// Returns the passed float64 list, to test serialization and deserialization.
   static final echoNullableFloat64ListWithList_error_ =
       objc.ObjCProtocolMethod<
-        NativeInteropTestsPigeonTypedData? Function(
-          NativeInteropTestsPigeonTypedData?,
+        NativeInteropTestsGolubetsTypedData? Function(
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
         )
       >(
@@ -13759,16 +13759,16 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
           isInstanceMethod: true,
         ),
         (
-          NativeInteropTestsPigeonTypedData? Function(
-            NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData? Function(
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
           )
           func,
         ) =>
-            ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError.fromFunction(
+            ObjCBlock_NativeInteropTestsGolubetsTypedData_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError.fromFunction(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
               ) => func(arg1, arg2),
             ),
@@ -13777,8 +13777,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
   /// Returns the passed int32 list, to test serialization and deserialization.
   static final echoNullableInt32ListWithList_error_ =
       objc.ObjCProtocolMethod<
-        NativeInteropTestsPigeonTypedData? Function(
-          NativeInteropTestsPigeonTypedData?,
+        NativeInteropTestsGolubetsTypedData? Function(
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
         )
       >(
@@ -13802,16 +13802,16 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
           isInstanceMethod: true,
         ),
         (
-          NativeInteropTestsPigeonTypedData? Function(
-            NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData? Function(
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
           )
           func,
         ) =>
-            ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError.fromFunction(
+            ObjCBlock_NativeInteropTestsGolubetsTypedData_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError.fromFunction(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
               ) => func(arg1, arg2),
             ),
@@ -13820,8 +13820,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
   /// Returns the passed int64 list, to test serialization and deserialization.
   static final echoNullableInt64ListWithList_error_ =
       objc.ObjCProtocolMethod<
-        NativeInteropTestsPigeonTypedData? Function(
-          NativeInteropTestsPigeonTypedData?,
+        NativeInteropTestsGolubetsTypedData? Function(
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
         )
       >(
@@ -13845,16 +13845,16 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
           isInstanceMethod: true,
         ),
         (
-          NativeInteropTestsPigeonTypedData? Function(
-            NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData? Function(
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
           )
           func,
         ) =>
-            ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError.fromFunction(
+            ObjCBlock_NativeInteropTestsGolubetsTypedData_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError.fromFunction(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
               ) => func(arg1, arg2),
             ),
@@ -14225,8 +14225,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
   /// Returns the passed byte list, to test serialization and deserialization.
   static final echoNullableUint8ListWithList_error_ =
       objc.ObjCProtocolMethod<
-        NativeInteropTestsPigeonTypedData? Function(
-          NativeInteropTestsPigeonTypedData?,
+        NativeInteropTestsGolubetsTypedData? Function(
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
         )
       >(
@@ -14250,16 +14250,16 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
           isInstanceMethod: true,
         ),
         (
-          NativeInteropTestsPigeonTypedData? Function(
-            NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData? Function(
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
           )
           func,
         ) =>
-            ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError.fromFunction(
+            ObjCBlock_NativeInteropTestsGolubetsTypedData_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError.fromFunction(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
               ) => func(arg1, arg2),
             ),
@@ -14328,8 +14328,8 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
   /// Returns the passed byte list, to test serialization and deserialization.
   static final echoUint8ListWithList_error_ =
       objc.ObjCProtocolMethod<
-        NativeInteropTestsPigeonTypedData? Function(
-          NativeInteropTestsPigeonTypedData?,
+        NativeInteropTestsGolubetsTypedData? Function(
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
         )
       >(
@@ -14353,16 +14353,16 @@ interface class NativeInteropFlutterIntegrationCoreApiBridge$Builder {
           isInstanceMethod: true,
         ),
         (
-          NativeInteropTestsPigeonTypedData? Function(
-            NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData? Function(
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
           )
           func,
         ) =>
-            ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError.fromFunction(
+            ObjCBlock_NativeInteropTestsGolubetsTypedData_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError.fromFunction(
               (
                 ffi.Pointer<ffi.Void> _,
-                NativeInteropTestsPigeonTypedData? arg1,
+                NativeInteropTestsGolubetsTypedData? arg1,
                 NativeInteropTestsError arg2,
               ) => func(arg1, arg2),
             ),
@@ -14811,7 +14811,7 @@ extension NativeInteropFlutterIntegrationCoreApiRegistrar$Methods
   }
 }
 
-/// Generated setup class from Pigeon to register implemented NativeInteropHostIntegrationCoreApi classes.
+/// Generated setup class from Golubets to register implemented NativeInteropHostIntegrationCoreApi classes.
 extension type NativeInteropHostIntegrationCoreApiSetup._(objc.ObjCObject object$)
     implements objc.ObjCObject, objc.NSObject {
   /// Constructs a [NativeInteropHostIntegrationCoreApiSetup] that points to the same underlying object as [other].
@@ -15080,9 +15080,9 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
 
   /// callFlutterEchoAsyncFloat64ListWithList:wrappedError:completionHandler:
   void callFlutterEchoAsyncFloat64ListWithList(
-    NativeInteropTestsPigeonTypedData list, {
+    NativeInteropTestsGolubetsTypedData list, {
     required NativeInteropTestsError wrappedError,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -15100,9 +15100,9 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
 
   /// callFlutterEchoAsyncInt32ListWithList:wrappedError:completionHandler:
   void callFlutterEchoAsyncInt32ListWithList(
-    NativeInteropTestsPigeonTypedData list, {
+    NativeInteropTestsGolubetsTypedData list, {
     required NativeInteropTestsError wrappedError,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -15120,9 +15120,9 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
 
   /// callFlutterEchoAsyncInt64ListWithList:wrappedError:completionHandler:
   void callFlutterEchoAsyncInt64ListWithList(
-    NativeInteropTestsPigeonTypedData list, {
+    NativeInteropTestsGolubetsTypedData list, {
     required NativeInteropTestsError wrappedError,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -15405,9 +15405,9 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
 
   /// callFlutterEchoAsyncNullableFloat64ListWithList:wrappedError:completionHandler:
   void callFlutterEchoAsyncNullableFloat64ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError wrappedError,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -15425,9 +15425,9 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
 
   /// callFlutterEchoAsyncNullableInt32ListWithList:wrappedError:completionHandler:
   void callFlutterEchoAsyncNullableInt32ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError wrappedError,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -15445,9 +15445,9 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
 
   /// callFlutterEchoAsyncNullableInt64ListWithList:wrappedError:completionHandler:
   void callFlutterEchoAsyncNullableInt64ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError wrappedError,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -15676,9 +15676,9 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
 
   /// callFlutterEchoAsyncNullableUint8ListWithList:wrappedError:completionHandler:
   void callFlutterEchoAsyncNullableUint8ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError wrappedError,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -15753,9 +15753,9 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
 
   /// callFlutterEchoAsyncUint8ListWithList:wrappedError:completionHandler:
   void callFlutterEchoAsyncUint8ListWithList(
-    NativeInteropTestsPigeonTypedData list, {
+    NativeInteropTestsGolubetsTypedData list, {
     required NativeInteropTestsError wrappedError,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -15892,8 +15892,8 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
   }
 
   /// callFlutterEchoFloat64ListWithList:wrappedError:
-  NativeInteropTestsPigeonTypedData? callFlutterEchoFloat64ListWithList(
-    NativeInteropTestsPigeonTypedData list, {
+  NativeInteropTestsGolubetsTypedData? callFlutterEchoFloat64ListWithList(
+    NativeInteropTestsGolubetsTypedData list, {
     required NativeInteropTestsError wrappedError,
   }) {
     final _$$ref = object$.ref;
@@ -15907,12 +15907,12 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// callFlutterEchoInt32ListWithList:wrappedError:
-  NativeInteropTestsPigeonTypedData? callFlutterEchoInt32ListWithList(
-    NativeInteropTestsPigeonTypedData list, {
+  NativeInteropTestsGolubetsTypedData? callFlutterEchoInt32ListWithList(
+    NativeInteropTestsGolubetsTypedData list, {
     required NativeInteropTestsError wrappedError,
   }) {
     final _$$ref = object$.ref;
@@ -15926,12 +15926,12 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// callFlutterEchoInt64ListWithList:wrappedError:
-  NativeInteropTestsPigeonTypedData? callFlutterEchoInt64ListWithList(
-    NativeInteropTestsPigeonTypedData list, {
+  NativeInteropTestsGolubetsTypedData? callFlutterEchoInt64ListWithList(
+    NativeInteropTestsGolubetsTypedData list, {
     required NativeInteropTestsError wrappedError,
   }) {
     final _$$ref = object$.ref;
@@ -15945,7 +15945,7 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// callFlutterEchoIntMapWithIntMap:wrappedError:
@@ -16331,8 +16331,8 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
   }
 
   /// callFlutterEchoNullableFloat64ListWithList:wrappedError:
-  NativeInteropTestsPigeonTypedData? callFlutterEchoNullableFloat64ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+  NativeInteropTestsGolubetsTypedData? callFlutterEchoNullableFloat64ListWithList(
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError wrappedError,
   }) {
     final _$$ref = object$.ref;
@@ -16346,12 +16346,12 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// callFlutterEchoNullableInt32ListWithList:wrappedError:
-  NativeInteropTestsPigeonTypedData? callFlutterEchoNullableInt32ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+  NativeInteropTestsGolubetsTypedData? callFlutterEchoNullableInt32ListWithList(
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError wrappedError,
   }) {
     final _$$ref = object$.ref;
@@ -16365,12 +16365,12 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// callFlutterEchoNullableInt64ListWithList:wrappedError:
-  NativeInteropTestsPigeonTypedData? callFlutterEchoNullableInt64ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+  NativeInteropTestsGolubetsTypedData? callFlutterEchoNullableInt64ListWithList(
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError wrappedError,
   }) {
     final _$$ref = object$.ref;
@@ -16384,7 +16384,7 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// callFlutterEchoNullableIntMapWithIntMap:wrappedError:
@@ -16606,8 +16606,8 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
   }
 
   /// callFlutterEchoNullableUint8ListWithList:wrappedError:
-  NativeInteropTestsPigeonTypedData? callFlutterEchoNullableUint8ListWithList(
-    NativeInteropTestsPigeonTypedData? list, {
+  NativeInteropTestsGolubetsTypedData? callFlutterEchoNullableUint8ListWithList(
+    NativeInteropTestsGolubetsTypedData? list, {
     required NativeInteropTestsError wrappedError,
   }) {
     final _$$ref = object$.ref;
@@ -16621,7 +16621,7 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// callFlutterEchoStringMapWithStringMap:wrappedError:
@@ -16661,8 +16661,8 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
   }
 
   /// callFlutterEchoUint8ListWithList:wrappedError:
-  NativeInteropTestsPigeonTypedData? callFlutterEchoUint8ListWithList(
-    NativeInteropTestsPigeonTypedData list, {
+  NativeInteropTestsGolubetsTypedData? callFlutterEchoUint8ListWithList(
+    NativeInteropTestsGolubetsTypedData list, {
     required NativeInteropTestsError wrappedError,
   }) {
     final _$$ref = object$.ref;
@@ -16676,7 +16676,7 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// callFlutterNoopAsyncWithWrappedError:completionHandler:
@@ -17097,9 +17097,9 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
 
   /// Returns the passed in Float64List asynchronously.
   void echoAsyncFloat64ListWithAFloat64List(
-    NativeInteropTestsPigeonTypedData aFloat64List, {
+    NativeInteropTestsGolubetsTypedData aFloat64List, {
     required NativeInteropTestsError wrappedError,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -17117,9 +17117,9 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
 
   /// Returns the passed in Int32List asynchronously.
   void echoAsyncInt32ListWithAInt32List(
-    NativeInteropTestsPigeonTypedData aInt32List, {
+    NativeInteropTestsGolubetsTypedData aInt32List, {
     required NativeInteropTestsError wrappedError,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -17137,9 +17137,9 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
 
   /// Returns the passed in Int64List asynchronously.
   void echoAsyncInt64ListWithAInt64List(
-    NativeInteropTestsPigeonTypedData aInt64List, {
+    NativeInteropTestsGolubetsTypedData aInt64List, {
     required NativeInteropTestsError wrappedError,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -17384,9 +17384,9 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
 
   /// Returns the passed in Float64List asynchronously.
   void echoAsyncNullableFloat64ListWithAFloat64List(
-    NativeInteropTestsPigeonTypedData? aFloat64List, {
+    NativeInteropTestsGolubetsTypedData? aFloat64List, {
     required NativeInteropTestsError wrappedError,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -17404,9 +17404,9 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
 
   /// Returns the passed in Int32List asynchronously.
   void echoAsyncNullableInt32ListWithAInt32List(
-    NativeInteropTestsPigeonTypedData? aInt32List, {
+    NativeInteropTestsGolubetsTypedData? aInt32List, {
     required NativeInteropTestsError wrappedError,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -17424,9 +17424,9 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
 
   /// Returns the passed in Int64List asynchronously.
   void echoAsyncNullableInt64ListWithAInt64List(
-    NativeInteropTestsPigeonTypedData? aInt64List, {
+    NativeInteropTestsGolubetsTypedData? aInt64List, {
     required NativeInteropTestsError wrappedError,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -17617,9 +17617,9 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
 
   /// Returns the passed in Uint8List asynchronously.
   void echoAsyncNullableUint8ListWithAUint8List(
-    NativeInteropTestsPigeonTypedData? aUint8List, {
+    NativeInteropTestsGolubetsTypedData? aUint8List, {
     required NativeInteropTestsError wrappedError,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -17694,9 +17694,9 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
 
   /// Returns the passed in Uint8List asynchronously.
   void echoAsyncUint8ListWithAUint8List(
-    NativeInteropTestsPigeonTypedData aUint8List, {
+    NativeInteropTestsGolubetsTypedData aUint8List, {
     required NativeInteropTestsError wrappedError,
-    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>
+    required objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
     completionHandler,
   }) {
     final _$$ref = object$.ref;
@@ -17883,8 +17883,8 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
   }
 
   /// Returns the passed in Float64List.
-  NativeInteropTestsPigeonTypedData? echoFloat64ListWithAFloat64List(
-    NativeInteropTestsPigeonTypedData aFloat64List, {
+  NativeInteropTestsGolubetsTypedData? echoFloat64ListWithAFloat64List(
+    NativeInteropTestsGolubetsTypedData aFloat64List, {
     required NativeInteropTestsError wrappedError,
   }) {
     final _$$ref = object$.ref;
@@ -17898,12 +17898,12 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// Returns the passed in Int32List.
-  NativeInteropTestsPigeonTypedData? echoInt32ListWithAInt32List(
-    NativeInteropTestsPigeonTypedData aInt32List, {
+  NativeInteropTestsGolubetsTypedData? echoInt32ListWithAInt32List(
+    NativeInteropTestsGolubetsTypedData aInt32List, {
     required NativeInteropTestsError wrappedError,
   }) {
     final _$$ref = object$.ref;
@@ -17917,12 +17917,12 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// Returns the passed in Int64List.
-  NativeInteropTestsPigeonTypedData? echoInt64ListWithAInt64List(
-    NativeInteropTestsPigeonTypedData aInt64List, {
+  NativeInteropTestsGolubetsTypedData? echoInt64ListWithAInt64List(
+    NativeInteropTestsGolubetsTypedData aInt64List, {
     required NativeInteropTestsError wrappedError,
   }) {
     final _$$ref = object$.ref;
@@ -17936,7 +17936,7 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// Returns the passed list, to test serialization and deserialization.
@@ -18292,8 +18292,8 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
   }
 
   /// Returns the passed in Float64List.
-  NativeInteropTestsPigeonTypedData? echoNullableFloat64ListWithANullableFloat64List(
-    NativeInteropTestsPigeonTypedData? aNullableFloat64List, {
+  NativeInteropTestsGolubetsTypedData? echoNullableFloat64ListWithANullableFloat64List(
+    NativeInteropTestsGolubetsTypedData? aNullableFloat64List, {
     required NativeInteropTestsError wrappedError,
   }) {
     final _$$ref = object$.ref;
@@ -18307,12 +18307,12 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// Returns the passed in Int32List.
-  NativeInteropTestsPigeonTypedData? echoNullableInt32ListWithANullableInt32List(
-    NativeInteropTestsPigeonTypedData? aNullableInt32List, {
+  NativeInteropTestsGolubetsTypedData? echoNullableInt32ListWithANullableInt32List(
+    NativeInteropTestsGolubetsTypedData? aNullableInt32List, {
     required NativeInteropTestsError wrappedError,
   }) {
     final _$$ref = object$.ref;
@@ -18326,12 +18326,12 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// Returns the passed in Int64List.
-  NativeInteropTestsPigeonTypedData? echoNullableInt64ListWithANullableInt64List(
-    NativeInteropTestsPigeonTypedData? aNullableInt64List, {
+  NativeInteropTestsGolubetsTypedData? echoNullableInt64ListWithANullableInt64List(
+    NativeInteropTestsGolubetsTypedData? aNullableInt64List, {
     required NativeInteropTestsError wrappedError,
   }) {
     final _$$ref = object$.ref;
@@ -18345,7 +18345,7 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// Returns the passed map, to test serialization and deserialization.
@@ -18584,8 +18584,8 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
   }
 
   /// Returns the passed in Uint8List.
-  NativeInteropTestsPigeonTypedData? echoNullableUint8ListWithANullableUint8List(
-    NativeInteropTestsPigeonTypedData? aNullableUint8List, {
+  NativeInteropTestsGolubetsTypedData? echoNullableUint8ListWithANullableUint8List(
+    NativeInteropTestsGolubetsTypedData? aNullableUint8List, {
     required NativeInteropTestsError wrappedError,
   }) {
     final _$$ref = object$.ref;
@@ -18599,7 +18599,7 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// Returns the passed in generic Object.
@@ -18722,8 +18722,8 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
   }
 
   /// Returns the passed in Uint8List.
-  NativeInteropTestsPigeonTypedData? echoUint8ListWithAUint8List(
-    NativeInteropTestsPigeonTypedData aUint8List, {
+  NativeInteropTestsGolubetsTypedData? echoUint8ListWithAUint8List(
+    NativeInteropTestsGolubetsTypedData aUint8List, {
     required NativeInteropTestsError wrappedError,
   }) {
     final _$$ref = object$.ref;
@@ -18737,7 +18737,7 @@ extension NativeInteropHostIntegrationCoreApiSetup$Methods
     );
     return $ret.address == 0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 
   /// Returns the inner <code>aString</code> value from the wrapped object, to test
@@ -19162,6 +19162,143 @@ extension NativeInteropTestsError$Methods on NativeInteropTestsError {
   }
 }
 
+/// NativeInteropTestsGolubetsInternalNull
+extension type NativeInteropTestsGolubetsInternalNull._(objc.ObjCObject object$)
+    implements objc.ObjCObject, objc.NSObject {
+  /// Constructs a [NativeInteropTestsGolubetsInternalNull] that points to the same underlying object as [other].
+  NativeInteropTestsGolubetsInternalNull.as(objc.ObjCObject other) : object$ = other {
+    assert(isA(object$));
+  }
+
+  /// Constructs a [NativeInteropTestsGolubetsInternalNull] that wraps the given raw object pointer.
+  NativeInteropTestsGolubetsInternalNull.fromPointer(
+    ffi.Pointer<objc.ObjCObjectImpl> other, {
+    bool retain = false,
+    bool release = false,
+  }) : object$ = objc.ObjCObject(other, retain: retain, release: release) {
+    assert(isA(object$));
+  }
+
+  /// Returns whether [obj] is an instance of [NativeInteropTestsGolubetsInternalNull].
+  static bool isA(objc.ObjCObject? obj) => obj == null
+      ? false
+      : _objc_msgSend_19nvye5(
+          obj.ref.pointer,
+          _sel_isKindOfClass_,
+          _class_NativeInteropTestsGolubetsInternalNull,
+        );
+
+  /// alloc
+  static NativeInteropTestsGolubetsInternalNull alloc() {
+    final $ret = _objc_msgSend_151sglz(_class_NativeInteropTestsGolubetsInternalNull, _sel_alloc);
+    return NativeInteropTestsGolubetsInternalNull.fromPointer($ret, retain: false, release: true);
+  }
+
+  /// allocWithZone:
+  static NativeInteropTestsGolubetsInternalNull allocWithZone(ffi.Pointer<objc.NSZone> zone) {
+    final $ret = _objc_msgSend_1cwp428(
+      _class_NativeInteropTestsGolubetsInternalNull,
+      _sel_allocWithZone_,
+      zone,
+    );
+    return NativeInteropTestsGolubetsInternalNull.fromPointer($ret, retain: false, release: true);
+  }
+
+  /// new
+  static NativeInteropTestsGolubetsInternalNull new$() {
+    final $ret = _objc_msgSend_151sglz(_class_NativeInteropTestsGolubetsInternalNull, _sel_new);
+    return NativeInteropTestsGolubetsInternalNull.fromPointer($ret, retain: false, release: true);
+  }
+
+  /// Returns a new instance of NativeInteropTestsGolubetsInternalNull constructed with the default `new` method.
+  NativeInteropTestsGolubetsInternalNull() : this.as(new$().object$);
+}
+
+extension NativeInteropTestsGolubetsInternalNull$Methods on NativeInteropTestsGolubetsInternalNull {
+  /// init
+  NativeInteropTestsGolubetsInternalNull init() {
+    final _$$ref = object$.ref;
+    objc.checkOsVersionInternal(
+      'NativeInteropTestsGolubetsInternalNull.init',
+      iOS: (false, (2, 0, 0)),
+      macOS: (false, (10, 0, 0)),
+    );
+    final $ret = _objc_msgSend_151sglz(_$$ref.retainAndReturnPointer(), _sel_init);
+    return NativeInteropTestsGolubetsInternalNull.fromPointer($ret, retain: false, release: true);
+  }
+}
+
+/// NativeInteropTestsGolubetsTypedData
+extension type NativeInteropTestsGolubetsTypedData._(objc.ObjCObject object$)
+    implements objc.ObjCObject, objc.NSObject {
+  /// Constructs a [NativeInteropTestsGolubetsTypedData] that points to the same underlying object as [other].
+  NativeInteropTestsGolubetsTypedData.as(objc.ObjCObject other) : object$ = other {
+    assert(isA(object$));
+  }
+
+  /// Constructs a [NativeInteropTestsGolubetsTypedData] that wraps the given raw object pointer.
+  NativeInteropTestsGolubetsTypedData.fromPointer(
+    ffi.Pointer<objc.ObjCObjectImpl> other, {
+    bool retain = false,
+    bool release = false,
+  }) : object$ = objc.ObjCObject(other, retain: retain, release: release) {
+    assert(isA(object$));
+  }
+
+  /// Returns whether [obj] is an instance of [NativeInteropTestsGolubetsTypedData].
+  static bool isA(objc.ObjCObject? obj) => obj == null
+      ? false
+      : _objc_msgSend_19nvye5(
+          obj.ref.pointer,
+          _sel_isKindOfClass_,
+          _class_NativeInteropTestsGolubetsTypedData,
+        );
+
+  /// alloc
+  static NativeInteropTestsGolubetsTypedData alloc() {
+    final $ret = _objc_msgSend_151sglz(_class_NativeInteropTestsGolubetsTypedData, _sel_alloc);
+    return NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: false, release: true);
+  }
+
+  /// allocWithZone:
+  static NativeInteropTestsGolubetsTypedData allocWithZone(ffi.Pointer<objc.NSZone> zone) {
+    final $ret = _objc_msgSend_1cwp428(
+      _class_NativeInteropTestsGolubetsTypedData,
+      _sel_allocWithZone_,
+      zone,
+    );
+    return NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: false, release: true);
+  }
+}
+
+extension NativeInteropTestsGolubetsTypedData$Methods on NativeInteropTestsGolubetsTypedData {
+  /// data
+  objc.NSData get data {
+    final _$$ref = object$.ref;
+    final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_data);
+    return objc.NSData.fromPointer($ret, retain: true, release: true);
+  }
+
+  /// initWithData:type:
+  NativeInteropTestsGolubetsTypedData initWithData(objc.NSData data, {required int type}) {
+    final _$$ref = object$.ref;
+    final _$$ref$1 = data.ref;
+    final $ret = _objc_msgSend_9slupp(
+      _$$ref.retainAndReturnPointer(),
+      _sel_initWithData_type_,
+      _$$ref$1.pointer,
+      type,
+    );
+    return NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: false, release: true);
+  }
+
+  /// type
+  int get type {
+    final _$$ref = object$.ref;
+    return _objc_msgSend_1hz7y9r(_$$ref.pointer, _sel_type);
+  }
+}
+
 /// NativeInteropTestsNumberWrapper
 extension type NativeInteropTestsNumberWrapper._(objc.ObjCObject object$)
     implements objc.ObjCObject, objc.NSObject, objc.NSCopying {
@@ -19266,144 +19403,7 @@ extension NativeInteropTestsNumberWrapper$Methods on NativeInteropTestsNumberWra
   }
 }
 
-/// NativeInteropTestsPigeonInternalNull
-extension type NativeInteropTestsPigeonInternalNull._(objc.ObjCObject object$)
-    implements objc.ObjCObject, objc.NSObject {
-  /// Constructs a [NativeInteropTestsPigeonInternalNull] that points to the same underlying object as [other].
-  NativeInteropTestsPigeonInternalNull.as(objc.ObjCObject other) : object$ = other {
-    assert(isA(object$));
-  }
-
-  /// Constructs a [NativeInteropTestsPigeonInternalNull] that wraps the given raw object pointer.
-  NativeInteropTestsPigeonInternalNull.fromPointer(
-    ffi.Pointer<objc.ObjCObjectImpl> other, {
-    bool retain = false,
-    bool release = false,
-  }) : object$ = objc.ObjCObject(other, retain: retain, release: release) {
-    assert(isA(object$));
-  }
-
-  /// Returns whether [obj] is an instance of [NativeInteropTestsPigeonInternalNull].
-  static bool isA(objc.ObjCObject? obj) => obj == null
-      ? false
-      : _objc_msgSend_19nvye5(
-          obj.ref.pointer,
-          _sel_isKindOfClass_,
-          _class_NativeInteropTestsPigeonInternalNull,
-        );
-
-  /// alloc
-  static NativeInteropTestsPigeonInternalNull alloc() {
-    final $ret = _objc_msgSend_151sglz(_class_NativeInteropTestsPigeonInternalNull, _sel_alloc);
-    return NativeInteropTestsPigeonInternalNull.fromPointer($ret, retain: false, release: true);
-  }
-
-  /// allocWithZone:
-  static NativeInteropTestsPigeonInternalNull allocWithZone(ffi.Pointer<objc.NSZone> zone) {
-    final $ret = _objc_msgSend_1cwp428(
-      _class_NativeInteropTestsPigeonInternalNull,
-      _sel_allocWithZone_,
-      zone,
-    );
-    return NativeInteropTestsPigeonInternalNull.fromPointer($ret, retain: false, release: true);
-  }
-
-  /// new
-  static NativeInteropTestsPigeonInternalNull new$() {
-    final $ret = _objc_msgSend_151sglz(_class_NativeInteropTestsPigeonInternalNull, _sel_new);
-    return NativeInteropTestsPigeonInternalNull.fromPointer($ret, retain: false, release: true);
-  }
-
-  /// Returns a new instance of NativeInteropTestsPigeonInternalNull constructed with the default `new` method.
-  NativeInteropTestsPigeonInternalNull() : this.as(new$().object$);
-}
-
-extension NativeInteropTestsPigeonInternalNull$Methods on NativeInteropTestsPigeonInternalNull {
-  /// init
-  NativeInteropTestsPigeonInternalNull init() {
-    final _$$ref = object$.ref;
-    objc.checkOsVersionInternal(
-      'NativeInteropTestsPigeonInternalNull.init',
-      iOS: (false, (2, 0, 0)),
-      macOS: (false, (10, 0, 0)),
-    );
-    final $ret = _objc_msgSend_151sglz(_$$ref.retainAndReturnPointer(), _sel_init);
-    return NativeInteropTestsPigeonInternalNull.fromPointer($ret, retain: false, release: true);
-  }
-}
-
-/// NativeInteropTestsPigeonTypedData
-extension type NativeInteropTestsPigeonTypedData._(objc.ObjCObject object$)
-    implements objc.ObjCObject, objc.NSObject {
-  /// Constructs a [NativeInteropTestsPigeonTypedData] that points to the same underlying object as [other].
-  NativeInteropTestsPigeonTypedData.as(objc.ObjCObject other) : object$ = other {
-    assert(isA(object$));
-  }
-
-  /// Constructs a [NativeInteropTestsPigeonTypedData] that wraps the given raw object pointer.
-  NativeInteropTestsPigeonTypedData.fromPointer(
-    ffi.Pointer<objc.ObjCObjectImpl> other, {
-    bool retain = false,
-    bool release = false,
-  }) : object$ = objc.ObjCObject(other, retain: retain, release: release) {
-    assert(isA(object$));
-  }
-
-  /// Returns whether [obj] is an instance of [NativeInteropTestsPigeonTypedData].
-  static bool isA(objc.ObjCObject? obj) => obj == null
-      ? false
-      : _objc_msgSend_19nvye5(
-          obj.ref.pointer,
-          _sel_isKindOfClass_,
-          _class_NativeInteropTestsPigeonTypedData,
-        );
-
-  /// alloc
-  static NativeInteropTestsPigeonTypedData alloc() {
-    final $ret = _objc_msgSend_151sglz(_class_NativeInteropTestsPigeonTypedData, _sel_alloc);
-    return NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: false, release: true);
-  }
-
-  /// allocWithZone:
-  static NativeInteropTestsPigeonTypedData allocWithZone(ffi.Pointer<objc.NSZone> zone) {
-    final $ret = _objc_msgSend_1cwp428(
-      _class_NativeInteropTestsPigeonTypedData,
-      _sel_allocWithZone_,
-      zone,
-    );
-    return NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: false, release: true);
-  }
-}
-
-extension NativeInteropTestsPigeonTypedData$Methods on NativeInteropTestsPigeonTypedData {
-  /// data
-  objc.NSData get data {
-    final _$$ref = object$.ref;
-    final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_data);
-    return objc.NSData.fromPointer($ret, retain: true, release: true);
-  }
-
-  /// initWithData:type:
-  NativeInteropTestsPigeonTypedData initWithData(objc.NSData data, {required int type}) {
-    final _$$ref = object$.ref;
-    final _$$ref$1 = data.ref;
-    final $ret = _objc_msgSend_9slupp(
-      _$$ref.retainAndReturnPointer(),
-      _sel_initWithData_type_,
-      _$$ref$1.pointer,
-      type,
-    );
-    return NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: false, release: true);
-  }
-
-  /// type
-  int get type {
-    final _$$ref = object$.ref;
-    return _objc_msgSend_1hz7y9r(_$$ref.pointer, _sel_type);
-  }
-}
-
-/// Generated bridge class from Pigeon that moves data from Swift to Objective-C.
+/// Generated bridge class from Golubets that moves data from Swift to Objective-C.
 extension type NativeInteropUnusedClassBridge._(objc.ObjCObject object$)
     implements objc.ObjCObject, objc.NSObject {
   /// Constructs a [NativeInteropUnusedClassBridge] that points to the same underlying object as [other].
@@ -21663,13 +21663,13 @@ extension ObjCBlock_NativeInteropAllTypesBridge_ffiVoid_NativeInteropAllTypesBri
   }
 }
 
-/// Construction methods for `objc.ObjCBlock<NativeInteropTestsPigeonTypedData? Function(ffi.Pointer<ffi.Void>, NativeInteropTestsPigeonTypedData?, NativeInteropTestsError)>`.
-abstract final class ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError {
+/// Construction methods for `objc.ObjCBlock<NativeInteropTestsGolubetsTypedData? Function(ffi.Pointer<ffi.Void>, NativeInteropTestsGolubetsTypedData?, NativeInteropTestsError)>`.
+abstract final class ObjCBlock_NativeInteropTestsGolubetsTypedData_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError {
   /// Returns a block that wraps the given raw block pointer.
   static objc.ObjCBlock<
-    NativeInteropTestsPigeonTypedData? Function(
+    NativeInteropTestsGolubetsTypedData? Function(
       ffi.Pointer<ffi.Void>,
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
   >
@@ -21679,9 +21679,9 @@ abstract final class ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeI
     bool release = false,
   }) =>
       objc.ObjCBlock<
-        NativeInteropTestsPigeonTypedData? Function(
+        NativeInteropTestsGolubetsTypedData? Function(
           ffi.Pointer<ffi.Void>,
-          NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
         )
       >(pointer, retain: retain, release: release);
@@ -21692,9 +21692,9 @@ abstract final class ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeI
   /// the isolate that registered it. Invoking the block on the wrong thread
   /// will result in a crash.
   static objc.ObjCBlock<
-    NativeInteropTestsPigeonTypedData? Function(
+    NativeInteropTestsGolubetsTypedData? Function(
       ffi.Pointer<ffi.Void>,
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
   >
@@ -21711,9 +21711,9 @@ abstract final class ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeI
     ptr,
   ) =>
       objc.ObjCBlock<
-        NativeInteropTestsPigeonTypedData? Function(
+        NativeInteropTestsGolubetsTypedData? Function(
           ffi.Pointer<ffi.Void>,
-          NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
         )
       >(objc.newPointerBlock(_fnPtrCallable, ptr.cast()), retain: false, release: true);
@@ -21727,25 +21727,25 @@ abstract final class ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeI
   /// If `keepIsolateAlive` is true, this block will keep this isolate alive
   /// until it is garbage collected by both Dart and ObjC.
   static objc.ObjCBlock<
-    NativeInteropTestsPigeonTypedData? Function(
+    NativeInteropTestsGolubetsTypedData? Function(
       ffi.Pointer<ffi.Void>,
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
   >
   fromFunction(
-    NativeInteropTestsPigeonTypedData? Function(
+    NativeInteropTestsGolubetsTypedData? Function(
       ffi.Pointer<ffi.Void>,
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
     )
     fn, {
     bool keepIsolateAlive = true,
   }) =>
       objc.ObjCBlock<
-        NativeInteropTestsPigeonTypedData? Function(
+        NativeInteropTestsGolubetsTypedData? Function(
           ffi.Pointer<ffi.Void>,
-          NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
         )
       >(
@@ -21758,7 +21758,11 @@ abstract final class ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeI
             arg0,
             arg1.address == 0
                 ? null
-                : NativeInteropTestsPigeonTypedData.fromPointer(arg1, retain: true, release: true),
+                : NativeInteropTestsGolubetsTypedData.fromPointer(
+                    arg1,
+                    retain: true,
+                    release: true,
+                  ),
             NativeInteropTestsError.fromPointer(arg2, retain: true, release: true),
           )?.ref;
           return _$$ref?.retainAndAutorelease() ?? ffi.nullptr;
@@ -21823,19 +21827,19 @@ abstract final class ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeI
           .cast();
 }
 
-/// Call operator for `objc.ObjCBlock<NativeInteropTestsPigeonTypedData? Function(ffi.Pointer<ffi.Void>, NativeInteropTestsPigeonTypedData?, NativeInteropTestsError)>`.
-extension ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError$CallExtension
+/// Call operator for `objc.ObjCBlock<NativeInteropTestsGolubetsTypedData? Function(ffi.Pointer<ffi.Void>, NativeInteropTestsGolubetsTypedData?, NativeInteropTestsError)>`.
+extension ObjCBlock_NativeInteropTestsGolubetsTypedData_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError$CallExtension
     on
         objc.ObjCBlock<
-          NativeInteropTestsPigeonTypedData? Function(
+          NativeInteropTestsGolubetsTypedData? Function(
             ffi.Pointer<ffi.Void>,
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
           )
         > {
-  NativeInteropTestsPigeonTypedData? call(
+  NativeInteropTestsGolubetsTypedData? call(
     ffi.Pointer<ffi.Void> arg0,
-    NativeInteropTestsPigeonTypedData? arg1,
+    NativeInteropTestsGolubetsTypedData? arg1,
     NativeInteropTestsError arg2,
   ) {
     final _$$ref$1 = arg1?.ref;
@@ -21862,7 +21866,7 @@ extension ObjCBlock_NativeInteropTestsPigeonTypedData_ffiVoid_NativeInteropTests
                 .address ==
             0
         ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer(
+        : NativeInteropTestsGolubetsTypedData.fromPointer(
             ref.pointer.ref.invoke
                 .cast<
                   ffi.NativeFunction<
@@ -23132,14 +23136,14 @@ extension ObjCBlock_ffiVoid_NativeInteropAllTypesBridge$CallExtension
   }
 }
 
-/// Construction methods for `objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>`.
-abstract final class ObjCBlock_ffiVoid_NativeInteropTestsPigeonTypedData {
+/// Construction methods for `objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>`.
+abstract final class ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData {
   /// Returns a block that wraps the given raw block pointer.
-  static objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> fromPointer(
+  static objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> fromPointer(
     ffi.Pointer<objc.ObjCBlockImpl> pointer, {
     bool retain = false,
     bool release = false,
-  }) => objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>(
+  }) => objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>(
     pointer,
     retain: retain,
     release: release,
@@ -23150,9 +23154,10 @@ abstract final class ObjCBlock_ffiVoid_NativeInteropTestsPigeonTypedData {
   /// This block must be invoked by native code running on the same thread as
   /// the isolate that registered it. Invoking the block on the wrong thread
   /// will result in a crash.
-  static objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> fromFunctionPointer(
+  static objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>
+  fromFunctionPointer(
     ffi.Pointer<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<objc.ObjCObjectImpl> arg0)>> ptr,
-  ) => objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>(
+  ) => objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>(
     objc.newPointerBlock(_fnPtrCallable, ptr.cast()),
     retain: false,
     release: true,
@@ -23166,15 +23171,15 @@ abstract final class ObjCBlock_ffiVoid_NativeInteropTestsPigeonTypedData {
   ///
   /// If `keepIsolateAlive` is true, this block will keep this isolate alive
   /// until it is garbage collected by both Dart and ObjC.
-  static objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> fromFunction(
-    void Function(NativeInteropTestsPigeonTypedData?) fn, {
+  static objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> fromFunction(
+    void Function(NativeInteropTestsGolubetsTypedData?) fn, {
     bool keepIsolateAlive = true,
-  }) => objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>(
+  }) => objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>(
     objc.newClosureBlock(_closureCallable, (ffi.Pointer<objc.ObjCObjectImpl> arg0) {
       return fn(
         arg0.address == 0
             ? null
-            : NativeInteropTestsPigeonTypedData.fromPointer(arg0, retain: true, release: true),
+            : NativeInteropTestsGolubetsTypedData.fromPointer(arg0, retain: true, release: true),
       );
     }, keepIsolateAlive),
     retain: false,
@@ -23189,15 +23194,15 @@ abstract final class ObjCBlock_ffiVoid_NativeInteropTestsPigeonTypedData {
   ///
   /// If `keepIsolateAlive` is true, this block will keep this isolate alive
   /// until it is garbage collected by both Dart and ObjC.
-  static objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> listener(
-    void Function(NativeInteropTestsPigeonTypedData?) fn, {
+  static objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> listener(
+    void Function(NativeInteropTestsGolubetsTypedData?) fn, {
     bool keepIsolateAlive = true,
   }) {
-    return objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>(
+    return objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>(
       objc.newBlockPort(_julz8q_wrapListenerBlock_xtuoz7, (
         ffi.Pointer<objc.ObjCObjectImpl> rawArgs,
       ) {
-        final args = _BlockArgs_1girpi6.fromPointer(rawArgs, retain: false, release: false);
+        final args = _BlockArgs_zvjqdr.fromPointer(rawArgs, retain: false, release: false);
 
         fn(args.arg0);
       }, keepIsolateAlive),
@@ -23216,15 +23221,15 @@ abstract final class ObjCBlock_ffiVoid_NativeInteropTestsPigeonTypedData {
   /// until it is garbage collected by both Dart and ObjC. If the owner isolate
   /// has shut down, and the block is invoked by native code, it may block
   /// indefinitely, or have other undefined behavior.
-  static objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> blocking(
-    void Function(NativeInteropTestsPigeonTypedData?) fn, {
+  static objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> blocking(
+    void Function(NativeInteropTestsGolubetsTypedData?) fn, {
     bool keepIsolateAlive = true,
   }) {
-    return objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>(
+    return objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>(
       objc.newBlockingBlockPort(_julz8q_wrapBlockingBlock_xtuoz7, (
         ffi.Pointer<objc.ObjCObjectImpl> rawArgs,
       ) {
-        final args = _BlockArgs_1girpi6.fromPointer(rawArgs, retain: false, release: false);
+        final args = _BlockArgs_zvjqdr.fromPointer(rawArgs, retain: false, release: false);
 
         fn(args.arg0);
       }, keepIsolateAlive),
@@ -23255,10 +23260,10 @@ abstract final class ObjCBlock_ffiVoid_NativeInteropTestsPigeonTypedData {
           .cast();
 }
 
-/// Call operator for `objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>`.
-extension ObjCBlock_ffiVoid_NativeInteropTestsPigeonTypedData$CallExtension
-    on objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> {
-  void call(NativeInteropTestsPigeonTypedData? arg0) {
+/// Call operator for `objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>`.
+extension ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension
+    on objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> {
+  void call(NativeInteropTestsGolubetsTypedData? arg0) {
     final _$$ref = arg0?.ref;
     return ref.pointer.ref.invoke
         .cast<
@@ -26542,15 +26547,15 @@ extension ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsError_ffiVoiddispatchdatat
   }
 }
 
-/// Construction methods for `objc.ObjCBlock<ffi.Void Function(ffi.Pointer<ffi.Void>, NativeInteropTestsPigeonTypedData?, NativeInteropTestsError, objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>)>`.
-abstract final class ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData {
+/// Construction methods for `objc.ObjCBlock<ffi.Void Function(ffi.Pointer<ffi.Void>, NativeInteropTestsGolubetsTypedData?, NativeInteropTestsError, objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>)>`.
+abstract final class ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData {
   /// Returns a block that wraps the given raw block pointer.
   static objc.ObjCBlock<
     ffi.Void Function(
       ffi.Pointer<ffi.Void>,
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
   >
   fromPointer(
@@ -26561,9 +26566,9 @@ abstract final class ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData
       objc.ObjCBlock<
         ffi.Void Function(
           ffi.Pointer<ffi.Void>,
-          NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
-          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
         )
       >(pointer, retain: retain, release: release);
 
@@ -26575,9 +26580,9 @@ abstract final class ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData
   static objc.ObjCBlock<
     ffi.Void Function(
       ffi.Pointer<ffi.Void>,
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
   >
   fromFunctionPointer(
@@ -26596,9 +26601,9 @@ abstract final class ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData
       objc.ObjCBlock<
         ffi.Void Function(
           ffi.Pointer<ffi.Void>,
-          NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
-          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
         )
       >(objc.newPointerBlock(_fnPtrCallable, ptr.cast()), retain: false, release: true);
 
@@ -26613,17 +26618,17 @@ abstract final class ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData
   static objc.ObjCBlock<
     ffi.Void Function(
       ffi.Pointer<ffi.Void>,
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
   >
   fromFunction(
     void Function(
       ffi.Pointer<ffi.Void>,
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     fn, {
     bool keepIsolateAlive = true,
@@ -26631,9 +26636,9 @@ abstract final class ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData
       objc.ObjCBlock<
         ffi.Void Function(
           ffi.Pointer<ffi.Void>,
-          NativeInteropTestsPigeonTypedData?,
+          NativeInteropTestsGolubetsTypedData?,
           NativeInteropTestsError,
-          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+          objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
         )
       >(
         objc.newClosureBlock(_closureCallable, (
@@ -26646,9 +26651,13 @@ abstract final class ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData
             arg0,
             arg1.address == 0
                 ? null
-                : NativeInteropTestsPigeonTypedData.fromPointer(arg1, retain: true, release: true),
+                : NativeInteropTestsGolubetsTypedData.fromPointer(
+                    arg1,
+                    retain: true,
+                    release: true,
+                  ),
             NativeInteropTestsError.fromPointer(arg2, retain: true, release: true),
-            ObjCBlock_ffiVoid_NativeInteropTestsPigeonTypedData.fromPointer(
+            ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.fromPointer(
               arg3,
               retain: true,
               release: true,
@@ -26670,17 +26679,17 @@ abstract final class ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData
   static objc.ObjCBlock<
     ffi.Void Function(
       ffi.Pointer<ffi.Void>,
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
   >
   listener(
     void Function(
       ffi.Pointer<ffi.Void>,
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     fn, {
     bool keepIsolateAlive = true,
@@ -26688,15 +26697,15 @@ abstract final class ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData
     return objc.ObjCBlock<
       ffi.Void Function(
         ffi.Pointer<ffi.Void>,
-        NativeInteropTestsPigeonTypedData?,
+        NativeInteropTestsGolubetsTypedData?,
         NativeInteropTestsError,
-        objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+        objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
       )
     >(
       objc.newBlockPort(_julz8q_wrapListenerBlock_bklti2, (
         ffi.Pointer<objc.ObjCObjectImpl> rawArgs,
       ) {
-        final args = _BlockArgs_3l4bu0.fromPointer(rawArgs, retain: false, release: false);
+        final args = _BlockArgs_lhyyu.fromPointer(rawArgs, retain: false, release: false);
 
         fn(args.arg0, args.arg1, args.arg2, args.arg3);
       }, keepIsolateAlive),
@@ -26718,17 +26727,17 @@ abstract final class ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData
   static objc.ObjCBlock<
     ffi.Void Function(
       ffi.Pointer<ffi.Void>,
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
   >
   blocking(
     void Function(
       ffi.Pointer<ffi.Void>,
-      NativeInteropTestsPigeonTypedData?,
+      NativeInteropTestsGolubetsTypedData?,
       NativeInteropTestsError,
-      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+      objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
     )
     fn, {
     bool keepIsolateAlive = true,
@@ -26736,15 +26745,15 @@ abstract final class ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData
     return objc.ObjCBlock<
       ffi.Void Function(
         ffi.Pointer<ffi.Void>,
-        NativeInteropTestsPigeonTypedData?,
+        NativeInteropTestsGolubetsTypedData?,
         NativeInteropTestsError,
-        objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+        objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
       )
     >(
       objc.newBlockingBlockPort(_julz8q_wrapBlockingBlock_bklti2, (
         ffi.Pointer<objc.ObjCObjectImpl> rawArgs,
       ) {
-        final args = _BlockArgs_3l4bu0.fromPointer(rawArgs, retain: false, release: false);
+        final args = _BlockArgs_lhyyu.fromPointer(rawArgs, retain: false, release: false);
 
         fn(args.arg0, args.arg1, args.arg2, args.arg3);
       }, keepIsolateAlive),
@@ -26816,22 +26825,22 @@ abstract final class ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData
           .cast();
 }
 
-/// Call operator for `objc.ObjCBlock<ffi.Void Function(ffi.Pointer<ffi.Void>, NativeInteropTestsPigeonTypedData?, NativeInteropTestsError, objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>)>`.
-extension ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsPigeonTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsPigeonTypedData$CallExtension
+/// Call operator for `objc.ObjCBlock<ffi.Void Function(ffi.Pointer<ffi.Void>, NativeInteropTestsGolubetsTypedData?, NativeInteropTestsError, objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>)>`.
+extension ObjCBlock_ffiVoid_ffiVoid_NativeInteropTestsGolubetsTypedData_NativeInteropTestsError_ffiVoidNativeInteropTestsGolubetsTypedData$CallExtension
     on
         objc.ObjCBlock<
           ffi.Void Function(
             ffi.Pointer<ffi.Void>,
-            NativeInteropTestsPigeonTypedData?,
+            NativeInteropTestsGolubetsTypedData?,
             NativeInteropTestsError,
-            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)>,
+            objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)>,
           )
         > {
   void call(
     ffi.Pointer<ffi.Void> arg0,
-    NativeInteropTestsPigeonTypedData? arg1,
+    NativeInteropTestsGolubetsTypedData? arg1,
     NativeInteropTestsError arg2,
-    objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> arg3,
+    objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> arg3,
   ) {
     final _$$ref = arg1?.ref;
     final _$$ref$1 = arg2.ref;
@@ -26984,37 +26993,6 @@ extension _BlockArgs_141x5aw$Methods on _BlockArgs_141x5aw {
       retain: true,
       release: true,
     );
-  }
-}
-
-extension type _BlockArgs_1girpi6._(objc.ObjCObject object$) implements objc.ObjCObject {
-  /// Constructs a [_BlockArgs_1girpi6] that points to the same underlying object as [other].
-  _BlockArgs_1girpi6.as(objc.ObjCObject other) : object$ = other {
-    assert(isA(object$));
-  }
-
-  /// Constructs a [_BlockArgs_1girpi6] that wraps the given raw object pointer.
-  _BlockArgs_1girpi6.fromPointer(
-    ffi.Pointer<objc.ObjCObjectImpl> other, {
-    bool retain = false,
-    bool release = false,
-  }) : object$ = objc.ObjCObject(other, retain: retain, release: release) {
-    assert(isA(object$));
-  }
-
-  /// Returns whether [obj] is an instance of [_BlockArgs_1girpi6].
-  static bool isA(objc.ObjCObject? obj) => obj == null
-      ? false
-      : _objc_msgSend_19nvye5(obj.ref.pointer, _sel_isKindOfClass_, _class__BlockArgs_1girpi6);
-}
-
-extension _BlockArgs_1girpi6$Methods on _BlockArgs_1girpi6 {
-  NativeInteropTestsPigeonTypedData? get arg0 {
-    final _$$ref = object$.ref;
-    final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_arg0);
-    return $ret.address == 0
-        ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
   }
 }
 
@@ -27401,58 +27379,6 @@ extension _BlockArgs_2545du$Methods on _BlockArgs_2545du {
   }
 }
 
-extension type _BlockArgs_3l4bu0._(objc.ObjCObject object$) implements objc.ObjCObject {
-  /// Constructs a [_BlockArgs_3l4bu0] that points to the same underlying object as [other].
-  _BlockArgs_3l4bu0.as(objc.ObjCObject other) : object$ = other {
-    assert(isA(object$));
-  }
-
-  /// Constructs a [_BlockArgs_3l4bu0] that wraps the given raw object pointer.
-  _BlockArgs_3l4bu0.fromPointer(
-    ffi.Pointer<objc.ObjCObjectImpl> other, {
-    bool retain = false,
-    bool release = false,
-  }) : object$ = objc.ObjCObject(other, retain: retain, release: release) {
-    assert(isA(object$));
-  }
-
-  /// Returns whether [obj] is an instance of [_BlockArgs_3l4bu0].
-  static bool isA(objc.ObjCObject? obj) => obj == null
-      ? false
-      : _objc_msgSend_19nvye5(obj.ref.pointer, _sel_isKindOfClass_, _class__BlockArgs_3l4bu0);
-}
-
-extension _BlockArgs_3l4bu0$Methods on _BlockArgs_3l4bu0 {
-  ffi.Pointer<ffi.Void> get arg0 {
-    final _$$ref = object$.ref;
-    return _objc_msgSend_6ex6p5(_$$ref.pointer, _sel_arg0);
-  }
-
-  NativeInteropTestsPigeonTypedData? get arg1 {
-    final _$$ref = object$.ref;
-    final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_arg1);
-    return $ret.address == 0
-        ? null
-        : NativeInteropTestsPigeonTypedData.fromPointer($ret, retain: true, release: true);
-  }
-
-  NativeInteropTestsError get arg2 {
-    final _$$ref = object$.ref;
-    final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_arg2);
-    return NativeInteropTestsError.fromPointer($ret, retain: true, release: true);
-  }
-
-  objc.ObjCBlock<ffi.Void Function(NativeInteropTestsPigeonTypedData?)> get arg3 {
-    final _$$ref = object$.ref;
-    final $ret = _objc_msgSend_uwvaik(_$$ref.pointer, _sel_arg3);
-    return ObjCBlock_ffiVoid_NativeInteropTestsPigeonTypedData.fromPointer(
-      $ret,
-      retain: true,
-      release: true,
-    );
-  }
-}
-
 extension type _BlockArgs_6tydoo._(objc.ObjCObject object$) implements objc.ObjCObject {
   /// Constructs a [_BlockArgs_6tydoo] that points to the same underlying object as [other].
   _BlockArgs_6tydoo.as(objc.ObjCObject other) : object$ = other {
@@ -27639,6 +27565,58 @@ extension _BlockArgs_jwy7mm$Methods on _BlockArgs_jwy7mm {
   }
 }
 
+extension type _BlockArgs_lhyyu._(objc.ObjCObject object$) implements objc.ObjCObject {
+  /// Constructs a [_BlockArgs_lhyyu] that points to the same underlying object as [other].
+  _BlockArgs_lhyyu.as(objc.ObjCObject other) : object$ = other {
+    assert(isA(object$));
+  }
+
+  /// Constructs a [_BlockArgs_lhyyu] that wraps the given raw object pointer.
+  _BlockArgs_lhyyu.fromPointer(
+    ffi.Pointer<objc.ObjCObjectImpl> other, {
+    bool retain = false,
+    bool release = false,
+  }) : object$ = objc.ObjCObject(other, retain: retain, release: release) {
+    assert(isA(object$));
+  }
+
+  /// Returns whether [obj] is an instance of [_BlockArgs_lhyyu].
+  static bool isA(objc.ObjCObject? obj) => obj == null
+      ? false
+      : _objc_msgSend_19nvye5(obj.ref.pointer, _sel_isKindOfClass_, _class__BlockArgs_lhyyu);
+}
+
+extension _BlockArgs_lhyyu$Methods on _BlockArgs_lhyyu {
+  ffi.Pointer<ffi.Void> get arg0 {
+    final _$$ref = object$.ref;
+    return _objc_msgSend_6ex6p5(_$$ref.pointer, _sel_arg0);
+  }
+
+  NativeInteropTestsGolubetsTypedData? get arg1 {
+    final _$$ref = object$.ref;
+    final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_arg1);
+    return $ret.address == 0
+        ? null
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
+  }
+
+  NativeInteropTestsError get arg2 {
+    final _$$ref = object$.ref;
+    final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_arg2);
+    return NativeInteropTestsError.fromPointer($ret, retain: true, release: true);
+  }
+
+  objc.ObjCBlock<ffi.Void Function(NativeInteropTestsGolubetsTypedData?)> get arg3 {
+    final _$$ref = object$.ref;
+    final $ret = _objc_msgSend_uwvaik(_$$ref.pointer, _sel_arg3);
+    return ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.fromPointer(
+      $ret,
+      retain: true,
+      release: true,
+    );
+  }
+}
+
 extension type _BlockArgs_oimzbh._(objc.ObjCObject object$) implements objc.ObjCObject {
   /// Constructs a [_BlockArgs_oimzbh] that points to the same underlying object as [other].
   _BlockArgs_oimzbh.as(objc.ObjCObject other) : object$ = other {
@@ -27713,6 +27691,37 @@ extension _BlockArgs_yul2nq$Methods on _BlockArgs_yul2nq {
     final _$$ref = object$.ref;
     final $ret = _objc_msgSend_uwvaik(_$$ref.pointer, _sel_arg3);
     return ObjCBlock_ffiVoid_NSDictionary.fromPointer($ret, retain: true, release: true);
+  }
+}
+
+extension type _BlockArgs_zvjqdr._(objc.ObjCObject object$) implements objc.ObjCObject {
+  /// Constructs a [_BlockArgs_zvjqdr] that points to the same underlying object as [other].
+  _BlockArgs_zvjqdr.as(objc.ObjCObject other) : object$ = other {
+    assert(isA(object$));
+  }
+
+  /// Constructs a [_BlockArgs_zvjqdr] that wraps the given raw object pointer.
+  _BlockArgs_zvjqdr.fromPointer(
+    ffi.Pointer<objc.ObjCObjectImpl> other, {
+    bool retain = false,
+    bool release = false,
+  }) : object$ = objc.ObjCObject(other, retain: retain, release: release) {
+    assert(isA(object$));
+  }
+
+  /// Returns whether [obj] is an instance of [_BlockArgs_zvjqdr].
+  static bool isA(objc.ObjCObject? obj) => obj == null
+      ? false
+      : _objc_msgSend_19nvye5(obj.ref.pointer, _sel_isKindOfClass_, _class__BlockArgs_zvjqdr);
+}
+
+extension _BlockArgs_zvjqdr$Methods on _BlockArgs_zvjqdr {
+  NativeInteropTestsGolubetsTypedData? get arg0 {
+    final _$$ref = object$.ref;
+    final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_arg0);
+    return $ret.address == 0
+        ? null
+        : NativeInteropTestsGolubetsTypedData.fromPointer($ret, retain: true, release: true);
   }
 }
 
@@ -27801,6 +27810,26 @@ final _class_NativeInteropTestsError = objc.getClass(
   ).cast(),
 );
 @ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(
+  symbol: 'OBJC_CLASS_\$__TtC11test_plugin38NativeInteropTestsGolubetsInternalNull',
+)
+external ffi.Pointer<objc.ObjCObjectImpl> _class_NativeInteropTestsGolubetsInternalNull_raw;
+final _class_NativeInteropTestsGolubetsInternalNull = objc.getClass(
+  "test_plugin.NativeInteropTestsGolubetsInternalNull",
+  () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(
+    _class_NativeInteropTestsGolubetsInternalNull_raw,
+  ).cast(),
+);
+@ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(
+  symbol: 'OBJC_CLASS_\$__TtC11test_plugin35NativeInteropTestsGolubetsTypedData',
+)
+external ffi.Pointer<objc.ObjCObjectImpl> _class_NativeInteropTestsGolubetsTypedData_raw;
+final _class_NativeInteropTestsGolubetsTypedData = objc.getClass(
+  "test_plugin.NativeInteropTestsGolubetsTypedData",
+  () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(
+    _class_NativeInteropTestsGolubetsTypedData_raw,
+  ).cast(),
+);
+@ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(
   symbol: 'OBJC_CLASS_\$__TtC11test_plugin31NativeInteropTestsNumberWrapper',
 )
 external ffi.Pointer<objc.ObjCObjectImpl> _class_NativeInteropTestsNumberWrapper_raw;
@@ -27808,26 +27837,6 @@ final _class_NativeInteropTestsNumberWrapper = objc.getClass(
   "test_plugin.NativeInteropTestsNumberWrapper",
   () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(
     _class_NativeInteropTestsNumberWrapper_raw,
-  ).cast(),
-);
-@ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(
-  symbol: 'OBJC_CLASS_\$__TtC11test_plugin36NativeInteropTestsPigeonInternalNull',
-)
-external ffi.Pointer<objc.ObjCObjectImpl> _class_NativeInteropTestsPigeonInternalNull_raw;
-final _class_NativeInteropTestsPigeonInternalNull = objc.getClass(
-  "test_plugin.NativeInteropTestsPigeonInternalNull",
-  () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(
-    _class_NativeInteropTestsPigeonInternalNull_raw,
-  ).cast(),
-);
-@ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(
-  symbol: 'OBJC_CLASS_\$__TtC11test_plugin33NativeInteropTestsPigeonTypedData',
-)
-external ffi.Pointer<objc.ObjCObjectImpl> _class_NativeInteropTestsPigeonTypedData_raw;
-final _class_NativeInteropTestsPigeonTypedData = objc.getClass(
-  "test_plugin.NativeInteropTestsPigeonTypedData",
-  () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(
-    _class_NativeInteropTestsPigeonTypedData_raw,
   ).cast(),
 );
 @ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(
@@ -27860,13 +27869,6 @@ final _class__BlockArgs_141x5aw = objc.getClass(
   "_julz8q_BlockArgs_bklti2",
   () =>
       ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(_class__BlockArgs_141x5aw_raw).cast(),
-);
-@ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(symbol: 'OBJC_CLASS_\$__julz8q_BlockArgs_xtuoz7')
-external ffi.Pointer<objc.ObjCObjectImpl> _class__BlockArgs_1girpi6_raw;
-final _class__BlockArgs_1girpi6 = objc.getClass(
-  "_julz8q_BlockArgs_xtuoz7",
-  () =>
-      ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(_class__BlockArgs_1girpi6_raw).cast(),
 );
 @ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(symbol: 'OBJC_CLASS_\$__julz8q_BlockArgs_bklti2')
 external ffi.Pointer<objc.ObjCObjectImpl> _class__BlockArgs_1hr4mm2_raw;
@@ -27937,12 +27939,6 @@ final _class__BlockArgs_2545du = objc.getClass(
   "_julz8q_BlockArgs_18v1jvf",
   () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(_class__BlockArgs_2545du_raw).cast(),
 );
-@ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(symbol: 'OBJC_CLASS_\$__julz8q_BlockArgs_bklti2')
-external ffi.Pointer<objc.ObjCObjectImpl> _class__BlockArgs_3l4bu0_raw;
-final _class__BlockArgs_3l4bu0 = objc.getClass(
-  "_julz8q_BlockArgs_bklti2",
-  () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(_class__BlockArgs_3l4bu0_raw).cast(),
-);
 @ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(symbol: 'OBJC_CLASS_\$__julz8q_BlockArgs_xtuoz7')
 external ffi.Pointer<objc.ObjCObjectImpl> _class__BlockArgs_6tydoo_raw;
 final _class__BlockArgs_6tydoo = objc.getClass(
@@ -27973,6 +27969,12 @@ final _class__BlockArgs_jwy7mm = objc.getClass(
   "_julz8q_BlockArgs_bklti2",
   () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(_class__BlockArgs_jwy7mm_raw).cast(),
 );
+@ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(symbol: 'OBJC_CLASS_\$__julz8q_BlockArgs_bklti2')
+external ffi.Pointer<objc.ObjCObjectImpl> _class__BlockArgs_lhyyu_raw;
+final _class__BlockArgs_lhyyu = objc.getClass(
+  "_julz8q_BlockArgs_bklti2",
+  () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(_class__BlockArgs_lhyyu_raw).cast(),
+);
 @ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(symbol: 'OBJC_CLASS_\$__julz8q_BlockArgs_xtuoz7')
 external ffi.Pointer<objc.ObjCObjectImpl> _class__BlockArgs_oimzbh_raw;
 final _class__BlockArgs_oimzbh = objc.getClass(
@@ -27984,6 +27986,12 @@ external ffi.Pointer<objc.ObjCObjectImpl> _class__BlockArgs_yul2nq_raw;
 final _class__BlockArgs_yul2nq = objc.getClass(
   "_julz8q_BlockArgs_bklti2",
   () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(_class__BlockArgs_yul2nq_raw).cast(),
+);
+@ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(symbol: 'OBJC_CLASS_\$__julz8q_BlockArgs_xtuoz7')
+external ffi.Pointer<objc.ObjCObjectImpl> _class__BlockArgs_zvjqdr_raw;
+final _class__BlockArgs_zvjqdr = objc.getClass(
+  "_julz8q_BlockArgs_xtuoz7",
+  () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(_class__BlockArgs_zvjqdr_raw).cast(),
 );
 final _objc_msgSend_11spmsz = objc.msgSendPointer
     .cast<

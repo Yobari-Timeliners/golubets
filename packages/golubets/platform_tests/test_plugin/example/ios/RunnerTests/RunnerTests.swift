@@ -41,12 +41,20 @@ struct RunnerTests {
   func echoStringFromProtocol() async throws {
     let api: FlutterApiFromProtocol = FlutterApiFromProtocol()
     let aString = "aString"
-    let res = try await api.echo(string: aString)
-    #expect(aString == res)
+    await confirmation { confirmed in
+      api.echo(string: aString) { response in
+        switch response {
+        case .success(let res):
+          #expect(aString == res)
+        case .failure(let error):
+          Issue.record("Failed with error: \(error)")
+        }
+        confirmed()
+      }
+    }
   }
 }
 
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/example/ios/RunnerTests/RunnerTests.swift
 class FlutterApiFromProtocol: FlutterSmallApiProtocol {
   func echo(
     string aStringArg: String,
@@ -60,14 +68,5 @@ class FlutterApiFromProtocol: FlutterSmallApiProtocol {
     completion: @escaping (Result<test_plugin.TestMessage, test_plugin.GolubetsError>) -> Void
   ) {
     completion(.success(msgArg))
-=======
-final class FlutterApiFromProtocol: FlutterSmallApiProtocol {
-  func echo(string aStringArg: String) async throws -> String {
-    return aStringArg
-  }
-
-  func echo(_ msgArg: test_plugin.TestMessage) async throws -> test_plugin.TestMessage {
-    return msgArg
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/example/ios/RunnerTests/RunnerTests.swift
   }
 }

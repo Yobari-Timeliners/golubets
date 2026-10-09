@@ -178,16 +178,12 @@ private class GolubetsApiImplementation: ExampleHostApi {
     return a + b
   }
 
-  func sendMessage(message: MessageData) async throws -> Bool {
+  func sendMessage(message: MessageData, completion: @escaping (Result<Bool, Error>) -> Void) {
     if message.code == Code.one {
-<<<<<<< HEAD:packages/golubets/example/README.md
       completion(.failure(GolubetsError(code: "code", message: "message", details: "details")))
       return
-=======
-      throw PigeonError(code: "code", message: "message", details: "details")
->>>>>>> filtered-upstream/main:packages/pigeon/example/README.md
     }
-    return true
+    completion(.success(true))
   }
 
   /// Unlike implementations on other platforms, this function does not throw any exceptions
@@ -222,11 +218,12 @@ private class PigeonApiImplementation : ExampleHostApi {
     return a + b
   }
 
-  override suspend fun sendMessage(message: MessageData): Boolean {
+  override fun sendMessage(message: MessageData, callback: (Result<Boolean>) -> Unit) {
     if (message.code == Code.ONE) {
-      throw FlutterError("code", "message", "details")
+      callback(Result.failure(FlutterError("code", "message", "details")))
+      return
     }
-    return true
+    callback(Result.success(true))
   }
 
   override suspend fun sendMessageModernAsync(message: MessageData): Boolean {
@@ -362,17 +359,12 @@ private class GolubetsFlutterApi {
     flutterAPI = MessageFlutterApi(binaryMessenger: binaryMessenger)
   }
 
-<<<<<<< HEAD:packages/golubets/example/README.md
   func callFlutterMethod(
     aString aStringArg: String?, completion: @escaping (Result<String, GolubetsError>) -> Void
   ) {
     flutterAPI.flutterMethod(aString: aStringArg) {
       completion($0)
     }
-=======
-  func callFlutterMethod(aString aStringArg: String?) async throws -> String {
-    return try await flutterAPI.flutterMethod(aString: aStringArg)
->>>>>>> filtered-upstream/main:packages/pigeon/example/README.md
   }
 }
 
@@ -389,8 +381,8 @@ private class PigeonFlutterApi(binding: FlutterPlugin.FlutterPluginBinding) {
     flutterApi = MessageFlutterApi(binding.binaryMessenger)
   }
 
-  suspend fun callFlutterMethod(aString: String): String {
-    return flutterApi!!.flutterMethod(aString)
+  fun callFlutterMethod(aString: String, callback: (Result<String>) -> Unit) {
+    flutterApi!!.flutterMethod(aString) { echo -> callback(echo) }
   }
 }
 ```

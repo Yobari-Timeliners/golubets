@@ -1,10 +1,10 @@
-# Skill: Migrating Flutter Plugins to Pigeon Native Interop (FFI & JNI)
+# Skill: Migrating Flutter Plugins to Golubets Native Interop (FFI & JNI)
 
 ## Overview
-This skill guides AI agents and developers through migrating an existing Flutter plugin package (containing Swift for iOS/macOS and/or Kotlin for Android) from platform-channel-based Pigeon code to direct **Native Interop** (`useFfi: true` for Swift, `useJni: true` for Kotlin).
+This skill guides AI agents and developers through migrating an existing Flutter plugin package (containing Swift for iOS/macOS and/or Kotlin for Android) from platform-channel-based Golubets code to direct **Native Interop** (`useFfi: true` for Swift, `useJni: true` for Kotlin).
 
 > [!IMPORTANT]
-> **Golden Rule for Generated Code**: Generated code files (`.g.dart`, `.g.swift`, `.g.kt`, `.g.jni.dart`, `.g.ffi.dart`) should be produced automatically by Pigeon, FFIgen, or JNIgen without manual edits. If you encounter a code generation error or bug that prevents compilation and cannot be resolved through configuration options:
+> **Golden Rule for Generated Code**: Generated code files (`.g.dart`, `.g.swift`, `.g.kt`, `.g.jni.dart`, `.g.ffi.dart`) should be produced automatically by Golubets, FFIgen, or JNIgen without manual edits. If you encounter a code generation error or bug that prevents compilation and cannot be resolved through configuration options:
 > 1. File a detailed bug report describing the generator issue.
 > 2. **Do not modify generated files without explicit user permission**. You may ask the user if they want you to temporarily alter the generated code to unblock testing, but you must inform them that re-running code generation will overwrite these manual edits.
 
@@ -15,34 +15,34 @@ This skill guides AI agents and developers through migrating an existing Flutter
 Add the required runtime dependencies to `dependencies` and code generators to `dev_dependencies` (in both the plugin and its `example/` app, if applicable). Using `flutter pub add` ensures runtime packages resolve to the latest compatible versions:
 
 ```bash
-# Add Pigeon (if not already added):
-flutter pub add dev:pigeon
+# Add Golubets (if not already added):
+flutter pub add dev:golubets
 
 # For iOS/macOS Swift FFI:
 flutter pub add ffi
 flutter pub add objective_c
-# Pigeon requires this specific version for compatibility with its generated FFIgen configuration:
+# Golubets requires this specific version for compatibility with its generated FFIgen configuration:
 flutter pub add dev:ffigen@21.0.0
 
 # For Android Kotlin JNI:
 flutter pub add jni
-# Pigeon requires this specific version for compatibility with its generated JNIgen configuration:
+# Golubets requires this specific version for compatibility with its generated JNIgen configuration:
 flutter pub add dev:jnigen@1.0.0
 ```
 
 ---
 
-## 2. Configure `@ConfigurePigeon` Options
+## 2. Configure `@ConfigureGolubets` Options
 
-In your Pigeon Dart definition file (`pigeons/<messages_file>.dart`), update `@ConfigurePigeon` to enable native interop for Swift and Kotlin. 
+In your Golubets Dart definition file (`pigeons/<messages_file>.dart`), update `@ConfigureGolubets` to enable native interop for Swift and Kotlin. 
 
 > [!NOTE]
 > Keep your package's existing file paths and options (`input`, `dartOut`, `swiftOut`, `kotlinOut`, `package`, `fileSpecificClassNameComponent`, `copyrightHeader`) unchanged. You only need to enable `useFfi: true`, `useJni: true`, and configure `appDirectory`.
 
 ```dart
 // Example configuration (keep existing paths and options, add native interop settings):
-@ConfigurePigeon(
-  PigeonOptions(
+@ConfigureGolubets(
+  GolubetsOptions(
     input: 'pigeons/messages.dart', // Your existing input path
     dartOut: 'lib/src/messages.g.dart', // Your existing Dart output path
     swiftOut: 'darwin/my_plugin/Sources/my_plugin/messages.g.swift', // Your existing Swift output path
@@ -68,9 +68,9 @@ In your Pigeon Dart definition file (`pigeons/<messages_file>.dart`), update `@C
 
 > [!WARNING]
 > **Threading, Isolates & TaskQueue**: Native Interop calls execute directly on the calling isolate's OS thread (the main UI thread when called from the root isolate, unless the application developer has opted out of thread merging, which [is still possible on macOS](https://github.com/flutter/flutter/issues/181874)).
-> - **`@TaskQueue` is unsupported**: Because calls do not use Flutter Engine message queues, `@TaskQueue` annotations must be removed from the Pigeon file.
+> - **`@TaskQueue` is unsupported**: Because calls do not use Flutter Engine message queues, `@TaskQueue` annotations must be removed from the Golubets file.
 > - **Migrating background work**:
->   - *Option A (Native Concurrency)*: Replace `@TaskQueue` with `@async` in the Pigeon definition file, and implement the generated Swift `async` or Kotlin `suspend` function on a background queue or coroutine dispatcher.
+>   - *Option A (Native Concurrency)*: Replace `@TaskQueue` with `@async` in the Golubets definition file, and implement the generated Swift `async` or Kotlin `suspend` function on a background queue or coroutine dispatcher.
 >   - *Option B (Dart Isolates)*: Keep the method synchronous and call it from a worker isolate using `await Isolate.run(() => api.doSomething())`. Unlike platform channels, Native Interop Host API calls work out of the box in background isolates without `BackgroundIsolateBinaryMessenger`. Callers must ensure the isolate stays alive while there are pending asynchronous calls, as attempting to execute a callback after the isolate has terminated will cause a crash.
 
 ---
@@ -125,12 +125,12 @@ When implementing Native Interop host APIs directly in an application target (su
 2. **Native Host Registration Location**:
    - **iOS**: Register in `AppDelegate.swift` inside `didInitializeImplicitFlutterEngine`:
      ```swift
-     let api = PigeonApiImplementation()
+     let api = GolubetsApiImplementation()
      MyApiSetup.register(api: api)
      ```
    - **macOS**: Register in `MainFlutterWindow.swift` inside `awakeFromNib()`:
      ```swift
-     let api = PigeonApiImplementation()
+     let api = GolubetsApiImplementation()
      MyApiSetup.register(api: api)
      ```
    *Note: Calling `MyApiSetup.register(api: api)` in native code also prevents the Xcode linker (`-dead_strip`) from stripping the setup class from the compiled binary.*
@@ -164,7 +164,7 @@ When implementing Native Interop host APIs directly in an application target (su
    ```
 
 ### 4.2 Kotlin Implementation (`<PluginName>.kt`)
-1. **Abstract Class Constructors**: Add `()` to parent Pigeon class instantiations:
+1. **Abstract Class Constructors**: Add `()` to parent Golubets class instantiations:
    ```kotlin
    // BEFORE: class MyPlugin : FlutterPlugin, MyApi
    // AFTER:  class MyPlugin : FlutterPlugin, MyApi()
@@ -220,13 +220,13 @@ For `@FlutterApi()` interfaces (where host native code calls into Dart):
 
 ## 5. Code Generation, Formatting, and Validation
 
-1. **Run Pigeon Generator**:
+1. **Run Golubets Generator**:
    ```bash
-   dart run pigeon --input pigeons/messages.dart
+   dart run golubets --input pigeons/messages.dart
    ```
 2. **Run JNIgen Config Script** (if JNI is enabled):
    ```bash
-   dart run example/tool/pigeon/jnigen_config.dart
+   dart run example/tool/golubets/jnigen_config.dart
    ```
 3. **Format Code**:
    ```bash
@@ -251,12 +251,12 @@ For `@FlutterApi()` interfaces (where host native code calls into Dart):
 Host API methods executed via FFI/JNI run directly on the calling thread without message loop scheduling. Ensure native operations intended to be synchronous are thread-safe and do not perform long-running blocking I/O on the main UI thread.
 
 ### 6.2 Unupdated Native Code or Uncompiled Bytecode (JNI)
-JNIgen parses compiled `.class` bytecode files. If you change a Pigeon schema and run Pigeon before updating or compiling your native Kotlin/Java implementation, JNIgen will fail to parse class signatures.
+JNIgen parses compiled `.class` bytecode files. If you change a Golubets schema and run Golubets before updating or compiling your native Kotlin/Java implementation, JNIgen will fail to parse class signatures.
 - **Solution**: Compile your native code first to produce up-to-date `.class` files:
   ```bash
   cd android && ./gradlew compileReleaseKotlin
   ```
-  Then re-run `dart run pigeon --input pigeons/<messages_file>.dart`.
+  Then re-run `dart run golubets --input pigeons/<messages_file>.dart`.
 
 ### 6.3 Missing Class Files or Non-Standard Build Directory (JNI)
 For standalone Flutter applications, JNIgen defaults to searching `build/app/tmp/kotlin-classes/release`. If your build configuration uses a different output path (or hasn't been built yet), JNIgen will fail.
@@ -269,13 +269,13 @@ For standalone Flutter applications, JNIgen defaults to searching `build/app/tmp
   ```
 
 ### 6.4 Direct Interop Config Script Execution (Debugging)
-Pigeon automatically generates input-specific config scripts under `tool/pigeon/` named `<input_name>_jnigen_config.dart` and `<input_name>_ffigen_config.dart` (for example, `messages_jnigen_config.dart` for `pigeons/messages.dart`). If `dart run pigeon` fails during automated JNIgen or FFIgen execution, you can execute these generated configuration scripts directly to view full verbose log output:
+Golubets automatically generates input-specific config scripts under `tool/golubets/` named `<input_name>_jnigen_config.dart` and `<input_name>_ffigen_config.dart` (for example, `messages_jnigen_config.dart` for `pigeons/messages.dart`). If `dart run golubets` fails during automated JNIgen or FFIgen execution, you can execute these generated configuration scripts directly to view full verbose log output:
 ```bash
 # Debug JNIgen (Android):
-dart run tool/pigeon/<input_name>_jnigen_config.dart
+dart run tool/golubets/<input_name>_jnigen_config.dart
 
 # Debug FFIgen (iOS/macOS):
-dart run tool/pigeon/<input_name>_ffigen_config.dart
+dart run tool/golubets/<input_name>_ffigen_config.dart
 ```
 
 ### 6.5 Environment Prerequisites & Tooling Versions

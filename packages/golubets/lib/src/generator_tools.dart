@@ -8,11 +8,8 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:mirrors';
 
-<<<<<<< HEAD:packages/golubets/lib/src/generator_tools.dart
 import 'package:collection/collection.dart';
-=======
 import 'package:path/path.dart' as path;
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/generator_tools.dart
 import 'package:yaml/yaml.dart' as yaml;
 
 import 'ast.dart';
@@ -21,18 +18,14 @@ import 'generator.dart';
 /// The current version of golubets.
 ///
 /// This must match the version in pubspec.yaml.
-<<<<<<< HEAD:packages/golubets/lib/src/generator_tools.dart
-const String golubetsVersion = '2.0.0';
-=======
-const String pigeonVersion = '29.0.4';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/generator_tools.dart
+const String golubetsVersion = '2.1.0';
 
 /// Default plugin package name.
 const String defaultPluginPackageName = 'dev.bayori.golubets';
 
 /// The default instance name string for native interop generated APIs.
 const String defaultNativeInteropInstanceName =
-    'PigeonDefaultClassName32uh4ui3lh445uh4h3l2l455g4y34u';
+    'GolubetsDefaultClassName32uh4ui3lh445uh4h3l2l455g4y34u';
 
 /// Converts any path containing Windows backslashes into a POSIX-style path.
 String posixPath(String inputPath) => inputPath.replaceAll(r'\', '/');
@@ -56,17 +49,17 @@ String getJnigenConfigFileName([String? inputPath]) {
 }
 
 /// Default relative path for generated FFIgen config files.
-final String ffigenConfigPath = path.posix.join('tool', 'pigeon', getFfigenConfigFileName());
+final String ffigenConfigPath = path.posix.join('tool', 'golubets', getFfigenConfigFileName());
 
 /// Default relative path for generated JNIgen config files.
-final String jnigenConfigPath = path.posix.join('tool', 'pigeon', getJnigenConfigFileName());
+final String jnigenConfigPath = path.posix.join('tool', 'golubets', getJnigenConfigFileName());
 
 /// Returns the path to the FFIgen config file in [appDirectory] and optional [inputPath].
 String getFfigenConfigPath(String appDirectory, [String? inputPath]) {
   return path.posix.join(
     posixPath(appDirectory),
     'tool',
-    'pigeon',
+    'golubets',
     getFfigenConfigFileName(inputPath),
   );
 }
@@ -76,7 +69,7 @@ String getJnigenConfigPath(String appDirectory, [String? inputPath]) {
   return path.posix.join(
     posixPath(appDirectory),
     'tool',
-    'pigeon',
+    'golubets',
     getJnigenConfigFileName(inputPath),
   );
 }
@@ -477,14 +470,14 @@ void addLines(Indent indent, Iterable<String> lines, {String? linePrefix}) {
 ///
 /// In other words, whenever there is a conflict over the value of a key path,
 /// [modification]'s value for that key path is selected.
-Map<String, Object> mergePigeonMaps(Map<String, Object> base, Map<String, Object> modification) {
+Map<String, Object> mergeMaps(Map<String, Object> base, Map<String, Object> modification) {
   final result = <String, Object>{};
   for (final MapEntry<String, Object> entry in modification.entries) {
     if (base.containsKey(entry.key)) {
       final Object entryValue = entry.value;
       if (entryValue is Map<String, Object>) {
         assert(base[entry.key] is Map<String, Object>);
-        result[entry.key] = mergePigeonMaps((base[entry.key] as Map<String, Object>?)!, entryValue);
+        result[entry.key] = mergeMaps((base[entry.key] as Map<String, Object>?)!, entryValue);
       } else {
         result[entry.key] = entry.value;
       }
@@ -1212,7 +1205,6 @@ bool isCollectionType(TypeDeclaration type) {
       (type.baseName.contains('List') || type.baseName == 'Map');
 }
 
-<<<<<<< HEAD:packages/golubets/lib/src/generator_tools.dart
 /// String manipulation extensions.
 extension StringExtension on String {
   /// Converts the first letter of the string to lowercase.
@@ -1271,7 +1263,6 @@ extension ClassExtension on Class {
   }
 }
 
-=======
 /// Whether the type is a primitive scalar type (bool, int, or double).
 bool isPrimitiveType(TypeDeclaration type) {
   return type.baseName == 'bool' || type.baseName == 'int' || type.baseName == 'double';
@@ -1335,7 +1326,6 @@ int _calculateGenericScore(TypeDeclaration type, int depth) {
 const int Function(TypeDeclaration, TypeDeclaration) sortByObjectCount =
     compareTypeDeclarationGenericness;
 
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/generator_tools.dart
 /// Escapes special characters in a string for use in double-quoted string literals.
 String escapeStringDoubleQuotes(String value) {
   return value

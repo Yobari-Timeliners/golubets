@@ -28,8 +28,17 @@ struct NullableReturnsTests {
     binaryMessenger.defaultReturn = 99
     let api = NullableArgFlutterApi(binaryMessenger: binaryMessenger)
 
-    let res = try await api.doit(x: nil)
-    #expect(res == 99)
+    await confirmation { confirmed in
+      api.doit(x: nil) { result in
+        switch result {
+        case .success(let res):
+          #expect(res == 99)
+          confirmed()
+        case .failure(let error):
+          Issue.record("Failed with error: \(error)")
+        }
+      }
+    }
   }
 
   @Test
@@ -59,11 +68,16 @@ struct NullableReturnsTests {
     binaryMessenger.result = NSNull()
     let api = FlutterIntegrationCoreApi(binaryMessenger: binaryMessenger)
 
-    do {
-      _ = try await api.sendMultipleNullableTypes(aBool: nil, anInt: nil, aString: nil)
-      Issue.record("Expected a null-error but the call succeeded.")
-    } catch let error as PigeonError {
-      #expect(error.code == "null-error")
+    await confirmation { confirmed in
+      api.sendMultipleNullableTypes(aBool: nil, anInt: nil, aString: nil) { result in
+        switch result {
+        case .success:
+          Issue.record("Expected a null-error but the call succeeded.")
+        case .failure(let error):
+          #expect(error.code == "null-error")
+          confirmed()
+        }
+      }
     }
   }
 }

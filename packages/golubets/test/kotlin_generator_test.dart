@@ -2,14 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-<<<<<<< HEAD:packages/golubets/test/kotlin_generator_test.dart
 import 'package:golubets/src/ast.dart';
 import 'package:golubets/src/kotlin/kotlin_generator.dart';
-=======
-import 'package:pigeon/pigeon.dart' show TaskQueueType;
-import 'package:pigeon/src/ast.dart';
-import 'package:pigeon/src/kotlin/kotlin_generator.dart';
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin_generator_test.dart
 import 'package:test/test.dart';
 
 const String DEFAULT_PACKAGE_NAME = 'test_package';
@@ -507,8 +501,8 @@ void main() {
     const generator = KotlinGenerator();
     generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-    expect(code, contains('suspend fun doSomething(arg0Arg: Input)'));
-    expect(code, contains('continuation.resume(Unit)'));
+    expect(code, contains('callback: (Result<Unit>) -> Unit'));
+    expect(code, contains('callback(Result.success(Unit))'));
     // Lines should not end in semicolons.
     expect(code, isNot(contains(RegExp(r';\n'))));
   });
@@ -593,7 +587,7 @@ void main() {
     const generator = KotlinGenerator();
     generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-    expect(code, contains('suspend fun doSomething(): Output'));
+    expect(code, contains('fun doSomething(callback: (Result<Output>) -> Unit)'));
     expect(code, contains('channel.send(null)'));
   });
 
@@ -741,7 +735,6 @@ void main() {
     generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('interface Api'));
-<<<<<<< HEAD:packages/golubets/test/kotlin_generator_test.dart
     expect(code, contains('api.doSomething(argArg) {'));
     expect(code, contains('reply.reply(GolubetsUtils.wrapResult(data))'));
   });
@@ -872,11 +865,6 @@ void main() {
     expect(code, contains('coroutineScope: CoroutineScope'));
     expect(code, contains('api.doSomething(argArg)'));
     expect(code, contains('reply.reply(wrapped)'));
-=======
-    expect(code, contains('suspend fun doSomething(arg: Input): Output'));
-    expect(code, contains('CoroutineScope(Dispatchers.Main).launch {'));
-    expect(code, contains('listOf(api.doSomething(argArg))'));
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin_generator_test.dart
   });
 
   test('gen one async Flutter Api', () {
@@ -936,7 +924,7 @@ void main() {
     generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('class Api'));
-    expect(code, matches('suspend fun doSomething.*Input.*: Output'));
+    expect(code, matches('fun doSomething.*Input.*callback.*Output.*Unit'));
   });
 
   test('gen one enum class', () {
@@ -1209,9 +1197,9 @@ void main() {
     const generator = KotlinGenerator();
     generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-    expect(code, contains('suspend fun doit()'));
+    expect(code, contains('fun doit(callback: (Result<List<Long?>>) -> Unit)'));
     expect(code, contains('val output = it[0] as List<Long?>'));
-    expect(code, contains('continuation.resume(output)'));
+    expect(code, contains('callback(Result.success(output))'));
   });
 
   test('generic class with single type parameter', () {
@@ -1504,8 +1492,8 @@ void main() {
     generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
     expect(code, contains('val channel = BasicMessageChannel'));
-    expect(code, contains('continuation.resume(output)'));
-    expect(code, contains('suspend fun add(xArg: Long, yArg: Long)'));
+    expect(code, contains('callback(Result.success(output))'));
+    expect(code, contains('fun add(xArg: Long, yArg: Long, callback: (Result<Long>) -> Unit)'));
     expect(code, contains('channel.send(listOf(xArg, yArg)) {'));
   });
 
@@ -1559,7 +1547,7 @@ void main() {
     const generator = KotlinGenerator();
     generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-    expect(code, contains('suspend fun doit(): Long?'));
+    expect(code, contains('fun doit(callback: (Result<Long?>) -> Unit'));
   });
 
   test('nullable argument host', () {
@@ -1621,7 +1609,7 @@ void main() {
     const generator = KotlinGenerator();
     generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-    expect(code, contains('suspend fun doit(fooArg: Long?)'));
+    expect(code, contains('fun doit(fooArg: Long?, callback: (Result<Unit>) -> Unit)'));
   });
 
   test('nonnull fields', () {
@@ -1867,11 +1855,7 @@ void main() {
     );
     expect(
       code,
-<<<<<<< HEAD:packages/golubets/test/kotlin_generator_test.dart
       contains('callback(Result.failure(GolubetsUtils.createConnectionError(channelName)))'),
-=======
-      contains('continuation.resumeWithException(PigeonUtils.createConnectionError(channelName))'),
->>>>>>> filtered-upstream/main:packages/pigeon/test/kotlin_generator_test.dart
     );
   });
 
@@ -3138,7 +3122,7 @@ void main() {
     expect(code, contains('registeredFlutterApi.remove(name)'));
   });
 
-  test('asyncCallback emits callback-based host api method', () {
+  test('callback async emits callback-based host api method', () {
     final root = Root(
       apis: <Api>[
         AstHostApi(
@@ -3148,8 +3132,7 @@ void main() {
               name: 'doit',
               location: ApiLocation.host,
               returnType: const TypeDeclaration(baseName: 'int', isNullable: true),
-              isAsynchronous: true,
-              isAsynchronousCallback: true,
+              asynchronousType: AsynchronousType.callback,
               parameters: <Parameter>[],
             ),
           ],
@@ -3166,19 +3149,26 @@ void main() {
     expect(code, contains('fun doit(callback: (Result<Long?>) -> Unit'));
   });
 
-  test('async method with TaskQueue generates CoroutineScope(Dispatchers.Unconfined)', () {
+  test('await async flutter api method generates suspend fun', () {
     final root = Root(
       apis: <Api>[
-        AstHostApi(
+        AstFlutterApi(
           name: 'Api',
           methods: <Method>[
             Method(
-              name: 'doit',
-              location: ApiLocation.host,
-              returnType: const TypeDeclaration(baseName: 'int', isNullable: true),
-              isAsynchronous: true,
-              taskQueueType: TaskQueueType.serialBackgroundThread,
+              name: 'awaitMethod',
+              location: ApiLocation.flutter,
               parameters: <Parameter>[],
+              returnType: const TypeDeclaration(baseName: 'int', isNullable: false),
+              asynchronousType: const AwaitAsynchronous(
+                swiftOptions: SwiftAwaitAsynchronousOptions(throws: true),
+              ),
+            ),
+            Method(
+              name: 'callbackMethod',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[],
+              returnType: const TypeDeclaration.voidDeclaration(),
             ),
           ],
         ),
@@ -3191,8 +3181,8 @@ void main() {
     const generator = KotlinGenerator();
     generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-    expect(code, contains('suspend fun doit(): Long?'));
-    expect(code, contains('CoroutineScope(Dispatchers.Unconfined).launch'));
-    expect(code, isNot(contains('CoroutineScope(Dispatchers.Main).launch')));
+    expect(code, contains('suspend fun awaitMethod(): Long'));
+    expect(code, contains('import kotlinx.coroutines.suspendCancellableCoroutine'));
+    expect(code, contains('fun callbackMethod(callback: (Result<Unit>) -> Unit)'));
   });
 }

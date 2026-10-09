@@ -5,7 +5,7 @@
 import Flutter
 import Foundation
 
-final class EchoBinaryMessenger: NSObject, FlutterBinaryMessenger, @unchecked Sendable {
+class EchoBinaryMessenger: NSObject, FlutterBinaryMessenger {
   let codec: FlutterMessageCodec
   private(set) var count = 0
   var defaultReturn: Any?

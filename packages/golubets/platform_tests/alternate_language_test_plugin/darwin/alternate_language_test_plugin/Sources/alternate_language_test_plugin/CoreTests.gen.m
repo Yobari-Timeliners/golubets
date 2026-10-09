@@ -4678,7 +4678,7 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
     FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
            initWithName:[NSString stringWithFormat:
                                       @"%@%@",
-                                      @"dev.flutter.pigeon.pigeon_integration_tests."
+                                      @"dev.bayori.golubets.golubets_integration_tests."
                                       @"HostIntegrationCoreApi.asyncTaskQueueIsBackgroundThread",
                                       messageChannelSuffix]
         binaryMessenger:binaryMessenger
@@ -6124,7 +6124,7 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
     FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
            initWithName:[NSString
                             stringWithFormat:@"%@%@",
-                                             @"dev.flutter.pigeon.pigeon_integration_tests."
+                                             @"dev.bayori.golubets.golubets_integration_tests."
                                              @"HostIntegrationCoreApi.callFlutterCallbackNoop",
                                              messageChannelSuffix]
         binaryMessenger:binaryMessenger
@@ -6147,7 +6147,7 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
     FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
            initWithName:
                [NSString stringWithFormat:@"%@%@",
-                                          @"dev.flutter.pigeon.pigeon_integration_tests."
+                                          @"dev.bayori.golubets.golubets_integration_tests."
                                           @"HostIntegrationCoreApi.callFlutterCallbackEchoString",
                                           messageChannelSuffix]
         binaryMessenger:binaryMessenger
@@ -6174,7 +6174,7 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
     FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
            initWithName:
                [NSString stringWithFormat:@"%@%@",
-                                          @"dev.flutter.pigeon.pigeon_integration_tests."
+                                          @"dev.bayori.golubets.golubets_integration_tests."
                                           @"HostIntegrationCoreApi.callFlutterCallbackThrowError",
                                           messageChannelSuffix]
         binaryMessenger:binaryMessenger
@@ -6199,7 +6199,7 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
            initWithName:
                [NSString
                    stringWithFormat:@"%@%@",
-                                    @"dev.flutter.pigeon.pigeon_integration_tests."
+                                    @"dev.bayori.golubets.golubets_integration_tests."
                                     @"HostIntegrationCoreApi.callFlutterCallbackThrowErrorFromVoid",
                                     messageChannelSuffix]
         binaryMessenger:binaryMessenger
@@ -6223,7 +6223,7 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
     FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
            initWithName:[NSString stringWithFormat:
                                       @"%@%@",
-                                      @"dev.flutter.pigeon.pigeon_integration_tests."
+                                      @"dev.bayori.golubets.golubets_integration_tests."
                                       @"HostIntegrationCoreApi.callFlutterIsAsyncFlutterApiOnRoot",
                                       messageChannelSuffix]
         binaryMessenger:binaryMessenger
@@ -6268,9 +6268,9 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
 }
 - (void)noopWithCompletion:(void (^)(FlutterError *_Nullable))completion {
   NSString *channelName = [NSString
-      stringWithFormat:@"%@%@",
-                       @"dev.flutter.pigeon.pigeon_integration_tests.FlutterCallbackCoreApi.noop",
-                       _messageChannelSuffix];
+      stringWithFormat:
+          @"%@%@", @"dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.noop",
+          _messageChannelSuffix];
   FlutterBasicMessageChannel *channel =
       [FlutterBasicMessageChannel messageChannelWithName:channelName
                                          binaryMessenger:self.binaryMessenger
@@ -6294,7 +6294,8 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
         completion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion {
   NSString *channelName = [NSString
       stringWithFormat:
-          @"%@%@", @"dev.flutter.pigeon.pigeon_integration_tests.FlutterCallbackCoreApi.echoString",
+          @"%@%@",
+          @"dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.echoString",
           _messageChannelSuffix];
   FlutterBasicMessageChannel *channel =
       [FlutterBasicMessageChannel messageChannelWithName:channelName
@@ -6319,7 +6320,8 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
 - (void)throwErrorWithCompletion:(void (^)(id _Nullable, FlutterError *_Nullable))completion {
   NSString *channelName = [NSString
       stringWithFormat:
-          @"%@%@", @"dev.flutter.pigeon.pigeon_integration_tests.FlutterCallbackCoreApi.throwError",
+          @"%@%@",
+          @"dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.throwError",
           _messageChannelSuffix];
   FlutterBasicMessageChannel *channel =
       [FlutterBasicMessageChannel messageChannelWithName:channelName
@@ -6342,11 +6344,11 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
                  }];
 }
 - (void)throwErrorFromVoidWithCompletion:(void (^)(FlutterError *_Nullable))completion {
-  NSString *channelName = [NSString
-      stringWithFormat:
-          @"%@%@",
-          @"dev.flutter.pigeon.pigeon_integration_tests.FlutterCallbackCoreApi.throwErrorFromVoid",
-          _messageChannelSuffix];
+  NSString *channelName =
+      [NSString stringWithFormat:@"%@%@",
+                                 @"dev.bayori.golubets.golubets_integration_tests."
+                                 @"FlutterCallbackCoreApi.throwErrorFromVoid",
+                                 _messageChannelSuffix];
   FlutterBasicMessageChannel *channel =
       [FlutterBasicMessageChannel messageChannelWithName:channelName
                                          binaryMessenger:self.binaryMessenger
@@ -7864,7 +7866,7 @@ void SetUpFLTHostIntegrationCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryM
                                                         FlutterError *_Nullable))completion {
   NSString *channelName =
       [NSString stringWithFormat:@"%@%@",
-                                 @"dev.flutter.pigeon.pigeon_integration_tests."
+                                 @"dev.bayori.golubets.golubets_integration_tests."
                                  @"FlutterIntegrationCoreApi.isAsyncFlutterApiOnRoot",
                                  _messageChannelSuffix];
   FlutterBasicMessageChannel *channel =
@@ -7908,8 +7910,8 @@ void SetUpFLTHostCallbackCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryMess
   {
     FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
            initWithName:[NSString stringWithFormat:@"%@%@",
-                                                   @"dev.flutter.pigeon.pigeon_integration_tests."
-                                                   @"HostCallbackCoreApi.noop",
+                                                   @"dev.bayori.golubets.golubets_integration_"
+                                                   @"tests.HostCallbackCoreApi.noop",
                                                    messageChannelSuffix]
         binaryMessenger:binaryMessenger
                   codec:FLTGetCoreTestsCodec()];
@@ -7930,8 +7932,8 @@ void SetUpFLTHostCallbackCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryMess
   {
     FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
            initWithName:[NSString stringWithFormat:@"%@%@",
-                                                   @"dev.flutter.pigeon.pigeon_integration_tests."
-                                                   @"HostCallbackCoreApi.echoString",
+                                                   @"dev.bayori.golubets.golubets_integration_"
+                                                   @"tests.HostCallbackCoreApi.echoString",
                                                    messageChannelSuffix]
         binaryMessenger:binaryMessenger
                   codec:FLTGetCoreTestsCodec()];
@@ -7955,8 +7957,8 @@ void SetUpFLTHostCallbackCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryMess
   {
     FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
            initWithName:[NSString stringWithFormat:@"%@%@",
-                                                   @"dev.flutter.pigeon.pigeon_integration_tests."
-                                                   @"HostCallbackCoreApi.echoAllTypes",
+                                                   @"dev.bayori.golubets.golubets_integration_"
+                                                   @"tests.HostCallbackCoreApi.echoAllTypes",
                                                    messageChannelSuffix]
         binaryMessenger:binaryMessenger
                   codec:FLTGetCoreTestsCodec()];
@@ -7980,8 +7982,8 @@ void SetUpFLTHostCallbackCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryMess
   {
     FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
            initWithName:[NSString stringWithFormat:@"%@%@",
-                                                   @"dev.flutter.pigeon.pigeon_integration_tests."
-                                                   @"HostCallbackCoreApi.echoNullableString",
+                                                   @"dev.bayori.golubets.golubets_integration_"
+                                                   @"tests.HostCallbackCoreApi.echoNullableString",
                                                    messageChannelSuffix]
         binaryMessenger:binaryMessenger
                   codec:FLTGetCoreTestsCodec()];
@@ -8005,8 +8007,8 @@ void SetUpFLTHostCallbackCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryMess
   {
     FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
            initWithName:[NSString stringWithFormat:@"%@%@",
-                                                   @"dev.flutter.pigeon.pigeon_integration_tests."
-                                                   @"HostCallbackCoreApi.throwError",
+                                                   @"dev.bayori.golubets.golubets_integration_"
+                                                   @"tests.HostCallbackCoreApi.throwError",
                                                    messageChannelSuffix]
         binaryMessenger:binaryMessenger
                   codec:FLTGetCoreTestsCodec()];
@@ -8027,8 +8029,8 @@ void SetUpFLTHostCallbackCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryMess
   {
     FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
            initWithName:[NSString stringWithFormat:@"%@%@",
-                                                   @"dev.flutter.pigeon.pigeon_integration_tests."
-                                                   @"HostCallbackCoreApi.throwErrorFromVoid",
+                                                   @"dev.bayori.golubets.golubets_integration_"
+                                                   @"tests.HostCallbackCoreApi.throwErrorFromVoid",
                                                    messageChannelSuffix]
         binaryMessenger:binaryMessenger
                   codec:FLTGetCoreTestsCodec()];
@@ -8050,7 +8052,7 @@ void SetUpFLTHostCallbackCoreApiWithSuffix(id<FlutterBinaryMessenger> binaryMess
     FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
            initWithName:[NSString
                             stringWithFormat:@"%@%@",
-                                             @"dev.flutter.pigeon.pigeon_integration_tests."
+                                             @"dev.bayori.golubets.golubets_integration_tests."
                                              @"HostCallbackCoreApi.taskQueueIsBackgroundThread",
                                              messageChannelSuffix]
         binaryMessenger:binaryMessenger

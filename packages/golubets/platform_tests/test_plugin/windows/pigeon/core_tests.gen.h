@@ -955,7 +955,9 @@ class ImmutableAllTypes {
   ::flutter::EncodableList ToEncodableList() const;
   friend class AllTypesWithDefaults;
   friend class HostIntegrationCoreApi;
+  friend class FlutterCallbackCoreApi;
   friend class FlutterIntegrationCoreApi;
+  friend class HostCallbackCoreApi;
   friend class HostTrivialApi;
   friend class HostSmallApi;
   friend class FlutterSmallApi;
@@ -1111,7 +1113,9 @@ class AllTypesWithDefaults {
       const ::flutter::EncodableList& list);
   ::flutter::EncodableList ToEncodableList() const;
   friend class HostIntegrationCoreApi;
+  friend class FlutterCallbackCoreApi;
   friend class FlutterIntegrationCoreApi;
+  friend class HostCallbackCoreApi;
   friend class HostTrivialApi;
   friend class HostSmallApi;
   friend class FlutterSmallApi;
@@ -1845,7 +1849,7 @@ class HostIntegrationCoreApi {
 };
 // A Flutter API using callback-based asynchronous methods (@asyncCallback).
 //
-// Generated class from Pigeon that represents Flutter messages that can be
+// Generated class from Golubets that represents Flutter messages that can be
 // called from C++.
 class FlutterCallbackCoreApi {
  public:
@@ -2136,7 +2140,7 @@ class FlutterIntegrationCoreApi {
 
 // A Host API using callback-based asynchronous methods (@asyncCallback).
 //
-// Generated interface from Pigeon that represents a handler of messages from
+// Generated interface from Golubets that represents a handler of messages from
 // Flutter.
 class HostCallbackCoreApi {
  public:

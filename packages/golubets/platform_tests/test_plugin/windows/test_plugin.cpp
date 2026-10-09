@@ -72,30 +72,31 @@ void TestPlugin::RegisterWithRegistrar(
 
 void TestPlugin::Noop(
     std::function<
-        void(std::optional<core_tests_pigeontest::FlutterError> reply)>
+        void(std::optional<core_tests_golubetstest::FlutterError> reply)>
         result) {
   result(std::nullopt);
 }
 
 void TestPlugin::EchoString(
     const std::string& a_string,
-    std::function<void(core_tests_pigeontest::ErrorOr<std::string> reply)>
+    std::function<void(core_tests_golubetstest::ErrorOr<std::string> reply)>
         result) {
   result(a_string);
 }
 
 void TestPlugin::EchoAllTypes(
-    const core_tests_pigeontest::AllTypes& everything,
-    std::function<void(
-        core_tests_pigeontest::ErrorOr<core_tests_pigeontest::AllTypes> reply)>
+    const core_tests_golubetstest::AllTypes& everything,
+    std::function<
+        void(core_tests_golubetstest::ErrorOr<core_tests_golubetstest::AllTypes>
+                 reply)>
         result) {
   result(everything);
 }
 
 void TestPlugin::EchoNullableString(
     const std::string* a_string,
-    std::function<
-        void(core_tests_pigeontest::ErrorOr<std::optional<std::string>> reply)>
+    std::function<void(
+        core_tests_golubetstest::ErrorOr<std::optional<std::string>> reply)>
         result) {
   if (a_string) {
     result(std::optional<std::string>(*a_string));
@@ -105,24 +106,24 @@ void TestPlugin::EchoNullableString(
 }
 
 void TestPlugin::ThrowError(
-    std::function<void(
-        core_tests_pigeontest::ErrorOr<std::optional<::flutter::EncodableValue>>
-            reply)>
+    std::function<void(core_tests_golubetstest::ErrorOr<
+                       std::optional<::flutter::EncodableValue>>
+                           reply)>
         result) {
-  result(core_tests_pigeontest::FlutterError(
+  result(core_tests_golubetstest::FlutterError(
       "code", "message", flutter::EncodableValue("details")));
 }
 
 void TestPlugin::ThrowErrorFromVoid(
     std::function<
-        void(std::optional<core_tests_pigeontest::FlutterError> reply)>
+        void(std::optional<core_tests_golubetstest::FlutterError> reply)>
         result) {
-  result(core_tests_pigeontest::FlutterError(
+  result(core_tests_golubetstest::FlutterError(
       "code", "message", flutter::EncodableValue("details")));
 }
 
 void TestPlugin::TaskQueueIsBackgroundThread(
-    std::function<void(core_tests_pigeontest::ErrorOr<bool> reply)> result) {
+    std::function<void(core_tests_golubetstest::ErrorOr<bool> reply)> result) {
   result(std::this_thread::get_id() != main_thread_id_);
 }
 
@@ -138,7 +139,7 @@ TestPlugin::TestPlugin(flutter::BinaryMessenger* binary_messenger,
       flutter_api_(
           std::make_unique<FlutterIntegrationCoreApi>(binary_messenger)),
       flutter_callback_api_(
-          std::make_unique<core_tests_pigeontest::FlutterCallbackCoreApi>(
+          std::make_unique<core_tests_golubetstest::FlutterCallbackCoreApi>(
               binary_messenger)),
       main_thread_id_(std::this_thread::get_id()) {}
 
@@ -1361,13 +1362,9 @@ void TestPlugin::CallFlutterSmallApiEchoString(
       [result](const FlutterError& error) { result(error); });
 }
 
-<<<<<<< HEAD:packages/golubets/platform_tests/test_plugin/windows/test_plugin.cpp
-core_tests_golubetstest::UnusedClass TestPlugin::TestUnusedClassGenerates() {
-  return core_tests_golubetstest::UnusedClass();
-=======
 void TestPlugin::CallFlutterCallbackNoop(
     std::function<
-        void(std::optional<core_tests_pigeontest::FlutterError> reply)>
+        void(std::optional<core_tests_golubetstest::FlutterError> reply)>
         result) {
   flutter_callback_api_->Noop(
       [result]() { result(std::nullopt); },
@@ -1376,7 +1373,7 @@ void TestPlugin::CallFlutterCallbackNoop(
 
 void TestPlugin::CallFlutterCallbackEchoString(
     const std::string& a_string,
-    std::function<void(core_tests_pigeontest::ErrorOr<std::string> reply)>
+    std::function<void(core_tests_golubetstest::ErrorOr<std::string> reply)>
         result) {
   flutter_callback_api_->EchoString(
       a_string, [result](const std::string& echo) { result(echo); },
@@ -1385,7 +1382,7 @@ void TestPlugin::CallFlutterCallbackEchoString(
 
 void TestPlugin::CallFlutterCallbackThrowError(
     std::function<void(
-        core_tests_pigeontest::ErrorOr<std::optional<flutter::EncodableValue>>
+        core_tests_golubetstest::ErrorOr<std::optional<flutter::EncodableValue>>
             reply)>
         result) {
   flutter_callback_api_->ThrowError(
@@ -1397,7 +1394,7 @@ void TestPlugin::CallFlutterCallbackThrowError(
 
 void TestPlugin::CallFlutterCallbackThrowErrorFromVoid(
     std::function<
-        void(std::optional<core_tests_pigeontest::FlutterError> reply)>
+        void(std::optional<core_tests_golubetstest::FlutterError> reply)>
         result) {
   flutter_callback_api_->ThrowErrorFromVoid(
       [result]() { result(std::nullopt); },
@@ -1405,15 +1402,14 @@ void TestPlugin::CallFlutterCallbackThrowErrorFromVoid(
 }
 
 void TestPlugin::CallFlutterIsAsyncFlutterApiOnRoot(
-    std::function<void(core_tests_pigeontest::ErrorOr<bool> reply)> result) {
+    std::function<void(core_tests_golubetstest::ErrorOr<bool> reply)> result) {
   flutter_api_->IsAsyncFlutterApiOnRoot(
       [result](bool is_on_root) { result(is_on_root); },
       [result](const FlutterError& error) { result(error); });
 }
 
-core_tests_pigeontest::UnusedClass TestPlugin::TestUnusedClassGenerates() {
-  return core_tests_pigeontest::UnusedClass();
->>>>>>> filtered-upstream/main:packages/pigeon/platform_tests/test_plugin/windows/test_plugin.cpp
+core_tests_golubetstest::UnusedClass TestPlugin::TestUnusedClassGenerates() {
+  return core_tests_golubetstest::UnusedClass();
 }
 
 }  // namespace test_plugin

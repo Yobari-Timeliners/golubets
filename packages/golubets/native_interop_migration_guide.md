@@ -1,7 +1,7 @@
 <?code-excerpt path-base="example/native_interop_app"?>
-# Pigeon Native Interop Migration Guide
+# Golubets Native Interop Migration Guide
 
-This guide provides detailed information on migrating from the platform-channel-based Pigeon model to the direct **Native Interop (FFI & JNI)** model.
+This guide provides detailed information on migrating from the platform-channel-based Golubets model to the direct **Native Interop (FFI & JNI)** model.
 
 For a comprehensive walkthrough on setting up Native Interop from scratch, see the main [Native Interop Guide](./native_interop_guide.md).
 
@@ -20,35 +20,35 @@ For a comprehensive walkthrough on setting up Native Interop from scratch, see t
 
 ## 2. Enabling Native Interop
 
-To migrate an existing Pigeon plugin or app to Native Interop, follow these initial steps:
+To migrate an existing Golubets plugin or app to Native Interop, follow these initial steps:
 
 ### 2.1 Add Dependencies
 
 Add the required runtime dependencies to `dependencies` and code generators to `dev_dependencies` (in both the plugin and its `example/` app, if applicable). Using `flutter pub add` ensures runtime packages resolve to the latest compatible versions:
 
 ```bash
-# Add Pigeon (if not already added):
-flutter pub add dev:pigeon
+# Add Golubets (if not already added):
+flutter pub add dev:golubets
 
 # For iOS/macOS Swift FFI:
 flutter pub add ffi
 flutter pub add objective_c
-# Pigeon requires this specific version for compatibility with its generated FFIgen configuration:
+# Golubets requires this specific version for compatibility with its generated FFIgen configuration:
 flutter pub add dev:ffigen@21.0.0
 
 # For Android Kotlin JNI:
 flutter pub add jni
-# Pigeon requires this specific version for compatibility with its generated JNIgen configuration:
+# Golubets requires this specific version for compatibility with its generated JNIgen configuration:
 flutter pub add dev:jnigen@1.0.0
 ```
 
-### 2.2 Update Pigeon Configuration Options
+### 2.2 Update Golubets Configuration Options
 
-In your Pigeon Dart definition file, update `@ConfigurePigeon` to enable `useJni: true` for Kotlin and/or `useFfi: true` for Swift:
+In your Golubets Dart definition file, update `@ConfigureGolubets` to enable `useJni: true` for Kotlin and/or `useFfi: true` for Swift:
 
 ```dart
-@ConfigurePigeon(
-  PigeonOptions(
+@ConfigureGolubets(
+  GolubetsOptions(
     // (Recommended) Path to the compiled application directory (e.g., 'example/' for plugins, or './' for standalone apps)
     appDirectory: './',
     dartOptions: DartOptions(),
@@ -63,14 +63,14 @@ In your Pigeon Dart definition file, update `@ConfigurePigeon` to enable `useJni
 )
 ```
 
-*Note: `appDirectory` specifies the root of the compiled Flutter **application** (e.g., `example/` when developing a plugin, or `./` for a standalone app). This is required for `ffigen` and `jnigen` to locate the compiled native outputs and create `tool/pigeon/` config scripts.*
+*Note: `appDirectory` specifies the root of the compiled Flutter **application** (e.g., `example/` when developing a plugin, or `./` for a standalone app). This is required for `ffigen` and `jnigen` to locate the compiled native outputs and create `tool/golubets/` config scripts.*
 
 ### 2.3 Re-run Code Generation
 
-Re-run the Pigeon CLI tool to generate the interop bridge files and automatically run `ffigen` and `jnigen`:
+Re-run the Golubets CLI tool to generate the interop bridge files and automatically run `ffigen` and `jnigen`:
 
 ```bash
-dart run pigeon --input <path/to/pigeon_file.dart>
+dart run golubets --input <path/to/golubets_file.dart>
 ```
 
 ---
@@ -117,11 +117,11 @@ suspend fun echoAsync(value: String): String {
 
 ### 3.3 Migrating from `@TaskQueue`
 
-If your existing Pigeon interface uses `@TaskQueue` to process method calls off the main thread, you have two options:
+If your existing Golubets interface uses `@TaskQueue` to process method calls off the main thread, you have two options:
 
 #### Option A: Adopt Native Concurrency (Recommended)
 
-1. **Update the Pigeon Definition**: Replace `@TaskQueue(...)` with `@async` in your Pigeon file:
+1. **Update the Golubets Definition**: Replace `@TaskQueue(...)` with `@async` in your Golubets file:
    ```dart
    @HostApi()
    abstract class ExampleHostApi {
@@ -135,7 +135,7 @@ If your existing Pigeon interface uses `@TaskQueue` to process method calls off 
 
 #### Option B: Offload via Dart Isolates
 
-Keep the method synchronous in the Pigeon file and native code, and invoke it from a worker isolate on the Dart side:
+Keep the method synchronous in the Golubets file and native code, and invoke it from a worker isolate on the Dart side:
 ```dart
 final String result = await Isolate.run(() => api.doSomething(value));
 ```
@@ -161,7 +161,7 @@ For Swift FFI, the toolchain generates an Objective-C bridging target under `<sw
 - **CocoaPods**: Ensure `s.source_files = 'Sources/**/*.{swift,m}'` in your `.podspec`.
 - **SwiftPM**: Add a separate Objective-C target for `my_plugin_objc_gen` in `Package.swift` and depend on it from your main Swift target.
 - **Application & Example App Targets**:
-  - **Swift Module Name**: Set `ffiModuleName` in `SwiftOptions` to match your application's Swift module name (defaults to `'Runner'`). If iOS and macOS share the same generated Dart FFI file, both platforms must compile under that same module name. Since Flutter's default macOS template sets the module name to the app name rather than `Runner`, you can unify them by setting `PRODUCT_MODULE_NAME = Runner` in `macos/Runner/Configs/AppInfo.xcconfig` (or by matching whatever module name you configure). If iOS and macOS use separate Pigeon generation outputs or you only target one platform, unifying module names across platforms is not required.
+  - **Swift Module Name**: Set `ffiModuleName` in `SwiftOptions` to match your application's Swift module name (defaults to `'Runner'`). If iOS and macOS share the same generated Dart FFI file, both platforms must compile under that same module name. Since Flutter's default macOS template sets the module name to the app name rather than `Runner`, you can unify them by setting `PRODUCT_MODULE_NAME = Runner` in `macos/Runner/Configs/AppInfo.xcconfig` (or by matching whatever module name you configure). If iOS and macOS use separate Golubets generation outputs or you only target one platform, unifying module names across platforms is not required.
   - **Native Registration**: Register the native API implementation in native code (e.g., `MainFlutterWindow.swift` in `awakeFromNib()` on macOS, or `AppDelegate.swift` on iOS via `MyApiSetup.register(api: api)`). This also ensures the setup class is referenced so the Xcode linker does not strip it (`-dead_strip`).
 
 ---

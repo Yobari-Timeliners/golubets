@@ -129,7 +129,7 @@ class InternalGolubetsOptions {
               copyrightHeader: copyrightHeader,
               useJni: options.kotlinOptions?.useJni ?? false,
               useFfi: options.swiftOptions?.useFfi ?? false,
-              ffiErrorClassName: options.swiftOptions?.errorClassName ?? 'PigeonError',
+              ffiErrorClassName: options.swiftOptions?.errorClassName ?? 'GolubetsError',
               jniErrorClassName: options.kotlinOptions?.errorClassName ?? 'FlutterError',
               fileSpecificClassNameComponent:
                   options.fileSpecificClassNameComponent ??
@@ -535,13 +535,8 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
   IOSink? shouldGenerate(InternalGolubetsOptions options, FileType _) =>
-      _openSink(options.swiftOptions?.swiftOut, basePath: options.basePath ?? '');
-=======
-  IOSink? shouldGenerate(InternalPigeonOptions options, FileType _) =>
       _openSink(options.swiftOptions?.allSwiftOuts.firstOrNull, basePath: options.basePath ?? '');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
 
   @override
   List<Error> validate(InternalGolubetsOptions options, Root root) {
@@ -574,7 +569,6 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
         }
       }
     }
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
 
     for (final Method method in root.apis.expand((Api api) => api.methods)) {
       final Class? associatedClass = method.returnType.associatedClass;
@@ -612,7 +606,6 @@ class SwiftGeneratorAdapter implements GeneratorAdapter {
       }
     }
 
-=======
     if (options.swiftOptions?.useFfi ?? false) {
       _errorOnTaskQueueInNativeInterop(errors, 'Swift FFI', root);
     }
@@ -629,7 +622,7 @@ class FfigenConfigGeneratorAdapter implements GeneratorAdapter {
   List<FileType> get fileTypeList => const <FileType>[FileType.na];
 
   @override
-  void generate(StringSink sink, InternalPigeonOptions options, Root root, FileType fileType) {
+  void generate(StringSink sink, InternalGolubetsOptions options, Root root, FileType fileType) {
     final InternalSwiftOptions? swiftOptions = options.swiftOptions;
     final InternalDartOptions? dartOptions = options.dartOptions;
     if (swiftOptions == null || dartOptions == null) {
@@ -650,7 +643,7 @@ class FfigenConfigGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  IOSink? shouldGenerate(InternalPigeonOptions options, FileType _) {
+  IOSink? shouldGenerate(InternalGolubetsOptions options, FileType _) {
     if (!(options.swiftOptions?.useFfi ?? false)) {
       return null;
     }
@@ -660,7 +653,7 @@ class FfigenConfigGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  List<Error> validate(InternalPigeonOptions options, Root root) {
+  List<Error> validate(InternalGolubetsOptions options, Root root) {
     if (!(options.swiftOptions?.useFfi ?? false)) {
       return <Error>[];
     }
@@ -676,7 +669,6 @@ class FfigenConfigGeneratorAdapter implements GeneratorAdapter {
         requiredDevDeps: const <String>['ffigen'],
       ),
     );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
     return errors;
   }
 }
@@ -805,10 +797,7 @@ class KotlinGeneratorAdapter implements GeneratorAdapter {
       _openSink(options.kotlinOptions?.kotlinOut, basePath: options.basePath ?? '');
 
   @override
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-  List<Error> validate(InternalGolubetsOptions options, Root root) => <Error>[];
-=======
-  List<Error> validate(InternalPigeonOptions options, Root root) {
+  List<Error> validate(InternalGolubetsOptions options, Root root) {
     final errors = <Error>[];
     if (options.kotlinOptions?.useJni ?? false) {
       _errorOnTaskQueueInNativeInterop(errors, 'Kotlin JNI', root);
@@ -827,7 +816,7 @@ class JnigenConfigGeneratorAdapter implements GeneratorAdapter {
   List<FileType> get fileTypeList => const <FileType>[FileType.na];
 
   @override
-  void generate(StringSink sink, InternalPigeonOptions options, Root root, FileType fileType) {
+  void generate(StringSink sink, InternalGolubetsOptions options, Root root, FileType fileType) {
     if (options.kotlinOptions == null || options.dartOptions == null) {
       return;
     }
@@ -844,7 +833,7 @@ class JnigenConfigGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  IOSink? shouldGenerate(InternalPigeonOptions options, FileType _) {
+  IOSink? shouldGenerate(InternalGolubetsOptions options, FileType _) {
     if (options.kotlinOptions?.kotlinOut == null || !(options.kotlinOptions?.useJni ?? false)) {
       return null;
     }
@@ -854,7 +843,7 @@ class JnigenConfigGeneratorAdapter implements GeneratorAdapter {
   }
 
   @override
-  List<Error> validate(InternalPigeonOptions options, Root root) {
+  List<Error> validate(InternalGolubetsOptions options, Root root) {
     if (!(options.kotlinOptions?.useJni ?? false)) {
       return <Error>[];
     }
@@ -873,7 +862,6 @@ class JnigenConfigGeneratorAdapter implements GeneratorAdapter {
     );
     return errors;
   }
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
 }
 
 dart_ast.Annotation? _findMetadata(dart_ast.NodeList<dart_ast.Annotation> metadata, String query) {
@@ -1534,9 +1522,6 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       }
     }
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-    // It must run **after** `_attachAssociatedDefinitions`.
-=======
     final Map<TypeDeclaration, List<int>> referencedTypesAfterAssoc = getReferencedTypes(
       _apis,
       _classes,
@@ -1550,29 +1535,22 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
       }
     }
 
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
+    // It must run **after** `_attachAssociatedDefinitions`.
     final completeRoot = Root(
       apis: _apis,
       classes: _classes,
       enums: referencedEnums,
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
-=======
       lists: referencedLists,
       maps: referencedMaps,
-      constants: _constants,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
       containsHostApi: containsHostApi,
       containsFlutterApi: containsFlutterApi,
       containsProxyApi: containsProxyApi,
       containsEventChannel: containsEventChannel,
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
       genericTypeNames: _genericTypeNames,
       genericUsage: _genericTypeNames.isEmpty
           ? const <String, Set<TypeArgumentCombination>>{}
           : collectGenericTypeUsage(classes: _classes, apis: _apis),
       constants: _constants,
-=======
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
     );
 
     final List<Error> validateErrors = _validateAst(completeRoot, source);
@@ -1617,13 +1595,10 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
               apis: <Api>[],
               classes: <Class>[],
               enums: <Enum>[],
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
               genericTypeNames: <String>{},
               genericUsage: <String, Set<TypeArgumentCombination>>{},
-=======
               lists: <String, TypeDeclaration>{},
               maps: <String, TypeDeclaration>{},
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
             ),
       errors: totalErrors,
       golubetsOptions: _golubetsOptions,
@@ -2211,21 +2186,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
     final List<Parameter> arguments = parameters.parameters
         .map(_formalParameterToPigeonParameter)
         .toList();
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
     final AsynchronousType asynchronousType = _parseAsynchronousType(node.metadata);
-=======
-    final bool hasAsync = _hasMetadata(node.metadata, 'async');
-    final bool hasAsyncCallback = _hasMetadata(node.metadata, 'asyncCallback');
-    final bool isUseCallback =
-        hasAsyncCallback ||
-        (_findMetadata(
-              node.metadata,
-              'async',
-            )?.arguments?.arguments.any((arg) => arg.toSource().contains('useCallback: true')) ??
-            false);
-    final bool isAsynchronous = hasAsync || hasAsyncCallback;
-    final bool isAsynchronousCallback = isAsynchronous && isUseCallback;
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
     final bool isStatic = _hasMetadata(node.metadata, 'static');
     final String objcSelector =
         _findMetadata(
@@ -2303,12 +2264,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
               AstFlutterApi() => ApiLocation.flutter,
               AstEventChannelApi() => ApiLocation.host,
             },
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
             asynchronousType: asynchronousType,
-=======
-            isAsynchronous: isAsynchronous,
-            isAsynchronousCallback: isAsynchronousCallback,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
             objcSelector: objcSelector,
             swiftFunction: swiftFunction,
             offset: node.offset,
@@ -2631,7 +2587,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
   }
 
   AsynchronousType _parseAsynchronousType(dart_ast.NodeList<dart_ast.Annotation> metadata) {
-    if (_hasMetadata(metadata, 'async')) {
+    if (_hasMetadata(metadata, 'async') || _hasMetadata(metadata, 'asyncCallback')) {
       return AsynchronousType.callback;
     }
 
@@ -2697,7 +2653,6 @@ int calculateLineNumber(String contents, int offset) {
   return result;
 }
 
-<<<<<<< HEAD:packages/golubets/lib/src/pigeon_lib_internal.dart
 class _DefaultValueVisitor extends dart_ast_visitor.SimpleAstVisitor<DefaultValue> {
   const _DefaultValueVisitor();
 
@@ -2829,7 +2784,8 @@ class _DefaultValueVisitor extends dart_ast_visitor.SimpleAstVisitor<DefaultValu
 
     return ObjectCreation(type: type, arguments: args);
   }
-=======
+}
+
 List<Error> _validateDependencies({
   required String? appDirectory,
   required String? dartOutPath,
@@ -2940,5 +2896,4 @@ List<Error> _validateDependencies({
   }
 
   return errors;
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/pigeon_lib_internal.dart
 }

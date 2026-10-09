@@ -9,7 +9,6 @@ import io.mockk.every
 import io.mockk.mockk
 import java.nio.ByteBuffer
 import java.util.ArrayList
-import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -17,7 +16,7 @@ import org.junit.Test
 class ListTest {
 
   @Test
-  fun testListInList() = runTest {
+  fun testListInList() {
     val binaryMessenger = mockk<BinaryMessenger>()
     val api = FlutterSmallApi(binaryMessenger)
 
@@ -36,8 +35,13 @@ class ListTest {
           reply.reply(replyData)
         }
 
-    val res = api.echoWrappedList(input)
-    assertEquals(input, res)
+    var didCall = false
+    api.echoWrappedList(input) {
+      didCall = true
+      assertEquals(input, it.getOrNull())
+    }
+
+    assertTrue(didCall)
   }
 
   @Test

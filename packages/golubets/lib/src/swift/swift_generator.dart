@@ -30,16 +30,13 @@ class SwiftOptions {
     this.fileSpecificClassNameComponent,
     this.errorClassName,
     this.includeErrorClass = true,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
     this.usePureSealedSubclasses = false,
-=======
     this.useFfi = false,
     this.ffiModuleName,
     this.appDirectory,
     this.configDirectory,
     this.appleSdkPath,
     this.appleSdkTriple,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
   });
 
   /// A copyright header that will get prepended to generated code.
@@ -57,7 +54,6 @@ class SwiftOptions {
   /// Swift file in the same directory.
   final bool includeErrorClass;
 
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
   /// {@template swift_options.sealed_names_purified}
   /// Whether the names of sealed classes are purified.
   ///
@@ -90,7 +86,7 @@ class SwiftOptions {
   /// ```
   /// {@endtemplate}
   final bool usePureSealedSubclasses;
-=======
+
   /// Whether to use FFI when possible.
   final bool useFfi;
 
@@ -118,7 +114,6 @@ class SwiftOptions {
   /// falling back to `arm64-apple-ios` (or `x86_64-apple-macosx` if `appleSdkPath`
   /// contains "macosx").
   final String? appleSdkTriple;
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
 
   /// Creates a [SwiftOptions] from a Map representation where:
   /// `x = SwiftOptions.fromList(x.toMap())`.
@@ -128,16 +123,13 @@ class SwiftOptions {
       fileSpecificClassNameComponent: map['fileSpecificClassNameComponent'] as String?,
       errorClassName: map['errorClassName'] as String?,
       includeErrorClass: map['includeErrorClass'] as bool? ?? true,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
       usePureSealedSubclasses: map['usePureSealedSubclasses'] as bool? ?? false,
-=======
       useFfi: map['useFfi'] as bool? ?? false,
       ffiModuleName: map['ffiModuleName'] as String?,
       appDirectory: map['appDirectory'] as String?,
       configDirectory: map['configDirectory'] as String?,
       appleSdkPath: map['appleSdkPath'] as String?,
       appleSdkTriple: map['appleSdkTriple'] as String?,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
     );
   }
 
@@ -150,16 +142,13 @@ class SwiftOptions {
         'fileSpecificClassNameComponent': fileSpecificClassNameComponent!,
       if (errorClassName != null) 'errorClassName': errorClassName!,
       'includeErrorClass': includeErrorClass,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
       'usePureSealedSubclasses': usePureSealedSubclasses,
-=======
       'useFfi': useFfi,
       if (ffiModuleName != null) 'ffiModuleName': ffiModuleName!,
       if (appDirectory != null) 'appDirectory': appDirectory!,
       if (configDirectory != null) 'configDirectory': configDirectory!,
       if (appleSdkPath != null) 'appleSdkPath': appleSdkPath!,
       if (appleSdkTriple != null) 'appleSdkTriple': appleSdkTriple!,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
     };
     return result;
   }
@@ -167,7 +156,7 @@ class SwiftOptions {
   /// Overrides any non-null parameters from [options] into this to make a new
   /// [SwiftOptions].
   SwiftOptions merge(SwiftOptions options) {
-    return SwiftOptions.fromList(mergePigeonMaps(toMap(), options.toMap()));
+    return SwiftOptions.fromList(mergeMaps(toMap(), options.toMap()));
   }
 }
 
@@ -181,16 +170,13 @@ class InternalSwiftOptions extends InternalOptions {
     this.fileSpecificClassNameComponent,
     this.errorClassName,
     this.includeErrorClass = true,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
     this.usePureSealedSubclasses = false,
-=======
     this.useFfi = false,
     this.ffiModuleName,
     this.appDirectory,
     this.configDirectory,
     this.appleSdkPath,
     this.appleSdkTriple,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
   });
 
   /// Creates InternalSwiftOptions from SwiftOptions.
@@ -209,9 +195,6 @@ class InternalSwiftOptions extends InternalOptions {
        ),
        errorClassName = options.errorClassName,
        includeErrorClass = options.includeErrorClass,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-       usePureSealedSubclasses = options.usePureSealedSubclasses;
-=======
        useFfi = options.useFfi,
        ffiModuleName = options.ffiModuleName,
        appDirectory = options.appDirectory,
@@ -219,8 +202,8 @@ class InternalSwiftOptions extends InternalOptions {
        appleSdkPath = options.appleSdkPath,
        appleSdkTriple = options.appleSdkTriple,
        swiftOut = swiftOut ?? swiftOuts?.firstOrNull ?? '',
-       swiftOuts = swiftOuts ?? (swiftOut != null ? <String>[swiftOut] : const <String>[]);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+       swiftOuts = swiftOuts ?? (swiftOut != null ? <String>[swiftOut] : const <String>[]),
+       usePureSealedSubclasses = options.usePureSealedSubclasses;
 
   /// A copyright header that will get prepended to generated code.
   final Iterable<String>? copyrightHeader;
@@ -249,10 +232,9 @@ class InternalSwiftOptions extends InternalOptions {
   /// Swift file in the same directory.
   final bool includeErrorClass;
 
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
   /// {@macro swift_options.sealed_names_purified}
   final bool usePureSealedSubclasses;
-=======
+
   /// Whether to use FFI when possible.
   final bool useFfi;
 
@@ -277,7 +259,6 @@ class InternalSwiftOptions extends InternalOptions {
   /// `appleSdkPath`, defaulting to `arm64-apple-ios` (or `x86_64-apple-macosx14.0`
   /// if `appleSdkPath` contains "macosx").
   final String? appleSdkTriple;
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
 }
 
 /// Options that control how Swift code will be generated for a specific
@@ -426,13 +407,9 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     indent.newln();
     addDocumentationComments(indent, anEnum.documentationComments, _docCommentSpec);
 
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-    indent.write('public enum ${anEnum.name}: Int, CaseIterable ');
-=======
     indent.write(
-      '${generatorOptions.useFfi ? '@objc ' : ''}enum ${anEnum.name}: Int, CaseIterable ',
+      '${generatorOptions.useFfi ? '@objc ' : ''}public enum ${anEnum.name}: Int, CaseIterable ',
     );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
     indent.addScoped('{', '}', () {
       enumerate(anEnum.members, (int index, EnumMember member) {
         addDocumentationComments(indent, member.documentationComments, _docCommentSpec);
@@ -444,24 +421,24 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
   void _writeFfiCodec(Indent indent, Root root) {
     indent.newln();
     indent.format('''
-@objc class ${_classNamePrefix}PigeonInternalNull: NSObject {}
+@objc class ${_classNamePrefix}GolubetsInternalNull: NSObject {}
 
-class _PigeonFfiCodec {
+class _GolubetsFfiCodec {
   static func readValue(value: NSObject?, type: String? = nil, type2: String? = nil) -> Any? {
-    if (${_classNamePrefix}PigeonInternal.isNullish(value)) {
+    if (${_classNamePrefix}GolubetsInternal.isNullish(value)) {
       return nil
     }
-    if let typedData = value as? ${_classNamePrefix}PigeonTypedData {
+    if let typedData = value as? ${_classNamePrefix}GolubetsTypedData {
       switch typedData.type {
-      case ${_classNamePrefix}PigeonInternalNumberType.uint8.rawValue:
+      case ${_classNamePrefix}GolubetsInternalNumberType.uint8.rawValue:
         return typedData.toUint8Array()
-      case ${_classNamePrefix}PigeonInternalNumberType.int32.rawValue:
+      case ${_classNamePrefix}GolubetsInternalNumberType.int32.rawValue:
         return typedData.toInt32Array()
-      case ${_classNamePrefix}PigeonInternalNumberType.int64.rawValue:
+      case ${_classNamePrefix}GolubetsInternalNumberType.int64.rawValue:
         return typedData.toInt64Array()
-      case ${_classNamePrefix}PigeonInternalNumberType.float32.rawValue:
+      case ${_classNamePrefix}GolubetsInternalNumberType.float32.rawValue:
         return typedData.toFloat32Array()
-      case ${_classNamePrefix}PigeonInternalNumberType.float64.rawValue:
+      case ${_classNamePrefix}GolubetsInternalNumberType.float64.rawValue:
         return typedData.toFloat64Array()
       default:
         return typedData
@@ -515,23 +492,23 @@ class _PigeonFfiCodec {
   }
 
   static func writeValue(value: Any?, isObject: Bool = false) -> Any? {
-    if (${_classNamePrefix}PigeonInternal.isNullish(value)) {
-      return ${_classNamePrefix}PigeonInternalNull()
+    if (${_classNamePrefix}GolubetsInternal.isNullish(value)) {
+      return ${_classNamePrefix}GolubetsInternalNull()
     }
     if let uint8Array = value as? [UInt8] {
-      return isObject ? ${_classNamePrefix}PigeonTypedData(uint8Array) : uint8Array as NSArray
+      return isObject ? ${_classNamePrefix}GolubetsTypedData(uint8Array) : uint8Array as NSArray
     }
     if let int32Array = value as? [Int32] {
-      return isObject ? ${_classNamePrefix}PigeonTypedData(int32Array) : int32Array as NSArray
+      return isObject ? ${_classNamePrefix}GolubetsTypedData(int32Array) : int32Array as NSArray
     }
     if let int64Array = value as? [Int64] {
-      return isObject ? ${_classNamePrefix}PigeonTypedData(int64Array) : int64Array as NSArray
+      return isObject ? ${_classNamePrefix}GolubetsTypedData(int64Array) : int64Array as NSArray
     }
     if let float32Array = value as? [Float32] {
-      return isObject ? ${_classNamePrefix}PigeonTypedData(float32Array) : float32Array as NSArray
+      return isObject ? ${_classNamePrefix}GolubetsTypedData(float32Array) : float32Array as NSArray
     }
     if let float64Array = value as? [Double] {
-      return isObject ? ${_classNamePrefix}PigeonTypedData(float64Array) : float64Array as NSArray
+      return isObject ? ${_classNamePrefix}GolubetsTypedData(float64Array) : float64Array as NSArray
     }
     if (value is Bool || value is Double || value is Int || value is Int64${root.enums.map((Enum enumDefinition) {
       return ' || value is ${enumDefinition.name}';
@@ -557,7 +534,7 @@ class _PigeonFfiCodec {
       let list = value as! [Any]
       let res: NSMutableArray = NSMutableArray(capacity: list.count)
       for item in list {
-        res.add(${_classNamePrefix}PigeonInternal.isNullish(item) ? ${_classNamePrefix}PigeonInternalNull() : writeValue(value: item, isObject: true) as! NSObject)
+        res.add(${_classNamePrefix}GolubetsInternal.isNullish(item) ? ${_classNamePrefix}GolubetsInternalNull() : writeValue(value: item, isObject: true) as! NSObject)
       }
       return res
     }
@@ -565,7 +542,7 @@ class _PigeonFfiCodec {
       let dict = value as! [AnyHashable: Any]
       let res: NSMutableDictionary = NSMutableDictionary(capacity: dict.count)
       for (key, value) in dict {
-         res.setObject(${_classNamePrefix}PigeonInternal.isNullish(value) ? ${_classNamePrefix}PigeonInternalNull() : writeValue(value: value, isObject: true) as! NSObject, forKey: writeValue(value: key, isObject: true) as! NSCopying)
+         res.setObject(${_classNamePrefix}GolubetsInternal.isNullish(value) ? ${_classNamePrefix}GolubetsInternalNull() : writeValue(value: value, isObject: true) as! NSObject, forKey: writeValue(value: key, isObject: true) as! NSCopying)
       }
       return res
     }
@@ -777,11 +754,10 @@ class _PigeonFfiCodec {
     required InternalSwiftOptions generatorOptions,
     bool customStringConvertible = true,
   }) {
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
     final classLookup = <String, Class>{
       for (final Class classDefinition in root.classes) classDefinition.name: classDefinition,
     };
-    if (classDefinition.isSealed) {
+    if (classDefinition.isSealed && !useFfi) {
       _writeSealedClassSignature(
         indent,
         classDefinition,
@@ -800,14 +776,11 @@ class _PigeonFfiCodec {
       classLookup: classLookup,
     );
     final privateString = private ? 'private ' : 'public ';
+    final objcString = useFfi ? '@objc ' : '';
+    final bridge = useFfi ? 'Bridge' : '';
     final typeArguments = classDefinition.typeArguments.isEmpty
         ? ''
         : '<${_flattenTypeArgumentsWithSelectiveHashableConstraints(classDefinition.typeArguments, hashableTypeParams)}>';
-=======
-    final privateString = private ? 'private ' : '';
-    final objcString = useFfi ? '@objc ' : '';
-    final bridge = useFfi ? 'Bridge' : '';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
     final protocols = <String>[];
     if (useFfi) {
       protocols.add('NSObject');
@@ -823,15 +796,10 @@ class _PigeonFfiCodec {
       }
     }
     final extendsString = protocols.isEmpty ? '' : ': ${protocols.join(', ')}';
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-    if (classDefinition.isSwiftClass) {
-      indent.write('${privateString}class ${classDefinition.name}$typeArguments$extendsString ');
-=======
     if (classDefinition.isSwiftClass || useFfi) {
       indent.write(
-        '$privateString${objcString}class ${classDefinition.name}$bridge$extendsString ',
+        '$objcString${privateString}class ${classDefinition.name}$bridge$typeArguments$extendsString ',
       );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
     } else if (classDefinition.isSealed) {
       indent.write('${privateString}protocol ${classDefinition.name} ');
     } else {
@@ -840,26 +808,16 @@ class _PigeonFfiCodec {
 
     indent.addScoped('{', '', () {
       final Iterable<NamedType> fields = getFieldsInSerializationOrder(classDefinition);
-      final classLookup = <String, Class>{
-        for (final Class classDefinition in root.classes) classDefinition.name: classDefinition,
-      };
 
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-      if (!classDefinition.isSealed) {
-        _writeClassInit(
-          indent,
-          fields.toList(),
-          classLookup: classLookup,
-          generatorOptions: generatorOptions,
-=======
-      if (classDefinition.isSwiftClass || useFfi) {
+      if (!classDefinition.isSealed || useFfi) {
         _writeClassInit(
           indent,
           fields.toList(),
           objcString,
           useFfi: useFfi,
           useFfiTypedData: useFfiTypedData,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+          classLookup: classLookup,
+          generatorOptions: generatorOptions,
         );
       }
 
@@ -867,9 +825,8 @@ class _PigeonFfiCodec {
 
       for (final field in fields) {
         addDocumentationComments(indent, field.documentationComments, _docCommentSpec);
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
         final varKeyword = classDefinition.isImmutable ? 'let' : 'var';
-        indent.write('$public$varKeyword ');
+        indent.write('$objcString$public$varKeyword ');
         _writeClassField(
           indent,
           field,
@@ -877,17 +834,10 @@ class _PigeonFfiCodec {
               !classDefinition.isSwiftClass &&
               field.defaultValue == null &&
               !classDefinition.isImmutable,
-          classLookup: classLookup,
-          generatorOptions: generatorOptions,
-=======
-        indent.write('${objcString}var ');
-        _writeClassField(
-          indent,
-          field,
-          addNil: !classDefinition.isSwiftClass,
           useFfi: useFfi,
           useFfiTypedData: useFfiTypedData,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+          classLookup: classLookup,
+          generatorOptions: generatorOptions,
         );
         indent.newln();
       }
@@ -1010,16 +960,13 @@ if (wrapped == nil) {
       _docCommentSpec,
       generatorComments: generatedComments,
     );
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
     _writeDataClassSignature(
       indent,
       classDefinition,
+      useFfiTypedData: generatorOptions.useFfi,
       root: root,
       generatorOptions: generatorOptions,
     );
-=======
-    _writeDataClassSignature(indent, classDefinition, useFfiTypedData: generatorOptions.useFfi);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
     indent.writeScoped('', '}', () {
       indent.newln();
       writeClassDecode(
@@ -1064,24 +1011,6 @@ if (wrapped == nil) {
     }
   }
 
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-  void _writeClassInit(
-    Indent indent,
-    List<NamedType> fields, {
-    required Map<String, Class> classLookup,
-    required InternalSwiftOptions generatorOptions,
-  }) {
-    indent.writeScoped('public init(', ')', () {
-      for (var i = 0; i < fields.length; i++) {
-        indent.write('');
-        _writeClassField(
-          indent,
-          fields[i],
-          addDefault: true,
-          classLookup: classLookup,
-          generatorOptions: generatorOptions,
-        );
-=======
   void _writeFfiBridgeClass(
     InternalSwiftOptions generatorOptions,
     Root root,
@@ -1090,7 +1019,7 @@ if (wrapped == nil) {
     required String dartPackageName,
   }) {
     final generatedComments = <String>[
-      ' Generated bridge class from Pigeon that moves data from Swift to Objective-C.',
+      ' Generated bridge class from Golubets that moves data from Swift to Objective-C.',
     ];
     indent.newln();
     addDocumentationComments(
@@ -1099,7 +1028,14 @@ if (wrapped == nil) {
       _docCommentSpec,
       generatorComments: generatedComments,
     );
-    _writeDataClassSignature(indent, classDefinition, useFfi: true, hashable: false);
+    _writeDataClassSignature(
+      indent,
+      classDefinition,
+      useFfi: true,
+      hashable: false,
+      root: root,
+      generatorOptions: generatorOptions,
+    );
     indent.writeScoped('', '}', () {
       if (classDefinition.isSealed) {
         return;
@@ -1110,7 +1046,7 @@ if (wrapped == nil) {
         '}',
         () {
           indent.writeScoped(
-            'if (${_classNamePrefix}PigeonInternal.isNullish(${varNamePrefix}Class)) {',
+            'if (${_classNamePrefix}GolubetsInternal.isNullish(${varNamePrefix}Class)) {',
             '}',
             () {
               indent.writeln('return nil');
@@ -1151,8 +1087,8 @@ if (wrapped == nil) {
       case 'Float32List':
       case 'Float64List':
         return wrapConditionally(
-          '${_classNamePrefix}PigeonTypedData($varName${type.isNullable ? '!' : ''})',
-          '${_classNamePrefix}PigeonInternal.isNullish($varName) ? nil : ',
+          '${_classNamePrefix}GolubetsTypedData($varName${type.isNullable ? '!' : ''})',
+          '${_classNamePrefix}GolubetsInternal.isNullish($varName) ? nil : ',
           '',
           type.isNullable || forceNullable,
         );
@@ -1160,9 +1096,9 @@ if (wrapped == nil) {
         return '$varName as NSString$nullable';
       case 'List':
       case 'Map':
-        return '_PigeonFfiCodec.writeValue(value: $varName) as${type.isNullable || forceNullable ? '?' : '!'} ${_swiftTypeForBuiltinDartType(type, useFfi: true)}';
+        return '_GolubetsFfiCodec.writeValue(value: $varName) as${type.isNullable || forceNullable ? '?' : '!'} ${_swiftTypeForBuiltinDartType(type, useFfi: true)}';
       case 'Object':
-        return '_PigeonFfiCodec.writeValue(value: $varName, isObject: true) as${type.isNullable || forceNullable ? '?' : '!'} NSObject';
+        return '_GolubetsFfiCodec.writeValue(value: $varName, isObject: true) as${type.isNullable || forceNullable ? '?' : '!'} NSObject';
       default:
         if (type.isEnum && (type.isNullable || forceNullable)) {
           return _numberToObjc(
@@ -1179,17 +1115,17 @@ if (wrapped == nil) {
   }
 
   String _numberToObjc(String varName, {String getter = '', bool isNullable = true}) => isNullable
-      ? '${_classNamePrefix}PigeonInternal.isNullish($varName) ? nil : NSNumber(value: $varName$getter)'
+      ? '${_classNamePrefix}GolubetsInternal.isNullish($varName) ? nil : NSNumber(value: $varName$getter)'
       : 'NSNumber(value: $varName$getter)';
 
   String _varToSwift(String varName, TypeDeclaration type, {bool forceNullable = false}) {
     final nullable = type.isNullable ? '?' : '';
     final checkNullish = type.isNullable || forceNullable
-        ? '${_classNamePrefix}PigeonInternal.isNullish($varName) ? nil : '
+        ? '${_classNamePrefix}GolubetsInternal.isNullish($varName) ? nil : '
         : '';
     switch (type.baseName) {
       case 'Object':
-        return '_PigeonFfiCodec.readValue(value: $varName)${type.isNullable || forceNullable ? '' : '!'}';
+        return '_GolubetsFfiCodec.readValue(value: $varName)${type.isNullable || forceNullable ? '' : '!'}';
       case 'int':
         return type.isNullable || forceNullable ? '$checkNullish$varName!.int64Value' : varName;
       case 'double':
@@ -1222,7 +1158,7 @@ if (wrapped == nil) {
                 type.typeArguments.last.baseName != 'Map'
             ? ', type2: "${type.typeArguments.last.baseName}"'
             : '';
-        return '_PigeonFfiCodec.readValue(value: $varName as NSObject$nullable$typeArg$type2Arg) as${type.isNullable || forceNullable ? '?' : '!'} ${_swiftTypeForBuiltinDartType(type)}';
+        return '_GolubetsFfiCodec.readValue(value: $varName as NSObject$nullable$typeArg$type2Arg) as${type.isNullable || forceNullable ? '?' : '!'} ${_swiftTypeForBuiltinDartType(type)}';
       default:
         if (type.isEnum) {
           return type.isNullable || forceNullable
@@ -1244,12 +1180,21 @@ if (wrapped == nil) {
     String objc, {
     bool useFfi = false,
     bool useFfiTypedData = false,
+    required Map<String, Class> classLookup,
+    required InternalSwiftOptions generatorOptions,
   }) {
-    indent.writeScoped('${objc}init(', ')', () {
+    indent.writeScoped('${objc}public init(', ')', () {
       for (var i = 0; i < fields.length; i++) {
         indent.write('');
-        _writeClassField(indent, fields[i], useFfi: useFfi, useFfiTypedData: useFfiTypedData);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+        _writeClassField(
+          indent,
+          fields[i],
+          addDefault: !useFfi,
+          useFfi: useFfi,
+          useFfiTypedData: useFfiTypedData,
+          classLookup: classLookup,
+          generatorOptions: generatorOptions,
+        );
         if (i == fields.length - 1) {
           indent.newln();
         } else {
@@ -1268,13 +1213,16 @@ if (wrapped == nil) {
     Indent indent,
     NamedType field, {
     bool addNil = true,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
     bool addDefault = false,
+    bool useFfi = false,
+    bool useFfiTypedData = false,
     required Map<String, Class> classLookup,
     required InternalSwiftOptions generatorOptions,
   }) {
     final DefaultValue? defaultValue = field.defaultValue;
-    indent.add('${field.name}: ${_nullSafeSwiftTypeForDartType(field.type)}');
+    indent.add(
+      '${field.name}: ${_nullSafeSwiftTypeForDartType(field.type, useFfi: useFfi, ffiTypedData: useFfiTypedData)}',
+    );
     if (defaultValue != null && addDefault) {
       indent.add(' = ');
       defaultValue.write(
@@ -1287,15 +1235,6 @@ if (wrapped == nil) {
       final defaultNil = field.type.isNullable && addNil ? ' = nil' : '';
       indent.add(defaultNil);
     }
-=======
-    bool useFfi = false,
-    bool useFfiTypedData = false,
-  }) {
-    final defaultNil = field.type.isNullable && addNil ? ' = nil' : '';
-    indent.add(
-      '${field.name}: ${_nullSafeSwiftTypeForDartType(field.type, useFfi: useFfi, ffiTypedData: useFfiTypedData)}$defaultNil',
-    );
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
   }
 
   void _writeClassFieldInit(Indent indent, NamedType field, {bool useFfiTypedData = false}) {
@@ -1566,16 +1505,12 @@ if (wrapped == nil) {
       generatorComments: generatedComments,
     );
 
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-    indent.addScoped('public protocol ${api.name}Protocol {', '}', () {
-=======
     if (generatorOptions.useFfi) {
       _writeFfiFlutterApi(generatorOptions, root, indent, api, dartPackageName: dartPackageName);
       return;
     }
 
-    indent.addScoped('protocol ${api.name}Protocol {', '}', () {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+    indent.addScoped('public protocol ${api.name}Protocol {', '}', () {
       for (final Method func in api.methods) {
         addDocumentationComments(indent, func.documentationComments, _docCommentSpec);
         indent.writeln(
@@ -1584,15 +1519,13 @@ if (wrapped == nil) {
             parameters: func.parameters,
             returnType: func.returnType,
             errorTypeName: _getErrorClassName(generatorOptions),
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-=======
-            isAsynchronous: true,
-            isAsynchronousCallback: func.isAsynchronousCallback,
-            isMainActor: !func.isAsynchronousCallback,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+            isMainActor: true,
             swiftFunction: func.swiftFunction,
             getParameterName: _getSafeArgumentName,
-            asynchronousType: AsynchronousType.callback,
+            // FlutterApi methods use callbacks unless explicitly annotated with `AsyncType.await()`.
+            asynchronousType: func.asynchronousType.isAwait
+                ? func.asynchronousType
+                : AsynchronousType.callback,
             isPublic: false,
           ),
         );
@@ -1627,7 +1560,7 @@ if (wrapped == nil) {
           channelName: '${makeChannelName(api, func, dartPackageName)}\\(messageChannelSuffix)',
           parameters: func.parameters,
           returnType: func.returnType,
-          isAsynchronousCallback: func.isAsynchronousCallback,
+          isAsynchronousCallback: !func.asynchronousType.isAwait,
           swiftFunction: func.swiftFunction,
         );
       }
@@ -1671,7 +1604,7 @@ if (wrapped == nil) {
       indent.writeln('static var registered${api.name} = [String: ${api.name}]()');
       indent.newln();
       indent.write(
-        '@objc static func registerInstance(api: ${api.name}Bridge?, name: String = ${_classNamePrefix}PigeonInternal.defaultInstanceName) ',
+        '@objc static func registerInstance(api: ${api.name}Bridge?, name: String = ${_classNamePrefix}GolubetsInternal.defaultInstanceName) ',
       );
       indent.addScoped('{', '}', () {
         indent.writeScoped('if let api = api {', '}', () {
@@ -1685,7 +1618,7 @@ if (wrapped == nil) {
       });
       indent.newln();
       indent.write(
-        'static func getInstance(name: String = ${_classNamePrefix}PigeonInternal.defaultInstanceName) -> ${api.name}? ',
+        'static func getInstance(name: String = ${_classNamePrefix}GolubetsInternal.defaultInstanceName) -> ${api.name}? ',
       );
       indent.addScoped('{', '}', () {
         indent.writeln('return ${api.name}Registrar.registered${api.name}[name]');
@@ -1703,7 +1636,7 @@ if (wrapped == nil) {
       });
       indent.newln();
       indent.write(
-        'static func getInstance(name: String = ${_classNamePrefix}PigeonInternal.defaultInstanceName) -> ${api.name}? ',
+        'static func getInstance(name: String = ${_classNamePrefix}GolubetsInternal.defaultInstanceName) -> ${api.name}? ',
       );
       indent.addScoped('{', '}', () {
         indent.writeln('return ${api.name}Registrar.getInstance(name: name)');
@@ -1763,7 +1696,7 @@ if (wrapped == nil) {
               cast = ' as! $swiftType';
             }
             indent.writeln(
-              'return _PigeonFfiCodec.readValue(value: (res$valueCast), type: "${method.returnType.baseName}")$cast',
+              'return _GolubetsFfiCodec.readValue(value: (res$valueCast), type: "${method.returnType.baseName}")$cast',
             );
           }
         });
@@ -1780,14 +1713,14 @@ if (wrapped == nil) {
   }) {
     indent.newln();
     indent.writeln(
-      '$_docCommentPrefix Generated setup class from Pigeon to register implemented ${api.name} classes.',
+      '$_docCommentPrefix Generated setup class from Golubets to register implemented ${api.name} classes.',
     );
     indent.writeScoped('@objc class ${api.name}Setup: NSObject {', '}', () {
       if (generatorOptions.useFfi) {
         indent.writeln('private var api: ${api.name}?');
         indent.writeln('override init() {}');
         indent.writeScoped(
-          'static func register(api: ${api.name}?, name: String = ${_classNamePrefix}PigeonInternal.defaultInstanceName) {',
+          'static func register(api: ${api.name}?, name: String = ${_classNamePrefix}GolubetsInternal.defaultInstanceName) {',
           '}',
           () {
             indent.writeScoped('if let api = api {', '}', () {
@@ -1825,9 +1758,10 @@ if (wrapped == nil) {
             returnType: method.returnType,
             errorTypeName: _getErrorClassName(generatorOptions),
             ffiBridgeApi: generatorOptions.useFfi,
-            isAsynchronous: method.isAsynchronous,
+            asynchronousType: method.asynchronousType,
             swiftFunction: method.swiftFunction,
             components: components,
+            isPublic: false,
           ),
         );
         indent.addScoped(' {', '}', () {
@@ -1844,7 +1778,7 @@ if (wrapped == nil) {
                 }).join(', ')})${method.returnType.isEnum ? '?.rawValue' : ''}',
               );
               indent.writeln(
-                'return ${_classNamePrefix}PigeonInternal.isNullish(res) ? nil : ${method.returnType.isEnum ? 'NSNumber(value: res!)' : '${_classNamePrefix}PigeonTypedData(res${method.returnType.isNullable ? '!' : ''})'}',
+                'return ${_classNamePrefix}GolubetsInternal.isNullish(res) ? nil : ${method.returnType.isEnum ? 'NSNumber(value: res!)' : '${_classNamePrefix}GolubetsTypedData(res${method.returnType.isNullable ? '!' : ''})'}',
               );
             } else {
               indent.writeln(
@@ -1917,16 +1851,10 @@ if (wrapped == nil) {
             parameters: method.parameters,
             returnType: method.returnType,
             errorTypeName: 'Error',
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-            asynchronousType: method.asynchronousType,
-            swiftFunction: method.swiftFunction,
-            isPublic: false,
-=======
-            isAsynchronous: method.isAsynchronous,
-            isAsynchronousCallback: method.isAsynchronousCallback,
+            asynchronousType: _hostMethodAsynchronousType(method, generatorOptions),
             swiftFunction: method.swiftFunction,
             ffiUserApi: generatorOptions.useFfi,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+            isPublic: false,
           ),
         );
       }
@@ -1939,12 +1867,8 @@ if (wrapped == nil) {
     indent.writeln(
       '$_docCommentPrefix Generated setup class from Golubets to handle messages through the `binaryMessenger`.',
     );
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
     indent.write('public class ${apiName}Setup ');
     indent.addScoped('{', '}', () {
-=======
-    indent.writeScoped('class ${apiName}Setup {', '}', () {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
       indent.writeln(
         'static var codec: FlutterStandardMessageCodec { ${_getMessageCodecName(generatorOptions)}.shared }',
       );
@@ -1981,12 +1905,7 @@ if (wrapped == nil) {
             channelName: '${makeChannelName(api, method, dartPackageName)}\\(channelSuffix)',
             parameters: method.parameters,
             returnType: method.returnType,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
             asynchronousType: method.asynchronousType,
-=======
-            isAsynchronous: method.isAsynchronous,
-            isAsynchronousCallback: method.isAsynchronousCallback,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
             swiftFunction: method.swiftFunction,
             documentationComments: method.documentationComments,
             serialBackgroundQueue: method.taskQueueType == TaskQueueType.serialBackgroundThread
@@ -2430,7 +2349,7 @@ static func isNullish(_ value: Any?) -> Bool {
     return true
   }
 
-  return innerValue is NSNull${generatorOptions.useFfi ? ' || innerValue is ${_classNamePrefix}PigeonInternalNull' : ''}
+  return innerValue is NSNull${generatorOptions.useFfi ? ' || innerValue is ${_classNamePrefix}GolubetsInternalNull' : ''}
 }''');
   }
 
@@ -2729,7 +2648,7 @@ static func deepHash(value: Any?, hasher: inout Hasher) {
 
     indent.format('''
 // Enum to represent the Dart TypedData types
-enum ${_classNamePrefix}PigeonInternalNumberType: Int {
+enum ${_classNamePrefix}GolubetsInternalNumberType: Int {
   case uint8 = 0
   case int32 = 1
   case int64 = 2
@@ -2737,7 +2656,7 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
   case float64 = 4
 }
 
-@objc public class ${_classNamePrefix}PigeonTypedData: NSObject {
+@objc public class ${_classNamePrefix}GolubetsTypedData: NSObject {
   @objc public let data: NSData
   @objc public let type: Int
 
@@ -2748,38 +2667,38 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
 
   public init(_ data: [UInt8]) {
     self.data = NSData(bytes: data, length: data.count)
-    self.type = ${_classNamePrefix}PigeonInternalNumberType.uint8.rawValue
+    self.type = ${_classNamePrefix}GolubetsInternalNumberType.uint8.rawValue
   }
 
   public init(_ data: [Int32]) {
     self.data = NSData(bytes: data, length: data.count * MemoryLayout<Int32>.size)
-    self.type = ${_classNamePrefix}PigeonInternalNumberType.int32.rawValue
+    self.type = ${_classNamePrefix}GolubetsInternalNumberType.int32.rawValue
   }
 
   public init(_ data: [Int64]) {
     self.data = NSData(bytes: data, length: data.count * MemoryLayout<Int64>.size)
-    self.type = ${_classNamePrefix}PigeonInternalNumberType.int64.rawValue
+    self.type = ${_classNamePrefix}GolubetsInternalNumberType.int64.rawValue
   }
 
   public init(_ data: [Float32]) {
     self.data = NSData(bytes: data, length: data.count * MemoryLayout<Float32>.size)
-    self.type = ${_classNamePrefix}PigeonInternalNumberType.float32.rawValue
+    self.type = ${_classNamePrefix}GolubetsInternalNumberType.float32.rawValue
   }
 
   public init(_ data: [Float64]) {
     self.data = NSData(bytes: data, length: data.count * MemoryLayout<Float64>.size)
-    self.type = ${_classNamePrefix}PigeonInternalNumberType.float64.rawValue
+    self.type = ${_classNamePrefix}GolubetsInternalNumberType.float64.rawValue
   }
 
   /// Returns the data as a [UInt8] array, if the type is .uint8
   public func toUint8Array() -> [UInt8]? {
-    guard type == ${_classNamePrefix}PigeonInternalNumberType.uint8.rawValue else { return nil }
+    guard type == ${_classNamePrefix}GolubetsInternalNumberType.uint8.rawValue else { return nil }
     return [UInt8](data as Data)
   }
 
   /// Returns the data as a [Int32] array, if the type is .int32
   public func toInt32Array() -> [Int32]? {
-    guard type == ${_classNamePrefix}PigeonInternalNumberType.int32.rawValue else { return nil }
+    guard type == ${_classNamePrefix}GolubetsInternalNumberType.int32.rawValue else { return nil }
     guard data.length % MemoryLayout<Int32>.size == 0 else { return nil }
     let count = data.length / MemoryLayout<Int32>.size
     var array = [Int32](repeating: 0, count: count)
@@ -2789,7 +2708,7 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
 
   /// Returns the data as a [Int64] array, if the type is .int64
   public func toInt64Array() -> [Int64]? {
-    guard type == ${_classNamePrefix}PigeonInternalNumberType.int64.rawValue else { return nil }
+    guard type == ${_classNamePrefix}GolubetsInternalNumberType.int64.rawValue else { return nil }
     guard data.length % MemoryLayout<Int64>.size == 0 else { return nil }
     let count = data.length / MemoryLayout<Int64>.size
     var array = [Int64](repeating: 0, count: count)
@@ -2799,7 +2718,7 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
 
   /// Returns the data as a [Float32] array, if the type is .float32
   public func toFloat32Array() -> [Float32]? {
-    guard type == ${_classNamePrefix}PigeonInternalNumberType.float32.rawValue else { return nil }
+    guard type == ${_classNamePrefix}GolubetsInternalNumberType.float32.rawValue else { return nil }
     guard data.length % MemoryLayout<Float32>.size == 0 else { return nil }
     let count = data.length / MemoryLayout<Float32>.size
     var array = [Float32](repeating: 0, count: count)
@@ -2809,7 +2728,7 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
 
   /// Returns the data as a [Float64] array (Array<Double>), if the type is .float64
   public func toFloat64Array() -> [Double]? {
-    guard type == ${_classNamePrefix}PigeonInternalNumberType.float64.rawValue else { return nil }
+    guard type == ${_classNamePrefix}GolubetsInternalNumberType.float64.rawValue else { return nil }
     guard data.length % MemoryLayout<Double>.size == 0 else { return nil }
     let count = data.length / MemoryLayout<Double>.size
     var array = [Double](repeating: 0, count: count)
@@ -2820,17 +2739,13 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
   ''');
   }
 
-  void _writePigeonInternal(InternalSwiftOptions generatorOptions, Root root, Indent indent) {
+  void _writeGolubetsInternal(InternalSwiftOptions generatorOptions, Root root, Indent indent) {
     indent.newln();
     final String uniqueComponent = generatorOptions.fileSpecificClassNameComponent ?? '';
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
     indent.writeScoped('enum ${uniqueComponent}GolubetsInternal {', '}', () {
-=======
-    indent.writeScoped('enum ${uniqueComponent}PigeonInternal {', '}', () {
       if (generatorOptions.useFfi) {
         indent.writeln('static let defaultInstanceName = "$defaultNativeInteropInstanceName"');
       }
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
       _writeIsNullish(generatorOptions, indent);
       if (root.classes.isNotEmpty) {
         _writeDeepEquals(generatorOptions, indent);
@@ -2860,7 +2775,7 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
       _writeNumberWrapper(root, indent);
     }
 
-    _writePigeonInternal(generatorOptions, root, indent);
+    _writeGolubetsInternal(generatorOptions, root, indent);
     _writeNilOrValue(indent);
   }
 
@@ -2955,7 +2870,6 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
     required String channelName,
     required List<Parameter> parameters,
     required TypeDeclaration returnType,
-    bool isAsynchronous = true,
     bool isAsynchronousCallback = false,
     required String? swiftFunction,
   }) {
@@ -2964,15 +2878,12 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
       parameters: parameters,
       returnType: returnType,
       errorTypeName: _getErrorClassName(generatorOptions),
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-=======
-      isAsynchronous: isAsynchronous,
-      isAsynchronousCallback: isAsynchronousCallback,
-      isMainActor: isAsynchronous && !isAsynchronousCallback,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+      isMainActor: true,
       swiftFunction: swiftFunction,
       getParameterName: _getSafeArgumentName,
-      asynchronousType: AsynchronousType.callback,
+      asynchronousType: isAsynchronousCallback
+          ? AsynchronousType.callback
+          : const AwaitAsynchronous(swiftOptions: SwiftAwaitAsynchronousOptions(throws: true)),
       isPublic: true,
     );
 
@@ -3039,7 +2950,7 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
         }, addTrailingNewline: false);
         if (!returnType.isNullable && !returnType.isVoid) {
           indent.addScoped(
-            'else if ${_classNamePrefix}PigeonInternal.isNullish(listResponse[0]) {',
+            'else if ${_classNamePrefix}GolubetsInternal.isNullish(listResponse[0]) {',
             '} ',
             () {
               indent.writeln(
@@ -3094,11 +3005,6 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
     required String channelName,
     required Iterable<Parameter> parameters,
     required TypeDeclaration returnType,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-=======
-    required bool isAsynchronous,
-    bool isAsynchronousCallback = false,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
     required String? swiftFunction,
     String? serialBackgroundQueue,
     String setHandlerCondition = 'let api = api',
@@ -3173,7 +3079,6 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
             }
           });
         }
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
         final bool throws = switch (asynchronousType) {
           CallbackAsynchronous() => false,
           AwaitAsynchronous(:final SwiftAwaitAsynchronousOptions swiftOptions) =>
@@ -3182,49 +3087,18 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
         };
         final tryStatement = throws ? 'try ' : '';
         final awaitKeyword = asynchronousType.isAwait ? 'await ' : '';
-=======
-        final bool useAsync = isAsynchronous && !isAsynchronousCallback;
-        final tryStatement = isAsynchronous ? '' : 'try ';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
         late final String call;
         if (onCreateCall == null) {
           // Empty parens are not required when calling a method whose only
           // argument is a trailing closure.
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
           final argumentString = methodArgument.isEmpty && asynchronousType.isCallback
-=======
-          final argumentString = methodArgument.isEmpty && isAsynchronousCallback
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
               ? ''
               : '(${methodArgument.join(', ')})';
           call = '$tryStatement${awaitKeyword}api.${components.name}$argumentString';
         } else {
           call = onCreateCall(methodArgument, apiVarName: 'api');
         }
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
         if (asynchronousType.isCallback) {
-=======
-        if (useAsync) {
-          final taskDeclaration = serialBackgroundQueue == null ? 'Task { @MainActor in' : 'Task {';
-          indent.writeln(taskDeclaration);
-          indent.nest(1, () {
-            indent.write('do ');
-            indent.addScoped('{', '}', () {
-              if (returnType.isVoid) {
-                indent.writeln('try await $call');
-                indent.writeln('reply(wrapResult(nil))');
-              } else {
-                indent.writeln('let result = try await $call');
-                indent.writeln('reply(wrapResult(result))');
-              }
-            }, addTrailingNewline: false);
-            indent.addScoped(' catch {', '}', () {
-              indent.writeln('reply(wrapError(error))');
-            });
-          });
-          indent.writeln('}');
-        } else if (isAsynchronous) {
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
           final resultName = returnType.isVoid ? 'nil' : 'res';
           final successVariableInit = returnType.isVoid ? '' : '(let res)';
           indent.write('$call ');
@@ -3572,12 +3446,7 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
           ...method.parameters,
         ],
         returnType: method.returnType,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
         asynchronousType: method.asynchronousType,
-=======
-        isAsynchronous: method.isAsynchronous,
-        isAsynchronousCallback: true,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
         errorTypeName: 'Error',
         isPublic: false,
       );
@@ -3778,12 +3647,7 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
                 name: method.name,
                 channelName: makeChannelName(api, method, dartPackageName),
                 returnType: method.returnType,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
                 asynchronousType: method.asynchronousType,
-=======
-                isAsynchronous: method.isAsynchronous,
-                isAsynchronousCallback: true,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
                 swiftFunction: null,
                 onCreateCall: (List<String> methodParameters, {required String apiVarName}) {
                   final tryStatement = method.asynchronousType.isCallback ? '' : 'try ';
@@ -3840,11 +3704,6 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
       name: 'golubetsNewInstance',
       parameters: <Parameter>[Parameter(name: 'golubetsInstance', type: apiAsTypeDeclaration)],
       returnType: const TypeDeclaration.voidDeclaration(),
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-=======
-      isAsynchronous: true,
-      isAsynchronousCallback: true,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
       errorTypeName: _getErrorClassName(generatorOptions),
       asynchronousType: AsynchronousType.callback,
       isPublic: true,
@@ -3954,11 +3813,6 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
           ...method.parameters,
         ],
         returnType: method.returnType,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-=======
-        isAsynchronous: true,
-        isAsynchronousCallback: true,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
         errorTypeName: _getErrorClassName(generatorOptions),
         getParameterName: _getSafeArgumentName,
         asynchronousType: AsynchronousType.callback,
@@ -4024,18 +3878,7 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
     indent.newln();
     indent.writeln('/// Error class for passing custom error details to Dart side.');
     indent.writeScoped(
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-      'public final class ${_getErrorClassName(generatorOptions)}: Error {',
-      '}',
-      () {
-        indent.writeln('let code: String');
-        indent.writeln('let message: String?');
-        indent.writeln('let details: Sendable?');
-        indent.newln();
-        indent.writeScoped(
-          'public init(code: String, message: String?, details: Sendable?) {',
-=======
-      '${objc}final class ${_getErrorClassName(generatorOptions)}: ${generatorOptions.useFfi ? 'NSObject, ' : ''}Error {',
+      '${objc}public final class ${_getErrorClassName(generatorOptions)}: ${generatorOptions.useFfi ? 'NSObject, ' : ''}Error {',
       '}',
       () {
         final declaration = generatorOptions.useFfi ? '${objc}var' : 'let';
@@ -4048,8 +3891,7 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
         }
         indent.newln();
         indent.writeScoped(
-          '${objc}init(code: String${generatorOptions.useFfi ? '?' : ''}, message: String?, details: ${generatorOptions.useFfi ? 'String' : 'Sendable'}?) {',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+          '${objc}public init(code: String${generatorOptions.useFfi ? '?' : ''}, message: String?, details: ${generatorOptions.useFfi ? 'String' : 'Sendable'}?) {',
           '}',
           () {
             indent.writeln('self.code = code');
@@ -4061,11 +3903,7 @@ enum ${_classNamePrefix}PigeonInternalNumberType: Int {
         indent.writeScoped('var localizedDescription: String {', '}', () {
           indent.writeScoped('return', '', () {
             indent.writeln(
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-              '"${_getErrorClassName(generatorOptions)}(code: \\(code), message: \\(message ?? "<nil>"), details: \\(details ?? "<nil>")"',
-=======
               '"${_getErrorClassName(generatorOptions)}(code: \\(code${generatorOptions.useFfi ? ' ?? "<nil>"' : ''}), message: \\(message ?? "<nil>"), details: \\(details ?? "<nil>"))"',
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
             );
           }, addTrailingNewline: false);
         });
@@ -4337,7 +4175,6 @@ String _camelCase(String text) {
 
 /// Converts a [List] of [TypeDeclaration]s to a comma separated [String] to be
 /// used in Swift code.
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
 String _flattenTypeArguments(List<TypeDeclaration> args) {
   return args.map((TypeDeclaration e) => _nullSafeSwiftTypeForDartType(e)).join(', ');
 }
@@ -4478,10 +4315,6 @@ String _flattenTypeArgumentsWithSelectiveHashableConstraints(
         return hashableTypeParams.contains(e.baseName) ? '$typeName: Hashable' : typeName;
       })
       .join(', ');
-=======
-String _flattenSwiftTypeArguments(List<TypeDeclaration> args, {bool useFfi = false}) {
-  return args.map((TypeDeclaration e) => _swiftTypeForDartType(e, useFfi: useFfi)).join(', ');
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
 }
 
 String _swiftTypeForBuiltinGenericDartType(TypeDeclaration type, {bool useFfi = false}) {
@@ -4502,7 +4335,7 @@ String _swiftTypeForBuiltinGenericDartType(TypeDeclaration type, {bool useFfi = 
     } else if (type.baseName == 'Map') {
       return '[${_nullSafeSwiftTypeForDartType(type.typeArguments.first, mapKey: true)}: ${_nullSafeSwiftTypeForDartType(type.typeArguments.last)}]';
     } else {
-      return '${type.baseName}<${_flattenSwiftTypeArguments(type.typeArguments)}>';
+      return '${type.baseName}<${_flattenTypeArguments(type.typeArguments)}>';
     }
   }
 }
@@ -4575,11 +4408,11 @@ String? _ffiTypeForBuiltinDartType(
     'String': 'NSString',
     'int': 'NSNumber',
     'double': 'NSNumber',
-    'Uint8List': '${_classNamePrefix}PigeonTypedData',
-    'Int32List': '${_classNamePrefix}PigeonTypedData',
-    'Int64List': '${_classNamePrefix}PigeonTypedData',
-    'Float32List': '${_classNamePrefix}PigeonTypedData',
-    'Float64List': '${_classNamePrefix}PigeonTypedData',
+    'Uint8List': '${_classNamePrefix}GolubetsTypedData',
+    'Int32List': '${_classNamePrefix}GolubetsTypedData',
+    'Int64List': '${_classNamePrefix}GolubetsTypedData',
+    'Float32List': '${_classNamePrefix}GolubetsTypedData',
+    'Float64List': '${_classNamePrefix}GolubetsTypedData',
     'Object': 'NSObject',
   };
   if (type.baseName == 'Object' && collectionSubType) {
@@ -4622,13 +4455,11 @@ String _swiftTypeForDartType(
         ffiTypedData: ffiTypedData,
       ) ??
       _swiftTypeForProxyApiType(type) ??
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-      (type.typeArguments.isEmpty
+      (useFfi && type.isClass
+          ? '${type.baseName}Bridge'
+          : type.typeArguments.isEmpty
           ? type.baseName
           : '${type.baseName}<${_flattenTypeArguments(type.typeArguments)}>');
-=======
-      (useFfi && type.isClass ? '${type.baseName}Bridge' : type.baseName);
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
 }
 
 String _ffiTypeForDartType(
@@ -4662,18 +4493,24 @@ String _nullSafeFfiTypeForDartType(
   return '${_ffiTypeForDartType(type, collectionSubType: collectionSubType, forceNullable: forceNullable)}${(type.isNullable && type.baseName != 'Object' && !collectionSubType) || forceNullable ? '?' : ''}';
 }
 
+/// Returns the [AsynchronousType] used for the user-facing signature of a host [method].
+///
+/// FFI bridges always `await` the user implementation, so asynchronous methods use
+/// async/await there regardless of the requested style.
+AsynchronousType _hostMethodAsynchronousType(Method method, InternalSwiftOptions generatorOptions) {
+  if (generatorOptions.useFfi && method.asynchronousType.isCallback) {
+    return const AwaitAsynchronous(swiftOptions: SwiftAwaitAsynchronousOptions(throws: true));
+  }
+  return method.asynchronousType;
+}
+
 String _getMethodSignature({
   required String name,
   required Iterable<Parameter> parameters,
   required TypeDeclaration returnType,
   required String errorTypeName,
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-=======
-  bool isAsynchronous = false,
   bool ffiUserApi = false,
-  bool isAsynchronousCallback = false,
   bool isMainActor = false,
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
   String? swiftFunction,
   bool ffiBridgeApi = false,
   _SwiftFunctionComponents? components,
@@ -4687,12 +4524,8 @@ String _getMethodSignature({
     returnType: returnType,
     swiftFunction: swiftFunction,
   );
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
-  final public = isPublic ? 'public' : '';
-  final String returnTypeString = returnType.isVoid
-=======
+  final public = isPublic ? 'public ' : '';
   String returnTypeString = returnType.isVoid
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
       ? 'Void'
       : _nullSafeSwiftTypeForDartType(returnType, ffiTypedData: ffiUserApi);
 
@@ -4720,7 +4553,9 @@ String _getMethodSignature({
     types = parameters.map((NamedType e) => _nullSafeFfiTypeForDartType(e.type));
     throwString = '';
     errorParam = '${parameters.isEmpty ? '' : ', '}wrappedError: $errorTypeName';
-    asyncString = isAsynchronous ? ' async${returnType.isVoid ? '' : ' -> $returnTypeString'}' : '';
+    asyncString = asynchronousType.isNone
+        ? ''
+        : ' async${returnType.isVoid ? '' : ' -> $returnTypeString'}';
   }
 
   final Iterable<String> names = indexMap(parameters, getParameterName);
@@ -4732,14 +4567,23 @@ String _getMethodSignature({
     return '${label != name ? '$label ' : ''}$name: $type';
   }).join(', ');
 
-<<<<<<< HEAD:packages/golubets/lib/src/swift/swift_generator.dart
+  if (ffiBridgeApi) {
+    if (!asynchronousType.isNone) {
+      return '$objc${public}func $name($parameterSignature$errorParam)$asyncString';
+    } else {
+      final returnTypeSuffix = returnType.isVoid ? '' : ' -> $returnTypeString';
+      return '$objc${public}func $name($parameterSignature$errorParam)$throwString$returnTypeSuffix';
+    }
+  }
+
   if (asynchronousType.isCallback) {
     if (parameters.isEmpty) {
-      return '$public func ${components.name}(completion: @escaping (Result<$returnTypeString, $errorTypeName>) -> Void)';
+      return '${public}func ${components.name}(completion: @escaping (Result<$returnTypeString, $errorTypeName>) -> Void)';
     } else {
-      return '$public func ${components.name}($parameterSignature, completion: @escaping (Result<$returnTypeString, $errorTypeName>) -> Void)';
+      return '${public}func ${components.name}($parameterSignature, completion: @escaping (Result<$returnTypeString, $errorTypeName>) -> Void)';
     }
   } else {
+    final mainActorPrefix = isMainActor && asynchronousType.isAwait ? '@MainActor ' : '';
     final asyncKeyword = (asynchronousType.isAwait) ? ' async' : '';
     final String throwsKeyword = switch (asynchronousType) {
       CallbackAsynchronous() => '',
@@ -4748,36 +4592,11 @@ String _getMethodSignature({
       NoAsynchronous() => ' throws',
     };
     if (returnType.isVoid) {
-      return '$public func ${components.name}($parameterSignature)$asyncKeyword$throwsKeyword';
+      return '$mainActorPrefix${public}func ${components.name}($parameterSignature)$asyncKeyword$throwsKeyword';
     } else {
-      return '$public func ${components.name}($parameterSignature)$asyncKeyword$throwsKeyword -> $returnTypeString';
-=======
-  final String methodName = ffiBridgeApi ? name : components.name;
-
-  if (ffiBridgeApi) {
-    if (isAsynchronous) {
-      return '${objc}func $methodName($parameterSignature$errorParam)$asyncString';
-    } else {
-      final returnTypeSuffix = returnType.isVoid ? '' : ' -> $returnTypeString';
-      return '${objc}func $methodName($parameterSignature$errorParam)$throwString$returnTypeSuffix';
->>>>>>> filtered-upstream/main:packages/pigeon/lib/src/swift/swift_generator.dart
+      return '$mainActorPrefix${public}func ${components.name}($parameterSignature)$asyncKeyword$throwsKeyword -> $returnTypeString';
     }
   }
-
-  if (isAsynchronous && !isAsynchronousCallback) {
-    final mainActorPrefix = isMainActor ? '@MainActor ' : '';
-    final returnTypeSuffix = returnType.isVoid ? '' : ' -> $returnTypeString';
-    return '${mainActorPrefix}func ${components.name}($parameterSignature) async throws$returnTypeSuffix';
-  }
-
-  if (isAsynchronous) {
-    final completion = 'completion: @escaping (Result<$returnTypeString, $errorTypeName>) -> Void';
-    final params = parameters.isEmpty ? completion : '$parameterSignature, $completion';
-    return 'func $methodName($params)';
-  }
-
-  final returnTypeSuffix = returnType.isVoid ? '' : ' -> $returnTypeString';
-  return 'func $methodName($parameterSignature) throws$returnTypeSuffix';
 }
 
 /// A class that represents a Swift function argument.

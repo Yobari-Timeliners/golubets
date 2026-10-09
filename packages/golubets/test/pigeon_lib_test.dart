@@ -5,22 +5,15 @@
 import 'dart:async';
 import 'dart:io';
 
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
 import 'package:golubets/src/ast.dart';
+import 'package:golubets/src/dart/dart_generator.dart';
 import 'package:golubets/src/generator_tools.dart';
+import 'package:golubets/src/kotlin/jnigen_config_generator.dart';
+import 'package:golubets/src/kotlin/kotlin_generator.dart';
 import 'package:golubets/src/pigeon_lib.dart';
 import 'package:golubets/src/pigeon_lib_internal.dart';
-=======
+import 'package:golubets/src/swift/swift_generator.dart';
 import 'package:path/path.dart' as path;
-import 'package:pigeon/src/ast.dart';
-import 'package:pigeon/src/dart/dart_generator.dart';
-import 'package:pigeon/src/generator_tools.dart';
-import 'package:pigeon/src/kotlin/jnigen_config_generator.dart';
-import 'package:pigeon/src/kotlin/kotlin_generator.dart';
-import 'package:pigeon/src/pigeon_lib.dart';
-import 'package:pigeon/src/pigeon_lib_internal.dart';
-import 'package:pigeon/src/swift/swift_generator.dart';
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
 import 'package:test/test.dart';
 
 class _ValidatorGeneratorAdapter implements GeneratorAdapter {
@@ -123,7 +116,7 @@ void main() {
   });
 
   test('parse args - multiple swift_out', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubetsOptions opts = Golubets.parseArgs(<String>[
       '--swift_out',
       'Foo.swift',
       '--swift_out',
@@ -133,7 +126,7 @@ void main() {
   });
 
   test('parse args - comma-separated swift_out', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--swift_out', 'Foo.swift,Bar.swift']);
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--swift_out', 'Foo.swift,Bar.swift']);
     expect(opts.swiftOut, equals(<String>['Foo.swift', 'Bar.swift']));
   });
 
@@ -153,7 +146,7 @@ void main() {
   });
 
   test('parse args - kotlin_jni_classpaths', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubetsOptions opts = Golubets.parseArgs(<String>[
       '--kotlin_jni_classpaths',
       'foo/bar',
       '--kotlin_jni_classpaths',
@@ -188,12 +181,12 @@ void main() {
   });
 
   test('parse args - app_directory', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--app_directory', './foo/']);
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--app_directory', './foo/']);
     expect(opts.appDirectory, equals('./foo/'));
   });
 
   test('parse args - swift options', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubetsOptions opts = Golubets.parseArgs(<String>[
       '--swift_error_class_name',
       'MyError',
       '--no-swift_include_error_class',
@@ -217,12 +210,12 @@ void main() {
   });
 
   test('parse args - java options', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--java_class_name', 'MyClass']);
+    final GolubetsOptions opts = Golubets.parseArgs(<String>['--java_class_name', 'MyClass']);
     expect(opts.javaOptions?.className, equals('MyClass'));
   });
 
   test('parse args - kotlin options', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubetsOptions opts = Golubets.parseArgs(<String>[
       '--kotlin_use_jni',
       '--kotlin_app_directory',
       './app/',
@@ -240,7 +233,7 @@ void main() {
   });
 
   test('parse args - cpp options', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubetsOptions opts = Golubets.parseArgs(<String>[
       '--cpp_header_include_path',
       'foo.h',
       '--cpp_header_out_path',
@@ -251,7 +244,7 @@ void main() {
   });
 
   test('parse args - gobject options', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>[
+    final GolubetsOptions opts = Golubets.parseArgs(<String>[
       '--gobject_header_include_path',
       'foo.h',
       '--gobject_header_out_path',
@@ -262,7 +255,10 @@ void main() {
   });
 
   test('parse args - objc options', () {
-    final PigeonOptions opts = Pigeon.parseArgs(<String>['--objc_header_include_path', 'foo.h']);
+    final GolubetsOptions opts = Golubets.parseArgs(<String>[
+      '--objc_header_include_path',
+      'foo.h',
+    ]);
     expect(opts.objcOptions?.headerIncludePath, equals('foo.h'));
   });
 
@@ -1543,9 +1539,9 @@ class Message {
     expect(options.cppOptions?.headerIncludePath, 'Header.path');
   });
 
-  test('@ConfigurePigeon swiftOut single', () {
+  test('@ConfigureGolubets swiftOut single', () {
     const code = '''
-@ConfigurePigeon(PigeonOptions(
+@ConfigureGolubets(GolubetsOptions(
   swiftOut: 'Foo.swift',
 ))
 class Message {
@@ -1554,14 +1550,14 @@ class Message {
 ''';
 
     final ParseResults results = parseSource(code);
-    final PigeonOptions options = PigeonOptions.fromMap(results.pigeonOptions!);
+    final GolubetsOptions options = GolubetsOptions.fromMap(results.golubetsOptions!);
     expect(options.swiftOut, 'Foo.swift');
     expect(options.swiftOutPaths, <String>['Foo.swift']);
   });
 
-  test('@ConfigurePigeon swiftOut multiple', () {
+  test('@ConfigureGolubets swiftOut multiple', () {
     const code = '''
-@ConfigurePigeon(PigeonOptions(
+@ConfigureGolubets(GolubetsOptions(
   swiftOut: <String>['Foo.swift', 'Bar.swift'],
 ))
 class Message {
@@ -1570,7 +1566,7 @@ class Message {
 ''';
 
     final ParseResults results = parseSource(code);
-    final PigeonOptions options = PigeonOptions.fromMap(results.pigeonOptions!);
+    final GolubetsOptions options = GolubetsOptions.fromMap(results.golubetsOptions!);
     expect(options.swiftOut, <String>['Foo.swift', 'Bar.swift']);
     expect(options.swiftOutPaths, <String>['Foo.swift', 'Bar.swift']);
   });
@@ -1589,8 +1585,8 @@ abstract class Api {
       input.writeAsStringSync(code);
       final String swift1 = path.join(dir.path, 'one.swift');
       final String swift2 = path.join(dir.path, 'two.swift');
-      final int result = await Pigeon.runWithOptions(
-        PigeonOptions(
+      final int result = await Golubets.runWithOptions(
+        GolubetsOptions(
           input: input.path,
           swiftOut: <String>[swift1, swift2],
           dartOut: path.join(dir.path, 'out.dart'),
@@ -1626,7 +1622,7 @@ abstract class Api {
       input.writeAsStringSync(code);
       final String swift1 = path.join(dir.path, 'one.swift');
       final String swift2 = path.join(dir.path, 'two.swift');
-      final int result = await Pigeon.run(<String>[
+      final int result = await Golubets.run(<String>[
         '--input',
         input.path,
         '--dart_out',
@@ -1745,14 +1741,8 @@ abstract class Api {
     });
   });
 
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
   test('run with GolubetsOptions', () async {
-    final completer = Completer<void>();
-    withTempFile('foo.dart', (File input) async {
-=======
-  test('run with PigeonOptions', () async {
     await withTempFileAsync('foo.dart', (File input) async {
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
       final generator = _ValidatorGeneratorAdapter(null);
       final int result = await Golubets.runWithOptions(
         GolubetsOptions(input: input.path, dartOut: 'foo.dart'),
@@ -2121,18 +2111,13 @@ abstract class Api {
 ''';
       await withTempFileAsync('foo.dart', (File input) async {
         input.writeAsStringSync(code);
-<<<<<<< HEAD:packages/golubets/test/pigeon_lib_test.dart
         final int result = await Golubets.runWithOptions(
-          GolubetsOptions(input: input.path, swiftOut: 'Foo.swift', dartOut: 'foo.dart'),
-=======
-        final int result = await Pigeon.runWithOptions(
-          PigeonOptions(
+          GolubetsOptions(
             input: input.path,
             swiftOut: path.join(input.parent.path, 'Foo.swift'),
             dartOut: path.join(input.parent.path, 'foo_out.dart'),
             dartPackageName: 'foo_package',
           ),
->>>>>>> filtered-upstream/main:packages/pigeon/test/pigeon_lib_test.dart
         );
         expect(result, isNot(0));
       });
@@ -2154,8 +2139,8 @@ dependencies:
 dev_dependencies:
   ffigen: ^20.0.0
 ''');
-          final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-            PigeonOptions(
+          final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+            GolubetsOptions(
               input: 'foo.dart',
               dartOut: '${tempDir.path}/lib/messages.dart',
               swiftOut: '${tempDir.path}/lib/messages.swift',
@@ -2186,8 +2171,8 @@ dependencies:
 dev_dependencies:
   ffigen: ^20.0.0
 ''');
-        final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-          PigeonOptions(
+        final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+          GolubetsOptions(
             input: 'foo.dart',
             dartOut: '${tempDir.path}/lib/messages.dart',
             swiftOut: '${tempDir.path}/lib/messages.swift',
@@ -2221,8 +2206,8 @@ dev_dependencies:
   objective_c: ^1.0.0
   ffigen: ^20.0.0
 ''');
-          final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-            PigeonOptions(
+          final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+            GolubetsOptions(
               input: 'foo.dart',
               dartOut: '${tempDir.path}/lib/messages.dart',
               swiftOut: '${tempDir.path}/lib/messages.swift',
@@ -2256,8 +2241,8 @@ dependencies:
   ffi: ^2.0.0
   objective_c: ^1.0.0
 ''');
-        final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-          PigeonOptions(
+        final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+          GolubetsOptions(
             input: 'foo.dart',
             dartOut: '${tempDir.path}/lib/messages.dart',
             swiftOut: '${tempDir.path}/lib/messages.swift',
@@ -2288,8 +2273,8 @@ dependencies:
 dev_dependencies:
   jnigen: ^20.0.0
 ''');
-        final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-          PigeonOptions(
+        final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+          GolubetsOptions(
             input: 'foo.dart',
             dartOut: '${tempDir.path}/lib/messages.dart',
             kotlinOut: '${tempDir.path}/lib/messages.kt',
@@ -2317,8 +2302,8 @@ name: my_package
 dev_dependencies:
   jnigen: ^20.0.0
 ''');
-        final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-          PigeonOptions(
+        final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+          GolubetsOptions(
             input: 'foo.dart',
             dartOut: '${tempDir.path}/lib/messages.dart',
             kotlinOut: '${tempDir.path}/lib/messages.kt',
@@ -2341,8 +2326,8 @@ dev_dependencies:
     test('validation fails if pubspec.yaml is not found', () async {
       final Directory tempDir = Directory.systemTemp.createTempSync('pigeon_no_pubspec_test_');
       try {
-        final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-          PigeonOptions(
+        final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+          GolubetsOptions(
             input: 'foo.dart',
             swiftOut: '${tempDir.path}/lib/messages.swift',
             appDirectory: tempDir.path,
@@ -2368,8 +2353,8 @@ dev_dependencies:
       try {
         final pubspecFile = File('${tempDir.path}/pubspec.yaml');
         pubspecFile.writeAsStringSync('invalid_yaml: [unclosed list');
-        final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-          PigeonOptions(
+        final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+          GolubetsOptions(
             input: 'foo.dart',
             swiftOut: '${tempDir.path}/lib/messages.swift',
             appDirectory: tempDir.path,
@@ -2421,8 +2406,8 @@ dev_dependencies:
         final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
         final sink = StringBuffer();
         const adapter = JnigenConfigGeneratorAdapter();
-        final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-          const PigeonOptions(
+        final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+          const GolubetsOptions(
             input: 'pigeons/messages.dart',
             dartOut: 'lib/src/messages.g.dart',
             kotlinOut: 'android/src/main/kotlin/com/example/Messages.g.kt',
@@ -2443,8 +2428,8 @@ dev_dependencies:
         final root = Root(apis: <Api>[], classes: <Class>[], enums: <Enum>[]);
         final sink = StringBuffer();
         const adapter = FfigenConfigGeneratorAdapter();
-        final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-          const PigeonOptions(
+        final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+          const GolubetsOptions(
             input: 'pigeons/messages.dart',
             dartOut: 'lib/src/messages.g.dart',
             swiftOut: 'darwin/Messages.g.swift',
@@ -2479,8 +2464,8 @@ dev_dependencies:
         enums: <Enum>[],
       );
       const adapter = SwiftGeneratorAdapter();
-      final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-        const PigeonOptions(
+      final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+        const GolubetsOptions(
           swiftOut: 'darwin/Messages.g.swift',
           swiftOptions: SwiftOptions(useFfi: true),
         ),
@@ -2510,8 +2495,8 @@ dev_dependencies:
         enums: <Enum>[],
       );
       const adapter = KotlinGeneratorAdapter();
-      final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-        const PigeonOptions(
+      final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+        const GolubetsOptions(
           kotlinOut: 'android/Messages.g.kt',
           kotlinOptions: KotlinOptions(useJni: true),
         ),
@@ -2546,8 +2531,8 @@ dev_dependencies:
         enums: <Enum>[],
       );
       const adapter = KotlinGeneratorAdapter();
-      final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-        const PigeonOptions(
+      final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+        const GolubetsOptions(
           kotlinOut: 'android/Messages.g.kt',
           kotlinOptions: KotlinOptions(useJni: true),
         ),
@@ -2597,8 +2582,8 @@ dev_dependencies:
           enums: <Enum>[],
         );
         const adapter = JnigenConfigGeneratorAdapter();
-        final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-          PigeonOptions(
+        final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+          GolubetsOptions(
             dartOut: '${tempDir.path}/lib/messages.g.dart',
             kotlinOut: '${tempDir.path}/android/Messages.g.kt',
             kotlinOptions: const KotlinOptions(useJni: true),
@@ -2729,8 +2714,8 @@ const String myConst = 'hello ${1 + 2}';
 
   group('Jnigen and Ffigen configDirectory placement', () {
     test('JnigenConfigGeneratorAdapter defaults target to plugin pubspec root level', () {
-      final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-        const PigeonOptions(
+      final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+        const GolubetsOptions(
           input: 'pigeons/messages.dart',
           kotlinOut: 'android/src/main/kotlin/com/example/Messages.kt',
           kotlinOptions: KotlinOptions(useJni: true),
@@ -2744,12 +2729,12 @@ const String myConst = 'hello ${1 + 2}';
           options.basePath ??
           '';
       final String configPath = getJnigenConfigPath(targetDir, options.input);
-      expect(configPath, equals('./tool/pigeon/messages_jnigen_config.dart'));
+      expect(configPath, equals('./tool/golubets/messages_jnigen_config.dart'));
     });
 
     test('JnigenConfigGeneratorAdapter uses explicit configDirectory', () {
-      final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-        const PigeonOptions(
+      final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+        const GolubetsOptions(
           input: 'pigeons/messages.dart',
           kotlinOut: 'android/src/main/kotlin/com/example/Messages.kt',
           kotlinOptions: KotlinOptions(useJni: true, configDirectory: 'custom/config/dir'),
@@ -2763,12 +2748,12 @@ const String myConst = 'hello ${1 + 2}';
           options.basePath ??
           '';
       final String configPath = getJnigenConfigPath(targetDir, options.input);
-      expect(configPath, equals('custom/config/dir/tool/pigeon/messages_jnigen_config.dart'));
+      expect(configPath, equals('custom/config/dir/tool/golubets/messages_jnigen_config.dart'));
     });
 
     test('FfigenConfigGeneratorAdapter defaults target to plugin pubspec root level', () {
-      final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-        const PigeonOptions(
+      final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+        const GolubetsOptions(
           input: 'pigeons/messages.dart',
           swiftOut: 'ios/Classes/Messages.swift',
           swiftOptions: SwiftOptions(useFfi: true),
@@ -2782,12 +2767,12 @@ const String myConst = 'hello ${1 + 2}';
           options.basePath ??
           '';
       final String configPath = getFfigenConfigPath(targetDir, options.input);
-      expect(configPath, equals('./tool/pigeon/messages_ffigen_config.dart'));
+      expect(configPath, equals('./tool/golubets/messages_ffigen_config.dart'));
     });
 
     test('FfigenConfigGeneratorAdapter uses explicit configDirectory', () {
-      final InternalPigeonOptions options = InternalPigeonOptions.fromPigeonOptions(
-        const PigeonOptions(
+      final InternalGolubetsOptions options = InternalGolubetsOptions.fromGolubetsOptions(
+        const GolubetsOptions(
           input: 'pigeons/messages.dart',
           swiftOut: 'ios/Classes/Messages.swift',
           swiftOptions: SwiftOptions(useFfi: true, configDirectory: 'example/'),
@@ -2801,7 +2786,20 @@ const String myConst = 'hello ${1 + 2}';
           options.basePath ??
           '';
       final String configPath = getFfigenConfigPath(targetDir, options.input);
-      expect(configPath, equals('example/tool/pigeon/messages_ffigen_config.dart'));
+      expect(configPath, equals('example/tool/golubets/messages_ffigen_config.dart'));
     });
+  });
+
+  test('asyncCallback parses as callback async', () {
+    const code = '''
+@HostApi()
+abstract class Api {
+  @asyncCallback
+  int doit();
+}
+''';
+    final ParseResults results = parseSource(code);
+    expect(results.errors, isEmpty);
+    expect(results.root.apis[0].methods[0].asynchronousType.isCallback, isTrue);
   });
 }

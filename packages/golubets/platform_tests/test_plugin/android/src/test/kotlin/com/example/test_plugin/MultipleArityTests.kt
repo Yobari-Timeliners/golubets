@@ -9,9 +9,10 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import java.nio.ByteBuffer
-import kotlinx.coroutines.test.runTest
+import java.util.ArrayList
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MultipleArityTests {
@@ -44,7 +45,7 @@ class MultipleArityTests {
   }
 
   @Test
-  fun testSimpleFlutter() = runTest {
+  fun testSimpleFlutter() {
     val binaryMessenger = mockk<BinaryMessenger>()
     val api = MultipleArityFlutterApi(binaryMessenger)
 
@@ -65,7 +66,12 @@ class MultipleArityTests {
           reply.reply(replyData)
         }
 
-    val res = api.subtract(inputX, inputY)
-    assertEquals(inputX - inputY, res)
+    var didCall = false
+    api.subtract(inputX, inputY) {
+      didCall = true
+      assertEquals(inputX - inputY, it.getOrNull())
+    }
+
+    assertTrue(didCall)
   }
 }

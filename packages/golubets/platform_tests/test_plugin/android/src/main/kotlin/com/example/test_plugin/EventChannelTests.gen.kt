@@ -882,7 +882,7 @@ abstract class StreamIntsStreamHandler : EventChannelTestsGolubetsEventChannelWr
           .setStreamHandler(internalStreamHandler)
     }
   }
-  // Implement methods from EventChannelTestsPigeonEventChannelWrapper
+  // Implement methods from EventChannelTestsGolubetsEventChannelWrapper
   override fun onListen(p0: Any?, sink: GolubetsEventSink<Long>) {}
 
   override fun onCancel(p0: Any?) {}
@@ -907,7 +907,7 @@ abstract class StreamEventsStreamHandler :
           .setStreamHandler(internalStreamHandler)
     }
   }
-  // Implement methods from EventChannelTestsPigeonEventChannelWrapper
+  // Implement methods from EventChannelTestsGolubetsEventChannelWrapper
   override fun onListen(p0: Any?, sink: GolubetsEventSink<PlatformEvent>) {}
 
   override fun onCancel(p0: Any?) {}
@@ -931,7 +931,7 @@ abstract class StreamConsistentNumbersStreamHandler :
           .setStreamHandler(internalStreamHandler)
     }
   }
-  // Implement methods from EventChannelTestsPigeonEventChannelWrapper
+  // Implement methods from EventChannelTestsGolubetsEventChannelWrapper
   override fun onListen(p0: Any?, sink: GolubetsEventSink<Long>) {}
 
   override fun onCancel(p0: Any?) {}

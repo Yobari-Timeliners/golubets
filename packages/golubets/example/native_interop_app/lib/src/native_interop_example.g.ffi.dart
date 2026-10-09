@@ -15,7 +15,126 @@ import 'package:ffi/ffi.dart' as pkg_ffi;
 
 const _$objcVersionCheck = objc.ObjCVersionCheck(9, 6);
 
-/// Generated setup class from Pigeon to register implemented NativeInteropExampleApi classes.
+/// Error class for passing custom error details to Dart side.
+extension type GolubetsError._(objc.ObjCObject object$) implements objc.ObjCObject, objc.NSObject {
+  /// Constructs a [GolubetsError] that points to the same underlying object as [other].
+  GolubetsError.as(objc.ObjCObject other) : object$ = other {
+    assert(isA(object$));
+  }
+
+  /// Constructs a [GolubetsError] that wraps the given raw object pointer.
+  GolubetsError.fromPointer(
+    ffi.Pointer<objc.ObjCObjectImpl> other, {
+    bool retain = false,
+    bool release = false,
+  }) : object$ = objc.ObjCObject(other, retain: retain, release: release) {
+    assert(isA(object$));
+  }
+
+  /// Returns whether [obj] is an instance of [GolubetsError].
+  static bool isA(objc.ObjCObject? obj) => obj == null
+      ? false
+      : _objc_msgSend_19nvye5(obj.ref.pointer, _sel_isKindOfClass_, _class_GolubetsError);
+
+  /// alloc
+  static GolubetsError alloc() {
+    final $ret = _objc_msgSend_151sglz(_class_GolubetsError, _sel_alloc);
+    return GolubetsError.fromPointer($ret, retain: false, release: true);
+  }
+
+  /// allocWithZone:
+  static GolubetsError allocWithZone(ffi.Pointer<objc.NSZone> zone) {
+    final $ret = _objc_msgSend_1cwp428(_class_GolubetsError, _sel_allocWithZone_, zone);
+    return GolubetsError.fromPointer($ret, retain: false, release: true);
+  }
+
+  /// new
+  static GolubetsError new$() {
+    final $ret = _objc_msgSend_151sglz(_class_GolubetsError, _sel_new);
+    return GolubetsError.fromPointer($ret, retain: false, release: true);
+  }
+
+  /// Returns a new instance of GolubetsError constructed with the default `new` method.
+  GolubetsError() : this.as(new$().object$);
+}
+
+extension GolubetsError$Methods on GolubetsError {
+  /// code
+  objc.NSString? get code {
+    final _$$ref = object$.ref;
+    final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_code);
+    return $ret.address == 0 ? null : objc.NSString.fromPointer($ret, retain: true, release: true);
+  }
+
+  /// details
+  objc.NSString? get details {
+    final _$$ref = object$.ref;
+    final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_details);
+    return $ret.address == 0 ? null : objc.NSString.fromPointer($ret, retain: true, release: true);
+  }
+
+  /// init
+  GolubetsError init() {
+    final _$$ref = object$.ref;
+    objc.checkOsVersionInternal(
+      'GolubetsError.init',
+      iOS: (false, (2, 0, 0)),
+      macOS: (false, (10, 0, 0)),
+    );
+    final $ret = _objc_msgSend_151sglz(_$$ref.retainAndReturnPointer(), _sel_init);
+    return GolubetsError.fromPointer($ret, retain: false, release: true);
+  }
+
+  /// initWithCode:message:details:
+  GolubetsError initWithCode(
+    objc.NSString? code, {
+    objc.NSString? message,
+    objc.NSString? details,
+  }) {
+    final _$$ref = object$.ref;
+    final _$$ref$1 = code?.ref;
+    final _$$ref$2 = message?.ref;
+    final _$$ref$3 = details?.ref;
+    final $ret = _objc_msgSend_11spmsz(
+      _$$ref.retainAndReturnPointer(),
+      _sel_initWithCode_message_details_,
+      _$$ref$1?.pointer ?? ffi.nullptr,
+      _$$ref$2?.pointer ?? ffi.nullptr,
+      _$$ref$3?.pointer ?? ffi.nullptr,
+    );
+    return GolubetsError.fromPointer($ret, retain: false, release: true);
+  }
+
+  /// message
+  objc.NSString? get message {
+    final _$$ref = object$.ref;
+    final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_message);
+    return $ret.address == 0 ? null : objc.NSString.fromPointer($ret, retain: true, release: true);
+  }
+
+  /// setCode:
+  set code(objc.NSString? value) {
+    final _$$ref = object$.ref;
+    final _$$ref$1 = value?.ref;
+    _objc_msgSend_xtuoz7(_$$ref.pointer, _sel_setCode_, _$$ref$1?.pointer ?? ffi.nullptr);
+  }
+
+  /// setDetails:
+  set details(objc.NSString? value) {
+    final _$$ref = object$.ref;
+    final _$$ref$1 = value?.ref;
+    _objc_msgSend_xtuoz7(_$$ref.pointer, _sel_setDetails_, _$$ref$1?.pointer ?? ffi.nullptr);
+  }
+
+  /// setMessage:
+  set message(objc.NSString? value) {
+    final _$$ref = object$.ref;
+    final _$$ref$1 = value?.ref;
+    _objc_msgSend_xtuoz7(_$$ref.pointer, _sel_setMessage_, _$$ref$1?.pointer ?? ffi.nullptr);
+  }
+}
+
+/// Generated setup class from Golubets to register implemented NativeInteropExampleApi classes.
 extension type NativeInteropExampleApiSetup._(objc.ObjCObject object$)
     implements objc.ObjCObject, objc.NSObject {
   /// Constructs a [NativeInteropExampleApiSetup] that points to the same underlying object as [other].
@@ -82,7 +201,7 @@ extension type NativeInteropExampleApiSetup._(objc.ObjCObject object$)
 
 extension NativeInteropExampleApiSetup$Methods on NativeInteropExampleApiSetup {
   /// doSomethingWithWrappedError:
-  void doSomethingWithWrappedError(PigeonError wrappedError) {
+  void doSomethingWithWrappedError(GolubetsError wrappedError) {
     final _$$ref = object$.ref;
     final _$$ref$1 = wrappedError.ref;
     _objc_msgSend_xtuoz7(_$$ref.pointer, _sel_doSomethingWithWrappedError_, _$$ref$1.pointer);
@@ -98,6 +217,144 @@ extension NativeInteropExampleApiSetup$Methods on NativeInteropExampleApiSetup {
     );
     final $ret = _objc_msgSend_151sglz(_$$ref.retainAndReturnPointer(), _sel_init);
     return NativeInteropExampleApiSetup.fromPointer($ret, retain: false, release: true);
+  }
+}
+
+/// NativeInteropExampleGolubetsInternalNull
+extension type NativeInteropExampleGolubetsInternalNull._(objc.ObjCObject object$)
+    implements objc.ObjCObject, objc.NSObject {
+  /// Constructs a [NativeInteropExampleGolubetsInternalNull] that points to the same underlying object as [other].
+  NativeInteropExampleGolubetsInternalNull.as(objc.ObjCObject other) : object$ = other {
+    assert(isA(object$));
+  }
+
+  /// Constructs a [NativeInteropExampleGolubetsInternalNull] that wraps the given raw object pointer.
+  NativeInteropExampleGolubetsInternalNull.fromPointer(
+    ffi.Pointer<objc.ObjCObjectImpl> other, {
+    bool retain = false,
+    bool release = false,
+  }) : object$ = objc.ObjCObject(other, retain: retain, release: release) {
+    assert(isA(object$));
+  }
+
+  /// Returns whether [obj] is an instance of [NativeInteropExampleGolubetsInternalNull].
+  static bool isA(objc.ObjCObject? obj) => obj == null
+      ? false
+      : _objc_msgSend_19nvye5(
+          obj.ref.pointer,
+          _sel_isKindOfClass_,
+          _class_NativeInteropExampleGolubetsInternalNull,
+        );
+
+  /// alloc
+  static NativeInteropExampleGolubetsInternalNull alloc() {
+    final $ret = _objc_msgSend_151sglz(_class_NativeInteropExampleGolubetsInternalNull, _sel_alloc);
+    return NativeInteropExampleGolubetsInternalNull.fromPointer($ret, retain: false, release: true);
+  }
+
+  /// allocWithZone:
+  static NativeInteropExampleGolubetsInternalNull allocWithZone(ffi.Pointer<objc.NSZone> zone) {
+    final $ret = _objc_msgSend_1cwp428(
+      _class_NativeInteropExampleGolubetsInternalNull,
+      _sel_allocWithZone_,
+      zone,
+    );
+    return NativeInteropExampleGolubetsInternalNull.fromPointer($ret, retain: false, release: true);
+  }
+
+  /// new
+  static NativeInteropExampleGolubetsInternalNull new$() {
+    final $ret = _objc_msgSend_151sglz(_class_NativeInteropExampleGolubetsInternalNull, _sel_new);
+    return NativeInteropExampleGolubetsInternalNull.fromPointer($ret, retain: false, release: true);
+  }
+
+  /// Returns a new instance of NativeInteropExampleGolubetsInternalNull constructed with the default `new` method.
+  NativeInteropExampleGolubetsInternalNull() : this.as(new$().object$);
+}
+
+extension NativeInteropExampleGolubetsInternalNull$Methods
+    on NativeInteropExampleGolubetsInternalNull {
+  /// init
+  NativeInteropExampleGolubetsInternalNull init() {
+    final _$$ref = object$.ref;
+    objc.checkOsVersionInternal(
+      'NativeInteropExampleGolubetsInternalNull.init',
+      iOS: (false, (2, 0, 0)),
+      macOS: (false, (10, 0, 0)),
+    );
+    final $ret = _objc_msgSend_151sglz(_$$ref.retainAndReturnPointer(), _sel_init);
+    return NativeInteropExampleGolubetsInternalNull.fromPointer($ret, retain: false, release: true);
+  }
+}
+
+/// NativeInteropExampleGolubetsTypedData
+extension type NativeInteropExampleGolubetsTypedData._(objc.ObjCObject object$)
+    implements objc.ObjCObject, objc.NSObject {
+  /// Constructs a [NativeInteropExampleGolubetsTypedData] that points to the same underlying object as [other].
+  NativeInteropExampleGolubetsTypedData.as(objc.ObjCObject other) : object$ = other {
+    assert(isA(object$));
+  }
+
+  /// Constructs a [NativeInteropExampleGolubetsTypedData] that wraps the given raw object pointer.
+  NativeInteropExampleGolubetsTypedData.fromPointer(
+    ffi.Pointer<objc.ObjCObjectImpl> other, {
+    bool retain = false,
+    bool release = false,
+  }) : object$ = objc.ObjCObject(other, retain: retain, release: release) {
+    assert(isA(object$));
+  }
+
+  /// Returns whether [obj] is an instance of [NativeInteropExampleGolubetsTypedData].
+  static bool isA(objc.ObjCObject? obj) => obj == null
+      ? false
+      : _objc_msgSend_19nvye5(
+          obj.ref.pointer,
+          _sel_isKindOfClass_,
+          _class_NativeInteropExampleGolubetsTypedData,
+        );
+
+  /// alloc
+  static NativeInteropExampleGolubetsTypedData alloc() {
+    final $ret = _objc_msgSend_151sglz(_class_NativeInteropExampleGolubetsTypedData, _sel_alloc);
+    return NativeInteropExampleGolubetsTypedData.fromPointer($ret, retain: false, release: true);
+  }
+
+  /// allocWithZone:
+  static NativeInteropExampleGolubetsTypedData allocWithZone(ffi.Pointer<objc.NSZone> zone) {
+    final $ret = _objc_msgSend_1cwp428(
+      _class_NativeInteropExampleGolubetsTypedData,
+      _sel_allocWithZone_,
+      zone,
+    );
+    return NativeInteropExampleGolubetsTypedData.fromPointer($ret, retain: false, release: true);
+  }
+}
+
+extension NativeInteropExampleGolubetsTypedData$Methods on NativeInteropExampleGolubetsTypedData {
+  /// data
+  objc.NSData get data {
+    final _$$ref = object$.ref;
+    final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_data);
+    return objc.NSData.fromPointer($ret, retain: true, release: true);
+  }
+
+  /// initWithData:type:
+  NativeInteropExampleGolubetsTypedData initWithData(objc.NSData data, {required int type}) {
+    final _$$ref = object$.ref;
+    final _$$ref$1 = data.ref;
+    final $ret = _objc_msgSend_9slupp(
+      _$$ref.retainAndReturnPointer(),
+      _sel_initWithData_type_,
+      _$$ref$1.pointer,
+      type,
+    );
+    return NativeInteropExampleGolubetsTypedData.fromPointer($ret, retain: false, release: true);
+  }
+
+  /// type
+  int get type {
+    final _$$ref = object$.ref;
+    return _objc_msgSend_1hz7y9r(_$$ref.pointer, _sel_type);
   }
 }
 
@@ -205,258 +462,12 @@ extension NativeInteropExampleNumberWrapper$Methods on NativeInteropExampleNumbe
   }
 }
 
-/// NativeInteropExamplePigeonInternalNull
-extension type NativeInteropExamplePigeonInternalNull._(objc.ObjCObject object$)
-    implements objc.ObjCObject, objc.NSObject {
-  /// Constructs a [NativeInteropExamplePigeonInternalNull] that points to the same underlying object as [other].
-  NativeInteropExamplePigeonInternalNull.as(objc.ObjCObject other) : object$ = other {
-    assert(isA(object$));
-  }
-
-  /// Constructs a [NativeInteropExamplePigeonInternalNull] that wraps the given raw object pointer.
-  NativeInteropExamplePigeonInternalNull.fromPointer(
-    ffi.Pointer<objc.ObjCObjectImpl> other, {
-    bool retain = false,
-    bool release = false,
-  }) : object$ = objc.ObjCObject(other, retain: retain, release: release) {
-    assert(isA(object$));
-  }
-
-  /// Returns whether [obj] is an instance of [NativeInteropExamplePigeonInternalNull].
-  static bool isA(objc.ObjCObject? obj) => obj == null
-      ? false
-      : _objc_msgSend_19nvye5(
-          obj.ref.pointer,
-          _sel_isKindOfClass_,
-          _class_NativeInteropExamplePigeonInternalNull,
-        );
-
-  /// alloc
-  static NativeInteropExamplePigeonInternalNull alloc() {
-    final $ret = _objc_msgSend_151sglz(_class_NativeInteropExamplePigeonInternalNull, _sel_alloc);
-    return NativeInteropExamplePigeonInternalNull.fromPointer($ret, retain: false, release: true);
-  }
-
-  /// allocWithZone:
-  static NativeInteropExamplePigeonInternalNull allocWithZone(ffi.Pointer<objc.NSZone> zone) {
-    final $ret = _objc_msgSend_1cwp428(
-      _class_NativeInteropExamplePigeonInternalNull,
-      _sel_allocWithZone_,
-      zone,
-    );
-    return NativeInteropExamplePigeonInternalNull.fromPointer($ret, retain: false, release: true);
-  }
-
-  /// new
-  static NativeInteropExamplePigeonInternalNull new$() {
-    final $ret = _objc_msgSend_151sglz(_class_NativeInteropExamplePigeonInternalNull, _sel_new);
-    return NativeInteropExamplePigeonInternalNull.fromPointer($ret, retain: false, release: true);
-  }
-
-  /// Returns a new instance of NativeInteropExamplePigeonInternalNull constructed with the default `new` method.
-  NativeInteropExamplePigeonInternalNull() : this.as(new$().object$);
-}
-
-extension NativeInteropExamplePigeonInternalNull$Methods on NativeInteropExamplePigeonInternalNull {
-  /// init
-  NativeInteropExamplePigeonInternalNull init() {
-    final _$$ref = object$.ref;
-    objc.checkOsVersionInternal(
-      'NativeInteropExamplePigeonInternalNull.init',
-      iOS: (false, (2, 0, 0)),
-      macOS: (false, (10, 0, 0)),
-    );
-    final $ret = _objc_msgSend_151sglz(_$$ref.retainAndReturnPointer(), _sel_init);
-    return NativeInteropExamplePigeonInternalNull.fromPointer($ret, retain: false, release: true);
-  }
-}
-
-/// NativeInteropExamplePigeonTypedData
-extension type NativeInteropExamplePigeonTypedData._(objc.ObjCObject object$)
-    implements objc.ObjCObject, objc.NSObject {
-  /// Constructs a [NativeInteropExamplePigeonTypedData] that points to the same underlying object as [other].
-  NativeInteropExamplePigeonTypedData.as(objc.ObjCObject other) : object$ = other {
-    assert(isA(object$));
-  }
-
-  /// Constructs a [NativeInteropExamplePigeonTypedData] that wraps the given raw object pointer.
-  NativeInteropExamplePigeonTypedData.fromPointer(
-    ffi.Pointer<objc.ObjCObjectImpl> other, {
-    bool retain = false,
-    bool release = false,
-  }) : object$ = objc.ObjCObject(other, retain: retain, release: release) {
-    assert(isA(object$));
-  }
-
-  /// Returns whether [obj] is an instance of [NativeInteropExamplePigeonTypedData].
-  static bool isA(objc.ObjCObject? obj) => obj == null
-      ? false
-      : _objc_msgSend_19nvye5(
-          obj.ref.pointer,
-          _sel_isKindOfClass_,
-          _class_NativeInteropExamplePigeonTypedData,
-        );
-
-  /// alloc
-  static NativeInteropExamplePigeonTypedData alloc() {
-    final $ret = _objc_msgSend_151sglz(_class_NativeInteropExamplePigeonTypedData, _sel_alloc);
-    return NativeInteropExamplePigeonTypedData.fromPointer($ret, retain: false, release: true);
-  }
-
-  /// allocWithZone:
-  static NativeInteropExamplePigeonTypedData allocWithZone(ffi.Pointer<objc.NSZone> zone) {
-    final $ret = _objc_msgSend_1cwp428(
-      _class_NativeInteropExamplePigeonTypedData,
-      _sel_allocWithZone_,
-      zone,
-    );
-    return NativeInteropExamplePigeonTypedData.fromPointer($ret, retain: false, release: true);
-  }
-}
-
-extension NativeInteropExamplePigeonTypedData$Methods on NativeInteropExamplePigeonTypedData {
-  /// data
-  objc.NSData get data {
-    final _$$ref = object$.ref;
-    final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_data);
-    return objc.NSData.fromPointer($ret, retain: true, release: true);
-  }
-
-  /// initWithData:type:
-  NativeInteropExamplePigeonTypedData initWithData(objc.NSData data, {required int type}) {
-    final _$$ref = object$.ref;
-    final _$$ref$1 = data.ref;
-    final $ret = _objc_msgSend_9slupp(
-      _$$ref.retainAndReturnPointer(),
-      _sel_initWithData_type_,
-      _$$ref$1.pointer,
-      type,
-    );
-    return NativeInteropExamplePigeonTypedData.fromPointer($ret, retain: false, release: true);
-  }
-
-  /// type
-  int get type {
-    final _$$ref = object$.ref;
-    return _objc_msgSend_1hz7y9r(_$$ref.pointer, _sel_type);
-  }
-}
-
-/// Error class for passing custom error details to Dart side.
-extension type PigeonError._(objc.ObjCObject object$) implements objc.ObjCObject, objc.NSObject {
-  /// Constructs a [PigeonError] that points to the same underlying object as [other].
-  PigeonError.as(objc.ObjCObject other) : object$ = other {
-    assert(isA(object$));
-  }
-
-  /// Constructs a [PigeonError] that wraps the given raw object pointer.
-  PigeonError.fromPointer(
-    ffi.Pointer<objc.ObjCObjectImpl> other, {
-    bool retain = false,
-    bool release = false,
-  }) : object$ = objc.ObjCObject(other, retain: retain, release: release) {
-    assert(isA(object$));
-  }
-
-  /// Returns whether [obj] is an instance of [PigeonError].
-  static bool isA(objc.ObjCObject? obj) => obj == null
-      ? false
-      : _objc_msgSend_19nvye5(obj.ref.pointer, _sel_isKindOfClass_, _class_PigeonError);
-
-  /// alloc
-  static PigeonError alloc() {
-    final $ret = _objc_msgSend_151sglz(_class_PigeonError, _sel_alloc);
-    return PigeonError.fromPointer($ret, retain: false, release: true);
-  }
-
-  /// allocWithZone:
-  static PigeonError allocWithZone(ffi.Pointer<objc.NSZone> zone) {
-    final $ret = _objc_msgSend_1cwp428(_class_PigeonError, _sel_allocWithZone_, zone);
-    return PigeonError.fromPointer($ret, retain: false, release: true);
-  }
-
-  /// new
-  static PigeonError new$() {
-    final $ret = _objc_msgSend_151sglz(_class_PigeonError, _sel_new);
-    return PigeonError.fromPointer($ret, retain: false, release: true);
-  }
-
-  /// Returns a new instance of PigeonError constructed with the default `new` method.
-  PigeonError() : this.as(new$().object$);
-}
-
-extension PigeonError$Methods on PigeonError {
-  /// code
-  objc.NSString? get code {
-    final _$$ref = object$.ref;
-    final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_code);
-    return $ret.address == 0 ? null : objc.NSString.fromPointer($ret, retain: true, release: true);
-  }
-
-  /// details
-  objc.NSString? get details {
-    final _$$ref = object$.ref;
-    final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_details);
-    return $ret.address == 0 ? null : objc.NSString.fromPointer($ret, retain: true, release: true);
-  }
-
-  /// init
-  PigeonError init() {
-    final _$$ref = object$.ref;
-    objc.checkOsVersionInternal(
-      'PigeonError.init',
-      iOS: (false, (2, 0, 0)),
-      macOS: (false, (10, 0, 0)),
-    );
-    final $ret = _objc_msgSend_151sglz(_$$ref.retainAndReturnPointer(), _sel_init);
-    return PigeonError.fromPointer($ret, retain: false, release: true);
-  }
-
-  /// initWithCode:message:details:
-  PigeonError initWithCode(objc.NSString? code, {objc.NSString? message, objc.NSString? details}) {
-    final _$$ref = object$.ref;
-    final _$$ref$1 = code?.ref;
-    final _$$ref$2 = message?.ref;
-    final _$$ref$3 = details?.ref;
-    final $ret = _objc_msgSend_11spmsz(
-      _$$ref.retainAndReturnPointer(),
-      _sel_initWithCode_message_details_,
-      _$$ref$1?.pointer ?? ffi.nullptr,
-      _$$ref$2?.pointer ?? ffi.nullptr,
-      _$$ref$3?.pointer ?? ffi.nullptr,
-    );
-    return PigeonError.fromPointer($ret, retain: false, release: true);
-  }
-
-  /// message
-  objc.NSString? get message {
-    final _$$ref = object$.ref;
-    final $ret = _objc_msgSend_151sglz(_$$ref.pointer, _sel_message);
-    return $ret.address == 0 ? null : objc.NSString.fromPointer($ret, retain: true, release: true);
-  }
-
-  /// setCode:
-  set code(objc.NSString? value) {
-    final _$$ref = object$.ref;
-    final _$$ref$1 = value?.ref;
-    _objc_msgSend_xtuoz7(_$$ref.pointer, _sel_setCode_, _$$ref$1?.pointer ?? ffi.nullptr);
-  }
-
-  /// setDetails:
-  set details(objc.NSString? value) {
-    final _$$ref = object$.ref;
-    final _$$ref$1 = value?.ref;
-    _objc_msgSend_xtuoz7(_$$ref.pointer, _sel_setDetails_, _$$ref$1?.pointer ?? ffi.nullptr);
-  }
-
-  /// setMessage:
-  set message(objc.NSString? value) {
-    final _$$ref = object$.ref;
-    final _$$ref$1 = value?.ref;
-    _objc_msgSend_xtuoz7(_$$ref.pointer, _sel_setMessage_, _$$ref$1?.pointer ?? ffi.nullptr);
-  }
-}
-
+@ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(symbol: 'OBJC_CLASS_\$__TtC6Runner13GolubetsError')
+external ffi.Pointer<objc.ObjCObjectImpl> _class_GolubetsError_raw;
+final _class_GolubetsError = objc.getClass(
+  "Runner.GolubetsError",
+  () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(_class_GolubetsError_raw).cast(),
+);
 @ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(
   symbol: 'OBJC_CLASS_\$__TtC6Runner28NativeInteropExampleApiSetup',
 )
@@ -468,6 +479,26 @@ final _class_NativeInteropExampleApiSetup = objc.getClass(
   ).cast(),
 );
 @ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(
+  symbol: 'OBJC_CLASS_\$__TtC6Runner40NativeInteropExampleGolubetsInternalNull',
+)
+external ffi.Pointer<objc.ObjCObjectImpl> _class_NativeInteropExampleGolubetsInternalNull_raw;
+final _class_NativeInteropExampleGolubetsInternalNull = objc.getClass(
+  "Runner.NativeInteropExampleGolubetsInternalNull",
+  () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(
+    _class_NativeInteropExampleGolubetsInternalNull_raw,
+  ).cast(),
+);
+@ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(
+  symbol: 'OBJC_CLASS_\$__TtC6Runner37NativeInteropExampleGolubetsTypedData',
+)
+external ffi.Pointer<objc.ObjCObjectImpl> _class_NativeInteropExampleGolubetsTypedData_raw;
+final _class_NativeInteropExampleGolubetsTypedData = objc.getClass(
+  "Runner.NativeInteropExampleGolubetsTypedData",
+  () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(
+    _class_NativeInteropExampleGolubetsTypedData_raw,
+  ).cast(),
+);
+@ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(
   symbol: 'OBJC_CLASS_\$__TtC6Runner33NativeInteropExampleNumberWrapper',
 )
 external ffi.Pointer<objc.ObjCObjectImpl> _class_NativeInteropExampleNumberWrapper_raw;
@@ -476,32 +507,6 @@ final _class_NativeInteropExampleNumberWrapper = objc.getClass(
   () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(
     _class_NativeInteropExampleNumberWrapper_raw,
   ).cast(),
-);
-@ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(
-  symbol: 'OBJC_CLASS_\$__TtC6Runner38NativeInteropExamplePigeonInternalNull',
-)
-external ffi.Pointer<objc.ObjCObjectImpl> _class_NativeInteropExamplePigeonInternalNull_raw;
-final _class_NativeInteropExamplePigeonInternalNull = objc.getClass(
-  "Runner.NativeInteropExamplePigeonInternalNull",
-  () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(
-    _class_NativeInteropExamplePigeonInternalNull_raw,
-  ).cast(),
-);
-@ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(
-  symbol: 'OBJC_CLASS_\$__TtC6Runner35NativeInteropExamplePigeonTypedData',
-)
-external ffi.Pointer<objc.ObjCObjectImpl> _class_NativeInteropExamplePigeonTypedData_raw;
-final _class_NativeInteropExamplePigeonTypedData = objc.getClass(
-  "Runner.NativeInteropExamplePigeonTypedData",
-  () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(
-    _class_NativeInteropExamplePigeonTypedData_raw,
-  ).cast(),
-);
-@ffi.Native<ffi.Pointer<objc.ObjCObjectImpl>>(symbol: 'OBJC_CLASS_\$__TtC6Runner11PigeonError')
-external ffi.Pointer<objc.ObjCObjectImpl> _class_PigeonError_raw;
-final _class_PigeonError = objc.getClass(
-  "Runner.PigeonError",
-  () => ffi.Native.addressOf<ffi.Pointer<objc.ObjCObjectImpl>>(_class_PigeonError_raw).cast(),
 );
 final _objc_msgSend_11spmsz = objc.msgSendPointer
     .cast<
