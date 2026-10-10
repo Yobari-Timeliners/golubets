@@ -61,4 +61,23 @@ struct NullableReturnsTests {
     #expect(api.didCall)
     #expect(api.x == nil)
   }
+
+  @Test
+  func nonNullReturnFailsOnNSNullResponse() async throws {
+    let binaryMessenger = MockBinaryMessenger<NSNull>(codec: codec)
+    binaryMessenger.result = NSNull()
+    let api = FlutterIntegrationCoreApi(binaryMessenger: binaryMessenger)
+
+    await confirmation { confirmed in
+      api.sendMultipleNullableTypes(aBool: nil, anInt: nil, aString: nil) { result in
+        switch result {
+        case .success:
+          Issue.record("Expected a null-error but the call succeeded.")
+        case .failure(let error):
+          #expect(error.code == "null-error")
+          confirmed()
+        }
+      }
+    }
+  }
 }

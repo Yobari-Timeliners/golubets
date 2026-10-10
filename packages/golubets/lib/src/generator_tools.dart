@@ -9,6 +9,7 @@ import 'dart:math';
 import 'dart:mirrors';
 
 import 'package:collection/collection.dart';
+import 'package:path/path.dart' as path;
 import 'package:yaml/yaml.dart' as yaml;
 
 import 'ast.dart';
@@ -17,10 +18,73 @@ import 'generator.dart';
 /// The current version of golubets.
 ///
 /// This must match the version in pubspec.yaml.
-const String golubetsVersion = '2.0.0';
+const String golubetsVersion = '2.1.0';
 
 /// Default plugin package name.
 const String defaultPluginPackageName = 'dev.bayori.golubets';
+
+/// The default instance name string for native interop generated APIs.
+const String defaultNativeInteropInstanceName =
+    'GolubetsDefaultClassName32uh4ui3lh445uh4h3l2l455g4y34u';
+
+/// Converts any path containing Windows backslashes into a POSIX-style path.
+String posixPath(String inputPath) => inputPath.replaceAll(r'\', '/');
+
+/// Returns the filename for generated FFIgen config files based on [inputPath].
+String getFfigenConfigFileName([String? inputPath]) {
+  if (inputPath == null || inputPath.isEmpty) {
+    return 'ffigen_config.dart';
+  }
+  final String baseName = path.posix.basenameWithoutExtension(posixPath(inputPath));
+  return '${baseName}_ffigen_config.dart';
+}
+
+/// Returns the filename for generated JNIgen config files based on [inputPath].
+String getJnigenConfigFileName([String? inputPath]) {
+  if (inputPath == null || inputPath.isEmpty) {
+    return 'jnigen_config.dart';
+  }
+  final String baseName = path.posix.basenameWithoutExtension(posixPath(inputPath));
+  return '${baseName}_jnigen_config.dart';
+}
+
+/// Default relative path for generated FFIgen config files.
+final String ffigenConfigPath = path.posix.join('tool', 'golubets', getFfigenConfigFileName());
+
+/// Default relative path for generated JNIgen config files.
+final String jnigenConfigPath = path.posix.join('tool', 'golubets', getJnigenConfigFileName());
+
+/// Returns the path to the FFIgen config file in [appDirectory] and optional [inputPath].
+String getFfigenConfigPath(String appDirectory, [String? inputPath]) {
+  return path.posix.join(
+    posixPath(appDirectory),
+    'tool',
+    'golubets',
+    getFfigenConfigFileName(inputPath),
+  );
+}
+
+/// Returns the path to the JNIgen config file in [appDirectory] and optional [inputPath].
+String getJnigenConfigPath(String appDirectory, [String? inputPath]) {
+  return path.posix.join(
+    posixPath(appDirectory),
+    'tool',
+    'golubets',
+    getJnigenConfigFileName(inputPath),
+  );
+}
+
+/// Computes a posix relative path from [fromPath] to [targetPath], safely
+/// handling empty strings, unnormalized paths, and cross-directory steps.
+String makeRelative(String targetPath, String fromPath) {
+  final String absTarget = path.isAbsolute(targetPath)
+      ? posixPath(path.normalize(targetPath))
+      : posixPath(path.normalize(path.absolute(targetPath)));
+  final String absFrom = path.isAbsolute(fromPath)
+      ? posixPath(path.normalize(fromPath))
+      : posixPath(path.normalize(path.absolute(fromPath)));
+  return path.posix.relative(absTarget, from: absFrom);
+}
 
 /// Read all the content from [stdin] to a String.
 String readStdin() {
@@ -570,25 +634,26 @@ Map<TypeDeclaration, List<int>> getReferencedTypes(List<Api> apis, List<Class> c
   final Set<String> referencedTypeNames = references.map.keys
       .map((TypeDeclaration e) => e.baseName)
       .toSet();
-  final classesToCheck = List<String>.from(referencedTypeNames);
+  final classesToCheck = Set<String>.from(referencedTypeNames);
   while (classesToCheck.isNotEmpty) {
-    final String next = classesToCheck.removeLast();
+    final String next = classesToCheck.last;
     final Class aClass = classes.firstWhere(
       (Class x) => x.name == next,
       orElse: () => Class(name: '', fields: <NamedType>[]),
     );
     for (final NamedType field in aClass.fields) {
+      references.add(field.type, field.offset);
       if (_isUnseenCustomType(field.type, referencedTypeNames)) {
-        references.add(field.type, field.offset);
         classesToCheck.add(field.type.baseName);
       }
       for (final TypeDeclaration typeArg in field.type.typeArguments) {
+        references.add(typeArg, field.offset);
         if (_isUnseenCustomType(typeArg, referencedTypeNames)) {
-          references.add(typeArg, field.offset);
           classesToCheck.add(typeArg.baseName);
         }
       }
     }
+    classesToCheck.remove(next);
   }
   return references.map;
 }
@@ -994,28 +1059,24 @@ Iterable<NamedType> getFieldsInSerializationOrder(Class classDefinition) {
   return classDefinition.fields;
 }
 
-/// Crawls up the path of [dartFilePath] until it finds a pubspec.yaml in a
-/// parent directory and returns its path.
-String? _findPubspecPath(String dartFilePath) {
+/// Crawls up the path starting from [startDirectory] until it finds a pubspec.yaml
+/// in [startDirectory] or one of its parent directories, and returns its path.
+String? findPubspecPath(Directory startDirectory) {
   try {
-    Directory dir = File(dartFilePath).parent;
-    String? pubspecPath;
-    while (pubspecPath == null) {
+    var dir = startDirectory;
+    while (true) {
       if (dir.existsSync()) {
-        final Iterable<String> pubspecPaths = dir
-            .listSync()
-            .map((FileSystemEntity e) => e.path)
-            .where((String path) => path.endsWith('pubspec.yaml'));
-        if (pubspecPaths.isNotEmpty) {
-          pubspecPath = pubspecPaths.first;
-        } else {
-          dir = dir.parent;
+        final pubspecFile = File(path.join(dir.path, 'pubspec.yaml'));
+        if (pubspecFile.existsSync()) {
+          return pubspecFile.path;
         }
-      } else {
+      }
+      if (dir.path == dir.parent.path) {
         break;
       }
+      dir = dir.parent;
     }
-    return pubspecPath;
+    return null;
   } catch (ex) {
     return null;
   }
@@ -1024,7 +1085,7 @@ String? _findPubspecPath(String dartFilePath) {
 /// Given the path of a Dart file, [mainDartFile], the name of the package will
 /// be deduced by locating and parsing its associated pubspec.yaml.
 String? deducePackageName(String mainDartFile) {
-  final String? pubspecPath = _findPubspecPath(mainDartFile);
+  final String? pubspecPath = findPubspecPath(File(mainDartFile).parent);
   if (pubspecPath == null) {
     return null;
   }
@@ -1035,6 +1096,16 @@ String? deducePackageName(String mainDartFile) {
   } catch (_) {
     return null;
   }
+}
+
+/// Extracts the base class name component from an output file path.
+///
+/// For example, extracts 'messages' from 'ios/Classes/messages.g.swift'.
+String deduceClassNameComponent(String? filePath) {
+  if (filePath == null || filePath.isEmpty) {
+    return '';
+  }
+  return path.basename(filePath).split('.').first;
 }
 
 /// Enum to specify api type when generating code.
@@ -1191,6 +1262,69 @@ extension ClassExtension on Class {
     return name.purify(superClass.name);
   }
 }
+
+/// Whether the type is a primitive scalar type (bool, int, or double).
+bool isPrimitiveType(TypeDeclaration type) {
+  return type.baseName == 'bool' || type.baseName == 'int' || type.baseName == 'double';
+}
+
+/// Wraps provided [toWrap] with [start] and [end] if [wrap] is true.
+String wrapConditionally(String toWrap, String start, String end, bool wrap) {
+  return wrap ? '$start$toWrap$end' : toWrap;
+}
+
+/// Returns '?' if [nullable] is true, otherwise empty string.
+String getNullabilitySymbol(bool nullable) => nullable ? '?' : '';
+
+/// Returns '!' if [force] is true, otherwise empty string.
+String getForceNonNullSymbol(bool force) => force ? '!' : '';
+
+/// A comparator that orders [TypeDeclaration]s from most specific to most generic.
+///
+/// This is used when generating code where more specific types (e.g., `List<int>`)
+/// need to be handled before broader fallback types (e.g., `List<Object?>`).
+///
+/// Generic-ness is calculated recursively by scoring type components based on depth,
+/// where occurrences of `Object` are heavily weighted, nullability is lightly weighted,
+/// and nested type arguments are scored with decreasing weight by depth.
+///
+/// For example:
+/// * `int` is more specific (lower score) than `Object?` (higher score).
+/// * `List<int>` is more specific than `List<Object?>`.
+/// * `Map<String, int>` is more specific than `Map<Object?, Object?>`.
+int compareTypeDeclarationGenericness(TypeDeclaration a, TypeDeclaration b) {
+  return _calculateGenericScore(a, 0).compareTo(_calculateGenericScore(b, 0));
+}
+
+int _calculateGenericScore(TypeDeclaration type, int depth) {
+  var score = 0;
+
+  if (type.baseName == 'Object') {
+    score += 10000 >> depth;
+  }
+  if (type.isNullable) {
+    score += 1000 >> depth;
+  }
+
+  // Handle untyped collections by scoring their implicit 'Object?' arguments
+  if (type.typeArguments.isEmpty) {
+    if (type.baseName == 'List') {
+      score += 11000 >> (depth + 1);
+    }
+    if (type.baseName == 'Map') {
+      score += 22000 >> (depth + 1);
+    }
+  }
+
+  for (final TypeDeclaration arg in type.typeArguments) {
+    score += _calculateGenericScore(arg, depth + 1);
+  }
+  return score;
+}
+
+/// Alias for [compareTypeDeclarationGenericness] to maintain compatibility.
+const int Function(TypeDeclaration, TypeDeclaration) sortByObjectCount =
+    compareTypeDeclarationGenericness;
 
 /// Escapes special characters in a string for use in double-quoted string literals.
 String escapeStringDoubleQuotes(String value) {

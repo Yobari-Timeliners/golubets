@@ -2252,6 +2252,11 @@ interface HostIntegrationCoreApi {
    * with TaskQueue support.
    */
   fun taskQueueIsBackgroundThread(): Boolean
+  /**
+   * Returns true if the handler is run on a non-main thread, which should be true for any platform
+   * with TaskQueue support.
+   */
+  fun asyncTaskQueueIsBackgroundThread(callback: (Result<Boolean>) -> Unit)
 
   fun callFlutterNoop(callback: (Result<Unit>) -> Unit)
 
@@ -2445,6 +2450,16 @@ interface HostIntegrationCoreApi {
   )
 
   fun callFlutterSmallApiEchoString(aString: String, callback: (Result<String>) -> Unit)
+
+  fun callFlutterCallbackNoop(callback: (Result<Unit>) -> Unit)
+
+  fun callFlutterCallbackEchoString(aString: String, callback: (Result<String>) -> Unit)
+
+  fun callFlutterCallbackThrowError(callback: (Result<Any?>) -> Unit)
+
+  fun callFlutterCallbackThrowErrorFromVoid(callback: (Result<Unit>) -> Unit)
+
+  fun callFlutterIsAsyncFlutterApiOnRoot(callback: (Result<Boolean>) -> Unit)
 
   companion object {
     /** The codec used by HostIntegrationCoreApi. */
@@ -5079,6 +5094,29 @@ interface HostIntegrationCoreApi {
         val channel =
             BasicMessageChannel<Any?>(
                 binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.asyncTaskQueueIsBackgroundThread$separatedMessageChannelSuffix",
+                codec,
+                taskQueue)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            api.asyncTaskQueueIsBackgroundThread { result: Result<Boolean> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(CoreTestsGolubetsUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(CoreTestsGolubetsUtils.wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
                 "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterNoop$separatedMessageChannelSuffix",
                 codec)
         if (api != null) {
@@ -6314,6 +6352,215 @@ interface HostIntegrationCoreApi {
         } else {
           channel.setMessageHandler(null)
         }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterCallbackNoop$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            api.callFlutterCallbackNoop { result: Result<Unit> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(CoreTestsGolubetsUtils.wrapError(error))
+              } else {
+                reply.reply(CoreTestsGolubetsUtils.wrapResult(null))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterCallbackEchoString$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val aStringArg = args[0] as String
+            api.callFlutterCallbackEchoString(aStringArg) { result: Result<String> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(CoreTestsGolubetsUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(CoreTestsGolubetsUtils.wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterCallbackThrowError$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            api.callFlutterCallbackThrowError { result: Result<Any?> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(CoreTestsGolubetsUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(CoreTestsGolubetsUtils.wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterCallbackThrowErrorFromVoid$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            api.callFlutterCallbackThrowErrorFromVoid { result: Result<Unit> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(CoreTestsGolubetsUtils.wrapError(error))
+              } else {
+                reply.reply(CoreTestsGolubetsUtils.wrapResult(null))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostIntegrationCoreApi.callFlutterIsAsyncFlutterApiOnRoot$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            api.callFlutterIsAsyncFlutterApiOnRoot { result: Result<Boolean> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(CoreTestsGolubetsUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(CoreTestsGolubetsUtils.wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+    }
+  }
+}
+/**
+ * A Flutter API using callback-based asynchronous methods (@asyncCallback).
+ *
+ * Generated class from Golubets that represents Flutter messages that can be called from Kotlin.
+ */
+class FlutterCallbackCoreApi(
+    private val binaryMessenger: BinaryMessenger,
+    private val messageChannelSuffix: String = ""
+) {
+  companion object {
+    /** The codec used by FlutterCallbackCoreApi. */
+    val codec: MessageCodec<Any?> by lazy { CoreTestsGolubetsCodec() }
+  }
+
+  fun noop(callback: (Result<Unit>) -> Unit) {
+    val separatedMessageChannelSuffix =
+        if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    val channelName =
+        "dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.noop$separatedMessageChannelSuffix"
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+    channel.send(null) {
+      if (it is List<*>) {
+        if (it.size > 1) {
+          callback(Result.failure(FlutterError(it[0] as String, it[1] as String, it[2] as String?)))
+        } else {
+          callback(Result.success(Unit))
+        }
+      } else {
+        callback(Result.failure(CoreTestsGolubetsUtils.createConnectionError(channelName)))
+      }
+    }
+  }
+
+  fun echoString(aStringArg: String, callback: (Result<String>) -> Unit) {
+    val separatedMessageChannelSuffix =
+        if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    val channelName =
+        "dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.echoString$separatedMessageChannelSuffix"
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+    channel.send(listOf(aStringArg)) {
+      if (it is List<*>) {
+        if (it.size > 1) {
+          callback(Result.failure(FlutterError(it[0] as String, it[1] as String, it[2] as String?)))
+        } else if (it[0] == null) {
+          callback(
+              Result.failure(
+                  FlutterError(
+                      "null-error",
+                      "Flutter api returned null value for non-null return value.",
+                      "")))
+        } else {
+          val output = it[0] as String
+          callback(Result.success(output))
+        }
+      } else {
+        callback(Result.failure(CoreTestsGolubetsUtils.createConnectionError(channelName)))
+      }
+    }
+  }
+
+  fun throwError(callback: (Result<Any?>) -> Unit) {
+    val separatedMessageChannelSuffix =
+        if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    val channelName =
+        "dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.throwError$separatedMessageChannelSuffix"
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+    channel.send(null) {
+      if (it is List<*>) {
+        if (it.size > 1) {
+          callback(Result.failure(FlutterError(it[0] as String, it[1] as String, it[2] as String?)))
+        } else {
+          val output = it[0]
+          callback(Result.success(output))
+        }
+      } else {
+        callback(Result.failure(CoreTestsGolubetsUtils.createConnectionError(channelName)))
+      }
+    }
+  }
+
+  fun throwErrorFromVoid(callback: (Result<Unit>) -> Unit) {
+    val separatedMessageChannelSuffix =
+        if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    val channelName =
+        "dev.bayori.golubets.golubets_integration_tests.FlutterCallbackCoreApi.throwErrorFromVoid$separatedMessageChannelSuffix"
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+    channel.send(null) {
+      if (it is List<*>) {
+        if (it.size > 1) {
+          callback(Result.failure(FlutterError(it[0] as String, it[1] as String, it[2] as String?)))
+        } else {
+          callback(Result.success(Unit))
+        }
+      } else {
+        callback(Result.failure(CoreTestsGolubetsUtils.createConnectionError(channelName)))
       }
     }
   }
@@ -7631,6 +7878,231 @@ class FlutterIntegrationCoreApi(
         }
       } else {
         callback(Result.failure(CoreTestsGolubetsUtils.createConnectionError(channelName)))
+      }
+    }
+  }
+  /** Returns true if the async FlutterApi method is run on the root isolate. */
+  fun isAsyncFlutterApiOnRoot(callback: (Result<Boolean>) -> Unit) {
+    val separatedMessageChannelSuffix =
+        if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    val channelName =
+        "dev.bayori.golubets.golubets_integration_tests.FlutterIntegrationCoreApi.isAsyncFlutterApiOnRoot$separatedMessageChannelSuffix"
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+    channel.send(null) {
+      if (it is List<*>) {
+        if (it.size > 1) {
+          callback(Result.failure(FlutterError(it[0] as String, it[1] as String, it[2] as String?)))
+        } else if (it[0] == null) {
+          callback(
+              Result.failure(
+                  FlutterError(
+                      "null-error",
+                      "Flutter api returned null value for non-null return value.",
+                      "")))
+        } else {
+          val output = it[0] as Boolean
+          callback(Result.success(output))
+        }
+      } else {
+        callback(Result.failure(CoreTestsGolubetsUtils.createConnectionError(channelName)))
+      }
+    }
+  }
+}
+/**
+ * A Host API using callback-based asynchronous methods (@asyncCallback).
+ *
+ * Generated interface from Golubets that represents a handler of messages from Flutter.
+ */
+interface HostCallbackCoreApi {
+  fun noop(callback: (Result<Unit>) -> Unit)
+
+  fun echoString(aString: String, callback: (Result<String>) -> Unit)
+
+  fun echoAllTypes(everything: AllTypes, callback: (Result<AllTypes>) -> Unit)
+
+  fun echoNullableString(aString: String?, callback: (Result<String?>) -> Unit)
+
+  fun throwError(callback: (Result<Any?>) -> Unit)
+
+  fun throwErrorFromVoid(callback: (Result<Unit>) -> Unit)
+
+  fun taskQueueIsBackgroundThread(callback: (Result<Boolean>) -> Unit)
+
+  companion object {
+    /** The codec used by HostCallbackCoreApi. */
+    val codec: MessageCodec<Any?> by lazy { CoreTestsGolubetsCodec() }
+    /**
+     * Sets up an instance of `HostCallbackCoreApi` to handle messages through the
+     * `binaryMessenger`.
+     */
+    @JvmOverloads
+    fun setUp(
+        binaryMessenger: BinaryMessenger,
+        api: HostCallbackCoreApi?,
+        messageChannelSuffix: String = ""
+    ) {
+      val separatedMessageChannelSuffix =
+          if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+      val taskQueue = binaryMessenger.makeBackgroundTaskQueue()
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.noop$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            api.noop { result: Result<Unit> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(CoreTestsGolubetsUtils.wrapError(error))
+              } else {
+                reply.reply(CoreTestsGolubetsUtils.wrapResult(null))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.echoString$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val aStringArg = args[0] as String
+            api.echoString(aStringArg) { result: Result<String> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(CoreTestsGolubetsUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(CoreTestsGolubetsUtils.wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.echoAllTypes$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val everythingArg = args[0] as AllTypes
+            api.echoAllTypes(everythingArg) { result: Result<AllTypes> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(CoreTestsGolubetsUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(CoreTestsGolubetsUtils.wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.echoNullableString$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val aStringArg = args[0] as String?
+            api.echoNullableString(aStringArg) { result: Result<String?> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(CoreTestsGolubetsUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(CoreTestsGolubetsUtils.wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.throwError$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            api.throwError { result: Result<Any?> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(CoreTestsGolubetsUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(CoreTestsGolubetsUtils.wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.throwErrorFromVoid$separatedMessageChannelSuffix",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            api.throwErrorFromVoid { result: Result<Unit> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(CoreTestsGolubetsUtils.wrapError(error))
+              } else {
+                reply.reply(CoreTestsGolubetsUtils.wrapResult(null))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.bayori.golubets.golubets_integration_tests.HostCallbackCoreApi.taskQueueIsBackgroundThread$separatedMessageChannelSuffix",
+                codec,
+                taskQueue)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            api.taskQueueIsBackgroundThread { result: Result<Boolean> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(CoreTestsGolubetsUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(CoreTestsGolubetsUtils.wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
       }
     }
   }

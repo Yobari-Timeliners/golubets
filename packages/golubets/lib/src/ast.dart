@@ -146,6 +146,9 @@ class Method extends Node {
   /// Whether this method is asynchronous.
   bool get isAsynchronous => !asynchronousType.isNone;
 
+  /// Whether this asynchronous method uses callback-based completions instead of native async/await or suspend functions.
+  bool get isAsynchronousCallback => asynchronousType.isCallback;
+
   @override
   String toString() {
     final objcSelectorStr = objcSelector.isEmpty ? '' : ' objcSelector:$objcSelector';
@@ -552,6 +555,25 @@ class TypeDeclaration {
   /// Associated [AstProxyApi], if any.
   final AstProxyApi? associatedProxyApi;
 
+  /// Returns the full annotated name of the type.
+  String getFullName({bool withNullable = true}) {
+    return '$baseName$typeArgumentsString${isNullable && withNullable ? '?' : ''}';
+  }
+
+  /// Returns the Type Arguments in annotation form.
+  String get typeArgumentsString {
+    final String typeArgumentString;
+    if (baseName == 'List') {
+      typeArgumentString = typeArguments.firstOrNull?.getFullName() ?? 'Object?';
+    } else if (baseName == 'Map') {
+      typeArgumentString =
+          '${typeArguments.firstOrNull?.getFullName() ?? 'Object?'}, ${typeArguments.lastOrNull?.getFullName() ?? 'Object?'}';
+    } else {
+      return '';
+    }
+    return '<$typeArgumentString>';
+  }
+
   @override
   int get hashCode {
     // This has to be implemented because TypeDeclaration is used as a Key to a
@@ -908,6 +930,8 @@ class Root extends Node {
     required this.classes,
     required this.apis,
     required this.enums,
+    this.lists = const <String, TypeDeclaration>{},
+    this.maps = const <String, TypeDeclaration>{},
     this.constants = const <Constant>[],
     this.containsHostApi = false,
     this.containsFlutterApi = false,
@@ -925,6 +949,8 @@ class Root extends Node {
       enums: <Enum>[],
       genericTypeNames: <String>{},
       genericUsage: <String, Set<TypeArgumentCombination>>{},
+      lists: <String, TypeDeclaration>{},
+      maps: <String, TypeDeclaration>{},
       constants: <Constant>[],
     );
   }
@@ -939,6 +965,12 @@ class Root extends Node {
 
   /// All of the enums contained in the AST.
   List<Enum> enums;
+
+  /// All of the lists contained in the AST.
+  Map<String, TypeDeclaration> lists;
+
+  /// All of the maps contained in the AST.
+  Map<String, TypeDeclaration> maps;
 
   /// All of the constants contained in the AST.
   List<Constant> constants;
@@ -971,7 +1003,7 @@ class Root extends Node {
 
   @override
   String toString() {
-    return '(Root classes:$classes apis:$apis enums:$enums constants:$constants)';
+    return '(Root classes:$classes apis:$apis enums:$enums lists:$lists maps:$maps containsHostApi:$containsHostApi containsFlutterApi:$containsFlutterApi containsProxyApi:$containsProxyApi constants:$constants)';
   }
 }
 

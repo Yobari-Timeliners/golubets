@@ -5253,6 +5253,10 @@ typedef struct {
       *default_is_main_thread)(gpointer user_data);
   CoreTestsGolubetsTestHostIntegrationCoreApiTaskQueueIsBackgroundThreadResponse* (
       *task_queue_is_background_thread)(gpointer user_data);
+  void (*async_task_queue_is_background_thread)(
+      CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle*
+          response_handle,
+      gpointer user_data);
   void (*call_flutter_noop)(
       CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle*
           response_handle,
@@ -5504,6 +5508,27 @@ typedef struct {
       gpointer user_data);
   void (*call_flutter_small_api_echo_string)(
       const gchar* a_string,
+      CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle*
+          response_handle,
+      gpointer user_data);
+  void (*call_flutter_callback_noop)(
+      CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle*
+          response_handle,
+      gpointer user_data);
+  void (*call_flutter_callback_echo_string)(
+      const gchar* a_string,
+      CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle*
+          response_handle,
+      gpointer user_data);
+  void (*call_flutter_callback_throw_error)(
+      CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle*
+          response_handle,
+      gpointer user_data);
+  void (*call_flutter_callback_throw_error_from_void)(
+      CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle*
+          response_handle,
+      gpointer user_data);
+  void (*call_flutter_is_async_flutter_api_on_root)(
       CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle*
           response_handle,
       gpointer user_data);
@@ -6659,6 +6684,33 @@ void core_tests_golubets_test_host_integration_core_api_respond_echo_another_asy
  * HostIntegrationCoreApi.echoAnotherAsyncNullableEnum.
  */
 void core_tests_golubets_test_host_integration_core_api_respond_error_echo_another_async_nullable_enum(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_respond_async_task_queue_is_background_thread:
+ * @response_handle: a
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle.
+ * @return_value: location to write the value returned by this method.
+ *
+ * Responds to HostIntegrationCoreApi.asyncTaskQueueIsBackgroundThread.
+ */
+void core_tests_golubets_test_host_integration_core_api_respond_async_task_queue_is_background_thread(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    gboolean return_value);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_respond_error_async_task_queue_is_background_thread:
+ * @response_handle: a
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle.
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Responds with an error to
+ * HostIntegrationCoreApi.asyncTaskQueueIsBackgroundThread.
+ */
+void core_tests_golubets_test_host_integration_core_api_respond_error_async_task_queue_is_background_thread(
     CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
     const gchar* code, const gchar* message, FlValue* details);
 
@@ -8017,6 +8069,535 @@ void core_tests_golubets_test_host_integration_core_api_respond_call_flutter_sma
 void core_tests_golubets_test_host_integration_core_api_respond_error_call_flutter_small_api_echo_string(
     CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
     const gchar* code, const gchar* message, FlValue* details);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_respond_call_flutter_callback_noop:
+ * @response_handle: a
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle.
+ *
+ * Responds to HostIntegrationCoreApi.callFlutterCallbackNoop.
+ */
+void core_tests_golubets_test_host_integration_core_api_respond_call_flutter_callback_noop(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_respond_error_call_flutter_callback_noop:
+ * @response_handle: a
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle.
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Responds with an error to HostIntegrationCoreApi.callFlutterCallbackNoop.
+ */
+void core_tests_golubets_test_host_integration_core_api_respond_error_call_flutter_callback_noop(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_respond_call_flutter_callback_echo_string:
+ * @response_handle: a
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle.
+ * @return_value: location to write the value returned by this method.
+ *
+ * Responds to HostIntegrationCoreApi.callFlutterCallbackEchoString.
+ */
+void core_tests_golubets_test_host_integration_core_api_respond_call_flutter_callback_echo_string(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    const gchar* return_value);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_respond_error_call_flutter_callback_echo_string:
+ * @response_handle: a
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle.
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Responds with an error to
+ * HostIntegrationCoreApi.callFlutterCallbackEchoString.
+ */
+void core_tests_golubets_test_host_integration_core_api_respond_error_call_flutter_callback_echo_string(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_respond_call_flutter_callback_throw_error:
+ * @response_handle: a
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle.
+ * @return_value: location to write the value returned by this method.
+ *
+ * Responds to HostIntegrationCoreApi.callFlutterCallbackThrowError.
+ */
+void core_tests_golubets_test_host_integration_core_api_respond_call_flutter_callback_throw_error(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    FlValue* return_value);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_respond_error_call_flutter_callback_throw_error:
+ * @response_handle: a
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle.
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Responds with an error to
+ * HostIntegrationCoreApi.callFlutterCallbackThrowError.
+ */
+void core_tests_golubets_test_host_integration_core_api_respond_error_call_flutter_callback_throw_error(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_respond_call_flutter_callback_throw_error_from_void:
+ * @response_handle: a
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle.
+ *
+ * Responds to HostIntegrationCoreApi.callFlutterCallbackThrowErrorFromVoid.
+ */
+void core_tests_golubets_test_host_integration_core_api_respond_call_flutter_callback_throw_error_from_void(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_respond_error_call_flutter_callback_throw_error_from_void:
+ * @response_handle: a
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle.
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Responds with an error to
+ * HostIntegrationCoreApi.callFlutterCallbackThrowErrorFromVoid.
+ */
+void core_tests_golubets_test_host_integration_core_api_respond_error_call_flutter_callback_throw_error_from_void(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_respond_call_flutter_is_async_flutter_api_on_root:
+ * @response_handle: a
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle.
+ * @return_value: location to write the value returned by this method.
+ *
+ * Responds to HostIntegrationCoreApi.callFlutterIsAsyncFlutterApiOnRoot.
+ */
+void core_tests_golubets_test_host_integration_core_api_respond_call_flutter_is_async_flutter_api_on_root(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    gboolean return_value);
+
+/**
+ * core_tests_golubets_test_host_integration_core_api_respond_error_call_flutter_is_async_flutter_api_on_root:
+ * @response_handle: a
+ * #CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle.
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Responds with an error to
+ * HostIntegrationCoreApi.callFlutterIsAsyncFlutterApiOnRoot.
+ */
+void core_tests_golubets_test_host_integration_core_api_respond_error_call_flutter_is_async_flutter_api_on_root(
+    CoreTestsGolubetsTestHostIntegrationCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details);
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse,
+    core_tests_golubets_test_flutter_callback_core_api_noop_response,
+    CORE_TESTS_GOLUBETS_TEST, FLUTTER_CALLBACK_CORE_API_NOOP_RESPONSE, GObject)
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_noop_response_is_error:
+ * @response: a #CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse.
+ *
+ * Checks if a response to FlutterCallbackCoreApi.noop is an error.
+ *
+ * Returns: a %TRUE if this response is an error.
+ */
+gboolean
+core_tests_golubets_test_flutter_callback_core_api_noop_response_is_error(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse* response);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_noop_response_get_error_code:
+ * @response: a #CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse.
+ *
+ * Get the error code for this response.
+ *
+ * Returns: an error code or %NULL if not an error.
+ */
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_noop_response_get_error_code(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse* response);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_noop_response_get_error_message:
+ * @response: a #CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse.
+ *
+ * Get the error message for this response.
+ *
+ * Returns: an error message.
+ */
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_noop_response_get_error_message(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse* response);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_noop_response_get_error_details:
+ * @response: a #CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse.
+ *
+ * Get the error details for this response.
+ *
+ * Returns: (allow-none): an error details or %NULL.
+ */
+FlValue*
+core_tests_golubets_test_flutter_callback_core_api_noop_response_get_error_details(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse* response);
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse,
+    core_tests_golubets_test_flutter_callback_core_api_echo_string_response,
+    CORE_TESTS_GOLUBETS_TEST, FLUTTER_CALLBACK_CORE_API_ECHO_STRING_RESPONSE,
+    GObject)
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_echo_string_response_is_error:
+ * @response: a #CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse.
+ *
+ * Checks if a response to FlutterCallbackCoreApi.echoString is an error.
+ *
+ * Returns: a %TRUE if this response is an error.
+ */
+gboolean
+core_tests_golubets_test_flutter_callback_core_api_echo_string_response_is_error(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse* response);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_echo_string_response_get_error_code:
+ * @response: a #CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse.
+ *
+ * Get the error code for this response.
+ *
+ * Returns: an error code or %NULL if not an error.
+ */
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_echo_string_response_get_error_code(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse* response);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_echo_string_response_get_error_message:
+ * @response: a #CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse.
+ *
+ * Get the error message for this response.
+ *
+ * Returns: an error message.
+ */
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_echo_string_response_get_error_message(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse* response);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_echo_string_response_get_error_details:
+ * @response: a #CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse.
+ *
+ * Get the error details for this response.
+ *
+ * Returns: (allow-none): an error details or %NULL.
+ */
+FlValue*
+core_tests_golubets_test_flutter_callback_core_api_echo_string_response_get_error_details(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse* response);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_echo_string_response_get_return_value:
+ * @response: a #CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse.
+ *
+ * Get the return value for this response.
+ *
+ * Returns: a return value.
+ */
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_echo_string_response_get_return_value(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse* response);
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse,
+    core_tests_golubets_test_flutter_callback_core_api_throw_error_response,
+    CORE_TESTS_GOLUBETS_TEST, FLUTTER_CALLBACK_CORE_API_THROW_ERROR_RESPONSE,
+    GObject)
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_throw_error_response_is_error:
+ * @response: a #CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse.
+ *
+ * Checks if a response to FlutterCallbackCoreApi.throwError is an error.
+ *
+ * Returns: a %TRUE if this response is an error.
+ */
+gboolean
+core_tests_golubets_test_flutter_callback_core_api_throw_error_response_is_error(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse* response);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_throw_error_response_get_error_code:
+ * @response: a #CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse.
+ *
+ * Get the error code for this response.
+ *
+ * Returns: an error code or %NULL if not an error.
+ */
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_response_get_error_code(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse* response);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_throw_error_response_get_error_message:
+ * @response: a #CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse.
+ *
+ * Get the error message for this response.
+ *
+ * Returns: an error message.
+ */
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_response_get_error_message(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse* response);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_throw_error_response_get_error_details:
+ * @response: a #CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse.
+ *
+ * Get the error details for this response.
+ *
+ * Returns: (allow-none): an error details or %NULL.
+ */
+FlValue*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_response_get_error_details(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse* response);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_throw_error_response_get_return_value:
+ * @response: a #CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse.
+ *
+ * Get the return value for this response.
+ *
+ * Returns: (allow-none): a return value or %NULL.
+ */
+FlValue*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_response_get_return_value(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse* response);
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse,
+    core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response,
+    CORE_TESTS_GOLUBETS_TEST,
+    FLUTTER_CALLBACK_CORE_API_THROW_ERROR_FROM_VOID_RESPONSE, GObject)
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_is_error:
+ * @response: a
+ * #CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse.
+ *
+ * Checks if a response to FlutterCallbackCoreApi.throwErrorFromVoid is an
+ * error.
+ *
+ * Returns: a %TRUE if this response is an error.
+ */
+gboolean
+core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_is_error(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse*
+        response);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_get_error_code:
+ * @response: a
+ * #CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse.
+ *
+ * Get the error code for this response.
+ *
+ * Returns: an error code or %NULL if not an error.
+ */
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_get_error_code(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse*
+        response);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_get_error_message:
+ * @response: a
+ * #CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse.
+ *
+ * Get the error message for this response.
+ *
+ * Returns: an error message.
+ */
+const gchar*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_get_error_message(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse*
+        response);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_get_error_details:
+ * @response: a
+ * #CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse.
+ *
+ * Get the error details for this response.
+ *
+ * Returns: (allow-none): an error details or %NULL.
+ */
+FlValue*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_response_get_error_details(
+    CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse*
+        response);
+
+/**
+ * CoreTestsGolubetsTestFlutterCallbackCoreApi:
+ *
+ * A Flutter API using callback-based asynchronous methods (@asyncCallback).
+ */
+
+G_DECLARE_FINAL_TYPE(CoreTestsGolubetsTestFlutterCallbackCoreApi,
+                     core_tests_golubets_test_flutter_callback_core_api,
+                     CORE_TESTS_GOLUBETS_TEST, FLUTTER_CALLBACK_CORE_API,
+                     GObject)
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_new:
+ * @messenger: an #FlBinaryMessenger.
+ * @suffix: (allow-none): a suffix to add to the API or %NULL for none.
+ *
+ * Creates a new object to access the FlutterCallbackCoreApi API.
+ *
+ * Returns: a new #CoreTestsGolubetsTestFlutterCallbackCoreApi
+ */
+CoreTestsGolubetsTestFlutterCallbackCoreApi*
+core_tests_golubets_test_flutter_callback_core_api_new(
+    FlBinaryMessenger* messenger, const gchar* suffix);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_noop:
+ * @api: a #CoreTestsGolubetsTestFlutterCallbackCoreApi.
+ * @cancellable: (allow-none): a #GCancellable or %NULL.
+ * @callback: (scope async): (allow-none): a #GAsyncReadyCallback to call when
+ * the call is complete or %NULL to ignore the response.
+ * @user_data: (closure): user data to pass to @callback.
+ *
+ */
+void core_tests_golubets_test_flutter_callback_core_api_noop(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* api, GCancellable* cancellable,
+    GAsyncReadyCallback callback, gpointer user_data);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_noop_finish:
+ * @api: a #CoreTestsGolubetsTestFlutterCallbackCoreApi.
+ * @result: a #GAsyncResult.
+ * @error: (allow-none): #GError location to store the error occurring, or %NULL
+ * to ignore.
+ *
+ * Completes a core_tests_golubets_test_flutter_callback_core_api_noop() call.
+ *
+ * Returns: a #CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse or %NULL
+ * on error.
+ */
+CoreTestsGolubetsTestFlutterCallbackCoreApiNoopResponse*
+core_tests_golubets_test_flutter_callback_core_api_noop_finish(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* api, GAsyncResult* result,
+    GError** error);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_echo_string:
+ * @api: a #CoreTestsGolubetsTestFlutterCallbackCoreApi.
+ * @a_string: parameter for this method.
+ * @cancellable: (allow-none): a #GCancellable or %NULL.
+ * @callback: (scope async): (allow-none): a #GAsyncReadyCallback to call when
+ * the call is complete or %NULL to ignore the response.
+ * @user_data: (closure): user data to pass to @callback.
+ *
+ */
+void core_tests_golubets_test_flutter_callback_core_api_echo_string(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* api, const gchar* a_string,
+    GCancellable* cancellable, GAsyncReadyCallback callback,
+    gpointer user_data);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_echo_string_finish:
+ * @api: a #CoreTestsGolubetsTestFlutterCallbackCoreApi.
+ * @result: a #GAsyncResult.
+ * @error: (allow-none): #GError location to store the error occurring, or %NULL
+ * to ignore.
+ *
+ * Completes a core_tests_golubets_test_flutter_callback_core_api_echo_string()
+ * call.
+ *
+ * Returns: a #CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse or
+ * %NULL on error.
+ */
+CoreTestsGolubetsTestFlutterCallbackCoreApiEchoStringResponse*
+core_tests_golubets_test_flutter_callback_core_api_echo_string_finish(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* api, GAsyncResult* result,
+    GError** error);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_throw_error:
+ * @api: a #CoreTestsGolubetsTestFlutterCallbackCoreApi.
+ * @cancellable: (allow-none): a #GCancellable or %NULL.
+ * @callback: (scope async): (allow-none): a #GAsyncReadyCallback to call when
+ * the call is complete or %NULL to ignore the response.
+ * @user_data: (closure): user data to pass to @callback.
+ *
+ */
+void core_tests_golubets_test_flutter_callback_core_api_throw_error(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* api, GCancellable* cancellable,
+    GAsyncReadyCallback callback, gpointer user_data);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_throw_error_finish:
+ * @api: a #CoreTestsGolubetsTestFlutterCallbackCoreApi.
+ * @result: a #GAsyncResult.
+ * @error: (allow-none): #GError location to store the error occurring, or %NULL
+ * to ignore.
+ *
+ * Completes a core_tests_golubets_test_flutter_callback_core_api_throw_error()
+ * call.
+ *
+ * Returns: a #CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse or
+ * %NULL on error.
+ */
+CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorResponse*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_finish(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* api, GAsyncResult* result,
+    GError** error);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void:
+ * @api: a #CoreTestsGolubetsTestFlutterCallbackCoreApi.
+ * @cancellable: (allow-none): a #GCancellable or %NULL.
+ * @callback: (scope async): (allow-none): a #GAsyncReadyCallback to call when
+ * the call is complete or %NULL to ignore the response.
+ * @user_data: (closure): user data to pass to @callback.
+ *
+ */
+void core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* api, GCancellable* cancellable,
+    GAsyncReadyCallback callback, gpointer user_data);
+
+/**
+ * core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_finish:
+ * @api: a #CoreTestsGolubetsTestFlutterCallbackCoreApi.
+ * @result: a #GAsyncResult.
+ * @error: (allow-none): #GError location to store the error occurring, or %NULL
+ * to ignore.
+ *
+ * Completes a
+ * core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void()
+ * call.
+ *
+ * Returns: a
+ * #CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse or
+ * %NULL on error.
+ */
+CoreTestsGolubetsTestFlutterCallbackCoreApiThrowErrorFromVoidResponse*
+core_tests_golubets_test_flutter_callback_core_api_throw_error_from_void_finish(
+    CoreTestsGolubetsTestFlutterCallbackCoreApi* api, GAsyncResult* result,
+    GError** error);
 
 G_DECLARE_FINAL_TYPE(
     CoreTestsGolubetsTestFlutterIntegrationCoreApiNoopResponse,
@@ -11895,6 +12476,83 @@ core_tests_golubets_test_flutter_integration_core_api_echo_async_string_response
     CoreTestsGolubetsTestFlutterIntegrationCoreApiEchoAsyncStringResponse*
         response);
 
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse,
+    core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response,
+    CORE_TESTS_GOLUBETS_TEST,
+    FLUTTER_INTEGRATION_CORE_API_IS_ASYNC_FLUTTER_API_ON_ROOT_RESPONSE, GObject)
+
+/**
+ * core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_is_error:
+ * @response: a
+ * #CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse.
+ *
+ * Checks if a response to FlutterIntegrationCoreApi.isAsyncFlutterApiOnRoot is
+ * an error.
+ *
+ * Returns: a %TRUE if this response is an error.
+ */
+gboolean
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_is_error(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse*
+        response);
+
+/**
+ * core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_get_error_code:
+ * @response: a
+ * #CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse.
+ *
+ * Get the error code for this response.
+ *
+ * Returns: an error code or %NULL if not an error.
+ */
+const gchar*
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_get_error_code(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse*
+        response);
+
+/**
+ * core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_get_error_message:
+ * @response: a
+ * #CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse.
+ *
+ * Get the error message for this response.
+ *
+ * Returns: an error message.
+ */
+const gchar*
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_get_error_message(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse*
+        response);
+
+/**
+ * core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_get_error_details:
+ * @response: a
+ * #CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse.
+ *
+ * Get the error details for this response.
+ *
+ * Returns: (allow-none): an error details or %NULL.
+ */
+FlValue*
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_get_error_details(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse*
+        response);
+
+/**
+ * core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_get_return_value:
+ * @response: a
+ * #CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse.
+ *
+ * Get the return value for this response.
+ *
+ * Returns: a return value.
+ */
+gboolean
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_response_get_return_value(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse*
+        response);
+
 /**
  * CoreTestsGolubetsTestFlutterIntegrationCoreApi:
  *
@@ -13773,6 +14431,275 @@ CoreTestsGolubetsTestFlutterIntegrationCoreApiEchoAsyncStringResponse*
 core_tests_golubets_test_flutter_integration_core_api_echo_async_string_finish(
     CoreTestsGolubetsTestFlutterIntegrationCoreApi* api, GAsyncResult* result,
     GError** error);
+
+/**
+ * core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root:
+ * @api: a #CoreTestsGolubetsTestFlutterIntegrationCoreApi.
+ * @cancellable: (allow-none): a #GCancellable or %NULL.
+ * @callback: (scope async): (allow-none): a #GAsyncReadyCallback to call when
+ * the call is complete or %NULL to ignore the response.
+ * @user_data: (closure): user data to pass to @callback.
+ *
+ * Returns true if the async FlutterApi method is run on the root isolate.
+ */
+void core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApi* api,
+    GCancellable* cancellable, GAsyncReadyCallback callback,
+    gpointer user_data);
+
+/**
+ * core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_finish:
+ * @api: a #CoreTestsGolubetsTestFlutterIntegrationCoreApi.
+ * @result: a #GAsyncResult.
+ * @error: (allow-none): #GError location to store the error occurring, or %NULL
+ * to ignore.
+ *
+ * Completes a
+ * core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root()
+ * call.
+ *
+ * Returns: a
+ * #CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse
+ * or %NULL on error.
+ */
+CoreTestsGolubetsTestFlutterIntegrationCoreApiIsAsyncFlutterApiOnRootResponse*
+core_tests_golubets_test_flutter_integration_core_api_is_async_flutter_api_on_root_finish(
+    CoreTestsGolubetsTestFlutterIntegrationCoreApi* api, GAsyncResult* result,
+    GError** error);
+
+G_DECLARE_FINAL_TYPE(CoreTestsGolubetsTestHostCallbackCoreApi,
+                     core_tests_golubets_test_host_callback_core_api,
+                     CORE_TESTS_GOLUBETS_TEST, HOST_CALLBACK_CORE_API, GObject)
+
+G_DECLARE_FINAL_TYPE(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle,
+    core_tests_golubets_test_host_callback_core_api_response_handle,
+    CORE_TESTS_GOLUBETS_TEST, HOST_CALLBACK_CORE_API_RESPONSE_HANDLE, GObject)
+
+/**
+ * CoreTestsGolubetsTestHostCallbackCoreApiVTable:
+ *
+ * Table of functions exposed by HostCallbackCoreApi to be implemented by the
+ * API provider.
+ */
+typedef struct {
+  void (*noop)(
+      CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+      gpointer user_data);
+  void (*echo_string)(
+      const gchar* a_string,
+      CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+      gpointer user_data);
+  void (*echo_all_types)(
+      CoreTestsGolubetsTestAllTypes* everything,
+      CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+      gpointer user_data);
+  void (*echo_nullable_string)(
+      const gchar* a_string,
+      CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+      gpointer user_data);
+  void (*throw_error)(
+      CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+      gpointer user_data);
+  void (*throw_error_from_void)(
+      CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+      gpointer user_data);
+  void (*task_queue_is_background_thread)(
+      CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+      gpointer user_data);
+} CoreTestsGolubetsTestHostCallbackCoreApiVTable;
+
+/**
+ * core_tests_golubets_test_host_callback_core_api_set_method_handlers:
+ *
+ * @messenger: an #FlBinaryMessenger.
+ * @suffix: (allow-none): a suffix to add to the API or %NULL for none.
+ * @vtable: implementations of the methods in this API.
+ * @user_data: (closure): user data to pass to the functions in @vtable.
+ * @user_data_free_func: (allow-none): a function which gets called to free
+ * @user_data, or %NULL.
+ *
+ * Connects the method handlers in the HostCallbackCoreApi API.
+ */
+void core_tests_golubets_test_host_callback_core_api_set_method_handlers(
+    FlBinaryMessenger* messenger, const gchar* suffix,
+    const CoreTestsGolubetsTestHostCallbackCoreApiVTable* vtable,
+    gpointer user_data, GDestroyNotify user_data_free_func);
+
+/**
+ * core_tests_golubets_test_host_callback_core_api_clear_method_handlers:
+ *
+ * @messenger: an #FlBinaryMessenger.
+ * @suffix: (allow-none): a suffix to add to the API or %NULL for none.
+ *
+ * Clears the method handlers in the HostCallbackCoreApi API.
+ */
+void core_tests_golubets_test_host_callback_core_api_clear_method_handlers(
+    FlBinaryMessenger* messenger, const gchar* suffix);
+
+/**
+ * core_tests_golubets_test_host_callback_core_api_respond_noop:
+ * @response_handle: a #CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle.
+ *
+ * Responds to HostCallbackCoreApi.noop.
+ */
+void core_tests_golubets_test_host_callback_core_api_respond_noop(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle);
+
+/**
+ * core_tests_golubets_test_host_callback_core_api_respond_error_noop:
+ * @response_handle: a #CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle.
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Responds with an error to HostCallbackCoreApi.noop.
+ */
+void core_tests_golubets_test_host_callback_core_api_respond_error_noop(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details);
+
+/**
+ * core_tests_golubets_test_host_callback_core_api_respond_echo_string:
+ * @response_handle: a #CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle.
+ * @return_value: location to write the value returned by this method.
+ *
+ * Responds to HostCallbackCoreApi.echoString.
+ */
+void core_tests_golubets_test_host_callback_core_api_respond_echo_string(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* return_value);
+
+/**
+ * core_tests_golubets_test_host_callback_core_api_respond_error_echo_string:
+ * @response_handle: a #CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle.
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Responds with an error to HostCallbackCoreApi.echoString.
+ */
+void core_tests_golubets_test_host_callback_core_api_respond_error_echo_string(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details);
+
+/**
+ * core_tests_golubets_test_host_callback_core_api_respond_echo_all_types:
+ * @response_handle: a #CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle.
+ * @return_value: location to write the value returned by this method.
+ *
+ * Responds to HostCallbackCoreApi.echoAllTypes.
+ */
+void core_tests_golubets_test_host_callback_core_api_respond_echo_all_types(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    CoreTestsGolubetsTestAllTypes* return_value);
+
+/**
+ * core_tests_golubets_test_host_callback_core_api_respond_error_echo_all_types:
+ * @response_handle: a #CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle.
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Responds with an error to HostCallbackCoreApi.echoAllTypes.
+ */
+void core_tests_golubets_test_host_callback_core_api_respond_error_echo_all_types(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details);
+
+/**
+ * core_tests_golubets_test_host_callback_core_api_respond_echo_nullable_string:
+ * @response_handle: a #CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle.
+ * @return_value: location to write the value returned by this method.
+ *
+ * Responds to HostCallbackCoreApi.echoNullableString.
+ */
+void core_tests_golubets_test_host_callback_core_api_respond_echo_nullable_string(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* return_value);
+
+/**
+ * core_tests_golubets_test_host_callback_core_api_respond_error_echo_nullable_string:
+ * @response_handle: a #CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle.
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Responds with an error to HostCallbackCoreApi.echoNullableString.
+ */
+void core_tests_golubets_test_host_callback_core_api_respond_error_echo_nullable_string(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details);
+
+/**
+ * core_tests_golubets_test_host_callback_core_api_respond_throw_error:
+ * @response_handle: a #CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle.
+ * @return_value: location to write the value returned by this method.
+ *
+ * Responds to HostCallbackCoreApi.throwError.
+ */
+void core_tests_golubets_test_host_callback_core_api_respond_throw_error(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    FlValue* return_value);
+
+/**
+ * core_tests_golubets_test_host_callback_core_api_respond_error_throw_error:
+ * @response_handle: a #CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle.
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Responds with an error to HostCallbackCoreApi.throwError.
+ */
+void core_tests_golubets_test_host_callback_core_api_respond_error_throw_error(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details);
+
+/**
+ * core_tests_golubets_test_host_callback_core_api_respond_throw_error_from_void:
+ * @response_handle: a #CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle.
+ *
+ * Responds to HostCallbackCoreApi.throwErrorFromVoid.
+ */
+void core_tests_golubets_test_host_callback_core_api_respond_throw_error_from_void(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle);
+
+/**
+ * core_tests_golubets_test_host_callback_core_api_respond_error_throw_error_from_void:
+ * @response_handle: a #CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle.
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Responds with an error to HostCallbackCoreApi.throwErrorFromVoid.
+ */
+void core_tests_golubets_test_host_callback_core_api_respond_error_throw_error_from_void(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details);
+
+/**
+ * core_tests_golubets_test_host_callback_core_api_respond_task_queue_is_background_thread:
+ * @response_handle: a #CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle.
+ * @return_value: location to write the value returned by this method.
+ *
+ * Responds to HostCallbackCoreApi.taskQueueIsBackgroundThread.
+ */
+void core_tests_golubets_test_host_callback_core_api_respond_task_queue_is_background_thread(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    gboolean return_value);
+
+/**
+ * core_tests_golubets_test_host_callback_core_api_respond_error_task_queue_is_background_thread:
+ * @response_handle: a #CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle.
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Responds with an error to HostCallbackCoreApi.taskQueueIsBackgroundThread.
+ */
+void core_tests_golubets_test_host_callback_core_api_respond_error_task_queue_is_background_thread(
+    CoreTestsGolubetsTestHostCallbackCoreApiResponseHandle* response_handle,
+    const gchar* code, const gchar* message, FlValue* details);
 
 G_DECLARE_FINAL_TYPE(CoreTestsGolubetsTestHostTrivialApi,
                      core_tests_golubets_test_host_trivial_api,

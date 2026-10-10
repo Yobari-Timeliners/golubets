@@ -78,8 +78,8 @@ class NullableReturnHostApi {
       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
 
+  final BinaryMessenger? golubetsVar_binaryMessenger;
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
   final String golubetsVar_messageChannelSuffix;
@@ -150,8 +150,8 @@ class NullableArgHostApi {
       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
 
+  final BinaryMessenger? golubetsVar_binaryMessenger;
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
   final String golubetsVar_messageChannelSuffix;
@@ -226,8 +226,8 @@ class NullableCollectionReturnHostApi {
        golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
            ? '.$messageChannelSuffix'
            : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
 
+  final BinaryMessenger? golubetsVar_binaryMessenger;
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
   final String golubetsVar_messageChannelSuffix;
@@ -298,8 +298,8 @@ class NullableCollectionArgHostApi {
       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
 
+  final BinaryMessenger? golubetsVar_binaryMessenger;
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
   final String golubetsVar_messageChannelSuffix;

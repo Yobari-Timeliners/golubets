@@ -1,3 +1,15 @@
+## 2.1.0
+* Merges upstream Pigeon changes up to 29.0.4.
+* [swift] [kotlin] Adds experimental support for FFI and JNI (native interop).
+* Exposes missing GolubetsOptions and language-specific configurations as command-line arguments.
+* [swift] Adds support for multiple output locations in `swiftOut` and `--swift_out`.
+* [swift] [kotlin] Adds support for `@Async(type: AsyncType.await())` on `@FlutterApi` methods, generating `async throws`/`suspend` signatures. Callback style remains the default.
+* [swift] Annotates await-style `FlutterApi` methods with `@MainActor`.
+* Adds the `asyncCallback` annotation as an alias of `async` for compatibility with Pigeon definitions.
+* [swift] Uses `isNullish` to check for null and `NSNull` in non-null Flutter API returns.
+* [swift] Fixes the generated error class `localizedDescription` missing a closing parenthesis.
+* [kotlin] [swift] Derives the default file-specific class name component in UpperCamelCase from the output file name.
+
 ## 2.0.0
 * [dart] Fixes lint warning from unused codec variable in Dart proxy classes.
 * Updates analyzer dependency to support versions 13 and 14.

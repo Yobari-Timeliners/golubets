@@ -308,8 +308,8 @@ class NonNullFieldHostApi {
       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
           ? '.$messageChannelSuffix'
           : '';
-  final BinaryMessenger? golubetsVar_binaryMessenger;
 
+  final BinaryMessenger? golubetsVar_binaryMessenger;
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
   final String golubetsVar_messageChannelSuffix;

@@ -33,7 +33,7 @@ public final class GolubetsError: Error {
 
   var localizedDescription: String {
     return
-      "GolubetsError(code: \(code), message: \(message ?? "<nil>"), details: \(details ?? "<nil>")"
+      "GolubetsError(code: \(code), message: \(message ?? "<nil>"), details: \(details ?? "<nil>"))"
   }
 }
 
@@ -110,19 +110,19 @@ enum MessagesGolubetsInternal {
     case is (Void, Void):
       return true
 
-    case (let lhsArray, let rhsArray) as ([Any?], [Any?]):
+    case (let lhsArray, let rhsArray) as ([Double], [Double]):
       guard lhsArray.count == rhsArray.count else { return false }
       for (index, element) in lhsArray.enumerated() {
-        if !deepEquals(element, rhsArray[index]) {
+        if !doubleEquals(element, rhsArray[index]) {
           return false
         }
       }
       return true
 
-    case (let lhsArray, let rhsArray) as ([Double], [Double]):
+    case (let lhsArray, let rhsArray) as ([Any?], [Any?]):
       guard lhsArray.count == rhsArray.count else { return false }
       for (index, element) in lhsArray.enumerated() {
-        if !doubleEquals(element, rhsArray[index]) {
+        if !deepEquals(element, rhsArray[index]) {
           return false
         }
       }
@@ -475,7 +475,7 @@ public class MessageFlutterApi: MessageFlutterApiProtocol {
         let message: String? = nilOrValue(listResponse[1])
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
-      } else if listResponse[0] == nil {
+      } else if MessagesGolubetsInternal.isNullish(listResponse[0]) {
         completion(
           .failure(
             GolubetsError(

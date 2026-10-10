@@ -47,6 +47,14 @@ void main() {
     expect(code, isNot(contains('containsKey')));
   });
 
+  test('fileSpecificClassNameComponent defaults to UpperCamelCase from kotlinOut', () {
+    final kotlinOptions = InternalKotlinOptions.fromKotlinOptions(
+      const KotlinOptions(),
+      kotlinOut: 'path/to/messages.g.kt',
+    );
+    expect(kotlinOptions.fileSpecificClassNameComponent, equals('Messages'));
+  });
+
   test('gen one enum', () {
     final anEnum = Enum(
       name: 'Foobar',
@@ -3067,5 +3075,114 @@ void main() {
     expect(code, contains('const val boolConst: Boolean = true'));
     expect(code, contains(r'const val stringWithBackslashDollar: String = "\\\$"'));
     expect(code, contains(r'const val stringWithTwoBackslashesDollar: String = "\\\\\$"'));
+  });
+
+  test('kotlin generator handles HostApi and FlutterApi deregistration with null', () {
+    final root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'HostApi',
+          methods: <Method>[
+            Method(
+              name: 'doSomething',
+              location: ApiLocation.host,
+              returnType: const TypeDeclaration.voidDeclaration(),
+              parameters: <Parameter>[],
+            ),
+          ],
+        ),
+        AstFlutterApi(
+          name: 'FlutterApi',
+          methods: <Method>[
+            Method(
+              name: 'onEvent',
+              location: ApiLocation.flutter,
+              returnType: const TypeDeclaration.voidDeclaration(),
+              parameters: <Parameter>[],
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[],
+      enums: <Enum>[],
+    );
+    final sink = StringBuffer();
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '', useJni: true);
+    const generator = KotlinGenerator();
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
+    final code = sink.toString();
+    expect(code, contains('interface HostApi {'));
+    expect(code, contains('class HostApiRegistrar : HostApi {'));
+    expect(code, contains('api: HostApi?,'));
+    expect(code, contains('HostApiInstances.remove(name)'));
+    expect(
+      code,
+      contains('fun registerInstance(api: FlutterApi?, name: String = defaultInstanceName)'),
+    );
+    expect(code, contains('registeredFlutterApi.remove(name)'));
+  });
+
+  test('callback async emits callback-based host api method', () {
+    final root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'doit',
+              location: ApiLocation.host,
+              returnType: const TypeDeclaration(baseName: 'int', isNullable: true),
+              asynchronousType: AsynchronousType.callback,
+              parameters: <Parameter>[],
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[],
+      enums: <Enum>[],
+    );
+    final sink = StringBuffer();
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
+    const generator = KotlinGenerator();
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
+    final code = sink.toString();
+    expect(code, contains('fun doit(callback: (Result<Long?>) -> Unit'));
+  });
+
+  test('await async flutter api method generates suspend fun', () {
+    final root = Root(
+      apis: <Api>[
+        AstFlutterApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'awaitMethod',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[],
+              returnType: const TypeDeclaration(baseName: 'int', isNullable: false),
+              asynchronousType: const AwaitAsynchronous(
+                swiftOptions: SwiftAwaitAsynchronousOptions(throws: true),
+              ),
+            ),
+            Method(
+              name: 'callbackMethod',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[],
+              returnType: const TypeDeclaration.voidDeclaration(),
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[],
+      enums: <Enum>[],
+    );
+    final sink = StringBuffer();
+    const kotlinOptions = InternalKotlinOptions(kotlinOut: '');
+    const generator = KotlinGenerator();
+    generator.generate(kotlinOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
+    final code = sink.toString();
+    expect(code, contains('suspend fun awaitMethod(): Long'));
+    expect(code, contains('import kotlinx.coroutines.suspendCancellableCoroutine'));
+    expect(code, contains('fun callbackMethod(callback: (Result<Unit>) -> Unit)'));
   });
 }

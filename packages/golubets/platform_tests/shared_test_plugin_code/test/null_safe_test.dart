@@ -204,7 +204,7 @@ void main() {
         'dev.bayori.golubets.golubets_integration_tests.NullableReturnFlutterApi.doit',
         NullableReturnFlutterApi.golubetsChannelCodec.encodeMessage(<Object?>[]),
         (ByteData? data) {
-          resultCompleter.complete(null);
+          resultCompleter.complete();
         },
       ),
     );
@@ -227,7 +227,7 @@ void main() {
         'dev.bayori.golubets.golubets_integration_tests.NullableCollectionReturnFlutterApi.doit',
         NullableCollectionReturnFlutterApi.golubetsChannelCodec.encodeMessage(<Object?>[]),
         (ByteData? data) {
-          resultCompleter.complete(null);
+          resultCompleter.complete();
         },
       ),
     );
