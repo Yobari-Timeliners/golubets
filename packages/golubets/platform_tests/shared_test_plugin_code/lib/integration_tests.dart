@@ -2657,12 +2657,11 @@ void runPigeonIntegrationTests(TargetGenerator targetGenerator) {
 
   testWidgets('async task queue handlers run on a background thread', (_) async {
     final api = HostIntegrationCoreApi();
-    // Swift async methods inherently run on a background thread pool regardless of
-    // platform, whereas other languages rely on engine TaskQueue support.
+    // `@async` is callback-style in golubets (not Swift async/await), so like the
+    // sync case it relies on engine TaskQueue support, which macOS lacks.
     final bool taskQueuesSupported =
         defaultTargetPlatform == TargetPlatform.android ||
-        defaultTargetPlatform == TargetPlatform.iOS ||
-        targetGenerator == TargetGenerator.swift;
+        defaultTargetPlatform == TargetPlatform.iOS;
     expect(await api.asyncTaskQueueIsBackgroundThread(), taskQueuesSupported);
   });
 
