@@ -8,6 +8,7 @@
 #     heavily changed files and leaves stray copies under packages/pigeon).
 #   * Pigeon* -> Golubets* identifiers in the sources where the fork renamed
 #     them, so new upstream code arrives with our names.
+#   * upstream .github is dropped entirely.
 #
 # Usage: prepare_upstream.sh <upstream-repo-dir>
 set -euo pipefail
@@ -21,6 +22,11 @@ fi
 if [ -f "$pkg/lib/pigeon.dart" ]; then
   git mv "$pkg/lib/pigeon.dart" "$pkg/lib/golubets.dart"
 fi
+
+# Upstream's GitHub config (release/labeler/dependabot workflows, ...) is not
+# ours. Dropping it from both normalized sides means upstream changes there
+# never reach us, while our own .github stays as "added by us".
+git rm -r -q --ignore-unmatch .github
 
 # Only the files the fork renamed. C++/GObject/Java/ObjC generators and their
 # generated symbols intentionally keep pigeon names.
