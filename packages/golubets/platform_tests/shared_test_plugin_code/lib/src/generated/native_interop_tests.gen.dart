@@ -139,17 +139,20 @@ class _GolubetsJniCodec {
     } else if (value.isA<JBoolean>(JBoolean.type)) {
       return value.as(JBoolean.type).booleanValue();
     } else if (value.isA<JByteArray>(JByteArray.type)) {
+      // `getRange` returns a view over a finalizable native buffer that can be
+      // freed early once the value leaves the isolate (e.g. via `Isolate.run`),
+      // so typed arrays are copied into Dart memory.
       final JByteArray array = value.as(JByteArray.type);
-      return array.getRange(0, array.length).buffer.asUint8List();
+      return Uint8List.fromList(array.getRange(0, array.length));
     } else if (value.isA<JIntArray>(JIntArray.type)) {
       final JIntArray array = value.as(JIntArray.type);
-      return array.getRange(0, array.length);
+      return Int32List.fromList(array.getRange(0, array.length));
     } else if (value.isA<JLongArray>(JLongArray.type)) {
       final JLongArray array = value.as(JLongArray.type);
-      return array.getRange(0, array.length);
+      return Int64List.fromList(array.getRange(0, array.length));
     } else if (value.isA<JDoubleArray>(JDoubleArray.type)) {
       final JDoubleArray array = value.as(JDoubleArray.type);
-      return array.getRange(0, array.length);
+      return Float64List.fromList(array.getRange(0, array.length));
     } else if (value.isA<JList<JObject>>(JList.type as JType<JList<JObject>>)) {
       final List<JObject?> list = value.as(JList.type).asDart();
       final res = <Object?>[];
