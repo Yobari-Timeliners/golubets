@@ -176,18 +176,12 @@ extension type NativeInteropExampleApiSetup._(objc.ObjCObject object$)
     return NativeInteropExampleApiSetup.fromPointer($ret, retain: false, release: true);
   }
 
-  /// new
-  static NativeInteropExampleApiSetup new$() {
-    final $ret = _objc_msgSend_151sglz(_class_NativeInteropExampleApiSetup, _sel_new);
-    return NativeInteropExampleApiSetup.fromPointer($ret, retain: false, release: true);
-  }
-
   /// Returns the engine key <code>instance</code> was registered with, or <code>Int64.min</code> if unknown.
-  static int pigeonEngineKeyOf(NativeInteropExampleApiSetup instance) {
+  static int golubetsEngineKeyOf(NativeInteropExampleApiSetup instance) {
     final _$$ref = instance.ref;
     return _objc_msgSend_1oj5o8z(
       _class_NativeInteropExampleApiSetup,
-      _sel_pigeonEngineKeyOf_,
+      _sel_golubetsEngineKeyOf_,
       _$$ref.pointer,
     );
   }
@@ -196,7 +190,7 @@ extension type NativeInteropExampleApiSetup._(objc.ObjCObject object$)
   /// instance).
   /// Prefers the most recent registration whose engine key is <code>engineId</code>, then
   /// <code>affinityKey</code>, then the most recent registration. <code>Int64.min</code> means unknown.
-  static NativeInteropExampleApiSetup? pigeonResolveInstanceWithEngineId(
+  static NativeInteropExampleApiSetup? golubetsResolveInstanceWithEngineId(
     int engineId, {
     required int affinityKey,
     required objc.NSString name,
@@ -204,7 +198,7 @@ extension type NativeInteropExampleApiSetup._(objc.ObjCObject object$)
     final _$$ref = name.ref;
     final $ret = _objc_msgSend_6vqy4b(
       _class_NativeInteropExampleApiSetup,
-      _sel_pigeonResolveInstanceWithEngineId_affinityKey_name_,
+      _sel_golubetsResolveInstanceWithEngineId_affinityKey_name_,
       engineId,
       affinityKey,
       _$$ref.pointer,
@@ -212,6 +206,12 @@ extension type NativeInteropExampleApiSetup._(objc.ObjCObject object$)
     return $ret.address == 0
         ? null
         : NativeInteropExampleApiSetup.fromPointer($ret, retain: true, release: true);
+  }
+
+  /// new
+  static NativeInteropExampleApiSetup new$() {
+    final $ret = _objc_msgSend_151sglz(_class_NativeInteropExampleApiSetup, _sel_new);
+    return NativeInteropExampleApiSetup.fromPointer($ret, retain: false, release: true);
   }
 
   /// Returns a new instance of NativeInteropExampleApiSetup constructed with the default `new` method.
@@ -705,6 +705,10 @@ late final _sel_copyWithZone_ = objc.registerName("copyWithZone:");
 late final _sel_data = objc.registerName("data");
 late final _sel_details = objc.registerName("details");
 late final _sel_doSomethingWithWrappedError_ = objc.registerName("doSomethingWithWrappedError:");
+late final _sel_golubetsEngineKeyOf_ = objc.registerName("golubetsEngineKeyOf:");
+late final _sel_golubetsResolveInstanceWithEngineId_affinityKey_name_ = objc.registerName(
+  "golubetsResolveInstanceWithEngineId:affinityKey:name:",
+);
 late final _sel_hash = objc.registerName("hash");
 late final _sel_init = objc.registerName("init");
 late final _sel_initWithCode_message_details_ = objc.registerName("initWithCode:message:details:");
@@ -715,10 +719,6 @@ late final _sel_isKindOfClass_ = objc.registerName("isKindOfClass:");
 late final _sel_message = objc.registerName("message");
 late final _sel_new = objc.registerName("new");
 late final _sel_number = objc.registerName("number");
-late final _sel_pigeonEngineKeyOf_ = objc.registerName("pigeonEngineKeyOf:");
-late final _sel_pigeonResolveInstanceWithEngineId_affinityKey_name_ = objc.registerName(
-  "pigeonResolveInstanceWithEngineId:affinityKey:name:",
-);
 late final _sel_setCode_ = objc.registerName("setCode:");
 late final _sel_setDetails_ = objc.registerName("setDetails:");
 late final _sel_setMessage_ = objc.registerName("setMessage:");

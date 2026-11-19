@@ -3431,7 +3431,7 @@ name: foobar
             Method(
               name: 'later',
               location: ApiLocation.host,
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
               parameters: <Parameter>[Parameter(name: 'completer', type: string)],
               returnType: string,
             ),
@@ -3495,14 +3495,18 @@ name: foobar
     expect(code, contains('_jniApi.convert(_GolubetsJniCodec.writeValue<JString>(dartTypeRes))'));
     expect(
       code,
-      contains('_GolubetsFfiCodec.writeValue<NSString>(dartTypeRes), wrappedError: golubetsVar_error)'),
+      contains(
+        '_GolubetsFfiCodec.writeValue<NSString>(dartTypeRes), wrappedError: golubetsVar_error)',
+      ),
     );
     expect(code, contains('return golubetsVar_dartTypeRes;'));
     expect(code, isNot(contains(' dartTypeRes = ')));
     expect(code, contains('JString send(JString arg_response,JString arg_errorOut,)'));
     expect(
       code,
-      contains('(NSString? arg_response, NSString? arg_errorOut, ffi_bridge.GolubetsError errorOut)'),
+      contains(
+        '(NSString? arg_response, NSString? arg_errorOut, ffi_bridge.GolubetsError errorOut)',
+      ),
     );
   });
 
@@ -3672,7 +3676,7 @@ name: foobar
             Method(
               name: 'goToAsync',
               location: ApiLocation.flutter,
-              isAsynchronous: true,
+              asynchronousType: AsynchronousType.callback,
               parameters: <Parameter>[],
               returnType: string,
             ),
@@ -3777,7 +3781,7 @@ name: foobar
       Method(
         name: 'echoAsyncData',
         location: location,
-        isAsynchronous: true,
+        asynchronousType: AsynchronousType.callback,
         parameters: <Parameter>[Parameter(name: 'data', type: dataType())],
         returnType: dataType(isNullable: true),
       ),
@@ -3830,7 +3834,10 @@ name: foobar
       final String code = generate(useJni: true, useFfi: false);
       expect(code, contains('return _jniApi.add(a, b);'));
       expect(code, contains('_jniApi.echoColor(color?.index ?? -1)'));
-      expect(code, contains('return golubetsVar_res == -1 ? null : Color.values[golubetsVar_res];'));
+      expect(
+        code,
+        contains('return golubetsVar_res == -1 ? null : Color.values[golubetsVar_res];'),
+      );
     });
 
     test('jni flutter api implements the buffer bridge', () {
@@ -3854,7 +3861,9 @@ name: foobar
       final String code = generate(useJni: false, useFfi: true);
       expect(
         code,
-        contains('final NSData golubetsVar_args = _GolubetsFfiBuffers.encode(<Object?>[data, list]);'),
+        contains(
+          'final NSData golubetsVar_args = _GolubetsFfiBuffers.encode(<Object?>[data, list]);',
+        ),
       );
       expect(
         code,
@@ -4188,7 +4197,10 @@ name: foobar
         ),
       );
       expect(nativeInteropCode, contains('extension GolubetsInternalDataNativeInterop on Data'));
-      expect(nativeInteropCode, contains('extension GolubetsInternalMyEnumNativeInterop on MyEnum'));
+      expect(
+        nativeInteropCode,
+        contains('extension GolubetsInternalMyEnumNativeInterop on MyEnum'),
+      );
       expect(
         nativeInteropCode,
         contains('class _ApiForNativeInterop implements ApiForNativeInterop'),
@@ -4384,7 +4396,10 @@ name: foobar
     test('emits engine affinity state once per file', () {
       final String code = generateNativeInterop(jniOptions, root);
       expect(code, contains("import 'dart:ui' show PlatformDispatcher;"));
-      expect('const int _golubetsNoEngineKey = -9223372036854775808;'.allMatches(code), hasLength(1));
+      expect(
+        'const int _golubetsNoEngineKey = -9223372036854775808;'.allMatches(code),
+        hasLength(1),
+      );
       expect('int? _golubetsEngineAffinity;'.allMatches(code), hasLength(1));
     });
 

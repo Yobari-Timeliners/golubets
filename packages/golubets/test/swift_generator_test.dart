@@ -3110,11 +3110,11 @@ void main() {
     );
     final code = sink.toString();
 
-    expect(code, contains('protocol Shape {'));
-    expect(code, contains('struct Circle: Shape, Hashable, CustomStringConvertible {'));
-    expect(code, contains('@objc class ShapeBridge: NSObject {'));
-    expect(code, contains('@objc class CircleBridge: ShapeBridge {'));
-    expect(code, contains('@objc class EmptyShapeBridge: ShapeBridge {'));
+    // Golubets generates Swift sealed classes as enums.
+    expect(code, contains('public enum Shape: Hashable {'));
+    expect(code, contains('@objc public class ShapeBridge: NSObject {'));
+    expect(code, contains('@objc public class CircleBridge: ShapeBridge {'));
+    expect(code, contains('@objc public class EmptyShapeBridge: ShapeBridge {'));
     expect(code, isNot(contains('NSObject, Shape')));
   });
 
@@ -3135,14 +3135,62 @@ void main() {
     final code = sink.toString();
 
     expect(code, contains('static func fromSwift(_ golubetsVar_Class: Shape?) -> ShapeBridge? {'));
-    expect(code, contains('case let golubetsVar_value as Circle:'));
-    expect(code, contains('return CircleBridge.fromSwift(golubetsVar_value)'));
+    expect(code, contains('case .circle?:'));
+    expect(code, contains('return CircleBridge.fromSwiftCase(golubetsVar_Class)'));
+    expect(code, contains('case nil:'));
     expect(code, contains('static func toSwift(_ golubetsVar_bridge: ShapeBridge?) -> Shape? {'));
     expect(code, contains('case let golubetsVar_value as CircleBridge:'));
     expect(code, contains('return golubetsVar_value.toSwift()'));
     expect(code, contains('ShapeBridge.toSwift(shapeArg)!'));
     expect(code, contains('ShapeBridge.toSwift(shapeArg))'));
     expect(code, contains('ShapeBridge.fromSwift(res)'));
+  });
+
+  test('ffi bridges of sealed class subclasses convert their enum cases', () {
+    final sink = StringBuffer();
+    const swiftOptions = InternalSwiftOptions(swiftOut: '', useFfi: true);
+    const generator = SwiftGenerator();
+    generator.generate(
+      swiftOptions,
+      buildSealedClassRoot(),
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+
+    expect(
+      code,
+      contains('static func fromSwiftCase(_ golubetsVar_Class: Shape?) -> CircleBridge? {'),
+    );
+    expect(
+      code,
+      contains(
+        'guard case let .circle(golubetsVar_radius)? = golubetsVar_Class else { return nil }',
+      ),
+    );
+    expect(code, contains('guard case .emptyShape? = golubetsVar_Class else { return nil }'));
+    expect(code, contains('func toSwift() -> Shape {'));
+    expect(code, contains('return .emptyShape'));
+  });
+
+  test('hybrid codec writes and reads sealed class subclasses as enum cases', () {
+    final sink = StringBuffer();
+    const swiftOptions = InternalSwiftOptions(swiftOut: '', useFfi: true);
+    const generator = SwiftGenerator();
+    generator.generate(
+      swiftOptions,
+      buildSealedClassRoot(),
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+
+    expect(code, contains('mutating func writeCircle(_ value: Shape) {'));
+    expect(code, contains('if valueType == Shape.self, case .circle = (value as! Shape) {'));
+    expect(code, contains('if let value = value as? Shape, case .emptyShape = value {'));
+    expect(code, contains('mutating func readCircle() -> Shape {'));
+    expect(code, contains('mutating func readEmptyShape() -> Shape {'));
+    expect(code, isNot(contains('Circle.self')));
   });
 
   test('ffi codec has no branch for sealed classes', () {
@@ -3159,8 +3207,9 @@ void main() {
 
     expect(code, contains('} else if (value is CircleBridge) {'));
     expect(code, isNot(contains('} else if (value is ShapeBridge) {')));
-    expect(code, contains('} else if (value is Circle) {'));
-    expect(code, isNot(contains('} else if (value is Shape) {')));
+    // Swift values of sealed classes are enums, so they are matched by the enum.
+    expect(code, contains('} else if (value is Shape) {'));
+    expect(code, isNot(contains('} else if (value is Circle) {')));
   });
 
   test('ffi bridge without fields inherits init', () {
@@ -3175,11 +3224,21 @@ void main() {
     );
     final code = sink.toString();
 
-    expect(code, contains(RegExp(r'@objc class CircleBridge: ShapeBridge \{\s*@objc init\(')));
-    expect(code, isNot(contains(RegExp(r'@objc class ShapeBridge: NSObject \{\s*@objc init\('))));
     expect(
       code,
-      isNot(contains(RegExp(r'@objc class EmptyShapeBridge: ShapeBridge \{\s*@objc init\('))),
+      contains(RegExp(r'@objc public class CircleBridge: ShapeBridge \{\s*@objc public init\(')),
+    );
+    expect(
+      code,
+      isNot(contains(RegExp(r'@objc public class ShapeBridge: NSObject \{\s*@objc public init\('))),
+    );
+    expect(
+      code,
+      isNot(
+        contains(
+          RegExp(r'@objc public class EmptyShapeBridge: ShapeBridge \{\s*@objc public init\('),
+        ),
+      ),
     );
   });
 
@@ -3206,7 +3265,10 @@ void main() {
     const generator = SwiftGenerator();
     generator.generate(swiftOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
-    expect(code, contains('@objc class EmptyBridge: NSObject {\n  @objc override init(\n  ) {'));
+    expect(
+      code,
+      contains('@objc public class EmptyBridge: NSObject {\n  @objc override public init(\n  ) {'),
+    );
   });
 
   test('ffi host api bridge', () {
@@ -3225,8 +3287,7 @@ void main() {
             Method(
               name: 'later',
               location: ApiLocation.host,
-              isAsynchronous: true,
-              isAsynchronousCallback: true,
+              asynchronousType: AsynchronousType.callback,
               parameters: <Parameter>[Parameter(name: 'value', type: string)],
               returnType: string,
             ),
@@ -3262,18 +3323,12 @@ void main() {
     );
     expect(code, contains('let activeApi = try resolveApi()'));
     expect(code, contains('let res: String = try activeApi.echo(error: errorArg as String)'));
+    // Golubets FFI host APIs implement callback-style async methods with `async`.
     expect(
       code,
-      contains(
-        'let res: String = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<String, Error>) in',
-      ),
+      contains('let res: String = try await activeApi.later(value: valueArg as String)'),
     );
-    expect(
-      code,
-      contains(
-        r'activeApi.later(value: valueArg as String, completion: { continuation.resume(with: $0) })',
-      ),
-    );
+    expect(code, isNot(contains('withCheckedThrowingContinuation')));
     expect(code, contains(r'wrappedError.message = "\(Swift.type(of: error))"'));
   });
 
@@ -3360,7 +3415,7 @@ void main() {
       Method(
         name: 'echoAsyncData',
         location: location,
-        isAsynchronous: true,
+        asynchronousType: AsynchronousType.callback,
         parameters: <Parameter>[Parameter(name: 'data', type: dataType)],
         returnType: dataType,
       ),

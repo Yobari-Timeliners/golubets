@@ -205,10 +205,10 @@ enum class Code(val raw: Int) {
   TWO(1);
 
   companion object {
-    private val pigeonValues = values()
+    private val golubetsValues = values()
 
     fun ofRaw(raw: Int): Code? {
-      return pigeonValues.getOrNull(raw)
+      return golubetsValues.getOrNull(raw)
     }
   }
 }

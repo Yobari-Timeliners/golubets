@@ -142,14 +142,16 @@ class NativeInteropRegistrarTest {
     assertEquals(
         "engine2:ping",
         releasePing(
-            NativeInteropReservedNamesHostApiRegistrar.golubetsResolveInstance(NO_KEY, NO_KEY, name)))
+            NativeInteropReservedNamesHostApiRegistrar.golubetsResolveInstance(
+                NO_KEY, NO_KEY, name)))
 
     // Unregistering engine1 out-of-order leaves engine2 active.
     NativeInteropReservedNamesHostApiRegistrar().unregister(api1, engine1, name)
     assertEquals(
         "engine2:ping",
         releasePing(
-            NativeInteropReservedNamesHostApiRegistrar.golubetsResolveInstance(NO_KEY, NO_KEY, name)))
+            NativeInteropReservedNamesHostApiRegistrar.golubetsResolveInstance(
+                NO_KEY, NO_KEY, name)))
     // Stale registrar1 reference has its internal api cleared.
     val error = assertThrows(NativeInteropTestsError::class.java) { registrar1!!.release("ping") }
     assertEquals("unregistered-instance", error.code)
@@ -174,7 +176,8 @@ class NativeInteropRegistrarTest {
     assertEquals(
         "other:ping",
         releasePing(
-            NativeInteropReservedNamesHostApiRegistrar.golubetsResolveInstance(NO_KEY, NO_KEY, name)))
+            NativeInteropReservedNamesHostApiRegistrar.golubetsResolveInstance(
+                NO_KEY, NO_KEY, name)))
 
     NativeInteropReservedNamesHostApiRegistrar().unregister(other, engine, name)
     assertNull(
@@ -199,7 +202,8 @@ class NativeInteropRegistrarTest {
     assertEquals(
         "engine2:ping",
         releasePing(
-            NativeInteropReservedNamesHostApiRegistrar.golubetsResolveInstance(NO_KEY, NO_KEY, name)))
+            NativeInteropReservedNamesHostApiRegistrar.golubetsResolveInstance(
+                NO_KEY, NO_KEY, name)))
 
     NativeInteropReservedNamesHostApiRegistrar().unregister(api2, engine, name)
     assertNull(
@@ -392,7 +396,8 @@ class NativeInteropRegistrarTest {
     val engine = mockEngine(701L)
 
     NativeInteropReservedNamesHostApiRegistrar().register(defaultApi, engine)
-    assertNull(NativeInteropReservedNamesHostApiRegistrar.golubetsResolveInstance(NO_KEY, NO_KEY, ""))
+    assertNull(
+        NativeInteropReservedNamesHostApiRegistrar.golubetsResolveInstance(NO_KEY, NO_KEY, ""))
 
     NativeInteropReservedNamesHostApiRegistrar().register(emptyNameApi, engine, "")
     assertEquals(
@@ -405,7 +410,8 @@ class NativeInteropRegistrarTest {
             NativeInteropReservedNamesHostApiRegistrar.golubetsResolveInstance(NO_KEY, NO_KEY, "")))
 
     NativeInteropReservedNamesHostApiRegistrar().unregister(emptyNameApi, engine, "")
-    assertNull(NativeInteropReservedNamesHostApiRegistrar.golubetsResolveInstance(NO_KEY, NO_KEY, ""))
+    assertNull(
+        NativeInteropReservedNamesHostApiRegistrar.golubetsResolveInstance(NO_KEY, NO_KEY, ""))
     assertEquals(
         "defaultEngine:ping",
         releasePing(

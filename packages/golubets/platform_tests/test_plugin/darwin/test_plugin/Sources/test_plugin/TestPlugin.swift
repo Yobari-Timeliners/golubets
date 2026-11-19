@@ -21,14 +21,10 @@ public class TestPlugin: NSObject, FlutterPlugin, HostIntegrationCoreApi, HostCa
   var flutterSmallApiOne: FlutterSmallApi
   var flutterSmallApiTwo: FlutterSmallApi
   var proxyApiRegistrar: ProxyApiTestsGolubetsProxyApiRegistrar?
-<<<<<<< HEAD
   var flutterGenericApi: FlutterGenericApi?
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-=======
   var niHostApiImpl: NativeInteropTestsClass?
   var niReservedImpl: NativeInteropReservedNamesHostApiImpl?
   var niSealedImpl: NativeInteropSealedClassHostApiImpl?
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
 
   public static func register(with registrar: FlutterPluginRegistrar) {
     // Workaround for https://github.com/flutter/flutter/issues/118103.

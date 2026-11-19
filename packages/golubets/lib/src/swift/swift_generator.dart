@@ -443,6 +443,11 @@ class SwiftGenerator extends StructuredGenerator<InternalSwiftOptions> {
     // Sealed classes have no bridge object of their own, and the branches for
     // their subclasses already match every value they can hold.
     final Iterable<Class> concreteClasses = root.classes.where((Class c) => !c.isSealed);
+    // Golubets generates sealed classes as Swift enums, so on the Swift side
+    // the subclasses have no type of their own and are matched by the enum.
+    final Iterable<Class> swiftClasses = root.classes.where(
+      (Class c) => !(c.superClass?.isSealed ?? false),
+    );
     indent.newln();
     indent.format('''
 @objc class ${_classNamePrefix}GolubetsInternalNull: NSObject {}
@@ -572,7 +577,7 @@ private class _GolubetsFfiCodec {
     }
     if (value is String) {
       return value as! NSString
-    ${concreteClasses.map((Class dataClass) {
+    ${swiftClasses.map((Class dataClass) {
       return '''
       } else if (value is ${dataClass.name}) {
         return ${dataClass.name}Bridge.fromSwift(value as? ${dataClass.name});
@@ -945,15 +950,27 @@ private class _GolubetsFfiCodec {
           // stays a list rather than becoming typed data, and optional fields
           // aren't boxed.
           final List<NamedType> fields = getFieldsInSerializationOrder(dataClass).toList();
+          final Class? sealedClass = _sealedSuperClass(dataClass);
           indent.newln();
           indent.writeScoped(
-            'mutating func write${customType.name}(_ value: ${customType.name}) {',
+            'mutating func write${customType.name}(_ value: ${sealedClass?.name ?? customType.name}) {',
             '}',
             () {
+              if (sealedClass != null && fields.isNotEmpty) {
+                final String bindings = fields
+                    .map((NamedType field) => '$varNamePrefix${field.name}')
+                    .join(', ');
+                indent.writeln(
+                  'guard case let .${_sealedCaseName(dataClass, generatorOptions)}($bindings) = value else { return }',
+                );
+              }
               indent.writeln('writeByte($codec.typeList)');
               indent.writeln('writeSize(${fields.length})');
               for (final field in fields) {
-                indent.writeln(_swiftInteropWrite('value.${field.name}', field.type, codec));
+                final fieldValue = sealedClass != null
+                    ? '$varNamePrefix${field.name}'
+                    : 'value.${field.name}';
+                indent.writeln(_swiftInteropWrite(fieldValue, field.type, codec));
               }
             },
           );
@@ -967,6 +984,21 @@ private class _GolubetsFfiCodec {
         '}',
         () {
           for (final customType in enumeratedTypes) {
+            final Class? sealedClass = _sealedSuperClass(customType.associatedClass);
+            if (sealedClass != null) {
+              final String caseName = _sealedCaseName(
+                customType.associatedClass!,
+                generatorOptions,
+              );
+              indent.writeScoped(
+                'if valueType == ${sealedClass.name}.self, case .$caseName = (value as! ${sealedClass.name}) {',
+                '}',
+                () {
+                  writeCustomBody(customType, '(value as! ${sealedClass.name})');
+                },
+              );
+              continue;
+            }
             indent.writeScoped('if valueType == ${customType.name}.self {', '}', () {
               writeCustomBody(customType, '(value as! ${customType.name})');
             });
@@ -977,7 +1009,12 @@ private class _GolubetsFfiCodec {
       indent.newln();
       indent.writeScoped('mutating func writeCustomValueFallback(_ value: Any) -> Bool {', '}', () {
         for (final customType in enumeratedTypes) {
-          indent.writeScoped('if let value = value as? ${customType.name} {', '}', () {
+          final Class? sealedClass = _sealedSuperClass(customType.associatedClass);
+          final condition = sealedClass == null
+              ? 'if let value = value as? ${customType.name}'
+              : 'if let value = value as? ${sealedClass.name}, '
+                    'case .${_sealedCaseName(customType.associatedClass!, generatorOptions)} = value';
+          indent.writeScoped('$condition {', '}', () {
             writeCustomBody(customType, 'value');
           });
         }
@@ -1212,16 +1249,20 @@ extension Dictionary: ${prefix}GolubetsInteropMap {
           // Fields are read by their declared types, which avoids converting
           // untyped collections afterwards.
           final List<NamedType> fields = getFieldsInSerializationOrder(dataClass).toList();
+          final Class? sealedClass = _sealedSuperClass(dataClass);
+          final String constructor = sealedClass == null
+              ? customType.name
+              : '.${_sealedCaseName(dataClass, generatorOptions)}';
           indent.newln();
           indent.writeScoped(
-            'mutating func read${customType.name}() -> ${customType.name} {',
+            'mutating func read${customType.name}() -> ${sealedClass?.name ?? customType.name} {',
             '}',
             () {
               indent.writeln('readListHeader()');
               if (fields.isEmpty) {
-                indent.writeln('return ${customType.name}()');
+                indent.writeln('return $constructor${sealedClass == null ? '()' : ''}');
               } else {
-                indent.writeScoped('return ${customType.name}(', ')', () {
+                indent.writeScoped('return $constructor(', ')', () {
                   for (final (int index, NamedType field) in fields.indexed) {
                     final comma = index < fields.length - 1 ? ',' : '';
                     indent.writeln('${field.name}: ${_swiftInteropRead(field.type)}$comma');
@@ -1734,6 +1775,15 @@ if (wrapped == nil) {
   }) {
     // Children will be covered in _writeDataClassSignature()
     if (classDefinition.superClass?.isSealed ?? false) {
+      if (generatorOptions.useFfi) {
+        _writeFfiBridgeClass(
+          generatorOptions,
+          root,
+          indent,
+          classDefinition,
+          dartPackageName: dartPackageName,
+        );
+      }
       return;
     }
 
@@ -1825,7 +1875,17 @@ if (wrapped == nil) {
     );
     indent.writeScoped('', '}', () {
       if (classDefinition.isSealed) {
-        _writeSealedFfiBridgeConversions(indent, classDefinition);
+        _writeSealedFfiBridgeConversions(indent, classDefinition, generatorOptions);
+        return;
+      }
+      final Class? sealedClass = _sealedSuperClass(classDefinition);
+      if (sealedClass != null) {
+        _writeSealedChildFfiBridgeConversions(
+          indent,
+          classDefinition,
+          sealedClass,
+          generatorOptions,
+        );
         return;
       }
       indent.writeln('// swift-format-ignore: AlwaysUseLowerCamelCase');
@@ -1861,10 +1921,15 @@ if (wrapped == nil) {
 
   /// Writes the conversions of a sealed class's bridge.
   ///
-  /// Both pick the subclass by its runtime type. `toSwift` is static because an
+  /// `fromSwift` picks the subclass by its enum case, and `toSwift` by the
+  /// runtime type of the bridge. `toSwift` is static because an
   /// instance method would make each subclass bridge's own `toSwift()`
   /// ambiguous wherever the expected type isn't that subclass.
-  void _writeSealedFfiBridgeConversions(Indent indent, Class classDefinition) {
+  void _writeSealedFfiBridgeConversions(
+    Indent indent,
+    Class classDefinition,
+    InternalSwiftOptions generatorOptions,
+  ) {
     final String name = classDefinition.name;
     indent.writeln('// swift-format-ignore: AlwaysUseLowerCamelCase');
     indent.writeScoped(
@@ -1873,11 +1938,11 @@ if (wrapped == nil) {
       () {
         indent.writeScoped('switch ${varNamePrefix}Class {', '}', () {
           for (final Class child in classDefinition.children) {
-            indent.writeScoped('case let ${varNamePrefix}value as ${child.name}:', null, () {
-              indent.writeln('return ${child.name}Bridge.fromSwift(${varNamePrefix}value)');
+            indent.writeScoped('case .${_sealedCaseName(child, generatorOptions)}?:', null, () {
+              indent.writeln('return ${child.name}Bridge.fromSwiftCase(${varNamePrefix}Class)');
             });
           }
-          indent.writeScoped('default:', null, () {
+          indent.writeScoped('case nil:', null, () {
             indent.writeln('return nil');
           });
         });
@@ -1900,6 +1965,58 @@ if (wrapped == nil) {
         });
       },
     );
+  }
+
+  /// Writes the conversions of the bridge of [classDefinition], a subclass of
+  /// [sealedClass], from and to its case of the enum that Golubets generates
+  /// for [sealedClass].
+  void _writeSealedChildFfiBridgeConversions(
+    Indent indent,
+    Class classDefinition,
+    Class sealedClass,
+    InternalSwiftOptions generatorOptions,
+  ) {
+    final String caseName = _sealedCaseName(classDefinition, generatorOptions);
+    final List<NamedType> fields = getFieldsInSerializationOrder(classDefinition).toList();
+    indent.writeln('// swift-format-ignore: AlwaysUseLowerCamelCase');
+    indent.writeScoped(
+      // Not `fromSwift`, which would clash with the sealed bridge's `fromSwift`
+      // that takes the same enum.
+      'static func fromSwiftCase(_ ${varNamePrefix}Class: ${sealedClass.name}?) -> ${classDefinition.name}Bridge? {',
+      '}',
+      () {
+        if (fields.isEmpty) {
+          indent.writeln('guard case .$caseName? = ${varNamePrefix}Class else { return nil }');
+          indent.writeln('return ${classDefinition.name}Bridge()');
+          return;
+        }
+        final String bindings = fields
+            .map((NamedType field) => '$varNamePrefix${field.name}')
+            .join(', ');
+        indent.writeln(
+          'guard case let .$caseName($bindings)? = ${varNamePrefix}Class else { return nil }',
+        );
+        indent.writeScoped('return ${classDefinition.name}Bridge(', ')', () {
+          for (final field in fields) {
+            indent.writeln(
+              '${field.name}: ${_varToObjc('$varNamePrefix${field.name}', field.type)},',
+            );
+          }
+        });
+      },
+    );
+    indent.writeScoped('func toSwift() -> ${sealedClass.name} {', '}', () {
+      if (fields.isEmpty) {
+        indent.writeln('return .$caseName');
+        return;
+      }
+      indent.writeScoped('return .$caseName(', ')', () {
+        for (final (int index, NamedType field) in fields.indexed) {
+          final comma = index < fields.length - 1 ? ',' : '';
+          indent.writeln('${field.name}: ${_varToSwift(field.name, field.type)}$comma');
+        }
+      });
+    });
   }
 
   String _varToObjc(String varName, TypeDeclaration type, {bool forceNullable = false}) {
@@ -2017,14 +2134,8 @@ if (wrapped == nil) {
     required Map<String, Class> classLookup,
     required InternalSwiftOptions generatorOptions,
   }) {
-<<<<<<< HEAD
-    indent.writeScoped('${objc}public init(', ')', () {
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-    indent.writeScoped('${objc}init(', ')', () {
-=======
     final override = useFfi && fields.isEmpty ? 'override ' : '';
-    indent.writeScoped('$objc${override}init(', ')', () {
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
+    indent.writeScoped('$objc${override}public init(', ')', () {
       for (var i = 0; i < fields.length; i++) {
         indent.write('');
         _writeClassField(
@@ -3003,12 +3114,8 @@ if (wrapped == nil) {
             asynchronousType: method.asynchronousType,
             swiftFunction: method.swiftFunction,
             components: components,
-<<<<<<< HEAD
             isPublic: false,
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-=======
             getParameterName: _getSafeArgumentName,
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
           ),
         );
         indent.addScoped(' {', '}', () {
@@ -3028,7 +3135,7 @@ if (wrapped == nil) {
           final resultDeclaration = returnsValue ? 'let res: $swiftReturnType = ' : '';
           indent.writeScoped('do {', '}', () {
             indent.writeln('let activeApi = try resolveApi()');
-            if (method.isAsynchronousCallback) {
+            if (_hostMethodAsynchronousType(method, generatorOptions).isCallback) {
               final completion =
                   '${arguments.isEmpty ? '' : ', '}completion: { continuation.resume(with: \$0) }';
               indent.writeScoped(
@@ -3146,7 +3253,7 @@ if (wrapped == nil) {
               ? _nullSafeSwiftTypeForDartType(method.returnType, ffiTypedData: true)
               : 'Void';
           final resultDeclaration = returnsValue ? 'let res: $swiftReturnType = ' : '';
-          if (method.isAsynchronousCallback) {
+          if (_hostMethodAsynchronousType(method, generatorOptions).isCallback) {
             final completion =
                 '${arguments.isEmpty ? '' : ', '}completion: { continuation.resume(with: \$0) }';
             indent.writeScoped(
@@ -3216,14 +3323,8 @@ if (wrapped == nil) {
       generatorComments: generatedComments,
     );
 
-<<<<<<< HEAD
-    indent.write('public protocol $apiName ');
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-    indent.write('protocol $apiName ');
-=======
     final protocolConstraint = generatorOptions.useFfi ? ': AnyObject' : '';
-    indent.write('protocol $apiName$protocolConstraint ');
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
+    indent.write('public protocol $apiName$protocolConstraint ');
     indent.addScoped('{', '}', () {
       for (final Method method in api.methods) {
         addDocumentationComments(indent, method.documentationComments, _docCommentSpec);
@@ -6169,7 +6270,6 @@ class _SwiftFunctionComponents {
   final TypeDeclaration returnType;
 }
 
-<<<<<<< HEAD
 extension on DefaultValue {
   /// [prefix] - used for pretty formatting.
   void write(
@@ -6255,8 +6355,19 @@ extension on DefaultValue {
       }(),
     };
   }
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-=======
+}
+
+/// The sealed class that [classDefinition] extends, if any.
+Class? _sealedSuperClass(Class? classDefinition) {
+  final Class? superClass = classDefinition?.superClass;
+  return (superClass?.isSealed ?? false) ? superClass : null;
+}
+
+/// The case of the Swift enum generated for a sealed class that represents
+/// its subclass [child].
+String _sealedCaseName(Class child, InternalSwiftOptions generatorOptions) =>
+    (generatorOptions.usePureSealedSubclasses ? child.pureName : child.name).toLowFirstLetter();
+
 /// The Swift element type of the typed data type [typedDataName].
 String _swiftTypedDataElement(String typedDataName) => switch (typedDataName) {
   'Uint8List' => 'UInt8',
@@ -6518,5 +6629,4 @@ String _hybridSwiftEntryPointReturnType(TypeDeclaration returnType) {
     return '';
   }
   return ' -> ${nativeInteropReturnsBuffer(returnType) ? 'NSData?' : _hybridSwiftDirectReturnType(returnType)}';
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
 }

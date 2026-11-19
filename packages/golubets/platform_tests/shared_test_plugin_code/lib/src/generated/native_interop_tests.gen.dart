@@ -8,17 +8,14 @@
 // ignore_for_file: public_member_api_docs, non_constant_identifier_names, avoid_as, omit_local_variable_types, omit_obvious_local_variable_types
 
 import 'dart:async';
-import 'dart:ffi';
-import 'dart:io' show Platform;
-import 'dart:typed_data' show Float32List, Float64List, Int32List, Int64List, Int8List, TypedData;
+import 'dart:typed_data' show Float64List, Int32List, Int64List;
 
-import 'package:ffi/ffi.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
-import 'package:jni/jni.dart';
-import 'package:meta/meta.dart' show immutable, protected, visibleForTesting;
-import 'package:objective_c/objective_c.dart';
-import './native_interop_tests.gen.ffi.dart' as ffi_bridge;
-import './native_interop_tests.gen.jni.dart' as jni_bridge;
+import 'package:meta/meta.dart' show immutable, internal, protected, visibleForTesting;
+import './native_interop_tests.gen.dart'
+    if (dart.library.ffi) './native_interop_tests.native_interop.gen.dart'
+    as golubets_native;
 
 Object? _extractReplyValueOrThrow(
   List<Object?>? replyList,
@@ -116,983 +113,9 @@ int _deepHash(Object? value) {
   return value.hashCode;
 }
 
-class _GolubetsJniCodec {
-  static JObject get _kotlinUnit {
-    final JClass unitClass = JClass.forName('kotlin/Unit');
-    try {
-      return unitClass.staticFieldId('INSTANCE', 'Lkotlin/Unit;').get(unitClass, JObject.type);
-    } finally {
-      unitClass.release();
-    }
-  }
+enum NativeInteropAnEnum { one, two, three, fortyTwo, fourHundredTwentyTwo }
 
-  static Object? readValue(JObject? value) {
-    if (value == null) {
-      return null;
-    }
-    if (value.isA<JLong>(JLong.type)) {
-      return value.as(JLong.type).longValue();
-    } else if (value.isA<JDouble>(JDouble.type)) {
-      return value.as(JDouble.type).doubleValue();
-    } else if (value.isA<JString>(JString.type)) {
-      return value.as(JString.type).toDartString();
-    } else if (value.isA<JBoolean>(JBoolean.type)) {
-      return value.as(JBoolean.type).booleanValue();
-    } else if (value.isA<JByteArray>(JByteArray.type)) {
-      // `getRange` returns a view over a finalizable native buffer that can be
-      // freed early once the value leaves the isolate (e.g. via `Isolate.run`),
-      // so typed arrays are copied into Dart memory.
-      final JByteArray array = value.as(JByteArray.type);
-      return Uint8List.fromList(array.getRange(0, array.length));
-    } else if (value.isA<JIntArray>(JIntArray.type)) {
-      final JIntArray array = value.as(JIntArray.type);
-      return Int32List.fromList(array.getRange(0, array.length));
-    } else if (value.isA<JLongArray>(JLongArray.type)) {
-      final JLongArray array = value.as(JLongArray.type);
-      return Int64List.fromList(array.getRange(0, array.length));
-    } else if (value.isA<JDoubleArray>(JDoubleArray.type)) {
-      final JDoubleArray array = value.as(JDoubleArray.type);
-      return Float64List.fromList(array.getRange(0, array.length));
-    } else if (value.isA<JList<JObject>>(JList.type as JType<JList<JObject>>)) {
-      final List<JObject?> list = value.as(JList.type).asDart();
-      final res = <Object?>[];
-      // Cache the length before iterating to avoid a JNI hop per iteration.
-      final int len = list.length;
-      for (int i = 0; i < len; i++) {
-        res.add(readValue(list[i]));
-      }
-      return res;
-    } else if (value.isA<JMap<JObject, JObject>>(JMap.type as JType<JMap<JObject, JObject>>)) {
-      final Map<JObject?, JObject?> map = value.as(JMap.type).asDart();
-      final res = <Object?, Object?>{};
-      for (final MapEntry<JObject?, JObject?> entry in map.entries) {
-        res[readValue(entry.key)] = readValue(entry.value);
-      }
-      return res;
-    } else if (value.isA<jni_bridge.NativeInteropUnusedClass>(
-      jni_bridge.NativeInteropUnusedClass.type,
-    )) {
-      return NativeInteropUnusedClass.fromJni(value.as(jni_bridge.NativeInteropUnusedClass.type));
-    } else if (value.isA<jni_bridge.NativeInteropAllTypes>(jni_bridge.NativeInteropAllTypes.type)) {
-      return NativeInteropAllTypes.fromJni(value.as(jni_bridge.NativeInteropAllTypes.type));
-    } else if (value.isA<jni_bridge.NativeInteropAllNullableTypes>(
-      jni_bridge.NativeInteropAllNullableTypes.type,
-    )) {
-      return NativeInteropAllNullableTypes.fromJni(
-        value.as(jni_bridge.NativeInteropAllNullableTypes.type),
-      );
-    } else if (value.isA<jni_bridge.NativeInteropAllNullableTypesWithoutRecursion>(
-      jni_bridge.NativeInteropAllNullableTypesWithoutRecursion.type,
-    )) {
-      return NativeInteropAllNullableTypesWithoutRecursion.fromJni(
-        value.as(jni_bridge.NativeInteropAllNullableTypesWithoutRecursion.type),
-      );
-    } else if (value.isA<jni_bridge.NativeInteropAllClassesWrapper>(
-      jni_bridge.NativeInteropAllClassesWrapper.type,
-    )) {
-      return NativeInteropAllClassesWrapper.fromJni(
-        value.as(jni_bridge.NativeInteropAllClassesWrapper.type),
-      );
-    } else if (value.isA<jni_bridge.NativeInteropAnEnum>(jni_bridge.NativeInteropAnEnum.type)) {
-      return NativeInteropAnEnum.fromJni(value.as(jni_bridge.NativeInteropAnEnum.type));
-    } else if (value.isA<jni_bridge.NativeInteropAnotherEnum>(
-      jni_bridge.NativeInteropAnotherEnum.type,
-    )) {
-      return NativeInteropAnotherEnum.fromJni(value.as(jni_bridge.NativeInteropAnotherEnum.type));
-    } else {
-      throw ArgumentError.value(value);
-    }
-  }
-
-  static T writeValue<T extends JObject?>(Object? value) {
-    if (value == null) {
-      return null as T;
-    }
-    if (value is bool) {
-      return JBoolean(value) as T;
-    } else if (value is double) {
-      return JDouble(value) as T;
-      // ignore: avoid_double_and_int_checks
-    } else if (value is int) {
-      return JLong(value) as T;
-    } else if (value is String) {
-      return value.toJString() as T;
-    } else if (value is Uint8List) {
-      final JByteArray array = JByteArray(value.length);
-      array.setRange(
-        0,
-        value.length,
-        Int8List.view(value.buffer, value.offsetInBytes, value.length),
-      );
-      return array as T;
-    } else if (value is Int32List) {
-      final JIntArray array = JIntArray(value.length);
-      array.setRange(0, value.length, value);
-      return array as T;
-    } else if (value is Int64List) {
-      final JLongArray array = JLongArray(value.length);
-      array.setRange(0, value.length, value);
-      return array as T;
-    } else if (value is Float64List) {
-      final JDoubleArray array = JDoubleArray(value.length);
-      array.setRange(0, value.length, value);
-      return array as T;
-    } else if (value is List<String>) {
-      return value.map<JString>((e) => writeValue<JString>(e)).toJList() as T;
-    } else if (value is List<int>) {
-      return value.map<JLong>((e) => writeValue<JLong>(e)).toJList() as T;
-    } else if (value is List<double>) {
-      return value.map<JDouble>((e) => writeValue<JDouble>(e)).toJList() as T;
-    } else if (value is List<bool>) {
-      return value.map<JBoolean>((e) => writeValue<JBoolean>(e)).toJList() as T;
-    } else if (value is List<NativeInteropAllTypes?>) {
-      return value
-              .map<jni_bridge.NativeInteropAllTypes?>(
-                (e) => writeValue<jni_bridge.NativeInteropAllTypes?>(e),
-              )
-              .toJList()
-          as T;
-    } else if (value is List<NativeInteropAnEnum>) {
-      return value
-              .map<jni_bridge.NativeInteropAnEnum>(
-                (e) => writeValue<jni_bridge.NativeInteropAnEnum>(e),
-              )
-              .toJList()
-          as T;
-    } else if (value is List<NativeInteropAllNullableTypes>) {
-      return value
-              .map<jni_bridge.NativeInteropAllNullableTypes>(
-                (e) => writeValue<jni_bridge.NativeInteropAllNullableTypes>(e),
-              )
-              .toJList()
-          as T;
-    } else if (value is List<String?>) {
-      return value.map<JString?>((e) => writeValue<JString?>(e)).toJList() as T;
-    } else if (value is List<int?>) {
-      return value.map<JLong?>((e) => writeValue<JLong?>(e)).toJList() as T;
-    } else if (value is List<double?>) {
-      return value.map<JDouble?>((e) => writeValue<JDouble?>(e)).toJList() as T;
-    } else if (value is List<bool?>) {
-      return value.map<JBoolean?>((e) => writeValue<JBoolean?>(e)).toJList() as T;
-    } else if (value is List<NativeInteropAnEnum?>) {
-      return value
-              .map<jni_bridge.NativeInteropAnEnum?>(
-                (e) => writeValue<jni_bridge.NativeInteropAnEnum?>(e),
-              )
-              .toJList()
-          as T;
-    } else if (value is List<NativeInteropAllNullableTypes?>) {
-      return value
-              .map<jni_bridge.NativeInteropAllNullableTypes?>(
-                (e) => writeValue<jni_bridge.NativeInteropAllNullableTypes?>(e),
-              )
-              .toJList()
-          as T;
-    } else if (value is List<NativeInteropAllNullableTypesWithoutRecursion?>) {
-      return value
-              .map<jni_bridge.NativeInteropAllNullableTypesWithoutRecursion?>(
-                (e) => writeValue<jni_bridge.NativeInteropAllNullableTypesWithoutRecursion?>(e),
-              )
-              .toJList()
-          as T;
-    } else if (value is List<List<Object?>>) {
-      return value.map<JList<JObject?>>((e) => writeValue<JList<JObject?>>(e)).toJList() as T;
-    } else if (value is List<List<Object?>?>) {
-      return value.map<JList<JObject?>?>((e) => writeValue<JList<JObject?>?>(e)).toJList() as T;
-    } else if (value is List<Map<Object?, Object?>>) {
-      return value
-              .map<JMap<JObject?, JObject?>>((e) => writeValue<JMap<JObject?, JObject?>>(e))
-              .toJList()
-          as T;
-    } else if (value is List<Map<Object?, Object?>?>) {
-      return value
-              .map<JMap<JObject?, JObject?>?>((e) => writeValue<JMap<JObject?, JObject?>?>(e))
-              .toJList()
-          as T;
-    } else if (value is List<Object>) {
-      return value.map<JObject>((e) => writeValue<JObject>(e)).toJList() as T;
-    } else if (value is List) {
-      return value.map<JObject?>((e) => writeValue<JObject?>(e)).toJList() as T;
-    } else if (value is Map<String, String>) {
-      return value
-              .map<JString, JString>(
-                (k, v) => MapEntry(writeValue<JString>(k), writeValue<JString>(v)),
-              )
-              .toJMap()
-          as T;
-    } else if (value is Map<int, int>) {
-      return value
-              .map<JLong, JLong>((k, v) => MapEntry(writeValue<JLong>(k), writeValue<JLong>(v)))
-              .toJMap()
-          as T;
-    } else if (value is Map<NativeInteropAnEnum, NativeInteropAnEnum>) {
-      return value
-              .map<jni_bridge.NativeInteropAnEnum, jni_bridge.NativeInteropAnEnum>(
-                (k, v) => MapEntry(
-                  writeValue<jni_bridge.NativeInteropAnEnum>(k),
-                  writeValue<jni_bridge.NativeInteropAnEnum>(v),
-                ),
-              )
-              .toJMap()
-          as T;
-    } else if (value is Map<int, NativeInteropAllNullableTypes>) {
-      return value
-              .map<JLong, jni_bridge.NativeInteropAllNullableTypes>(
-                (k, v) => MapEntry(
-                  writeValue<JLong>(k),
-                  writeValue<jni_bridge.NativeInteropAllNullableTypes>(v),
-                ),
-              )
-              .toJMap()
-          as T;
-    } else if (value is Map<int?, NativeInteropAllTypes?>) {
-      return value
-              .map<JLong?, jni_bridge.NativeInteropAllTypes?>(
-                (k, v) => MapEntry(
-                  writeValue<JLong?>(k),
-                  writeValue<jni_bridge.NativeInteropAllTypes?>(v),
-                ),
-              )
-              .toJMap()
-          as T;
-    } else if (value is Map<String?, String?>) {
-      return value
-              .map<JString?, JString?>(
-                (k, v) => MapEntry(writeValue<JString?>(k), writeValue<JString?>(v)),
-              )
-              .toJMap()
-          as T;
-    } else if (value is Map<int?, int?>) {
-      return value
-              .map<JLong?, JLong?>((k, v) => MapEntry(writeValue<JLong?>(k), writeValue<JLong?>(v)))
-              .toJMap()
-          as T;
-    } else if (value is Map<NativeInteropAnEnum?, NativeInteropAnEnum?>) {
-      return value
-              .map<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>(
-                (k, v) => MapEntry(
-                  writeValue<jni_bridge.NativeInteropAnEnum?>(k),
-                  writeValue<jni_bridge.NativeInteropAnEnum?>(v),
-                ),
-              )
-              .toJMap()
-          as T;
-    } else if (value is Map<int?, NativeInteropAllNullableTypes?>) {
-      return value
-              .map<JLong?, jni_bridge.NativeInteropAllNullableTypes?>(
-                (k, v) => MapEntry(
-                  writeValue<JLong?>(k),
-                  writeValue<jni_bridge.NativeInteropAllNullableTypes?>(v),
-                ),
-              )
-              .toJMap()
-          as T;
-    } else if (value is Map<int?, NativeInteropAllNullableTypesWithoutRecursion?>) {
-      return value
-              .map<JLong?, jni_bridge.NativeInteropAllNullableTypesWithoutRecursion?>(
-                (k, v) => MapEntry(
-                  writeValue<JLong?>(k),
-                  writeValue<jni_bridge.NativeInteropAllNullableTypesWithoutRecursion?>(v),
-                ),
-              )
-              .toJMap()
-          as T;
-    } else if (value is Map<int, List<Object?>>) {
-      return value
-              .map<JLong, JList<JObject?>>(
-                (k, v) => MapEntry(writeValue<JLong>(k), writeValue<JList<JObject?>>(v)),
-              )
-              .toJMap()
-          as T;
-    } else if (value is Map<int?, List<Object?>?>) {
-      return value
-              .map<JLong?, JList<JObject?>?>(
-                (k, v) => MapEntry(writeValue<JLong?>(k), writeValue<JList<JObject?>?>(v)),
-              )
-              .toJMap()
-          as T;
-    } else if (value is Map<int, Map<Object?, Object?>>) {
-      return value
-              .map<JLong, JMap<JObject?, JObject?>>(
-                (k, v) => MapEntry(writeValue<JLong>(k), writeValue<JMap<JObject?, JObject?>>(v)),
-              )
-              .toJMap()
-          as T;
-    } else if (value is Map<int?, Map<Object?, Object?>?>) {
-      return value
-              .map<JLong?, JMap<JObject?, JObject?>?>(
-                (k, v) => MapEntry(writeValue<JLong?>(k), writeValue<JMap<JObject?, JObject?>?>(v)),
-              )
-              .toJMap()
-          as T;
-    } else if (value is Map<Object, Object>) {
-      return value
-              .map<JObject, JObject>(
-                (k, v) => MapEntry(writeValue<JObject>(k), writeValue<JObject>(v)),
-              )
-              .toJMap()
-          as T;
-    } else if (value is Map<Object, Object?>) {
-      return value
-              .map<JObject, JObject?>(
-                (k, v) => MapEntry(writeValue<JObject>(k), writeValue<JObject?>(v)),
-              )
-              .toJMap()
-          as T;
-    } else if (value is Map) {
-      return value
-              .map<JObject?, JObject?>(
-                (k, v) => MapEntry(writeValue<JObject?>(k), writeValue<JObject?>(v)),
-              )
-              .toJMap()
-          as T;
-    } else if (value is NativeInteropUnusedClass) {
-      return value.toJni() as T;
-    } else if (value is NativeInteropAllTypes) {
-      return value.toJni() as T;
-    } else if (value is NativeInteropAllNullableTypes) {
-      return value.toJni() as T;
-    } else if (value is NativeInteropAllNullableTypesWithoutRecursion) {
-      return value.toJni() as T;
-    } else if (value is NativeInteropAllClassesWrapper) {
-      return value.toJni() as T;
-    } else if (value is NativeInteropAnEnum) {
-      return value.toJni() as T;
-    } else if (value is NativeInteropAnotherEnum) {
-      return value.toJni() as T;
-    } else {
-      throw ArgumentError.value(value);
-    }
-  }
-}
-
-class _GolubetsFfiCodec {
-  static Object? readValue(ObjCObject? value, [Type? type, Type? type2]) {
-    if (value == null || ffi_bridge.NativeInteropTestsGolubetsInternalNull.isA(value)) {
-      return null;
-    } else if (NSNumber.isA(value)) {
-      final NSNumber numValue = NSNumber.as(value);
-      if (type == double) {
-        return numValue.doubleValue;
-      } else if (type == bool) {
-        return numValue.boolValue;
-      } else if (type == NativeInteropAnEnum) {
-        return NativeInteropAnEnum.fromNSNumber(numValue);
-      } else if (type == NativeInteropAnotherEnum) {
-        return NativeInteropAnotherEnum.fromNSNumber(numValue);
-      }
-
-      return numValue.longValue;
-    } else if (NSString.isA(value)) {
-      return NSString.as(value).toDartString();
-    } else if (ffi_bridge.NativeInteropTestsGolubetsTypedData.isA(value)) {
-      return _getValueFromGolubetsTypedData(
-        value as ffi_bridge.NativeInteropTestsGolubetsTypedData,
-      );
-    } else if (NSArray.isA(value)) {
-      final NSArray array = NSArray.as(value);
-      final List<Object?> res = <Object?>[];
-      for (int i = 0; i < array.count; i++) {
-        res.add(readValue(array.objectAtIndex(i), type));
-      }
-      return res;
-    } else if (NSDictionary.isA(value)) {
-      final NSDictionary dict = NSDictionary.as(value);
-      final NSArray keys = dict.allKeys;
-      final Map<Object?, Object?> res = <Object?, Object?>{};
-      for (int i = 0; i < keys.count; i++) {
-        final ObjCObject key = keys.objectAtIndex(i);
-        res[readValue(key, type, type2)] = readValue(dict.objectForKey(key), type, type2);
-      }
-      return res;
-    } else if (ffi_bridge.NativeInteropTestsNumberWrapper.isA(value)) {
-      return _convertNumberWrapperToDart(ffi_bridge.NativeInteropTestsNumberWrapper.as(value));
-    } else if (ffi_bridge.NativeInteropUnusedClassBridge.isA(value)) {
-      return NativeInteropUnusedClass.fromFfi(ffi_bridge.NativeInteropUnusedClassBridge.as(value));
-    } else if (ffi_bridge.NativeInteropAllTypesBridge.isA(value)) {
-      return NativeInteropAllTypes.fromFfi(ffi_bridge.NativeInteropAllTypesBridge.as(value));
-    } else if (ffi_bridge.NativeInteropAllNullableTypesBridge.isA(value)) {
-      return NativeInteropAllNullableTypes.fromFfi(
-        ffi_bridge.NativeInteropAllNullableTypesBridge.as(value),
-      );
-    } else if (ffi_bridge.NativeInteropAllNullableTypesWithoutRecursionBridge.isA(value)) {
-      return NativeInteropAllNullableTypesWithoutRecursion.fromFfi(
-        ffi_bridge.NativeInteropAllNullableTypesWithoutRecursionBridge.as(value),
-      );
-    } else if (ffi_bridge.NativeInteropAllClassesWrapperBridge.isA(value)) {
-      return NativeInteropAllClassesWrapper.fromFfi(
-        ffi_bridge.NativeInteropAllClassesWrapperBridge.as(value),
-      );
-    } else {
-      throw ArgumentError.value(value);
-    }
-  }
-
-  static T writeValue<T extends ObjCObject?>(Object? value, {bool generic = false}) {
-    if (value == null) {
-      if (_isTypeOrNullableType<T>(ObjCObject) || _isTypeOrNullableType<T>(NSObject)) {
-        return ffi_bridge.NativeInteropTestsGolubetsInternalNull() as T;
-      }
-      return null as T;
-    }
-    if (value is bool) {
-      return (generic
-              ? _convertToFfiNumberWrapper(value)
-              : NSNumber.alloc().initWithLong(value ? 1 : 0))
-          as T;
-    } else if (value is double) {
-      return (generic ? _convertToFfiNumberWrapper(value) : NSNumber.alloc().initWithDouble(value))
-          as T;
-      // ignore: avoid_double_and_int_checks
-    } else if (value is int) {
-      return (generic ? _convertToFfiNumberWrapper(value) : NSNumber.alloc().initWithLong(value))
-          as T;
-    } else if (value is Enum) {
-      return (generic
-              ? _convertToFfiNumberWrapper(value)
-              : NSNumber.alloc().initWithLong(value.index))
-          as T;
-    } else if (value is String) {
-      return NSString(value) as T;
-    } else if (value is TypedData) {
-      return _toGolubetsTypedData(value) as T;
-    } else if (value is List<String> && _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final String entry in value) {
-        res.addObject(writeValue<NSString>(entry, generic: true));
-      }
-      return res as T;
-    } else if (value is List<int> && _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final int entry in value) {
-        res.addObject(writeValue<NSNumber>(entry, generic: true));
-      }
-      return res as T;
-    } else if (value is List<double> && _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final double entry in value) {
-        res.addObject(writeValue<NSNumber>(entry, generic: true));
-      }
-      return res as T;
-    } else if (value is List<bool> && _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final bool entry in value) {
-        res.addObject(writeValue<NSNumber>(entry, generic: true));
-      }
-      return res as T;
-    } else if (value is List<NativeInteropAllTypes?> && _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final NativeInteropAllTypes? entry in value) {
-        res.addObject(
-          entry == null
-              ? ffi_bridge.NativeInteropTestsGolubetsInternalNull()
-              : writeValue<ffi_bridge.NativeInteropAllTypesBridge>(entry, generic: true),
-        );
-      }
-      return res as T;
-    } else if (value is List<NativeInteropAnEnum> && _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final NativeInteropAnEnum entry in value) {
-        res.addObject(writeValue<NSNumber>(entry, generic: true));
-      }
-      return res as T;
-    } else if (value is List<NativeInteropAllNullableTypes> &&
-        _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final NativeInteropAllNullableTypes entry in value) {
-        res.addObject(
-          writeValue<ffi_bridge.NativeInteropAllNullableTypesBridge>(entry, generic: true),
-        );
-      }
-      return res as T;
-    } else if (value is List<String?> && _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final String? entry in value) {
-        res.addObject(
-          entry == null
-              ? ffi_bridge.NativeInteropTestsGolubetsInternalNull()
-              : writeValue<NSString>(entry, generic: true),
-        );
-      }
-      return res as T;
-    } else if (value is List<int?> && _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final int? entry in value) {
-        res.addObject(
-          entry == null
-              ? ffi_bridge.NativeInteropTestsGolubetsInternalNull()
-              : writeValue<NSNumber>(entry, generic: true),
-        );
-      }
-      return res as T;
-    } else if (value is List<double?> && _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final double? entry in value) {
-        res.addObject(
-          entry == null
-              ? ffi_bridge.NativeInteropTestsGolubetsInternalNull()
-              : writeValue<NSNumber>(entry, generic: true),
-        );
-      }
-      return res as T;
-    } else if (value is List<bool?> && _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final bool? entry in value) {
-        res.addObject(
-          entry == null
-              ? ffi_bridge.NativeInteropTestsGolubetsInternalNull()
-              : writeValue<NSNumber>(entry, generic: true),
-        );
-      }
-      return res as T;
-    } else if (value is List<NativeInteropAnEnum?> && _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final NativeInteropAnEnum? entry in value) {
-        res.addObject(
-          entry == null
-              ? ffi_bridge.NativeInteropTestsGolubetsInternalNull()
-              : writeValue<NSNumber>(entry, generic: true),
-        );
-      }
-      return res as T;
-    } else if (value is List<NativeInteropAllNullableTypes?> &&
-        _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final NativeInteropAllNullableTypes? entry in value) {
-        res.addObject(
-          entry == null
-              ? ffi_bridge.NativeInteropTestsGolubetsInternalNull()
-              : writeValue<ffi_bridge.NativeInteropAllNullableTypesBridge>(entry, generic: true),
-        );
-      }
-      return res as T;
-    } else if (value is List<NativeInteropAllNullableTypesWithoutRecursion?> &&
-        _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final NativeInteropAllNullableTypesWithoutRecursion? entry in value) {
-        res.addObject(
-          entry == null
-              ? ffi_bridge.NativeInteropTestsGolubetsInternalNull()
-              : writeValue<ffi_bridge.NativeInteropAllNullableTypesWithoutRecursionBridge>(
-                  entry,
-                  generic: true,
-                ),
-        );
-      }
-      return res as T;
-    } else if (value is List<List<Object?>> && _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final List<Object?> entry in value) {
-        res.addObject(writeValue<NSArray>(entry, generic: true));
-      }
-      return res as T;
-    } else if (value is List<List<Object?>?> && _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final List<Object?>? entry in value) {
-        res.addObject(
-          entry == null
-              ? ffi_bridge.NativeInteropTestsGolubetsInternalNull()
-              : writeValue<NSArray>(entry, generic: true),
-        );
-      }
-      return res as T;
-    } else if (value is List<Map<Object?, Object?>> && _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final Map<Object?, Object?> entry in value) {
-        res.addObject(writeValue<NSDictionary>(entry, generic: true));
-      }
-      return res as T;
-    } else if (value is List<Map<Object?, Object?>?> && _isTypeOrNullableType<NSMutableArray>(T)) {
-      final NSMutableArray res = NSMutableArray();
-      for (final Map<Object?, Object?>? entry in value) {
-        res.addObject(
-          entry == null
-              ? ffi_bridge.NativeInteropTestsGolubetsInternalNull()
-              : writeValue<NSDictionary>(entry, generic: true),
-        );
-      }
-      return res as T;
-    } else if (value is List) {
-      final NSMutableArray res = NSMutableArray();
-      for (final Object? entry in value) {
-        res.addObject(
-          entry == null
-              ? ffi_bridge.NativeInteropTestsGolubetsInternalNull()
-              : writeValue(entry, generic: true),
-        );
-      }
-      return res as T;
-    } else if (value is Map<String, String> && _isTypeOrNullableType<NSDictionary>(T)) {
-      final NSMutableDictionary res = NSMutableDictionary();
-      for (final MapEntry<String, String> entry in value.entries) {
-        res.setObject(
-          writeValue(entry.value, generic: true),
-          forKey: NSCopying.as(writeValue(entry.key, generic: true)),
-        );
-      }
-      return res as T;
-    } else if (value is Map<int, int> && _isTypeOrNullableType<NSDictionary>(T)) {
-      final NSMutableDictionary res = NSMutableDictionary();
-      for (final MapEntry<int, int> entry in value.entries) {
-        res.setObject(
-          writeValue(entry.value, generic: true),
-          forKey: NSCopying.as(writeValue(entry.key, generic: true)),
-        );
-      }
-      return res as T;
-    } else if (value is Map<NativeInteropAnEnum, NativeInteropAnEnum> &&
-        _isTypeOrNullableType<NSDictionary>(T)) {
-      final NSMutableDictionary res = NSMutableDictionary();
-      for (final MapEntry<NativeInteropAnEnum, NativeInteropAnEnum> entry in value.entries) {
-        res.setObject(
-          writeValue(entry.value, generic: true),
-          forKey: NSCopying.as(writeValue(entry.key, generic: true)),
-        );
-      }
-      return res as T;
-    } else if (value is Map<int, NativeInteropAllNullableTypes> &&
-        _isTypeOrNullableType<NSDictionary>(T)) {
-      final NSMutableDictionary res = NSMutableDictionary();
-      for (final MapEntry<int, NativeInteropAllNullableTypes> entry in value.entries) {
-        res.setObject(
-          writeValue(entry.value, generic: true),
-          forKey: NSCopying.as(writeValue(entry.key, generic: true)),
-        );
-      }
-      return res as T;
-    } else if (value is Map<int?, NativeInteropAllTypes?> &&
-        _isTypeOrNullableType<NSDictionary>(T)) {
-      final NSMutableDictionary res = NSMutableDictionary();
-      for (final MapEntry<int?, NativeInteropAllTypes?> entry in value.entries) {
-        res.setObject(
-          writeValue(entry.value, generic: true),
-          forKey: NSCopying.as(writeValue(entry.key, generic: true)),
-        );
-      }
-      return res as T;
-    } else if (value is Map<String?, String?> && _isTypeOrNullableType<NSDictionary>(T)) {
-      final NSMutableDictionary res = NSMutableDictionary();
-      for (final MapEntry<String?, String?> entry in value.entries) {
-        res.setObject(
-          writeValue(entry.value, generic: true),
-          forKey: NSCopying.as(writeValue(entry.key, generic: true)),
-        );
-      }
-      return res as T;
-    } else if (value is Map<int?, int?> && _isTypeOrNullableType<NSDictionary>(T)) {
-      final NSMutableDictionary res = NSMutableDictionary();
-      for (final MapEntry<int?, int?> entry in value.entries) {
-        res.setObject(
-          writeValue(entry.value, generic: true),
-          forKey: NSCopying.as(writeValue(entry.key, generic: true)),
-        );
-      }
-      return res as T;
-    } else if (value is Map<NativeInteropAnEnum?, NativeInteropAnEnum?> &&
-        _isTypeOrNullableType<NSDictionary>(T)) {
-      final NSMutableDictionary res = NSMutableDictionary();
-      for (final MapEntry<NativeInteropAnEnum?, NativeInteropAnEnum?> entry in value.entries) {
-        res.setObject(
-          writeValue(entry.value, generic: true),
-          forKey: NSCopying.as(writeValue(entry.key, generic: true)),
-        );
-      }
-      return res as T;
-    } else if (value is Map<int?, NativeInteropAllNullableTypes?> &&
-        _isTypeOrNullableType<NSDictionary>(T)) {
-      final NSMutableDictionary res = NSMutableDictionary();
-      for (final MapEntry<int?, NativeInteropAllNullableTypes?> entry in value.entries) {
-        res.setObject(
-          writeValue(entry.value, generic: true),
-          forKey: NSCopying.as(writeValue(entry.key, generic: true)),
-        );
-      }
-      return res as T;
-    } else if (value is Map<int?, NativeInteropAllNullableTypesWithoutRecursion?> &&
-        _isTypeOrNullableType<NSDictionary>(T)) {
-      final NSMutableDictionary res = NSMutableDictionary();
-      for (final MapEntry<int?, NativeInteropAllNullableTypesWithoutRecursion?> entry
-          in value.entries) {
-        res.setObject(
-          writeValue(entry.value, generic: true),
-          forKey: NSCopying.as(writeValue(entry.key, generic: true)),
-        );
-      }
-      return res as T;
-    } else if (value is Map<int, List<Object?>> && _isTypeOrNullableType<NSDictionary>(T)) {
-      final NSMutableDictionary res = NSMutableDictionary();
-      for (final MapEntry<int, List<Object?>> entry in value.entries) {
-        res.setObject(
-          writeValue(entry.value, generic: true),
-          forKey: NSCopying.as(writeValue(entry.key, generic: true)),
-        );
-      }
-      return res as T;
-    } else if (value is Map<int?, List<Object?>?> && _isTypeOrNullableType<NSDictionary>(T)) {
-      final NSMutableDictionary res = NSMutableDictionary();
-      for (final MapEntry<int?, List<Object?>?> entry in value.entries) {
-        res.setObject(
-          writeValue(entry.value, generic: true),
-          forKey: NSCopying.as(writeValue(entry.key, generic: true)),
-        );
-      }
-      return res as T;
-    } else if (value is Map<int, Map<Object?, Object?>> && _isTypeOrNullableType<NSDictionary>(T)) {
-      final NSMutableDictionary res = NSMutableDictionary();
-      for (final MapEntry<int, Map<Object?, Object?>> entry in value.entries) {
-        res.setObject(
-          writeValue(entry.value, generic: true),
-          forKey: NSCopying.as(writeValue(entry.key, generic: true)),
-        );
-      }
-      return res as T;
-    } else if (value is Map<int?, Map<Object?, Object?>?> &&
-        _isTypeOrNullableType<NSDictionary>(T)) {
-      final NSMutableDictionary res = NSMutableDictionary();
-      for (final MapEntry<int?, Map<Object?, Object?>?> entry in value.entries) {
-        res.setObject(
-          writeValue(entry.value, generic: true),
-          forKey: NSCopying.as(writeValue(entry.key, generic: true)),
-        );
-      }
-      return res as T;
-    } else if (value is Map) {
-      final NSMutableDictionary res = NSMutableDictionary();
-      for (final MapEntry<Object?, Object?> entry in value.entries) {
-        res.setObject(
-          writeValue(entry.value, generic: true),
-          forKey: NSCopying.as(writeValue(entry.key, generic: true)),
-        );
-      }
-      return res as T;
-    } else if (value is NativeInteropUnusedClass) {
-      return value.toFfi() as T;
-    } else if (value is NativeInteropAllTypes) {
-      return value.toFfi() as T;
-    } else if (value is NativeInteropAllNullableTypes) {
-      return value.toFfi() as T;
-    } else if (value is NativeInteropAllNullableTypesWithoutRecursion) {
-      return value.toFfi() as T;
-    } else if (value is NativeInteropAllClassesWrapper) {
-      return value.toFfi() as T;
-    } else {
-      throw ArgumentError.value(value);
-    }
-  }
-}
-
-ffi_bridge.NativeInteropTestsGolubetsTypedData _toGolubetsTypedData(TypedData value) {
-  final int lengthInBytes = value.lengthInBytes;
-  if (value is Uint8List) {
-    final int length = value.length;
-    final Pointer<Uint8> ptr = calloc<Uint8>(length);
-    ptr.asTypedList(length).setAll(0, value);
-    final NSData nsData = NSData.dataWithBytes(ptr.cast<Void>(), length: lengthInBytes);
-    calloc.free(ptr);
-    return ffi_bridge.NativeInteropTestsGolubetsTypedData.alloc().initWithData(nsData, type: 0);
-  } else if (value is Int32List) {
-    final int length = value.length;
-    final Pointer<Int32> ptr = calloc<Int32>(length);
-    ptr.asTypedList(length).setAll(0, value);
-    final NSData nsData = NSData.dataWithBytes(ptr.cast<Void>(), length: lengthInBytes);
-    calloc.free(ptr);
-    return ffi_bridge.NativeInteropTestsGolubetsTypedData.alloc().initWithData(nsData, type: 1);
-  } else if (value is Int64List) {
-    final int length = value.length;
-    final Pointer<Int64> ptr = calloc<Int64>(length);
-    ptr.asTypedList(length).setAll(0, value);
-    final NSData nsData = NSData.dataWithBytes(ptr.cast<Void>(), length: lengthInBytes);
-    calloc.free(ptr);
-    return ffi_bridge.NativeInteropTestsGolubetsTypedData.alloc().initWithData(nsData, type: 2);
-  } else if (value is Float32List) {
-    final int length = value.length;
-    final Pointer<Float> ptr = calloc<Float>(length);
-    ptr.asTypedList(length).setAll(0, value);
-    final NSData nsData = NSData.dataWithBytes(ptr.cast<Void>(), length: lengthInBytes);
-    calloc.free(ptr);
-    return ffi_bridge.NativeInteropTestsGolubetsTypedData.alloc().initWithData(nsData, type: 3);
-  } else if (value is Float64List) {
-    final int length = value.length;
-    final Pointer<Double> ptr = calloc<Double>(length);
-    ptr.asTypedList(length).setAll(0, value);
-    final NSData nsData = NSData.dataWithBytes(ptr.cast<Void>(), length: lengthInBytes);
-    calloc.free(ptr);
-    return ffi_bridge.NativeInteropTestsGolubetsTypedData.alloc().initWithData(nsData, type: 4);
-  }
-  throw ArgumentError.value(value);
-}
-
-Object? _getValueFromGolubetsTypedData(ffi_bridge.NativeInteropTestsGolubetsTypedData value) {
-  final NSData data = value.data;
-  final Pointer<Void> bytes = data.bytes;
-  return switch (value.type) {
-    0 => Uint8List.fromList(bytes.cast<Uint8>().asTypedList(data.length)),
-    1 => Int32List.fromList(bytes.cast<Int32>().asTypedList(data.length ~/ 4)),
-    2 => Int64List.fromList(bytes.cast<Int64>().asTypedList(data.length ~/ 8)),
-    3 => Float32List.fromList(bytes.cast<Float>().asTypedList(data.length ~/ 4)),
-    4 => Float64List.fromList(bytes.cast<Double>().asTypedList(data.length ~/ 8)),
-    _ => throw ArgumentError.value(value),
-  };
-}
-
-Object? _convertNumberWrapperToDart(ffi_bridge.NativeInteropTestsNumberWrapper value) {
-  switch (value.type) {
-    case 1:
-      return value.number.longValue;
-    case 2:
-      return value.number.doubleValue;
-    case 3:
-      return value.number.boolValue;
-    case 4:
-      return NativeInteropAnEnum.fromNSNumber(value.number);
-    case 5:
-      return NativeInteropAnotherEnum.fromNSNumber(value.number);
-    default:
-      throw ArgumentError.value(value);
-  }
-}
-
-ffi_bridge.NativeInteropTestsNumberWrapper _convertToFfiNumberWrapper(Object value) {
-  switch (value) {
-    case int _:
-      return ffi_bridge.NativeInteropTestsNumberWrapper.alloc().initWithNumber(
-        NSNumber.alloc().initWithLong(value),
-        type: 1,
-      );
-    case double _:
-      return ffi_bridge.NativeInteropTestsNumberWrapper.alloc().initWithNumber(
-        NSNumber.alloc().initWithDouble(value),
-        type: 2,
-      );
-    case bool _:
-      return ffi_bridge.NativeInteropTestsNumberWrapper.alloc().initWithNumber(
-        NSNumber.alloc().initWithLong(value ? 1 : 0),
-        type: 3,
-      );
-    case NativeInteropAnEnum _:
-      return ffi_bridge.NativeInteropTestsNumberWrapper.alloc().initWithNumber(
-        value.toNSNumber(),
-        type: 4,
-      );
-    case NativeInteropAnotherEnum _:
-      return ffi_bridge.NativeInteropTestsNumberWrapper.alloc().initWithNumber(
-        value.toNSNumber(),
-        type: 5,
-      );
-    default:
-      throw ArgumentError.value(value);
-  }
-}
-
-bool _isType<T>(Type t) => T == t;
-bool _isTypeOrNullableType<T>(Type t) => _isType<T>(t) || _isType<T?>(t);
-
-void _throwNoInstanceError(String channelName) {
-  String nameString = 'named $channelName';
-  if (channelName == defaultInstanceName) {
-    nameString = 'with no name';
-  }
-  final String error = 'No instance $nameString has been registered.';
-  throw ArgumentError(error);
-}
-
-void _throwIfFfiError(ffi_bridge.NativeInteropTestsError error) {
-  if (error.code != null) {
-    throw _wrapFfiError(error);
-  }
-}
-
-PlatformException _wrapFfiError(ffi_bridge.NativeInteropTestsError error) => PlatformException(
-  code: error.code!.toDartString(),
-  message: error.message?.toDartString(),
-  details: NSString.isA(error.details) ? error.details!.toDartString() : error.details,
-);
-
-void _reportFfiError(ffi_bridge.NativeInteropTestsError errorOut, Object e) {
-  if (e is PlatformException) {
-    errorOut.code = NSString(e.code);
-    errorOut.message = NSString(e.message ?? '');
-    errorOut.details = NSString((e.details ?? '').toString());
-  } else {
-    errorOut.code = NSString('error');
-    errorOut.message = NSString(e.toString());
-    errorOut.details = null;
-  }
-}
-
-PlatformException _wrapJniException(JThrowable e) {
-  if (e.isA<jni_bridge.NativeInteropTestsError>(jni_bridge.NativeInteropTestsError.type)) {
-    final jni_bridge.NativeInteropTestsError golubetsError = e.as(
-      jni_bridge.NativeInteropTestsError.type,
-    );
-    return PlatformException(
-      code: golubetsError.code.toDartString(),
-      message: golubetsError.message?.toDartString(),
-      details: golubetsError.details?.isA<JString>(JString.type) ?? false
-          ? golubetsError.details!.as(JString.type).toDartString()
-          : golubetsError.details,
-      stacktrace: e.javaStackTrace,
-    );
-  }
-  return PlatformException(
-    code: 'PlatformException',
-    message: e.message,
-    details: e,
-    stacktrace: e.javaStackTrace,
-  );
-}
-
-enum NativeInteropAnEnum {
-  one,
-  two,
-  three,
-  fortyTwo,
-  fourHundredTwentyTwo;
-
-  jni_bridge.NativeInteropAnEnum toJni() {
-    return jni_bridge.NativeInteropAnEnum.Companion.ofRaw(index)!;
-  }
-
-  static NativeInteropAnEnum? fromJni(jni_bridge.NativeInteropAnEnum? jniEnum) {
-    return jniEnum == null ? null : NativeInteropAnEnum.values[jniEnum.raw];
-  }
-
-  NSNumber toFfi() {
-    return _GolubetsFfiCodec.writeValue<NSNumber>(index);
-  }
-
-  NSNumber toNSNumber() {
-    return NSNumber.alloc().initWithLong(index);
-  }
-
-  static NativeInteropAnEnum? fromNSNumber(NSNumber? ffiEnum) {
-    return ffiEnum == null ? null : NativeInteropAnEnum.values[ffiEnum.intValue];
-  }
-}
-
-enum NativeInteropAnotherEnum {
-  justInCase;
-
-  jni_bridge.NativeInteropAnotherEnum toJni() {
-    return jni_bridge.NativeInteropAnotherEnum.Companion.ofRaw(index)!;
-  }
-
-  static NativeInteropAnotherEnum? fromJni(jni_bridge.NativeInteropAnotherEnum? jniEnum) {
-    return jniEnum == null ? null : NativeInteropAnotherEnum.values[jniEnum.raw];
-  }
-
-  NSNumber toFfi() {
-    return _GolubetsFfiCodec.writeValue<NSNumber>(index);
-  }
-
-  NSNumber toNSNumber() {
-    return NSNumber.alloc().initWithLong(index);
-  }
-
-  static NativeInteropAnotherEnum? fromNSNumber(NSNumber? ffiEnum) {
-    return ffiEnum == null ? null : NativeInteropAnotherEnum.values[ffiEnum.intValue];
-  }
-}
+enum NativeInteropAnotherEnum { justInCase }
 
 class NativeInteropUnusedClass {
   NativeInteropUnusedClass({this.aField});
@@ -1103,30 +126,8 @@ class NativeInteropUnusedClass {
     return <Object?>[aField];
   }
 
-  jni_bridge.NativeInteropUnusedClass toJni() {
-    return jni_bridge.NativeInteropUnusedClass(_GolubetsJniCodec.writeValue<JObject?>(aField));
-  }
-
-  ffi_bridge.NativeInteropUnusedClassBridge toFfi() {
-    return ffi_bridge.NativeInteropUnusedClassBridge.alloc().initWithAField(
-      _GolubetsFfiCodec.writeValue<NSObject>(aField, generic: true),
-    );
-  }
-
   Object encode() {
     return _toList();
-  }
-
-  static NativeInteropUnusedClass? fromJni(jni_bridge.NativeInteropUnusedClass? jniClass) {
-    return jniClass == null
-        ? null
-        : NativeInteropUnusedClass(aField: _GolubetsJniCodec.readValue(jniClass.aField));
-  }
-
-  static NativeInteropUnusedClass? fromFfi(ffi_bridge.NativeInteropUnusedClassBridge? ffiClass) {
-    return ffiClass == null
-        ? null
-        : NativeInteropUnusedClass(aField: _GolubetsFfiCodec.readValue(ffiClass.aField));
   }
 
   static NativeInteropUnusedClass decode(Object result) {
@@ -1278,192 +279,8 @@ class NativeInteropAllTypes {
     ];
   }
 
-  jni_bridge.NativeInteropAllTypes toJni() {
-    return jni_bridge.NativeInteropAllTypes(
-      aBool,
-      anInt,
-      anInt64,
-      aDouble,
-      _GolubetsJniCodec.writeValue<JByteArray>(aByteArray),
-      _GolubetsJniCodec.writeValue<JIntArray>(a4ByteArray),
-      _GolubetsJniCodec.writeValue<JLongArray>(a8ByteArray),
-      _GolubetsJniCodec.writeValue<JDoubleArray>(aFloatArray),
-      anEnum.toJni(),
-      anotherEnum.toJni(),
-      _GolubetsJniCodec.writeValue<JString>(aString),
-      _GolubetsJniCodec.writeValue<JObject>(anObject),
-      _GolubetsJniCodec.writeValue<JList<JObject?>>(list),
-      _GolubetsJniCodec.writeValue<JList<JString>>(stringList),
-      _GolubetsJniCodec.writeValue<JList<JLong>>(intList),
-      _GolubetsJniCodec.writeValue<JList<JDouble>>(doubleList),
-      _GolubetsJniCodec.writeValue<JList<JBoolean>>(boolList),
-      _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum>>(enumList),
-      _GolubetsJniCodec.writeValue<JList<JObject>>(objectList),
-      _GolubetsJniCodec.writeValue<JList<JList<JObject?>>>(listList),
-      _GolubetsJniCodec.writeValue<JList<JMap<JObject?, JObject?>>>(mapList),
-      _GolubetsJniCodec.writeValue<JMap<JObject, JObject?>>(map),
-      _GolubetsJniCodec.writeValue<JMap<JString, JString>>(stringMap),
-      _GolubetsJniCodec.writeValue<JMap<JLong, JLong>>(intMap),
-      _GolubetsJniCodec.writeValue<
-        JMap<jni_bridge.NativeInteropAnEnum, jni_bridge.NativeInteropAnEnum>
-      >(enumMap),
-      _GolubetsJniCodec.writeValue<JMap<JObject, JObject>>(objectMap),
-      _GolubetsJniCodec.writeValue<JMap<JLong, JList<JObject?>>>(listMap),
-      _GolubetsJniCodec.writeValue<JMap<JLong, JMap<JObject?, JObject?>>>(mapMap),
-    );
-  }
-
-  ffi_bridge.NativeInteropAllTypesBridge toFfi() {
-    return ffi_bridge.NativeInteropAllTypesBridge.alloc().initWithABool(
-      aBool,
-      anInt: anInt,
-      anInt64: anInt64,
-      aDouble: aDouble,
-      aByteArray: _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(
-        aByteArray,
-      ),
-      a4ByteArray: _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(
-        a4ByteArray,
-      ),
-      a8ByteArray: _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(
-        a8ByteArray,
-      ),
-      aFloatArray: _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(
-        aFloatArray,
-      ),
-      anEnum: ffi_bridge.NativeInteropAnEnum.values[anEnum.index],
-      anotherEnum: ffi_bridge.NativeInteropAnotherEnum.values[anotherEnum.index],
-      aString: _GolubetsFfiCodec.writeValue<NSString>(aString),
-      anObject: _GolubetsFfiCodec.writeValue<NSObject>(anObject, generic: true),
-      list: _GolubetsFfiCodec.writeValue<NSMutableArray>(list),
-      stringList: _GolubetsFfiCodec.writeValue<NSMutableArray>(stringList),
-      intList: _GolubetsFfiCodec.writeValue<NSMutableArray>(intList),
-      doubleList: _GolubetsFfiCodec.writeValue<NSMutableArray>(doubleList),
-      boolList: _GolubetsFfiCodec.writeValue<NSMutableArray>(boolList),
-      enumList: _GolubetsFfiCodec.writeValue<NSMutableArray>(enumList),
-      objectList: _GolubetsFfiCodec.writeValue<NSMutableArray>(objectList),
-      listList: _GolubetsFfiCodec.writeValue<NSMutableArray>(listList),
-      mapList: _GolubetsFfiCodec.writeValue<NSMutableArray>(mapList),
-      map: _GolubetsFfiCodec.writeValue<NSDictionary>(map),
-      stringMap: _GolubetsFfiCodec.writeValue<NSDictionary>(stringMap),
-      intMap: _GolubetsFfiCodec.writeValue<NSDictionary>(intMap),
-      enumMap: _GolubetsFfiCodec.writeValue<NSDictionary>(enumMap),
-      objectMap: _GolubetsFfiCodec.writeValue<NSDictionary>(objectMap),
-      listMap: _GolubetsFfiCodec.writeValue<NSDictionary>(listMap),
-      mapMap: _GolubetsFfiCodec.writeValue<NSDictionary>(mapMap),
-    );
-  }
-
   Object encode() {
     return _toList();
-  }
-
-  static NativeInteropAllTypes? fromJni(jni_bridge.NativeInteropAllTypes? jniClass) {
-    return jniClass == null
-        ? null
-        : NativeInteropAllTypes(
-            aBool: jniClass.aBool,
-            anInt: jniClass.anInt,
-            anInt64: jniClass.anInt64,
-            aDouble: jniClass.aDouble,
-            aByteArray: _GolubetsJniCodec.readValue(jniClass.aByteArray)! as Uint8List,
-            a4ByteArray: _GolubetsJniCodec.readValue(jniClass.a4ByteArray)! as Int32List,
-            a8ByteArray: _GolubetsJniCodec.readValue(jniClass.a8ByteArray)! as Int64List,
-            aFloatArray: _GolubetsJniCodec.readValue(jniClass.aFloatArray)! as Float64List,
-            anEnum: NativeInteropAnEnum.fromJni(jniClass.anEnum)!,
-            anotherEnum: NativeInteropAnotherEnum.fromJni(jniClass.anotherEnum)!,
-            aString: jniClass.aString.toDartString(releaseOriginal: true),
-            anObject: _GolubetsJniCodec.readValue(jniClass.anObject)!,
-            list: (_GolubetsJniCodec.readValue(jniClass.list)! as List<Object?>).cast<Object?>(),
-            stringList: (_GolubetsJniCodec.readValue(jniClass.stringList)! as List<Object?>)
-                .cast<String>(),
-            intList: (_GolubetsJniCodec.readValue(jniClass.intList)! as List<Object?>).cast<int>(),
-            doubleList: (_GolubetsJniCodec.readValue(jniClass.doubleList)! as List<Object?>)
-                .cast<double>(),
-            boolList: (_GolubetsJniCodec.readValue(jniClass.boolList)! as List<Object?>)
-                .cast<bool>(),
-            enumList: (_GolubetsJniCodec.readValue(jniClass.enumList)! as List<Object?>)
-                .cast<NativeInteropAnEnum>(),
-            objectList: (_GolubetsJniCodec.readValue(jniClass.objectList)! as List<Object?>)
-                .cast<Object>(),
-            listList: (_GolubetsJniCodec.readValue(jniClass.listList)! as List<Object?>)
-                .cast<List<Object?>>(),
-            mapList: (_GolubetsJniCodec.readValue(jniClass.mapList)! as List<Object?>)
-                .cast<Map<Object?, Object?>>(),
-            map: (_GolubetsJniCodec.readValue(jniClass.map)! as Map<Object?, Object?>)
-                .cast<Object?, Object?>(),
-            stringMap: (_GolubetsJniCodec.readValue(jniClass.stringMap)! as Map<Object?, Object?>)
-                .cast<String, String>(),
-            intMap: (_GolubetsJniCodec.readValue(jniClass.intMap)! as Map<Object?, Object?>)
-                .cast<int, int>(),
-            enumMap: (_GolubetsJniCodec.readValue(jniClass.enumMap)! as Map<Object?, Object?>)
-                .cast<NativeInteropAnEnum, NativeInteropAnEnum>(),
-            objectMap: (_GolubetsJniCodec.readValue(jniClass.objectMap)! as Map<Object?, Object?>)
-                .cast<Object, Object>(),
-            listMap: (_GolubetsJniCodec.readValue(jniClass.listMap)! as Map<Object?, Object?>)
-                .cast<int, List<Object?>>(),
-            mapMap: (_GolubetsJniCodec.readValue(jniClass.mapMap)! as Map<Object?, Object?>)
-                .cast<int, Map<Object?, Object?>>(),
-          );
-  }
-
-  static NativeInteropAllTypes? fromFfi(ffi_bridge.NativeInteropAllTypesBridge? ffiClass) {
-    return ffiClass == null
-        ? null
-        : NativeInteropAllTypes(
-            aBool: ffiClass.aBool,
-            anInt: ffiClass.anInt,
-            anInt64: ffiClass.anInt64,
-            aDouble: ffiClass.aDouble,
-            aByteArray: _GolubetsFfiCodec.readValue(ffiClass.aByteArray)! as Uint8List,
-            a4ByteArray: _GolubetsFfiCodec.readValue(ffiClass.a4ByteArray)! as Int32List,
-            a8ByteArray: _GolubetsFfiCodec.readValue(ffiClass.a8ByteArray)! as Int64List,
-            aFloatArray: _GolubetsFfiCodec.readValue(ffiClass.aFloatArray)! as Float64List,
-            anEnum: NativeInteropAnEnum.values[ffiClass.anEnum.index],
-            anotherEnum: NativeInteropAnotherEnum.values[ffiClass.anotherEnum.index],
-            aString: ffiClass.aString.toDartString(),
-            anObject: _GolubetsFfiCodec.readValue(ffiClass.anObject)!,
-            list: (_GolubetsFfiCodec.readValue(ffiClass.list)! as List<Object?>).cast<Object?>(),
-            stringList: (_GolubetsFfiCodec.readValue(ffiClass.stringList)! as List<Object?>)
-                .cast<String>(),
-            intList: (_GolubetsFfiCodec.readValue(ffiClass.intList, int)! as List<Object?>)
-                .cast<int>(),
-            doubleList: (_GolubetsFfiCodec.readValue(ffiClass.doubleList, double)! as List<Object?>)
-                .cast<double>(),
-            boolList: (_GolubetsFfiCodec.readValue(ffiClass.boolList, bool)! as List<Object?>)
-                .cast<bool>(),
-            enumList:
-                (_GolubetsFfiCodec.readValue(ffiClass.enumList, NativeInteropAnEnum)!
-                        as List<Object?>)
-                    .cast<NativeInteropAnEnum>(),
-            objectList: (_GolubetsFfiCodec.readValue(ffiClass.objectList)! as List<Object?>)
-                .cast<Object>(),
-            listList: (_GolubetsFfiCodec.readValue(ffiClass.listList)! as List<Object?>)
-                .cast<List<Object?>>(),
-            mapList: (_GolubetsFfiCodec.readValue(ffiClass.mapList)! as List<Object?>)
-                .cast<Map<Object?, Object?>>(),
-            map: (_GolubetsFfiCodec.readValue(ffiClass.map)! as Map<Object?, Object?>)
-                .cast<Object?, Object?>(),
-            stringMap: (_GolubetsFfiCodec.readValue(ffiClass.stringMap)! as Map<Object?, Object?>)
-                .cast<String, String>(),
-            intMap:
-                (_GolubetsFfiCodec.readValue(ffiClass.intMap, int, int)! as Map<Object?, Object?>)
-                    .cast<int, int>(),
-            enumMap:
-                (_GolubetsFfiCodec.readValue(
-                          ffiClass.enumMap,
-                          NativeInteropAnEnum,
-                          NativeInteropAnEnum,
-                        )!
-                        as Map<Object?, Object?>)
-                    .cast<NativeInteropAnEnum, NativeInteropAnEnum>(),
-            objectMap: (_GolubetsFfiCodec.readValue(ffiClass.objectMap)! as Map<Object?, Object?>)
-                .cast<Object, Object>(),
-            listMap: (_GolubetsFfiCodec.readValue(ffiClass.listMap, int)! as Map<Object?, Object?>)
-                .cast<int, List<Object?>>(),
-            mapMap: (_GolubetsFfiCodec.readValue(ffiClass.mapMap, int)! as Map<Object?, Object?>)
-                .cast<int, Map<Object?, Object?>>(),
-          );
   }
 
   static NativeInteropAllTypes decode(Object result) {
@@ -1684,238 +501,8 @@ class NativeInteropAllNullableTypes {
     ];
   }
 
-  jni_bridge.NativeInteropAllNullableTypes toJni() {
-    return jni_bridge.NativeInteropAllNullableTypes(
-      _GolubetsJniCodec.writeValue<JBoolean?>(aNullableBool),
-      _GolubetsJniCodec.writeValue<JLong?>(aNullableInt),
-      _GolubetsJniCodec.writeValue<JLong?>(aNullableInt64),
-      _GolubetsJniCodec.writeValue<JDouble?>(aNullableDouble),
-      _GolubetsJniCodec.writeValue<JByteArray?>(aNullableByteArray),
-      _GolubetsJniCodec.writeValue<JIntArray?>(aNullable4ByteArray),
-      _GolubetsJniCodec.writeValue<JLongArray?>(aNullable8ByteArray),
-      _GolubetsJniCodec.writeValue<JDoubleArray?>(aNullableFloatArray),
-      aNullableEnum?.toJni(),
-      anotherNullableEnum?.toJni(),
-      _GolubetsJniCodec.writeValue<JString?>(aNullableString),
-      _GolubetsJniCodec.writeValue<JObject?>(aNullableObject),
-      allNullableTypes?.toJni(),
-      _GolubetsJniCodec.writeValue<JList<JObject?>?>(list),
-      _GolubetsJniCodec.writeValue<JList<JString?>?>(stringList),
-      _GolubetsJniCodec.writeValue<JList<JLong?>?>(intList),
-      _GolubetsJniCodec.writeValue<JList<JDouble?>?>(doubleList),
-      _GolubetsJniCodec.writeValue<JList<JBoolean?>?>(boolList),
-      _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum?>?>(enumList),
-      _GolubetsJniCodec.writeValue<JList<JObject?>?>(objectList),
-      _GolubetsJniCodec.writeValue<JList<JList<JObject?>?>?>(listList),
-      _GolubetsJniCodec.writeValue<JList<JMap<JObject?, JObject?>?>?>(mapList),
-      _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes?>?>(
-        recursiveClassList,
-      ),
-      _GolubetsJniCodec.writeValue<JMap<JObject, JObject?>?>(map),
-      _GolubetsJniCodec.writeValue<JMap<JString?, JString?>?>(stringMap),
-      _GolubetsJniCodec.writeValue<JMap<JLong?, JLong?>?>(intMap),
-      _GolubetsJniCodec.writeValue<
-        JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>?
-      >(enumMap),
-      _GolubetsJniCodec.writeValue<JMap<JObject?, JObject?>?>(objectMap),
-      _GolubetsJniCodec.writeValue<JMap<JLong?, JList<JObject?>?>?>(listMap),
-      _GolubetsJniCodec.writeValue<JMap<JLong?, JMap<JObject?, JObject?>?>?>(mapMap),
-      _GolubetsJniCodec.writeValue<JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>?>(
-        recursiveClassMap,
-      ),
-    );
-  }
-
-  ffi_bridge.NativeInteropAllNullableTypesBridge toFfi() {
-    return ffi_bridge.NativeInteropAllNullableTypesBridge.alloc().initWithANullableBool(
-      _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableBool),
-      aNullableInt: _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableInt),
-      aNullableInt64: _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableInt64),
-      aNullableDouble: _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableDouble),
-      aNullableByteArray:
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(
-            aNullableByteArray,
-          ),
-      aNullable4ByteArray:
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(
-            aNullable4ByteArray,
-          ),
-      aNullable8ByteArray:
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(
-            aNullable8ByteArray,
-          ),
-      aNullableFloatArray:
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(
-            aNullableFloatArray,
-          ),
-      aNullableEnum: _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableEnum?.index),
-      anotherNullableEnum: _GolubetsFfiCodec.writeValue<NSNumber?>(anotherNullableEnum?.index),
-      aNullableString: _GolubetsFfiCodec.writeValue<NSString?>(aNullableString),
-      aNullableObject: _GolubetsFfiCodec.writeValue<NSObject>(aNullableObject, generic: true),
-      allNullableTypes: allNullableTypes?.toFfi(),
-      list: _GolubetsFfiCodec.writeValue<NSMutableArray?>(list),
-      stringList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(stringList),
-      intList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(intList),
-      doubleList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(doubleList),
-      boolList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(boolList),
-      enumList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(enumList),
-      objectList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(objectList),
-      listList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(listList),
-      mapList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(mapList),
-      recursiveClassList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(recursiveClassList),
-      map: _GolubetsFfiCodec.writeValue<NSDictionary?>(map),
-      stringMap: _GolubetsFfiCodec.writeValue<NSDictionary?>(stringMap),
-      intMap: _GolubetsFfiCodec.writeValue<NSDictionary?>(intMap),
-      enumMap: _GolubetsFfiCodec.writeValue<NSDictionary?>(enumMap),
-      objectMap: _GolubetsFfiCodec.writeValue<NSDictionary?>(objectMap),
-      listMap: _GolubetsFfiCodec.writeValue<NSDictionary?>(listMap),
-      mapMap: _GolubetsFfiCodec.writeValue<NSDictionary?>(mapMap),
-      recursiveClassMap: _GolubetsFfiCodec.writeValue<NSDictionary?>(recursiveClassMap),
-    );
-  }
-
   Object encode() {
     return _toList();
-  }
-
-  static NativeInteropAllNullableTypes? fromJni(
-    jni_bridge.NativeInteropAllNullableTypes? jniClass,
-  ) {
-    return jniClass == null
-        ? null
-        : NativeInteropAllNullableTypes(
-            aNullableBool: jniClass.aNullableBool?.toDartBool(releaseOriginal: true),
-            aNullableInt: jniClass.aNullableInt?.toDartInt(releaseOriginal: true),
-            aNullableInt64: jniClass.aNullableInt64?.toDartInt(releaseOriginal: true),
-            aNullableDouble: jniClass.aNullableDouble?.toDartDouble(releaseOriginal: true),
-            aNullableByteArray:
-                _GolubetsJniCodec.readValue(jniClass.aNullableByteArray) as Uint8List?,
-            aNullable4ByteArray:
-                _GolubetsJniCodec.readValue(jniClass.aNullable4ByteArray) as Int32List?,
-            aNullable8ByteArray:
-                _GolubetsJniCodec.readValue(jniClass.aNullable8ByteArray) as Int64List?,
-            aNullableFloatArray:
-                _GolubetsJniCodec.readValue(jniClass.aNullableFloatArray) as Float64List?,
-            aNullableEnum: NativeInteropAnEnum.fromJni(jniClass.aNullableEnum),
-            anotherNullableEnum: NativeInteropAnotherEnum.fromJni(jniClass.anotherNullableEnum),
-            aNullableString: jniClass.aNullableString?.toDartString(releaseOriginal: true),
-            aNullableObject: _GolubetsJniCodec.readValue(jniClass.aNullableObject),
-            allNullableTypes: NativeInteropAllNullableTypes.fromJni(jniClass.allNullableTypes),
-            list: (_GolubetsJniCodec.readValue(jniClass.list) as List<Object?>?)?.cast<Object?>(),
-            stringList: (_GolubetsJniCodec.readValue(jniClass.stringList) as List<Object?>?)
-                ?.cast<String?>(),
-            intList: (_GolubetsJniCodec.readValue(jniClass.intList) as List<Object?>?)
-                ?.cast<int?>(),
-            doubleList: (_GolubetsJniCodec.readValue(jniClass.doubleList) as List<Object?>?)
-                ?.cast<double?>(),
-            boolList: (_GolubetsJniCodec.readValue(jniClass.boolList) as List<Object?>?)
-                ?.cast<bool?>(),
-            enumList: (_GolubetsJniCodec.readValue(jniClass.enumList) as List<Object?>?)
-                ?.cast<NativeInteropAnEnum?>(),
-            objectList: (_GolubetsJniCodec.readValue(jniClass.objectList) as List<Object?>?)
-                ?.cast<Object?>(),
-            listList: (_GolubetsJniCodec.readValue(jniClass.listList) as List<Object?>?)
-                ?.cast<List<Object?>?>(),
-            mapList: (_GolubetsJniCodec.readValue(jniClass.mapList) as List<Object?>?)
-                ?.cast<Map<Object?, Object?>?>(),
-            recursiveClassList:
-                (_GolubetsJniCodec.readValue(jniClass.recursiveClassList) as List<Object?>?)
-                    ?.cast<NativeInteropAllNullableTypes?>(),
-            map: (_GolubetsJniCodec.readValue(jniClass.map) as Map<Object?, Object?>?)
-                ?.cast<Object?, Object?>(),
-            stringMap: (_GolubetsJniCodec.readValue(jniClass.stringMap) as Map<Object?, Object?>?)
-                ?.cast<String?, String?>(),
-            intMap: (_GolubetsJniCodec.readValue(jniClass.intMap) as Map<Object?, Object?>?)
-                ?.cast<int?, int?>(),
-            enumMap: (_GolubetsJniCodec.readValue(jniClass.enumMap) as Map<Object?, Object?>?)
-                ?.cast<NativeInteropAnEnum?, NativeInteropAnEnum?>(),
-            objectMap: (_GolubetsJniCodec.readValue(jniClass.objectMap) as Map<Object?, Object?>?)
-                ?.cast<Object?, Object?>(),
-            listMap: (_GolubetsJniCodec.readValue(jniClass.listMap) as Map<Object?, Object?>?)
-                ?.cast<int?, List<Object?>?>(),
-            mapMap: (_GolubetsJniCodec.readValue(jniClass.mapMap) as Map<Object?, Object?>?)
-                ?.cast<int?, Map<Object?, Object?>?>(),
-            recursiveClassMap:
-                (_GolubetsJniCodec.readValue(jniClass.recursiveClassMap) as Map<Object?, Object?>?)
-                    ?.cast<int?, NativeInteropAllNullableTypes?>(),
-          );
-  }
-
-  static NativeInteropAllNullableTypes? fromFfi(
-    ffi_bridge.NativeInteropAllNullableTypesBridge? ffiClass,
-  ) {
-    return ffiClass == null
-        ? null
-        : NativeInteropAllNullableTypes(
-            aNullableBool: ffiClass.aNullableBool?.boolValue,
-            aNullableInt: ffiClass.aNullableInt?.longValue,
-            aNullableInt64: ffiClass.aNullableInt64?.longValue,
-            aNullableDouble: ffiClass.aNullableDouble?.doubleValue,
-            aNullableByteArray:
-                _GolubetsFfiCodec.readValue(ffiClass.aNullableByteArray) as Uint8List?,
-            aNullable4ByteArray:
-                _GolubetsFfiCodec.readValue(ffiClass.aNullable4ByteArray) as Int32List?,
-            aNullable8ByteArray:
-                _GolubetsFfiCodec.readValue(ffiClass.aNullable8ByteArray) as Int64List?,
-            aNullableFloatArray:
-                _GolubetsFfiCodec.readValue(ffiClass.aNullableFloatArray) as Float64List?,
-            aNullableEnum: ffiClass.aNullableEnum == null
-                ? null
-                : NativeInteropAnEnum.values[ffiClass.aNullableEnum!.longValue],
-            anotherNullableEnum: ffiClass.anotherNullableEnum == null
-                ? null
-                : NativeInteropAnotherEnum.values[ffiClass.anotherNullableEnum!.longValue],
-            aNullableString: ffiClass.aNullableString?.toDartString(),
-            aNullableObject: _GolubetsFfiCodec.readValue(ffiClass.aNullableObject),
-            allNullableTypes: NativeInteropAllNullableTypes.fromFfi(ffiClass.allNullableTypes),
-            list: (_GolubetsFfiCodec.readValue(ffiClass.list) as List<Object?>?)?.cast<Object?>(),
-            stringList: (_GolubetsFfiCodec.readValue(ffiClass.stringList) as List<Object?>?)
-                ?.cast<String?>(),
-            intList: (_GolubetsFfiCodec.readValue(ffiClass.intList, int) as List<Object?>?)
-                ?.cast<int?>(),
-            doubleList: (_GolubetsFfiCodec.readValue(ffiClass.doubleList, double) as List<Object?>?)
-                ?.cast<double?>(),
-            boolList: (_GolubetsFfiCodec.readValue(ffiClass.boolList, bool) as List<Object?>?)
-                ?.cast<bool?>(),
-            enumList:
-                (_GolubetsFfiCodec.readValue(ffiClass.enumList, NativeInteropAnEnum)
-                        as List<Object?>?)
-                    ?.cast<NativeInteropAnEnum?>(),
-            objectList: (_GolubetsFfiCodec.readValue(ffiClass.objectList) as List<Object?>?)
-                ?.cast<Object?>(),
-            listList: (_GolubetsFfiCodec.readValue(ffiClass.listList) as List<Object?>?)
-                ?.cast<List<Object?>?>(),
-            mapList: (_GolubetsFfiCodec.readValue(ffiClass.mapList) as List<Object?>?)
-                ?.cast<Map<Object?, Object?>?>(),
-            recursiveClassList:
-                (_GolubetsFfiCodec.readValue(ffiClass.recursiveClassList) as List<Object?>?)
-                    ?.cast<NativeInteropAllNullableTypes?>(),
-            map: (_GolubetsFfiCodec.readValue(ffiClass.map) as Map<Object?, Object?>?)
-                ?.cast<Object?, Object?>(),
-            stringMap: (_GolubetsFfiCodec.readValue(ffiClass.stringMap) as Map<Object?, Object?>?)
-                ?.cast<String?, String?>(),
-            intMap:
-                (_GolubetsFfiCodec.readValue(ffiClass.intMap, int, int) as Map<Object?, Object?>?)
-                    ?.cast<int?, int?>(),
-            enumMap:
-                (_GolubetsFfiCodec.readValue(
-                          ffiClass.enumMap,
-                          NativeInteropAnEnum,
-                          NativeInteropAnEnum,
-                        )
-                        as Map<Object?, Object?>?)
-                    ?.cast<NativeInteropAnEnum?, NativeInteropAnEnum?>(),
-            objectMap: (_GolubetsFfiCodec.readValue(ffiClass.objectMap) as Map<Object?, Object?>?)
-                ?.cast<Object?, Object?>(),
-            listMap: (_GolubetsFfiCodec.readValue(ffiClass.listMap, int) as Map<Object?, Object?>?)
-                ?.cast<int?, List<Object?>?>(),
-            mapMap: (_GolubetsFfiCodec.readValue(ffiClass.mapMap, int) as Map<Object?, Object?>?)
-                ?.cast<int?, Map<Object?, Object?>?>(),
-            recursiveClassMap:
-                (_GolubetsFfiCodec.readValue(ffiClass.recursiveClassMap, int)
-                        as Map<Object?, Object?>?)
-                    ?.cast<int?, NativeInteropAllNullableTypes?>(),
-          );
   }
 
   static NativeInteropAllNullableTypes decode(Object result) {
@@ -2137,218 +724,8 @@ class NativeInteropAllNullableTypesWithoutRecursion {
     ];
   }
 
-  jni_bridge.NativeInteropAllNullableTypesWithoutRecursion toJni() {
-    return jni_bridge.NativeInteropAllNullableTypesWithoutRecursion(
-      _GolubetsJniCodec.writeValue<JBoolean?>(aNullableBool),
-      _GolubetsJniCodec.writeValue<JLong?>(aNullableInt),
-      _GolubetsJniCodec.writeValue<JLong?>(aNullableInt64),
-      _GolubetsJniCodec.writeValue<JDouble?>(aNullableDouble),
-      _GolubetsJniCodec.writeValue<JByteArray?>(aNullableByteArray),
-      _GolubetsJniCodec.writeValue<JIntArray?>(aNullable4ByteArray),
-      _GolubetsJniCodec.writeValue<JLongArray?>(aNullable8ByteArray),
-      _GolubetsJniCodec.writeValue<JDoubleArray?>(aNullableFloatArray),
-      aNullableEnum?.toJni(),
-      anotherNullableEnum?.toJni(),
-      _GolubetsJniCodec.writeValue<JString?>(aNullableString),
-      _GolubetsJniCodec.writeValue<JObject?>(aNullableObject),
-      _GolubetsJniCodec.writeValue<JLong?>(type),
-      _GolubetsJniCodec.writeValue<JList<JObject?>?>(list),
-      _GolubetsJniCodec.writeValue<JList<JString?>?>(stringList),
-      _GolubetsJniCodec.writeValue<JList<JLong?>?>(intList),
-      _GolubetsJniCodec.writeValue<JList<JDouble?>?>(doubleList),
-      _GolubetsJniCodec.writeValue<JList<JBoolean?>?>(boolList),
-      _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum?>?>(enumList),
-      _GolubetsJniCodec.writeValue<JList<JObject?>?>(objectList),
-      _GolubetsJniCodec.writeValue<JList<JList<JObject?>?>?>(listList),
-      _GolubetsJniCodec.writeValue<JList<JMap<JObject?, JObject?>?>?>(mapList),
-      _GolubetsJniCodec.writeValue<JMap<JObject, JObject?>?>(map),
-      _GolubetsJniCodec.writeValue<JMap<JString?, JString?>?>(stringMap),
-      _GolubetsJniCodec.writeValue<JMap<JLong?, JLong?>?>(intMap),
-      _GolubetsJniCodec.writeValue<
-        JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>?
-      >(enumMap),
-      _GolubetsJniCodec.writeValue<JMap<JObject?, JObject?>?>(objectMap),
-      _GolubetsJniCodec.writeValue<JMap<JLong?, JList<JObject?>?>?>(listMap),
-      _GolubetsJniCodec.writeValue<JMap<JLong?, JMap<JObject?, JObject?>?>?>(mapMap),
-    );
-  }
-
-  ffi_bridge.NativeInteropAllNullableTypesWithoutRecursionBridge toFfi() {
-    return ffi_bridge.NativeInteropAllNullableTypesWithoutRecursionBridge.alloc()
-        .initWithANullableBool(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableBool),
-          aNullableInt: _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableInt),
-          aNullableInt64: _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableInt64),
-          aNullableDouble: _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableDouble),
-          aNullableByteArray:
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(
-                aNullableByteArray,
-              ),
-          aNullable4ByteArray:
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(
-                aNullable4ByteArray,
-              ),
-          aNullable8ByteArray:
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(
-                aNullable8ByteArray,
-              ),
-          aNullableFloatArray:
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(
-                aNullableFloatArray,
-              ),
-          aNullableEnum: _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableEnum?.index),
-          anotherNullableEnum: _GolubetsFfiCodec.writeValue<NSNumber?>(anotherNullableEnum?.index),
-          aNullableString: _GolubetsFfiCodec.writeValue<NSString?>(aNullableString),
-          aNullableObject: _GolubetsFfiCodec.writeValue<NSObject>(aNullableObject, generic: true),
-          type: _GolubetsFfiCodec.writeValue<NSNumber?>(type),
-          list: _GolubetsFfiCodec.writeValue<NSMutableArray?>(list),
-          stringList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(stringList),
-          intList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(intList),
-          doubleList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(doubleList),
-          boolList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(boolList),
-          enumList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(enumList),
-          objectList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(objectList),
-          listList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(listList),
-          mapList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(mapList),
-          map: _GolubetsFfiCodec.writeValue<NSDictionary?>(map),
-          stringMap: _GolubetsFfiCodec.writeValue<NSDictionary?>(stringMap),
-          intMap: _GolubetsFfiCodec.writeValue<NSDictionary?>(intMap),
-          enumMap: _GolubetsFfiCodec.writeValue<NSDictionary?>(enumMap),
-          objectMap: _GolubetsFfiCodec.writeValue<NSDictionary?>(objectMap),
-          listMap: _GolubetsFfiCodec.writeValue<NSDictionary?>(listMap),
-          mapMap: _GolubetsFfiCodec.writeValue<NSDictionary?>(mapMap),
-        );
-  }
-
   Object encode() {
     return _toList();
-  }
-
-  static NativeInteropAllNullableTypesWithoutRecursion? fromJni(
-    jni_bridge.NativeInteropAllNullableTypesWithoutRecursion? jniClass,
-  ) {
-    return jniClass == null
-        ? null
-        : NativeInteropAllNullableTypesWithoutRecursion(
-            aNullableBool: jniClass.aNullableBool?.toDartBool(releaseOriginal: true),
-            aNullableInt: jniClass.aNullableInt?.toDartInt(releaseOriginal: true),
-            aNullableInt64: jniClass.aNullableInt64?.toDartInt(releaseOriginal: true),
-            aNullableDouble: jniClass.aNullableDouble?.toDartDouble(releaseOriginal: true),
-            aNullableByteArray:
-                _GolubetsJniCodec.readValue(jniClass.aNullableByteArray) as Uint8List?,
-            aNullable4ByteArray:
-                _GolubetsJniCodec.readValue(jniClass.aNullable4ByteArray) as Int32List?,
-            aNullable8ByteArray:
-                _GolubetsJniCodec.readValue(jniClass.aNullable8ByteArray) as Int64List?,
-            aNullableFloatArray:
-                _GolubetsJniCodec.readValue(jniClass.aNullableFloatArray) as Float64List?,
-            aNullableEnum: NativeInteropAnEnum.fromJni(jniClass.aNullableEnum),
-            anotherNullableEnum: NativeInteropAnotherEnum.fromJni(jniClass.anotherNullableEnum),
-            aNullableString: jniClass.aNullableString?.toDartString(releaseOriginal: true),
-            aNullableObject: _GolubetsJniCodec.readValue(jniClass.aNullableObject),
-            type: jniClass.type$1?.toDartInt(releaseOriginal: true),
-            list: (_GolubetsJniCodec.readValue(jniClass.list) as List<Object?>?)?.cast<Object?>(),
-            stringList: (_GolubetsJniCodec.readValue(jniClass.stringList) as List<Object?>?)
-                ?.cast<String?>(),
-            intList: (_GolubetsJniCodec.readValue(jniClass.intList) as List<Object?>?)
-                ?.cast<int?>(),
-            doubleList: (_GolubetsJniCodec.readValue(jniClass.doubleList) as List<Object?>?)
-                ?.cast<double?>(),
-            boolList: (_GolubetsJniCodec.readValue(jniClass.boolList) as List<Object?>?)
-                ?.cast<bool?>(),
-            enumList: (_GolubetsJniCodec.readValue(jniClass.enumList) as List<Object?>?)
-                ?.cast<NativeInteropAnEnum?>(),
-            objectList: (_GolubetsJniCodec.readValue(jniClass.objectList) as List<Object?>?)
-                ?.cast<Object?>(),
-            listList: (_GolubetsJniCodec.readValue(jniClass.listList) as List<Object?>?)
-                ?.cast<List<Object?>?>(),
-            mapList: (_GolubetsJniCodec.readValue(jniClass.mapList) as List<Object?>?)
-                ?.cast<Map<Object?, Object?>?>(),
-            map: (_GolubetsJniCodec.readValue(jniClass.map) as Map<Object?, Object?>?)
-                ?.cast<Object?, Object?>(),
-            stringMap: (_GolubetsJniCodec.readValue(jniClass.stringMap) as Map<Object?, Object?>?)
-                ?.cast<String?, String?>(),
-            intMap: (_GolubetsJniCodec.readValue(jniClass.intMap) as Map<Object?, Object?>?)
-                ?.cast<int?, int?>(),
-            enumMap: (_GolubetsJniCodec.readValue(jniClass.enumMap) as Map<Object?, Object?>?)
-                ?.cast<NativeInteropAnEnum?, NativeInteropAnEnum?>(),
-            objectMap: (_GolubetsJniCodec.readValue(jniClass.objectMap) as Map<Object?, Object?>?)
-                ?.cast<Object?, Object?>(),
-            listMap: (_GolubetsJniCodec.readValue(jniClass.listMap) as Map<Object?, Object?>?)
-                ?.cast<int?, List<Object?>?>(),
-            mapMap: (_GolubetsJniCodec.readValue(jniClass.mapMap) as Map<Object?, Object?>?)
-                ?.cast<int?, Map<Object?, Object?>?>(),
-          );
-  }
-
-  static NativeInteropAllNullableTypesWithoutRecursion? fromFfi(
-    ffi_bridge.NativeInteropAllNullableTypesWithoutRecursionBridge? ffiClass,
-  ) {
-    return ffiClass == null
-        ? null
-        : NativeInteropAllNullableTypesWithoutRecursion(
-            aNullableBool: ffiClass.aNullableBool?.boolValue,
-            aNullableInt: ffiClass.aNullableInt?.longValue,
-            aNullableInt64: ffiClass.aNullableInt64?.longValue,
-            aNullableDouble: ffiClass.aNullableDouble?.doubleValue,
-            aNullableByteArray:
-                _GolubetsFfiCodec.readValue(ffiClass.aNullableByteArray) as Uint8List?,
-            aNullable4ByteArray:
-                _GolubetsFfiCodec.readValue(ffiClass.aNullable4ByteArray) as Int32List?,
-            aNullable8ByteArray:
-                _GolubetsFfiCodec.readValue(ffiClass.aNullable8ByteArray) as Int64List?,
-            aNullableFloatArray:
-                _GolubetsFfiCodec.readValue(ffiClass.aNullableFloatArray) as Float64List?,
-            aNullableEnum: ffiClass.aNullableEnum == null
-                ? null
-                : NativeInteropAnEnum.values[ffiClass.aNullableEnum!.longValue],
-            anotherNullableEnum: ffiClass.anotherNullableEnum == null
-                ? null
-                : NativeInteropAnotherEnum.values[ffiClass.anotherNullableEnum!.longValue],
-            aNullableString: ffiClass.aNullableString?.toDartString(),
-            aNullableObject: _GolubetsFfiCodec.readValue(ffiClass.aNullableObject),
-            type: ffiClass.type?.longValue,
-            list: (_GolubetsFfiCodec.readValue(ffiClass.list) as List<Object?>?)?.cast<Object?>(),
-            stringList: (_GolubetsFfiCodec.readValue(ffiClass.stringList) as List<Object?>?)
-                ?.cast<String?>(),
-            intList: (_GolubetsFfiCodec.readValue(ffiClass.intList, int) as List<Object?>?)
-                ?.cast<int?>(),
-            doubleList: (_GolubetsFfiCodec.readValue(ffiClass.doubleList, double) as List<Object?>?)
-                ?.cast<double?>(),
-            boolList: (_GolubetsFfiCodec.readValue(ffiClass.boolList, bool) as List<Object?>?)
-                ?.cast<bool?>(),
-            enumList:
-                (_GolubetsFfiCodec.readValue(ffiClass.enumList, NativeInteropAnEnum)
-                        as List<Object?>?)
-                    ?.cast<NativeInteropAnEnum?>(),
-            objectList: (_GolubetsFfiCodec.readValue(ffiClass.objectList) as List<Object?>?)
-                ?.cast<Object?>(),
-            listList: (_GolubetsFfiCodec.readValue(ffiClass.listList) as List<Object?>?)
-                ?.cast<List<Object?>?>(),
-            mapList: (_GolubetsFfiCodec.readValue(ffiClass.mapList) as List<Object?>?)
-                ?.cast<Map<Object?, Object?>?>(),
-            map: (_GolubetsFfiCodec.readValue(ffiClass.map) as Map<Object?, Object?>?)
-                ?.cast<Object?, Object?>(),
-            stringMap: (_GolubetsFfiCodec.readValue(ffiClass.stringMap) as Map<Object?, Object?>?)
-                ?.cast<String?, String?>(),
-            intMap:
-                (_GolubetsFfiCodec.readValue(ffiClass.intMap, int, int) as Map<Object?, Object?>?)
-                    ?.cast<int?, int?>(),
-            enumMap:
-                (_GolubetsFfiCodec.readValue(
-                          ffiClass.enumMap,
-                          NativeInteropAnEnum,
-                          NativeInteropAnEnum,
-                        )
-                        as Map<Object?, Object?>?)
-                    ?.cast<NativeInteropAnEnum?, NativeInteropAnEnum?>(),
-            objectMap: (_GolubetsFfiCodec.readValue(ffiClass.objectMap) as Map<Object?, Object?>?)
-                ?.cast<Object?, Object?>(),
-            listMap: (_GolubetsFfiCodec.readValue(ffiClass.listMap, int) as Map<Object?, Object?>?)
-                ?.cast<int?, List<Object?>?>(),
-            mapMap: (_GolubetsFfiCodec.readValue(ffiClass.mapMap, int) as Map<Object?, Object?>?)
-                ?.cast<int?, Map<Object?, Object?>?>(),
-          );
   }
 
   static NativeInteropAllNullableTypesWithoutRecursion decode(Object result) {
@@ -2480,86 +857,8 @@ class NativeInteropAllClassesWrapper {
     ];
   }
 
-  jni_bridge.NativeInteropAllClassesWrapper toJni() {
-    return jni_bridge.NativeInteropAllClassesWrapper(
-      allNullableTypes.toJni(),
-      allNullableTypesWithoutRecursion?.toJni(),
-      allTypes?.toJni(),
-      _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllTypes?>>(classList),
-      _GolubetsJniCodec.writeValue<
-        JList<jni_bridge.NativeInteropAllNullableTypesWithoutRecursion?>?
-      >(nullableClassList),
-      _GolubetsJniCodec.writeValue<JMap<JLong?, jni_bridge.NativeInteropAllTypes?>>(classMap),
-      _GolubetsJniCodec.writeValue<
-        JMap<JLong?, jni_bridge.NativeInteropAllNullableTypesWithoutRecursion?>?
-      >(nullableClassMap),
-    );
-  }
-
-  ffi_bridge.NativeInteropAllClassesWrapperBridge toFfi() {
-    return ffi_bridge.NativeInteropAllClassesWrapperBridge.alloc().initWithAllNullableTypes(
-      allNullableTypes.toFfi(),
-      allNullableTypesWithoutRecursion: allNullableTypesWithoutRecursion?.toFfi(),
-      allTypes: allTypes?.toFfi(),
-      classList: _GolubetsFfiCodec.writeValue<NSMutableArray>(classList),
-      nullableClassList: _GolubetsFfiCodec.writeValue<NSMutableArray?>(nullableClassList),
-      classMap: _GolubetsFfiCodec.writeValue<NSDictionary>(classMap),
-      nullableClassMap: _GolubetsFfiCodec.writeValue<NSDictionary?>(nullableClassMap),
-    );
-  }
-
   Object encode() {
     return _toList();
-  }
-
-  static NativeInteropAllClassesWrapper? fromJni(
-    jni_bridge.NativeInteropAllClassesWrapper? jniClass,
-  ) {
-    return jniClass == null
-        ? null
-        : NativeInteropAllClassesWrapper(
-            allNullableTypes: NativeInteropAllNullableTypes.fromJni(jniClass.allNullableTypes)!,
-            allNullableTypesWithoutRecursion: NativeInteropAllNullableTypesWithoutRecursion.fromJni(
-              jniClass.allNullableTypesWithoutRecursion,
-            ),
-            allTypes: NativeInteropAllTypes.fromJni(jniClass.allTypes),
-            classList: (_GolubetsJniCodec.readValue(jniClass.classList)! as List<Object?>)
-                .cast<NativeInteropAllTypes?>(),
-            nullableClassList:
-                (_GolubetsJniCodec.readValue(jniClass.nullableClassList) as List<Object?>?)
-                    ?.cast<NativeInteropAllNullableTypesWithoutRecursion?>(),
-            classMap: (_GolubetsJniCodec.readValue(jniClass.classMap)! as Map<Object?, Object?>)
-                .cast<int?, NativeInteropAllTypes?>(),
-            nullableClassMap:
-                (_GolubetsJniCodec.readValue(jniClass.nullableClassMap) as Map<Object?, Object?>?)
-                    ?.cast<int?, NativeInteropAllNullableTypesWithoutRecursion?>(),
-          );
-  }
-
-  static NativeInteropAllClassesWrapper? fromFfi(
-    ffi_bridge.NativeInteropAllClassesWrapperBridge? ffiClass,
-  ) {
-    return ffiClass == null
-        ? null
-        : NativeInteropAllClassesWrapper(
-            allNullableTypes: NativeInteropAllNullableTypes.fromFfi(ffiClass.allNullableTypes)!,
-            allNullableTypesWithoutRecursion: NativeInteropAllNullableTypesWithoutRecursion.fromFfi(
-              ffiClass.allNullableTypesWithoutRecursion,
-            ),
-            allTypes: NativeInteropAllTypes.fromFfi(ffiClass.allTypes),
-            classList: (_GolubetsFfiCodec.readValue(ffiClass.classList)! as List<Object?>)
-                .cast<NativeInteropAllTypes?>(),
-            nullableClassList:
-                (_GolubetsFfiCodec.readValue(ffiClass.nullableClassList) as List<Object?>?)
-                    ?.cast<NativeInteropAllNullableTypesWithoutRecursion?>(),
-            classMap:
-                (_GolubetsFfiCodec.readValue(ffiClass.classMap, int)! as Map<Object?, Object?>)
-                    .cast<int?, NativeInteropAllTypes?>(),
-            nullableClassMap:
-                (_GolubetsFfiCodec.readValue(ffiClass.nullableClassMap, int)
-                        as Map<Object?, Object?>?)
-                    ?.cast<int?, NativeInteropAllNullableTypesWithoutRecursion?>(),
-          );
   }
 
   static NativeInteropAllClassesWrapper decode(Object result) {
@@ -2605,6 +904,372 @@ class NativeInteropAllClassesWrapper {
   }
 }
 
+/// A sealed class, to test sealed class handling.
+sealed class NativeInteropSealedClass {}
+
+/// A subclass of `NativeInteropSealedClass` with fields.
+class NativeInteropSealedClassWithFields extends NativeInteropSealedClass {
+  NativeInteropSealedClassWithFields({
+    required this.aString,
+    this.aNullableInt,
+    required this.anEnum,
+    this.aClass,
+  });
+
+  String aString;
+
+  int? aNullableInt;
+
+  NativeInteropAnEnum anEnum;
+
+  NativeInteropAllNullableTypesWithoutRecursion? aClass;
+
+  List<Object?> _toList() {
+    return <Object?>[aString, aNullableInt, anEnum, aClass];
+  }
+
+  Object encode() {
+    return _toList();
+  }
+
+  static NativeInteropSealedClassWithFields decode(Object result) {
+    result as List<Object?>;
+    return NativeInteropSealedClassWithFields(
+      aString: result[0]! as String,
+      aNullableInt: result[1] as int?,
+      anEnum: result[2]! as NativeInteropAnEnum,
+      aClass: result[3] as NativeInteropAllNullableTypesWithoutRecursion?,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! NativeInteropSealedClassWithFields || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(aString, other.aString) &&
+        _deepEquals(aNullableInt, other.aNullableInt) &&
+        _deepEquals(anEnum, other.anEnum) &&
+        _deepEquals(aClass, other.aClass);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'NativeInteropSealedClassWithFields(aString: $aString, aNullableInt: $aNullableInt, anEnum: $anEnum, aClass: $aClass)';
+  }
+}
+
+/// A subclass of `NativeInteropSealedClass` without fields.
+class NativeInteropEmptySealedClass extends NativeInteropSealedClass {
+  List<Object?> _toList() {
+    return <Object?>[];
+  }
+
+  Object encode() {
+    return _toList();
+  }
+
+  static NativeInteropEmptySealedClass decode(Object _) {
+    return NativeInteropEmptySealedClass();
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! NativeInteropEmptySealedClass || other.runtimeType != runtimeType) {
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'NativeInteropEmptySealedClass()';
+  }
+}
+
+/// A class with sealed class fields, to test sealed classes nested in classes
+/// and lists.
+class NativeInteropSealedClassWrapper {
+  NativeInteropSealedClassWrapper({
+    required this.sealedClass,
+    this.nullableSealedClass,
+    required this.sealedClassList,
+  });
+
+  NativeInteropSealedClass sealedClass;
+
+  NativeInteropSealedClass? nullableSealedClass;
+
+  List<NativeInteropSealedClass> sealedClassList;
+
+  List<Object?> _toList() {
+    return <Object?>[sealedClass, nullableSealedClass, sealedClassList];
+  }
+
+  Object encode() {
+    return _toList();
+  }
+
+  static NativeInteropSealedClassWrapper decode(Object result) {
+    result as List<Object?>;
+    return NativeInteropSealedClassWrapper(
+      sealedClass: result[0]! as NativeInteropSealedClass,
+      nullableSealedClass: result[1] as NativeInteropSealedClass?,
+      sealedClassList: (result[2]! as List<Object?>).cast<NativeInteropSealedClass>(),
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! NativeInteropSealedClassWrapper || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(sealedClass, other.sealedClass) &&
+        _deepEquals(nullableSealedClass, other.nullableSealedClass) &&
+        _deepEquals(sealedClassList, other.sealedClassList);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'NativeInteropSealedClassWrapper(sealedClass: $sealedClass, nullableSealedClass: $nullableSealedClass, sealedClassList: $sealedClassList)';
+  }
+}
+
+/// A class whose field names collide with members of the bindings that JNIgen
+/// generates, so JNIgen renames their accessors.
+///
+/// The Dart generator has to predict those names, since it is generated before
+/// JNIgen runs.
+class NativeInteropReservedNames {
+  NativeInteropReservedNames({
+    this.type,
+    this.use,
+    this.reference,
+    this.releasedBy,
+    this.fromReference,
+    this.jClass,
+    this.isInstanceOf,
+    this.isNull,
+    this.isReleased = false,
+    this.equals,
+    this.isEnabled = false,
+    this.isMaybe,
+    this.isCount,
+    this.getValue,
+  });
+
+  String? type;
+
+  String? use;
+
+  String? reference;
+
+  String? releasedBy;
+
+  String? fromReference;
+
+  String? jClass;
+
+  String? isInstanceOf;
+
+  String? isNull;
+
+  bool isReleased;
+
+  String? equals;
+
+  bool isEnabled;
+
+  bool? isMaybe;
+
+  int? isCount;
+
+  String? getValue;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      type,
+      use,
+      reference,
+      releasedBy,
+      fromReference,
+      jClass,
+      isInstanceOf,
+      isNull,
+      isReleased,
+      equals,
+      isEnabled,
+      isMaybe,
+      isCount,
+      getValue,
+    ];
+  }
+
+  Object encode() {
+    return _toList();
+  }
+
+  static NativeInteropReservedNames decode(Object result) {
+    result as List<Object?>;
+    return NativeInteropReservedNames(
+      type: result[0] as String?,
+      use: result[1] as String?,
+      reference: result[2] as String?,
+      releasedBy: result[3] as String?,
+      fromReference: result[4] as String?,
+      jClass: result[5] as String?,
+      isInstanceOf: result[6] as String?,
+      isNull: result[7] as String?,
+      isReleased: result[8]! as bool,
+      equals: result[9] as String?,
+      isEnabled: result[10]! as bool,
+      isMaybe: result[11] as bool?,
+      isCount: result[12] as int?,
+      getValue: result[13] as String?,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! NativeInteropReservedNames || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(type, other.type) &&
+        _deepEquals(use, other.use) &&
+        _deepEquals(reference, other.reference) &&
+        _deepEquals(releasedBy, other.releasedBy) &&
+        _deepEquals(fromReference, other.fromReference) &&
+        _deepEquals(jClass, other.jClass) &&
+        _deepEquals(isInstanceOf, other.isInstanceOf) &&
+        _deepEquals(isNull, other.isNull) &&
+        _deepEquals(isReleased, other.isReleased) &&
+        _deepEquals(equals, other.equals) &&
+        _deepEquals(isEnabled, other.isEnabled) &&
+        _deepEquals(isMaybe, other.isMaybe) &&
+        _deepEquals(isCount, other.isCount) &&
+        _deepEquals(getValue, other.getValue);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'NativeInteropReservedNames(type: $type, use: $use, reference: $reference, releasedBy: $releasedBy, fromReference: $fromReference, jClass: $jClass, isInstanceOf: $isInstanceOf, isNull: $isNull, isReleased: $isReleased, equals: $equals, isEnabled: $isEnabled, isMaybe: $isMaybe, isCount: $isCount, getValue: $getValue)';
+  }
+}
+
+/// A sealed class passed in the call's buffer with the hybrid transport.
+sealed class NativeInteropShape {}
+
+class NativeInteropCircle extends NativeInteropShape {
+  NativeInteropCircle({required this.radius});
+
+  double radius;
+
+  List<Object?> _toList() {
+    return <Object?>[radius];
+  }
+
+  Object encode() {
+    return _toList();
+  }
+
+  static NativeInteropCircle decode(Object result) {
+    result as List<Object?>;
+    return NativeInteropCircle(radius: result[0]! as double);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! NativeInteropCircle || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(radius, other.radius);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'NativeInteropCircle(radius: $radius)';
+  }
+}
+
+class NativeInteropSquare extends NativeInteropShape {
+  NativeInteropSquare({required this.side, this.label});
+
+  double side;
+
+  String? label;
+
+  List<Object?> _toList() {
+    return <Object?>[side, label];
+  }
+
+  Object encode() {
+    return _toList();
+  }
+
+  static NativeInteropSquare decode(Object result) {
+    result as List<Object?>;
+    return NativeInteropSquare(side: result[0]! as double, label: result[1] as String?);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! NativeInteropSquare || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(side, other.side) && _deepEquals(label, other.label);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'NativeInteropSquare(side: $side, label: $label)';
+  }
+}
+
 class _GolubetsCodec extends StandardMessageCodec {
   const _GolubetsCodec();
   @override
@@ -2633,6 +1298,24 @@ class _GolubetsCodec extends StandardMessageCodec {
     } else if (value is NativeInteropAllClassesWrapper) {
       buffer.putUint8(135);
       writeValue(buffer, value.encode());
+    } else if (value is NativeInteropSealedClassWithFields) {
+      buffer.putUint8(136);
+      writeValue(buffer, value.encode());
+    } else if (value is NativeInteropEmptySealedClass) {
+      buffer.putUint8(137);
+      writeValue(buffer, value.encode());
+    } else if (value is NativeInteropSealedClassWrapper) {
+      buffer.putUint8(138);
+      writeValue(buffer, value.encode());
+    } else if (value is NativeInteropReservedNames) {
+      buffer.putUint8(139);
+      writeValue(buffer, value.encode());
+    } else if (value is NativeInteropCircle) {
+      buffer.putUint8(140);
+      writeValue(buffer, value.encode());
+    } else if (value is NativeInteropSquare) {
+      buffer.putUint8(141);
+      writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
     }
@@ -2657,6993 +1340,671 @@ class _GolubetsCodec extends StandardMessageCodec {
         return NativeInteropAllNullableTypesWithoutRecursion.decode(readValue(buffer)!);
       case 135:
         return NativeInteropAllClassesWrapper.decode(readValue(buffer)!);
+      case 136:
+        return NativeInteropSealedClassWithFields.decode(readValue(buffer)!);
+      case 137:
+        return NativeInteropEmptySealedClass.decode(readValue(buffer)!);
+      case 138:
+        return NativeInteropSealedClassWrapper.decode(readValue(buffer)!);
+      case 139:
+        return NativeInteropReservedNames.decode(readValue(buffer)!);
+      case 140:
+        return NativeInteropCircle.decode(readValue(buffer)!);
+      case 141:
+        return NativeInteropSquare.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }
   }
 }
 
+@internal
+const StandardMessageCodec golubets_NativeInteropTestsmessageCodec = _GolubetsCodec();
 const String defaultInstanceName = 'GolubetsDefaultClassName32uh4ui3lh445uh4h3l2l455g4y34u';
 
-class NativeInteropHostIntegrationCoreApiForNativeInterop {
-  NativeInteropHostIntegrationCoreApiForNativeInterop._withRegistrar({
-    jni_bridge.NativeInteropHostIntegrationCoreApiRegistrar? jniApi,
-    ffi_bridge.NativeInteropHostIntegrationCoreApiSetup? ffiApi,
-  }) : _jniApi = jniApi,
-       _ffiApi = ffiApi;
+@internal
+NativeInteropHostIntegrationCoreApiForNativeInterop?
+golubets_getInstance_NativeInteropHostIntegrationCoreApi({
+  String channelName = defaultInstanceName,
+}) {
+  throw UnsupportedError(
+    'Native Interop is not supported on this platform. Use NativeInteropHostIntegrationCoreApi instead.',
+  );
+}
 
+abstract class NativeInteropHostIntegrationCoreApiForNativeInterop {
   /// Returns instance of NativeInteropHostIntegrationCoreApiForNativeInterop with specified [channelName] if one has been registered.
   static NativeInteropHostIntegrationCoreApiForNativeInterop? getInstance({
     String channelName = defaultInstanceName,
-  }) {
-    final NativeInteropHostIntegrationCoreApiForNativeInterop res;
-    if (Platform.isAndroid) {
-      final jni_bridge.NativeInteropHostIntegrationCoreApiRegistrar? link =
-          jni_bridge.NativeInteropHostIntegrationCoreApiRegistrar().getInstance(
-            channelName.toJString(),
-          );
-      if (link == null) {
-        _throwNoInstanceError(channelName);
-      }
-      res = NativeInteropHostIntegrationCoreApiForNativeInterop._withRegistrar(jniApi: link);
-    } else if (Platform.isIOS || Platform.isMacOS) {
-      final ffi_bridge.NativeInteropHostIntegrationCoreApiSetup? link = ffi_bridge
-          .NativeInteropHostIntegrationCoreApiSetup.getInstanceWithName(NSString(channelName));
-      if (link == null) {
-        _throwNoInstanceError(channelName);
-      }
-      res = NativeInteropHostIntegrationCoreApiForNativeInterop._withRegistrar(ffiApi: link);
-    } else {
-      throw UnsupportedError(
-        'Native Interop is not supported on this platform. Use NativeInteropHostIntegrationCoreApi instead.',
-      );
-    }
-    return res;
-  }
+  }) => golubets_native.golubets_getInstance_NativeInteropHostIntegrationCoreApi(
+    channelName: channelName,
+  );
 
-  late final jni_bridge.NativeInteropHostIntegrationCoreApiRegistrar? _jniApi;
-  late final ffi_bridge.NativeInteropHostIntegrationCoreApiSetup? _ffiApi;
+  void noop();
 
-  void noop() {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.noop();
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        _ffiApi.noopWithWrappedError(error);
-        _throwIfFfiError(error);
-        return;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  NativeInteropAllTypes echoAllTypes(NativeInteropAllTypes everything);
 
-  NativeInteropAllTypes echoAllTypes(NativeInteropAllTypes everything) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllTypes res = _jniApi.echoAllTypes(everything.toJni());
-        final NativeInteropAllTypes dartTypeRes = NativeInteropAllTypes.fromJni(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropAllTypesBridge? res = _ffiApi.echoAllTypesWithEverything(
-          everything.toFfi(),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final NativeInteropAllTypes dartTypeRes = NativeInteropAllTypes.fromFfi(res)!;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Object? throwError();
 
-  Object? throwError() {
-    try {
-      if (_jniApi != null) {
-        final JObject? res = _jniApi.throwError();
-        final Object? dartTypeRes = _GolubetsJniCodec.readValue(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSObject? res = _ffiApi.throwErrorWithWrappedError(error);
-        _throwIfFfiError(error);
-        final Object? dartTypeRes = _GolubetsFfiCodec.readValue(res);
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  void throwErrorFromVoid();
 
-  void throwErrorFromVoid() {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.throwErrorFromVoid();
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        _ffiApi.throwErrorFromVoidWithWrappedError(error);
-        _throwIfFfiError(error);
-        return;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Object? throwFlutterError();
 
-  Object? throwFlutterError() {
-    try {
-      if (_jniApi != null) {
-        final JObject? res = _jniApi.throwFlutterError();
-        final Object? dartTypeRes = _GolubetsJniCodec.readValue(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSObject? res = _ffiApi.throwFlutterErrorWithWrappedError(error);
-        _throwIfFfiError(error);
-        final Object? dartTypeRes = _GolubetsFfiCodec.readValue(res);
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  int echoInt(int anInt);
 
-  int echoInt(int anInt) {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.echoInt(anInt);
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.echoIntWithAnInt(anInt, wrappedError: error);
-        _throwIfFfiError(error);
-        final int dartTypeRes = res!.longValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  double echoDouble(double aDouble);
 
-  double echoDouble(double aDouble) {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.echoDouble(aDouble);
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.echoDoubleWithADouble(aDouble, wrappedError: error);
-        _throwIfFfiError(error);
-        final double dartTypeRes = res!.doubleValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  bool echoBool(bool aBool);
 
-  bool echoBool(bool aBool) {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.echoBool(aBool);
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.echoBoolWithABool(aBool, wrappedError: error);
-        _throwIfFfiError(error);
-        final bool dartTypeRes = res!.boolValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  String echoString(String aString);
 
-  String echoString(String aString) {
-    try {
-      if (_jniApi != null) {
-        final JString res = _jniApi.echoString(_GolubetsJniCodec.writeValue<JString>(aString));
-        final String dartTypeRes = res.toDartString(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSString? res = _ffiApi.echoStringWithAString(
-          _GolubetsFfiCodec.writeValue<NSString>(aString),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final String dartTypeRes = res!.toDartString();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Uint8List echoUint8List(Uint8List aUint8List);
 
-  Uint8List echoUint8List(Uint8List aUint8List) {
-    try {
-      if (_jniApi != null) {
-        final JByteArray res = _jniApi.echoUint8List(
-          _GolubetsJniCodec.writeValue<JByteArray>(aUint8List),
-        );
-        final Uint8List dartTypeRes = _GolubetsJniCodec.readValue(res)! as Uint8List;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropTestsGolubetsTypedData? res = _ffiApi
-            .echoUint8ListWithAUint8List(
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(
-                aUint8List,
-              ),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final Uint8List dartTypeRes = _GolubetsFfiCodec.readValue(res)! as Uint8List;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Int32List echoInt32List(Int32List aInt32List);
 
-  Int32List echoInt32List(Int32List aInt32List) {
-    try {
-      if (_jniApi != null) {
-        final JIntArray res = _jniApi.echoInt32List(
-          _GolubetsJniCodec.writeValue<JIntArray>(aInt32List),
-        );
-        final Int32List dartTypeRes = _GolubetsJniCodec.readValue(res)! as Int32List;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropTestsGolubetsTypedData? res = _ffiApi
-            .echoInt32ListWithAInt32List(
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(
-                aInt32List,
-              ),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final Int32List dartTypeRes = _GolubetsFfiCodec.readValue(res)! as Int32List;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Int64List echoInt64List(Int64List aInt64List);
 
-  Int64List echoInt64List(Int64List aInt64List) {
-    try {
-      if (_jniApi != null) {
-        final JLongArray res = _jniApi.echoInt64List(
-          _GolubetsJniCodec.writeValue<JLongArray>(aInt64List),
-        );
-        final Int64List dartTypeRes = _GolubetsJniCodec.readValue(res)! as Int64List;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropTestsGolubetsTypedData? res = _ffiApi
-            .echoInt64ListWithAInt64List(
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(
-                aInt64List,
-              ),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final Int64List dartTypeRes = _GolubetsFfiCodec.readValue(res)! as Int64List;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Float64List echoFloat64List(Float64List aFloat64List);
 
-  Float64List echoFloat64List(Float64List aFloat64List) {
-    try {
-      if (_jniApi != null) {
-        final JDoubleArray res = _jniApi.echoFloat64List(
-          _GolubetsJniCodec.writeValue<JDoubleArray>(aFloat64List),
-        );
-        final Float64List dartTypeRes = _GolubetsJniCodec.readValue(res)! as Float64List;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropTestsGolubetsTypedData? res = _ffiApi
-            .echoFloat64ListWithAFloat64List(
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(
-                aFloat64List,
-              ),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final Float64List dartTypeRes = _GolubetsFfiCodec.readValue(res)! as Float64List;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Object echoObject(Object anObject);
 
-  Object echoObject(Object anObject) {
-    try {
-      if (_jniApi != null) {
-        final JObject res = _jniApi.echoObject(_GolubetsJniCodec.writeValue<JObject>(anObject));
-        final Object dartTypeRes = _GolubetsJniCodec.readValue(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSObject? res = _ffiApi.echoObjectWithAnObject(
-          _GolubetsFfiCodec.writeValue<NSObject>(anObject, generic: true),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Object dartTypeRes = _GolubetsFfiCodec.readValue(res)!;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  List<Object?> echoList(List<Object?> list);
 
-  List<Object?> echoList(List<Object?> list) {
-    try {
-      if (_jniApi != null) {
-        final JList<JObject?> res = _jniApi.echoList(
-          _GolubetsJniCodec.writeValue<JList<JObject?>>(list),
-        );
-        final List<Object?> dartTypeRes = (_GolubetsJniCodec.readValue(res)! as List<Object?>)
-            .cast<Object?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.echoListWithList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(list),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<Object?> dartTypeRes = (_GolubetsFfiCodec.readValue(res)! as List<Object?>)
-            .cast<Object?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  List<String?> echoStringList(List<String?> stringList);
 
-  List<String?> echoStringList(List<String?> stringList) {
-    try {
-      if (_jniApi != null) {
-        final JList<JString?> res = _jniApi.echoStringList(
-          _GolubetsJniCodec.writeValue<JList<JString?>>(stringList),
-        );
-        final List<String?> dartTypeRes = (_GolubetsJniCodec.readValue(res)! as List<Object?>)
-            .cast<String?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.echoStringListWithStringList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(stringList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<String?> dartTypeRes = (_GolubetsFfiCodec.readValue(res)! as List<Object?>)
-            .cast<String?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  List<int?> echoIntList(List<int?> intList);
 
-  List<int?> echoIntList(List<int?> intList) {
-    try {
-      if (_jniApi != null) {
-        final JList<JLong?> res = _jniApi.echoIntList(
-          _GolubetsJniCodec.writeValue<JList<JLong?>>(intList),
-        );
-        final List<int?> dartTypeRes = (_GolubetsJniCodec.readValue(res)! as List<Object?>)
-            .cast<int?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.echoIntListWithIntList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(intList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<int?> dartTypeRes = (_GolubetsFfiCodec.readValue(res, int)! as List<Object?>)
-            .cast<int?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  List<double?> echoDoubleList(List<double?> doubleList);
 
-  List<double?> echoDoubleList(List<double?> doubleList) {
-    try {
-      if (_jniApi != null) {
-        final JList<JDouble?> res = _jniApi.echoDoubleList(
-          _GolubetsJniCodec.writeValue<JList<JDouble?>>(doubleList),
-        );
-        final List<double?> dartTypeRes = (_GolubetsJniCodec.readValue(res)! as List<Object?>)
-            .cast<double?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.echoDoubleListWithDoubleList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(doubleList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<double?> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, double)! as List<Object?>).cast<double?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  List<bool?> echoBoolList(List<bool?> boolList);
 
-  List<bool?> echoBoolList(List<bool?> boolList) {
-    try {
-      if (_jniApi != null) {
-        final JList<JBoolean?> res = _jniApi.echoBoolList(
-          _GolubetsJniCodec.writeValue<JList<JBoolean?>>(boolList),
-        );
-        final List<bool?> dartTypeRes = (_GolubetsJniCodec.readValue(res)! as List<Object?>)
-            .cast<bool?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.echoBoolListWithBoolList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(boolList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<bool?> dartTypeRes = (_GolubetsFfiCodec.readValue(res, bool)! as List<Object?>)
-            .cast<bool?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
-
-  List<NativeInteropAnEnum?> echoEnumList(List<NativeInteropAnEnum?> enumList) {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAnEnum?> res = _jniApi.echoEnumList(
-          _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum?>>(enumList),
-        );
-        final List<NativeInteropAnEnum?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as List<Object?>).cast<NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.echoEnumListWithEnumList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(enumList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<NativeInteropAnEnum?> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum)! as List<Object?>)
-                .cast<NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  List<NativeInteropAnEnum?> echoEnumList(List<NativeInteropAnEnum?> enumList);
 
   List<NativeInteropAllNullableTypes?> echoClassList(
     List<NativeInteropAllNullableTypes?> classList,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAllNullableTypes?> res = _jniApi.echoClassList(
-          _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes?>>(classList),
-        );
-        final List<NativeInteropAllNullableTypes?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as List<Object?>)
-                .cast<NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.echoClassListWithClassList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(classList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<NativeInteropAllNullableTypes?> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res)! as List<Object?>)
-                .cast<NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  List<NativeInteropAnEnum> echoNonNullEnumList(List<NativeInteropAnEnum> enumList) {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAnEnum> res = _jniApi.echoNonNullEnumList(
-          _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum>>(enumList),
-        );
-        final List<NativeInteropAnEnum> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as List<Object?>).cast<NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.echoNonNullEnumListWithEnumList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(enumList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<NativeInteropAnEnum> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum)! as List<Object?>)
-                .cast<NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  List<NativeInteropAnEnum> echoNonNullEnumList(List<NativeInteropAnEnum> enumList);
 
   List<NativeInteropAllNullableTypes> echoNonNullClassList(
     List<NativeInteropAllNullableTypes> classList,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAllNullableTypes> res = _jniApi.echoNonNullClassList(
-          _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes>>(classList),
-        );
-        final List<NativeInteropAllNullableTypes> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as List<Object?>)
-                .cast<NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.echoNonNullClassListWithClassList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(classList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<NativeInteropAllNullableTypes> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res)! as List<Object?>)
-                .cast<NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Map<Object?, Object?> echoMap(Map<Object?, Object?> map) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JObject?, JObject?> res = _jniApi.echoMap(
-          _GolubetsJniCodec.writeValue<JMap<JObject?, JObject?>>(map),
-        );
-        final Map<Object?, Object?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>).cast<Object?, Object?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoMapWithMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(map),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<Object?, Object?> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res)! as Map<Object?, Object?>).cast<Object?, Object?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<Object?, Object?> echoMap(Map<Object?, Object?> map);
 
-  Map<String?, String?> echoStringMap(Map<String?, String?> stringMap) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JString?, JString?> res = _jniApi.echoStringMap(
-          _GolubetsJniCodec.writeValue<JMap<JString?, JString?>>(stringMap),
-        );
-        final Map<String?, String?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>).cast<String?, String?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoStringMapWithStringMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(stringMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<String?, String?> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res)! as Map<Object?, Object?>).cast<String?, String?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<String?, String?> echoStringMap(Map<String?, String?> stringMap);
 
-  Map<int?, int?> echoIntMap(Map<int?, int?> intMap) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong?, JLong?> res = _jniApi.echoIntMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong?, JLong?>>(intMap),
-        );
-        final Map<int?, int?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>).cast<int?, int?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoIntMapWithIntMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(intMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<int?, int?> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, int, int)! as Map<Object?, Object?>)
-                .cast<int?, int?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<int?, int?> echoIntMap(Map<int?, int?> intMap);
 
   Map<NativeInteropAnEnum?, NativeInteropAnEnum?> echoEnumMap(
     Map<NativeInteropAnEnum?, NativeInteropAnEnum?> enumMap,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?> res = _jniApi
-            .echoEnumMap(
-              _GolubetsJniCodec.writeValue<
-                JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>
-              >(enumMap),
-            );
-        final Map<NativeInteropAnEnum?, NativeInteropAnEnum?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>)
-                .cast<NativeInteropAnEnum?, NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoEnumMapWithEnumMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(enumMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<NativeInteropAnEnum?, NativeInteropAnEnum?> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum, NativeInteropAnEnum)!
-                    as Map<Object?, Object?>)
-                .cast<NativeInteropAnEnum?, NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Map<int?, NativeInteropAllNullableTypes?> echoClassMap(
     Map<int?, NativeInteropAllNullableTypes?> classMap,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?> res = _jniApi.echoClassMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>>(
-            classMap,
-          ),
-        );
-        final Map<int?, NativeInteropAllNullableTypes?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>)
-                .cast<int?, NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoClassMapWithClassMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(classMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<int?, NativeInteropAllNullableTypes?> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, int)! as Map<Object?, Object?>)
-                .cast<int?, NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Map<String, String> echoNonNullStringMap(Map<String, String> stringMap) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JString, JString> res = _jniApi.echoNonNullStringMap(
-          _GolubetsJniCodec.writeValue<JMap<JString, JString>>(stringMap),
-        );
-        final Map<String, String> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>).cast<String, String>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoNonNullStringMapWithStringMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(stringMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<String, String> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res)! as Map<Object?, Object?>).cast<String, String>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<String, String> echoNonNullStringMap(Map<String, String> stringMap);
 
-  Map<int, int> echoNonNullIntMap(Map<int, int> intMap) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong, JLong> res = _jniApi.echoNonNullIntMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong, JLong>>(intMap),
-        );
-        final Map<int, int> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>).cast<int, int>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoNonNullIntMapWithIntMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(intMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<int, int> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, int, int)! as Map<Object?, Object?>).cast<int, int>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<int, int> echoNonNullIntMap(Map<int, int> intMap);
 
   Map<NativeInteropAnEnum, NativeInteropAnEnum> echoNonNullEnumMap(
     Map<NativeInteropAnEnum, NativeInteropAnEnum> enumMap,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JMap<jni_bridge.NativeInteropAnEnum, jni_bridge.NativeInteropAnEnum> res = _jniApi
-            .echoNonNullEnumMap(
-              _GolubetsJniCodec.writeValue<
-                JMap<jni_bridge.NativeInteropAnEnum, jni_bridge.NativeInteropAnEnum>
-              >(enumMap),
-            );
-        final Map<NativeInteropAnEnum, NativeInteropAnEnum> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>)
-                .cast<NativeInteropAnEnum, NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoNonNullEnumMapWithEnumMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(enumMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<NativeInteropAnEnum, NativeInteropAnEnum> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum, NativeInteropAnEnum)!
-                    as Map<Object?, Object?>)
-                .cast<NativeInteropAnEnum, NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Map<int, NativeInteropAllNullableTypes> echoNonNullClassMap(
     Map<int, NativeInteropAllNullableTypes> classMap,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong, jni_bridge.NativeInteropAllNullableTypes> res = _jniApi
-            .echoNonNullClassMap(
-              _GolubetsJniCodec.writeValue<JMap<JLong, jni_bridge.NativeInteropAllNullableTypes>>(
-                classMap,
-              ),
-            );
-        final Map<int, NativeInteropAllNullableTypes> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>)
-                .cast<int, NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoNonNullClassMapWithClassMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(classMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<int, NativeInteropAllNullableTypes> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, int)! as Map<Object?, Object?>)
-                .cast<int, NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  NativeInteropAllClassesWrapper echoClassWrapper(NativeInteropAllClassesWrapper wrapper) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllClassesWrapper res = _jniApi.echoClassWrapper(
-          wrapper.toJni(),
-        );
-        final NativeInteropAllClassesWrapper dartTypeRes = NativeInteropAllClassesWrapper.fromJni(
-          res,
-        )!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropAllClassesWrapperBridge? res = _ffiApi
-            .echoClassWrapperWithWrapper(wrapper.toFfi(), wrappedError: error);
-        _throwIfFfiError(error);
-        final NativeInteropAllClassesWrapper dartTypeRes = NativeInteropAllClassesWrapper.fromFfi(
-          res,
-        )!;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  NativeInteropAllClassesWrapper echoClassWrapper(NativeInteropAllClassesWrapper wrapper);
 
-  NativeInteropAnEnum echoEnum(NativeInteropAnEnum anEnum) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAnEnum res = _jniApi.echoEnum(anEnum.toJni());
-        final NativeInteropAnEnum dartTypeRes = NativeInteropAnEnum.fromJni(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.echoEnumWithAnEnum(
-          ffi_bridge.NativeInteropAnEnum.values[anEnum.index],
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final NativeInteropAnEnum dartTypeRes =
-            _GolubetsFfiCodec.readValue(res, NativeInteropAnEnum)! as NativeInteropAnEnum;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  NativeInteropSealedClass echoSealedClass(NativeInteropSealedClass sealedClass);
 
-  NativeInteropAnotherEnum echoAnotherEnum(NativeInteropAnotherEnum anotherEnum) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAnotherEnum res = _jniApi.echoAnotherEnum(
-          anotherEnum.toJni(),
-        );
-        final NativeInteropAnotherEnum dartTypeRes = NativeInteropAnotherEnum.fromJni(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.echoAnotherEnumWithAnotherEnum(
-          ffi_bridge.NativeInteropAnotherEnum.values[anotherEnum.index],
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final NativeInteropAnotherEnum dartTypeRes =
-            _GolubetsFfiCodec.readValue(res, NativeInteropAnotherEnum)! as NativeInteropAnotherEnum;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  NativeInteropSealedClass? echoNullableSealedClass(NativeInteropSealedClass? sealedClass);
 
-  String echoNamedDefaultString({String aString = 'default'}) {
-    try {
-      if (_jniApi != null) {
-        final JString res = _jniApi.echoNamedDefaultString(
-          _GolubetsJniCodec.writeValue<JString>(aString),
-        );
-        final String dartTypeRes = res.toDartString(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSString? res = _ffiApi.echoNamedDefaultStringWithAString(
-          _GolubetsFfiCodec.writeValue<NSString>(aString),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final String dartTypeRes = res!.toDartString();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  List<NativeInteropSealedClass> echoSealedClassList(
+    List<NativeInteropSealedClass> sealedClassList,
+  );
 
-  double echoOptionalDefaultDouble([double aDouble = 3.14]) {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.echoOptionalDefaultDouble(aDouble);
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.echoOptionalDefaultDoubleWithADouble(
-          aDouble,
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final double dartTypeRes = res!.doubleValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  NativeInteropSealedClassWrapper echoSealedClassWrapper(NativeInteropSealedClassWrapper wrapper);
 
-  int echoRequiredInt({required int anInt}) {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.echoRequiredInt(anInt);
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.echoRequiredIntWithAnInt(anInt, wrappedError: error);
-        _throwIfFfiError(error);
-        final int dartTypeRes = res!.longValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  NativeInteropAnEnum echoEnum(NativeInteropAnEnum anEnum);
 
-  NativeInteropAllNullableTypes? echoAllNullableTypes(NativeInteropAllNullableTypes? everything) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllNullableTypes? res = _jniApi.echoAllNullableTypes(
-          everything?.toJni(),
-        );
-        final NativeInteropAllNullableTypes? dartTypeRes = NativeInteropAllNullableTypes.fromJni(
-          res,
-        );
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropAllNullableTypesBridge? res = _ffiApi
-            .echoAllNullableTypesWithEverything(everything?.toFfi(), wrappedError: error);
-        _throwIfFfiError(error);
-        final NativeInteropAllNullableTypes? dartTypeRes = NativeInteropAllNullableTypes.fromFfi(
-          res,
-        );
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  NativeInteropAnotherEnum echoAnotherEnum(NativeInteropAnotherEnum anotherEnum);
+
+  String echoNamedDefaultString({String aString = 'default'});
+
+  double echoOptionalDefaultDouble([double aDouble = 3.14]);
+
+  int echoRequiredInt({required int anInt});
+
+  NativeInteropAllNullableTypes? echoAllNullableTypes(NativeInteropAllNullableTypes? everything);
 
   NativeInteropAllNullableTypesWithoutRecursion? echoAllNullableTypesWithoutRecursion(
     NativeInteropAllNullableTypesWithoutRecursion? everything,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllNullableTypesWithoutRecursion? res = _jniApi
-            .echoAllNullableTypesWithoutRecursion(everything?.toJni());
-        final NativeInteropAllNullableTypesWithoutRecursion? dartTypeRes =
-            NativeInteropAllNullableTypesWithoutRecursion.fromJni(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropAllNullableTypesWithoutRecursionBridge? res = _ffiApi
-            .echoAllNullableTypesWithoutRecursionWithEverything(
-              everything?.toFfi(),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final NativeInteropAllNullableTypesWithoutRecursion? dartTypeRes =
-            NativeInteropAllNullableTypesWithoutRecursion.fromFfi(res);
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  String? extractNestedNullableString(NativeInteropAllClassesWrapper wrapper) {
-    try {
-      if (_jniApi != null) {
-        final JString? res = _jniApi.extractNestedNullableString(wrapper.toJni());
-        final String? dartTypeRes = res?.toDartString(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSString? res = _ffiApi.extractNestedNullableStringWithWrapper(
-          wrapper.toFfi(),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final String? dartTypeRes = res?.toDartString();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  String? extractNestedNullableString(NativeInteropAllClassesWrapper wrapper);
 
-  NativeInteropAllClassesWrapper createNestedNullableString(String? nullableString) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllClassesWrapper res = _jniApi.createNestedNullableString(
-          _GolubetsJniCodec.writeValue<JString?>(nullableString),
-        );
-        final NativeInteropAllClassesWrapper dartTypeRes = NativeInteropAllClassesWrapper.fromJni(
-          res,
-        )!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropAllClassesWrapperBridge? res = _ffiApi
-            .createNestedNullableStringWithNullableString(
-              _GolubetsFfiCodec.writeValue<NSString?>(nullableString),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final NativeInteropAllClassesWrapper dartTypeRes = NativeInteropAllClassesWrapper.fromFfi(
-          res,
-        )!;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  NativeInteropAllClassesWrapper createNestedNullableString(String? nullableString);
 
   NativeInteropAllNullableTypes sendMultipleNullableTypes(
     bool? aNullableBool,
     int? aNullableInt,
     String? aNullableString,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllNullableTypes res = _jniApi.sendMultipleNullableTypes(
-          _GolubetsJniCodec.writeValue<JBoolean?>(aNullableBool),
-          _GolubetsJniCodec.writeValue<JLong?>(aNullableInt),
-          _GolubetsJniCodec.writeValue<JString?>(aNullableString),
-        );
-        final NativeInteropAllNullableTypes dartTypeRes = NativeInteropAllNullableTypes.fromJni(
-          res,
-        )!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropAllNullableTypesBridge? res = _ffiApi
-            .sendMultipleNullableTypesWithANullableBool(
-              _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableBool),
-              aNullableInt: _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableInt),
-              aNullableString: _GolubetsFfiCodec.writeValue<NSString?>(aNullableString),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final NativeInteropAllNullableTypes dartTypeRes = NativeInteropAllNullableTypes.fromFfi(
-          res,
-        )!;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   NativeInteropAllNullableTypesWithoutRecursion sendMultipleNullableTypesWithoutRecursion(
     bool? aNullableBool,
     int? aNullableInt,
     String? aNullableString,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllNullableTypesWithoutRecursion res = _jniApi
-            .sendMultipleNullableTypesWithoutRecursion(
-              _GolubetsJniCodec.writeValue<JBoolean?>(aNullableBool),
-              _GolubetsJniCodec.writeValue<JLong?>(aNullableInt),
-              _GolubetsJniCodec.writeValue<JString?>(aNullableString),
-            );
-        final NativeInteropAllNullableTypesWithoutRecursion dartTypeRes =
-            NativeInteropAllNullableTypesWithoutRecursion.fromJni(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropAllNullableTypesWithoutRecursionBridge? res = _ffiApi
-            .sendMultipleNullableTypesWithoutRecursionWithANullableBool(
-              _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableBool),
-              aNullableInt: _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableInt),
-              aNullableString: _GolubetsFfiCodec.writeValue<NSString?>(aNullableString),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final NativeInteropAllNullableTypesWithoutRecursion dartTypeRes =
-            NativeInteropAllNullableTypesWithoutRecursion.fromFfi(res)!;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  int? echoNullableInt(int? aNullableInt) {
-    try {
-      if (_jniApi != null) {
-        final JLong? res = _jniApi.echoNullableInt(
-          _GolubetsJniCodec.writeValue<JLong?>(aNullableInt),
-        );
-        final int? dartTypeRes = res?.toDartInt(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.echoNullableIntWithANullableInt(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableInt),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final int? dartTypeRes = res?.longValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  int? echoNullableInt(int? aNullableInt);
 
-  double? echoNullableDouble(double? aNullableDouble) {
-    try {
-      if (_jniApi != null) {
-        final JDouble? res = _jniApi.echoNullableDouble(
-          _GolubetsJniCodec.writeValue<JDouble?>(aNullableDouble),
-        );
-        final double? dartTypeRes = res?.toDartDouble(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.echoNullableDoubleWithANullableDouble(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableDouble),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final double? dartTypeRes = res?.doubleValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  double? echoNullableDouble(double? aNullableDouble);
 
-  bool? echoNullableBool(bool? aNullableBool) {
-    try {
-      if (_jniApi != null) {
-        final JBoolean? res = _jniApi.echoNullableBool(
-          _GolubetsJniCodec.writeValue<JBoolean?>(aNullableBool),
-        );
-        final bool? dartTypeRes = res?.toDartBool(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.echoNullableBoolWithANullableBool(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableBool),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final bool? dartTypeRes = res?.boolValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  bool? echoNullableBool(bool? aNullableBool);
 
-  String? echoNullableString(String? aNullableString) {
-    try {
-      if (_jniApi != null) {
-        final JString? res = _jniApi.echoNullableString(
-          _GolubetsJniCodec.writeValue<JString?>(aNullableString),
-        );
-        final String? dartTypeRes = res?.toDartString(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSString? res = _ffiApi.echoNullableStringWithANullableString(
-          _GolubetsFfiCodec.writeValue<NSString?>(aNullableString),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final String? dartTypeRes = res?.toDartString();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  String? echoNullableString(String? aNullableString);
 
-  Uint8List? echoNullableUint8List(Uint8List? aNullableUint8List) {
-    try {
-      if (_jniApi != null) {
-        final JByteArray? res = _jniApi.echoNullableUint8List(
-          _GolubetsJniCodec.writeValue<JByteArray?>(aNullableUint8List),
-        );
-        final Uint8List? dartTypeRes = _GolubetsJniCodec.readValue(res) as Uint8List?;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropTestsGolubetsTypedData? res = _ffiApi
-            .echoNullableUint8ListWithANullableUint8List(
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(
-                aNullableUint8List,
-              ),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final Uint8List? dartTypeRes = _GolubetsFfiCodec.readValue(res) as Uint8List?;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Uint8List? echoNullableUint8List(Uint8List? aNullableUint8List);
 
-  Int32List? echoNullableInt32List(Int32List? aNullableInt32List) {
-    try {
-      if (_jniApi != null) {
-        final JIntArray? res = _jniApi.echoNullableInt32List(
-          _GolubetsJniCodec.writeValue<JIntArray?>(aNullableInt32List),
-        );
-        final Int32List? dartTypeRes = _GolubetsJniCodec.readValue(res) as Int32List?;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropTestsGolubetsTypedData? res = _ffiApi
-            .echoNullableInt32ListWithANullableInt32List(
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(
-                aNullableInt32List,
-              ),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final Int32List? dartTypeRes = _GolubetsFfiCodec.readValue(res) as Int32List?;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Int32List? echoNullableInt32List(Int32List? aNullableInt32List);
 
-  Int64List? echoNullableInt64List(Int64List? aNullableInt64List) {
-    try {
-      if (_jniApi != null) {
-        final JLongArray? res = _jniApi.echoNullableInt64List(
-          _GolubetsJniCodec.writeValue<JLongArray?>(aNullableInt64List),
-        );
-        final Int64List? dartTypeRes = _GolubetsJniCodec.readValue(res) as Int64List?;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropTestsGolubetsTypedData? res = _ffiApi
-            .echoNullableInt64ListWithANullableInt64List(
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(
-                aNullableInt64List,
-              ),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final Int64List? dartTypeRes = _GolubetsFfiCodec.readValue(res) as Int64List?;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Int64List? echoNullableInt64List(Int64List? aNullableInt64List);
 
-  Float64List? echoNullableFloat64List(Float64List? aNullableFloat64List) {
-    try {
-      if (_jniApi != null) {
-        final JDoubleArray? res = _jniApi.echoNullableFloat64List(
-          _GolubetsJniCodec.writeValue<JDoubleArray?>(aNullableFloat64List),
-        );
-        final Float64List? dartTypeRes = _GolubetsJniCodec.readValue(res) as Float64List?;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropTestsGolubetsTypedData? res = _ffiApi
-            .echoNullableFloat64ListWithANullableFloat64List(
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(
-                aNullableFloat64List,
-              ),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final Float64List? dartTypeRes = _GolubetsFfiCodec.readValue(res) as Float64List?;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Float64List? echoNullableFloat64List(Float64List? aNullableFloat64List);
 
-  Object? echoNullableObject(Object? aNullableObject) {
-    try {
-      if (_jniApi != null) {
-        final JObject? res = _jniApi.echoNullableObject(
-          _GolubetsJniCodec.writeValue<JObject?>(aNullableObject),
-        );
-        final Object? dartTypeRes = _GolubetsJniCodec.readValue(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSObject? res = _ffiApi.echoNullableObjectWithANullableObject(
-          _GolubetsFfiCodec.writeValue<NSObject>(aNullableObject, generic: true),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Object? dartTypeRes = _GolubetsFfiCodec.readValue(res);
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Object? echoNullableObject(Object? aNullableObject);
 
-  List<Object?>? echoNullableList(List<Object?>? aNullableList) {
-    try {
-      if (_jniApi != null) {
-        final JList<JObject?>? res = _jniApi.echoNullableList(
-          _GolubetsJniCodec.writeValue<JList<JObject?>?>(aNullableList),
-        );
-        final List<Object?>? dartTypeRes = (_GolubetsJniCodec.readValue(res) as List<Object?>?)
-            ?.cast<Object?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.echoNullableListWithANullableList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(aNullableList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<Object?>? dartTypeRes = (_GolubetsFfiCodec.readValue(res) as List<Object?>?)
-            ?.cast<Object?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  List<Object?>? echoNullableList(List<Object?>? aNullableList);
 
-  List<NativeInteropAnEnum?>? echoNullableEnumList(List<NativeInteropAnEnum?>? enumList) {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAnEnum?>? res = _jniApi.echoNullableEnumList(
-          _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum?>?>(enumList),
-        );
-        final List<NativeInteropAnEnum?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as List<Object?>?)?.cast<NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.echoNullableEnumListWithEnumList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(enumList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<NativeInteropAnEnum?>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum) as List<Object?>?)
-                ?.cast<NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  List<NativeInteropAnEnum?>? echoNullableEnumList(List<NativeInteropAnEnum?>? enumList);
 
   List<NativeInteropAllNullableTypes?>? echoNullableClassList(
     List<NativeInteropAllNullableTypes?>? classList,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAllNullableTypes?>? res = _jniApi.echoNullableClassList(
-          _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes?>?>(
-            classList,
-          ),
-        );
-        final List<NativeInteropAllNullableTypes?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as List<Object?>?)
-                ?.cast<NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.echoNullableClassListWithClassList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(classList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<NativeInteropAllNullableTypes?>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res) as List<Object?>?)
-                ?.cast<NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  List<NativeInteropAnEnum>? echoNullableNonNullEnumList(List<NativeInteropAnEnum>? enumList) {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAnEnum>? res = _jniApi.echoNullableNonNullEnumList(
-          _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum>?>(enumList),
-        );
-        final List<NativeInteropAnEnum>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as List<Object?>?)?.cast<NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.echoNullableNonNullEnumListWithEnumList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(enumList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<NativeInteropAnEnum>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum) as List<Object?>?)
-                ?.cast<NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  List<NativeInteropAnEnum>? echoNullableNonNullEnumList(List<NativeInteropAnEnum>? enumList);
 
   List<NativeInteropAllNullableTypes>? echoNullableNonNullClassList(
     List<NativeInteropAllNullableTypes>? classList,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAllNullableTypes>? res = _jniApi
-            .echoNullableNonNullClassList(
-              _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes>?>(
-                classList,
-              ),
-            );
-        final List<NativeInteropAllNullableTypes>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as List<Object?>?)
-                ?.cast<NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.echoNullableNonNullClassListWithClassList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(classList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<NativeInteropAllNullableTypes>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res) as List<Object?>?)
-                ?.cast<NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Map<Object?, Object?>? echoNullableMap(Map<Object?, Object?>? map) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JObject?, JObject?>? res = _jniApi.echoNullableMap(
-          _GolubetsJniCodec.writeValue<JMap<JObject?, JObject?>?>(map),
-        );
-        final Map<Object?, Object?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)?.cast<Object?, Object?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoNullableMapWithMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(map),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<Object?, Object?>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res) as Map<Object?, Object?>?)?.cast<Object?, Object?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<Object?, Object?>? echoNullableMap(Map<Object?, Object?>? map);
 
-  Map<String?, String?>? echoNullableStringMap(Map<String?, String?>? stringMap) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JString?, JString?>? res = _jniApi.echoNullableStringMap(
-          _GolubetsJniCodec.writeValue<JMap<JString?, JString?>?>(stringMap),
-        );
-        final Map<String?, String?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)?.cast<String?, String?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoNullableStringMapWithStringMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(stringMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<String?, String?>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res) as Map<Object?, Object?>?)?.cast<String?, String?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<String?, String?>? echoNullableStringMap(Map<String?, String?>? stringMap);
 
-  Map<int?, int?>? echoNullableIntMap(Map<int?, int?>? intMap) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong?, JLong?>? res = _jniApi.echoNullableIntMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong?, JLong?>?>(intMap),
-        );
-        final Map<int?, int?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)?.cast<int?, int?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoNullableIntMapWithIntMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(intMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<int?, int?>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, int, int) as Map<Object?, Object?>?)
-                ?.cast<int?, int?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<int?, int?>? echoNullableIntMap(Map<int?, int?>? intMap);
 
   Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? echoNullableEnumMap(
     Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? enumMap,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>? res = _jniApi
-            .echoNullableEnumMap(
-              _GolubetsJniCodec.writeValue<
-                JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>?
-              >(enumMap),
-            );
-        final Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)
-                ?.cast<NativeInteropAnEnum?, NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoNullableEnumMapWithEnumMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(enumMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum, NativeInteropAnEnum)
-                    as Map<Object?, Object?>?)
-                ?.cast<NativeInteropAnEnum?, NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Map<int?, NativeInteropAllNullableTypes?>? echoNullableClassMap(
     Map<int?, NativeInteropAllNullableTypes?>? classMap,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>?
-        res = _jniApi.echoNullableClassMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>?>(
-            classMap,
-          ),
-        );
-        final Map<int?, NativeInteropAllNullableTypes?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)
-                ?.cast<int?, NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoNullableClassMapWithClassMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(classMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<int?, NativeInteropAllNullableTypes?>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, int) as Map<Object?, Object?>?)
-                ?.cast<int?, NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Map<String, String>? echoNullableNonNullStringMap(Map<String, String>? stringMap) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JString, JString>? res = _jniApi.echoNullableNonNullStringMap(
-          _GolubetsJniCodec.writeValue<JMap<JString, JString>?>(stringMap),
-        );
-        final Map<String, String>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)?.cast<String, String>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoNullableNonNullStringMapWithStringMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(stringMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<String, String>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res) as Map<Object?, Object?>?)?.cast<String, String>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<String, String>? echoNullableNonNullStringMap(Map<String, String>? stringMap);
 
-  Map<int, int>? echoNullableNonNullIntMap(Map<int, int>? intMap) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong, JLong>? res = _jniApi.echoNullableNonNullIntMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong, JLong>?>(intMap),
-        );
-        final Map<int, int>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)?.cast<int, int>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoNullableNonNullIntMapWithIntMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(intMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<int, int>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, int, int) as Map<Object?, Object?>?)
-                ?.cast<int, int>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<int, int>? echoNullableNonNullIntMap(Map<int, int>? intMap);
 
   Map<NativeInteropAnEnum, NativeInteropAnEnum>? echoNullableNonNullEnumMap(
     Map<NativeInteropAnEnum, NativeInteropAnEnum>? enumMap,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JMap<jni_bridge.NativeInteropAnEnum, jni_bridge.NativeInteropAnEnum>? res = _jniApi
-            .echoNullableNonNullEnumMap(
-              _GolubetsJniCodec.writeValue<
-                JMap<jni_bridge.NativeInteropAnEnum, jni_bridge.NativeInteropAnEnum>?
-              >(enumMap),
-            );
-        final Map<NativeInteropAnEnum, NativeInteropAnEnum>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)
-                ?.cast<NativeInteropAnEnum, NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoNullableNonNullEnumMapWithEnumMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(enumMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<NativeInteropAnEnum, NativeInteropAnEnum>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum, NativeInteropAnEnum)
-                    as Map<Object?, Object?>?)
-                ?.cast<NativeInteropAnEnum, NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Map<int, NativeInteropAllNullableTypes>? echoNullableNonNullClassMap(
     Map<int, NativeInteropAllNullableTypes>? classMap,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong, jni_bridge.NativeInteropAllNullableTypes>? res = _jniApi
-            .echoNullableNonNullClassMap(
-              _GolubetsJniCodec.writeValue<JMap<JLong, jni_bridge.NativeInteropAllNullableTypes>?>(
-                classMap,
-              ),
-            );
-        final Map<int, NativeInteropAllNullableTypes>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)
-                ?.cast<int, NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.echoNullableNonNullClassMapWithClassMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(classMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<int, NativeInteropAllNullableTypes>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, int) as Map<Object?, Object?>?)
-                ?.cast<int, NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  NativeInteropAnEnum? echoNullableEnum(NativeInteropAnEnum? anEnum) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAnEnum? res = _jniApi.echoNullableEnum(anEnum?.toJni());
-        final NativeInteropAnEnum? dartTypeRes = NativeInteropAnEnum.fromJni(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.echoNullableEnumWithAnEnum(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(anEnum),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final NativeInteropAnEnum? dartTypeRes =
-            _GolubetsFfiCodec.readValue(res, NativeInteropAnEnum) as NativeInteropAnEnum?;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  NativeInteropAnEnum? echoNullableEnum(NativeInteropAnEnum? anEnum);
 
-  NativeInteropAnotherEnum? echoAnotherNullableEnum(NativeInteropAnotherEnum? anotherEnum) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAnotherEnum? res = _jniApi.echoAnotherNullableEnum(
-          anotherEnum?.toJni(),
-        );
-        final NativeInteropAnotherEnum? dartTypeRes = NativeInteropAnotherEnum.fromJni(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.echoAnotherNullableEnumWithAnotherEnum(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(anotherEnum),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final NativeInteropAnotherEnum? dartTypeRes =
-            _GolubetsFfiCodec.readValue(res, NativeInteropAnotherEnum) as NativeInteropAnotherEnum?;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  NativeInteropAnotherEnum? echoAnotherNullableEnum(NativeInteropAnotherEnum? anotherEnum);
 
-  int? echoOptionalNullableInt([int? aNullableInt]) {
-    try {
-      if (_jniApi != null) {
-        final JLong? res = _jniApi.echoOptionalNullableInt(
-          _GolubetsJniCodec.writeValue<JLong?>(aNullableInt),
-        );
-        final int? dartTypeRes = res?.toDartInt(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.echoOptionalNullableIntWithANullableInt(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableInt),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final int? dartTypeRes = res?.longValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  int? echoOptionalNullableInt([int? aNullableInt]);
 
-  String? echoNamedNullableString({String? aNullableString}) {
-    try {
-      if (_jniApi != null) {
-        final JString? res = _jniApi.echoNamedNullableString(
-          _GolubetsJniCodec.writeValue<JString?>(aNullableString),
-        );
-        final String? dartTypeRes = res?.toDartString(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSString? res = _ffiApi.echoNamedNullableStringWithANullableString(
-          _GolubetsFfiCodec.writeValue<NSString?>(aNullableString),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final String? dartTypeRes = res?.toDartString();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  String? echoNamedNullableString({String? aNullableString});
 
-  Future<void> noopAsync() async {
-    try {
-      if (_jniApi != null) {
-        await _jniApi.noopAsync();
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<void> completer = Completer<void>();
-        _ffiApi.noopAsyncWithWrappedError(
-          error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid.listener(() {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete();
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<void> noopAsync();
 
-  Future<int> echoAsyncInt(int anInt) async {
-    try {
-      if (_jniApi != null) {
-        final JLong res = await _jniApi.echoAsyncInt(anInt);
-        final int dartTypeRes = res.toDartInt(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<int> completer = Completer<int>();
-        _ffiApi.echoAsyncIntWithAnInt(
-          anInt,
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res!.longValue);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<int> echoAsyncInt(int anInt);
 
-  Future<double> echoAsyncDouble(double aDouble) async {
-    try {
-      if (_jniApi != null) {
-        final JDouble res = await _jniApi.echoAsyncDouble(aDouble);
-        final double dartTypeRes = res.toDartDouble(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<double> completer = Completer<double>();
-        _ffiApi.echoAsyncDoubleWithADouble(
-          aDouble,
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res!.doubleValue);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<double> echoAsyncDouble(double aDouble);
 
-  Future<bool> echoAsyncBool(bool aBool) async {
-    try {
-      if (_jniApi != null) {
-        final JBoolean res = await _jniApi.echoAsyncBool(aBool);
-        final bool dartTypeRes = res.toDartBool(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<bool> completer = Completer<bool>();
-        _ffiApi.echoAsyncBoolWithABool(
-          aBool,
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res!.boolValue);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<bool> echoAsyncBool(bool aBool);
 
-  Future<String> echoAsyncString(String aString) async {
-    try {
-      if (_jniApi != null) {
-        final JString res = await _jniApi.echoAsyncString(
-          _GolubetsJniCodec.writeValue<JString>(aString),
-        );
-        final String dartTypeRes = res.toDartString(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<String> completer = Completer<String>();
-        _ffiApi.echoAsyncStringWithAString(
-          _GolubetsFfiCodec.writeValue<NSString>(aString),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSString.listener((NSString? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res!.toDartString());
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<String> echoAsyncString(String aString);
 
-  Future<Uint8List> echoAsyncUint8List(Uint8List aUint8List) async {
-    try {
-      if (_jniApi != null) {
-        final JByteArray res = await _jniApi.echoAsyncUint8List(
-          _GolubetsJniCodec.writeValue<JByteArray>(aUint8List),
-        );
-        final Uint8List dartTypeRes = _GolubetsJniCodec.readValue(res)! as Uint8List;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Uint8List> completer = Completer<Uint8List>();
-        _ffiApi.echoAsyncUint8ListWithAUint8List(
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(aUint8List),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.listener((
-                ffi_bridge.NativeInteropTestsGolubetsTypedData? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(_GolubetsFfiCodec.readValue(res)! as Uint8List);
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Uint8List> echoAsyncUint8List(Uint8List aUint8List);
 
-  Future<Int32List> echoAsyncInt32List(Int32List aInt32List) async {
-    try {
-      if (_jniApi != null) {
-        final JIntArray res = await _jniApi.echoAsyncInt32List(
-          _GolubetsJniCodec.writeValue<JIntArray>(aInt32List),
-        );
-        final Int32List dartTypeRes = _GolubetsJniCodec.readValue(res)! as Int32List;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Int32List> completer = Completer<Int32List>();
-        _ffiApi.echoAsyncInt32ListWithAInt32List(
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(aInt32List),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.listener((
-                ffi_bridge.NativeInteropTestsGolubetsTypedData? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(_GolubetsFfiCodec.readValue(res)! as Int32List);
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Int32List> echoAsyncInt32List(Int32List aInt32List);
 
-  Future<Int64List> echoAsyncInt64List(Int64List aInt64List) async {
-    try {
-      if (_jniApi != null) {
-        final JLongArray res = await _jniApi.echoAsyncInt64List(
-          _GolubetsJniCodec.writeValue<JLongArray>(aInt64List),
-        );
-        final Int64List dartTypeRes = _GolubetsJniCodec.readValue(res)! as Int64List;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Int64List> completer = Completer<Int64List>();
-        _ffiApi.echoAsyncInt64ListWithAInt64List(
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(aInt64List),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.listener((
-                ffi_bridge.NativeInteropTestsGolubetsTypedData? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(_GolubetsFfiCodec.readValue(res)! as Int64List);
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Int64List> echoAsyncInt64List(Int64List aInt64List);
 
-  Future<Float64List> echoAsyncFloat64List(Float64List aFloat64List) async {
-    try {
-      if (_jniApi != null) {
-        final JDoubleArray res = await _jniApi.echoAsyncFloat64List(
-          _GolubetsJniCodec.writeValue<JDoubleArray>(aFloat64List),
-        );
-        final Float64List dartTypeRes = _GolubetsJniCodec.readValue(res)! as Float64List;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Float64List> completer = Completer<Float64List>();
-        _ffiApi.echoAsyncFloat64ListWithAFloat64List(
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(
-            aFloat64List,
-          ),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.listener((
-                ffi_bridge.NativeInteropTestsGolubetsTypedData? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(_GolubetsFfiCodec.readValue(res)! as Float64List);
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Float64List> echoAsyncFloat64List(Float64List aFloat64List);
 
-  Future<Object> echoAsyncObject(Object anObject) async {
-    try {
-      if (_jniApi != null) {
-        final JObject res = await _jniApi.echoAsyncObject(
-          _GolubetsJniCodec.writeValue<JObject>(anObject),
-        );
-        final Object dartTypeRes = _GolubetsJniCodec.readValue(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Object> completer = Completer<Object>();
-        _ffiApi.echoAsyncObjectWithAnObject(
-          _GolubetsFfiCodec.writeValue<NSObject>(anObject, generic: true),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSObject.listener((NSObject? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(_GolubetsFfiCodec.readValue(res)!);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Object> echoAsyncObject(Object anObject);
 
-  Future<List<Object?>> echoAsyncList(List<Object?> list) async {
-    try {
-      if (_jniApi != null) {
-        final JList<JObject?> res = await _jniApi.echoAsyncList(
-          _GolubetsJniCodec.writeValue<JList<JObject?>>(list),
-        );
-        final List<Object?> dartTypeRes = (_GolubetsJniCodec.readValue(res)! as List<Object?>)
-            .cast<Object?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<List<Object?>> completer = Completer<List<Object?>>();
-        _ffiApi.echoAsyncListWithList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(list),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSArray.listener((NSArray? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res)! as List<Object?>).cast<Object?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<List<Object?>> echoAsyncList(List<Object?> list);
 
-  Future<List<NativeInteropAnEnum?>> echoAsyncEnumList(List<NativeInteropAnEnum?> enumList) async {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAnEnum?> res = await _jniApi.echoAsyncEnumList(
-          _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum?>>(enumList),
-        );
-        final List<NativeInteropAnEnum?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as List<Object?>).cast<NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<List<NativeInteropAnEnum?>> completer =
-            Completer<List<NativeInteropAnEnum?>>();
-        _ffiApi.echoAsyncEnumListWithEnumList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(enumList),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSArray.listener((NSArray? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum)! as List<Object?>)
-                    .cast<NativeInteropAnEnum?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<List<NativeInteropAnEnum?>> echoAsyncEnumList(List<NativeInteropAnEnum?> enumList);
 
   Future<List<NativeInteropAllNullableTypes?>> echoAsyncClassList(
     List<NativeInteropAllNullableTypes?> classList,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAllNullableTypes?> res = await _jniApi
-            .echoAsyncClassList(
-              _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes?>>(
-                classList,
-              ),
-            );
-        final List<NativeInteropAllNullableTypes?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as List<Object?>)
-                .cast<NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<List<NativeInteropAllNullableTypes?>> completer =
-            Completer<List<NativeInteropAllNullableTypes?>>();
-        _ffiApi.echoAsyncClassListWithClassList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(classList),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSArray.listener((NSArray? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res)! as List<Object?>)
-                    .cast<NativeInteropAllNullableTypes?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Future<Map<Object?, Object?>> echoAsyncMap(Map<Object?, Object?> map) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<JObject?, JObject?> res = await _jniApi.echoAsyncMap(
-          _GolubetsJniCodec.writeValue<JMap<JObject?, JObject?>>(map),
-        );
-        final Map<Object?, Object?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>).cast<Object?, Object?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<Object?, Object?>> completer = Completer<Map<Object?, Object?>>();
-        _ffiApi.echoAsyncMapWithMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(map),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res)! as Map<Object?, Object?>)
-                    .cast<Object?, Object?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Map<Object?, Object?>> echoAsyncMap(Map<Object?, Object?> map);
 
-  Future<Map<String?, String?>> echoAsyncStringMap(Map<String?, String?> stringMap) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<JString?, JString?> res = await _jniApi.echoAsyncStringMap(
-          _GolubetsJniCodec.writeValue<JMap<JString?, JString?>>(stringMap),
-        );
-        final Map<String?, String?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>).cast<String?, String?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<String?, String?>> completer = Completer<Map<String?, String?>>();
-        _ffiApi.echoAsyncStringMapWithStringMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(stringMap),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res)! as Map<Object?, Object?>)
-                    .cast<String?, String?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Map<String?, String?>> echoAsyncStringMap(Map<String?, String?> stringMap);
 
-  Future<Map<int?, int?>> echoAsyncIntMap(Map<int?, int?> intMap) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong?, JLong?> res = await _jniApi.echoAsyncIntMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong?, JLong?>>(intMap),
-        );
-        final Map<int?, int?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>).cast<int?, int?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<int?, int?>> completer = Completer<Map<int?, int?>>();
-        _ffiApi.echoAsyncIntMapWithIntMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(intMap),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, int, int)! as Map<Object?, Object?>)
-                    .cast<int?, int?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Map<int?, int?>> echoAsyncIntMap(Map<int?, int?> intMap);
 
   Future<Map<NativeInteropAnEnum?, NativeInteropAnEnum?>> echoAsyncEnumMap(
     Map<NativeInteropAnEnum?, NativeInteropAnEnum?> enumMap,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?> res =
-            await _jniApi.echoAsyncEnumMap(
-              _GolubetsJniCodec.writeValue<
-                JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>
-              >(enumMap),
-            );
-        final Map<NativeInteropAnEnum?, NativeInteropAnEnum?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>)
-                .cast<NativeInteropAnEnum?, NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<NativeInteropAnEnum?, NativeInteropAnEnum?>> completer =
-            Completer<Map<NativeInteropAnEnum?, NativeInteropAnEnum?>>();
-        _ffiApi.echoAsyncEnumMapWithEnumMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(enumMap),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum, NativeInteropAnEnum)!
-                        as Map<Object?, Object?>)
-                    .cast<NativeInteropAnEnum?, NativeInteropAnEnum?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Future<Map<int?, NativeInteropAllNullableTypes?>> echoAsyncClassMap(
     Map<int?, NativeInteropAllNullableTypes?> classMap,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?> res = await _jniApi
-            .echoAsyncClassMap(
-              _GolubetsJniCodec.writeValue<JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>>(
-                classMap,
-              ),
-            );
-        final Map<int?, NativeInteropAllNullableTypes?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>)
-                .cast<int?, NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<int?, NativeInteropAllNullableTypes?>> completer =
-            Completer<Map<int?, NativeInteropAllNullableTypes?>>();
-        _ffiApi.echoAsyncClassMapWithClassMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(classMap),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, int)! as Map<Object?, Object?>)
-                    .cast<int?, NativeInteropAllNullableTypes?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Future<NativeInteropAnEnum> echoAsyncEnum(NativeInteropAnEnum anEnum) async {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAnEnum res = await _jniApi.echoAsyncEnum(anEnum.toJni());
-        final NativeInteropAnEnum dartTypeRes = NativeInteropAnEnum.fromJni(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<NativeInteropAnEnum> completer = Completer<NativeInteropAnEnum>();
-        _ffiApi.echoAsyncEnumWithAnEnum(
-          ffi_bridge.NativeInteropAnEnum.values[anEnum.index],
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                _GolubetsFfiCodec.readValue(res, NativeInteropAnEnum)! as NativeInteropAnEnum,
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<NativeInteropAnEnum> echoAsyncEnum(NativeInteropAnEnum anEnum);
 
-  Future<NativeInteropAnotherEnum> echoAnotherAsyncEnum(
-    NativeInteropAnotherEnum anotherEnum,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAnotherEnum res = await _jniApi.echoAnotherAsyncEnum(
-          anotherEnum.toJni(),
-        );
-        final NativeInteropAnotherEnum dartTypeRes = NativeInteropAnotherEnum.fromJni(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<NativeInteropAnotherEnum> completer = Completer<NativeInteropAnotherEnum>();
-        _ffiApi.echoAnotherAsyncEnumWithAnotherEnum(
-          ffi_bridge.NativeInteropAnotherEnum.values[anotherEnum.index],
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                _GolubetsFfiCodec.readValue(res, NativeInteropAnotherEnum)!
-                    as NativeInteropAnotherEnum,
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<NativeInteropAnotherEnum> echoAnotherAsyncEnum(NativeInteropAnotherEnum anotherEnum);
 
-  Future<Object?> throwAsyncError() async {
-    try {
-      if (_jniApi != null) {
-        final JObject? res = await _jniApi.throwAsyncError();
-        final Object? dartTypeRes = _GolubetsJniCodec.readValue(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Object?> completer = Completer<Object?>();
-        _ffiApi.throwAsyncErrorWithWrappedError(
-          error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSObject.listener((NSObject? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(_GolubetsFfiCodec.readValue(res));
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Object?> throwAsyncError();
 
-  Future<void> throwAsyncErrorFromVoid() async {
-    try {
-      if (_jniApi != null) {
-        await _jniApi.throwAsyncErrorFromVoid();
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<void> completer = Completer<void>();
-        _ffiApi.throwAsyncErrorFromVoidWithWrappedError(
-          error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid.listener(() {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete();
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<void> throwAsyncErrorFromVoid();
 
-  Future<Object?> throwAsyncFlutterError() async {
-    try {
-      if (_jniApi != null) {
-        final JObject? res = await _jniApi.throwAsyncFlutterError();
-        final Object? dartTypeRes = _GolubetsJniCodec.readValue(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Object?> completer = Completer<Object?>();
-        _ffiApi.throwAsyncFlutterErrorWithWrappedError(
-          error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSObject.listener((NSObject? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(_GolubetsFfiCodec.readValue(res));
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Object?> throwAsyncFlutterError();
 
-  Future<NativeInteropAllTypes> echoAsyncNativeInteropAllTypes(
-    NativeInteropAllTypes everything,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllTypes res = await _jniApi.echoAsyncNativeInteropAllTypes(
-          everything.toJni(),
-        );
-        final NativeInteropAllTypes dartTypeRes = NativeInteropAllTypes.fromJni(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<NativeInteropAllTypes> completer = Completer<NativeInteropAllTypes>();
-        _ffiApi.echoAsyncNativeInteropAllTypesWithEverything(
-          everything.toFfi(),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NativeInteropAllTypesBridge.listener((
-            ffi_bridge.NativeInteropAllTypesBridge? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(NativeInteropAllTypes.fromFfi(res)!);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<NativeInteropAllTypes> echoAsyncNativeInteropAllTypes(NativeInteropAllTypes everything);
+
+  Future<NativeInteropSealedClass> echoAsyncSealedClass(NativeInteropSealedClass sealedClass);
 
   Future<NativeInteropAllNullableTypes?> echoAsyncNullableNativeInteropAllNullableTypes(
     NativeInteropAllNullableTypes? everything,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllNullableTypes? res = await _jniApi
-            .echoAsyncNullableNativeInteropAllNullableTypes(everything?.toJni());
-        final NativeInteropAllNullableTypes? dartTypeRes = NativeInteropAllNullableTypes.fromJni(
-          res,
-        );
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<NativeInteropAllNullableTypes?> completer =
-            Completer<NativeInteropAllNullableTypes?>();
-        _ffiApi.echoAsyncNullableNativeInteropAllNullableTypesWithEverything(
-          everything?.toFfi(),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropAllNullableTypesBridge.listener((
-                ffi_bridge.NativeInteropAllNullableTypesBridge? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(NativeInteropAllNullableTypes.fromFfi(res));
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Future<NativeInteropAllNullableTypesWithoutRecursion?>
   echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
     NativeInteropAllNullableTypesWithoutRecursion? everything,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllNullableTypesWithoutRecursion? res = await _jniApi
-            .echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(everything?.toJni());
-        final NativeInteropAllNullableTypesWithoutRecursion? dartTypeRes =
-            NativeInteropAllNullableTypesWithoutRecursion.fromJni(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<NativeInteropAllNullableTypesWithoutRecursion?> completer =
-            Completer<NativeInteropAllNullableTypesWithoutRecursion?>();
-        _ffiApi.echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursionWithEverything(
-          everything?.toFfi(),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge
-                  .ObjCBlock_ffiVoid_NativeInteropAllNullableTypesWithoutRecursionBridge.listener((
-                ffi_bridge.NativeInteropAllNullableTypesWithoutRecursionBridge? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(NativeInteropAllNullableTypesWithoutRecursion.fromFfi(res));
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Future<int?> echoAsyncNullableInt(int? anInt) async {
-    try {
-      if (_jniApi != null) {
-        final JLong? res = await _jniApi.echoAsyncNullableInt(
-          _GolubetsJniCodec.writeValue<JLong?>(anInt),
-        );
-        final int? dartTypeRes = res?.toDartInt(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<int?> completer = Completer<int?>();
-        _ffiApi.echoAsyncNullableIntWithAnInt(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(anInt),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res?.longValue);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<int?> echoAsyncNullableInt(int? anInt);
 
-  Future<double?> echoAsyncNullableDouble(double? aDouble) async {
-    try {
-      if (_jniApi != null) {
-        final JDouble? res = await _jniApi.echoAsyncNullableDouble(
-          _GolubetsJniCodec.writeValue<JDouble?>(aDouble),
-        );
-        final double? dartTypeRes = res?.toDartDouble(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<double?> completer = Completer<double?>();
-        _ffiApi.echoAsyncNullableDoubleWithADouble(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(aDouble),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res?.doubleValue);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<double?> echoAsyncNullableDouble(double? aDouble);
 
-  Future<bool?> echoAsyncNullableBool(bool? aBool) async {
-    try {
-      if (_jniApi != null) {
-        final JBoolean? res = await _jniApi.echoAsyncNullableBool(
-          _GolubetsJniCodec.writeValue<JBoolean?>(aBool),
-        );
-        final bool? dartTypeRes = res?.toDartBool(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<bool?> completer = Completer<bool?>();
-        _ffiApi.echoAsyncNullableBoolWithABool(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(aBool),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res?.boolValue);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<bool?> echoAsyncNullableBool(bool? aBool);
 
-  Future<String?> echoAsyncNullableString(String? aString) async {
-    try {
-      if (_jniApi != null) {
-        final JString? res = await _jniApi.echoAsyncNullableString(
-          _GolubetsJniCodec.writeValue<JString?>(aString),
-        );
-        final String? dartTypeRes = res?.toDartString(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<String?> completer = Completer<String?>();
-        _ffiApi.echoAsyncNullableStringWithAString(
-          _GolubetsFfiCodec.writeValue<NSString?>(aString),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSString.listener((NSString? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res?.toDartString());
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<String?> echoAsyncNullableString(String? aString);
 
-  Future<Uint8List?> echoAsyncNullableUint8List(Uint8List? aUint8List) async {
-    try {
-      if (_jniApi != null) {
-        final JByteArray? res = await _jniApi.echoAsyncNullableUint8List(
-          _GolubetsJniCodec.writeValue<JByteArray?>(aUint8List),
-        );
-        final Uint8List? dartTypeRes = _GolubetsJniCodec.readValue(res) as Uint8List?;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Uint8List?> completer = Completer<Uint8List?>();
-        _ffiApi.echoAsyncNullableUint8ListWithAUint8List(
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(aUint8List),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.listener((
-                ffi_bridge.NativeInteropTestsGolubetsTypedData? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(_GolubetsFfiCodec.readValue(res) as Uint8List?);
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Uint8List?> echoAsyncNullableUint8List(Uint8List? aUint8List);
 
-  Future<Int32List?> echoAsyncNullableInt32List(Int32List? aInt32List) async {
-    try {
-      if (_jniApi != null) {
-        final JIntArray? res = await _jniApi.echoAsyncNullableInt32List(
-          _GolubetsJniCodec.writeValue<JIntArray?>(aInt32List),
-        );
-        final Int32List? dartTypeRes = _GolubetsJniCodec.readValue(res) as Int32List?;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Int32List?> completer = Completer<Int32List?>();
-        _ffiApi.echoAsyncNullableInt32ListWithAInt32List(
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(aInt32List),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.listener((
-                ffi_bridge.NativeInteropTestsGolubetsTypedData? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(_GolubetsFfiCodec.readValue(res) as Int32List?);
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Int32List?> echoAsyncNullableInt32List(Int32List? aInt32List);
 
-  Future<Int64List?> echoAsyncNullableInt64List(Int64List? aInt64List) async {
-    try {
-      if (_jniApi != null) {
-        final JLongArray? res = await _jniApi.echoAsyncNullableInt64List(
-          _GolubetsJniCodec.writeValue<JLongArray?>(aInt64List),
-        );
-        final Int64List? dartTypeRes = _GolubetsJniCodec.readValue(res) as Int64List?;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Int64List?> completer = Completer<Int64List?>();
-        _ffiApi.echoAsyncNullableInt64ListWithAInt64List(
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(aInt64List),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.listener((
-                ffi_bridge.NativeInteropTestsGolubetsTypedData? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(_GolubetsFfiCodec.readValue(res) as Int64List?);
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Int64List?> echoAsyncNullableInt64List(Int64List? aInt64List);
 
-  Future<Float64List?> echoAsyncNullableFloat64List(Float64List? aFloat64List) async {
-    try {
-      if (_jniApi != null) {
-        final JDoubleArray? res = await _jniApi.echoAsyncNullableFloat64List(
-          _GolubetsJniCodec.writeValue<JDoubleArray?>(aFloat64List),
-        );
-        final Float64List? dartTypeRes = _GolubetsJniCodec.readValue(res) as Float64List?;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Float64List?> completer = Completer<Float64List?>();
-        _ffiApi.echoAsyncNullableFloat64ListWithAFloat64List(
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(
-            aFloat64List,
-          ),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.listener((
-                ffi_bridge.NativeInteropTestsGolubetsTypedData? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(_GolubetsFfiCodec.readValue(res) as Float64List?);
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Float64List?> echoAsyncNullableFloat64List(Float64List? aFloat64List);
 
-  Future<Object?> echoAsyncNullableObject(Object? anObject) async {
-    try {
-      if (_jniApi != null) {
-        final JObject? res = await _jniApi.echoAsyncNullableObject(
-          _GolubetsJniCodec.writeValue<JObject?>(anObject),
-        );
-        final Object? dartTypeRes = _GolubetsJniCodec.readValue(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Object?> completer = Completer<Object?>();
-        _ffiApi.echoAsyncNullableObjectWithAnObject(
-          _GolubetsFfiCodec.writeValue<NSObject>(anObject, generic: true),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSObject.listener((NSObject? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(_GolubetsFfiCodec.readValue(res));
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Object?> echoAsyncNullableObject(Object? anObject);
 
-  Future<List<Object?>?> echoAsyncNullableList(List<Object?>? list) async {
-    try {
-      if (_jniApi != null) {
-        final JList<JObject?>? res = await _jniApi.echoAsyncNullableList(
-          _GolubetsJniCodec.writeValue<JList<JObject?>?>(list),
-        );
-        final List<Object?>? dartTypeRes = (_GolubetsJniCodec.readValue(res) as List<Object?>?)
-            ?.cast<Object?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<List<Object?>?> completer = Completer<List<Object?>?>();
-        _ffiApi.echoAsyncNullableListWithList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(list),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSArray.listener((NSArray? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res) as List<Object?>?)?.cast<Object?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<List<Object?>?> echoAsyncNullableList(List<Object?>? list);
 
   Future<List<NativeInteropAnEnum?>?> echoAsyncNullableEnumList(
     List<NativeInteropAnEnum?>? enumList,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAnEnum?>? res = await _jniApi.echoAsyncNullableEnumList(
-          _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum?>?>(enumList),
-        );
-        final List<NativeInteropAnEnum?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as List<Object?>?)?.cast<NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<List<NativeInteropAnEnum?>?> completer =
-            Completer<List<NativeInteropAnEnum?>?>();
-        _ffiApi.echoAsyncNullableEnumListWithEnumList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(enumList),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSArray.listener((NSArray? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum) as List<Object?>?)
-                    ?.cast<NativeInteropAnEnum?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Future<List<NativeInteropAllNullableTypes?>?> echoAsyncNullableClassList(
     List<NativeInteropAllNullableTypes?>? classList,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAllNullableTypes?>? res = await _jniApi
-            .echoAsyncNullableClassList(
-              _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes?>?>(
-                classList,
-              ),
-            );
-        final List<NativeInteropAllNullableTypes?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as List<Object?>?)
-                ?.cast<NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<List<NativeInteropAllNullableTypes?>?> completer =
-            Completer<List<NativeInteropAllNullableTypes?>?>();
-        _ffiApi.echoAsyncNullableClassListWithClassList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(classList),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSArray.listener((NSArray? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res) as List<Object?>?)
-                    ?.cast<NativeInteropAllNullableTypes?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Future<Map<Object?, Object?>?> echoAsyncNullableMap(Map<Object?, Object?>? map) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<JObject?, JObject?>? res = await _jniApi.echoAsyncNullableMap(
-          _GolubetsJniCodec.writeValue<JMap<JObject?, JObject?>?>(map),
-        );
-        final Map<Object?, Object?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)?.cast<Object?, Object?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<Object?, Object?>?> completer = Completer<Map<Object?, Object?>?>();
-        _ffiApi.echoAsyncNullableMapWithMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(map),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res) as Map<Object?, Object?>?)
-                    ?.cast<Object?, Object?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Map<Object?, Object?>?> echoAsyncNullableMap(Map<Object?, Object?>? map);
 
-  Future<Map<String?, String?>?> echoAsyncNullableStringMap(
-    Map<String?, String?>? stringMap,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<JString?, JString?>? res = await _jniApi.echoAsyncNullableStringMap(
-          _GolubetsJniCodec.writeValue<JMap<JString?, JString?>?>(stringMap),
-        );
-        final Map<String?, String?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)?.cast<String?, String?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<String?, String?>?> completer = Completer<Map<String?, String?>?>();
-        _ffiApi.echoAsyncNullableStringMapWithStringMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(stringMap),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res) as Map<Object?, Object?>?)
-                    ?.cast<String?, String?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Map<String?, String?>?> echoAsyncNullableStringMap(Map<String?, String?>? stringMap);
 
-  Future<Map<int?, int?>?> echoAsyncNullableIntMap(Map<int?, int?>? intMap) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong?, JLong?>? res = await _jniApi.echoAsyncNullableIntMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong?, JLong?>?>(intMap),
-        );
-        final Map<int?, int?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)?.cast<int?, int?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<int?, int?>?> completer = Completer<Map<int?, int?>?>();
-        _ffiApi.echoAsyncNullableIntMapWithIntMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(intMap),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, int, int) as Map<Object?, Object?>?)
-                    ?.cast<int?, int?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Map<int?, int?>?> echoAsyncNullableIntMap(Map<int?, int?>? intMap);
 
   Future<Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?> echoAsyncNullableEnumMap(
     Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? enumMap,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>? res =
-            await _jniApi.echoAsyncNullableEnumMap(
-              _GolubetsJniCodec.writeValue<
-                JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>?
-              >(enumMap),
-            );
-        final Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)
-                ?.cast<NativeInteropAnEnum?, NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?> completer =
-            Completer<Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?>();
-        _ffiApi.echoAsyncNullableEnumMapWithEnumMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(enumMap),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum, NativeInteropAnEnum)
-                        as Map<Object?, Object?>?)
-                    ?.cast<NativeInteropAnEnum?, NativeInteropAnEnum?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Future<Map<int?, NativeInteropAllNullableTypes?>?> echoAsyncNullableClassMap(
     Map<int?, NativeInteropAllNullableTypes?>? classMap,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>?
-        res = await _jniApi.echoAsyncNullableClassMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>?>(
-            classMap,
-          ),
-        );
-        final Map<int?, NativeInteropAllNullableTypes?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)
-                ?.cast<int?, NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<int?, NativeInteropAllNullableTypes?>?> completer =
-            Completer<Map<int?, NativeInteropAllNullableTypes?>?>();
-        _ffiApi.echoAsyncNullableClassMapWithClassMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(classMap),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, int) as Map<Object?, Object?>?)
-                    ?.cast<int?, NativeInteropAllNullableTypes?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Future<NativeInteropAnEnum?> echoAsyncNullableEnum(NativeInteropAnEnum? anEnum) async {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAnEnum? res = await _jniApi.echoAsyncNullableEnum(
-          anEnum?.toJni(),
-        );
-        final NativeInteropAnEnum? dartTypeRes = NativeInteropAnEnum.fromJni(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<NativeInteropAnEnum?> completer = Completer<NativeInteropAnEnum?>();
-        _ffiApi.echoAsyncNullableEnumWithAnEnum(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(anEnum),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                _GolubetsFfiCodec.readValue(res, NativeInteropAnEnum) as NativeInteropAnEnum?,
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<NativeInteropAnEnum?> echoAsyncNullableEnum(NativeInteropAnEnum? anEnum);
 
   Future<NativeInteropAnotherEnum?> echoAnotherAsyncNullableEnum(
     NativeInteropAnotherEnum? anotherEnum,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAnotherEnum? res = await _jniApi.echoAnotherAsyncNullableEnum(
-          anotherEnum?.toJni(),
-        );
-        final NativeInteropAnotherEnum? dartTypeRes = NativeInteropAnotherEnum.fromJni(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<NativeInteropAnotherEnum?> completer =
-            Completer<NativeInteropAnotherEnum?>();
-        _ffiApi.echoAnotherAsyncNullableEnumWithAnotherEnum(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(anotherEnum),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                _GolubetsFfiCodec.readValue(res, NativeInteropAnotherEnum)
-                    as NativeInteropAnotherEnum?,
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  void callFlutterNoop() {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.callFlutterNoop();
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        _ffiApi.callFlutterNoopWithWrappedError(error);
-        _throwIfFfiError(error);
-        return;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  void callFlutterNoop();
 
-  Object? callFlutterThrowError() {
-    try {
-      if (_jniApi != null) {
-        final JObject? res = _jniApi.callFlutterThrowError();
-        final Object? dartTypeRes = _GolubetsJniCodec.readValue(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSObject? res = _ffiApi.callFlutterThrowErrorWithWrappedError(error);
-        _throwIfFfiError(error);
-        final Object? dartTypeRes = _GolubetsFfiCodec.readValue(res);
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Object? callFlutterThrowError();
 
-  void callFlutterThrowErrorFromVoid() {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.callFlutterThrowErrorFromVoid();
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        _ffiApi.callFlutterThrowErrorFromVoidWithWrappedError(error);
-        _throwIfFfiError(error);
-        return;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  void callFlutterThrowErrorFromVoid();
 
-  NativeInteropAllTypes callFlutterEchoNativeInteropAllTypes(NativeInteropAllTypes everything) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllTypes res = _jniApi.callFlutterEchoNativeInteropAllTypes(
-          everything.toJni(),
-        );
-        final NativeInteropAllTypes dartTypeRes = NativeInteropAllTypes.fromJni(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropAllTypesBridge? res = _ffiApi
-            .callFlutterEchoNativeInteropAllTypesWithEverything(
-              everything.toFfi(),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final NativeInteropAllTypes dartTypeRes = NativeInteropAllTypes.fromFfi(res)!;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  NativeInteropAllTypes callFlutterEchoNativeInteropAllTypes(NativeInteropAllTypes everything);
 
   NativeInteropAllNullableTypes? callFlutterEchoNativeInteropAllNullableTypes(
     NativeInteropAllNullableTypes? everything,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllNullableTypes? res = _jniApi
-            .callFlutterEchoNativeInteropAllNullableTypes(everything?.toJni());
-        final NativeInteropAllNullableTypes? dartTypeRes = NativeInteropAllNullableTypes.fromJni(
-          res,
-        );
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropAllNullableTypesBridge? res = _ffiApi
-            .callFlutterEchoNativeInteropAllNullableTypesWithEverything(
-              everything?.toFfi(),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final NativeInteropAllNullableTypes? dartTypeRes = NativeInteropAllNullableTypes.fromFfi(
-          res,
-        );
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
+
+  NativeInteropSealedClass callFlutterEchoSealedClass(NativeInteropSealedClass sealedClass);
 
   NativeInteropAllNullableTypes callFlutterSendMultipleNullableTypes(
     bool? aNullableBool,
     int? aNullableInt,
     String? aNullableString,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllNullableTypes res = _jniApi
-            .callFlutterSendMultipleNullableTypes(
-              _GolubetsJniCodec.writeValue<JBoolean?>(aNullableBool),
-              _GolubetsJniCodec.writeValue<JLong?>(aNullableInt),
-              _GolubetsJniCodec.writeValue<JString?>(aNullableString),
-            );
-        final NativeInteropAllNullableTypes dartTypeRes = NativeInteropAllNullableTypes.fromJni(
-          res,
-        )!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropAllNullableTypesBridge? res = _ffiApi
-            .callFlutterSendMultipleNullableTypesWithANullableBool(
-              _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableBool),
-              aNullableInt: _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableInt),
-              aNullableString: _GolubetsFfiCodec.writeValue<NSString?>(aNullableString),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final NativeInteropAllNullableTypes dartTypeRes = NativeInteropAllNullableTypes.fromFfi(
-          res,
-        )!;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   NativeInteropAllNullableTypesWithoutRecursion?
   callFlutterEchoNativeInteropAllNullableTypesWithoutRecursion(
     NativeInteropAllNullableTypesWithoutRecursion? everything,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllNullableTypesWithoutRecursion? res = _jniApi
-            .callFlutterEchoNativeInteropAllNullableTypesWithoutRecursion(everything?.toJni());
-        final NativeInteropAllNullableTypesWithoutRecursion? dartTypeRes =
-            NativeInteropAllNullableTypesWithoutRecursion.fromJni(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropAllNullableTypesWithoutRecursionBridge? res = _ffiApi
-            .callFlutterEchoNativeInteropAllNullableTypesWithoutRecursionWithEverything(
-              everything?.toFfi(),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final NativeInteropAllNullableTypesWithoutRecursion? dartTypeRes =
-            NativeInteropAllNullableTypesWithoutRecursion.fromFfi(res);
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   NativeInteropAllNullableTypesWithoutRecursion
   callFlutterSendMultipleNullableTypesWithoutRecursion(
     bool? aNullableBool,
     int? aNullableInt,
     String? aNullableString,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllNullableTypesWithoutRecursion res = _jniApi
-            .callFlutterSendMultipleNullableTypesWithoutRecursion(
-              _GolubetsJniCodec.writeValue<JBoolean?>(aNullableBool),
-              _GolubetsJniCodec.writeValue<JLong?>(aNullableInt),
-              _GolubetsJniCodec.writeValue<JString?>(aNullableString),
-            );
-        final NativeInteropAllNullableTypesWithoutRecursion dartTypeRes =
-            NativeInteropAllNullableTypesWithoutRecursion.fromJni(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropAllNullableTypesWithoutRecursionBridge? res = _ffiApi
-            .callFlutterSendMultipleNullableTypesWithoutRecursionWithANullableBool(
-              _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableBool),
-              aNullableInt: _GolubetsFfiCodec.writeValue<NSNumber?>(aNullableInt),
-              aNullableString: _GolubetsFfiCodec.writeValue<NSString?>(aNullableString),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final NativeInteropAllNullableTypesWithoutRecursion dartTypeRes =
-            NativeInteropAllNullableTypesWithoutRecursion.fromFfi(res)!;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  bool callFlutterEchoBool(bool aBool) {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.callFlutterEchoBool(aBool);
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.callFlutterEchoBoolWithABool(aBool, wrappedError: error);
-        _throwIfFfiError(error);
-        final bool dartTypeRes = res!.boolValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  bool callFlutterEchoBool(bool aBool);
 
-  int callFlutterEchoInt(int anInt) {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.callFlutterEchoInt(anInt);
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.callFlutterEchoIntWithAnInt(anInt, wrappedError: error);
-        _throwIfFfiError(error);
-        final int dartTypeRes = res!.longValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  int callFlutterEchoInt(int anInt);
 
-  double callFlutterEchoDouble(double aDouble) {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.callFlutterEchoDouble(aDouble);
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.callFlutterEchoDoubleWithADouble(
-          aDouble,
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final double dartTypeRes = res!.doubleValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  double callFlutterEchoDouble(double aDouble);
 
-  String callFlutterEchoString(String aString) {
-    try {
-      if (_jniApi != null) {
-        final JString res = _jniApi.callFlutterEchoString(
-          _GolubetsJniCodec.writeValue<JString>(aString),
-        );
-        final String dartTypeRes = res.toDartString(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSString? res = _ffiApi.callFlutterEchoStringWithAString(
-          _GolubetsFfiCodec.writeValue<NSString>(aString),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final String dartTypeRes = res!.toDartString();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  String callFlutterEchoString(String aString);
 
-  Uint8List callFlutterEchoUint8List(Uint8List list) {
-    try {
-      if (_jniApi != null) {
-        final JByteArray res = _jniApi.callFlutterEchoUint8List(
-          _GolubetsJniCodec.writeValue<JByteArray>(list),
-        );
-        final Uint8List dartTypeRes = _GolubetsJniCodec.readValue(res)! as Uint8List;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropTestsGolubetsTypedData? res = _ffiApi
-            .callFlutterEchoUint8ListWithList(
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(list),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final Uint8List dartTypeRes = _GolubetsFfiCodec.readValue(res)! as Uint8List;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Uint8List callFlutterEchoUint8List(Uint8List list);
 
-  Int32List callFlutterEchoInt32List(Int32List list) {
-    try {
-      if (_jniApi != null) {
-        final JIntArray res = _jniApi.callFlutterEchoInt32List(
-          _GolubetsJniCodec.writeValue<JIntArray>(list),
-        );
-        final Int32List dartTypeRes = _GolubetsJniCodec.readValue(res)! as Int32List;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropTestsGolubetsTypedData? res = _ffiApi
-            .callFlutterEchoInt32ListWithList(
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(list),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final Int32List dartTypeRes = _GolubetsFfiCodec.readValue(res)! as Int32List;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Int32List callFlutterEchoInt32List(Int32List list);
 
-  Int64List callFlutterEchoInt64List(Int64List list) {
-    try {
-      if (_jniApi != null) {
-        final JLongArray res = _jniApi.callFlutterEchoInt64List(
-          _GolubetsJniCodec.writeValue<JLongArray>(list),
-        );
-        final Int64List dartTypeRes = _GolubetsJniCodec.readValue(res)! as Int64List;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropTestsGolubetsTypedData? res = _ffiApi
-            .callFlutterEchoInt64ListWithList(
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(list),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final Int64List dartTypeRes = _GolubetsFfiCodec.readValue(res)! as Int64List;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Int64List callFlutterEchoInt64List(Int64List list);
 
-  Float64List callFlutterEchoFloat64List(Float64List list) {
-    try {
-      if (_jniApi != null) {
-        final JDoubleArray res = _jniApi.callFlutterEchoFloat64List(
-          _GolubetsJniCodec.writeValue<JDoubleArray>(list),
-        );
-        final Float64List dartTypeRes = _GolubetsJniCodec.readValue(res)! as Float64List;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropTestsGolubetsTypedData? res = _ffiApi
-            .callFlutterEchoFloat64ListWithList(
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(list),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final Float64List dartTypeRes = _GolubetsFfiCodec.readValue(res)! as Float64List;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Float64List callFlutterEchoFloat64List(Float64List list);
 
-  List<Object?> callFlutterEchoList(List<Object?> list) {
-    try {
-      if (_jniApi != null) {
-        final JList<JObject?> res = _jniApi.callFlutterEchoList(
-          _GolubetsJniCodec.writeValue<JList<JObject?>>(list),
-        );
-        final List<Object?> dartTypeRes = (_GolubetsJniCodec.readValue(res)! as List<Object?>)
-            .cast<Object?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.callFlutterEchoListWithList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(list),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<Object?> dartTypeRes = (_GolubetsFfiCodec.readValue(res)! as List<Object?>)
-            .cast<Object?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  List<Object?> callFlutterEchoList(List<Object?> list);
 
-  List<NativeInteropAnEnum?> callFlutterEchoEnumList(List<NativeInteropAnEnum?> enumList) {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAnEnum?> res = _jniApi.callFlutterEchoEnumList(
-          _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum?>>(enumList),
-        );
-        final List<NativeInteropAnEnum?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as List<Object?>).cast<NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.callFlutterEchoEnumListWithEnumList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(enumList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<NativeInteropAnEnum?> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum)! as List<Object?>)
-                .cast<NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  List<NativeInteropAnEnum?> callFlutterEchoEnumList(List<NativeInteropAnEnum?> enumList);
 
   List<NativeInteropAllNullableTypes?> callFlutterEchoClassList(
     List<NativeInteropAllNullableTypes?> classList,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAllNullableTypes?> res = _jniApi
-            .callFlutterEchoClassList(
-              _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes?>>(
-                classList,
-              ),
-            );
-        final List<NativeInteropAllNullableTypes?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as List<Object?>)
-                .cast<NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.callFlutterEchoClassListWithClassList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(classList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<NativeInteropAllNullableTypes?> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res)! as List<Object?>)
-                .cast<NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  List<NativeInteropAnEnum> callFlutterEchoNonNullEnumList(List<NativeInteropAnEnum> enumList) {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAnEnum> res = _jniApi.callFlutterEchoNonNullEnumList(
-          _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum>>(enumList),
-        );
-        final List<NativeInteropAnEnum> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as List<Object?>).cast<NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.callFlutterEchoNonNullEnumListWithEnumList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(enumList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<NativeInteropAnEnum> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum)! as List<Object?>)
-                .cast<NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  List<NativeInteropAnEnum> callFlutterEchoNonNullEnumList(List<NativeInteropAnEnum> enumList);
 
   List<NativeInteropAllNullableTypes> callFlutterEchoNonNullClassList(
     List<NativeInteropAllNullableTypes> classList,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAllNullableTypes> res = _jniApi
-            .callFlutterEchoNonNullClassList(
-              _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes>>(
-                classList,
-              ),
-            );
-        final List<NativeInteropAllNullableTypes> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as List<Object?>)
-                .cast<NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.callFlutterEchoNonNullClassListWithClassList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(classList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<NativeInteropAllNullableTypes> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res)! as List<Object?>)
-                .cast<NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Map<Object?, Object?> callFlutterEchoMap(Map<Object?, Object?> map) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JObject?, JObject?> res = _jniApi.callFlutterEchoMap(
-          _GolubetsJniCodec.writeValue<JMap<JObject?, JObject?>>(map),
-        );
-        final Map<Object?, Object?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>).cast<Object?, Object?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoMapWithMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(map),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<Object?, Object?> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res)! as Map<Object?, Object?>).cast<Object?, Object?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<Object?, Object?> callFlutterEchoMap(Map<Object?, Object?> map);
 
-  Map<String?, String?> callFlutterEchoStringMap(Map<String?, String?> stringMap) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JString?, JString?> res = _jniApi.callFlutterEchoStringMap(
-          _GolubetsJniCodec.writeValue<JMap<JString?, JString?>>(stringMap),
-        );
-        final Map<String?, String?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>).cast<String?, String?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoStringMapWithStringMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(stringMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<String?, String?> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res)! as Map<Object?, Object?>).cast<String?, String?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<String?, String?> callFlutterEchoStringMap(Map<String?, String?> stringMap);
 
-  Map<int?, int?> callFlutterEchoIntMap(Map<int?, int?> intMap) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong?, JLong?> res = _jniApi.callFlutterEchoIntMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong?, JLong?>>(intMap),
-        );
-        final Map<int?, int?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>).cast<int?, int?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoIntMapWithIntMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(intMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<int?, int?> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, int, int)! as Map<Object?, Object?>)
-                .cast<int?, int?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<int?, int?> callFlutterEchoIntMap(Map<int?, int?> intMap);
 
   Map<NativeInteropAnEnum?, NativeInteropAnEnum?> callFlutterEchoEnumMap(
     Map<NativeInteropAnEnum?, NativeInteropAnEnum?> enumMap,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?> res = _jniApi
-            .callFlutterEchoEnumMap(
-              _GolubetsJniCodec.writeValue<
-                JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>
-              >(enumMap),
-            );
-        final Map<NativeInteropAnEnum?, NativeInteropAnEnum?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>)
-                .cast<NativeInteropAnEnum?, NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoEnumMapWithEnumMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(enumMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<NativeInteropAnEnum?, NativeInteropAnEnum?> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum, NativeInteropAnEnum)!
-                    as Map<Object?, Object?>)
-                .cast<NativeInteropAnEnum?, NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Map<int?, NativeInteropAllNullableTypes?> callFlutterEchoClassMap(
     Map<int?, NativeInteropAllNullableTypes?> classMap,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?> res = _jniApi
-            .callFlutterEchoClassMap(
-              _GolubetsJniCodec.writeValue<JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>>(
-                classMap,
-              ),
-            );
-        final Map<int?, NativeInteropAllNullableTypes?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>)
-                .cast<int?, NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoClassMapWithClassMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(classMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<int?, NativeInteropAllNullableTypes?> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, int)! as Map<Object?, Object?>)
-                .cast<int?, NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Map<String, String> callFlutterEchoNonNullStringMap(Map<String, String> stringMap) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JString, JString> res = _jniApi.callFlutterEchoNonNullStringMap(
-          _GolubetsJniCodec.writeValue<JMap<JString, JString>>(stringMap),
-        );
-        final Map<String, String> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>).cast<String, String>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoNonNullStringMapWithStringMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(stringMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<String, String> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res)! as Map<Object?, Object?>).cast<String, String>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<String, String> callFlutterEchoNonNullStringMap(Map<String, String> stringMap);
 
-  Map<int, int> callFlutterEchoNonNullIntMap(Map<int, int> intMap) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong, JLong> res = _jniApi.callFlutterEchoNonNullIntMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong, JLong>>(intMap),
-        );
-        final Map<int, int> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>).cast<int, int>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoNonNullIntMapWithIntMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(intMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<int, int> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, int, int)! as Map<Object?, Object?>).cast<int, int>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<int, int> callFlutterEchoNonNullIntMap(Map<int, int> intMap);
 
   Map<NativeInteropAnEnum, NativeInteropAnEnum> callFlutterEchoNonNullEnumMap(
     Map<NativeInteropAnEnum, NativeInteropAnEnum> enumMap,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JMap<jni_bridge.NativeInteropAnEnum, jni_bridge.NativeInteropAnEnum> res = _jniApi
-            .callFlutterEchoNonNullEnumMap(
-              _GolubetsJniCodec.writeValue<
-                JMap<jni_bridge.NativeInteropAnEnum, jni_bridge.NativeInteropAnEnum>
-              >(enumMap),
-            );
-        final Map<NativeInteropAnEnum, NativeInteropAnEnum> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>)
-                .cast<NativeInteropAnEnum, NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoNonNullEnumMapWithEnumMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(enumMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<NativeInteropAnEnum, NativeInteropAnEnum> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum, NativeInteropAnEnum)!
-                    as Map<Object?, Object?>)
-                .cast<NativeInteropAnEnum, NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Map<int, NativeInteropAllNullableTypes> callFlutterEchoNonNullClassMap(
     Map<int, NativeInteropAllNullableTypes> classMap,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong, jni_bridge.NativeInteropAllNullableTypes> res = _jniApi
-            .callFlutterEchoNonNullClassMap(
-              _GolubetsJniCodec.writeValue<JMap<JLong, jni_bridge.NativeInteropAllNullableTypes>>(
-                classMap,
-              ),
-            );
-        final Map<int, NativeInteropAllNullableTypes> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>)
-                .cast<int, NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoNonNullClassMapWithClassMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(classMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<int, NativeInteropAllNullableTypes> dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, int)! as Map<Object?, Object?>)
-                .cast<int, NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  NativeInteropAnEnum callFlutterEchoEnum(NativeInteropAnEnum anEnum) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAnEnum res = _jniApi.callFlutterEchoEnum(anEnum.toJni());
-        final NativeInteropAnEnum dartTypeRes = NativeInteropAnEnum.fromJni(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.callFlutterEchoEnumWithAnEnum(
-          ffi_bridge.NativeInteropAnEnum.values[anEnum.index],
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final NativeInteropAnEnum dartTypeRes =
-            _GolubetsFfiCodec.readValue(res, NativeInteropAnEnum)! as NativeInteropAnEnum;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  NativeInteropAnEnum callFlutterEchoEnum(NativeInteropAnEnum anEnum);
 
   NativeInteropAnotherEnum callFlutterEchoNativeInteropAnotherEnum(
     NativeInteropAnotherEnum anotherEnum,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAnotherEnum res = _jniApi
-            .callFlutterEchoNativeInteropAnotherEnum(anotherEnum.toJni());
-        final NativeInteropAnotherEnum dartTypeRes = NativeInteropAnotherEnum.fromJni(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.callFlutterEchoNativeInteropAnotherEnumWithAnotherEnum(
-          ffi_bridge.NativeInteropAnotherEnum.values[anotherEnum.index],
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final NativeInteropAnotherEnum dartTypeRes =
-            _GolubetsFfiCodec.readValue(res, NativeInteropAnotherEnum)! as NativeInteropAnotherEnum;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  bool? callFlutterEchoNullableBool(bool? aBool) {
-    try {
-      if (_jniApi != null) {
-        final JBoolean? res = _jniApi.callFlutterEchoNullableBool(
-          _GolubetsJniCodec.writeValue<JBoolean?>(aBool),
-        );
-        final bool? dartTypeRes = res?.toDartBool(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.callFlutterEchoNullableBoolWithABool(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(aBool),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final bool? dartTypeRes = res?.boolValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  bool? callFlutterEchoNullableBool(bool? aBool);
 
-  int? callFlutterEchoNullableInt(int? anInt) {
-    try {
-      if (_jniApi != null) {
-        final JLong? res = _jniApi.callFlutterEchoNullableInt(
-          _GolubetsJniCodec.writeValue<JLong?>(anInt),
-        );
-        final int? dartTypeRes = res?.toDartInt(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.callFlutterEchoNullableIntWithAnInt(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(anInt),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final int? dartTypeRes = res?.longValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  int? callFlutterEchoNullableInt(int? anInt);
 
-  double? callFlutterEchoNullableDouble(double? aDouble) {
-    try {
-      if (_jniApi != null) {
-        final JDouble? res = _jniApi.callFlutterEchoNullableDouble(
-          _GolubetsJniCodec.writeValue<JDouble?>(aDouble),
-        );
-        final double? dartTypeRes = res?.toDartDouble(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.callFlutterEchoNullableDoubleWithADouble(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(aDouble),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final double? dartTypeRes = res?.doubleValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  double? callFlutterEchoNullableDouble(double? aDouble);
 
-  String? callFlutterEchoNullableString(String? aString) {
-    try {
-      if (_jniApi != null) {
-        final JString? res = _jniApi.callFlutterEchoNullableString(
-          _GolubetsJniCodec.writeValue<JString?>(aString),
-        );
-        final String? dartTypeRes = res?.toDartString(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSString? res = _ffiApi.callFlutterEchoNullableStringWithAString(
-          _GolubetsFfiCodec.writeValue<NSString?>(aString),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final String? dartTypeRes = res?.toDartString();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  String? callFlutterEchoNullableString(String? aString);
 
-  Uint8List? callFlutterEchoNullableUint8List(Uint8List? list) {
-    try {
-      if (_jniApi != null) {
-        final JByteArray? res = _jniApi.callFlutterEchoNullableUint8List(
-          _GolubetsJniCodec.writeValue<JByteArray?>(list),
-        );
-        final Uint8List? dartTypeRes = _GolubetsJniCodec.readValue(res) as Uint8List?;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropTestsGolubetsTypedData? res = _ffiApi
-            .callFlutterEchoNullableUint8ListWithList(
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(list),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final Uint8List? dartTypeRes = _GolubetsFfiCodec.readValue(res) as Uint8List?;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Uint8List? callFlutterEchoNullableUint8List(Uint8List? list);
 
-  Int32List? callFlutterEchoNullableInt32List(Int32List? list) {
-    try {
-      if (_jniApi != null) {
-        final JIntArray? res = _jniApi.callFlutterEchoNullableInt32List(
-          _GolubetsJniCodec.writeValue<JIntArray?>(list),
-        );
-        final Int32List? dartTypeRes = _GolubetsJniCodec.readValue(res) as Int32List?;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropTestsGolubetsTypedData? res = _ffiApi
-            .callFlutterEchoNullableInt32ListWithList(
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(list),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final Int32List? dartTypeRes = _GolubetsFfiCodec.readValue(res) as Int32List?;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Int32List? callFlutterEchoNullableInt32List(Int32List? list);
 
-  Int64List? callFlutterEchoNullableInt64List(Int64List? list) {
-    try {
-      if (_jniApi != null) {
-        final JLongArray? res = _jniApi.callFlutterEchoNullableInt64List(
-          _GolubetsJniCodec.writeValue<JLongArray?>(list),
-        );
-        final Int64List? dartTypeRes = _GolubetsJniCodec.readValue(res) as Int64List?;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropTestsGolubetsTypedData? res = _ffiApi
-            .callFlutterEchoNullableInt64ListWithList(
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(list),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final Int64List? dartTypeRes = _GolubetsFfiCodec.readValue(res) as Int64List?;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Int64List? callFlutterEchoNullableInt64List(Int64List? list);
 
-  Float64List? callFlutterEchoNullableFloat64List(Float64List? list) {
-    try {
-      if (_jniApi != null) {
-        final JDoubleArray? res = _jniApi.callFlutterEchoNullableFloat64List(
-          _GolubetsJniCodec.writeValue<JDoubleArray?>(list),
-        );
-        final Float64List? dartTypeRes = _GolubetsJniCodec.readValue(res) as Float64List?;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final ffi_bridge.NativeInteropTestsGolubetsTypedData? res = _ffiApi
-            .callFlutterEchoNullableFloat64ListWithList(
-              _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(list),
-              wrappedError: error,
-            );
-        _throwIfFfiError(error);
-        final Float64List? dartTypeRes = _GolubetsFfiCodec.readValue(res) as Float64List?;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Float64List? callFlutterEchoNullableFloat64List(Float64List? list);
 
-  List<Object?>? callFlutterEchoNullableList(List<Object?>? list) {
-    try {
-      if (_jniApi != null) {
-        final JList<JObject?>? res = _jniApi.callFlutterEchoNullableList(
-          _GolubetsJniCodec.writeValue<JList<JObject?>?>(list),
-        );
-        final List<Object?>? dartTypeRes = (_GolubetsJniCodec.readValue(res) as List<Object?>?)
-            ?.cast<Object?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.callFlutterEchoNullableListWithList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(list),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<Object?>? dartTypeRes = (_GolubetsFfiCodec.readValue(res) as List<Object?>?)
-            ?.cast<Object?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  List<Object?>? callFlutterEchoNullableList(List<Object?>? list);
 
-  List<NativeInteropAnEnum?>? callFlutterEchoNullableEnumList(
-    List<NativeInteropAnEnum?>? enumList,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAnEnum?>? res = _jniApi.callFlutterEchoNullableEnumList(
-          _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum?>?>(enumList),
-        );
-        final List<NativeInteropAnEnum?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as List<Object?>?)?.cast<NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.callFlutterEchoNullableEnumListWithEnumList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(enumList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<NativeInteropAnEnum?>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum) as List<Object?>?)
-                ?.cast<NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  List<NativeInteropAnEnum?>? callFlutterEchoNullableEnumList(List<NativeInteropAnEnum?>? enumList);
 
   List<NativeInteropAllNullableTypes?>? callFlutterEchoNullableClassList(
     List<NativeInteropAllNullableTypes?>? classList,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAllNullableTypes?>? res = _jniApi
-            .callFlutterEchoNullableClassList(
-              _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes?>?>(
-                classList,
-              ),
-            );
-        final List<NativeInteropAllNullableTypes?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as List<Object?>?)
-                ?.cast<NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.callFlutterEchoNullableClassListWithClassList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(classList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<NativeInteropAllNullableTypes?>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res) as List<Object?>?)
-                ?.cast<NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   List<NativeInteropAnEnum>? callFlutterEchoNullableNonNullEnumList(
     List<NativeInteropAnEnum>? enumList,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAnEnum>? res = _jniApi
-            .callFlutterEchoNullableNonNullEnumList(
-              _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum>?>(enumList),
-            );
-        final List<NativeInteropAnEnum>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as List<Object?>?)?.cast<NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.callFlutterEchoNullableNonNullEnumListWithEnumList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(enumList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<NativeInteropAnEnum>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum) as List<Object?>?)
-                ?.cast<NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   List<NativeInteropAllNullableTypes>? callFlutterEchoNullableNonNullClassList(
     List<NativeInteropAllNullableTypes>? classList,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAllNullableTypes>? res = _jniApi
-            .callFlutterEchoNullableNonNullClassList(
-              _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes>?>(
-                classList,
-              ),
-            );
-        final List<NativeInteropAllNullableTypes>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as List<Object?>?)
-                ?.cast<NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSArray? res = _ffiApi.callFlutterEchoNullableNonNullClassListWithClassList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(classList),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final List<NativeInteropAllNullableTypes>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res) as List<Object?>?)
-                ?.cast<NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Map<Object?, Object?>? callFlutterEchoNullableMap(Map<Object?, Object?>? map) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JObject?, JObject?>? res = _jniApi.callFlutterEchoNullableMap(
-          _GolubetsJniCodec.writeValue<JMap<JObject?, JObject?>?>(map),
-        );
-        final Map<Object?, Object?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)?.cast<Object?, Object?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoNullableMapWithMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(map),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<Object?, Object?>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res) as Map<Object?, Object?>?)?.cast<Object?, Object?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<Object?, Object?>? callFlutterEchoNullableMap(Map<Object?, Object?>? map);
 
-  Map<String?, String?>? callFlutterEchoNullableStringMap(Map<String?, String?>? stringMap) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JString?, JString?>? res = _jniApi.callFlutterEchoNullableStringMap(
-          _GolubetsJniCodec.writeValue<JMap<JString?, JString?>?>(stringMap),
-        );
-        final Map<String?, String?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)?.cast<String?, String?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoNullableStringMapWithStringMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(stringMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<String?, String?>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res) as Map<Object?, Object?>?)?.cast<String?, String?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<String?, String?>? callFlutterEchoNullableStringMap(Map<String?, String?>? stringMap);
 
-  Map<int?, int?>? callFlutterEchoNullableIntMap(Map<int?, int?>? intMap) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong?, JLong?>? res = _jniApi.callFlutterEchoNullableIntMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong?, JLong?>?>(intMap),
-        );
-        final Map<int?, int?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)?.cast<int?, int?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoNullableIntMapWithIntMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(intMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<int?, int?>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, int, int) as Map<Object?, Object?>?)
-                ?.cast<int?, int?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<int?, int?>? callFlutterEchoNullableIntMap(Map<int?, int?>? intMap);
 
   Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? callFlutterEchoNullableEnumMap(
     Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? enumMap,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>? res = _jniApi
-            .callFlutterEchoNullableEnumMap(
-              _GolubetsJniCodec.writeValue<
-                JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>?
-              >(enumMap),
-            );
-        final Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)
-                ?.cast<NativeInteropAnEnum?, NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoNullableEnumMapWithEnumMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(enumMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum, NativeInteropAnEnum)
-                    as Map<Object?, Object?>?)
-                ?.cast<NativeInteropAnEnum?, NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Map<int?, NativeInteropAllNullableTypes?>? callFlutterEchoNullableClassMap(
     Map<int?, NativeInteropAllNullableTypes?>? classMap,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>?
-        res = _jniApi.callFlutterEchoNullableClassMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>?>(
-            classMap,
-          ),
-        );
-        final Map<int?, NativeInteropAllNullableTypes?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)
-                ?.cast<int?, NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoNullableClassMapWithClassMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(classMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<int?, NativeInteropAllNullableTypes?>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, int) as Map<Object?, Object?>?)
-                ?.cast<int?, NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Map<String, String>? callFlutterEchoNullableNonNullStringMap(Map<String, String>? stringMap) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JString, JString>? res = _jniApi.callFlutterEchoNullableNonNullStringMap(
-          _GolubetsJniCodec.writeValue<JMap<JString, JString>?>(stringMap),
-        );
-        final Map<String, String>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)?.cast<String, String>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoNullableNonNullStringMapWithStringMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(stringMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<String, String>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res) as Map<Object?, Object?>?)?.cast<String, String>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<String, String>? callFlutterEchoNullableNonNullStringMap(Map<String, String>? stringMap);
 
-  Map<int, int>? callFlutterEchoNullableNonNullIntMap(Map<int, int>? intMap) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong, JLong>? res = _jniApi.callFlutterEchoNullableNonNullIntMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong, JLong>?>(intMap),
-        );
-        final Map<int, int>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)?.cast<int, int>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoNullableNonNullIntMapWithIntMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(intMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<int, int>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, int, int) as Map<Object?, Object?>?)
-                ?.cast<int, int>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Map<int, int>? callFlutterEchoNullableNonNullIntMap(Map<int, int>? intMap);
 
   Map<NativeInteropAnEnum, NativeInteropAnEnum>? callFlutterEchoNullableNonNullEnumMap(
     Map<NativeInteropAnEnum, NativeInteropAnEnum>? enumMap,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JMap<jni_bridge.NativeInteropAnEnum, jni_bridge.NativeInteropAnEnum>? res = _jniApi
-            .callFlutterEchoNullableNonNullEnumMap(
-              _GolubetsJniCodec.writeValue<
-                JMap<jni_bridge.NativeInteropAnEnum, jni_bridge.NativeInteropAnEnum>?
-              >(enumMap),
-            );
-        final Map<NativeInteropAnEnum, NativeInteropAnEnum>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)
-                ?.cast<NativeInteropAnEnum, NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoNullableNonNullEnumMapWithEnumMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(enumMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<NativeInteropAnEnum, NativeInteropAnEnum>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum, NativeInteropAnEnum)
-                    as Map<Object?, Object?>?)
-                ?.cast<NativeInteropAnEnum, NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Map<int, NativeInteropAllNullableTypes>? callFlutterEchoNullableNonNullClassMap(
     Map<int, NativeInteropAllNullableTypes>? classMap,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong, jni_bridge.NativeInteropAllNullableTypes>? res = _jniApi
-            .callFlutterEchoNullableNonNullClassMap(
-              _GolubetsJniCodec.writeValue<JMap<JLong, jni_bridge.NativeInteropAllNullableTypes>?>(
-                classMap,
-              ),
-            );
-        final Map<int, NativeInteropAllNullableTypes>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)
-                ?.cast<int, NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSDictionary? res = _ffiApi.callFlutterEchoNullableNonNullClassMapWithClassMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(classMap),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final Map<int, NativeInteropAllNullableTypes>? dartTypeRes =
-            (_GolubetsFfiCodec.readValue(res, int) as Map<Object?, Object?>?)
-                ?.cast<int, NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  NativeInteropAnEnum? callFlutterEchoNullableEnum(NativeInteropAnEnum? anEnum) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAnEnum? res = _jniApi.callFlutterEchoNullableEnum(
-          anEnum?.toJni(),
-        );
-        final NativeInteropAnEnum? dartTypeRes = NativeInteropAnEnum.fromJni(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.callFlutterEchoNullableEnumWithAnEnum(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(anEnum),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final NativeInteropAnEnum? dartTypeRes =
-            _GolubetsFfiCodec.readValue(res, NativeInteropAnEnum) as NativeInteropAnEnum?;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  NativeInteropAnEnum? callFlutterEchoNullableEnum(NativeInteropAnEnum? anEnum);
 
   NativeInteropAnotherEnum? callFlutterEchoAnotherNullableEnum(
     NativeInteropAnotherEnum? anotherEnum,
-  ) {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAnotherEnum? res = _jniApi.callFlutterEchoAnotherNullableEnum(
-          anotherEnum?.toJni(),
-        );
-        final NativeInteropAnotherEnum? dartTypeRes = NativeInteropAnotherEnum.fromJni(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.callFlutterEchoAnotherNullableEnumWithAnotherEnum(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(anotherEnum),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final NativeInteropAnotherEnum? dartTypeRes =
-            _GolubetsFfiCodec.readValue(res, NativeInteropAnotherEnum) as NativeInteropAnotherEnum?;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Future<void> callFlutterNoopAsync() async {
-    try {
-      if (_jniApi != null) {
-        await _jniApi.callFlutterNoopAsync();
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<void> completer = Completer<void>();
-        _ffiApi.callFlutterNoopAsyncWithWrappedError(
-          error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid.listener(() {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete();
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<void> callFlutterNoopAsync();
 
   Future<NativeInteropAllTypes> callFlutterEchoAsyncNativeInteropAllTypes(
     NativeInteropAllTypes everything,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllTypes res = await _jniApi
-            .callFlutterEchoAsyncNativeInteropAllTypes(everything.toJni());
-        final NativeInteropAllTypes dartTypeRes = NativeInteropAllTypes.fromJni(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<NativeInteropAllTypes> completer = Completer<NativeInteropAllTypes>();
-        _ffiApi.callFlutterEchoAsyncNativeInteropAllTypesWithEverything(
-          everything.toFfi(),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NativeInteropAllTypesBridge.listener((
-            ffi_bridge.NativeInteropAllTypesBridge? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(NativeInteropAllTypes.fromFfi(res)!);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Future<NativeInteropAllNullableTypes?> callFlutterEchoAsyncNullableNativeInteropAllNullableTypes(
     NativeInteropAllNullableTypes? everything,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllNullableTypes? res = await _jniApi
-            .callFlutterEchoAsyncNullableNativeInteropAllNullableTypes(everything?.toJni());
-        final NativeInteropAllNullableTypes? dartTypeRes = NativeInteropAllNullableTypes.fromJni(
-          res,
-        );
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<NativeInteropAllNullableTypes?> completer =
-            Completer<NativeInteropAllNullableTypes?>();
-        _ffiApi.callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithEverything(
-          everything?.toFfi(),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropAllNullableTypesBridge.listener((
-                ffi_bridge.NativeInteropAllNullableTypesBridge? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(NativeInteropAllNullableTypes.fromFfi(res));
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Future<NativeInteropAllNullableTypesWithoutRecursion?>
   callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
     NativeInteropAllNullableTypesWithoutRecursion? everything,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAllNullableTypesWithoutRecursion? res = await _jniApi
-            .callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
-              everything?.toJni(),
-            );
-        final NativeInteropAllNullableTypesWithoutRecursion? dartTypeRes =
-            NativeInteropAllNullableTypesWithoutRecursion.fromJni(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<NativeInteropAllNullableTypesWithoutRecursion?> completer =
-            Completer<NativeInteropAllNullableTypesWithoutRecursion?>();
-        _ffiApi
-            .callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithoutRecursionWithEverything(
-              everything?.toFfi(),
-              wrappedError: error,
-              completionHandler:
-                  ffi_bridge
-                      .ObjCBlock_ffiVoid_NativeInteropAllNullableTypesWithoutRecursionBridge.listener(
-                    (ffi_bridge.NativeInteropAllNullableTypesWithoutRecursionBridge? res) {
-                      if (error.code != null) {
-                        completer.completeError(_wrapFfiError(error));
-                      } else {
-                        completer.complete(
-                          NativeInteropAllNullableTypesWithoutRecursion.fromFfi(res),
-                        );
-                      }
-                    },
-                  ),
-            );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Future<bool> callFlutterEchoAsyncBool(bool aBool) async {
-    try {
-      if (_jniApi != null) {
-        final JBoolean res = await _jniApi.callFlutterEchoAsyncBool(aBool);
-        final bool dartTypeRes = res.toDartBool(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<bool> completer = Completer<bool>();
-        _ffiApi.callFlutterEchoAsyncBoolWithABool(
-          aBool,
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res!.boolValue);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<bool> callFlutterEchoAsyncBool(bool aBool);
 
-  Future<int> callFlutterEchoAsyncInt(int anInt) async {
-    try {
-      if (_jniApi != null) {
-        final JLong res = await _jniApi.callFlutterEchoAsyncInt(anInt);
-        final int dartTypeRes = res.toDartInt(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<int> completer = Completer<int>();
-        _ffiApi.callFlutterEchoAsyncIntWithAnInt(
-          anInt,
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res!.longValue);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<int> callFlutterEchoAsyncInt(int anInt);
 
-  Future<double> callFlutterEchoAsyncDouble(double aDouble) async {
-    try {
-      if (_jniApi != null) {
-        final JDouble res = await _jniApi.callFlutterEchoAsyncDouble(aDouble);
-        final double dartTypeRes = res.toDartDouble(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<double> completer = Completer<double>();
-        _ffiApi.callFlutterEchoAsyncDoubleWithADouble(
-          aDouble,
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res!.doubleValue);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<double> callFlutterEchoAsyncDouble(double aDouble);
 
-  Future<String> callFlutterEchoAsyncString(String aString) async {
-    try {
-      if (_jniApi != null) {
-        final JString res = await _jniApi.callFlutterEchoAsyncString(
-          _GolubetsJniCodec.writeValue<JString>(aString),
-        );
-        final String dartTypeRes = res.toDartString(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<String> completer = Completer<String>();
-        _ffiApi.callFlutterEchoAsyncStringWithAString(
-          _GolubetsFfiCodec.writeValue<NSString>(aString),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSString.listener((NSString? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res!.toDartString());
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<String> callFlutterEchoAsyncString(String aString);
 
-  Future<Uint8List> callFlutterEchoAsyncUint8List(Uint8List list) async {
-    try {
-      if (_jniApi != null) {
-        final JByteArray res = await _jniApi.callFlutterEchoAsyncUint8List(
-          _GolubetsJniCodec.writeValue<JByteArray>(list),
-        );
-        final Uint8List dartTypeRes = _GolubetsJniCodec.readValue(res)! as Uint8List;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Uint8List> completer = Completer<Uint8List>();
-        _ffiApi.callFlutterEchoAsyncUint8ListWithList(
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(list),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.listener((
-                ffi_bridge.NativeInteropTestsGolubetsTypedData? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(_GolubetsFfiCodec.readValue(res)! as Uint8List);
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Uint8List> callFlutterEchoAsyncUint8List(Uint8List list);
 
-  Future<Int32List> callFlutterEchoAsyncInt32List(Int32List list) async {
-    try {
-      if (_jniApi != null) {
-        final JIntArray res = await _jniApi.callFlutterEchoAsyncInt32List(
-          _GolubetsJniCodec.writeValue<JIntArray>(list),
-        );
-        final Int32List dartTypeRes = _GolubetsJniCodec.readValue(res)! as Int32List;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Int32List> completer = Completer<Int32List>();
-        _ffiApi.callFlutterEchoAsyncInt32ListWithList(
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(list),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.listener((
-                ffi_bridge.NativeInteropTestsGolubetsTypedData? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(_GolubetsFfiCodec.readValue(res)! as Int32List);
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Int32List> callFlutterEchoAsyncInt32List(Int32List list);
 
-  Future<Int64List> callFlutterEchoAsyncInt64List(Int64List list) async {
-    try {
-      if (_jniApi != null) {
-        final JLongArray res = await _jniApi.callFlutterEchoAsyncInt64List(
-          _GolubetsJniCodec.writeValue<JLongArray>(list),
-        );
-        final Int64List dartTypeRes = _GolubetsJniCodec.readValue(res)! as Int64List;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Int64List> completer = Completer<Int64List>();
-        _ffiApi.callFlutterEchoAsyncInt64ListWithList(
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(list),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.listener((
-                ffi_bridge.NativeInteropTestsGolubetsTypedData? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(_GolubetsFfiCodec.readValue(res)! as Int64List);
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Int64List> callFlutterEchoAsyncInt64List(Int64List list);
 
-  Future<Float64List> callFlutterEchoAsyncFloat64List(Float64List list) async {
-    try {
-      if (_jniApi != null) {
-        final JDoubleArray res = await _jniApi.callFlutterEchoAsyncFloat64List(
-          _GolubetsJniCodec.writeValue<JDoubleArray>(list),
-        );
-        final Float64List dartTypeRes = _GolubetsJniCodec.readValue(res)! as Float64List;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Float64List> completer = Completer<Float64List>();
-        _ffiApi.callFlutterEchoAsyncFloat64ListWithList(
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(list),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.listener((
-                ffi_bridge.NativeInteropTestsGolubetsTypedData? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(_GolubetsFfiCodec.readValue(res)! as Float64List);
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Float64List> callFlutterEchoAsyncFloat64List(Float64List list);
 
-  Future<Object> callFlutterEchoAsyncObject(Object anObject) async {
-    try {
-      if (_jniApi != null) {
-        final JObject res = await _jniApi.callFlutterEchoAsyncObject(
-          _GolubetsJniCodec.writeValue<JObject>(anObject),
-        );
-        final Object dartTypeRes = _GolubetsJniCodec.readValue(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Object> completer = Completer<Object>();
-        _ffiApi.callFlutterEchoAsyncObjectWithAnObject(
-          _GolubetsFfiCodec.writeValue<NSObject>(anObject, generic: true),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSObject.listener((NSObject? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(_GolubetsFfiCodec.readValue(res)!);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Object> callFlutterEchoAsyncObject(Object anObject);
 
-  Future<List<Object?>> callFlutterEchoAsyncList(List<Object?> list) async {
-    try {
-      if (_jniApi != null) {
-        final JList<JObject?> res = await _jniApi.callFlutterEchoAsyncList(
-          _GolubetsJniCodec.writeValue<JList<JObject?>>(list),
-        );
-        final List<Object?> dartTypeRes = (_GolubetsJniCodec.readValue(res)! as List<Object?>)
-            .cast<Object?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<List<Object?>> completer = Completer<List<Object?>>();
-        _ffiApi.callFlutterEchoAsyncListWithList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(list),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSArray.listener((NSArray? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res)! as List<Object?>).cast<Object?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<List<Object?>> callFlutterEchoAsyncList(List<Object?> list);
 
   Future<List<NativeInteropAnEnum?>> callFlutterEchoAsyncEnumList(
     List<NativeInteropAnEnum?> enumList,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAnEnum?> res = await _jniApi
-            .callFlutterEchoAsyncEnumList(
-              _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum?>>(enumList),
-            );
-        final List<NativeInteropAnEnum?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as List<Object?>).cast<NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<List<NativeInteropAnEnum?>> completer =
-            Completer<List<NativeInteropAnEnum?>>();
-        _ffiApi.callFlutterEchoAsyncEnumListWithEnumList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(enumList),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSArray.listener((NSArray? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum)! as List<Object?>)
-                    .cast<NativeInteropAnEnum?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Future<List<NativeInteropAllNullableTypes?>> callFlutterEchoAsyncClassList(
     List<NativeInteropAllNullableTypes?> classList,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAllNullableTypes?> res = await _jniApi
-            .callFlutterEchoAsyncClassList(
-              _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes?>>(
-                classList,
-              ),
-            );
-        final List<NativeInteropAllNullableTypes?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as List<Object?>)
-                .cast<NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<List<NativeInteropAllNullableTypes?>> completer =
-            Completer<List<NativeInteropAllNullableTypes?>>();
-        _ffiApi.callFlutterEchoAsyncClassListWithClassList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(classList),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSArray.listener((NSArray? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res)! as List<Object?>)
-                    .cast<NativeInteropAllNullableTypes?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Future<List<NativeInteropAnEnum>> callFlutterEchoAsyncNonNullEnumList(
     List<NativeInteropAnEnum> enumList,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAnEnum> res = await _jniApi
-            .callFlutterEchoAsyncNonNullEnumList(
-              _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum>>(enumList),
-            );
-        final List<NativeInteropAnEnum> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as List<Object?>).cast<NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<List<NativeInteropAnEnum>> completer =
-            Completer<List<NativeInteropAnEnum>>();
-        _ffiApi.callFlutterEchoAsyncNonNullEnumListWithEnumList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(enumList),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSArray.listener((NSArray? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum)! as List<Object?>)
-                    .cast<NativeInteropAnEnum>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Future<List<NativeInteropAllNullableTypes>> callFlutterEchoAsyncNonNullClassList(
     List<NativeInteropAllNullableTypes> classList,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAllNullableTypes> res = await _jniApi
-            .callFlutterEchoAsyncNonNullClassList(
-              _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes>>(
-                classList,
-              ),
-            );
-        final List<NativeInteropAllNullableTypes> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as List<Object?>)
-                .cast<NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<List<NativeInteropAllNullableTypes>> completer =
-            Completer<List<NativeInteropAllNullableTypes>>();
-        _ffiApi.callFlutterEchoAsyncNonNullClassListWithClassList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray>(classList),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSArray.listener((NSArray? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res)! as List<Object?>)
-                    .cast<NativeInteropAllNullableTypes>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Future<Map<Object?, Object?>> callFlutterEchoAsyncMap(Map<Object?, Object?> map) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<JObject?, JObject?> res = await _jniApi.callFlutterEchoAsyncMap(
-          _GolubetsJniCodec.writeValue<JMap<JObject?, JObject?>>(map),
-        );
-        final Map<Object?, Object?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>).cast<Object?, Object?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<Object?, Object?>> completer = Completer<Map<Object?, Object?>>();
-        _ffiApi.callFlutterEchoAsyncMapWithMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(map),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res)! as Map<Object?, Object?>)
-                    .cast<Object?, Object?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Map<Object?, Object?>> callFlutterEchoAsyncMap(Map<Object?, Object?> map);
 
-  Future<Map<String?, String?>> callFlutterEchoAsyncStringMap(
-    Map<String?, String?> stringMap,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<JString?, JString?> res = await _jniApi.callFlutterEchoAsyncStringMap(
-          _GolubetsJniCodec.writeValue<JMap<JString?, JString?>>(stringMap),
-        );
-        final Map<String?, String?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>).cast<String?, String?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<String?, String?>> completer = Completer<Map<String?, String?>>();
-        _ffiApi.callFlutterEchoAsyncStringMapWithStringMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(stringMap),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res)! as Map<Object?, Object?>)
-                    .cast<String?, String?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Map<String?, String?>> callFlutterEchoAsyncStringMap(Map<String?, String?> stringMap);
 
-  Future<Map<int?, int?>> callFlutterEchoAsyncIntMap(Map<int?, int?> intMap) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong?, JLong?> res = await _jniApi.callFlutterEchoAsyncIntMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong?, JLong?>>(intMap),
-        );
-        final Map<int?, int?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>).cast<int?, int?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<int?, int?>> completer = Completer<Map<int?, int?>>();
-        _ffiApi.callFlutterEchoAsyncIntMapWithIntMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(intMap),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, int, int)! as Map<Object?, Object?>)
-                    .cast<int?, int?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Map<int?, int?>> callFlutterEchoAsyncIntMap(Map<int?, int?> intMap);
 
   Future<Map<NativeInteropAnEnum?, NativeInteropAnEnum?>> callFlutterEchoAsyncEnumMap(
     Map<NativeInteropAnEnum?, NativeInteropAnEnum?> enumMap,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?> res =
-            await _jniApi.callFlutterEchoAsyncEnumMap(
-              _GolubetsJniCodec.writeValue<
-                JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>
-              >(enumMap),
-            );
-        final Map<NativeInteropAnEnum?, NativeInteropAnEnum?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>)
-                .cast<NativeInteropAnEnum?, NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<NativeInteropAnEnum?, NativeInteropAnEnum?>> completer =
-            Completer<Map<NativeInteropAnEnum?, NativeInteropAnEnum?>>();
-        _ffiApi.callFlutterEchoAsyncEnumMapWithEnumMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(enumMap),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum, NativeInteropAnEnum)!
-                        as Map<Object?, Object?>)
-                    .cast<NativeInteropAnEnum?, NativeInteropAnEnum?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Future<Map<int?, NativeInteropAllNullableTypes?>> callFlutterEchoAsyncClassMap(
     Map<int?, NativeInteropAllNullableTypes?> classMap,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?> res = await _jniApi
-            .callFlutterEchoAsyncClassMap(
-              _GolubetsJniCodec.writeValue<JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>>(
-                classMap,
-              ),
-            );
-        final Map<int?, NativeInteropAllNullableTypes?> dartTypeRes =
-            (_GolubetsJniCodec.readValue(res)! as Map<Object?, Object?>)
-                .cast<int?, NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<int?, NativeInteropAllNullableTypes?>> completer =
-            Completer<Map<int?, NativeInteropAllNullableTypes?>>();
-        _ffiApi.callFlutterEchoAsyncClassMapWithClassMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary>(classMap),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, int)! as Map<Object?, Object?>)
-                    .cast<int?, NativeInteropAllNullableTypes?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Future<NativeInteropAnEnum> callFlutterEchoAsyncEnum(NativeInteropAnEnum anEnum) async {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAnEnum res = await _jniApi.callFlutterEchoAsyncEnum(
-          anEnum.toJni(),
-        );
-        final NativeInteropAnEnum dartTypeRes = NativeInteropAnEnum.fromJni(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<NativeInteropAnEnum> completer = Completer<NativeInteropAnEnum>();
-        _ffiApi.callFlutterEchoAsyncEnumWithAnEnum(
-          ffi_bridge.NativeInteropAnEnum.values[anEnum.index],
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                _GolubetsFfiCodec.readValue(res, NativeInteropAnEnum)! as NativeInteropAnEnum,
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<NativeInteropAnEnum> callFlutterEchoAsyncEnum(NativeInteropAnEnum anEnum);
 
   Future<NativeInteropAnotherEnum> callFlutterEchoAnotherAsyncEnum(
     NativeInteropAnotherEnum anotherEnum,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAnotherEnum res = await _jniApi
-            .callFlutterEchoAnotherAsyncEnum(anotherEnum.toJni());
-        final NativeInteropAnotherEnum dartTypeRes = NativeInteropAnotherEnum.fromJni(res)!;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<NativeInteropAnotherEnum> completer = Completer<NativeInteropAnotherEnum>();
-        _ffiApi.callFlutterEchoAnotherAsyncEnumWithAnotherEnum(
-          ffi_bridge.NativeInteropAnotherEnum.values[anotherEnum.index],
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                _GolubetsFfiCodec.readValue(res, NativeInteropAnotherEnum)!
-                    as NativeInteropAnotherEnum,
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Future<bool?> callFlutterEchoAsyncNullableBool(bool? aBool) async {
-    try {
-      if (_jniApi != null) {
-        final JBoolean? res = await _jniApi.callFlutterEchoAsyncNullableBool(
-          _GolubetsJniCodec.writeValue<JBoolean?>(aBool),
-        );
-        final bool? dartTypeRes = res?.toDartBool(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<bool?> completer = Completer<bool?>();
-        _ffiApi.callFlutterEchoAsyncNullableBoolWithABool(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(aBool),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res?.boolValue);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<bool?> callFlutterEchoAsyncNullableBool(bool? aBool);
 
-  Future<int?> callFlutterEchoAsyncNullableInt(int? anInt) async {
-    try {
-      if (_jniApi != null) {
-        final JLong? res = await _jniApi.callFlutterEchoAsyncNullableInt(
-          _GolubetsJniCodec.writeValue<JLong?>(anInt),
-        );
-        final int? dartTypeRes = res?.toDartInt(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<int?> completer = Completer<int?>();
-        _ffiApi.callFlutterEchoAsyncNullableIntWithAnInt(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(anInt),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res?.longValue);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<int?> callFlutterEchoAsyncNullableInt(int? anInt);
 
-  Future<double?> callFlutterEchoAsyncNullableDouble(double? aDouble) async {
-    try {
-      if (_jniApi != null) {
-        final JDouble? res = await _jniApi.callFlutterEchoAsyncNullableDouble(
-          _GolubetsJniCodec.writeValue<JDouble?>(aDouble),
-        );
-        final double? dartTypeRes = res?.toDartDouble(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<double?> completer = Completer<double?>();
-        _ffiApi.callFlutterEchoAsyncNullableDoubleWithADouble(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(aDouble),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res?.doubleValue);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<double?> callFlutterEchoAsyncNullableDouble(double? aDouble);
 
-  Future<String?> callFlutterEchoAsyncNullableString(String? aString) async {
-    try {
-      if (_jniApi != null) {
-        final JString? res = await _jniApi.callFlutterEchoAsyncNullableString(
-          _GolubetsJniCodec.writeValue<JString?>(aString),
-        );
-        final String? dartTypeRes = res?.toDartString(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<String?> completer = Completer<String?>();
-        _ffiApi.callFlutterEchoAsyncNullableStringWithAString(
-          _GolubetsFfiCodec.writeValue<NSString?>(aString),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSString.listener((NSString? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res?.toDartString());
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<String?> callFlutterEchoAsyncNullableString(String? aString);
 
-  Future<Uint8List?> callFlutterEchoAsyncNullableUint8List(Uint8List? list) async {
-    try {
-      if (_jniApi != null) {
-        final JByteArray? res = await _jniApi.callFlutterEchoAsyncNullableUint8List(
-          _GolubetsJniCodec.writeValue<JByteArray?>(list),
-        );
-        final Uint8List? dartTypeRes = _GolubetsJniCodec.readValue(res) as Uint8List?;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Uint8List?> completer = Completer<Uint8List?>();
-        _ffiApi.callFlutterEchoAsyncNullableUint8ListWithList(
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(list),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.listener((
-                ffi_bridge.NativeInteropTestsGolubetsTypedData? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(_GolubetsFfiCodec.readValue(res) as Uint8List?);
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Uint8List?> callFlutterEchoAsyncNullableUint8List(Uint8List? list);
 
-  Future<Int32List?> callFlutterEchoAsyncNullableInt32List(Int32List? list) async {
-    try {
-      if (_jniApi != null) {
-        final JIntArray? res = await _jniApi.callFlutterEchoAsyncNullableInt32List(
-          _GolubetsJniCodec.writeValue<JIntArray?>(list),
-        );
-        final Int32List? dartTypeRes = _GolubetsJniCodec.readValue(res) as Int32List?;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Int32List?> completer = Completer<Int32List?>();
-        _ffiApi.callFlutterEchoAsyncNullableInt32ListWithList(
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(list),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.listener((
-                ffi_bridge.NativeInteropTestsGolubetsTypedData? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(_GolubetsFfiCodec.readValue(res) as Int32List?);
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Int32List?> callFlutterEchoAsyncNullableInt32List(Int32List? list);
 
-  Future<Int64List?> callFlutterEchoAsyncNullableInt64List(Int64List? list) async {
-    try {
-      if (_jniApi != null) {
-        final JLongArray? res = await _jniApi.callFlutterEchoAsyncNullableInt64List(
-          _GolubetsJniCodec.writeValue<JLongArray?>(list),
-        );
-        final Int64List? dartTypeRes = _GolubetsJniCodec.readValue(res) as Int64List?;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Int64List?> completer = Completer<Int64List?>();
-        _ffiApi.callFlutterEchoAsyncNullableInt64ListWithList(
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(list),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.listener((
-                ffi_bridge.NativeInteropTestsGolubetsTypedData? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(_GolubetsFfiCodec.readValue(res) as Int64List?);
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Int64List?> callFlutterEchoAsyncNullableInt64List(Int64List? list);
 
-  Future<Float64List?> callFlutterEchoAsyncNullableFloat64List(Float64List? list) async {
-    try {
-      if (_jniApi != null) {
-        final JDoubleArray? res = await _jniApi.callFlutterEchoAsyncNullableFloat64List(
-          _GolubetsJniCodec.writeValue<JDoubleArray?>(list),
-        );
-        final Float64List? dartTypeRes = _GolubetsJniCodec.readValue(res) as Float64List?;
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Float64List?> completer = Completer<Float64List?>();
-        _ffiApi.callFlutterEchoAsyncNullableFloat64ListWithList(
-          _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData?>(list),
-          wrappedError: error,
-          completionHandler:
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData.listener((
-                ffi_bridge.NativeInteropTestsGolubetsTypedData? res,
-              ) {
-                if (error.code != null) {
-                  completer.completeError(_wrapFfiError(error));
-                } else {
-                  completer.complete(_GolubetsFfiCodec.readValue(res) as Float64List?);
-                }
-              }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Float64List?> callFlutterEchoAsyncNullableFloat64List(Float64List? list);
 
-  Future<Object?> callFlutterThrowFlutterErrorAsync() async {
-    try {
-      if (_jniApi != null) {
-        final JObject? res = await _jniApi.callFlutterThrowFlutterErrorAsync();
-        final Object? dartTypeRes = _GolubetsJniCodec.readValue(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Object?> completer = Completer<Object?>();
-        _ffiApi.callFlutterThrowFlutterErrorAsyncWithWrappedError(
-          error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSObject.listener((NSObject? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(_GolubetsFfiCodec.readValue(res));
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Object?> callFlutterThrowFlutterErrorAsync();
 
-  Future<Object?> callFlutterEchoAsyncNullableObject(Object? anObject) async {
-    try {
-      if (_jniApi != null) {
-        final JObject? res = await _jniApi.callFlutterEchoAsyncNullableObject(
-          _GolubetsJniCodec.writeValue<JObject?>(anObject),
-        );
-        final Object? dartTypeRes = _GolubetsJniCodec.readValue(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Object?> completer = Completer<Object?>();
-        _ffiApi.callFlutterEchoAsyncNullableObjectWithAnObject(
-          _GolubetsFfiCodec.writeValue<NSObject>(anObject, generic: true),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSObject.listener((NSObject? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(_GolubetsFfiCodec.readValue(res));
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Object?> callFlutterEchoAsyncNullableObject(Object? anObject);
 
-  Future<List<Object?>?> callFlutterEchoAsyncNullableList(List<Object?>? list) async {
-    try {
-      if (_jniApi != null) {
-        final JList<JObject?>? res = await _jniApi.callFlutterEchoAsyncNullableList(
-          _GolubetsJniCodec.writeValue<JList<JObject?>?>(list),
-        );
-        final List<Object?>? dartTypeRes = (_GolubetsJniCodec.readValue(res) as List<Object?>?)
-            ?.cast<Object?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<List<Object?>?> completer = Completer<List<Object?>?>();
-        _ffiApi.callFlutterEchoAsyncNullableListWithList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(list),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSArray.listener((NSArray? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res) as List<Object?>?)?.cast<Object?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<List<Object?>?> callFlutterEchoAsyncNullableList(List<Object?>? list);
 
   Future<List<NativeInteropAnEnum?>?> callFlutterEchoAsyncNullableEnumList(
     List<NativeInteropAnEnum?>? enumList,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAnEnum?>? res = await _jniApi
-            .callFlutterEchoAsyncNullableEnumList(
-              _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum?>?>(enumList),
-            );
-        final List<NativeInteropAnEnum?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as List<Object?>?)?.cast<NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<List<NativeInteropAnEnum?>?> completer =
-            Completer<List<NativeInteropAnEnum?>?>();
-        _ffiApi.callFlutterEchoAsyncNullableEnumListWithEnumList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(enumList),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSArray.listener((NSArray? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum) as List<Object?>?)
-                    ?.cast<NativeInteropAnEnum?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Future<List<NativeInteropAllNullableTypes?>?> callFlutterEchoAsyncNullableClassList(
     List<NativeInteropAllNullableTypes?>? classList,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAllNullableTypes?>? res = await _jniApi
-            .callFlutterEchoAsyncNullableClassList(
-              _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes?>?>(
-                classList,
-              ),
-            );
-        final List<NativeInteropAllNullableTypes?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as List<Object?>?)
-                ?.cast<NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<List<NativeInteropAllNullableTypes?>?> completer =
-            Completer<List<NativeInteropAllNullableTypes?>?>();
-        _ffiApi.callFlutterEchoAsyncNullableClassListWithClassList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(classList),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSArray.listener((NSArray? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res) as List<Object?>?)
-                    ?.cast<NativeInteropAllNullableTypes?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Future<List<NativeInteropAnEnum>?> callFlutterEchoAsyncNullableNonNullEnumList(
     List<NativeInteropAnEnum>? enumList,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAnEnum>? res = await _jniApi
-            .callFlutterEchoAsyncNullableNonNullEnumList(
-              _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum>?>(enumList),
-            );
-        final List<NativeInteropAnEnum>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as List<Object?>?)?.cast<NativeInteropAnEnum>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<List<NativeInteropAnEnum>?> completer =
-            Completer<List<NativeInteropAnEnum>?>();
-        _ffiApi.callFlutterEchoAsyncNullableNonNullEnumListWithEnumList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(enumList),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSArray.listener((NSArray? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum) as List<Object?>?)
-                    ?.cast<NativeInteropAnEnum>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Future<List<NativeInteropAllNullableTypes>?> callFlutterEchoAsyncNullableNonNullClassList(
     List<NativeInteropAllNullableTypes>? classList,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JList<jni_bridge.NativeInteropAllNullableTypes>? res = await _jniApi
-            .callFlutterEchoAsyncNullableNonNullClassList(
-              _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes>?>(
-                classList,
-              ),
-            );
-        final List<NativeInteropAllNullableTypes>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as List<Object?>?)
-                ?.cast<NativeInteropAllNullableTypes>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<List<NativeInteropAllNullableTypes>?> completer =
-            Completer<List<NativeInteropAllNullableTypes>?>();
-        _ffiApi.callFlutterEchoAsyncNullableNonNullClassListWithClassList(
-          _GolubetsFfiCodec.writeValue<NSMutableArray?>(classList),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSArray.listener((NSArray? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res) as List<Object?>?)
-                    ?.cast<NativeInteropAllNullableTypes>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Future<Map<Object?, Object?>?> callFlutterEchoAsyncNullableMap(Map<Object?, Object?>? map) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<JObject?, JObject?>? res = await _jniApi.callFlutterEchoAsyncNullableMap(
-          _GolubetsJniCodec.writeValue<JMap<JObject?, JObject?>?>(map),
-        );
-        final Map<Object?, Object?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)?.cast<Object?, Object?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<Object?, Object?>?> completer = Completer<Map<Object?, Object?>?>();
-        _ffiApi.callFlutterEchoAsyncNullableMapWithMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(map),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res) as Map<Object?, Object?>?)
-                    ?.cast<Object?, Object?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Map<Object?, Object?>?> callFlutterEchoAsyncNullableMap(Map<Object?, Object?>? map);
 
   Future<Map<String?, String?>?> callFlutterEchoAsyncNullableStringMap(
     Map<String?, String?>? stringMap,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<JString?, JString?>? res = await _jniApi.callFlutterEchoAsyncNullableStringMap(
-          _GolubetsJniCodec.writeValue<JMap<JString?, JString?>?>(stringMap),
-        );
-        final Map<String?, String?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)?.cast<String?, String?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<String?, String?>?> completer = Completer<Map<String?, String?>?>();
-        _ffiApi.callFlutterEchoAsyncNullableStringMapWithStringMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(stringMap),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res) as Map<Object?, Object?>?)
-                    ?.cast<String?, String?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Future<Map<int?, int?>?> callFlutterEchoAsyncNullableIntMap(Map<int?, int?>? intMap) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong?, JLong?>? res = await _jniApi.callFlutterEchoAsyncNullableIntMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong?, JLong?>?>(intMap),
-        );
-        final Map<int?, int?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)?.cast<int?, int?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<int?, int?>?> completer = Completer<Map<int?, int?>?>();
-        _ffiApi.callFlutterEchoAsyncNullableIntMapWithIntMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(intMap),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, int, int) as Map<Object?, Object?>?)
-                    ?.cast<int?, int?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<Map<int?, int?>?> callFlutterEchoAsyncNullableIntMap(Map<int?, int?>? intMap);
 
   Future<Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?> callFlutterEchoAsyncNullableEnumMap(
     Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? enumMap,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>? res =
-            await _jniApi.callFlutterEchoAsyncNullableEnumMap(
-              _GolubetsJniCodec.writeValue<
-                JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>?
-              >(enumMap),
-            );
-        final Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)
-                ?.cast<NativeInteropAnEnum?, NativeInteropAnEnum?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?> completer =
-            Completer<Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?>();
-        _ffiApi.callFlutterEchoAsyncNullableEnumMapWithEnumMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(enumMap),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, NativeInteropAnEnum, NativeInteropAnEnum)
-                        as Map<Object?, Object?>?)
-                    ?.cast<NativeInteropAnEnum?, NativeInteropAnEnum?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
   Future<Map<int?, NativeInteropAllNullableTypes?>?> callFlutterEchoAsyncNullableClassMap(
     Map<int?, NativeInteropAllNullableTypes?>? classMap,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>?
-        res = await _jniApi.callFlutterEchoAsyncNullableClassMap(
-          _GolubetsJniCodec.writeValue<JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>?>(
-            classMap,
-          ),
-        );
-        final Map<int?, NativeInteropAllNullableTypes?>? dartTypeRes =
-            (_GolubetsJniCodec.readValue(res) as Map<Object?, Object?>?)
-                ?.cast<int?, NativeInteropAllNullableTypes?>();
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<Map<int?, NativeInteropAllNullableTypes?>?> completer =
-            Completer<Map<int?, NativeInteropAllNullableTypes?>?>();
-        _ffiApi.callFlutterEchoAsyncNullableClassMapWithClassMap(
-          _GolubetsFfiCodec.writeValue<NSDictionary?>(classMap),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSDictionary.listener((
-            NSDictionary? res,
-          ) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                (_GolubetsFfiCodec.readValue(res, int) as Map<Object?, Object?>?)
-                    ?.cast<int?, NativeInteropAllNullableTypes?>(),
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  Future<NativeInteropAnEnum?> callFlutterEchoAsyncNullableEnum(NativeInteropAnEnum? anEnum) async {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAnEnum? res = await _jniApi.callFlutterEchoAsyncNullableEnum(
-          anEnum?.toJni(),
-        );
-        final NativeInteropAnEnum? dartTypeRes = NativeInteropAnEnum.fromJni(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<NativeInteropAnEnum?> completer = Completer<NativeInteropAnEnum?>();
-        _ffiApi.callFlutterEchoAsyncNullableEnumWithAnEnum(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(anEnum),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                _GolubetsFfiCodec.readValue(res, NativeInteropAnEnum) as NativeInteropAnEnum?,
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<NativeInteropAnEnum?> callFlutterEchoAsyncNullableEnum(NativeInteropAnEnum? anEnum);
 
   Future<NativeInteropAnotherEnum?> callFlutterEchoAnotherAsyncNullableEnum(
     NativeInteropAnotherEnum? anotherEnum,
-  ) async {
-    try {
-      if (_jniApi != null) {
-        final jni_bridge.NativeInteropAnotherEnum? res = await _jniApi
-            .callFlutterEchoAnotherAsyncNullableEnum(anotherEnum?.toJni());
-        final NativeInteropAnotherEnum? dartTypeRes = NativeInteropAnotherEnum.fromJni(res);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<NativeInteropAnotherEnum?> completer =
-            Completer<NativeInteropAnotherEnum?>();
-        _ffiApi.callFlutterEchoAnotherAsyncNullableEnumWithAnotherEnum(
-          _GolubetsFfiCodec.writeValue<NSNumber?>(anotherEnum),
-          wrappedError: error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(
-                _GolubetsFfiCodec.readValue(res, NativeInteropAnotherEnum)
-                    as NativeInteropAnotherEnum?,
-              );
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  );
 
-  bool isMainThread() {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.isMainThread;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.isMainThreadWithWrappedError(error);
-        _throwIfFfiError(error);
-        final bool dartTypeRes = res!.boolValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  bool isMainThread();
 
-  Future<bool> asyncIsBackgroundThread() async {
-    try {
-      if (_jniApi != null) {
-        final JBoolean res = await _jniApi.asyncIsBackgroundThread();
-        final bool dartTypeRes = res.toDartBool(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<bool> completer = Completer<bool>();
-        _ffiApi.asyncIsBackgroundThreadWithWrappedError(
-          error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res!.boolValue);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<bool> asyncIsBackgroundThread();
 
-  bool isGetter() {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.isGetter;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.isGetterWithWrappedError(error);
-        _throwIfFfiError(error);
-        final bool dartTypeRes = res!.boolValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  bool isGetter();
 
-  int getGetter() {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.getter;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.getGetterWithWrappedError(error);
-        _throwIfFfiError(error);
-        final int dartTypeRes = res!.longValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  int getGetter();
 
-  void setSetter(int value) {
-    try {
-      if (_jniApi != null) {
-        _jniApi.setter = value;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        _ffiApi.setSetterWithValue(value, wrappedError: error);
-        _throwIfFfiError(error);
-        return;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  void setSetter(int value);
 
-  Future<bool> callFlutterNoopOnBackgroundThread() async {
-    try {
-      if (_jniApi != null) {
-        final JBoolean res = await _jniApi.callFlutterNoopOnBackgroundThread();
-        final bool dartTypeRes = res.toDartBool(releaseOriginal: true);
-        return dartTypeRes;
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final Completer<bool> completer = Completer<bool>();
-        _ffiApi.callFlutterNoopOnBackgroundThreadWithWrappedError(
-          error,
-          completionHandler: ffi_bridge.ObjCBlock_ffiVoid_NSNumber.listener((NSNumber? res) {
-            if (error.code != null) {
-              completer.completeError(_wrapFfiError(error));
-            } else {
-              completer.complete(res!.boolValue);
-            }
-          }),
-        );
-        return await completer.future;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  Future<bool> callFlutterNoopOnBackgroundThread();
 
-  bool testDeregisterHostApi() {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.testDeregisterHostApi();
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.testDeregisterHostApiWithWrappedError(error);
-        _throwIfFfiError(error);
-        final bool dartTypeRes = res!.boolValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  bool testDeregisterHostApi();
 
-  bool testDeregisterFlutterApi() {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.testDeregisterFlutterApi();
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.testDeregisterFlutterApiWithWrappedError(error);
-        _throwIfFfiError(error);
-        final bool dartTypeRes = res!.boolValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  bool testDeregisterFlutterApi();
 
-  void registerAndImmediatelyDeregisterHostApi(String name) {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.registerAndImmediatelyDeregisterHostApi(
-          _GolubetsJniCodec.writeValue<JString>(name),
-        );
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        _ffiApi.registerAndImmediatelyDeregisterHostApiWithName(
-          _GolubetsFfiCodec.writeValue<NSString>(name),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        return;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  void registerAndImmediatelyDeregisterHostApi(String name);
 
-  bool testCallDeregisteredFlutterApi(String name) {
-    try {
-      if (_jniApi != null) {
-        return _jniApi.testCallDeregisteredFlutterApi(_GolubetsJniCodec.writeValue<JString>(name));
-      } else if (_ffiApi != null) {
-        final error = ffi_bridge.NativeInteropTestsError();
-        final NSNumber? res = _ffiApi.testCallDeregisteredFlutterApiWithName(
-          _GolubetsFfiCodec.writeValue<NSString>(name),
-          wrappedError: error,
-        );
-        _throwIfFfiError(error);
-        final bool dartTypeRes = res!.boolValue;
-        return dartTypeRes;
-      } else {
-        throw Exception('No JNI or FFI api available');
-      }
-    } on JThrowable catch (e) {
-      throw _wrapJniException(e);
-    }
-  }
+  void registerNamedHostApi(String name);
+
+  void deregisterNamedHostApi(String name);
+
+  bool testCallDeregisteredFlutterApi(String name);
+
+  Future<bool> testSecondaryEngineDartExecution();
+
+  bool isSecondaryEngineRegistrationReady();
+
+  void reportSecondaryEngineCheck(bool success);
+
+  void notifyConcurrentIsolateResolved();
+
+  int registeredEngineKey();
+
+  String engineLabel();
+
+  bool pluginEngineIdentifierIsAvailable();
 }
 
 /// The core interface that each host language plugin must implement in
@@ -9671,25 +2032,18 @@ class NativeInteropHostIntegrationCoreApi {
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
   }) {
-    NativeInteropHostIntegrationCoreApiForNativeInterop? nativeInteropApi;
-    String nativeInteropApiInstanceName = '';
-    if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS) {
-      if (messageChannelSuffix.isEmpty) {
-        nativeInteropApi = NativeInteropHostIntegrationCoreApiForNativeInterop.getInstance();
-      } else {
-        nativeInteropApiInstanceName = messageChannelSuffix;
-        nativeInteropApi = NativeInteropHostIntegrationCoreApiForNativeInterop.getInstance(
-          channelName: messageChannelSuffix,
-        );
-      }
-    } else {
+    if (kIsWeb) {
       throw UnsupportedError(
         'Native Interop is not supported on this platform. Use the default constructor of NativeInteropHostIntegrationCoreApi instead.',
       );
     }
+    final NativeInteropHostIntegrationCoreApiForNativeInterop? nativeInteropApi =
+        NativeInteropHostIntegrationCoreApiForNativeInterop.getInstance(
+          channelName: messageChannelSuffix.isEmpty ? defaultInstanceName : messageChannelSuffix,
+        );
     if (nativeInteropApi == null) {
       throw ArgumentError(
-        'No NativeInteropHostIntegrationCoreApi instance with ${nativeInteropApiInstanceName.isEmpty ? 'no ' : ''} instance name ${nativeInteropApiInstanceName.isNotEmpty ? '"$nativeInteropApiInstanceName" ' : ''}found.',
+        'No NativeInteropHostIntegrationCoreApi instance with ${messageChannelSuffix.isEmpty ? 'no ' : ''}instance name ${messageChannelSuffix.isNotEmpty ? '"$messageChannelSuffix" ' : ''}found.',
       );
     }
     return NativeInteropHostIntegrationCoreApi(
@@ -9721,7 +2075,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -9739,7 +2092,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[everything]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -9762,7 +2114,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -9785,7 +2136,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -9803,7 +2153,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -9826,7 +2175,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anInt]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -9849,7 +2197,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aDouble]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -9872,7 +2219,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aBool]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -9895,7 +2241,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aString]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -9918,7 +2263,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aUint8List]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -9941,7 +2285,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aInt32List]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -9964,7 +2307,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aInt64List]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -9989,7 +2331,6 @@ class NativeInteropHostIntegrationCoreApi {
       aFloat64List,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10012,7 +2353,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anObject]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10035,7 +2375,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10058,7 +2397,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[stringList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10081,7 +2419,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[intList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10104,7 +2441,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[doubleList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10127,7 +2463,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[boolList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10150,7 +2485,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10175,7 +2509,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10198,7 +2531,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10223,7 +2555,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10246,7 +2577,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[map]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10269,7 +2599,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[stringMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10292,7 +2621,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[intMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10317,7 +2645,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10343,7 +2670,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10367,7 +2693,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[stringMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10390,7 +2715,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[intMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10415,7 +2739,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10441,7 +2764,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10467,13 +2789,108 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[wrapper]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
       isNullValid: false,
     );
     return golubetsVar_replyValue! as NativeInteropAllClassesWrapper;
+  }
+
+  /// Returns the passed sealed class, to test sealed class handling.
+  Future<NativeInteropSealedClass> echoSealedClass(NativeInteropSealedClass sealedClass) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.echoSealedClass(sealedClass);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropHostIntegrationCoreApi.echoSealedClass$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[sealedClass]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as NativeInteropSealedClass;
+  }
+
+  /// Returns the passed sealed class, to test nullable sealed class handling.
+  Future<NativeInteropSealedClass?> echoNullableSealedClass(
+    NativeInteropSealedClass? sealedClass,
+  ) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.echoNullableSealedClass(sealedClass);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropHostIntegrationCoreApi.echoNullableSealedClass$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[sealedClass]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: true,
+    );
+    return golubetsVar_replyValue as NativeInteropSealedClass?;
+  }
+
+  /// Returns the passed list, to test sealed classes in lists.
+  Future<List<NativeInteropSealedClass>> echoSealedClassList(
+    List<NativeInteropSealedClass> sealedClassList,
+  ) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.echoSealedClassList(sealedClassList);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropHostIntegrationCoreApi.echoSealedClassList$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[
+      sealedClassList,
+    ]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return (golubetsVar_replyValue! as List<Object?>).cast<NativeInteropSealedClass>();
+  }
+
+  /// Returns the passed wrapper, to test sealed classes in class fields.
+  Future<NativeInteropSealedClassWrapper> echoSealedClassWrapper(
+    NativeInteropSealedClassWrapper wrapper,
+  ) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.echoSealedClassWrapper(wrapper);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropHostIntegrationCoreApi.echoSealedClassWrapper$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[wrapper]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as NativeInteropSealedClassWrapper;
   }
 
   /// Returns the passed enum to test serialization and deserialization.
@@ -10490,7 +2907,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anEnum]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10513,7 +2929,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anotherEnum]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10536,7 +2951,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aString]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10559,7 +2973,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aDouble]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10582,7 +2995,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anInt]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10607,7 +3019,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[everything]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10632,7 +3043,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[everything]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10656,7 +3066,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[wrapper]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10682,7 +3091,6 @@ class NativeInteropHostIntegrationCoreApi {
       nullableString,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10716,7 +3124,6 @@ class NativeInteropHostIntegrationCoreApi {
       aNullableString,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10751,7 +3158,6 @@ class NativeInteropHostIntegrationCoreApi {
       aNullableString,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10776,7 +3182,6 @@ class NativeInteropHostIntegrationCoreApi {
       aNullableInt,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10801,7 +3206,6 @@ class NativeInteropHostIntegrationCoreApi {
       aNullableDouble,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10826,7 +3230,6 @@ class NativeInteropHostIntegrationCoreApi {
       aNullableBool,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10851,7 +3254,6 @@ class NativeInteropHostIntegrationCoreApi {
       aNullableString,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10876,7 +3278,6 @@ class NativeInteropHostIntegrationCoreApi {
       aNullableUint8List,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10901,7 +3302,6 @@ class NativeInteropHostIntegrationCoreApi {
       aNullableInt32List,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10926,7 +3326,6 @@ class NativeInteropHostIntegrationCoreApi {
       aNullableInt64List,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10951,7 +3350,6 @@ class NativeInteropHostIntegrationCoreApi {
       aNullableFloat64List,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -10976,7 +3374,6 @@ class NativeInteropHostIntegrationCoreApi {
       aNullableObject,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11001,7 +3398,6 @@ class NativeInteropHostIntegrationCoreApi {
       aNullableList,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11026,7 +3422,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11051,7 +3446,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11076,7 +3470,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11101,7 +3494,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11124,7 +3516,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[map]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11147,7 +3538,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[stringMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11170,7 +3560,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[intMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11195,7 +3584,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11221,7 +3609,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11245,7 +3632,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[stringMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11268,7 +3654,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[intMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11293,7 +3678,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11319,7 +3703,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11342,7 +3725,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anEnum]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11366,7 +3748,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anotherEnum]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11391,7 +3772,6 @@ class NativeInteropHostIntegrationCoreApi {
       aNullableInt,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11416,7 +3796,6 @@ class NativeInteropHostIntegrationCoreApi {
       aNullableString,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11440,7 +3819,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -11458,7 +3836,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anInt]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11481,7 +3858,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aDouble]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11504,7 +3880,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aBool]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11527,7 +3902,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aString]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11550,7 +3924,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aUint8List]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11573,7 +3946,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aInt32List]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11596,7 +3968,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aInt64List]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11621,7 +3992,6 @@ class NativeInteropHostIntegrationCoreApi {
       aFloat64List,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11644,7 +4014,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anObject]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11667,7 +4036,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11690,7 +4058,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11715,7 +4082,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11738,7 +4104,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[map]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11761,7 +4126,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[stringMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11784,7 +4148,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[intMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11809,7 +4172,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11835,7 +4197,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11859,7 +4220,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anEnum]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11884,7 +4244,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anotherEnum]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11907,7 +4266,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11930,7 +4288,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -11948,7 +4305,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -11973,13 +4329,36 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[everything]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
       isNullValid: false,
     );
     return golubetsVar_replyValue! as NativeInteropAllTypes;
+  }
+
+  /// Returns the passed sealed class asynchronously.
+  Future<NativeInteropSealedClass> echoAsyncSealedClass(
+    NativeInteropSealedClass sealedClass,
+  ) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.echoAsyncSealedClass(sealedClass);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropHostIntegrationCoreApi.echoAsyncSealedClass$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[sealedClass]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as NativeInteropSealedClass;
   }
 
   /// Returns the passed object, to test serialization and deserialization.
@@ -11998,7 +4377,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[everything]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12026,7 +4404,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[everything]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12049,7 +4426,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anInt]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12072,7 +4448,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aDouble]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12095,7 +4470,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aBool]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12118,7 +4492,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aString]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12141,7 +4514,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aUint8List]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12164,7 +4536,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aInt32List]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12187,7 +4558,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aInt64List]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12212,7 +4582,6 @@ class NativeInteropHostIntegrationCoreApi {
       aFloat64List,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12235,7 +4604,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anObject]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12258,7 +4626,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12283,7 +4650,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12308,7 +4674,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12331,7 +4696,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[map]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12356,7 +4720,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[stringMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12379,7 +4742,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[intMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12404,7 +4766,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12430,7 +4791,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12454,7 +4814,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anEnum]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12479,7 +4838,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anotherEnum]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12501,7 +4859,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -12518,7 +4875,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12540,7 +4896,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -12559,7 +4914,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[everything]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12583,13 +4937,35 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[everything]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
       isNullValid: true,
     );
     return golubetsVar_replyValue as NativeInteropAllNullableTypes?;
+  }
+
+  Future<NativeInteropSealedClass> callFlutterEchoSealedClass(
+    NativeInteropSealedClass sealedClass,
+  ) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.callFlutterEchoSealedClass(sealedClass);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropHostIntegrationCoreApi.callFlutterEchoSealedClass$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[sealedClass]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as NativeInteropSealedClass;
   }
 
   Future<NativeInteropAllNullableTypes> callFlutterSendMultipleNullableTypes(
@@ -12617,7 +4993,6 @@ class NativeInteropHostIntegrationCoreApi {
       aNullableString,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12644,7 +5019,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[everything]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12679,7 +5053,6 @@ class NativeInteropHostIntegrationCoreApi {
       aNullableString,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12701,7 +5074,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aBool]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12723,7 +5095,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anInt]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12745,7 +5116,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aDouble]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12767,7 +5137,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aString]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12789,7 +5158,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12811,7 +5179,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12833,7 +5200,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12855,7 +5221,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12877,7 +5242,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12901,7 +5265,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12925,7 +5288,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12949,7 +5311,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12973,7 +5334,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -12995,7 +5355,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[map]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13017,7 +5376,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[stringMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13039,7 +5397,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[intMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13063,7 +5420,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13088,7 +5444,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13111,7 +5466,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[stringMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13133,7 +5487,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[intMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13157,7 +5510,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13182,7 +5534,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13205,7 +5556,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anEnum]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13229,7 +5579,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anotherEnum]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13251,7 +5600,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aBool]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13273,7 +5621,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anInt]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13295,7 +5642,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aDouble]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13317,7 +5663,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aString]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13339,7 +5684,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13361,7 +5705,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13383,7 +5726,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13405,7 +5747,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13427,7 +5768,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13451,7 +5791,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13475,7 +5814,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13499,7 +5837,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13523,7 +5860,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13545,7 +5881,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[map]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13569,7 +5904,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[stringMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13591,7 +5925,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[intMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13615,7 +5948,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13640,7 +5972,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13665,7 +5996,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[stringMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13687,7 +6017,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[intMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13711,7 +6040,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13736,7 +6064,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13759,7 +6086,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anEnum]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13783,7 +6109,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anotherEnum]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13805,7 +6130,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -13824,7 +6148,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[everything]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13850,7 +6173,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[everything]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13876,7 +6198,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[everything]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13898,7 +6219,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aBool]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13920,7 +6240,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anInt]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13942,7 +6261,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aDouble]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13964,7 +6282,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aString]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -13986,7 +6303,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14008,7 +6324,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14030,7 +6345,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14052,7 +6366,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14074,7 +6387,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anObject]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14096,7 +6408,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14120,7 +6431,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14144,7 +6454,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14168,7 +6477,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14192,7 +6500,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14214,7 +6521,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[map]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14238,7 +6544,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[stringMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14260,7 +6565,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[intMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14284,7 +6588,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14309,7 +6612,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14332,7 +6634,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anEnum]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14356,7 +6657,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anotherEnum]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14378,7 +6678,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aBool]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14400,7 +6699,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anInt]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14422,7 +6720,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aDouble]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14444,7 +6741,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aString]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14466,7 +6762,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14488,7 +6783,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14510,7 +6804,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14532,7 +6825,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14554,7 +6846,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14576,7 +6867,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anObject]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14598,7 +6888,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[list]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14622,7 +6911,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14646,7 +6934,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14670,7 +6957,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14694,7 +6980,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14716,7 +7001,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[map]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14740,7 +7024,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[stringMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14762,7 +7045,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[intMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14786,7 +7068,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[enumMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14811,7 +7092,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[classMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14834,7 +7114,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anEnum]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14858,7 +7137,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[anotherEnum]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14881,7 +7159,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14904,7 +7181,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14928,7 +7204,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14952,7 +7227,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -14976,7 +7250,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -14996,7 +7269,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -15019,7 +7291,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -15042,7 +7313,6 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -15065,7 +7335,40 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[name]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
+  }
 
+  /// Registers a separate Host API instance under [name] for detached-handle testing.
+  Future<void> registerNamedHostApi(String name) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.registerNamedHostApi(name);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropHostIntegrationCoreApi.registerNamedHostApi$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[name]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
+  }
+
+  /// Deregisters the Host API instance previously registered by [registerNamedHostApi] under [name].
+  Future<void> deregisterNamedHostApi(String name) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.deregisterNamedHostApi(name);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropHostIntegrationCoreApi.deregisterNamedHostApi$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[name]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -15083,7 +7386,158 @@ class NativeInteropHostIntegrationCoreApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[name]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as bool;
+  }
 
+  /// Spawns secondary engines, destroys one out-of-order, executes a live Dart
+  /// entrypoint on another (where supported by the embedder), and tears it down
+  /// while keeping the primary engine registration intact.
+  Future<bool> testSecondaryEngineDartExecution() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.testSecondaryEngineDartExecution();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropHostIntegrationCoreApi.testSecondaryEngineDartExecution$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as bool;
+  }
+
+  /// Returns whether the secondary engine's Host API registration is ready for
+  /// the secondary Dart isolate to invoke.
+  Future<bool> isSecondaryEngineRegistrationReady() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.isSecondaryEngineRegistrationReady();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropHostIntegrationCoreApi.isSecondaryEngineRegistrationReady$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as bool;
+  }
+
+  /// Reports whether Native Interop Host API calls from a secondary engine's
+  /// Dart isolate succeeded.
+  Future<void> reportSecondaryEngineCheck(bool success) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.reportSecondaryEngineCheck(success);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropHostIntegrationCoreApi.reportSecondaryEngineCheck$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[success]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
+  }
+
+  /// Signals that the concurrent background isolate resolved a fresh handle
+  /// while the secondary engine was registered.
+  Future<void> notifyConcurrentIsolateResolved() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.notifyConcurrentIsolateResolved();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropHostIntegrationCoreApi.notifyConcurrentIsolateResolved$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
+  }
+
+  /// Returns the engine key that native code stored for this plugin's
+  /// default Host API registration.
+  Future<int> registeredEngineKey() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.registeredEngineKey();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropHostIntegrationCoreApi.registeredEngineKey$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as int;
+  }
+
+  /// Returns a label unique to the Host API instance that handled the call, so
+  /// tests can check which engine's registration a handle resolved to.
+  Future<String> engineLabel() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.engineLabel();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropHostIntegrationCoreApi.engineLabel$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+
+  /// Returns whether this platform's plugin binding / registrar exposes an
+  /// engine identifier, so registrations should use exact engine keys.
+  Future<bool> pluginEngineIdentifierIsAvailable() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.pluginEngineIdentifierIsAvailable();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropHostIntegrationCoreApi.pluginEngineIdentifierIsAvailable$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -15093,4910 +7547,61 @@ class NativeInteropHostIntegrationCoreApi {
   }
 }
 
-/// The core interface that the Dart platform_test code implements for host
-/// integration tests to call into.
-final class NativeInteropFlutterIntegrationCoreApiRegistrar
-    with jni_bridge.$NativeInteropFlutterIntegrationCoreApi {
-  NativeInteropFlutterIntegrationCoreApi? dartApi;
+@internal
+NativeInteropFlutterIntegrationCoreApi golubets_register_NativeInteropFlutterIntegrationCoreApi(
+  NativeInteropFlutterIntegrationCoreApi api, {
+  String name = defaultInstanceName,
+}) {
+  throw UnsupportedError(
+    'Native Interop is not supported on this platform. Use NativeInteropFlutterIntegrationCoreApi.setUp instead.',
+  );
+}
 
+@internal
+void golubets_unregister_NativeInteropFlutterIntegrationCoreApi(
+  NativeInteropFlutterIntegrationCoreApi api, {
+  String name = defaultInstanceName,
+}) {
+  throw UnsupportedError(
+    'Native Interop is not supported on this platform. Use NativeInteropFlutterIntegrationCoreApi.setUp instead.',
+  );
+}
+
+@internal
+void golubets_set_up_NativeInteropFlutterIntegrationCoreApi(
+  NativeInteropFlutterIntegrationCoreApi? api, {
+  String name = defaultInstanceName,
+}) {
+  throw UnsupportedError(
+    'Native Interop is not supported on this platform. Use NativeInteropFlutterIntegrationCoreApi.setUp instead.',
+  );
+}
+
+/// Registers [NativeInteropFlutterIntegrationCoreApi] implementations for Native Interop callers.
+final class NativeInteropFlutterIntegrationCoreApiRegistrar {
+  /// Registers [api] under [name] (or the default instance when [name] is
+  /// omitted) and returns [api].
+  ///
+  /// The registration is tied to this isolate's engine, so native code looking
+  /// up the instance for that engine receives [api]. Unlike [NativeInteropFlutterIntegrationCoreApi.setUp],
+  /// this does not replace earlier registrations from this isolate.
   NativeInteropFlutterIntegrationCoreApi register(
     NativeInteropFlutterIntegrationCoreApi api, {
     String name = defaultInstanceName,
-  }) {
-    dartApi = api;
-
-    if (Platform.isAndroid) {
-      final jni_bridge.NativeInteropFlutterIntegrationCoreApi impl =
-          jni_bridge.NativeInteropFlutterIntegrationCoreApi.implement(this);
-      jni_bridge.NativeInteropFlutterIntegrationCoreApiRegistrar().registerInstance(
-        impl,
-        name.toJString(),
-      );
-    }
-    if (Platform.isIOS || Platform.isMacOS) {
-      final ObjCProtocolBuilder builder = ObjCProtocolBuilder(
-        debugName: 'NativeInteropFlutterIntegrationCoreApiBridge',
-      );
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.noopWithError_.implement(
-        builder,
-        (ffi_bridge.NativeInteropTestsError errorOut) {
-          try {
-            if (dartApi != null) {
-              dartApi!.noop();
-              return;
-            } else {
-              _reportFfiError(
-                errorOut,
-                'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-              );
-              return;
-            }
-          } catch (e) {
-            _reportFfiError(errorOut, e);
-            return;
-          }
-        },
-      );
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.throwFlutterErrorWithError_
-          .implement(builder, (ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final Object? response = dartApi!.throwFlutterError();
-                return _GolubetsFfiCodec.writeValue<NSObject>(response, generic: true);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.throwErrorWithError_
-          .implement(builder, (ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final Object? response = dartApi!.throwError();
-                return _GolubetsFfiCodec.writeValue<NSObject>(response, generic: true);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.throwErrorFromVoidWithError_
-          .implement(builder, (ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                dartApi!.throwErrorFromVoid();
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNativeInteropAllTypesWithEverything_error_
-          .implement(builder, (
-            ffi_bridge.NativeInteropAllTypesBridge? everything,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final NativeInteropAllTypes response = dartApi!.echoNativeInteropAllTypes(
-                  NativeInteropAllTypes.fromFfi(everything)!,
-                );
-                return response.toFfi();
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNativeInteropAllNullableTypesWithEverything_error_
-          .implement(builder, (
-            ffi_bridge.NativeInteropAllNullableTypesBridge? everything,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final NativeInteropAllNullableTypes? response = dartApi!
-                    .echoNativeInteropAllNullableTypes(
-                      NativeInteropAllNullableTypes.fromFfi(everything),
-                    );
-                return response?.toFfi();
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .sendMultipleNullableTypesWithANullableBool_aNullableInt_aNullableString_error_
-          .implement(builder, (
-            NSNumber? aNullableBool,
-            NSNumber? aNullableInt,
-            NSString? aNullableString,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final NativeInteropAllNullableTypes response = dartApi!.sendMultipleNullableTypes(
-                  aNullableBool?.boolValue,
-                  aNullableInt?.longValue,
-                  aNullableString?.toDartString(),
-                );
-                return response.toFfi();
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNativeInteropAllNullableTypesWithoutRecursionWithEverything_error_
-          .implement(builder, (
-            ffi_bridge.NativeInteropAllNullableTypesWithoutRecursionBridge? everything,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final NativeInteropAllNullableTypesWithoutRecursion? response = dartApi!
-                    .echoNativeInteropAllNullableTypesWithoutRecursion(
-                      NativeInteropAllNullableTypesWithoutRecursion.fromFfi(everything),
-                    );
-                return response?.toFfi();
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .sendMultipleNullableTypesWithoutRecursionWithANullableBool_aNullableInt_aNullableString_error_
-          .implement(builder, (
-            NSNumber? aNullableBool,
-            NSNumber? aNullableInt,
-            NSString? aNullableString,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final NativeInteropAllNullableTypesWithoutRecursion response = dartApi!
-                    .sendMultipleNullableTypesWithoutRecursion(
-                      aNullableBool?.boolValue,
-                      aNullableInt?.longValue,
-                      aNullableString?.toDartString(),
-                    );
-                return response.toFfi();
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.echoBoolWithABool_error_
-          .implement(builder, (NSNumber? aBool, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final bool response = dartApi!.echoBool(aBool!.boolValue);
-                return _GolubetsFfiCodec.writeValue<NSNumber>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.echoIntWithAnInt_error_
-          .implement(builder, (NSNumber? anInt, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final int response = dartApi!.echoInt(anInt!.longValue);
-                return _GolubetsFfiCodec.writeValue<NSNumber>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.echoDoubleWithADouble_error_
-          .implement(builder, (NSNumber? aDouble, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final double response = dartApi!.echoDouble(aDouble!.doubleValue);
-                return _GolubetsFfiCodec.writeValue<NSNumber>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.echoStringWithAString_error_
-          .implement(builder, (NSString? aString, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final String response = dartApi!.echoString(aString!.toDartString());
-                return _GolubetsFfiCodec.writeValue<NSString>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.echoUint8ListWithList_error_
-          .implement(builder, (
-            ffi_bridge.NativeInteropTestsGolubetsTypedData? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final Uint8List response = dartApi!.echoUint8List(
-                  _GolubetsFfiCodec.readValue(list)! as Uint8List,
-                );
-                return _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(
-                  response,
-                );
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.echoInt32ListWithList_error_
-          .implement(builder, (
-            ffi_bridge.NativeInteropTestsGolubetsTypedData? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final Int32List response = dartApi!.echoInt32List(
-                  _GolubetsFfiCodec.readValue(list)! as Int32List,
-                );
-                return _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(
-                  response,
-                );
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.echoInt64ListWithList_error_
-          .implement(builder, (
-            ffi_bridge.NativeInteropTestsGolubetsTypedData? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final Int64List response = dartApi!.echoInt64List(
-                  _GolubetsFfiCodec.readValue(list)! as Int64List,
-                );
-                return _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(
-                  response,
-                );
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.echoFloat64ListWithList_error_
-          .implement(builder, (
-            ffi_bridge.NativeInteropTestsGolubetsTypedData? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final Float64List response = dartApi!.echoFloat64List(
-                  _GolubetsFfiCodec.readValue(list)! as Float64List,
-                );
-                return _GolubetsFfiCodec.writeValue<ffi_bridge.NativeInteropTestsGolubetsTypedData>(
-                  response,
-                );
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.echoListWithList_error_
-          .implement(builder, (NSArray? list, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final List<Object?> response = dartApi!.echoList(
-                  (_GolubetsFfiCodec.readValue(list)! as List<Object?>).cast<Object?>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSMutableArray>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoEnumListWithEnumList_error_
-          .implement(builder, (NSArray? enumList, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final List<NativeInteropAnEnum?> response = dartApi!.echoEnumList(
-                  (_GolubetsFfiCodec.readValue(enumList, NativeInteropAnEnum)! as List<Object?>)
-                      .cast<NativeInteropAnEnum?>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSMutableArray>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoClassListWithClassList_error_
-          .implement(builder, (NSArray? classList, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final List<NativeInteropAllNullableTypes?> response = dartApi!.echoClassList(
-                  (_GolubetsFfiCodec.readValue(classList)! as List<Object?>)
-                      .cast<NativeInteropAllNullableTypes?>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSMutableArray>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNonNullEnumListWithEnumList_error_
-          .implement(builder, (NSArray? enumList, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final List<NativeInteropAnEnum> response = dartApi!.echoNonNullEnumList(
-                  (_GolubetsFfiCodec.readValue(enumList, NativeInteropAnEnum)! as List<Object?>)
-                      .cast<NativeInteropAnEnum>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSMutableArray>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNonNullClassListWithClassList_error_
-          .implement(builder, (NSArray? classList, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final List<NativeInteropAllNullableTypes> response = dartApi!.echoNonNullClassList(
-                  (_GolubetsFfiCodec.readValue(classList)! as List<Object?>)
-                      .cast<NativeInteropAllNullableTypes>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSMutableArray>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.echoMapWithMap_error_
-          .implement(builder, (NSDictionary? map, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final Map<Object?, Object?> response = dartApi!.echoMap(
-                  (_GolubetsFfiCodec.readValue(map)! as Map<Object?, Object?>)
-                      .cast<Object?, Object?>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSDictionary>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoStringMapWithStringMap_error_
-          .implement(builder, (
-            NSDictionary? stringMap,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final Map<String?, String?> response = dartApi!.echoStringMap(
-                  (_GolubetsFfiCodec.readValue(stringMap)! as Map<Object?, Object?>)
-                      .cast<String?, String?>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSDictionary>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.echoIntMapWithIntMap_error_
-          .implement(builder, (NSDictionary? intMap, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final Map<int?, int?> response = dartApi!.echoIntMap(
-                  (_GolubetsFfiCodec.readValue(intMap, int, int)! as Map<Object?, Object?>)
-                      .cast<int?, int?>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSDictionary>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.echoEnumMapWithEnumMap_error_
-          .implement(builder, (NSDictionary? enumMap, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final Map<NativeInteropAnEnum?, NativeInteropAnEnum?> response = dartApi!
-                    .echoEnumMap(
-                      (_GolubetsFfiCodec.readValue(
-                                enumMap,
-                                NativeInteropAnEnum,
-                                NativeInteropAnEnum,
-                              )!
-                              as Map<Object?, Object?>)
-                          .cast<NativeInteropAnEnum?, NativeInteropAnEnum?>(),
-                    );
-                return _GolubetsFfiCodec.writeValue<NSDictionary>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoClassMapWithClassMap_error_
-          .implement(builder, (
-            NSDictionary? classMap,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final Map<int?, NativeInteropAllNullableTypes?> response = dartApi!.echoClassMap(
-                  (_GolubetsFfiCodec.readValue(classMap, int)! as Map<Object?, Object?>)
-                      .cast<int?, NativeInteropAllNullableTypes?>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSDictionary>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNonNullStringMapWithStringMap_error_
-          .implement(builder, (
-            NSDictionary? stringMap,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final Map<String, String> response = dartApi!.echoNonNullStringMap(
-                  (_GolubetsFfiCodec.readValue(stringMap)! as Map<Object?, Object?>)
-                      .cast<String, String>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSDictionary>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNonNullIntMapWithIntMap_error_
-          .implement(builder, (NSDictionary? intMap, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final Map<int, int> response = dartApi!.echoNonNullIntMap(
-                  (_GolubetsFfiCodec.readValue(intMap, int, int)! as Map<Object?, Object?>)
-                      .cast<int, int>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSDictionary>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNonNullEnumMapWithEnumMap_error_
-          .implement(builder, (NSDictionary? enumMap, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final Map<NativeInteropAnEnum, NativeInteropAnEnum> response = dartApi!
-                    .echoNonNullEnumMap(
-                      (_GolubetsFfiCodec.readValue(
-                                enumMap,
-                                NativeInteropAnEnum,
-                                NativeInteropAnEnum,
-                              )!
-                              as Map<Object?, Object?>)
-                          .cast<NativeInteropAnEnum, NativeInteropAnEnum>(),
-                    );
-                return _GolubetsFfiCodec.writeValue<NSDictionary>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNonNullClassMapWithClassMap_error_
-          .implement(builder, (
-            NSDictionary? classMap,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final Map<int, NativeInteropAllNullableTypes> response = dartApi!
-                    .echoNonNullClassMap(
-                      (_GolubetsFfiCodec.readValue(classMap, int)! as Map<Object?, Object?>)
-                          .cast<int, NativeInteropAllNullableTypes>(),
-                    );
-                return _GolubetsFfiCodec.writeValue<NSDictionary>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.echoEnumWithAnEnum_error_
-          .implement(builder, (NSNumber? anEnum, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final NativeInteropAnEnum response = dartApi!.echoEnum(
-                  _GolubetsFfiCodec.readValue(anEnum, NativeInteropAnEnum)! as NativeInteropAnEnum,
-                );
-                return _GolubetsFfiCodec.writeValue<NSNumber>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNativeInteropAnotherEnumWithAnotherEnum_error_
-          .implement(builder, (NSNumber? anotherEnum, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final NativeInteropAnotherEnum response = dartApi!.echoNativeInteropAnotherEnum(
-                  _GolubetsFfiCodec.readValue(anotherEnum, NativeInteropAnotherEnum)!
-                      as NativeInteropAnotherEnum,
-                );
-                return _GolubetsFfiCodec.writeValue<NSNumber>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableBoolWithABool_error_
-          .implement(builder, (NSNumber? aBool, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final bool? response = dartApi!.echoNullableBool(aBool?.boolValue);
-                return _GolubetsFfiCodec.writeValue<NSNumber?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableIntWithAnInt_error_
-          .implement(builder, (NSNumber? anInt, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final int? response = dartApi!.echoNullableInt(anInt?.longValue);
-                return _GolubetsFfiCodec.writeValue<NSNumber?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableDoubleWithADouble_error_
-          .implement(builder, (NSNumber? aDouble, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final double? response = dartApi!.echoNullableDouble(aDouble?.doubleValue);
-                return _GolubetsFfiCodec.writeValue<NSNumber?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableStringWithAString_error_
-          .implement(builder, (NSString? aString, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final String? response = dartApi!.echoNullableString(aString?.toDartString());
-                return _GolubetsFfiCodec.writeValue<NSString?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableUint8ListWithList_error_
-          .implement(builder, (
-            ffi_bridge.NativeInteropTestsGolubetsTypedData? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final Uint8List? response = dartApi!.echoNullableUint8List(
-                  _GolubetsFfiCodec.readValue(list) as Uint8List?,
-                );
-                return _GolubetsFfiCodec.writeValue<
-                  ffi_bridge.NativeInteropTestsGolubetsTypedData?
-                >(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableInt32ListWithList_error_
-          .implement(builder, (
-            ffi_bridge.NativeInteropTestsGolubetsTypedData? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final Int32List? response = dartApi!.echoNullableInt32List(
-                  _GolubetsFfiCodec.readValue(list) as Int32List?,
-                );
-                return _GolubetsFfiCodec.writeValue<
-                  ffi_bridge.NativeInteropTestsGolubetsTypedData?
-                >(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableInt64ListWithList_error_
-          .implement(builder, (
-            ffi_bridge.NativeInteropTestsGolubetsTypedData? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final Int64List? response = dartApi!.echoNullableInt64List(
-                  _GolubetsFfiCodec.readValue(list) as Int64List?,
-                );
-                return _GolubetsFfiCodec.writeValue<
-                  ffi_bridge.NativeInteropTestsGolubetsTypedData?
-                >(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableFloat64ListWithList_error_
-          .implement(builder, (
-            ffi_bridge.NativeInteropTestsGolubetsTypedData? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final Float64List? response = dartApi!.echoNullableFloat64List(
-                  _GolubetsFfiCodec.readValue(list) as Float64List?,
-                );
-                return _GolubetsFfiCodec.writeValue<
-                  ffi_bridge.NativeInteropTestsGolubetsTypedData?
-                >(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableListWithList_error_
-          .implement(builder, (NSArray? list, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final List<Object?>? response = dartApi!.echoNullableList(
-                  (_GolubetsFfiCodec.readValue(list) as List<Object?>?)?.cast<Object?>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSMutableArray?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableEnumListWithEnumList_error_
-          .implement(builder, (NSArray? enumList, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final List<NativeInteropAnEnum?>? response = dartApi!.echoNullableEnumList(
-                  (_GolubetsFfiCodec.readValue(enumList, NativeInteropAnEnum) as List<Object?>?)
-                      ?.cast<NativeInteropAnEnum?>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSMutableArray?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableClassListWithClassList_error_
-          .implement(builder, (NSArray? classList, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final List<NativeInteropAllNullableTypes?>? response = dartApi!
-                    .echoNullableClassList(
-                      (_GolubetsFfiCodec.readValue(classList) as List<Object?>?)
-                          ?.cast<NativeInteropAllNullableTypes?>(),
-                    );
-                return _GolubetsFfiCodec.writeValue<NSMutableArray?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableNonNullEnumListWithEnumList_error_
-          .implement(builder, (NSArray? enumList, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final List<NativeInteropAnEnum>? response = dartApi!.echoNullableNonNullEnumList(
-                  (_GolubetsFfiCodec.readValue(enumList, NativeInteropAnEnum) as List<Object?>?)
-                      ?.cast<NativeInteropAnEnum>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSMutableArray?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableNonNullClassListWithClassList_error_
-          .implement(builder, (NSArray? classList, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final List<NativeInteropAllNullableTypes>? response = dartApi!
-                    .echoNullableNonNullClassList(
-                      (_GolubetsFfiCodec.readValue(classList) as List<Object?>?)
-                          ?.cast<NativeInteropAllNullableTypes>(),
-                    );
-                return _GolubetsFfiCodec.writeValue<NSMutableArray?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.echoNullableMapWithMap_error_
-          .implement(builder, (NSDictionary? map, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final Map<Object?, Object?>? response = dartApi!.echoNullableMap(
-                  (_GolubetsFfiCodec.readValue(map) as Map<Object?, Object?>?)
-                      ?.cast<Object?, Object?>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSDictionary?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableStringMapWithStringMap_error_
-          .implement(builder, (
-            NSDictionary? stringMap,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final Map<String?, String?>? response = dartApi!.echoNullableStringMap(
-                  (_GolubetsFfiCodec.readValue(stringMap) as Map<Object?, Object?>?)
-                      ?.cast<String?, String?>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSDictionary?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableIntMapWithIntMap_error_
-          .implement(builder, (NSDictionary? intMap, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final Map<int?, int?>? response = dartApi!.echoNullableIntMap(
-                  (_GolubetsFfiCodec.readValue(intMap, int, int) as Map<Object?, Object?>?)
-                      ?.cast<int?, int?>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSDictionary?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableEnumMapWithEnumMap_error_
-          .implement(builder, (NSDictionary? enumMap, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? response = dartApi!
-                    .echoNullableEnumMap(
-                      (_GolubetsFfiCodec.readValue(
-                                enumMap,
-                                NativeInteropAnEnum,
-                                NativeInteropAnEnum,
-                              )
-                              as Map<Object?, Object?>?)
-                          ?.cast<NativeInteropAnEnum?, NativeInteropAnEnum?>(),
-                    );
-                return _GolubetsFfiCodec.writeValue<NSDictionary?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableClassMapWithClassMap_error_
-          .implement(builder, (
-            NSDictionary? classMap,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final Map<int?, NativeInteropAllNullableTypes?>? response = dartApi!
-                    .echoNullableClassMap(
-                      (_GolubetsFfiCodec.readValue(classMap, int) as Map<Object?, Object?>?)
-                          ?.cast<int?, NativeInteropAllNullableTypes?>(),
-                    );
-                return _GolubetsFfiCodec.writeValue<NSDictionary?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableNonNullStringMapWithStringMap_error_
-          .implement(builder, (
-            NSDictionary? stringMap,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final Map<String, String>? response = dartApi!.echoNullableNonNullStringMap(
-                  (_GolubetsFfiCodec.readValue(stringMap) as Map<Object?, Object?>?)
-                      ?.cast<String, String>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSDictionary?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableNonNullIntMapWithIntMap_error_
-          .implement(builder, (NSDictionary? intMap, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final Map<int, int>? response = dartApi!.echoNullableNonNullIntMap(
-                  (_GolubetsFfiCodec.readValue(intMap, int, int) as Map<Object?, Object?>?)
-                      ?.cast<int, int>(),
-                );
-                return _GolubetsFfiCodec.writeValue<NSDictionary?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableNonNullEnumMapWithEnumMap_error_
-          .implement(builder, (NSDictionary? enumMap, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final Map<NativeInteropAnEnum, NativeInteropAnEnum>? response = dartApi!
-                    .echoNullableNonNullEnumMap(
-                      (_GolubetsFfiCodec.readValue(
-                                enumMap,
-                                NativeInteropAnEnum,
-                                NativeInteropAnEnum,
-                              )
-                              as Map<Object?, Object?>?)
-                          ?.cast<NativeInteropAnEnum, NativeInteropAnEnum>(),
-                    );
-                return _GolubetsFfiCodec.writeValue<NSDictionary?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableNonNullClassMapWithClassMap_error_
-          .implement(builder, (
-            NSDictionary? classMap,
-            ffi_bridge.NativeInteropTestsError errorOut,
-          ) {
-            try {
-              if (dartApi != null) {
-                final Map<int, NativeInteropAllNullableTypes>? response = dartApi!
-                    .echoNullableNonNullClassMap(
-                      (_GolubetsFfiCodec.readValue(classMap, int) as Map<Object?, Object?>?)
-                          ?.cast<int, NativeInteropAllNullableTypes>(),
-                    );
-                return _GolubetsFfiCodec.writeValue<NSDictionary?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoNullableEnumWithAnEnum_error_
-          .implement(builder, (NSNumber? anEnum, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final NativeInteropAnEnum? response = dartApi!.echoNullableEnum(
-                  _GolubetsFfiCodec.readValue(anEnum, NativeInteropAnEnum) as NativeInteropAnEnum?,
-                );
-                return _GolubetsFfiCodec.writeValue<NSNumber?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAnotherNullableEnumWithAnotherEnum_error_
-          .implement(builder, (NSNumber? anotherEnum, ffi_bridge.NativeInteropTestsError errorOut) {
-            try {
-              if (dartApi != null) {
-                final NativeInteropAnotherEnum? response = dartApi!.echoAnotherNullableEnum(
-                  _GolubetsFfiCodec.readValue(anotherEnum, NativeInteropAnotherEnum)
-                      as NativeInteropAnotherEnum?,
-                );
-                return _GolubetsFfiCodec.writeValue<NSNumber?>(response);
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                return null;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              return null;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .noopAsyncWithError_completionHandler_
-          .implementAsListener(builder, (
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function()> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!.noopAsync().then(
-                  (response) {
-                    ffi_bridge.ObjCBlock_ffiVoid$CallExtension(completionHandler).call();
-                  },
-                  onError: (Object e) {
-                    _reportFfiError(errorOut, e);
-                    ffi_bridge.ObjCBlock_ffiVoid$CallExtension(completionHandler).call();
-                  },
-                );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid$CallExtension(completionHandler).call();
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid$CallExtension(completionHandler).call();
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .throwFlutterErrorAsyncWithError_completionHandler_
-          .implementAsListener(builder, (
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSObject?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!.throwFlutterErrorAsync().then(
-                  (response) {
-                    ffi_bridge.ObjCBlock_ffiVoid_NSObject$CallExtension(
-                      completionHandler,
-                    ).call(_GolubetsFfiCodec.writeValue<NSObject>(response, generic: true));
-                  },
-                  onError: (Object e) {
-                    _reportFfiError(errorOut, e);
-                    ffi_bridge.ObjCBlock_ffiVoid_NSObject$CallExtension(
-                      completionHandler,
-                    ).call(null);
-                  },
-                );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSObject$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSObject$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNativeInteropAllTypesWithEverything_error_completionHandler_
-          .implementAsListener(builder, (
-            ffi_bridge.NativeInteropAllTypesBridge? everything,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(ffi_bridge.NativeInteropAllTypesBridge?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNativeInteropAllTypes(NativeInteropAllTypes.fromFfi(everything)!)
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropAllTypesBridge$CallExtension(
-                          completionHandler,
-                        ).call(response.toFfi());
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropAllTypesBridge$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NativeInteropAllTypesBridge$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropAllTypesBridge$CallExtension(
-                completionHandler,
-              ).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableNativeInteropAllNullableTypesWithEverything_error_completionHandler_
-          .implementAsListener(builder, (
-            ffi_bridge.NativeInteropAllNullableTypesBridge? everything,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(ffi_bridge.NativeInteropAllNullableTypesBridge?)>
-            completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableNativeInteropAllNullableTypes(
-                      NativeInteropAllNullableTypes.fromFfi(everything),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropAllNullableTypesBridge$CallExtension(
-                          completionHandler,
-                        ).call(response?.toFfi());
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropAllNullableTypesBridge$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NativeInteropAllNullableTypesBridge$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropAllNullableTypesBridge$CallExtension(
-                completionHandler,
-              ).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursionWithEverything_error_completionHandler_
-          .implementAsListener(builder, (
-            ffi_bridge.NativeInteropAllNullableTypesWithoutRecursionBridge? everything,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<
-              Void Function(ffi_bridge.NativeInteropAllNullableTypesWithoutRecursionBridge?)
-            >
-            completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
-                      NativeInteropAllNullableTypesWithoutRecursion.fromFfi(everything),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropAllNullableTypesWithoutRecursionBridge$CallExtension(
-                          completionHandler,
-                        ).call(response?.toFfi());
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropAllNullableTypesWithoutRecursionBridge$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NativeInteropAllNullableTypesWithoutRecursionBridge$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropAllNullableTypesWithoutRecursionBridge$CallExtension(
-                completionHandler,
-              ).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncBoolWithABool_error_completionHandler_
-          .implementAsListener(builder, (
-            NSNumber? aBool,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSNumber?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncBool(aBool!.boolValue)
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSNumber>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncIntWithAnInt_error_completionHandler_
-          .implementAsListener(builder, (
-            NSNumber? anInt,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSNumber?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncInt(anInt!.longValue)
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSNumber>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncDoubleWithADouble_error_completionHandler_
-          .implementAsListener(builder, (
-            NSNumber? aDouble,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSNumber?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncDouble(aDouble!.doubleValue)
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSNumber>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncStringWithAString_error_completionHandler_
-          .implementAsListener(builder, (
-            NSString? aString,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSString?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncString(aString!.toDartString())
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSString$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSString>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSString$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSString$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSString$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncUint8ListWithList_error_completionHandler_
-          .implementAsListener(builder, (
-            ffi_bridge.NativeInteropTestsGolubetsTypedData? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(ffi_bridge.NativeInteropTestsGolubetsTypedData?)>
-            completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncUint8List(_GolubetsFfiCodec.readValue(list)! as Uint8List)
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                          completionHandler,
-                        ).call(
-                          _GolubetsFfiCodec.writeValue<
-                            ffi_bridge.NativeInteropTestsGolubetsTypedData
-                          >(response),
-                        );
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                completionHandler,
-              ).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncInt32ListWithList_error_completionHandler_
-          .implementAsListener(builder, (
-            ffi_bridge.NativeInteropTestsGolubetsTypedData? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(ffi_bridge.NativeInteropTestsGolubetsTypedData?)>
-            completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncInt32List(_GolubetsFfiCodec.readValue(list)! as Int32List)
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                          completionHandler,
-                        ).call(
-                          _GolubetsFfiCodec.writeValue<
-                            ffi_bridge.NativeInteropTestsGolubetsTypedData
-                          >(response),
-                        );
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                completionHandler,
-              ).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncInt64ListWithList_error_completionHandler_
-          .implementAsListener(builder, (
-            ffi_bridge.NativeInteropTestsGolubetsTypedData? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(ffi_bridge.NativeInteropTestsGolubetsTypedData?)>
-            completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncInt64List(_GolubetsFfiCodec.readValue(list)! as Int64List)
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                          completionHandler,
-                        ).call(
-                          _GolubetsFfiCodec.writeValue<
-                            ffi_bridge.NativeInteropTestsGolubetsTypedData
-                          >(response),
-                        );
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                completionHandler,
-              ).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncFloat64ListWithList_error_completionHandler_
-          .implementAsListener(builder, (
-            ffi_bridge.NativeInteropTestsGolubetsTypedData? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(ffi_bridge.NativeInteropTestsGolubetsTypedData?)>
-            completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncFloat64List(_GolubetsFfiCodec.readValue(list)! as Float64List)
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                          completionHandler,
-                        ).call(
-                          _GolubetsFfiCodec.writeValue<
-                            ffi_bridge.NativeInteropTestsGolubetsTypedData
-                          >(response),
-                        );
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                completionHandler,
-              ).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncObjectWithAnObject_error_completionHandler_
-          .implementAsListener(builder, (
-            NSObject? anObject,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSObject?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncObject(_GolubetsFfiCodec.readValue(anObject)!)
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSObject$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSObject>(response, generic: true));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSObject$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSObject$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSObject$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncListWithList_error_completionHandler_
-          .implementAsListener(builder, (
-            NSArray? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSArray?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncList(
-                      (_GolubetsFfiCodec.readValue(list)! as List<Object?>).cast<Object?>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSMutableArray>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncEnumListWithEnumList_error_completionHandler_
-          .implementAsListener(builder, (
-            NSArray? enumList,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSArray?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncEnumList(
-                      (_GolubetsFfiCodec.readValue(enumList, NativeInteropAnEnum)! as List<Object?>)
-                          .cast<NativeInteropAnEnum?>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSMutableArray>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncClassListWithClassList_error_completionHandler_
-          .implementAsListener(builder, (
-            NSArray? classList,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSArray?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncClassList(
-                      (_GolubetsFfiCodec.readValue(classList)! as List<Object?>)
-                          .cast<NativeInteropAllNullableTypes?>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSMutableArray>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNonNullEnumListWithEnumList_error_completionHandler_
-          .implementAsListener(builder, (
-            NSArray? enumList,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSArray?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNonNullEnumList(
-                      (_GolubetsFfiCodec.readValue(enumList, NativeInteropAnEnum)! as List<Object?>)
-                          .cast<NativeInteropAnEnum>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSMutableArray>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNonNullClassListWithClassList_error_completionHandler_
-          .implementAsListener(builder, (
-            NSArray? classList,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSArray?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNonNullClassList(
-                      (_GolubetsFfiCodec.readValue(classList)! as List<Object?>)
-                          .cast<NativeInteropAllNullableTypes>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSMutableArray>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncMapWithMap_error_completionHandler_
-          .implementAsListener(builder, (
-            NSDictionary? map,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSDictionary?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncMap(
-                      (_GolubetsFfiCodec.readValue(map)! as Map<Object?, Object?>)
-                          .cast<Object?, Object?>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSDictionary>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncStringMapWithStringMap_error_completionHandler_
-          .implementAsListener(builder, (
-            NSDictionary? stringMap,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSDictionary?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncStringMap(
-                      (_GolubetsFfiCodec.readValue(stringMap)! as Map<Object?, Object?>)
-                          .cast<String?, String?>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSDictionary>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncIntMapWithIntMap_error_completionHandler_
-          .implementAsListener(builder, (
-            NSDictionary? intMap,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSDictionary?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncIntMap(
-                      (_GolubetsFfiCodec.readValue(intMap, int, int)! as Map<Object?, Object?>)
-                          .cast<int?, int?>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSDictionary>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncEnumMapWithEnumMap_error_completionHandler_
-          .implementAsListener(builder, (
-            NSDictionary? enumMap,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSDictionary?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncEnumMap(
-                      (_GolubetsFfiCodec.readValue(
-                                enumMap,
-                                NativeInteropAnEnum,
-                                NativeInteropAnEnum,
-                              )!
-                              as Map<Object?, Object?>)
-                          .cast<NativeInteropAnEnum?, NativeInteropAnEnum?>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSDictionary>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncClassMapWithClassMap_error_completionHandler_
-          .implementAsListener(builder, (
-            NSDictionary? classMap,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSDictionary?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncClassMap(
-                      (_GolubetsFfiCodec.readValue(classMap, int)! as Map<Object?, Object?>)
-                          .cast<int?, NativeInteropAllNullableTypes?>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSDictionary>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncEnumWithAnEnum_error_completionHandler_
-          .implementAsListener(builder, (
-            NSNumber? anEnum,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSNumber?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncEnum(
-                      _GolubetsFfiCodec.readValue(anEnum, NativeInteropAnEnum)!
-                          as NativeInteropAnEnum,
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSNumber>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAnotherAsyncEnumWithAnotherEnum_error_completionHandler_
-          .implementAsListener(builder, (
-            NSNumber? anotherEnum,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSNumber?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAnotherAsyncEnum(
-                      _GolubetsFfiCodec.readValue(anotherEnum, NativeInteropAnotherEnum)!
-                          as NativeInteropAnotherEnum,
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSNumber>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableBoolWithABool_error_completionHandler_
-          .implementAsListener(builder, (
-            NSNumber? aBool,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSNumber?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableBool(aBool?.boolValue)
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSNumber?>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableIntWithAnInt_error_completionHandler_
-          .implementAsListener(builder, (
-            NSNumber? anInt,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSNumber?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableInt(anInt?.longValue)
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSNumber?>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableDoubleWithADouble_error_completionHandler_
-          .implementAsListener(builder, (
-            NSNumber? aDouble,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSNumber?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableDouble(aDouble?.doubleValue)
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSNumber?>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableStringWithAString_error_completionHandler_
-          .implementAsListener(builder, (
-            NSString? aString,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSString?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableString(aString?.toDartString())
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSString$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSString?>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSString$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSString$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSString$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableUint8ListWithList_error_completionHandler_
-          .implementAsListener(builder, (
-            ffi_bridge.NativeInteropTestsGolubetsTypedData? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(ffi_bridge.NativeInteropTestsGolubetsTypedData?)>
-            completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableUint8List(_GolubetsFfiCodec.readValue(list) as Uint8List?)
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                          completionHandler,
-                        ).call(
-                          _GolubetsFfiCodec.writeValue<
-                            ffi_bridge.NativeInteropTestsGolubetsTypedData?
-                          >(response),
-                        );
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                completionHandler,
-              ).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableInt32ListWithList_error_completionHandler_
-          .implementAsListener(builder, (
-            ffi_bridge.NativeInteropTestsGolubetsTypedData? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(ffi_bridge.NativeInteropTestsGolubetsTypedData?)>
-            completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableInt32List(_GolubetsFfiCodec.readValue(list) as Int32List?)
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                          completionHandler,
-                        ).call(
-                          _GolubetsFfiCodec.writeValue<
-                            ffi_bridge.NativeInteropTestsGolubetsTypedData?
-                          >(response),
-                        );
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                completionHandler,
-              ).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableInt64ListWithList_error_completionHandler_
-          .implementAsListener(builder, (
-            ffi_bridge.NativeInteropTestsGolubetsTypedData? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(ffi_bridge.NativeInteropTestsGolubetsTypedData?)>
-            completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableInt64List(_GolubetsFfiCodec.readValue(list) as Int64List?)
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                          completionHandler,
-                        ).call(
-                          _GolubetsFfiCodec.writeValue<
-                            ffi_bridge.NativeInteropTestsGolubetsTypedData?
-                          >(response),
-                        );
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                completionHandler,
-              ).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableFloat64ListWithList_error_completionHandler_
-          .implementAsListener(builder, (
-            ffi_bridge.NativeInteropTestsGolubetsTypedData? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(ffi_bridge.NativeInteropTestsGolubetsTypedData?)>
-            completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableFloat64List(_GolubetsFfiCodec.readValue(list) as Float64List?)
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                          completionHandler,
-                        ).call(
-                          _GolubetsFfiCodec.writeValue<
-                            ffi_bridge.NativeInteropTestsGolubetsTypedData?
-                          >(response),
-                        );
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NativeInteropTestsGolubetsTypedData$CallExtension(
-                completionHandler,
-              ).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableObjectWithAnObject_error_completionHandler_
-          .implementAsListener(builder, (
-            NSObject? anObject,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSObject?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableObject(_GolubetsFfiCodec.readValue(anObject))
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSObject$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSObject>(response, generic: true));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSObject$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSObject$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSObject$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableListWithList_error_completionHandler_
-          .implementAsListener(builder, (
-            NSArray? list,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSArray?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableList(
-                      (_GolubetsFfiCodec.readValue(list) as List<Object?>?)?.cast<Object?>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSMutableArray?>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableEnumListWithEnumList_error_completionHandler_
-          .implementAsListener(builder, (
-            NSArray? enumList,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSArray?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableEnumList(
-                      (_GolubetsFfiCodec.readValue(enumList, NativeInteropAnEnum) as List<Object?>?)
-                          ?.cast<NativeInteropAnEnum?>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSMutableArray?>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableClassListWithClassList_error_completionHandler_
-          .implementAsListener(builder, (
-            NSArray? classList,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSArray?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableClassList(
-                      (_GolubetsFfiCodec.readValue(classList) as List<Object?>?)
-                          ?.cast<NativeInteropAllNullableTypes?>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSMutableArray?>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableNonNullEnumListWithEnumList_error_completionHandler_
-          .implementAsListener(builder, (
-            NSArray? enumList,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSArray?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableNonNullEnumList(
-                      (_GolubetsFfiCodec.readValue(enumList, NativeInteropAnEnum) as List<Object?>?)
-                          ?.cast<NativeInteropAnEnum>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSMutableArray?>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableNonNullClassListWithClassList_error_completionHandler_
-          .implementAsListener(builder, (
-            NSArray? classList,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSArray?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableNonNullClassList(
-                      (_GolubetsFfiCodec.readValue(classList) as List<Object?>?)
-                          ?.cast<NativeInteropAllNullableTypes>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSMutableArray?>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSArray$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableMapWithMap_error_completionHandler_
-          .implementAsListener(builder, (
-            NSDictionary? map,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSDictionary?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableMap(
-                      (_GolubetsFfiCodec.readValue(map) as Map<Object?, Object?>?)
-                          ?.cast<Object?, Object?>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSDictionary?>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableStringMapWithStringMap_error_completionHandler_
-          .implementAsListener(builder, (
-            NSDictionary? stringMap,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSDictionary?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableStringMap(
-                      (_GolubetsFfiCodec.readValue(stringMap) as Map<Object?, Object?>?)
-                          ?.cast<String?, String?>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSDictionary?>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableIntMapWithIntMap_error_completionHandler_
-          .implementAsListener(builder, (
-            NSDictionary? intMap,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSDictionary?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableIntMap(
-                      (_GolubetsFfiCodec.readValue(intMap, int, int) as Map<Object?, Object?>?)
-                          ?.cast<int?, int?>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSDictionary?>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableEnumMapWithEnumMap_error_completionHandler_
-          .implementAsListener(builder, (
-            NSDictionary? enumMap,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSDictionary?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableEnumMap(
-                      (_GolubetsFfiCodec.readValue(
-                                enumMap,
-                                NativeInteropAnEnum,
-                                NativeInteropAnEnum,
-                              )
-                              as Map<Object?, Object?>?)
-                          ?.cast<NativeInteropAnEnum?, NativeInteropAnEnum?>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSDictionary?>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableClassMapWithClassMap_error_completionHandler_
-          .implementAsListener(builder, (
-            NSDictionary? classMap,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSDictionary?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableClassMap(
-                      (_GolubetsFfiCodec.readValue(classMap, int) as Map<Object?, Object?>?)
-                          ?.cast<int?, NativeInteropAllNullableTypes?>(),
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSDictionary?>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(
-                  completionHandler,
-                ).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSDictionary$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAsyncNullableEnumWithAnEnum_error_completionHandler_
-          .implementAsListener(builder, (
-            NSNumber? anEnum,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSNumber?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAsyncNullableEnum(
-                      _GolubetsFfiCodec.readValue(anEnum, NativeInteropAnEnum)
-                          as NativeInteropAnEnum?,
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSNumber?>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      ffi_bridge
-          .NativeInteropFlutterIntegrationCoreApiBridge$Builder
-          .echoAnotherAsyncNullableEnumWithAnotherEnum_error_completionHandler_
-          .implementAsListener(builder, (
-            NSNumber? anotherEnum,
-            ffi_bridge.NativeInteropTestsError errorOut,
-            ObjCBlock<Void Function(NSNumber?)> completionHandler,
-          ) {
-            try {
-              if (dartApi != null) {
-                dartApi!
-                    .echoAnotherAsyncNullableEnum(
-                      _GolubetsFfiCodec.readValue(anotherEnum, NativeInteropAnotherEnum)
-                          as NativeInteropAnotherEnum?,
-                    )
-                    .then(
-                      (response) {
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(_GolubetsFfiCodec.writeValue<NSNumber?>(response));
-                      },
-                      onError: (Object e) {
-                        _reportFfiError(errorOut, e);
-                        ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(
-                          completionHandler,
-                        ).call(null);
-                      },
-                    );
-                return;
-              } else {
-                _reportFfiError(
-                  errorOut,
-                  'ArgumentError: NativeInteropFlutterIntegrationCoreApi was not registered.',
-                );
-                ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-                return;
-              }
-            } catch (e) {
-              _reportFfiError(errorOut, e);
-              ffi_bridge.ObjCBlock_ffiVoid_NSNumber$CallExtension(completionHandler).call(null);
-              return;
-            }
-          });
-      builder.addProtocol(
-        ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge$Builder.$protocol,
-      );
-      final ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge impl =
-          ffi_bridge.NativeInteropFlutterIntegrationCoreApiBridge.as(builder.build());
-      ffi_bridge.NativeInteropFlutterIntegrationCoreApiRegistrar.registerInstanceWithApi(
-        impl,
-        name: NSString(name),
-      );
-    }
-    return api;
-  }
-
-  @override
-  void noop() {
-    if (dartApi != null) {
-      dartApi!.noop();
-      return;
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JObject? throwFlutterError() {
-    if (dartApi != null) {
-      final Object? response = dartApi!.throwFlutterError();
-      return _GolubetsJniCodec.writeValue<JObject?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JObject? throwError() {
-    if (dartApi != null) {
-      final Object? response = dartApi!.throwError();
-      return _GolubetsJniCodec.writeValue<JObject?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  void throwErrorFromVoid() {
-    if (dartApi != null) {
-      dartApi!.throwErrorFromVoid();
-      return;
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  jni_bridge.NativeInteropAllTypes echoNativeInteropAllTypes(
-    jni_bridge.NativeInteropAllTypes everything,
-  ) {
-    if (dartApi != null) {
-      final NativeInteropAllTypes response = dartApi!.echoNativeInteropAllTypes(
-        NativeInteropAllTypes.fromJni(everything)!,
-      );
-      return response.toJni();
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  jni_bridge.NativeInteropAllNullableTypes? echoNativeInteropAllNullableTypes(
-    jni_bridge.NativeInteropAllNullableTypes? everything,
-  ) {
-    if (dartApi != null) {
-      final NativeInteropAllNullableTypes? response = dartApi!.echoNativeInteropAllNullableTypes(
-        NativeInteropAllNullableTypes.fromJni(everything),
-      );
-      return response?.toJni();
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  jni_bridge.NativeInteropAllNullableTypes sendMultipleNullableTypes(
-    JBoolean? aNullableBool,
-    JLong? aNullableInt,
-    JString? aNullableString,
-  ) {
-    if (dartApi != null) {
-      final NativeInteropAllNullableTypes response = dartApi!.sendMultipleNullableTypes(
-        aNullableBool?.toDartBool(releaseOriginal: true),
-        aNullableInt?.toDartInt(releaseOriginal: true),
-        aNullableString?.toDartString(releaseOriginal: true),
-      );
-      return response.toJni();
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  jni_bridge.NativeInteropAllNullableTypesWithoutRecursion?
-  echoNativeInteropAllNullableTypesWithoutRecursion(
-    jni_bridge.NativeInteropAllNullableTypesWithoutRecursion? everything,
-  ) {
-    if (dartApi != null) {
-      final NativeInteropAllNullableTypesWithoutRecursion? response = dartApi!
-          .echoNativeInteropAllNullableTypesWithoutRecursion(
-            NativeInteropAllNullableTypesWithoutRecursion.fromJni(everything),
-          );
-      return response?.toJni();
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  jni_bridge.NativeInteropAllNullableTypesWithoutRecursion
-  sendMultipleNullableTypesWithoutRecursion(
-    JBoolean? aNullableBool,
-    JLong? aNullableInt,
-    JString? aNullableString,
-  ) {
-    if (dartApi != null) {
-      final NativeInteropAllNullableTypesWithoutRecursion response = dartApi!
-          .sendMultipleNullableTypesWithoutRecursion(
-            aNullableBool?.toDartBool(releaseOriginal: true),
-            aNullableInt?.toDartInt(releaseOriginal: true),
-            aNullableString?.toDartString(releaseOriginal: true),
-          );
-      return response.toJni();
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  bool echoBool(bool aBool) {
-    if (dartApi != null) {
-      final bool response = dartApi!.echoBool(aBool);
-      return response;
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  int echoInt(int anInt) {
-    if (dartApi != null) {
-      final int response = dartApi!.echoInt(anInt);
-      return response;
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  double echoDouble(double aDouble) {
-    if (dartApi != null) {
-      final double response = dartApi!.echoDouble(aDouble);
-      return response;
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JString echoString(JString aString) {
-    if (dartApi != null) {
-      final String response = dartApi!.echoString(aString.toDartString(releaseOriginal: true));
-      return _GolubetsJniCodec.writeValue<JString>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JByteArray echoUint8List(JByteArray list) {
-    if (dartApi != null) {
-      final Uint8List response = dartApi!.echoUint8List(
-        _GolubetsJniCodec.readValue(list)! as Uint8List,
-      );
-      return _GolubetsJniCodec.writeValue<JByteArray>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JIntArray echoInt32List(JIntArray list) {
-    if (dartApi != null) {
-      final Int32List response = dartApi!.echoInt32List(
-        _GolubetsJniCodec.readValue(list)! as Int32List,
-      );
-      return _GolubetsJniCodec.writeValue<JIntArray>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JLongArray echoInt64List(JLongArray list) {
-    if (dartApi != null) {
-      final Int64List response = dartApi!.echoInt64List(
-        _GolubetsJniCodec.readValue(list)! as Int64List,
-      );
-      return _GolubetsJniCodec.writeValue<JLongArray>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JDoubleArray echoFloat64List(JDoubleArray list) {
-    if (dartApi != null) {
-      final Float64List response = dartApi!.echoFloat64List(
-        _GolubetsJniCodec.readValue(list)! as Float64List,
-      );
-      return _GolubetsJniCodec.writeValue<JDoubleArray>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JList<JObject?> echoList(JList<JObject?> list) {
-    if (dartApi != null) {
-      final List<Object?> response = dartApi!.echoList(
-        (_GolubetsJniCodec.readValue(list)! as List<Object?>).cast<Object?>(),
-      );
-      return _GolubetsJniCodec.writeValue<JList<JObject?>>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JList<jni_bridge.NativeInteropAnEnum?> echoEnumList(
-    JList<jni_bridge.NativeInteropAnEnum?> enumList,
-  ) {
-    if (dartApi != null) {
-      final List<NativeInteropAnEnum?> response = dartApi!.echoEnumList(
-        (_GolubetsJniCodec.readValue(enumList)! as List<Object?>).cast<NativeInteropAnEnum?>(),
-      );
-      return _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum?>>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JList<jni_bridge.NativeInteropAllNullableTypes?> echoClassList(
-    JList<jni_bridge.NativeInteropAllNullableTypes?> classList,
-  ) {
-    if (dartApi != null) {
-      final List<NativeInteropAllNullableTypes?> response = dartApi!.echoClassList(
-        (_GolubetsJniCodec.readValue(classList)! as List<Object?>)
-            .cast<NativeInteropAllNullableTypes?>(),
-      );
-      return _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes?>>(
-        response,
-      );
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JList<jni_bridge.NativeInteropAnEnum> echoNonNullEnumList(
-    JList<jni_bridge.NativeInteropAnEnum> enumList,
-  ) {
-    if (dartApi != null) {
-      final List<NativeInteropAnEnum> response = dartApi!.echoNonNullEnumList(
-        (_GolubetsJniCodec.readValue(enumList)! as List<Object?>).cast<NativeInteropAnEnum>(),
-      );
-      return _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum>>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JList<jni_bridge.NativeInteropAllNullableTypes> echoNonNullClassList(
-    JList<jni_bridge.NativeInteropAllNullableTypes> classList,
-  ) {
-    if (dartApi != null) {
-      final List<NativeInteropAllNullableTypes> response = dartApi!.echoNonNullClassList(
-        (_GolubetsJniCodec.readValue(classList)! as List<Object?>)
-            .cast<NativeInteropAllNullableTypes>(),
-      );
-      return _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes>>(
-        response,
-      );
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<JObject?, JObject?> echoMap(JMap<JObject?, JObject?> map) {
-    if (dartApi != null) {
-      final Map<Object?, Object?> response = dartApi!.echoMap(
-        (_GolubetsJniCodec.readValue(map)! as Map<Object?, Object?>).cast<Object?, Object?>(),
-      );
-      return _GolubetsJniCodec.writeValue<JMap<JObject?, JObject?>>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<JString?, JString?> echoStringMap(JMap<JString?, JString?> stringMap) {
-    if (dartApi != null) {
-      final Map<String?, String?> response = dartApi!.echoStringMap(
-        (_GolubetsJniCodec.readValue(stringMap)! as Map<Object?, Object?>).cast<String?, String?>(),
-      );
-      return _GolubetsJniCodec.writeValue<JMap<JString?, JString?>>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<JLong?, JLong?> echoIntMap(JMap<JLong?, JLong?> intMap) {
-    if (dartApi != null) {
-      final Map<int?, int?> response = dartApi!.echoIntMap(
-        (_GolubetsJniCodec.readValue(intMap)! as Map<Object?, Object?>).cast<int?, int?>(),
-      );
-      return _GolubetsJniCodec.writeValue<JMap<JLong?, JLong?>>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?> echoEnumMap(
-    JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?> enumMap,
-  ) {
-    if (dartApi != null) {
-      final Map<NativeInteropAnEnum?, NativeInteropAnEnum?> response = dartApi!.echoEnumMap(
-        (_GolubetsJniCodec.readValue(enumMap)! as Map<Object?, Object?>)
-            .cast<NativeInteropAnEnum?, NativeInteropAnEnum?>(),
-      );
-      return _GolubetsJniCodec.writeValue<
-        JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>
-      >(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?> echoClassMap(
-    JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?> classMap,
-  ) {
-    if (dartApi != null) {
-      final Map<int?, NativeInteropAllNullableTypes?> response = dartApi!.echoClassMap(
-        (_GolubetsJniCodec.readValue(classMap)! as Map<Object?, Object?>)
-            .cast<int?, NativeInteropAllNullableTypes?>(),
-      );
-      return _GolubetsJniCodec.writeValue<JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>>(
-        response,
-      );
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<JString, JString> echoNonNullStringMap(JMap<JString, JString> stringMap) {
-    if (dartApi != null) {
-      final Map<String, String> response = dartApi!.echoNonNullStringMap(
-        (_GolubetsJniCodec.readValue(stringMap)! as Map<Object?, Object?>).cast<String, String>(),
-      );
-      return _GolubetsJniCodec.writeValue<JMap<JString, JString>>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<JLong, JLong> echoNonNullIntMap(JMap<JLong, JLong> intMap) {
-    if (dartApi != null) {
-      final Map<int, int> response = dartApi!.echoNonNullIntMap(
-        (_GolubetsJniCodec.readValue(intMap)! as Map<Object?, Object?>).cast<int, int>(),
-      );
-      return _GolubetsJniCodec.writeValue<JMap<JLong, JLong>>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<jni_bridge.NativeInteropAnEnum, jni_bridge.NativeInteropAnEnum> echoNonNullEnumMap(
-    JMap<jni_bridge.NativeInteropAnEnum, jni_bridge.NativeInteropAnEnum> enumMap,
-  ) {
-    if (dartApi != null) {
-      final Map<NativeInteropAnEnum, NativeInteropAnEnum> response = dartApi!.echoNonNullEnumMap(
-        (_GolubetsJniCodec.readValue(enumMap)! as Map<Object?, Object?>)
-            .cast<NativeInteropAnEnum, NativeInteropAnEnum>(),
-      );
-      return _GolubetsJniCodec.writeValue<
-        JMap<jni_bridge.NativeInteropAnEnum, jni_bridge.NativeInteropAnEnum>
-      >(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<JLong, jni_bridge.NativeInteropAllNullableTypes> echoNonNullClassMap(
-    JMap<JLong, jni_bridge.NativeInteropAllNullableTypes> classMap,
-  ) {
-    if (dartApi != null) {
-      final Map<int, NativeInteropAllNullableTypes> response = dartApi!.echoNonNullClassMap(
-        (_GolubetsJniCodec.readValue(classMap)! as Map<Object?, Object?>)
-            .cast<int, NativeInteropAllNullableTypes>(),
-      );
-      return _GolubetsJniCodec.writeValue<JMap<JLong, jni_bridge.NativeInteropAllNullableTypes>>(
-        response,
-      );
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  jni_bridge.NativeInteropAnEnum echoEnum(jni_bridge.NativeInteropAnEnum anEnum) {
-    if (dartApi != null) {
-      final NativeInteropAnEnum response = dartApi!.echoEnum(NativeInteropAnEnum.fromJni(anEnum)!);
-      return response.toJni();
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  jni_bridge.NativeInteropAnotherEnum echoNativeInteropAnotherEnum(
-    jni_bridge.NativeInteropAnotherEnum anotherEnum,
-  ) {
-    if (dartApi != null) {
-      final NativeInteropAnotherEnum response = dartApi!.echoNativeInteropAnotherEnum(
-        NativeInteropAnotherEnum.fromJni(anotherEnum)!,
-      );
-      return response.toJni();
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JBoolean? echoNullableBool(JBoolean? aBool) {
-    if (dartApi != null) {
-      final bool? response = dartApi!.echoNullableBool(aBool?.toDartBool(releaseOriginal: true));
-      return _GolubetsJniCodec.writeValue<JBoolean?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JLong? echoNullableInt(JLong? anInt) {
-    if (dartApi != null) {
-      final int? response = dartApi!.echoNullableInt(anInt?.toDartInt(releaseOriginal: true));
-      return _GolubetsJniCodec.writeValue<JLong?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JDouble? echoNullableDouble(JDouble? aDouble) {
-    if (dartApi != null) {
-      final double? response = dartApi!.echoNullableDouble(
-        aDouble?.toDartDouble(releaseOriginal: true),
-      );
-      return _GolubetsJniCodec.writeValue<JDouble?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JString? echoNullableString(JString? aString) {
-    if (dartApi != null) {
-      final String? response = dartApi!.echoNullableString(
-        aString?.toDartString(releaseOriginal: true),
-      );
-      return _GolubetsJniCodec.writeValue<JString?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JByteArray? echoNullableUint8List(JByteArray? list) {
-    if (dartApi != null) {
-      final Uint8List? response = dartApi!.echoNullableUint8List(
-        _GolubetsJniCodec.readValue(list) as Uint8List?,
-      );
-      return _GolubetsJniCodec.writeValue<JByteArray?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JIntArray? echoNullableInt32List(JIntArray? list) {
-    if (dartApi != null) {
-      final Int32List? response = dartApi!.echoNullableInt32List(
-        _GolubetsJniCodec.readValue(list) as Int32List?,
-      );
-      return _GolubetsJniCodec.writeValue<JIntArray?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JLongArray? echoNullableInt64List(JLongArray? list) {
-    if (dartApi != null) {
-      final Int64List? response = dartApi!.echoNullableInt64List(
-        _GolubetsJniCodec.readValue(list) as Int64List?,
-      );
-      return _GolubetsJniCodec.writeValue<JLongArray?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JDoubleArray? echoNullableFloat64List(JDoubleArray? list) {
-    if (dartApi != null) {
-      final Float64List? response = dartApi!.echoNullableFloat64List(
-        _GolubetsJniCodec.readValue(list) as Float64List?,
-      );
-      return _GolubetsJniCodec.writeValue<JDoubleArray?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JList<JObject?>? echoNullableList(JList<JObject?>? list) {
-    if (dartApi != null) {
-      final List<Object?>? response = dartApi!.echoNullableList(
-        (_GolubetsJniCodec.readValue(list) as List<Object?>?)?.cast<Object?>(),
-      );
-      return _GolubetsJniCodec.writeValue<JList<JObject?>?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JList<jni_bridge.NativeInteropAnEnum?>? echoNullableEnumList(
-    JList<jni_bridge.NativeInteropAnEnum?>? enumList,
-  ) {
-    if (dartApi != null) {
-      final List<NativeInteropAnEnum?>? response = dartApi!.echoNullableEnumList(
-        (_GolubetsJniCodec.readValue(enumList) as List<Object?>?)?.cast<NativeInteropAnEnum?>(),
-      );
-      return _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum?>?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JList<jni_bridge.NativeInteropAllNullableTypes?>? echoNullableClassList(
-    JList<jni_bridge.NativeInteropAllNullableTypes?>? classList,
-  ) {
-    if (dartApi != null) {
-      final List<NativeInteropAllNullableTypes?>? response = dartApi!.echoNullableClassList(
-        (_GolubetsJniCodec.readValue(classList) as List<Object?>?)
-            ?.cast<NativeInteropAllNullableTypes?>(),
-      );
-      return _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes?>?>(
-        response,
-      );
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JList<jni_bridge.NativeInteropAnEnum>? echoNullableNonNullEnumList(
-    JList<jni_bridge.NativeInteropAnEnum>? enumList,
-  ) {
-    if (dartApi != null) {
-      final List<NativeInteropAnEnum>? response = dartApi!.echoNullableNonNullEnumList(
-        (_GolubetsJniCodec.readValue(enumList) as List<Object?>?)?.cast<NativeInteropAnEnum>(),
-      );
-      return _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum>?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JList<jni_bridge.NativeInteropAllNullableTypes>? echoNullableNonNullClassList(
-    JList<jni_bridge.NativeInteropAllNullableTypes>? classList,
-  ) {
-    if (dartApi != null) {
-      final List<NativeInteropAllNullableTypes>? response = dartApi!.echoNullableNonNullClassList(
-        (_GolubetsJniCodec.readValue(classList) as List<Object?>?)
-            ?.cast<NativeInteropAllNullableTypes>(),
-      );
-      return _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes>?>(
-        response,
-      );
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<JObject?, JObject?>? echoNullableMap(JMap<JObject?, JObject?>? map) {
-    if (dartApi != null) {
-      final Map<Object?, Object?>? response = dartApi!.echoNullableMap(
-        (_GolubetsJniCodec.readValue(map) as Map<Object?, Object?>?)?.cast<Object?, Object?>(),
-      );
-      return _GolubetsJniCodec.writeValue<JMap<JObject?, JObject?>?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<JString?, JString?>? echoNullableStringMap(JMap<JString?, JString?>? stringMap) {
-    if (dartApi != null) {
-      final Map<String?, String?>? response = dartApi!.echoNullableStringMap(
-        (_GolubetsJniCodec.readValue(stringMap) as Map<Object?, Object?>?)
-            ?.cast<String?, String?>(),
-      );
-      return _GolubetsJniCodec.writeValue<JMap<JString?, JString?>?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<JLong?, JLong?>? echoNullableIntMap(JMap<JLong?, JLong?>? intMap) {
-    if (dartApi != null) {
-      final Map<int?, int?>? response = dartApi!.echoNullableIntMap(
-        (_GolubetsJniCodec.readValue(intMap) as Map<Object?, Object?>?)?.cast<int?, int?>(),
-      );
-      return _GolubetsJniCodec.writeValue<JMap<JLong?, JLong?>?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>? echoNullableEnumMap(
-    JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>? enumMap,
-  ) {
-    if (dartApi != null) {
-      final Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? response = dartApi!
-          .echoNullableEnumMap(
-            (_GolubetsJniCodec.readValue(enumMap) as Map<Object?, Object?>?)
-                ?.cast<NativeInteropAnEnum?, NativeInteropAnEnum?>(),
-          );
-      return _GolubetsJniCodec.writeValue<
-        JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>?
-      >(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>? echoNullableClassMap(
-    JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>? classMap,
-  ) {
-    if (dartApi != null) {
-      final Map<int?, NativeInteropAllNullableTypes?>? response = dartApi!.echoNullableClassMap(
-        (_GolubetsJniCodec.readValue(classMap) as Map<Object?, Object?>?)
-            ?.cast<int?, NativeInteropAllNullableTypes?>(),
-      );
-      return _GolubetsJniCodec.writeValue<JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>?>(
-        response,
-      );
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<JString, JString>? echoNullableNonNullStringMap(JMap<JString, JString>? stringMap) {
-    if (dartApi != null) {
-      final Map<String, String>? response = dartApi!.echoNullableNonNullStringMap(
-        (_GolubetsJniCodec.readValue(stringMap) as Map<Object?, Object?>?)?.cast<String, String>(),
-      );
-      return _GolubetsJniCodec.writeValue<JMap<JString, JString>?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<JLong, JLong>? echoNullableNonNullIntMap(JMap<JLong, JLong>? intMap) {
-    if (dartApi != null) {
-      final Map<int, int>? response = dartApi!.echoNullableNonNullIntMap(
-        (_GolubetsJniCodec.readValue(intMap) as Map<Object?, Object?>?)?.cast<int, int>(),
-      );
-      return _GolubetsJniCodec.writeValue<JMap<JLong, JLong>?>(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<jni_bridge.NativeInteropAnEnum, jni_bridge.NativeInteropAnEnum>? echoNullableNonNullEnumMap(
-    JMap<jni_bridge.NativeInteropAnEnum, jni_bridge.NativeInteropAnEnum>? enumMap,
-  ) {
-    if (dartApi != null) {
-      final Map<NativeInteropAnEnum, NativeInteropAnEnum>? response = dartApi!
-          .echoNullableNonNullEnumMap(
-            (_GolubetsJniCodec.readValue(enumMap) as Map<Object?, Object?>?)
-                ?.cast<NativeInteropAnEnum, NativeInteropAnEnum>(),
-          );
-      return _GolubetsJniCodec.writeValue<
-        JMap<jni_bridge.NativeInteropAnEnum, jni_bridge.NativeInteropAnEnum>?
-      >(response);
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  JMap<JLong, jni_bridge.NativeInteropAllNullableTypes>? echoNullableNonNullClassMap(
-    JMap<JLong, jni_bridge.NativeInteropAllNullableTypes>? classMap,
-  ) {
-    if (dartApi != null) {
-      final Map<int, NativeInteropAllNullableTypes>? response = dartApi!
-          .echoNullableNonNullClassMap(
-            (_GolubetsJniCodec.readValue(classMap) as Map<Object?, Object?>?)
-                ?.cast<int, NativeInteropAllNullableTypes>(),
-          );
-      return _GolubetsJniCodec.writeValue<JMap<JLong, jni_bridge.NativeInteropAllNullableTypes>?>(
-        response,
-      );
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  jni_bridge.NativeInteropAnEnum? echoNullableEnum(jni_bridge.NativeInteropAnEnum? anEnum) {
-    if (dartApi != null) {
-      final NativeInteropAnEnum? response = dartApi!.echoNullableEnum(
-        NativeInteropAnEnum.fromJni(anEnum),
-      );
-      return response?.toJni();
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  jni_bridge.NativeInteropAnotherEnum? echoAnotherNullableEnum(
-    jni_bridge.NativeInteropAnotherEnum? anotherEnum,
-  ) {
-    if (dartApi != null) {
-      final NativeInteropAnotherEnum? response = dartApi!.echoAnotherNullableEnum(
-        NativeInteropAnotherEnum.fromJni(anotherEnum),
-      );
-      return response?.toJni();
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JObject> noopAsync() {
-    if (dartApi != null) {
-      return dartApi!.noopAsync().then((response) {
-        return _GolubetsJniCodec._kotlinUnit;
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JObject?> throwFlutterErrorAsync() {
-    if (dartApi != null) {
-      return dartApi!.throwFlutterErrorAsync().then((response) {
-        return _GolubetsJniCodec.writeValue<JObject?>(response);
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<jni_bridge.NativeInteropAllTypes> echoAsyncNativeInteropAllTypes(
-    jni_bridge.NativeInteropAllTypes everything,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNativeInteropAllTypes(NativeInteropAllTypes.fromJni(everything)!)
-          .then((response) {
-            return response.toJni();
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<jni_bridge.NativeInteropAllNullableTypes?> echoAsyncNullableNativeInteropAllNullableTypes(
-    jni_bridge.NativeInteropAllNullableTypes? everything,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNullableNativeInteropAllNullableTypes(
-            NativeInteropAllNullableTypes.fromJni(everything),
-          )
-          .then((response) {
-            return response?.toJni();
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<jni_bridge.NativeInteropAllNullableTypesWithoutRecursion?>
-  echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
-    jni_bridge.NativeInteropAllNullableTypesWithoutRecursion? everything,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
-            NativeInteropAllNullableTypesWithoutRecursion.fromJni(everything),
-          )
-          .then((response) {
-            return response?.toJni();
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JBoolean> echoAsyncBool(bool aBool) {
-    if (dartApi != null) {
-      return dartApi!.echoAsyncBool(aBool).then((response) {
-        return _GolubetsJniCodec.writeValue<JBoolean>(response);
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JLong> echoAsyncInt(int anInt) {
-    if (dartApi != null) {
-      return dartApi!.echoAsyncInt(anInt).then((response) {
-        return _GolubetsJniCodec.writeValue<JLong>(response);
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JDouble> echoAsyncDouble(double aDouble) {
-    if (dartApi != null) {
-      return dartApi!.echoAsyncDouble(aDouble).then((response) {
-        return _GolubetsJniCodec.writeValue<JDouble>(response);
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JString> echoAsyncString(JString aString) {
-    if (dartApi != null) {
-      return dartApi!.echoAsyncString(aString.toDartString(releaseOriginal: true)).then((response) {
-        return _GolubetsJniCodec.writeValue<JString>(response);
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JByteArray> echoAsyncUint8List(JByteArray list) {
-    if (dartApi != null) {
-      return dartApi!.echoAsyncUint8List(_GolubetsJniCodec.readValue(list)! as Uint8List).then((
-        response,
-      ) {
-        return _GolubetsJniCodec.writeValue<JByteArray>(response);
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JIntArray> echoAsyncInt32List(JIntArray list) {
-    if (dartApi != null) {
-      return dartApi!.echoAsyncInt32List(_GolubetsJniCodec.readValue(list)! as Int32List).then((
-        response,
-      ) {
-        return _GolubetsJniCodec.writeValue<JIntArray>(response);
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JLongArray> echoAsyncInt64List(JLongArray list) {
-    if (dartApi != null) {
-      return dartApi!.echoAsyncInt64List(_GolubetsJniCodec.readValue(list)! as Int64List).then((
-        response,
-      ) {
-        return _GolubetsJniCodec.writeValue<JLongArray>(response);
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JDoubleArray> echoAsyncFloat64List(JDoubleArray list) {
-    if (dartApi != null) {
-      return dartApi!.echoAsyncFloat64List(_GolubetsJniCodec.readValue(list)! as Float64List).then((
-        response,
-      ) {
-        return _GolubetsJniCodec.writeValue<JDoubleArray>(response);
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JObject> echoAsyncObject(JObject anObject) {
-    if (dartApi != null) {
-      return dartApi!.echoAsyncObject(_GolubetsJniCodec.readValue(anObject)!).then((response) {
-        return _GolubetsJniCodec.writeValue<JObject>(response);
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JList<JObject?>> echoAsyncList(JList<JObject?> list) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncList((_GolubetsJniCodec.readValue(list)! as List<Object?>).cast<Object?>())
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JList<JObject?>>(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JList<jni_bridge.NativeInteropAnEnum?>> echoAsyncEnumList(
-    JList<jni_bridge.NativeInteropAnEnum?> enumList,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncEnumList(
-            (_GolubetsJniCodec.readValue(enumList)! as List<Object?>).cast<NativeInteropAnEnum?>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum?>>(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JList<jni_bridge.NativeInteropAllNullableTypes?>> echoAsyncClassList(
-    JList<jni_bridge.NativeInteropAllNullableTypes?> classList,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncClassList(
-            (_GolubetsJniCodec.readValue(classList)! as List<Object?>)
-                .cast<NativeInteropAllNullableTypes?>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes?>>(
-              response,
-            );
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JList<jni_bridge.NativeInteropAnEnum>> echoAsyncNonNullEnumList(
-    JList<jni_bridge.NativeInteropAnEnum?> enumList,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNonNullEnumList(
-            (_GolubetsJniCodec.readValue(enumList)! as List<Object?>).cast<NativeInteropAnEnum>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum>>(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JList<jni_bridge.NativeInteropAllNullableTypes>> echoAsyncNonNullClassList(
-    JList<jni_bridge.NativeInteropAllNullableTypes?> classList,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNonNullClassList(
-            (_GolubetsJniCodec.readValue(classList)! as List<Object?>)
-                .cast<NativeInteropAllNullableTypes>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes>>(
-              response,
-            );
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JMap<JObject?, JObject?>> echoAsyncMap(JMap<JObject?, JObject?> map) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncMap(
-            (_GolubetsJniCodec.readValue(map)! as Map<Object?, Object?>).cast<Object?, Object?>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JMap<JObject?, JObject?>>(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JMap<JString?, JString?>> echoAsyncStringMap(JMap<JString?, JString?> stringMap) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncStringMap(
-            (_GolubetsJniCodec.readValue(stringMap)! as Map<Object?, Object?>)
-                .cast<String?, String?>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JMap<JString?, JString?>>(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JMap<JLong?, JLong?>> echoAsyncIntMap(JMap<JLong?, JLong?> intMap) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncIntMap(
-            (_GolubetsJniCodec.readValue(intMap)! as Map<Object?, Object?>).cast<int?, int?>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JMap<JLong?, JLong?>>(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>> echoAsyncEnumMap(
-    JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?> enumMap,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncEnumMap(
-            (_GolubetsJniCodec.readValue(enumMap)! as Map<Object?, Object?>)
-                .cast<NativeInteropAnEnum?, NativeInteropAnEnum?>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<
-              JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>
-            >(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>> echoAsyncClassMap(
-    JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?> classMap,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncClassMap(
-            (_GolubetsJniCodec.readValue(classMap)! as Map<Object?, Object?>)
-                .cast<int?, NativeInteropAllNullableTypes?>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<
-              JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>
-            >(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<jni_bridge.NativeInteropAnEnum> echoAsyncEnum(jni_bridge.NativeInteropAnEnum anEnum) {
-    if (dartApi != null) {
-      return dartApi!.echoAsyncEnum(NativeInteropAnEnum.fromJni(anEnum)!).then((response) {
-        return response.toJni();
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<jni_bridge.NativeInteropAnotherEnum> echoAnotherAsyncEnum(
-    jni_bridge.NativeInteropAnotherEnum anotherEnum,
-  ) {
-    if (dartApi != null) {
-      return dartApi!.echoAnotherAsyncEnum(NativeInteropAnotherEnum.fromJni(anotherEnum)!).then((
-        response,
-      ) {
-        return response.toJni();
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JBoolean?> echoAsyncNullableBool(JBoolean? aBool) {
-    if (dartApi != null) {
-      return dartApi!.echoAsyncNullableBool(aBool?.toDartBool(releaseOriginal: true)).then((
-        response,
-      ) {
-        return _GolubetsJniCodec.writeValue<JBoolean?>(response);
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JLong?> echoAsyncNullableInt(JLong? anInt) {
-    if (dartApi != null) {
-      return dartApi!.echoAsyncNullableInt(anInt?.toDartInt(releaseOriginal: true)).then((
-        response,
-      ) {
-        return _GolubetsJniCodec.writeValue<JLong?>(response);
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JDouble?> echoAsyncNullableDouble(JDouble? aDouble) {
-    if (dartApi != null) {
-      return dartApi!.echoAsyncNullableDouble(aDouble?.toDartDouble(releaseOriginal: true)).then((
-        response,
-      ) {
-        return _GolubetsJniCodec.writeValue<JDouble?>(response);
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JString?> echoAsyncNullableString(JString? aString) {
-    if (dartApi != null) {
-      return dartApi!.echoAsyncNullableString(aString?.toDartString(releaseOriginal: true)).then((
-        response,
-      ) {
-        return _GolubetsJniCodec.writeValue<JString?>(response);
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JByteArray?> echoAsyncNullableUint8List(JByteArray? list) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNullableUint8List(_GolubetsJniCodec.readValue(list) as Uint8List?)
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JByteArray?>(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JIntArray?> echoAsyncNullableInt32List(JIntArray? list) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNullableInt32List(_GolubetsJniCodec.readValue(list) as Int32List?)
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JIntArray?>(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JLongArray?> echoAsyncNullableInt64List(JLongArray? list) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNullableInt64List(_GolubetsJniCodec.readValue(list) as Int64List?)
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JLongArray?>(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JDoubleArray?> echoAsyncNullableFloat64List(JDoubleArray? list) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNullableFloat64List(_GolubetsJniCodec.readValue(list) as Float64List?)
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JDoubleArray?>(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JObject?> echoAsyncNullableObject(JObject? anObject) {
-    if (dartApi != null) {
-      return dartApi!.echoAsyncNullableObject(_GolubetsJniCodec.readValue(anObject)).then((
-        response,
-      ) {
-        return _GolubetsJniCodec.writeValue<JObject?>(response);
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JList<JObject?>?> echoAsyncNullableList(JList<JObject?>? list) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNullableList(
-            (_GolubetsJniCodec.readValue(list) as List<Object?>?)?.cast<Object?>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JList<JObject?>?>(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JList<jni_bridge.NativeInteropAnEnum?>?> echoAsyncNullableEnumList(
-    JList<jni_bridge.NativeInteropAnEnum?>? enumList,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNullableEnumList(
-            (_GolubetsJniCodec.readValue(enumList) as List<Object?>?)?.cast<NativeInteropAnEnum?>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum?>?>(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JList<jni_bridge.NativeInteropAllNullableTypes?>?> echoAsyncNullableClassList(
-    JList<jni_bridge.NativeInteropAllNullableTypes?>? classList,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNullableClassList(
-            (_GolubetsJniCodec.readValue(classList) as List<Object?>?)
-                ?.cast<NativeInteropAllNullableTypes?>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes?>?>(
-              response,
-            );
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JList<jni_bridge.NativeInteropAnEnum>?> echoAsyncNullableNonNullEnumList(
-    JList<jni_bridge.NativeInteropAnEnum?>? enumList,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNullableNonNullEnumList(
-            (_GolubetsJniCodec.readValue(enumList) as List<Object?>?)?.cast<NativeInteropAnEnum>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAnEnum>?>(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JList<jni_bridge.NativeInteropAllNullableTypes>?> echoAsyncNullableNonNullClassList(
-    JList<jni_bridge.NativeInteropAllNullableTypes?>? classList,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNullableNonNullClassList(
-            (_GolubetsJniCodec.readValue(classList) as List<Object?>?)
-                ?.cast<NativeInteropAllNullableTypes>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JList<jni_bridge.NativeInteropAllNullableTypes>?>(
-              response,
-            );
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JMap<JObject?, JObject?>?> echoAsyncNullableMap(JMap<JObject?, JObject?>? map) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNullableMap(
-            (_GolubetsJniCodec.readValue(map) as Map<Object?, Object?>?)?.cast<Object?, Object?>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JMap<JObject?, JObject?>?>(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JMap<JString?, JString?>?> echoAsyncNullableStringMap(
-    JMap<JString?, JString?>? stringMap,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNullableStringMap(
-            (_GolubetsJniCodec.readValue(stringMap) as Map<Object?, Object?>?)
-                ?.cast<String?, String?>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JMap<JString?, JString?>?>(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JMap<JLong?, JLong?>?> echoAsyncNullableIntMap(JMap<JLong?, JLong?>? intMap) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNullableIntMap(
-            (_GolubetsJniCodec.readValue(intMap) as Map<Object?, Object?>?)?.cast<int?, int?>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<JMap<JLong?, JLong?>?>(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>?>
-  echoAsyncNullableEnumMap(
-    JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>? enumMap,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNullableEnumMap(
-            (_GolubetsJniCodec.readValue(enumMap) as Map<Object?, Object?>?)
-                ?.cast<NativeInteropAnEnum?, NativeInteropAnEnum?>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<
-              JMap<jni_bridge.NativeInteropAnEnum?, jni_bridge.NativeInteropAnEnum?>?
-            >(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>?> echoAsyncNullableClassMap(
-    JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>? classMap,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAsyncNullableClassMap(
-            (_GolubetsJniCodec.readValue(classMap) as Map<Object?, Object?>?)
-                ?.cast<int?, NativeInteropAllNullableTypes?>(),
-          )
-          .then((response) {
-            return _GolubetsJniCodec.writeValue<
-              JMap<JLong?, jni_bridge.NativeInteropAllNullableTypes?>?
-            >(response);
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<jni_bridge.NativeInteropAnEnum?> echoAsyncNullableEnum(
-    jni_bridge.NativeInteropAnEnum? anEnum,
-  ) {
-    if (dartApi != null) {
-      return dartApi!.echoAsyncNullableEnum(NativeInteropAnEnum.fromJni(anEnum)).then((response) {
-        return response?.toJni();
-      });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
-
-  @override
-  Future<jni_bridge.NativeInteropAnotherEnum?> echoAnotherAsyncNullableEnum(
-    jni_bridge.NativeInteropAnotherEnum? anotherEnum,
-  ) {
-    if (dartApi != null) {
-      return dartApi!
-          .echoAnotherAsyncNullableEnum(NativeInteropAnotherEnum.fromJni(anotherEnum))
-          .then((response) {
-            return response?.toJni();
-          });
-    } else {
-      throw ArgumentError('NativeInteropFlutterIntegrationCoreApi was not registered.');
-    }
-  }
+  }) => golubets_native.golubets_register_NativeInteropFlutterIntegrationCoreApi(api, name: name);
+
+  /// Removes [api], registered from this isolate under [name] (or the default
+  /// instance when [name] is omitted), leaving other registrations in place.
+  ///
+  /// Instances are matched by identity. Does nothing if [api] is not registered.
+  void unregister(
+    NativeInteropFlutterIntegrationCoreApi api, {
+    String name = defaultInstanceName,
+  }) => golubets_native.golubets_unregister_NativeInteropFlutterIntegrationCoreApi(api, name: name);
 }
 
+/// The core interface that the Dart platform_test code implements for host
+/// integration tests to call into.
 abstract class NativeInteropFlutterIntegrationCoreApi {
   static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
 
@@ -20020,6 +7625,9 @@ abstract class NativeInteropFlutterIntegrationCoreApi {
   NativeInteropAllNullableTypes? echoNativeInteropAllNullableTypes(
     NativeInteropAllNullableTypes? everything,
   );
+
+  /// Returns the passed sealed class, to test sealed class handling.
+  NativeInteropSealedClass echoNativeInteropSealedClass(NativeInteropSealedClass sealedClass);
 
   /// Returns passed in arguments of multiple types.
   ///
@@ -20340,20 +7948,12 @@ abstract class NativeInteropFlutterIntegrationCoreApi {
     BinaryMessenger? binaryMessenger,
     String messageChannelSuffix = '',
   }) {
-    if (Platform.isAndroid && api != null) {
-      NativeInteropFlutterIntegrationCoreApiRegistrar().register(
+    if (!kIsWeb) {
+      golubets_native.golubets_set_up_NativeInteropFlutterIntegrationCoreApi(
         api,
         name: messageChannelSuffix.isEmpty ? defaultInstanceName : messageChannelSuffix,
       );
     }
-
-    if ((Platform.isIOS || Platform.isMacOS) && api != null) {
-      NativeInteropFlutterIntegrationCoreApiRegistrar().register(
-        api,
-        name: messageChannelSuffix.isEmpty ? defaultInstanceName : messageChannelSuffix,
-      );
-    }
-
     messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
     {
       final golubetsVar_channel = BasicMessageChannel<Object?>(
@@ -20488,6 +8088,33 @@ abstract class NativeInteropFlutterIntegrationCoreApi {
           try {
             final NativeInteropAllNullableTypes? output = api.echoNativeInteropAllNullableTypes(
               arg_everything,
+            );
+            return wrapResponse(result: output);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+    {
+      final golubetsVar_channel = BasicMessageChannel<Object?>(
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropFlutterIntegrationCoreApi.echoNativeInteropSealedClass$messageChannelSuffix',
+        golubetsChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        golubetsVar_channel.setMessageHandler(null);
+      } else {
+        golubetsVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final NativeInteropSealedClass arg_sealedClass = args[0]! as NativeInteropSealedClass;
+          try {
+            final NativeInteropSealedClass output = api.echoNativeInteropSealedClass(
+              arg_sealedClass,
             );
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
@@ -23051,10 +10678,1179 @@ abstract class NativeInteropFlutterIntegrationCoreApi {
     }
   }
 
+  /// Registers [api] for Native Interop callers under [name], or the default
+  /// instance when [name] is omitted or empty, and returns [api].
   static NativeInteropFlutterIntegrationCoreApi implement(
     NativeInteropFlutterIntegrationCoreApi api, {
-    String name = '',
+    String name = defaultInstanceName,
   }) {
-    return NativeInteropFlutterIntegrationCoreApiRegistrar().register(api, name: name);
+    return NativeInteropFlutterIntegrationCoreApiRegistrar().register(
+      api,
+      name: name.isEmpty ? defaultInstanceName : name,
+    );
+  }
+}
+
+@internal
+NativeInteropReservedNamesHostApiForNativeInterop?
+golubets_getInstance_NativeInteropReservedNamesHostApi({String channelName = defaultInstanceName}) {
+  throw UnsupportedError(
+    'Native Interop is not supported on this platform. Use NativeInteropReservedNamesHostApi instead.',
+  );
+}
+
+abstract class NativeInteropReservedNamesHostApiForNativeInterop {
+  /// Returns instance of NativeInteropReservedNamesHostApiForNativeInterop with specified [channelName] if one has been registered.
+  static NativeInteropReservedNamesHostApiForNativeInterop? getInstance({
+    String channelName = defaultInstanceName,
+  }) => golubets_native.golubets_getInstance_NativeInteropReservedNamesHostApi(
+    channelName: channelName,
+  );
+
+  String release(String value);
+
+  int use(int value);
+
+  String type();
+
+  bool isNull();
+
+  bool? isNullable();
+
+  bool isOpen();
+
+  String getReference();
+
+  void setReference(String value);
+
+  String getDefault();
+
+  Future<String> getValueAsync();
+
+  String register(String value);
+
+  String unregister(String value);
+
+  String getGetInstance();
+
+  NativeInteropReservedNames echoReservedNames(NativeInteropReservedNames names);
+
+  String callFlutterRelease(String value);
+
+  String callFlutterType();
+
+  String callFlutterImplementIn(String value);
+
+  bool callFlutterIsNull();
+
+  String callFlutterGetReference();
+
+  String callFlutterRegister(String value);
+
+  String callFlutterDartApi();
+}
+
+/// Methods whose names collide with members of the bindings that JNIgen
+/// generates, or that JNIgen turns into Dart properties.
+class NativeInteropReservedNamesHostApi {
+  /// Constructor for [NativeInteropReservedNamesHostApi]. The [binaryMessenger] named argument is
+  /// available for dependency injection. If it is left null, the default
+  /// BinaryMessenger will be used which routes to the host platform.
+  NativeInteropReservedNamesHostApi({
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+    NativeInteropReservedNamesHostApiForNativeInterop? nativeInteropApi,
+  }) : golubetsVar_binaryMessenger = binaryMessenger,
+       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+           ? '.$messageChannelSuffix'
+           : '',
+       _nativeInteropApi = nativeInteropApi;
+
+  /// Creates an instance of [NativeInteropReservedNamesHostApi] that requests an instance of
+  /// [NativeInteropReservedNamesHostApiForNativeInterop] from the host platform with a matching instance name
+  /// to [messageChannelSuffix] or the default instance.
+  ///
+  /// Throws [ArgumentError] if no matching instance can be found.
+  factory NativeInteropReservedNamesHostApi.createWithNativeInteropApi({
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+  }) {
+    if (kIsWeb) {
+      throw UnsupportedError(
+        'Native Interop is not supported on this platform. Use the default constructor of NativeInteropReservedNamesHostApi instead.',
+      );
+    }
+    final NativeInteropReservedNamesHostApiForNativeInterop? nativeInteropApi =
+        NativeInteropReservedNamesHostApiForNativeInterop.getInstance(
+          channelName: messageChannelSuffix.isEmpty ? defaultInstanceName : messageChannelSuffix,
+        );
+    if (nativeInteropApi == null) {
+      throw ArgumentError(
+        'No NativeInteropReservedNamesHostApi instance with ${messageChannelSuffix.isEmpty ? 'no ' : ''}instance name ${messageChannelSuffix.isNotEmpty ? '"$messageChannelSuffix" ' : ''}found.',
+      );
+    }
+    return NativeInteropReservedNamesHostApi(
+      binaryMessenger: binaryMessenger,
+      messageChannelSuffix: messageChannelSuffix,
+      nativeInteropApi: nativeInteropApi,
+    );
+  }
+
+  final BinaryMessenger? golubetsVar_binaryMessenger;
+  static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
+
+  final String golubetsVar_messageChannelSuffix;
+
+  final NativeInteropReservedNamesHostApiForNativeInterop? _nativeInteropApi;
+
+  /// Collides with `JObject.release`.
+  Future<String> release(String value) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.release(value);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.release$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+
+  /// Collides with `JObject.use`.
+  Future<int> use(int value) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.use(value);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.use$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as int;
+  }
+
+  /// Collides with the static `type` field that JNIgen adds to every class.
+  Future<String> type() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.type();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.type$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+
+  /// JNIgen makes this a getter, which collides with `JObject.isNull`.
+  Future<bool> isNull() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.isNull();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.isNull$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as bool;
+  }
+
+  /// JNIgen keeps this a method, since nullable booleans are boxed on the JVM.
+  Future<bool?> isNullable() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.isNullable();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.isNullable$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: true,
+    );
+    return golubetsVar_replyValue as bool?;
+  }
+
+  /// JNIgen makes this a getter.
+  Future<bool> isOpen() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.isOpen();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.isOpen$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as bool;
+  }
+
+  /// JNIgen combines this and [setReference] into a property, which collides
+  /// with `JObject.reference`.
+  Future<String> getReference() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.getReference();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.getReference$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+
+  /// See [getReference].
+  Future<void> setReference(String value) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.setReference(value);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.setReference$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
+  }
+
+  /// JNIgen makes this a getter named after a Dart keyword, `default`.
+  Future<String> getDefault() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.getDefault();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.getDefault$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+
+  /// JNIgen keeps suspend functions as methods.
+  Future<String> getValueAsync() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.getValueAsync();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.getValueAsync$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+
+  /// Collides with `<Api>Registrar.register` in Kotlin bytecode.
+  Future<String> register(String value) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.register(value);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.register$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+
+  /// Collides with `<Api>Registrar.unregister` in Kotlin bytecode.
+  Future<String> unregister(String value) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.unregister(value);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.unregister$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+
+  /// JNIgen turns this into an instance getter `getInstance`, colliding with
+  /// `<Api>Registrar.getInstance`.
+  Future<String> getGetInstance() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.getGetInstance();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.getGetInstance$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+
+  /// Returns the passed object, to test serialization and deserialization.
+  Future<NativeInteropReservedNames> echoReservedNames(NativeInteropReservedNames names) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.echoReservedNames(names);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.echoReservedNames$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[names]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as NativeInteropReservedNames;
+  }
+
+  /// Returns the result of calling [NativeInteropReservedNamesFlutterApi.release].
+  Future<String> callFlutterRelease(String value) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.callFlutterRelease(value);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.callFlutterRelease$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+
+  /// Returns the result of calling [NativeInteropReservedNamesFlutterApi.type].
+  Future<String> callFlutterType() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.callFlutterType();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.callFlutterType$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+
+  /// Returns the result of calling [NativeInteropReservedNamesFlutterApi.implementIn].
+  Future<String> callFlutterImplementIn(String value) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.callFlutterImplementIn(value);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.callFlutterImplementIn$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+
+  /// Returns the result of calling [NativeInteropReservedNamesFlutterApi.isNull].
+  Future<bool> callFlutterIsNull() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.callFlutterIsNull();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.callFlutterIsNull$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as bool;
+  }
+
+  /// Returns the result of calling [NativeInteropReservedNamesFlutterApi.getReference].
+  Future<String> callFlutterGetReference() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.callFlutterGetReference();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.callFlutterGetReference$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+
+  /// Returns the result of calling [NativeInteropReservedNamesFlutterApi.register].
+  Future<String> callFlutterRegister(String value) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.callFlutterRegister(value);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.callFlutterRegister$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[value]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+
+  /// Returns the result of calling [NativeInteropReservedNamesFlutterApi.dartApi].
+  Future<String> callFlutterDartApi() async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.callFlutterDartApi();
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesHostApi.callFlutterDartApi$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as String;
+  }
+}
+
+@internal
+NativeInteropReservedNamesFlutterApi golubets_register_NativeInteropReservedNamesFlutterApi(
+  NativeInteropReservedNamesFlutterApi api, {
+  String name = defaultInstanceName,
+}) {
+  throw UnsupportedError(
+    'Native Interop is not supported on this platform. Use NativeInteropReservedNamesFlutterApi.setUp instead.',
+  );
+}
+
+@internal
+void golubets_unregister_NativeInteropReservedNamesFlutterApi(
+  NativeInteropReservedNamesFlutterApi api, {
+  String name = defaultInstanceName,
+}) {
+  throw UnsupportedError(
+    'Native Interop is not supported on this platform. Use NativeInteropReservedNamesFlutterApi.setUp instead.',
+  );
+}
+
+@internal
+void golubets_set_up_NativeInteropReservedNamesFlutterApi(
+  NativeInteropReservedNamesFlutterApi? api, {
+  String name = defaultInstanceName,
+}) {
+  throw UnsupportedError(
+    'Native Interop is not supported on this platform. Use NativeInteropReservedNamesFlutterApi.setUp instead.',
+  );
+}
+
+/// Registers [NativeInteropReservedNamesFlutterApi] implementations for Native Interop callers.
+final class NativeInteropReservedNamesFlutterApiRegistrar {
+  /// Registers [api] under [name] (or the default instance when [name] is
+  /// omitted) and returns [api].
+  ///
+  /// The registration is tied to this isolate's engine, so native code looking
+  /// up the instance for that engine receives [api]. Unlike [NativeInteropReservedNamesFlutterApi.setUp],
+  /// this does not replace earlier registrations from this isolate.
+  NativeInteropReservedNamesFlutterApi register(
+    NativeInteropReservedNamesFlutterApi api, {
+    String name = defaultInstanceName,
+  }) => golubets_native.golubets_register_NativeInteropReservedNamesFlutterApi(api, name: name);
+
+  /// Removes [api], registered from this isolate under [name] (or the default
+  /// instance when [name] is omitted), leaving other registrations in place.
+  ///
+  /// Instances are matched by identity. Does nothing if [api] is not registered.
+  void unregister(NativeInteropReservedNamesFlutterApi api, {String name = defaultInstanceName}) =>
+      golubets_native.golubets_unregister_NativeInteropReservedNamesFlutterApi(api, name: name);
+}
+
+/// The Flutter API counterpart of [NativeInteropReservedNamesHostApi].
+///
+/// JNIgen generates interfaces for Flutter APIs, which it renames differently
+/// than classes.
+abstract class NativeInteropReservedNamesFlutterApi {
+  static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
+
+  /// Collides with `JObject.release`.
+  String release(String value);
+
+  /// Collides with the static `type` field that JNIgen adds to every class.
+  String type();
+
+  /// Collides with the `implementIn` method that JNIgen adds to interfaces.
+  String implementIn(String value);
+
+  /// Collides with `JObject.isNull`.
+  bool isNull();
+
+  /// JNIgen doesn't turn interface methods into properties.
+  String getReference();
+
+  /// Previously collided with internal Dart JNI registrar `register` member.
+  String register(String value);
+
+  /// Previously collided with internal Dart JNI registrar `dartApi` field.
+  String dartApi();
+
+  static void setUp(
+    NativeInteropReservedNamesFlutterApi? api, {
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+  }) {
+    if (!kIsWeb) {
+      golubets_native.golubets_set_up_NativeInteropReservedNamesFlutterApi(
+        api,
+        name: messageChannelSuffix.isEmpty ? defaultInstanceName : messageChannelSuffix,
+      );
+    }
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+    {
+      final golubetsVar_channel = BasicMessageChannel<Object?>(
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesFlutterApi.release$messageChannelSuffix',
+        golubetsChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        golubetsVar_channel.setMessageHandler(null);
+      } else {
+        golubetsVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final String arg_value = args[0]! as String;
+          try {
+            final String output = api.release(arg_value);
+            return wrapResponse(result: output);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+    {
+      final golubetsVar_channel = BasicMessageChannel<Object?>(
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesFlutterApi.type$messageChannelSuffix',
+        golubetsChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        golubetsVar_channel.setMessageHandler(null);
+      } else {
+        golubetsVar_channel.setMessageHandler((Object? message) async {
+          try {
+            final String output = api.type();
+            return wrapResponse(result: output);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+    {
+      final golubetsVar_channel = BasicMessageChannel<Object?>(
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesFlutterApi.implementIn$messageChannelSuffix',
+        golubetsChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        golubetsVar_channel.setMessageHandler(null);
+      } else {
+        golubetsVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final String arg_value = args[0]! as String;
+          try {
+            final String output = api.implementIn(arg_value);
+            return wrapResponse(result: output);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+    {
+      final golubetsVar_channel = BasicMessageChannel<Object?>(
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesFlutterApi.isNull$messageChannelSuffix',
+        golubetsChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        golubetsVar_channel.setMessageHandler(null);
+      } else {
+        golubetsVar_channel.setMessageHandler((Object? message) async {
+          try {
+            final bool output = api.isNull();
+            return wrapResponse(result: output);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+    {
+      final golubetsVar_channel = BasicMessageChannel<Object?>(
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesFlutterApi.getReference$messageChannelSuffix',
+        golubetsChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        golubetsVar_channel.setMessageHandler(null);
+      } else {
+        golubetsVar_channel.setMessageHandler((Object? message) async {
+          try {
+            final String output = api.getReference();
+            return wrapResponse(result: output);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+    {
+      final golubetsVar_channel = BasicMessageChannel<Object?>(
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesFlutterApi.register$messageChannelSuffix',
+        golubetsChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        golubetsVar_channel.setMessageHandler(null);
+      } else {
+        golubetsVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final String arg_value = args[0]! as String;
+          try {
+            final String output = api.register(arg_value);
+            return wrapResponse(result: output);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+    {
+      final golubetsVar_channel = BasicMessageChannel<Object?>(
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropReservedNamesFlutterApi.dartApi$messageChannelSuffix',
+        golubetsChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        golubetsVar_channel.setMessageHandler(null);
+      } else {
+        golubetsVar_channel.setMessageHandler((Object? message) async {
+          try {
+            final String output = api.dartApi();
+            return wrapResponse(result: output);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+  }
+
+  /// Registers [api] for Native Interop callers under [name], or the default
+  /// instance when [name] is omitted or empty, and returns [api].
+  static NativeInteropReservedNamesFlutterApi implement(
+    NativeInteropReservedNamesFlutterApi api, {
+    String name = defaultInstanceName,
+  }) {
+    return NativeInteropReservedNamesFlutterApiRegistrar().register(
+      api,
+      name: name.isEmpty ? defaultInstanceName : name,
+    );
+  }
+}
+
+@internal
+NativeInteropSealedClassHostApiForNativeInterop?
+golubets_getInstance_NativeInteropSealedClassHostApi({String channelName = defaultInstanceName}) {
+  throw UnsupportedError(
+    'Native Interop is not supported on this platform. Use NativeInteropSealedClassHostApi instead.',
+  );
+}
+
+abstract class NativeInteropSealedClassHostApiForNativeInterop {
+  /// Returns instance of NativeInteropSealedClassHostApiForNativeInterop with specified [channelName] if one has been registered.
+  static NativeInteropSealedClassHostApiForNativeInterop? getInstance({
+    String channelName = defaultInstanceName,
+  }) => golubets_native.golubets_getInstance_NativeInteropSealedClassHostApi(
+    channelName: channelName,
+  );
+
+  NativeInteropShape echoShape(NativeInteropShape shape);
+
+  NativeInteropShape? echoNullableShape(NativeInteropShape? shape);
+
+  List<NativeInteropShape> echoShapeList(List<NativeInteropShape> shapes);
+
+  Map<String, NativeInteropShape> echoShapeMap(Map<String, NativeInteropShape> shapes);
+
+  Future<NativeInteropShape> echoAsyncShape(NativeInteropShape shape);
+
+  NativeInteropShape callFlutterEchoShape(NativeInteropShape shape);
+}
+
+/// Echoes [NativeInteropShape] sealed class hierarchies.
+class NativeInteropSealedClassHostApi {
+  /// Constructor for [NativeInteropSealedClassHostApi]. The [binaryMessenger] named argument is
+  /// available for dependency injection. If it is left null, the default
+  /// BinaryMessenger will be used which routes to the host platform.
+  NativeInteropSealedClassHostApi({
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+    NativeInteropSealedClassHostApiForNativeInterop? nativeInteropApi,
+  }) : golubetsVar_binaryMessenger = binaryMessenger,
+       golubetsVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+           ? '.$messageChannelSuffix'
+           : '',
+       _nativeInteropApi = nativeInteropApi;
+
+  /// Creates an instance of [NativeInteropSealedClassHostApi] that requests an instance of
+  /// [NativeInteropSealedClassHostApiForNativeInterop] from the host platform with a matching instance name
+  /// to [messageChannelSuffix] or the default instance.
+  ///
+  /// Throws [ArgumentError] if no matching instance can be found.
+  factory NativeInteropSealedClassHostApi.createWithNativeInteropApi({
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+  }) {
+    if (kIsWeb) {
+      throw UnsupportedError(
+        'Native Interop is not supported on this platform. Use the default constructor of NativeInteropSealedClassHostApi instead.',
+      );
+    }
+    final NativeInteropSealedClassHostApiForNativeInterop? nativeInteropApi =
+        NativeInteropSealedClassHostApiForNativeInterop.getInstance(
+          channelName: messageChannelSuffix.isEmpty ? defaultInstanceName : messageChannelSuffix,
+        );
+    if (nativeInteropApi == null) {
+      throw ArgumentError(
+        'No NativeInteropSealedClassHostApi instance with ${messageChannelSuffix.isEmpty ? 'no ' : ''}instance name ${messageChannelSuffix.isNotEmpty ? '"$messageChannelSuffix" ' : ''}found.',
+      );
+    }
+    return NativeInteropSealedClassHostApi(
+      binaryMessenger: binaryMessenger,
+      messageChannelSuffix: messageChannelSuffix,
+      nativeInteropApi: nativeInteropApi,
+    );
+  }
+
+  final BinaryMessenger? golubetsVar_binaryMessenger;
+  static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
+
+  final String golubetsVar_messageChannelSuffix;
+
+  final NativeInteropSealedClassHostApiForNativeInterop? _nativeInteropApi;
+
+  Future<NativeInteropShape> echoShape(NativeInteropShape shape) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.echoShape(shape);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropSealedClassHostApi.echoShape$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[shape]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as NativeInteropShape;
+  }
+
+  Future<NativeInteropShape?> echoNullableShape(NativeInteropShape? shape) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.echoNullableShape(shape);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropSealedClassHostApi.echoNullableShape$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[shape]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: true,
+    );
+    return golubetsVar_replyValue as NativeInteropShape?;
+  }
+
+  Future<List<NativeInteropShape>> echoShapeList(List<NativeInteropShape> shapes) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.echoShapeList(shapes);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropSealedClassHostApi.echoShapeList$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[shapes]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return (golubetsVar_replyValue! as List<Object?>).cast<NativeInteropShape>();
+  }
+
+  Future<Map<String, NativeInteropShape>> echoShapeMap(
+    Map<String, NativeInteropShape> shapes,
+  ) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.echoShapeMap(shapes);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropSealedClassHostApi.echoShapeMap$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[shapes]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return (golubetsVar_replyValue! as Map<Object?, Object?>).cast<String, NativeInteropShape>();
+  }
+
+  Future<NativeInteropShape> echoAsyncShape(NativeInteropShape shape) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.echoAsyncShape(shape);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropSealedClassHostApi.echoAsyncShape$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[shape]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as NativeInteropShape;
+  }
+
+  Future<NativeInteropShape> callFlutterEchoShape(NativeInteropShape shape) async {
+    if (_nativeInteropApi != null) {
+      return _nativeInteropApi.callFlutterEchoShape(shape);
+    }
+    final golubetsVar_channelName =
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropSealedClassHostApi.callFlutterEchoShape$golubetsVar_messageChannelSuffix';
+    final golubetsVar_channel = BasicMessageChannel<Object?>(
+      golubetsVar_channelName,
+      golubetsChannelCodec,
+      binaryMessenger: golubetsVar_binaryMessenger,
+    );
+    final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[shape]);
+    final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
+    final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
+      golubetsVar_replyList,
+      golubetsVar_channelName,
+      isNullValid: false,
+    );
+    return golubetsVar_replyValue! as NativeInteropShape;
+  }
+}
+
+@internal
+NativeInteropSealedClassFlutterApi golubets_register_NativeInteropSealedClassFlutterApi(
+  NativeInteropSealedClassFlutterApi api, {
+  String name = defaultInstanceName,
+}) {
+  throw UnsupportedError(
+    'Native Interop is not supported on this platform. Use NativeInteropSealedClassFlutterApi.setUp instead.',
+  );
+}
+
+@internal
+void golubets_unregister_NativeInteropSealedClassFlutterApi(
+  NativeInteropSealedClassFlutterApi api, {
+  String name = defaultInstanceName,
+}) {
+  throw UnsupportedError(
+    'Native Interop is not supported on this platform. Use NativeInteropSealedClassFlutterApi.setUp instead.',
+  );
+}
+
+@internal
+void golubets_set_up_NativeInteropSealedClassFlutterApi(
+  NativeInteropSealedClassFlutterApi? api, {
+  String name = defaultInstanceName,
+}) {
+  throw UnsupportedError(
+    'Native Interop is not supported on this platform. Use NativeInteropSealedClassFlutterApi.setUp instead.',
+  );
+}
+
+/// Registers [NativeInteropSealedClassFlutterApi] implementations for Native Interop callers.
+final class NativeInteropSealedClassFlutterApiRegistrar {
+  /// Registers [api] under [name] (or the default instance when [name] is
+  /// omitted) and returns [api].
+  ///
+  /// The registration is tied to this isolate's engine, so native code looking
+  /// up the instance for that engine receives [api]. Unlike [NativeInteropSealedClassFlutterApi.setUp],
+  /// this does not replace earlier registrations from this isolate.
+  NativeInteropSealedClassFlutterApi register(
+    NativeInteropSealedClassFlutterApi api, {
+    String name = defaultInstanceName,
+  }) => golubets_native.golubets_register_NativeInteropSealedClassFlutterApi(api, name: name);
+
+  /// Removes [api], registered from this isolate under [name] (or the default
+  /// instance when [name] is omitted), leaving other registrations in place.
+  ///
+  /// Instances are matched by identity. Does nothing if [api] is not registered.
+  void unregister(NativeInteropSealedClassFlutterApi api, {String name = defaultInstanceName}) =>
+      golubets_native.golubets_unregister_NativeInteropSealedClassFlutterApi(api, name: name);
+}
+
+/// The Flutter API counterpart of [NativeInteropSealedClassHostApi].
+abstract class NativeInteropSealedClassFlutterApi {
+  static const MessageCodec<Object?> golubetsChannelCodec = _GolubetsCodec();
+
+  NativeInteropShape echoShape(NativeInteropShape shape);
+
+  static void setUp(
+    NativeInteropSealedClassFlutterApi? api, {
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+  }) {
+    if (!kIsWeb) {
+      golubets_native.golubets_set_up_NativeInteropSealedClassFlutterApi(
+        api,
+        name: messageChannelSuffix.isEmpty ? defaultInstanceName : messageChannelSuffix,
+      );
+    }
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+    {
+      final golubetsVar_channel = BasicMessageChannel<Object?>(
+        'dev.bayori.golubets.golubets_integration_tests.NativeInteropSealedClassFlutterApi.echoShape$messageChannelSuffix',
+        golubetsChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        golubetsVar_channel.setMessageHandler(null);
+      } else {
+        golubetsVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final NativeInteropShape arg_shape = args[0]! as NativeInteropShape;
+          try {
+            final NativeInteropShape output = api.echoShape(arg_shape);
+            return wrapResponse(result: output);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+  }
+
+  /// Registers [api] for Native Interop callers under [name], or the default
+  /// instance when [name] is omitted or empty, and returns [api].
+  static NativeInteropSealedClassFlutterApi implement(
+    NativeInteropSealedClassFlutterApi api, {
+    String name = defaultInstanceName,
+  }) {
+    return NativeInteropSealedClassFlutterApiRegistrar().register(
+      api,
+      name: name.isEmpty ? defaultInstanceName : name,
+    );
   }
 }

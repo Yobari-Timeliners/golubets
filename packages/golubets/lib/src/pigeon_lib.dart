@@ -877,52 +877,8 @@ ${_argParser.usage}''';
     return opts;
   }
 
-<<<<<<< HEAD
-  /// Crawls through the reflection system looking for a configureGolubets method and
-  /// executing it.
-  static void _executeConfigureGolubets(GolubetsOptions options) {
-    for (final LibraryMirror library in currentMirrorSystem().libraries.values) {
-      for (final DeclarationMirror declaration in library.declarations.values) {
-        if (declaration is MethodMirror &&
-            MirrorSystem.getName(declaration.simpleName) == 'configureGolubets') {
-          if (declaration.parameters.length == 1 &&
-              declaration.parameters[0].type == reflectClass(GolubetsOptions)) {
-            library.invoke(declaration.simpleName, <dynamic>[options]);
-          } else {
-            print("warning: invalid 'configureGolubets' method defined.");
-          }
-        }
-      }
-    }
-  }
-
-  /// The 'main' entrypoint used by the command-line tool.  [args] are the
-  /// command-line arguments.  The optional parameter [adapters] allows you to
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-  /// Crawls through the reflection system looking for a configureGolubets method and
-  /// executing it.
-  static void _executeConfigureGolubets(GolubetsOptions options) {
-    for (final LibraryMirror library in currentMirrorSystem().libraries.values) {
-      for (final DeclarationMirror declaration in library.declarations.values) {
-        if (declaration is MethodMirror &&
-            MirrorSystem.getName(declaration.simpleName) == 'configureGolubets') {
-          if (declaration.parameters.length == 1 &&
-              declaration.parameters[0].type == reflectClass(GolubetsOptions)) {
-            library.invoke(declaration.simpleName, <dynamic>[options]);
-          } else {
-            print("warning: invalid 'configureGolubets' method defined.");
-          }
-        }
-      }
-    }
-  }
-
   /// The 'main' entrypoint used by the command-line tool. [args] are the
   /// command-line arguments. The optional parameter [adapters] allows you to
-=======
-  /// The 'main' entrypoint used by the command-line tool. [args] are the
-  /// command-line arguments. The optional parameter [adapters] allows you to
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
   /// customize the generators that golubets will use. The optional parameter
   /// [sdkPath] allows you to specify the Dart SDK path.
   static Future<int> run(List<String> args, {List<GeneratorAdapter>? adapters, String? sdkPath}) {

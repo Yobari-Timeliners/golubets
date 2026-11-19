@@ -188,7 +188,10 @@ void main() {
   });
 
   test('parse args - native_interop_transport', () {
-    final GolubetsOptions opts = Golubets.parseArgs(<String>['--native_interop_transport', 'hybrid']);
+    final GolubetsOptions opts = Golubets.parseArgs(<String>[
+      '--native_interop_transport',
+      'hybrid',
+    ]);
     expect(opts.nativeInteropTransport, NativeInteropTransport.hybrid);
     expect(Golubets.parseArgs(<String>[]).nativeInteropTransport, isNull);
   });
@@ -2451,7 +2454,9 @@ const _$objcVersionCheck = objc.ObjCVersionCheck(9, 6);
     test(
       'checkObjectiveCPubspecVersion warns when constraint allows lower minor version than ObjCVersionCheck',
       () {
-        final Directory tempDir = Directory.systemTemp.createTempSync('golubets_objc_version_test_');
+        final Directory tempDir = Directory.systemTemp.createTempSync(
+          'golubets_objc_version_test_',
+        );
         try {
           File('${tempDir.path}/pubspec.yaml').writeAsStringSync('''
 name: my_package
@@ -2583,7 +2588,9 @@ const _$objcVersionCheck = objc.ObjCVersionCheck(9, 6);
     test(
       'checkObjectiveCPubspecVersion warns on disjoint major, higher major range, bare, and versionless hosted dependencies, and skips path dependencies',
       () {
-        final Directory tempDir = Directory.systemTemp.createTempSync('golubets_objc_version_test_');
+        final Directory tempDir = Directory.systemTemp.createTempSync(
+          'golubets_objc_version_test_',
+        );
         try {
           final libDir = Directory('${tempDir.path}/lib')..createSync(recursive: true);
           File('${libDir.path}/messages.g.ffi.dart').writeAsStringSync(r'''
@@ -3486,7 +3493,7 @@ abstract class MyFlutterApi {
               methods: <Method>[
                 Method(
                   name: 'doWork',
-                  isAsynchronous: true,
+                  asynchronousType: AsynchronousType.callback,
                   returnType: const TypeDeclaration.voidDeclaration(),
                   parameters: <Parameter>[
                     Parameter(
@@ -3643,7 +3650,9 @@ abstract class MyFlutterApi {
     test(
       'runWithOptions finishes generation and surfaces JNIgen stdout, stderr, and hints to errorSink',
       () async {
-        final Directory tempDir = Directory.systemTemp.createTempSync('golubets_jnigen_error_test_');
+        final Directory tempDir = Directory.systemTemp.createTempSync(
+          'golubets_jnigen_error_test_',
+        );
         try {
           File(path.join(tempDir.path, 'pubspec.yaml')).writeAsStringSync('''
 name: my_package
@@ -3670,7 +3679,13 @@ abstract class Api {
           // basePath and invoke runWithOptions without JnigenConfigGeneratorAdapter
           // so _runJnigen executes our failing script.
           final configFile = File(
-            path.join(tempDir.path, 'custom_cfg', 'tool', 'golubets', 'messages_jnigen_config.dart'),
+            path.join(
+              tempDir.path,
+              'custom_cfg',
+              'tool',
+              'golubets',
+              'messages_jnigen_config.dart',
+            ),
           )..createSync(recursive: true);
           configFile.writeAsStringSync('''
 import 'dart:io';
@@ -3726,7 +3741,9 @@ void main() {
     test(
       'runWithOptions skips JNIgen and FFIgen config generation and execution when dartOut or host output is missing or stdout',
       () async {
-        final Directory tempDir = Directory.systemTemp.createTempSync('golubets_host_only_interop_');
+        final Directory tempDir = Directory.systemTemp.createTempSync(
+          'golubets_host_only_interop_',
+        );
         try {
           final inputFile = File(path.join(tempDir.path, 'messages.dart'))
             ..writeAsStringSync('''

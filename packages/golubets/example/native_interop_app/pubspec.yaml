@@ -27,19 +27,7 @@ dev_dependencies:
     path: ../../
   integration_test:
     sdk: flutter
-<<<<<<< HEAD
-  jnigen: ^1.0.0
-  logging: ^1.3.0
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-  jnigen: ^1.0.0
-  logging: ^1.3.0
-  pigeon:
-    path: ../../
-=======
   jnigen: 1.0.1
-  pigeon:
-    path: ../../
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
   pub_semver: ^2.1.4
   swift2objc: 0.3.1
   swiftgen: 0.2.0

@@ -3407,38 +3407,38 @@ void runPigeonNativeInteropIntegrationTests(TargetGenerator targetGenerator) {
     ) async {
       if (targetGenerator == TargetGenerator.kotlin) {
         expect(
-          PigeonInternalNativeInteropAnEnumNativeInterop.fromJni(
+          GolubetsInternalNativeInteropAnEnumNativeInterop.fromJni(
             NativeInteropAnEnum.fortyTwo.toJni(),
           ),
           NativeInteropAnEnum.fortyTwo,
         );
         expect(
-          PigeonInternalNativeInteropAllTypesNativeInterop.fromJni(
+          GolubetsInternalNativeInteropAllTypesNativeInterop.fromJni(
             genericNativeInteropAllTypes.toJni(),
           ),
           genericNativeInteropAllTypes,
         );
         expect(
-          PigeonInternalNativeInteropAllNullableTypesNativeInterop.fromJni(
+          GolubetsInternalNativeInteropAllNullableTypesNativeInterop.fromJni(
             recursiveNativeInteropAllNullableTypes.toJni(),
           ),
           recursiveNativeInteropAllNullableTypes,
         );
       } else if (targetGenerator == TargetGenerator.swift) {
         expect(
-          PigeonInternalNativeInteropAnEnumNativeInterop.fromNSNumber(
+          GolubetsInternalNativeInteropAnEnumNativeInterop.fromNSNumber(
             NativeInteropAnEnum.fortyTwo.toNSNumber(),
           ),
           NativeInteropAnEnum.fortyTwo,
         );
         expect(
-          PigeonInternalNativeInteropAllTypesNativeInterop.fromFfi(
+          GolubetsInternalNativeInteropAllTypesNativeInterop.fromFfi(
             genericNativeInteropAllTypes.toFfi(),
           ),
           genericNativeInteropAllTypes,
         );
         expect(
-          PigeonInternalNativeInteropAllNullableTypesNativeInterop.fromFfi(
+          GolubetsInternalNativeInteropAllNullableTypesNativeInterop.fromFfi(
             recursiveNativeInteropAllNullableTypes.toFfi(),
           ),
           recursiveNativeInteropAllNullableTypes,

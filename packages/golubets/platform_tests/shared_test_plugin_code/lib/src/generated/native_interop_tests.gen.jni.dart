@@ -275,14 +275,14 @@ extension type NativeInteropHostIntegrationCoreApiRegistrar$Companion._(jni$_.JO
 
 extension NativeInteropHostIntegrationCoreApiRegistrar$Companion$$Methods
     on NativeInteropHostIntegrationCoreApiRegistrar$Companion {
-  static final _id_pigeonResolveInstance = NativeInteropHostIntegrationCoreApiRegistrar$Companion
+  static final _id_golubetsResolveInstance = NativeInteropHostIntegrationCoreApiRegistrar$Companion
       ._class
       .instanceMethodId(
-        r'pigeonResolveInstance',
+        r'golubetsResolveInstance',
         r'(JJLjava/lang/String;)Lcom/example/test_plugin/NativeInteropHostIntegrationCoreApiRegistrar;',
       );
 
-  static final _pigeonResolveInstance =
+  static final _golubetsResolveInstance =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
               jni$_.JniResult Function(
@@ -302,31 +302,32 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$Companion$$Methods
             )
           >();
 
-  /// from: `public fun pigeonResolveInstance(engineId: kotlin.Long, affinityKey: kotlin.Long, name: kotlin.String): com.example.test_plugin.NativeInteropHostIntegrationCoreApiRegistrar?`
+  /// from: `public fun golubetsResolveInstance(engineId: kotlin.Long, affinityKey: kotlin.Long, name: kotlin.String): com.example.test_plugin.NativeInteropHostIntegrationCoreApiRegistrar?`
   /// The returned object must be released after use, by calling the [release] method.
-  NativeInteropHostIntegrationCoreApiRegistrar? pigeonResolveInstance(
+  NativeInteropHostIntegrationCoreApiRegistrar? golubetsResolveInstance(
     core$_.int j,
     core$_.int j1,
     jni$_.JString string,
   ) {
     final _$$selfRef = reference;
     final _$string = string.reference;
-    return _pigeonResolveInstance(
+    return _golubetsResolveInstance(
       _$$selfRef.pointer,
-      _id_pigeonResolveInstance.pointer,
+      _id_golubetsResolveInstance.pointer,
       j,
       j1,
       _$string.pointer,
     ).object<NativeInteropHostIntegrationCoreApiRegistrar?>();
   }
 
-  static final _id_pigeonEngineKeyOf = NativeInteropHostIntegrationCoreApiRegistrar$Companion._class
+  static final _id_golubetsEngineKeyOf = NativeInteropHostIntegrationCoreApiRegistrar$Companion
+      ._class
       .instanceMethodId(
-        r'pigeonEngineKeyOf',
+        r'golubetsEngineKeyOf',
         r'(Lcom/example/test_plugin/NativeInteropHostIntegrationCoreApiRegistrar;)J',
       );
 
-  static final _pigeonEngineKeyOf =
+  static final _golubetsEngineKeyOf =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
               jni$_.JniResult Function(
@@ -344,16 +345,16 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$Companion$$Methods
             )
           >();
 
-  /// from: `public fun pigeonEngineKeyOf(instance: com.example.test_plugin.NativeInteropHostIntegrationCoreApiRegistrar): kotlin.Long`
-  core$_.int pigeonEngineKeyOf(
+  /// from: `public fun golubetsEngineKeyOf(instance: com.example.test_plugin.NativeInteropHostIntegrationCoreApiRegistrar): kotlin.Long`
+  core$_.int golubetsEngineKeyOf(
     NativeInteropHostIntegrationCoreApiRegistrar nativeInteropHostIntegrationCoreApiRegistrar,
   ) {
     final _$$selfRef = reference;
     final _$nativeInteropHostIntegrationCoreApiRegistrar =
         nativeInteropHostIntegrationCoreApiRegistrar.reference;
-    return _pigeonEngineKeyOf(
+    return _golubetsEngineKeyOf(
       _$$selfRef.pointer,
-      _id_pigeonEngineKeyOf.pointer,
+      _id_golubetsEngineKeyOf.pointer,
       _$nativeInteropHostIntegrationCoreApiRegistrar.pointer,
     ).long;
   }
@@ -411,12 +412,12 @@ extension type NativeInteropHostIntegrationCoreApiRegistrar._(jni$_.JObject _$th
     ).object<NativeInteropHostIntegrationCoreApiRegistrar>();
   }
 
-  static final _id_pigeonResolveInstance = _class.staticMethodId(
-    r'pigeonResolveInstance',
+  static final _id_golubetsResolveInstance = _class.staticMethodId(
+    r'golubetsResolveInstance',
     r'(JJLjava/lang/String;)Lcom/example/test_plugin/NativeInteropHostIntegrationCoreApiRegistrar;',
   );
 
-  static final _pigeonResolveInstance =
+  static final _golubetsResolveInstance =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
               jni$_.JniResult Function(
@@ -436,30 +437,30 @@ extension type NativeInteropHostIntegrationCoreApiRegistrar._(jni$_.JObject _$th
             )
           >();
 
-  /// from: `static public final com.example.test_plugin.NativeInteropHostIntegrationCoreApiRegistrar pigeonResolveInstance(long j, long j1, java.lang.String string)`
+  /// from: `static public final com.example.test_plugin.NativeInteropHostIntegrationCoreApiRegistrar golubetsResolveInstance(long j, long j1, java.lang.String string)`
   /// The returned object must be released after use, by calling the [release] method.
-  static NativeInteropHostIntegrationCoreApiRegistrar? pigeonResolveInstance(
+  static NativeInteropHostIntegrationCoreApiRegistrar? golubetsResolveInstance(
     core$_.int j,
     core$_.int j1,
     jni$_.JString string,
   ) {
     final _$$classRef = _class.reference;
     final _$string = string.reference;
-    return _pigeonResolveInstance(
+    return _golubetsResolveInstance(
       _$$classRef.pointer,
-      _id_pigeonResolveInstance.pointer,
+      _id_golubetsResolveInstance.pointer,
       j,
       j1,
       _$string.pointer,
     ).object<NativeInteropHostIntegrationCoreApiRegistrar?>();
   }
 
-  static final _id_pigeonEngineKeyOf = _class.staticMethodId(
-    r'pigeonEngineKeyOf',
+  static final _id_golubetsEngineKeyOf = _class.staticMethodId(
+    r'golubetsEngineKeyOf',
     r'(Lcom/example/test_plugin/NativeInteropHostIntegrationCoreApiRegistrar;)J',
   );
 
-  static final _pigeonEngineKeyOf =
+  static final _golubetsEngineKeyOf =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
               jni$_.JniResult Function(
@@ -477,16 +478,16 @@ extension type NativeInteropHostIntegrationCoreApiRegistrar._(jni$_.JObject _$th
             )
           >();
 
-  /// from: `static public final long pigeonEngineKeyOf(com.example.test_plugin.NativeInteropHostIntegrationCoreApiRegistrar nativeInteropHostIntegrationCoreApiRegistrar)`
-  static core$_.int pigeonEngineKeyOf(
+  /// from: `static public final long golubetsEngineKeyOf(com.example.test_plugin.NativeInteropHostIntegrationCoreApiRegistrar nativeInteropHostIntegrationCoreApiRegistrar)`
+  static core$_.int golubetsEngineKeyOf(
     NativeInteropHostIntegrationCoreApiRegistrar nativeInteropHostIntegrationCoreApiRegistrar,
   ) {
     final _$$classRef = _class.reference;
     final _$nativeInteropHostIntegrationCoreApiRegistrar =
         nativeInteropHostIntegrationCoreApiRegistrar.reference;
-    return _pigeonEngineKeyOf(
+    return _golubetsEngineKeyOf(
       _$$classRef.pointer,
-      _id_pigeonEngineKeyOf.pointer,
+      _id_golubetsEngineKeyOf.pointer,
       _$nativeInteropHostIntegrationCoreApiRegistrar.pointer,
     ).long;
   }
@@ -720,7 +721,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoAllTypes(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoAllTypes(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoAllTypes(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1049,7 +1050,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoObject(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoObject(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoObject(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1084,7 +1085,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1117,7 +1118,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoStringList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoStringList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoStringList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1150,7 +1151,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoIntList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoIntList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoIntList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1183,7 +1184,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoDoubleList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoDoubleList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoDoubleList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1216,7 +1217,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoBoolList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoBoolList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoBoolList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1249,7 +1250,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoEnumList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1282,7 +1283,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoClassList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1315,7 +1316,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNonNullEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNonNullEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNonNullEnumList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1348,7 +1349,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNonNullClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNonNullClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNonNullClassList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1383,7 +1384,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1416,7 +1417,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoStringMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1449,7 +1450,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoIntMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1482,7 +1483,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoEnumMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1515,7 +1516,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoClassMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1548,7 +1549,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNonNullStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNonNullStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNonNullStringMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1581,7 +1582,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNonNullIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNonNullIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNonNullIntMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1614,7 +1615,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNonNullEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNonNullEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNonNullEnumMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1647,7 +1648,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNonNullClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNonNullClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNonNullClassMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1680,7 +1681,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoClassWrapper(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoClassWrapper(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoClassWrapper(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1713,7 +1714,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoSealedClass(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoSealedClass(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoSealedClass(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1746,7 +1747,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableSealedClass(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableSealedClass(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableSealedClass(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1779,7 +1780,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoSealedClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoSealedClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoSealedClassList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1812,7 +1813,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoSealedClassWrapper(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoSealedClassWrapper(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoSealedClassWrapper(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -1976,7 +1977,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoAllNullableTypes(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoAllNullableTypes(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoAllNullableTypes(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2012,7 +2013,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoAllNullableTypesWithoutRecursion(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoAllNullableTypesWithoutRecursion(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoAllNullableTypesWithoutRecursion(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2045,7 +2046,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun extractNestedNullableString(pigeonVar_args: kotlin.ByteArray): kotlin.String?`
+  /// from: `public fun extractNestedNullableString(golubetsVar_args: kotlin.ByteArray): kotlin.String?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JString? extractNestedNullableString(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2471,7 +2472,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableObject(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableObject(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableObject(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2504,7 +2505,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2537,7 +2538,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableEnumList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2570,7 +2571,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableClassList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2603,7 +2604,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableNonNullEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableNonNullEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableNonNullEnumList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2637,7 +2638,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableNonNullClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableNonNullClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableNonNullClassList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2670,7 +2671,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2703,7 +2704,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableStringMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2736,7 +2737,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableIntMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2769,7 +2770,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableEnumMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2802,7 +2803,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableClassMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2836,7 +2837,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableNonNullStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableNonNullStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableNonNullStringMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2869,7 +2870,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableNonNullIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableNonNullIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableNonNullIntMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2902,7 +2903,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableNonNullEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableNonNullEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableNonNullEnumMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -2935,7 +2936,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableNonNullClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableNonNullClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableNonNullClassMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -3588,7 +3589,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncObject(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncObject(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncObject(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -3647,7 +3648,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -3706,7 +3707,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncEnumList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -3765,7 +3766,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncClassList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -3821,7 +3822,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -3880,7 +3881,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncStringMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -3939,7 +3940,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncIntMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -3998,7 +3999,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncEnumMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -4057,7 +4058,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncClassMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -4392,7 +4393,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNativeInteropAllTypes(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNativeInteropAllTypes(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNativeInteropAllTypes(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -4451,7 +4452,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncSealedClass(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncSealedClass(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncSealedClass(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -4510,7 +4511,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableNativeInteropAllNullableTypes(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableNativeInteropAllNullableTypes(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableNativeInteropAllNullableTypes(
     jni$_.JByteArray bs,
@@ -4571,7 +4572,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
     jni$_.JByteArray bs,
@@ -5105,7 +5106,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableObject(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableObject(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableObject(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -5164,7 +5165,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -5223,7 +5224,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableEnumList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -5282,7 +5283,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableClassList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -5341,7 +5342,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -5400,7 +5401,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableStringMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -5459,7 +5460,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableIntMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -5518,7 +5519,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableEnumMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -5577,7 +5578,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableClassMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -5811,7 +5812,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNativeInteropAllTypes(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNativeInteropAllTypes(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNativeInteropAllTypes(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -5847,7 +5848,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNativeInteropAllNullableTypes(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNativeInteropAllNullableTypes(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNativeInteropAllNullableTypes(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -5880,7 +5881,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoSealedClass(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoSealedClass(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoSealedClass(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -5964,7 +5965,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNativeInteropAllNullableTypesWithoutRecursion(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNativeInteropAllNullableTypesWithoutRecursion(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNativeInteropAllNullableTypesWithoutRecursion(
     jni$_.JByteArray bs,
@@ -6289,7 +6290,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -6322,7 +6323,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoEnumList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -6355,7 +6356,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoClassList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -6389,7 +6390,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNonNullEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNonNullEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNonNullEnumList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -6423,7 +6424,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNonNullClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNonNullClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNonNullClassList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -6456,7 +6457,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -6489,7 +6490,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoStringMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -6522,7 +6523,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoIntMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -6555,7 +6556,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoEnumMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -6588,7 +6589,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoClassMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -6622,7 +6623,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNonNullStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNonNullStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNonNullStringMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -6656,7 +6657,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNonNullIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNonNullIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNonNullIntMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -6690,7 +6691,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNonNullEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNonNullEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNonNullEnumMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -6724,7 +6725,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNonNullClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNonNullClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNonNullClassMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -7089,7 +7090,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNullableList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNullableList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNullableList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -7123,7 +7124,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNullableEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNullableEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNullableEnumList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -7157,7 +7158,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNullableClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNullableClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNullableClassList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -7193,7 +7194,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNullableNonNullEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNullableNonNullEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNullableNonNullEnumList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -7229,7 +7230,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNullableNonNullClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNullableNonNullClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNullableNonNullClassList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -7262,7 +7263,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNullableMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNullableMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNullableMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -7296,7 +7297,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNullableStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNullableStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNullableStringMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -7330,7 +7331,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNullableIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNullableIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNullableIntMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -7364,7 +7365,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNullableEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNullableEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNullableEnumMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -7398,7 +7399,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNullableClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNullableClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNullableClassMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -7434,7 +7435,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNullableNonNullStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNullableNonNullStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNullableNonNullStringMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -7470,7 +7471,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNullableNonNullIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNullableNonNullIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNullableNonNullIntMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -7506,7 +7507,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNullableNonNullEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNullableNonNullEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNullableNonNullEnumMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -7542,7 +7543,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoNullableNonNullClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoNullableNonNullClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoNullableNonNullClassMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -7688,7 +7689,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncNativeInteropAllTypes(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncNativeInteropAllTypes(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncNativeInteropAllTypes(
     jni$_.JByteArray bs,
@@ -7749,7 +7750,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncNullableNativeInteropAllNullableTypes(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncNullableNativeInteropAllNullableTypes(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncNullableNativeInteropAllNullableTypes(
     jni$_.JByteArray bs,
@@ -7810,7 +7811,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?>
   callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
@@ -8329,7 +8330,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncObject(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncObject(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncObject(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -8388,7 +8389,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -8448,7 +8449,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncEnumList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -8508,7 +8509,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncClassList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -8567,7 +8568,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncNonNullEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncNonNullEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncNonNullEnumList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -8626,7 +8627,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncNonNullClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncNonNullClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncNonNullClassList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -8685,7 +8686,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -8745,7 +8746,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncStringMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -8804,7 +8805,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncIntMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -8863,7 +8864,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncEnumMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -8923,7 +8924,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncClassMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -9637,7 +9638,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncNullableObject(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncNullableObject(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncNullableObject(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -9697,7 +9698,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncNullableList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncNullableList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncNullableList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -9756,7 +9757,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncNullableEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncNullableEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncNullableEnumList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -9815,7 +9816,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncNullableClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncNullableClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncNullableClassList(
     jni$_.JByteArray bs,
@@ -9876,7 +9877,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncNullableNonNullEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncNullableNonNullEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncNullableNonNullEnumList(
     jni$_.JByteArray bs,
@@ -9937,7 +9938,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncNullableNonNullClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncNullableNonNullClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncNullableNonNullClassList(
     jni$_.JByteArray bs,
@@ -9999,7 +10000,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncNullableMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncNullableMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncNullableMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -10058,7 +10059,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncNullableStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncNullableStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncNullableStringMap(
     jni$_.JByteArray bs,
@@ -10120,7 +10121,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncNullableIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncNullableIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncNullableIntMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -10179,7 +10180,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncNullableEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncNullableEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncNullableEnumMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -10238,7 +10239,7 @@ extension NativeInteropHostIntegrationCoreApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun callFlutterEchoAsyncNullableClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun callFlutterEchoAsyncNullableClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> callFlutterEchoAsyncNullableClassMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -11820,7 +11821,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNativeInteropAllTypes(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNativeInteropAllTypes(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNativeInteropAllTypes(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -11854,7 +11855,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNativeInteropAllNullableTypes(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNativeInteropAllNullableTypes(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNativeInteropAllNullableTypes(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -11888,7 +11889,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNativeInteropSealedClass(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNativeInteropSealedClass(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNativeInteropSealedClass(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -11972,7 +11973,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNativeInteropAllNullableTypesWithoutRecursion(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNativeInteropAllNullableTypesWithoutRecursion(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNativeInteropAllNullableTypesWithoutRecursion(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -12293,7 +12294,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -12326,7 +12327,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoEnumList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -12359,7 +12360,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoClassList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -12392,7 +12393,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNonNullEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNonNullEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNonNullEnumList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -12425,7 +12426,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNonNullClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNonNullClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNonNullClassList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -12460,7 +12461,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -12493,7 +12494,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoStringMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -12526,7 +12527,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoIntMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -12559,7 +12560,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoEnumMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -12592,7 +12593,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoClassMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -12625,7 +12626,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNonNullStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNonNullStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNonNullStringMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -12658,7 +12659,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNonNullIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNonNullIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNonNullIntMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -12691,7 +12692,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNonNullEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNonNullEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNonNullEnumMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -12724,7 +12725,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNonNullClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNonNullClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNonNullClassMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -13074,7 +13075,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -13107,7 +13108,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableEnumList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -13140,7 +13141,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableClassList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -13173,7 +13174,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableNonNullEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableNonNullEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableNonNullEnumList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -13207,7 +13208,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableNonNullClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableNonNullClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableNonNullClassList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -13240,7 +13241,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -13273,7 +13274,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableStringMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -13306,7 +13307,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableIntMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -13339,7 +13340,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableEnumMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -13372,7 +13373,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableClassMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -13406,7 +13407,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableNonNullStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableNonNullStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableNonNullStringMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -13439,7 +13440,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableNonNullIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableNonNullIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableNonNullIntMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -13472,7 +13473,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableNonNullEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableNonNullEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableNonNullEnumMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -13505,7 +13506,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableNonNullClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableNonNullClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableNonNullClassMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -13702,7 +13703,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNativeInteropAllTypes(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNativeInteropAllTypes(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNativeInteropAllTypes(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -13761,7 +13762,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableNativeInteropAllNullableTypes(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableNativeInteropAllNullableTypes(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableNativeInteropAllNullableTypes(
     jni$_.JByteArray bs,
@@ -13822,7 +13823,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
     jni$_.JByteArray bs,
@@ -14330,7 +14331,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncObject(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncObject(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncObject(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -14389,7 +14390,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -14448,7 +14449,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncEnumList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -14507,7 +14508,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncClassList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -14566,7 +14567,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNonNullEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNonNullEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNonNullEnumList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -14625,7 +14626,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNonNullClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNonNullClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNonNullClassList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -14681,7 +14682,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -14740,7 +14741,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncStringMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -14799,7 +14800,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncIntMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -14858,7 +14859,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncEnumMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -14917,7 +14918,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncClassMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -15558,7 +15559,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableObject(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableObject(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableObject(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -15617,7 +15618,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -15676,7 +15677,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableEnumList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -15735,7 +15736,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableClassList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -15795,7 +15796,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableNonNullEnumList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableNonNullEnumList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableNonNullEnumList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -15855,7 +15856,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableNonNullClassList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableNonNullClassList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableNonNullClassList(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -15914,7 +15915,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -15973,7 +15974,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableStringMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableStringMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableStringMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -16032,7 +16033,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableIntMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableIntMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableIntMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -16091,7 +16092,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableEnumMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableEnumMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableEnumMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -16150,7 +16151,7 @@ extension NativeInteropFlutterIntegrationCoreApiBridge$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncNullableClassMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncNullableClassMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncNullableClassMap(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -17641,14 +17642,14 @@ extension type NativeInteropReservedNamesHostApiRegistrar$Companion._(jni$_.JObj
 
 extension NativeInteropReservedNamesHostApiRegistrar$Companion$$Methods
     on NativeInteropReservedNamesHostApiRegistrar$Companion {
-  static final _id_pigeonResolveInstance = NativeInteropReservedNamesHostApiRegistrar$Companion
+  static final _id_golubetsResolveInstance = NativeInteropReservedNamesHostApiRegistrar$Companion
       ._class
       .instanceMethodId(
-        r'pigeonResolveInstance',
+        r'golubetsResolveInstance',
         r'(JJLjava/lang/String;)Lcom/example/test_plugin/NativeInteropReservedNamesHostApiRegistrar;',
       );
 
-  static final _pigeonResolveInstance =
+  static final _golubetsResolveInstance =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
               jni$_.JniResult Function(
@@ -17668,31 +17669,31 @@ extension NativeInteropReservedNamesHostApiRegistrar$Companion$$Methods
             )
           >();
 
-  /// from: `public fun pigeonResolveInstance(engineId: kotlin.Long, affinityKey: kotlin.Long, name: kotlin.String): com.example.test_plugin.NativeInteropReservedNamesHostApiRegistrar?`
+  /// from: `public fun golubetsResolveInstance(engineId: kotlin.Long, affinityKey: kotlin.Long, name: kotlin.String): com.example.test_plugin.NativeInteropReservedNamesHostApiRegistrar?`
   /// The returned object must be released after use, by calling the [release] method.
-  NativeInteropReservedNamesHostApiRegistrar? pigeonResolveInstance(
+  NativeInteropReservedNamesHostApiRegistrar? golubetsResolveInstance(
     core$_.int j,
     core$_.int j1,
     jni$_.JString string,
   ) {
     final _$$selfRef = reference;
     final _$string = string.reference;
-    return _pigeonResolveInstance(
+    return _golubetsResolveInstance(
       _$$selfRef.pointer,
-      _id_pigeonResolveInstance.pointer,
+      _id_golubetsResolveInstance.pointer,
       j,
       j1,
       _$string.pointer,
     ).object<NativeInteropReservedNamesHostApiRegistrar?>();
   }
 
-  static final _id_pigeonEngineKeyOf = NativeInteropReservedNamesHostApiRegistrar$Companion._class
+  static final _id_golubetsEngineKeyOf = NativeInteropReservedNamesHostApiRegistrar$Companion._class
       .instanceMethodId(
-        r'pigeonEngineKeyOf',
+        r'golubetsEngineKeyOf',
         r'(Lcom/example/test_plugin/NativeInteropReservedNamesHostApiRegistrar;)J',
       );
 
-  static final _pigeonEngineKeyOf =
+  static final _golubetsEngineKeyOf =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
               jni$_.JniResult Function(
@@ -17710,16 +17711,16 @@ extension NativeInteropReservedNamesHostApiRegistrar$Companion$$Methods
             )
           >();
 
-  /// from: `public fun pigeonEngineKeyOf(instance: com.example.test_plugin.NativeInteropReservedNamesHostApiRegistrar): kotlin.Long`
-  core$_.int pigeonEngineKeyOf(
+  /// from: `public fun golubetsEngineKeyOf(instance: com.example.test_plugin.NativeInteropReservedNamesHostApiRegistrar): kotlin.Long`
+  core$_.int golubetsEngineKeyOf(
     NativeInteropReservedNamesHostApiRegistrar nativeInteropReservedNamesHostApiRegistrar,
   ) {
     final _$$selfRef = reference;
     final _$nativeInteropReservedNamesHostApiRegistrar =
         nativeInteropReservedNamesHostApiRegistrar.reference;
-    return _pigeonEngineKeyOf(
+    return _golubetsEngineKeyOf(
       _$$selfRef.pointer,
-      _id_pigeonEngineKeyOf.pointer,
+      _id_golubetsEngineKeyOf.pointer,
       _$nativeInteropReservedNamesHostApiRegistrar.pointer,
     ).long;
   }
@@ -17777,12 +17778,12 @@ extension type NativeInteropReservedNamesHostApiRegistrar._(jni$_.JObject _$this
     ).object<NativeInteropReservedNamesHostApiRegistrar>();
   }
 
-  static final _id_pigeonResolveInstance = _class.staticMethodId(
-    r'pigeonResolveInstance',
+  static final _id_golubetsResolveInstance = _class.staticMethodId(
+    r'golubetsResolveInstance',
     r'(JJLjava/lang/String;)Lcom/example/test_plugin/NativeInteropReservedNamesHostApiRegistrar;',
   );
 
-  static final _pigeonResolveInstance =
+  static final _golubetsResolveInstance =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
               jni$_.JniResult Function(
@@ -17802,30 +17803,30 @@ extension type NativeInteropReservedNamesHostApiRegistrar._(jni$_.JObject _$this
             )
           >();
 
-  /// from: `static public final com.example.test_plugin.NativeInteropReservedNamesHostApiRegistrar pigeonResolveInstance(long j, long j1, java.lang.String string)`
+  /// from: `static public final com.example.test_plugin.NativeInteropReservedNamesHostApiRegistrar golubetsResolveInstance(long j, long j1, java.lang.String string)`
   /// The returned object must be released after use, by calling the [release] method.
-  static NativeInteropReservedNamesHostApiRegistrar? pigeonResolveInstance(
+  static NativeInteropReservedNamesHostApiRegistrar? golubetsResolveInstance(
     core$_.int j,
     core$_.int j1,
     jni$_.JString string,
   ) {
     final _$$classRef = _class.reference;
     final _$string = string.reference;
-    return _pigeonResolveInstance(
+    return _golubetsResolveInstance(
       _$$classRef.pointer,
-      _id_pigeonResolveInstance.pointer,
+      _id_golubetsResolveInstance.pointer,
       j,
       j1,
       _$string.pointer,
     ).object<NativeInteropReservedNamesHostApiRegistrar?>();
   }
 
-  static final _id_pigeonEngineKeyOf = _class.staticMethodId(
-    r'pigeonEngineKeyOf',
+  static final _id_golubetsEngineKeyOf = _class.staticMethodId(
+    r'golubetsEngineKeyOf',
     r'(Lcom/example/test_plugin/NativeInteropReservedNamesHostApiRegistrar;)J',
   );
 
-  static final _pigeonEngineKeyOf =
+  static final _golubetsEngineKeyOf =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
               jni$_.JniResult Function(
@@ -17843,16 +17844,16 @@ extension type NativeInteropReservedNamesHostApiRegistrar._(jni$_.JObject _$this
             )
           >();
 
-  /// from: `static public final long pigeonEngineKeyOf(com.example.test_plugin.NativeInteropReservedNamesHostApiRegistrar nativeInteropReservedNamesHostApiRegistrar)`
-  static core$_.int pigeonEngineKeyOf(
+  /// from: `static public final long golubetsEngineKeyOf(com.example.test_plugin.NativeInteropReservedNamesHostApiRegistrar nativeInteropReservedNamesHostApiRegistrar)`
+  static core$_.int golubetsEngineKeyOf(
     NativeInteropReservedNamesHostApiRegistrar nativeInteropReservedNamesHostApiRegistrar,
   ) {
     final _$$classRef = _class.reference;
     final _$nativeInteropReservedNamesHostApiRegistrar =
         nativeInteropReservedNamesHostApiRegistrar.reference;
-    return _pigeonEngineKeyOf(
+    return _golubetsEngineKeyOf(
       _$$classRef.pointer,
-      _id_pigeonEngineKeyOf.pointer,
+      _id_golubetsEngineKeyOf.pointer,
       _$nativeInteropReservedNamesHostApiRegistrar.pointer,
     ).long;
   }
@@ -18408,7 +18409,7 @@ extension NativeInteropReservedNamesHostApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoReservedNames(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoReservedNames(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoReservedNames(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -19255,13 +19256,14 @@ extension type NativeInteropSealedClassHostApiRegistrar$Companion._(jni$_.JObjec
 
 extension NativeInteropSealedClassHostApiRegistrar$Companion$$Methods
     on NativeInteropSealedClassHostApiRegistrar$Companion {
-  static final _id_pigeonResolveInstance = NativeInteropSealedClassHostApiRegistrar$Companion._class
+  static final _id_golubetsResolveInstance = NativeInteropSealedClassHostApiRegistrar$Companion
+      ._class
       .instanceMethodId(
-        r'pigeonResolveInstance',
+        r'golubetsResolveInstance',
         r'(JJLjava/lang/String;)Lcom/example/test_plugin/NativeInteropSealedClassHostApiRegistrar;',
       );
 
-  static final _pigeonResolveInstance =
+  static final _golubetsResolveInstance =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
               jni$_.JniResult Function(
@@ -19281,31 +19283,31 @@ extension NativeInteropSealedClassHostApiRegistrar$Companion$$Methods
             )
           >();
 
-  /// from: `public fun pigeonResolveInstance(engineId: kotlin.Long, affinityKey: kotlin.Long, name: kotlin.String): com.example.test_plugin.NativeInteropSealedClassHostApiRegistrar?`
+  /// from: `public fun golubetsResolveInstance(engineId: kotlin.Long, affinityKey: kotlin.Long, name: kotlin.String): com.example.test_plugin.NativeInteropSealedClassHostApiRegistrar?`
   /// The returned object must be released after use, by calling the [release] method.
-  NativeInteropSealedClassHostApiRegistrar? pigeonResolveInstance(
+  NativeInteropSealedClassHostApiRegistrar? golubetsResolveInstance(
     core$_.int j,
     core$_.int j1,
     jni$_.JString string,
   ) {
     final _$$selfRef = reference;
     final _$string = string.reference;
-    return _pigeonResolveInstance(
+    return _golubetsResolveInstance(
       _$$selfRef.pointer,
-      _id_pigeonResolveInstance.pointer,
+      _id_golubetsResolveInstance.pointer,
       j,
       j1,
       _$string.pointer,
     ).object<NativeInteropSealedClassHostApiRegistrar?>();
   }
 
-  static final _id_pigeonEngineKeyOf = NativeInteropSealedClassHostApiRegistrar$Companion._class
+  static final _id_golubetsEngineKeyOf = NativeInteropSealedClassHostApiRegistrar$Companion._class
       .instanceMethodId(
-        r'pigeonEngineKeyOf',
+        r'golubetsEngineKeyOf',
         r'(Lcom/example/test_plugin/NativeInteropSealedClassHostApiRegistrar;)J',
       );
 
-  static final _pigeonEngineKeyOf =
+  static final _golubetsEngineKeyOf =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
               jni$_.JniResult Function(
@@ -19323,16 +19325,16 @@ extension NativeInteropSealedClassHostApiRegistrar$Companion$$Methods
             )
           >();
 
-  /// from: `public fun pigeonEngineKeyOf(instance: com.example.test_plugin.NativeInteropSealedClassHostApiRegistrar): kotlin.Long`
-  core$_.int pigeonEngineKeyOf(
+  /// from: `public fun golubetsEngineKeyOf(instance: com.example.test_plugin.NativeInteropSealedClassHostApiRegistrar): kotlin.Long`
+  core$_.int golubetsEngineKeyOf(
     NativeInteropSealedClassHostApiRegistrar nativeInteropSealedClassHostApiRegistrar,
   ) {
     final _$$selfRef = reference;
     final _$nativeInteropSealedClassHostApiRegistrar =
         nativeInteropSealedClassHostApiRegistrar.reference;
-    return _pigeonEngineKeyOf(
+    return _golubetsEngineKeyOf(
       _$$selfRef.pointer,
-      _id_pigeonEngineKeyOf.pointer,
+      _id_golubetsEngineKeyOf.pointer,
       _$nativeInteropSealedClassHostApiRegistrar.pointer,
     ).long;
   }
@@ -19390,12 +19392,12 @@ extension type NativeInteropSealedClassHostApiRegistrar._(jni$_.JObject _$this)
     ).object<NativeInteropSealedClassHostApiRegistrar>();
   }
 
-  static final _id_pigeonResolveInstance = _class.staticMethodId(
-    r'pigeonResolveInstance',
+  static final _id_golubetsResolveInstance = _class.staticMethodId(
+    r'golubetsResolveInstance',
     r'(JJLjava/lang/String;)Lcom/example/test_plugin/NativeInteropSealedClassHostApiRegistrar;',
   );
 
-  static final _pigeonResolveInstance =
+  static final _golubetsResolveInstance =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
               jni$_.JniResult Function(
@@ -19415,30 +19417,30 @@ extension type NativeInteropSealedClassHostApiRegistrar._(jni$_.JObject _$this)
             )
           >();
 
-  /// from: `static public final com.example.test_plugin.NativeInteropSealedClassHostApiRegistrar pigeonResolveInstance(long j, long j1, java.lang.String string)`
+  /// from: `static public final com.example.test_plugin.NativeInteropSealedClassHostApiRegistrar golubetsResolveInstance(long j, long j1, java.lang.String string)`
   /// The returned object must be released after use, by calling the [release] method.
-  static NativeInteropSealedClassHostApiRegistrar? pigeonResolveInstance(
+  static NativeInteropSealedClassHostApiRegistrar? golubetsResolveInstance(
     core$_.int j,
     core$_.int j1,
     jni$_.JString string,
   ) {
     final _$$classRef = _class.reference;
     final _$string = string.reference;
-    return _pigeonResolveInstance(
+    return _golubetsResolveInstance(
       _$$classRef.pointer,
-      _id_pigeonResolveInstance.pointer,
+      _id_golubetsResolveInstance.pointer,
       j,
       j1,
       _$string.pointer,
     ).object<NativeInteropSealedClassHostApiRegistrar?>();
   }
 
-  static final _id_pigeonEngineKeyOf = _class.staticMethodId(
-    r'pigeonEngineKeyOf',
+  static final _id_golubetsEngineKeyOf = _class.staticMethodId(
+    r'golubetsEngineKeyOf',
     r'(Lcom/example/test_plugin/NativeInteropSealedClassHostApiRegistrar;)J',
   );
 
-  static final _pigeonEngineKeyOf =
+  static final _golubetsEngineKeyOf =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
               jni$_.JniResult Function(
@@ -19456,16 +19458,16 @@ extension type NativeInteropSealedClassHostApiRegistrar._(jni$_.JObject _$this)
             )
           >();
 
-  /// from: `static public final long pigeonEngineKeyOf(com.example.test_plugin.NativeInteropSealedClassHostApiRegistrar nativeInteropSealedClassHostApiRegistrar)`
-  static core$_.int pigeonEngineKeyOf(
+  /// from: `static public final long golubetsEngineKeyOf(com.example.test_plugin.NativeInteropSealedClassHostApiRegistrar nativeInteropSealedClassHostApiRegistrar)`
+  static core$_.int golubetsEngineKeyOf(
     NativeInteropSealedClassHostApiRegistrar nativeInteropSealedClassHostApiRegistrar,
   ) {
     final _$$classRef = _class.reference;
     final _$nativeInteropSealedClassHostApiRegistrar =
         nativeInteropSealedClassHostApiRegistrar.reference;
-    return _pigeonEngineKeyOf(
+    return _golubetsEngineKeyOf(
       _$$classRef.pointer,
-      _id_pigeonEngineKeyOf.pointer,
+      _id_golubetsEngineKeyOf.pointer,
       _$nativeInteropSealedClassHostApiRegistrar.pointer,
     ).long;
   }
@@ -19680,7 +19682,7 @@ extension NativeInteropSealedClassHostApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoShape(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoShape(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoShape(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -19713,7 +19715,7 @@ extension NativeInteropSealedClassHostApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoNullableShape(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoNullableShape(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoNullableShape(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -19748,7 +19750,7 @@ extension NativeInteropSealedClassHostApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoShapeList(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoShapeList(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoShapeList(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -19783,7 +19785,7 @@ extension NativeInteropSealedClassHostApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun echoShapeMap(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoShapeMap(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoShapeMap(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -19820,7 +19822,7 @@ extension NativeInteropSealedClassHostApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public suspend fun echoAsyncShape(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public suspend fun echoAsyncShape(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   core$_.Future<jni$_.JByteArray?> echoAsyncShape(jni$_.JByteArray bs) async {
     final $p = jni$_.ReceivePort();
@@ -19875,7 +19877,7 @@ extension NativeInteropSealedClassHostApiRegistrar$$Methods
             )
           >();
 
-  /// from: `public fun callFlutterEchoShape(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun callFlutterEchoShape(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? callFlutterEchoShape(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -20002,7 +20004,7 @@ extension NativeInteropSealedClassFlutterApiBridge$$Methods
             )
           >();
 
-  /// from: `public fun echoShape(pigeonVar_args: kotlin.ByteArray): kotlin.ByteArray?`
+  /// from: `public fun echoShape(golubetsVar_args: kotlin.ByteArray): kotlin.ByteArray?`
   /// The returned object must be released after use, by calling the [release] method.
   jni$_.JByteArray? echoShape(jni$_.JByteArray bs) {
     final _$$selfRef = reference;
@@ -27623,7 +27625,7 @@ extension NativeInteropSealedClassWithFields$Companion$$Methods
             )
           >();
 
-  /// from: `public fun fromList(pigeonVar_list: kotlin.collections.List<kotlin.Any?>): com.example.test_plugin.NativeInteropSealedClassWithFields`
+  /// from: `public fun fromList(golubetsVar_list: kotlin.collections.List<kotlin.Any?>): com.example.test_plugin.NativeInteropSealedClassWithFields`
   /// The returned object must be released after use, by calling the [release] method.
   NativeInteropSealedClassWithFields fromList(jni$_.JList<jni$_.JObject?> list) {
     final _$$selfRef = reference;
@@ -28188,7 +28190,7 @@ extension NativeInteropEmptySealedClass$Companion$$Methods
             )
           >();
 
-  /// from: `public fun fromList(pigeonVar_list: kotlin.collections.List<kotlin.Any?>): com.example.test_plugin.NativeInteropEmptySealedClass`
+  /// from: `public fun fromList(golubetsVar_list: kotlin.collections.List<kotlin.Any?>): com.example.test_plugin.NativeInteropEmptySealedClass`
   /// The returned object must be released after use, by calling the [release] method.
   NativeInteropEmptySealedClass fromList(jni$_.JList<jni$_.JObject?> list) {
     final _$$selfRef = reference;
@@ -28423,7 +28425,7 @@ extension NativeInteropSealedClassWrapper$Companion$$Methods
             )
           >();
 
-  /// from: `public fun fromList(pigeonVar_list: kotlin.collections.List<kotlin.Any?>): com.example.test_plugin.NativeInteropSealedClassWrapper`
+  /// from: `public fun fromList(golubetsVar_list: kotlin.collections.List<kotlin.Any?>): com.example.test_plugin.NativeInteropSealedClassWrapper`
   /// The returned object must be released after use, by calling the [release] method.
   NativeInteropSealedClassWrapper fromList(jni$_.JList<jni$_.JObject?> list) {
     final _$$selfRef = reference;
@@ -28931,7 +28933,7 @@ extension NativeInteropReservedNames$Companion$$Methods on NativeInteropReserved
             )
           >();
 
-  /// from: `public fun fromList(pigeonVar_list: kotlin.collections.List<kotlin.Any?>): com.example.test_plugin.NativeInteropReservedNames`
+  /// from: `public fun fromList(golubetsVar_list: kotlin.collections.List<kotlin.Any?>): com.example.test_plugin.NativeInteropReservedNames`
   /// The returned object must be released after use, by calling the [release] method.
   NativeInteropReservedNames fromList(jni$_.JList<jni$_.JObject?> list) {
     final _$$selfRef = reference;
@@ -29184,6 +29186,23 @@ extension type NativeInteropReservedNames._(jni$_.JObject _$this) implements jni
       i,
       _$defaultConstructorMarker.pointer,
     ).object<NativeInteropReservedNames>();
+  }
+
+  static final _id_new$2 = _class.constructorId(r'()V');
+
+  static final _new$2 =
+      jni$_.ProtectedJniExtensions.lookup<
+            jni$_.NativeFunction<
+              jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr)
+            >
+          >('globalEnv_NewObject')
+          .asFunction<jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr)>();
+
+  /// from: `public void <init>()`
+  /// The returned object must be released after use, by calling the [release] method.
+  factory NativeInteropReservedNames.new$2() {
+    final _$$classRef = _class.reference;
+    return _new$2(_$$classRef.pointer, _id_new$2.pointer).object<NativeInteropReservedNames>();
   }
 }
 
@@ -30041,7 +30060,7 @@ extension NativeInteropCircle$Companion$$Methods on NativeInteropCircle$Companio
             )
           >();
 
-  /// from: `public fun fromList(pigeonVar_list: kotlin.collections.List<kotlin.Any?>): com.example.test_plugin.NativeInteropCircle`
+  /// from: `public fun fromList(golubetsVar_list: kotlin.collections.List<kotlin.Any?>): com.example.test_plugin.NativeInteropCircle`
   /// The returned object must be released after use, by calling the [release] method.
   NativeInteropCircle fromList(jni$_.JList<jni$_.JObject?> list) {
     final _$$selfRef = reference;
@@ -30328,7 +30347,7 @@ extension NativeInteropSquare$Companion$$Methods on NativeInteropSquare$Companio
             )
           >();
 
-  /// from: `public fun fromList(pigeonVar_list: kotlin.collections.List<kotlin.Any?>): com.example.test_plugin.NativeInteropSquare`
+  /// from: `public fun fromList(golubetsVar_list: kotlin.collections.List<kotlin.Any?>): com.example.test_plugin.NativeInteropSquare`
   /// The returned object must be released after use, by calling the [release] method.
   NativeInteropSquare fromList(jni$_.JList<jni$_.JObject?> list) {
     final _$$selfRef = reference;

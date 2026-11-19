@@ -1122,13 +1122,12 @@ data class NativeInteropSealedClassWithFields(
   }
 
   override fun equals(other: Any?): Boolean {
-    if (other == null || other.javaClass != javaClass) {
+    if (other !is NativeInteropSealedClassWithFields) {
       return false
     }
     if (this === other) {
       return true
     }
-    val other = other as NativeInteropSealedClassWithFields
     return NativeInteropTestsGolubetsUtils.deepEquals(this.aString, other.aString) &&
         NativeInteropTestsGolubetsUtils.deepEquals(this.aNullableInt, other.aNullableInt) &&
         NativeInteropTestsGolubetsUtils.deepEquals(this.anEnum, other.anEnum) &&
@@ -1155,8 +1154,9 @@ data class NativeInteropSealedClassWithFields(
  * Generated class from Golubets that represents data sent in messages.
  */
 @Keep
-class NativeInteropEmptySealedClass : NativeInteropSealedClass() {
+class NativeInteropEmptySealedClass() : NativeInteropSealedClass() {
   companion object {
+    @Suppress("UNUSED_PARAMETER")
     fun fromList(golubetsVar_list: List<Any?>): NativeInteropEmptySealedClass {
       return NativeInteropEmptySealedClass()
     }
@@ -1167,7 +1167,7 @@ class NativeInteropEmptySealedClass : NativeInteropSealedClass() {
   }
 
   override fun equals(other: Any?): Boolean {
-    if (other == null || other.javaClass != javaClass) {
+    if (other !is NativeInteropEmptySealedClass) {
       return false
     }
     if (this === other) {
@@ -1215,13 +1215,12 @@ data class NativeInteropSealedClassWrapper(
   }
 
   override fun equals(other: Any?): Boolean {
-    if (other == null || other.javaClass != javaClass) {
+    if (other !is NativeInteropSealedClassWrapper) {
       return false
     }
     if (this === other) {
       return true
     }
-    val other = other as NativeInteropSealedClassWrapper
     return NativeInteropTestsGolubetsUtils.deepEquals(this.sealedClass, other.sealedClass) &&
         NativeInteropTestsGolubetsUtils.deepEquals(
             this.nullableSealedClass, other.nullableSealedClass) &&
@@ -1259,9 +1258,9 @@ data class NativeInteropReservedNames(
     val jClass: String? = null,
     val isInstanceOf: String? = null,
     val isNull: String? = null,
-    val isReleased: Boolean,
+    val isReleased: Boolean = false,
     val equals: String? = null,
-    val isEnabled: Boolean,
+    val isEnabled: Boolean = false,
     val isMaybe: Boolean? = null,
     val isCount: Long? = null,
     val getValue: String? = null
@@ -1320,13 +1319,12 @@ data class NativeInteropReservedNames(
   }
 
   override fun equals(other: Any?): Boolean {
-    if (other == null || other.javaClass != javaClass) {
+    if (other !is NativeInteropReservedNames) {
       return false
     }
     if (this === other) {
       return true
     }
-    val other = other as NativeInteropReservedNames
     return NativeInteropTestsGolubetsUtils.deepEquals(this.type, other.type) &&
         NativeInteropTestsGolubetsUtils.deepEquals(this.use, other.use) &&
         NativeInteropTestsGolubetsUtils.deepEquals(this.reference, other.reference) &&
@@ -1391,13 +1389,12 @@ data class NativeInteropCircle(val radius: Double) : NativeInteropShape() {
   }
 
   override fun equals(other: Any?): Boolean {
-    if (other == null || other.javaClass != javaClass) {
+    if (other !is NativeInteropCircle) {
       return false
     }
     if (this === other) {
       return true
     }
-    val other = other as NativeInteropCircle
     return NativeInteropTestsGolubetsUtils.deepEquals(this.radius, other.radius)
   }
 
@@ -1431,13 +1428,12 @@ data class NativeInteropSquare(val side: Double, val label: String? = null) : Na
   }
 
   override fun equals(other: Any?): Boolean {
-    if (other == null || other.javaClass != javaClass) {
+    if (other !is NativeInteropSquare) {
       return false
     }
     if (this === other) {
       return true
     }
-    val other = other as NativeInteropSquare
     return NativeInteropTestsGolubetsUtils.deepEquals(this.side, other.side) &&
         NativeInteropTestsGolubetsUtils.deepEquals(this.label, other.label)
   }
@@ -2499,7 +2495,8 @@ private constructor(private val engineKey: Long) {
                 "unregistered-instance",
                 "NativeInteropHostIntegrationCoreApi has not been registered.")
     try {
-      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(golubetsVar_api.throwFlutterError())
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.throwFlutterError())
     } catch (e: NativeInteropTestsError) {
       throw NativeInteropTestsError(
               e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
@@ -2769,7 +2766,8 @@ private constructor(private val engineKey: Long) {
     try {
       val golubetsVar_decodedArgs =
           NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
-      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes?>
+      val golubetsVar_arg_classList =
+          golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes?>
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
           golubetsVar_api.echoClassList(golubetsVar_arg_classList))
     } catch (e: NativeInteropTestsError) {
@@ -2807,7 +2805,8 @@ private constructor(private val engineKey: Long) {
     try {
       val golubetsVar_decodedArgs =
           NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
-      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>
+      val golubetsVar_arg_classList =
+          golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
           golubetsVar_api.echoNonNullClassList(golubetsVar_arg_classList))
     } catch (e: NativeInteropTestsError) {
@@ -3058,7 +3057,8 @@ private constructor(private val engineKey: Long) {
     try {
       val golubetsVar_decodedArgs =
           NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
-      val golubetsVar_arg_sealedClassList = golubetsVar_decodedArgs[0] as List<NativeInteropSealedClass>
+      val golubetsVar_arg_sealedClassList =
+          golubetsVar_decodedArgs[0] as List<NativeInteropSealedClass>
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
           golubetsVar_api.echoSealedClassList(golubetsVar_arg_sealedClassList))
     } catch (e: NativeInteropTestsError) {
@@ -3504,7 +3504,8 @@ private constructor(private val engineKey: Long) {
     try {
       val golubetsVar_decodedArgs =
           NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
-      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>?
+      val golubetsVar_arg_classList =
+          golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>?
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
           golubetsVar_api.echoNullableNonNullClassList(golubetsVar_arg_classList))
     } catch (e: NativeInteropTestsError) {
@@ -3957,7 +3958,8 @@ private constructor(private val engineKey: Long) {
     try {
       val golubetsVar_decodedArgs =
           NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
-      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes?>
+      val golubetsVar_arg_classList =
+          golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes?>
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
           golubetsVar_api.echoAsyncClassList(golubetsVar_arg_classList))
     } catch (e: NativeInteropTestsError) {
@@ -4194,7 +4196,8 @@ private constructor(private val engineKey: Long) {
           NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
       val golubetsVar_arg_everything = golubetsVar_decodedArgs[0] as NativeInteropAllNullableTypes?
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
-          golubetsVar_api.echoAsyncNullableNativeInteropAllNullableTypes(golubetsVar_arg_everything))
+          golubetsVar_api.echoAsyncNullableNativeInteropAllNullableTypes(
+              golubetsVar_arg_everything))
     } catch (e: NativeInteropTestsError) {
       throw NativeInteropTestsError(
               e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
@@ -4892,7 +4895,8 @@ private constructor(private val engineKey: Long) {
     try {
       val golubetsVar_decodedArgs =
           NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
-      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes?>
+      val golubetsVar_arg_classList =
+          golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes?>
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
           golubetsVar_api.callFlutterEchoClassList(golubetsVar_arg_classList))
     } catch (e: NativeInteropTestsError) {
@@ -4930,7 +4934,8 @@ private constructor(private val engineKey: Long) {
     try {
       val golubetsVar_decodedArgs =
           NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
-      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>
+      val golubetsVar_arg_classList =
+          golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
           golubetsVar_api.callFlutterEchoNonNullClassList(golubetsVar_arg_classList))
     } catch (e: NativeInteropTestsError) {
@@ -5358,7 +5363,8 @@ private constructor(private val engineKey: Long) {
     try {
       val golubetsVar_decodedArgs =
           NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
-      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>?
+      val golubetsVar_arg_classList =
+          golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>?
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
           golubetsVar_api.callFlutterEchoNullableNonNullClassList(golubetsVar_arg_classList))
     } catch (e: NativeInteropTestsError) {
@@ -5846,7 +5852,8 @@ private constructor(private val engineKey: Long) {
     try {
       val golubetsVar_decodedArgs =
           NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
-      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes?>
+      val golubetsVar_arg_classList =
+          golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes?>
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
           golubetsVar_api.callFlutterEchoAsyncClassList(golubetsVar_arg_classList))
     } catch (e: NativeInteropTestsError) {
@@ -5884,7 +5891,8 @@ private constructor(private val engineKey: Long) {
     try {
       val golubetsVar_decodedArgs =
           NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
-      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>
+      val golubetsVar_arg_classList =
+          golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
           golubetsVar_api.callFlutterEchoAsyncNonNullClassList(golubetsVar_arg_classList))
     } catch (e: NativeInteropTestsError) {
@@ -6259,7 +6267,9 @@ private constructor(private val engineKey: Long) {
     }
   }
 
-  suspend fun callFlutterEchoAsyncNullableNonNullClassList(golubetsVar_args: ByteArray): ByteArray? {
+  suspend fun callFlutterEchoAsyncNullableNonNullClassList(
+      golubetsVar_args: ByteArray
+  ): ByteArray? {
     val golubetsVar_api =
         this.api
             ?: throw NativeInteropTestsError(
@@ -6268,7 +6278,8 @@ private constructor(private val engineKey: Long) {
     try {
       val golubetsVar_decodedArgs =
           NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
-      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>?
+      val golubetsVar_arg_classList =
+          golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>?
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
           golubetsVar_api.callFlutterEchoAsyncNullableNonNullClassList(golubetsVar_arg_classList))
     } catch (e: NativeInteropTestsError) {
@@ -7258,7 +7269,9 @@ interface NativeInteropFlutterIntegrationCoreApiBridge {
 
   suspend fun echoAsyncNativeInteropAllTypes(golubetsVar_args: ByteArray): ByteArray?
 
-  suspend fun echoAsyncNullableNativeInteropAllNullableTypes(golubetsVar_args: ByteArray): ByteArray?
+  suspend fun echoAsyncNullableNativeInteropAllNullableTypes(
+      golubetsVar_args: ByteArray
+  ): ByteArray?
 
   suspend fun echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
       golubetsVar_args: ByteArray
@@ -7574,7 +7587,8 @@ private class NativeInteropFlutterIntegrationCoreApiBridgeAdapter(
       enumMap: Map<NativeInteropAnEnum?, NativeInteropAnEnum?>
   ): Map<NativeInteropAnEnum?, NativeInteropAnEnum?> {
     val golubetsVar_result =
-        this.bridge.echoEnumMap(NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(enumMap)))
+        this.bridge.echoEnumMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(enumMap)))
     val golubetsVar_decoded =
         if (golubetsVar_result == null) null
         else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
@@ -7749,7 +7763,8 @@ private class NativeInteropFlutterIntegrationCoreApiBridgeAdapter(
 
   override fun echoNullableMap(map: Map<Any?, Any?>?): Map<Any?, Any?>? {
     val golubetsVar_result =
-        this.bridge.echoNullableMap(NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(map)))
+        this.bridge.echoNullableMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(map)))
     val golubetsVar_decoded =
         if (golubetsVar_result == null) null
         else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
@@ -7853,7 +7868,8 @@ private class NativeInteropFlutterIntegrationCoreApiBridgeAdapter(
   override fun echoAnotherNullableEnum(
       anotherEnum: NativeInteropAnotherEnum?
   ): NativeInteropAnotherEnum? {
-    val golubetsVar_result = this.bridge.echoAnotherNullableEnum((anotherEnum?.raw?.toLong() ?: -1L))
+    val golubetsVar_result =
+        this.bridge.echoAnotherNullableEnum((anotherEnum?.raw?.toLong() ?: -1L))
     return if (golubetsVar_result == -1L) null
     else NativeInteropAnotherEnum.ofRaw(golubetsVar_result.toInt())
   }

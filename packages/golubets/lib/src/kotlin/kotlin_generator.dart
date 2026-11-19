@@ -532,7 +532,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       _docCommentSpec,
       generatorComments: generatedMessages,
     );
-<<<<<<< HEAD
+    _writeKeepAnnotationForJni(generatorOptions, indent);
     _writeDataClassSignature(
       indent,
       classDefinition,
@@ -541,12 +541,6 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       },
       generatorOptions: generatorOptions,
     );
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-    _writeDataClassSignature(indent, classDefinition);
-=======
-    _writeKeepAnnotationForJni(generatorOptions, indent);
-    _writeDataClassSignature(indent, classDefinition);
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
     if (classDefinition.isSealed) {
       if (generatorOptions.nestSealedClasses) {
         indent.writeScoped(' {', '}', nestCount: 2, () {
@@ -905,19 +899,9 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
         !root.containsProxyApi) {
       return;
     }
-<<<<<<< HEAD
-    if (generatorOptions.useJni && !root.containsEventChannel && !root.containsProxyApi) {
-      return;
-    }
     final classLookup = <String, Class>{
       for (final Class classDefinition in root.classes) classDefinition.name: classDefinition,
     };
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-    if (generatorOptions.useJni && !root.containsEventChannel && !root.containsProxyApi) {
-      return;
-    }
-=======
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
     final List<EnumeratedType> enumeratedTypes = getEnumeratedTypes(
       root,
       excludeSealedClasses: true,
@@ -983,7 +967,6 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
       indent.write('${customType.enumeration}.toByte() -> ');
       indent.addScoped('{', '}', () {
         if (customType.type == CustomTypes.customClass) {
-<<<<<<< HEAD
           final typeArguments = customType.typeArguments.isEmpty
               ? ''
               : '<${_flattenTypeArguments(customType.typeArguments)}>';
@@ -994,12 +977,7 @@ class KotlinGenerator extends StructuredGenerator<InternalKotlinOptions> {
                   generatorOptions.nestSealedClasses
               ? customType.associatedClass?.pureName
               : customType.name;
-          indent.write('return (readValue(buffer) as? List<Any?>)?.let ');
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-          indent.write('return (readValue(buffer) as? List<Any?>)?.let ');
-=======
           indent.write('(readValue(buffer) as? List<Any?>)?.let ');
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
           indent.addScoped('{', '}', () {
             indent.writeln('$nestedClassPrefix$name.fromList$typeArguments(it)');
           });
@@ -2283,7 +2261,7 @@ This is called by the generated Dart code and is not intended for direct use.'''
             if (instanceName.isNotEmpty()) {
               channelName += ".\$instanceName"
             }
-            channel = EventChannel(messenger, channelName, ${generatorOptions.fileSpecificClassNameComponent}$_golubetsMethodCodec)
+            channel = EventChannel(messenger, channelName, ${generatorOptions.fileSpecificClassNameComponent}$_golubetsMethodChannelCodec)
           }
 
           /**
@@ -2299,23 +2277,6 @@ This is called by the generated Dart code and is not intended for direct use.'''
 
         abstract class $streamHandlerClassName : ${generatorOptions.fileSpecificClassNameComponent}GolubetsEventChannelWrapper<${_kotlinTypeForDartType(func.returnType)}> {
           companion object {
-<<<<<<< HEAD
-            fun register(messenger: BinaryMessenger, streamHandler: ${toUpperCamelCase(func.name)}StreamHandler, instanceName: String = "") {
-              var channelName: String = "${makeChannelName(api, func, dartPackageName)}"
-              if (instanceName.isNotEmpty()) {
-                channelName += ".\$instanceName"
-              }
-              val internalStreamHandler = ${generatorOptions.fileSpecificClassNameComponent}GolubetsStreamHandler<${_kotlinTypeForDartType(func.returnType)}>(streamHandler)
-              EventChannel(messenger, channelName, ${generatorOptions.fileSpecificClassNameComponent}$_golubetsMethodChannelCodec).setStreamHandler(internalStreamHandler)
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-            fun register(messenger: BinaryMessenger, streamHandler: ${toUpperCamelCase(func.name)}StreamHandler, instanceName: String = "") {
-              var channelName: String = "${makeChannelName(api, func, dartPackageName)}"
-              if (instanceName.isNotEmpty()) {
-                channelName += ".\$instanceName"
-              }
-              val internalStreamHandler = ${generatorOptions.fileSpecificClassNameComponent}GolubetsStreamHandler<${_kotlinTypeForDartType(func.returnType)}>(streamHandler)
-              EventChannel(messenger, channelName, ${generatorOptions.fileSpecificClassNameComponent}$_golubetsMethodCodec).setStreamHandler(internalStreamHandler)
-=======
             /**
              * Creates and returns a new event channel that calls the provided stream handler.
              *
@@ -2327,7 +2288,6 @@ This is called by the generated Dart code and is not intended for direct use.'''
               val channel = $channelClassName(messenger, instanceName)
               channel.setStreamHandler(streamHandler)
               return channel
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
             }
           }
 
@@ -3715,7 +3675,6 @@ String _cast(Indent indent, String variable, {required TypeDeclaration type}) {
   return '$variable as ${_nullSafeKotlinTypeForDartType(type)}';
 }
 
-<<<<<<< HEAD
 /// Helper to add comma or newline based on whether it's the last element.
 void _addCommaOrNewline(Indent indent, bool isLast) => isLast ? indent.newln() : indent.addln(', ');
 
@@ -3851,8 +3810,8 @@ extension on DefaultValue {
 
 extension on String {
   String take(int count) => length <= count ? this : substring(0, count);
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-=======
+}
+
 /// The name of the object that encodes and decodes the buffers of the hybrid
 /// native interop transport.
 String _interopCodecName(InternalKotlinOptions options) =>
@@ -3911,5 +3870,4 @@ String _hybridEntryPointReturnType(TypeDeclaration returnType) {
   return nativeInteropReturnsBuffer(returnType)
       ? ': ByteArray?'
       : ': ${_hybridDirectKotlinType(returnType)}';
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
 }

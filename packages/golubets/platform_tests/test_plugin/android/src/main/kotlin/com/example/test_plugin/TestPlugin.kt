@@ -12,27 +12,13 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
-<<<<<<< HEAD
-import kotlinx.coroutines.CoroutineScope
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-=======
 import java.lang.ref.WeakReference
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.CompletableDeferred
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-<<<<<<< HEAD
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-import kotlinx.coroutines.suspendCancellableCoroutine
-=======
-import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.suspendCancellableCoroutine
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
@@ -49,18 +35,12 @@ class TestPlugin :
   private var flutterSmallApiOne: FlutterSmallApi? = null
   private var flutterSmallApiTwo: FlutterSmallApi? = null
   private var proxyApiRegistrar: ProxyApiRegistrar? = null
-<<<<<<< HEAD
   private var coroutineScope: CoroutineScope? = null
   private var flutterGenericApi: FlutterGenericApi? = null
-  private var niMessageApi: NativeInteropHostIntegrationCoreApiRegistrar? = null
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-  private var niMessageApi: NativeInteropHostIntegrationCoreApiRegistrar? = null
-=======
   internal var niMessageApiImpl: NativeInteropIntegrationTests? = null
   private var niReservedNamesImpl: NativeInteropReservedNamesHostApiImpl? = null
   private var niSealedClassImpl: NativeInteropSealedClassHostApiImpl? = null
   private var eventChannelOne: StreamConsistentNumbersEventChannel? = null
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
 
   override fun onAttachedToEngine(binding: FlutterPluginBinding) {
     coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())

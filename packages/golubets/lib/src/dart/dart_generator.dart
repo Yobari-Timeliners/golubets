@@ -56,17 +56,9 @@ class DartOptions {
     this.sourceOutPath,
     this.testOutPath,
     this.dartOut,
-<<<<<<< HEAD
-    bool ignoreLints = true,
-    this.useApiInterface = false,
-  }) : _ignoreLints = ignoreLints;
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-    bool ignoreLints = true,
-  }) : _ignoreLints = ignoreLints;
-=======
     this._ignoreLints = true,
+    this.useApiInterface = false,
   });
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
 
   /// A copyright header that will get prepended to generated code.
   final Iterable<String>? copyrightHeader;
@@ -288,20 +280,6 @@ class _FfiType extends _NativeInteropType<_FfiType> {
     return _NativeInteropType.fromClass<_FfiType>(classDefinition, _FfiType.new);
   }
 
-<<<<<<< HEAD
-  /// Constructs an [_FfiType] representing a user-defined Pigeon [enumDefinition].
-  static _FfiType fromEnum(Enum enumDefinition) {
-    return _NativeInteropType.fromEnum<_FfiType>(enumDefinition, _FfiType.new);
-  }
-
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-  /// Constructs an [_FfiType] representing a user-defined Golubets [enumDefinition].
-  static _FfiType fromEnum(Enum enumDefinition) {
-    return _NativeInteropType.fromEnum<_FfiType>(enumDefinition, _FfiType.new);
-  }
-
-=======
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
   /// Returns the corresponding Objective-C/FFI class or bridge type name.
   ///
   /// If [withPrefix] is true (default), types defined in the bridge module include the bridge namespace prefix (`$_ffiBridgePrefix.`).
@@ -812,18 +790,10 @@ class InternalDartOptions extends InternalOptions {
     this.useFfi = false,
     this.ffiErrorClassName,
     this.jniErrorClassName,
-<<<<<<< HEAD
-    required bool ignoreLints,
-    this.useApiInterface = false,
-  }) : _ignoreLints = ignoreLints;
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-    required bool ignoreLints,
-  }) : _ignoreLints = ignoreLints;
-=======
     this.nativeInteropTransport = NativeInteropTransport.hybrid,
     required this._ignoreLints,
+    this.useApiInterface = false,
   });
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
 
   /// Creates InternalDartOptions from DartOptions.
   InternalDartOptions.fromDartOptions(
@@ -1432,18 +1402,8 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     Class classDefinition, {
     required String dartPackageName,
   }) {
-<<<<<<< HEAD
     if (classDefinition.typeArguments.isNotEmpty) {
       return;
-    }
-
-    if (generatorOptions.useJni) {
-      _writeFromJni(indent, classDefinition);
-      indent.newln();
-    }
-    if (generatorOptions.useFfi) {
-      _writeFromFfi(indent, classDefinition);
-      indent.newln();
     }
 
     final bool isResultUsed = classDefinition.fields.isNotEmpty;
@@ -1454,22 +1414,6 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       if (isResultUsed) {
         indent.writeln('result as List<Object?>;');
       }
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-    if (generatorOptions.useJni) {
-      _writeFromJni(indent, classDefinition);
-      indent.newln();
-    }
-    if (generatorOptions.useFfi) {
-      _writeFromFfi(indent, classDefinition);
-      indent.newln();
-    }
-
-    indent.writeScoped('static ${classDefinition.name} decode(Object result) {', '}', () {
-      indent.writeln('result as List<Object?>;');
-=======
-    indent.writeScoped('static ${classDefinition.name} decode(Object result) {', '}', () {
-      indent.writeln('result as List<Object?>;');
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
       indent.write('return ${classDefinition.name}');
       indent.addScoped('(', ');', () {
         enumerate(getFieldsInSerializationOrder(classDefinition), (int index, NamedType field) {
@@ -1972,7 +1916,9 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
           indent.writeln(
             'final int engineId = PlatformDispatcher.instance.engineId ?? _golubetsNoEngineKey;',
           );
-          indent.writeln('final int affinityKey = _golubetsEngineAffinity ?? _golubetsNoEngineKey;');
+          indent.writeln(
+            'final int affinityKey = _golubetsEngineAffinity ?? _golubetsNoEngineKey;',
+          );
           indent.writeScoped(
             'for (final MapEntry<String, List<(${api.name}, Object)>> entry in ${varNamePrefix}registeredHandles.entries) {',
             '}',
@@ -2650,7 +2596,9 @@ return ${generatorOptions.useJni ? 'await ' : ''}$completerVar.future;
         indent.writeln('return;');
       } else if (nativeInteropReturnsBuffer(returnType)) {
         indent.writeln('final JByteArray? $resultVar = $call;');
-        indent.writeln('return ${_castValue('_GolubetsJniBuffers.decode($resultVar)', returnType)};');
+        indent.writeln(
+          'return ${_castValue('_GolubetsJniBuffers.decode($resultVar)', returnType)};',
+        );
       } else if (returnType.isEnum) {
         final index = method.isAsynchronous ? '($call).toDartInt(releaseOriginal: true)' : call;
         indent.writeln('final int $resultVar = $index;');
@@ -3936,56 +3884,6 @@ JDoubleArray _float64ListToJni(Float64List value) {
     if (value == null) {
       return null;
     }
-<<<<<<< HEAD
-    if (value.isA<JLong>(JLong.type)) {
-      return value.as(JLong.type).longValue();
-    } else if (value.isA<JDouble>(JDouble.type)) {
-      return value.as(JDouble.type).doubleValue();
-    } else if (value.isA<JString>(JString.type)) {
-      return value.as(JString.type).toDartString();
-    } else if (value.isA<JBoolean>(JBoolean.type)) {
-      return value.as(JBoolean.type).booleanValue();
-    } else if (value.isA<JByteArray>(JByteArray.type)) {
-      // `getRange` returns a view over a finalizable native buffer that can be
-      // freed early once the value leaves the isolate (e.g. via `Isolate.run`),
-      // so typed arrays are copied into Dart memory.
-      final JByteArray array = value.as(JByteArray.type);
-      return Uint8List.fromList(array.getRange(0, array.length));
-    } else if (value.isA<JIntArray>(JIntArray.type)) {
-      final JIntArray array = value.as(JIntArray.type);
-      return Int32List.fromList(array.getRange(0, array.length));
-    } else if (value.isA<JLongArray>(JLongArray.type)) {
-      final JLongArray array = value.as(JLongArray.type);
-      return Int64List.fromList(array.getRange(0, array.length));
-    } else if (value.isA<JDoubleArray>(JDoubleArray.type)) {
-      final JDoubleArray array = value.as(JDoubleArray.type);
-      return Float64List.fromList(array.getRange(0, array.length));
-    } else if (value.isA<JList<JObject>>(JList.type as JType<JList<JObject>>)) {
-      final List<JObject?> list = value.as(JList.type).asDart();
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-    if (value.isA<JLong>(JLong.type)) {
-      return value.as(JLong.type).longValue();
-    } else if (value.isA<JDouble>(JDouble.type)) {
-      return value.as(JDouble.type).doubleValue();
-    } else if (value.isA<JString>(JString.type)) {
-      return value.as(JString.type).toDartString();
-    } else if (value.isA<JBoolean>(JBoolean.type)) {
-      return value.as(JBoolean.type).booleanValue();
-    } else if (value.isA<JByteArray>(JByteArray.type)) {
-      final JByteArray array = value.as(JByteArray.type);
-      return array.getRange(0, array.length).buffer.asUint8List();
-    } else if (value.isA<JIntArray>(JIntArray.type)) {
-      final JIntArray array = value.as(JIntArray.type);
-      return array.getRange(0, array.length);
-    } else if (value.isA<JLongArray>(JLongArray.type)) {
-      final JLongArray array = value.as(JLongArray.type);
-      return array.getRange(0, array.length);
-    } else if (value.isA<JDoubleArray>(JDoubleArray.type)) {
-      final JDoubleArray array = value.as(JDoubleArray.type);
-      return array.getRange(0, array.length);
-    } else if (value.isA<JList<JObject>>(JList.type as JType<JList<JObject>>)) {
-      final List<JObject?> list = value.as(JList.type).asDart();
-=======
     if (value.isInstanceOf(_longClass)) {
       return (value as JLong).longValue();
     } else if (value.isInstanceOf(_doubleClass)) {
@@ -4004,7 +3902,6 @@ JDoubleArray _float64ListToJni(Float64List value) {
       return _jDoubleArrayToDart(value as JDoubleArray);
     } else if (value.isInstanceOf(_listClass)) {
       final List<JObject?> list = (value as JList<JObject?>).asDart();
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
       final res = <Object?>[];
       // Cache the length before iterating to avoid a JNI hop per iteration.
       final int len = list.length;

@@ -2921,7 +2921,6 @@ int calculateLineNumber(String contents, int offset) {
   return result;
 }
 
-<<<<<<< HEAD
 class _DefaultValueVisitor extends dart_ast_visitor.SimpleAstVisitor<DefaultValue> {
   const _DefaultValueVisitor();
 
@@ -3055,12 +3054,7 @@ class _DefaultValueVisitor extends dart_ast_visitor.SimpleAstVisitor<DefaultValu
   }
 }
 
-List<Error> _validateDependencies({
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-List<Error> _validateDependencies({
-=======
 String? _findTargetPubspecPath({
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
   required String? appDirectory,
   required String? dartOutPath,
   String? basePath,

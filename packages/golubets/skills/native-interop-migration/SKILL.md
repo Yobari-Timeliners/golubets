@@ -4,13 +4,7 @@
 This skill guides AI agents and developers through migrating an existing Flutter plugin package (containing Swift for iOS/macOS and/or Kotlin for Android) from platform-channel-based Golubets code to direct **Native Interop** (`useFfi: true` for Swift, `useJni: true` for Kotlin).
 
 > [!IMPORTANT]
-<<<<<<< HEAD
-> **Golden Rule for Generated Code**: Generated code files (`.g.dart`, `.g.swift`, `.g.kt`, `.g.jni.dart`, `.g.ffi.dart`) should be produced automatically by Golubets, FFIgen, or JNIgen without manual edits. If you encounter a code generation error or bug that prevents compilation and cannot be resolved through configuration options:
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-> **Golden Rule for Generated Code**: Generated code files (`.g.dart`, `.g.swift`, `.g.kt`, `.g.jni.dart`, `.g.ffi.dart`) should be produced automatically by Pigeon, FFIgen, or JNIgen without manual edits. If you encounter a code generation error or bug that prevents compilation and cannot be resolved through configuration options:
-=======
-> **Golden Rule for Generated Code**: Generated code files (`.g.dart`, `.native_interop.g.dart`, `.g.swift`, `.g.kt`, `.g.jni.dart`, `.g.ffi.dart`) should be produced automatically by Pigeon, FFIgen, or JNIgen without manual edits. If you encounter a code generation error or bug that prevents compilation and cannot be resolved through configuration options:
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
+> **Golden Rule for Generated Code**: Generated code files (`.g.dart`, `.native_interop.g.dart`, `.g.swift`, `.g.kt`, `.g.jni.dart`, `.g.ffi.dart`) should be produced automatically by Golubets, FFIgen, or JNIgen without manual edits. If you encounter a code generation error or bug that prevents compilation and cannot be resolved through configuration options:
 > 1. File a detailed bug report describing the generator issue.
 > 2. **Do not modify generated files without explicit user permission**. You may ask the user if they want you to temporarily alter the generated code to unblock testing, but you must inform them that re-running code generation will overwrite these manual edits.
 
@@ -18,47 +12,23 @@ This skill guides AI agents and developers through migrating an existing Flutter
 
 ## 1. Add Dependencies
 
-Add the required runtime dependencies to `dependencies` and code generators/config-script dependencies to `dev_dependencies` in the package where Pigeon runs (for a plugin package, add these to the **plugin's** `pubspec.yaml`, not `example/pubspec.yaml`, unless the example app runs Pigeon directly).
+Add the required runtime dependencies to `dependencies` and code generators/config-script dependencies to `dev_dependencies` in the package where Golubets runs (for a plugin package, add these to the **plugin's** `pubspec.yaml`, not `example/pubspec.yaml`, unless the example app runs Golubets directly).
 
-Because Pigeon generates helper scripts in `tool/pigeon/` (`*_ffigen_config.dart` and `*_jnigen_config.dart`), `dart pub publish --dry-run` (and `flutter_plugin_tools publish-check`) requires every package imported by `lib/` or `tool/` to be explicitly declared in `pubspec.yaml`:
+Because Golubets generates helper scripts in `tool/golubets/` (`*_ffigen_config.dart` and `*_jnigen_config.dart`), `dart pub publish --dry-run` (and `flutter_plugin_tools publish-check`) requires every package imported by `lib/` or `tool/` to be explicitly declared in `pubspec.yaml`:
 
 ```bash
 # Add Golubets (if not already added):
 flutter pub add dev:golubets
 
 # For iOS/macOS Swift FFI:
-<<<<<<< HEAD
-flutter pub add ffi
-flutter pub add objective_c
-# Golubets requires this specific version for compatibility with its generated FFIgen configuration:
-flutter pub add dev:ffigen@21.0.0
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-flutter pub add ffi
-flutter pub add objective_c
-# Pigeon requires this specific version for compatibility with its generated FFIgen configuration:
-flutter pub add dev:ffigen@21.0.0
-=======
 flutter pub add ffi objective_c meta
-# Code generators and packages imported by tool/pigeon/*_ffigen_config.dart:
+# Code generators and packages imported by tool/golubets/*_ffigen_config.dart:
 flutter pub add dev:ffigen dev:swift2objc dev:swiftgen dev:path dev:pub_semver
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
 
-<<<<<<< HEAD
-# For Android Kotlin JNI:
-flutter pub add jni
-# Golubets requires this specific version for compatibility with its generated JNIgen configuration:
-flutter pub add dev:jnigen@1.0.0
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-# For Android Kotlin JNI:
-flutter pub add jni
-# Pigeon requires this specific version for compatibility with its generated JNIgen configuration:
-flutter pub add dev:jnigen@1.0.0
-=======
 # For Android Kotlin JNI (jni 1.1.1+ required for Android R8 keep rules):
 flutter pub add 'jni:^1.1.1' meta
-# Code generator imported by tool/pigeon/*_jnigen_config.dart:
+# Code generator imported by tool/golubets/*_jnigen_config.dart:
 flutter pub add 'dev:jnigen:^1.0.0'
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
 ```
 
 ---
@@ -72,17 +42,9 @@ In your Golubets Dart definition file (`pigeons/<messages_file>.dart`), update `
 
 ```dart
 // Example configuration (keep existing paths and options, add native interop settings):
-<<<<<<< HEAD
 @ConfigureGolubets(
   GolubetsOptions(
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-@ConfigurePigeon(
-  PigeonOptions(
-=======
-@ConfigurePigeon(
-  PigeonOptions(
     appDirectory: 'example/', // <-- ADD/UPDATE: Application directory (e.g. 'example/' for plugins, './' for apps)
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
     input: 'pigeons/messages.dart', // Your existing input path
     dartOut: 'lib/src/messages.g.dart', // Your existing Dart output path
     swiftOut: 'darwin/my_plugin/Sources/my_plugin/messages.g.swift', // Your existing Swift output path
@@ -106,17 +68,9 @@ In your Golubets Dart definition file (`pigeons/<messages_file>.dart`), update `
 - **`kotlinOptions: KotlinOptions(useJni: true)`**: Enables Kotlin JNI code generation.
 
 > [!WARNING]
-<<<<<<< HEAD
-> **Threading, Isolates & TaskQueue**: Native Interop calls execute directly on the calling isolate's OS thread (the main UI thread when called from the root isolate, unless the application developer has opted out of thread merging, which [is still possible on macOS](https://github.com/flutter/flutter/issues/181874)).
-> - **`@TaskQueue` is unsupported**: Because calls do not use Flutter Engine message queues, `@TaskQueue` annotations must be removed from the Golubets file.
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-> **Threading, Isolates & TaskQueue**: Native Interop calls execute directly on the calling isolate's OS thread (the main UI thread when called from the root isolate, unless the application developer has opted out of thread merging, which [is still possible on macOS](https://github.com/flutter/flutter/issues/181874)).
-> - **`@TaskQueue` is unsupported**: Because calls do not use Flutter Engine message queues, `@TaskQueue` annotations must be removed from the Pigeon file.
-=======
 > **Unsupported Features & Threading**: Native Interop calls execute directly on the calling isolate's OS thread (the main UI thread when called from the root isolate, unless the application developer has opted out of thread merging, which [is still possible on macOS](https://github.com/flutter/flutter/issues/181874)).
-> - **`@EventChannelApi` and `@ProxyApi` are unsupported**: Move any `@EventChannelApi` or `@ProxyApi` definitions into a separate Pigeon file without `useFfi` / `useJni`. Swift FFI also requires `SwiftOptions.includeErrorClass: true` (use a distinct `errorClassName` per file if multiple Swift FFI files share a module).
-> - **`@TaskQueue` is unsupported**: Because calls do not use Flutter Engine message queues, `@TaskQueue` annotations must be removed from the Pigeon file.
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
+> - **`@EventChannelApi` and `@ProxyApi` are unsupported**: Move any `@EventChannelApi` or `@ProxyApi` definitions into a separate Golubets file without `useFfi` / `useJni`. Swift FFI also requires `SwiftOptions.includeErrorClass: true` (use a distinct `errorClassName` per file if multiple Swift FFI files share a module).
+> - **`@TaskQueue` is unsupported**: Because calls do not use Flutter Engine message queues, `@TaskQueue` annotations must be removed from the Golubets file.
 > - **Migrating background work**:
 >   - *Option A (Native Concurrency)*: Replace `@TaskQueue` with `@async` in the Golubets definition file, and implement the generated Swift `async` or Kotlin `suspend` function on a background queue or coroutine dispatcher.
 >   - *Option B (Dart Isolates)*: Keep the method synchronous and call it from a worker isolate using `await Isolate.run(() => api.doSomething())`. Unlike platform channels, Native Interop Host API calls work out of the box in background isolates without `BackgroundIsolateBinaryMessenger`. Callers must ensure the isolate stays alive while there are pending asynchronous calls, as attempting to execute a callback after the isolate has terminated will cause a crash.
@@ -169,7 +123,7 @@ targets: [
 
 > [!IMPORTANT]
 > **Keep `FlutterFramework`, but do NOT add `<plugin_name>_objc_gen` to `Package.swift` if no `.m` file is generated!**
-> If your Pigeon schema only has synchronous `@HostApi()` methods, `ffigen` only generates a `.h` header (and a temporary `.o` file that should be deleted/ignored) in `<swift_output_dir>_objc_gen`, without a `.m` file. Keep the `FlutterFramework` package and `.product(name: "FlutterFramework", package: "FlutterFramework")` target dependency, but omit `my_plugin_objc_gen` — SwiftPM requires every `.target` to have at least one compilable source file (`.m`, `.c`, or `.swift`), so declaring `<plugin_name>_objc_gen` without a `.m` file will cause `flutter build ios`/`macos` to fail with:
+> If your Golubets schema only has synchronous `@HostApi()` methods, `ffigen` only generates a `.h` header (and a temporary `.o` file that should be deleted/ignored) in `<swift_output_dir>_objc_gen`, without a `.m` file. Keep the `FlutterFramework` package and `.product(name: "FlutterFramework", package: "FlutterFramework")` target dependency, but omit `my_plugin_objc_gen` — SwiftPM requires every `.target` to have at least one compilable source file (`.m`, `.c`, or `.swift`), so declaring `<plugin_name>_objc_gen` without a `.m` file will cause `flutter build ios`/`macos` to fail with:
 > `Error (Xcode): Build input file cannot be found: '.../<plugin_name>_objc_gen.o'`
 
 ### 3.3 Application & Example App Targets
@@ -186,32 +140,16 @@ When implementing Native Interop host APIs directly in an application target (su
 2. **Native Host Registration Location**:
    - **iOS**: Register in `AppDelegate.swift` inside `didInitializeImplicitFlutterEngine`:
      ```swift
-<<<<<<< HEAD
      let api = GolubetsApiImplementation()
-     MyApiSetup.register(api: api)
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-     let api = PigeonApiImplementation()
-     MyApiSetup.register(api: api)
-=======
-     let api = PigeonApiImplementation()
      if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "MyApi") {
        MyApiSetup.register(api: api, registrar: registrar)
      }
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
      ```
    - **macOS**: Register in `MainFlutterWindow.swift` inside `awakeFromNib()`:
      ```swift
-<<<<<<< HEAD
      let api = GolubetsApiImplementation()
-     MyApiSetup.register(api: api)
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-     let api = PigeonApiImplementation()
-     MyApiSetup.register(api: api)
-=======
-     let api = PigeonApiImplementation()
      MyApiSetup.register(
        api: api, registrar: flutterViewController.registrar(forPlugin: "MyApi"))
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
      ```
    - **Android**: Register in `MainActivity.configureFlutterEngine`:
      ```kotlin
@@ -255,13 +193,7 @@ When implementing Native Interop host APIs directly in an application target (su
    ```
 
 ### 4.2 Kotlin Implementation (`<PluginName>.kt`)
-<<<<<<< HEAD
-1. **Abstract Class Constructors**: Add `()` to parent Golubets class instantiations:
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-1. **Abstract Class Constructors**: Add `()` to parent Pigeon class instantiations:
-=======
 1. **Registration & Multi-Engine Deregistration Calls**: Replace platform channel setup/teardown with JNI registrars, passing the plugin binding so the registration is tied to that engine, and using `MyApiRegistrar().unregister(this, binding)` in `onDetachedFromEngine` so detaching a secondary `FlutterEngine` does not wipe out other active engines:
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
    ```kotlin
    // In onAttachedToEngine:
    // BEFORE: MyApi.setUp(binding.binaryMessenger, this)
@@ -271,7 +203,7 @@ When implementing Native Interop host APIs directly in an application target (su
    // BEFORE: MyApi.setUp(binding.binaryMessenger, null)
    // AFTER:  MyApiRegistrar().unregister(this, binding)
    ```
-   *Apps that own a `FlutterEngine` (for example, in `MainActivity.configureFlutterEngine`) use `MyApiRegistrar().register(api, flutterEngine)` / `MyApiRegistrar().unregister(api, flutterEngine)`. If spawning a custom or headless `FlutterEngine` without `GeneratedPluginRegistrant.registerWith(flutterEngine)`, register `JniPlugin` (`flutterEngine.plugins.add(com.github.dart_lang.jni.JniPlugin())`) before executing Dart code that uses JNI. (If upgrading from Pigeon `29.x` Native Interop: `unregister` replaces `register(null)` / `register(api: nil)`, and the name-only native `@HostApi` `getInstance(name)` is removed.)*
+   *Apps that own a `FlutterEngine` (for example, in `MainActivity.configureFlutterEngine`) use `MyApiRegistrar().register(api, flutterEngine)` / `MyApiRegistrar().unregister(api, flutterEngine)`. If spawning a custom or headless `FlutterEngine` without `GeneratedPluginRegistrant.registerWith(flutterEngine)`, register `JniPlugin` (`flutterEngine.plugins.add(com.github.dart_lang.jni.JniPlugin())`) before executing Dart code that uses JNI. (If upgrading from Golubets `29.x` Native Interop: `unregister` replaces `register(null)` / `register(api: nil)`, and the name-only native `@HostApi` `getInstance(name)` is removed.)*
 2. **Async Method Signatures**: Replace callback interfaces with Kotlin Coroutine `suspend` functions:
    ```kotlin
    // BEFORE (Callback style):
@@ -310,10 +242,10 @@ For `@FlutterApi()` interfaces (where host native code calls into Dart):
   // AFTER (Native Interop JNI):
   MyFlutterApiRegistrar().getInstance(binding)?.onEvent(data)
   ```
-- These lookups return the instance registered by that engine's Dart isolate when native code can match an exact engine identifier, or when that isolate has resolved a `@HostApi` handle from that engine defined in the same Pigeon input file (registered before or after); otherwise they fall back to the most recent registration (including for `@FlutterApi`-only files without exact engine identifiers). The old name-only `MyFlutterApiRegistrar().getInstance(name)` in Kotlin and `MyFlutterApiRegistrar.getInstance(name:)` / `MyFlutterApi.getInstance(name:)` in Swift no longer exist.
+- These lookups return the instance registered by that engine's Dart isolate when native code can match an exact engine identifier, or when that isolate has resolved a `@HostApi` handle from that engine defined in the same Golubets input file (registered before or after); otherwise they fall back to the most recent registration (including for `@FlutterApi`-only files without exact engine identifiers). The old name-only `MyFlutterApiRegistrar().getInstance(name)` in Kotlin and `MyFlutterApiRegistrar.getInstance(name:)` / `MyFlutterApi.getInstance(name:)` in Swift no longer exist.
 
 ### 4.4 Dart Plugin Client (`createWithNativeInteropApi` & `dartPluginClass`)
-In your Dart plugin implementation class, instantiate the Pigeon Host API using `<MyApi>.createWithNativeInteropApi()` (passing `messageChannelSuffix` if multiple named instances are registered on the host).
+In your Dart plugin implementation class, instantiate the Golubets Host API using `<MyApi>.createWithNativeInteropApi()` (passing `messageChannelSuffix` if multiple named instances are registered on the host).
 
 > [!CAUTION]
 > **Initialize `createWithNativeInteropApi()` Lazily (`late final`)**:
@@ -332,7 +264,7 @@ class MyPluginAndroid extends MyPluginPlatform {
 
 - **Multi-Engine Routing & Detached Instances**:
   - **Flutter 3.50.0 or higher is strongly recommended** with Native Interop; if a project runs into multi-engine routing issues on an earlier Flutter version, upgrade to Flutter 3.50.0+.
-  - `createWithNativeInteropApi()` resolves a host instance at lookup time, preferring: (1) exact `PlatformDispatcher.instance.engineId` match (always available for Kotlin `register(api, flutterEngine)`, and for plugin bindings/registrars on **Flutter 3.50.0+**), (2) the engine this isolate first resolved a handle from in that Pigeon file, or (3) the most recent registration.
+  - `createWithNativeInteropApi()` resolves a host instance at lookup time, preferring: (1) exact `PlatformDispatcher.instance.engineId` match (always available for Kotlin `register(api, flutterEngine)`, and for plugin bindings/registrars on **Flutter 3.50.0+**), (2) the engine this isolate first resolved a handle from in that Golubets file, or (3) the most recent registration.
   - When routing is best-effort (Flutter < 3.50.0 plugin bindings/registrars without engine IDs, engines spawned back-to-back before Dart starts, lazy first lookup while a secondary engine is attached, or `Isolate.spawn` / `Isolate.run` background isolates which lack `PlatformDispatcher.engineId`), lookups can bind to another engine's instance.
   - A `<MyApi>` object stays bound to the resolved host instance for its lifetime; calling it after its engine detaches throws a `PlatformException` with code `'unregistered-instance'`. Stateless or process-wide plugins work across any number of engines, while APIs holding **engine-specific state** (such as Android `Activity` via `ActivityAware`, `TextureRegistry`, or `UIViewController`) should pass a distinct `messageChannelSuffix` per engine or remain on platform channels / `@ProxyApi` unless exact routing is guaranteed.
 
@@ -340,31 +272,11 @@ class MyPluginAndroid extends MyPluginPlatform {
 
 ## 5. Code Generation, Formatting, and Validation
 
-<<<<<<< HEAD
-1. **Run Golubets Generator**:
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-1. **Run Pigeon Generator**:
-=======
-1. **Run Pigeon Generator** (this also runs JNIgen and FFIgen automatically):
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
+1. **Run Golubets Generator** (this also runs JNIgen and FFIgen automatically):
    ```bash
    dart run golubets --input pigeons/messages.dart
    ```
-<<<<<<< HEAD
-2. **Run JNIgen Config Script** (if JNI is enabled):
-   ```bash
-   dart run example/tool/golubets/jnigen_config.dart
-   ```
-3. **Format Code**:
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-2. **Run JNIgen Config Script** (if JNI is enabled):
-   ```bash
-   dart run example/tool/pigeon/jnigen_config.dart
-   ```
-3. **Format Code**:
-=======
 2. **Format Code**:
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
    ```bash
    dart run script/tool/bin/flutter_plugin_tools.dart format --packages <plugin_name>
    ```
@@ -374,7 +286,7 @@ class MyPluginAndroid extends MyPluginPlatform {
    dart run script/tool/bin/flutter_plugin_tools.dart analyze --packages <plugin_name>
    dart run script/tool/bin/flutter_plugin_tools.dart dart-test --packages <plugin_name>
 
-   # Verify pubspec.yaml dependencies (including tool/pigeon/*_config.dart imports)
+   # Verify pubspec.yaml dependencies (including tool/golubets/*_config.dart imports)
    dart run script/tool/bin/flutter_plugin_tools.dart publish-check --packages <plugin_name>
 
    # Integration Tests
@@ -408,13 +320,7 @@ For standalone Flutter applications, JNIgen defaults to searching `build/app/tmp
   ```
 
 ### 6.4 Direct Interop Config Script Execution (Debugging)
-<<<<<<< HEAD
-Golubets automatically generates input-specific config scripts under `tool/golubets/` named `<input_name>_jnigen_config.dart` and `<input_name>_ffigen_config.dart` (for example, `messages_jnigen_config.dart` for `pigeons/messages.dart`). If `dart run golubets` fails during automated JNIgen or FFIgen execution, you can execute these generated configuration scripts directly to view full verbose log output:
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-Pigeon automatically generates input-specific config scripts under `tool/pigeon/` named `<input_name>_jnigen_config.dart` and `<input_name>_ffigen_config.dart` (for example, `messages_jnigen_config.dart` for `pigeons/messages.dart`). If `dart run pigeon` fails during automated JNIgen or FFIgen execution, you can execute these generated configuration scripts directly to view full verbose log output:
-=======
-Pigeon automatically generates input-specific config scripts under `tool/pigeon/` named `<input_name>_jnigen_config.dart` and `<input_name>_ffigen_config.dart` (for example, `messages_jnigen_config.dart` for `pigeons/messages.dart`). `dart run pigeon` surfaces `jnigen` / `ffigen` errors directly, and you can also execute these generated configuration scripts directly to iterate on toolchain errors in isolation:
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
+Golubets automatically generates input-specific config scripts under `tool/golubets/` named `<input_name>_jnigen_config.dart` and `<input_name>_ffigen_config.dart` (for example, `messages_jnigen_config.dart` for `pigeons/messages.dart`). `dart run golubets` surfaces `jnigen` / `ffigen` errors directly, and you can also execute these generated configuration scripts directly to iterate on toolchain errors in isolation:
 ```bash
 # Debug JNIgen (Android):
 dart run tool/golubets/<input_name>_jnigen_config.dart
@@ -426,7 +332,7 @@ dart run tool/golubets/<input_name>_ffigen_config.dart
 ### 6.5 Environment Prerequisites & Tooling Versions
 - **Flutter 3.50.0 or higher (strongly recommended)**: Exposes engine identifiers on plugin bindings and registrars for exact multi-engine routing. Upgrade to Flutter 3.50.0+ if you encounter multi-engine issues on earlier versions.
 - **Android SDK & JDK 17–21**: An Android SDK must be installed and configured (via Flutter, `android/local.properties`, or `ANDROID_HOME`). JNIgen uses the JDK configured for Flutter (`flutter config --machine` → `jdk-dir`, which defaults to Android Studio's bundled JBR or `JAVA_HOME`), so no separate JDK setup is needed if Android Studio is installed; otherwise install a JDK (17–21) and configure it via `flutter config --jdk-dir` or `JAVA_HOME`.
-- **`jnigen` 1.0.0+ and `jni` 1.1.1+**: Pigeon's generated `*_jnigen_config.dart` uses the `JniGenerator` Dart config API introduced in `jnigen` 1.0.0 (which also supports Kotlin metadata up to 2.4; do not downgrade the project's Kotlin version to work around metadata errors on older `jnigen`), and requires `jni: ^1.1.1` for Android R8 keep rules.
+- **`jnigen` 1.0.0+ and `jni` 1.1.1+**: Golubets's generated `*_jnigen_config.dart` uses the `JniGenerator` Dart config API introduced in `jnigen` 1.0.0 (which also supports Kotlin metadata up to 2.4; do not downgrade the project's Kotlin version to work around metadata errors on older `jnigen`), and requires `jni: ^1.1.1` for Android R8 keep rules.
 - **LLVM / Xcode Command Line Tools**: Required by FFIgen to parse C/Objective-C headers (`xcode-select --install`).
 
 ### 6.6 Threading, Isolates & Platform UI Affinity
@@ -449,25 +355,25 @@ F DartJNI : JNI is not initialized. Are you trying to invoke a Java API from Dar
 
 ### 6.9 Xcode Build Error: `Build input file cannot be found: '.../<plugin_name>_objc_gen.o'`
 If an iOS or macOS SwiftPM build fails because `<plugin_name>_objc_gen.o` cannot be found:
-- **Cause**: `Package.swift` defines a `<plugin_name>_objc_gen` target, but `ffigen` did not generate a `.m` implementation file in `Sources/<plugin_name>_objc_gen/` (because the Pigeon schema has no async callbacks, closures, or `@FlutterApi` methods requiring Objective-C trampolines). Without a `.m` source file, SwiftPM does not produce an object file for the target. (Note: any `.o` file produced inside `Sources/<plugin_name>_objc_gen/` during `ffigen` execution is a temporary `swiftc` artifact and must be deleted/ignored, never committed.)
+- **Cause**: `Package.swift` defines a `<plugin_name>_objc_gen` target, but `ffigen` did not generate a `.m` implementation file in `Sources/<plugin_name>_objc_gen/` (because the Golubets schema has no async callbacks, closures, or `@FlutterApi` methods requiring Objective-C trampolines). Without a `.m` source file, SwiftPM does not produce an object file for the target. (Note: any `.o` file produced inside `Sources/<plugin_name>_objc_gen/` during `ffigen` execution is a temporary `swiftc` artifact and must be deleted/ignored, never committed.)
 - **Solution**: Remove the `<plugin_name>_objc_gen` target and its dependency entry from `Package.swift`.
 
 ### 6.10 `ClassNotFoundException` or `NoSuchMethodError` in Android Release Builds (JNI)
 If native interop calls work in debug builds but fail in release builds with `java.lang.ClassNotFoundException` or `java.lang.NoSuchMethodError`:
 - **Cause**: R8 removed or renamed a class or member that JNI looks up by name.
 - **Solution**:
-  - If the error names a class generated by Pigeon, regenerate with Pigeon 29.0.7 or later, which adds `@Keep` to every generated class that JNI reaches.
+  - If the error names a class generated by Golubets, regenerate with Golubets 29.0.7 or later, which adds `@Keep` to every generated class that JNI reaches.
   - To see what R8 removed or renamed, check `build/app/outputs/mapping/release/mapping.txt` in the example app directory.
 
 ### 6.11 Multi-Engine Deregistration & Per-Engine State (`ArgumentError` / `unregistered-instance`)
 If creating and destroying a secondary `FlutterEngine` causes subsequent Dart calls on a still-running engine to fail with `ArgumentError: Invalid argument(s): No instance ... has been registered.` (when calling `createWithNativeInteropApi()`) or `PlatformException(code: 'unregistered-instance', ...)` (when calling a previously resolved handle), or calls reach another engine's instance:
 - **Cause**: One of:
-  - The plugin used a Pigeon version prior to `30.0.0`, which kept a single instance per name, and called `register(null)` / `register(api: nil)` during engine teardown.
+  - The plugin used a Golubets version prior to `30.0.0`, which kept a single instance per name, and called `register(null)` / `register(api: nil)` during engine teardown.
   - The handle was resolved from the detached engine's registration (for example, a lookup that ran before the engine's own registration existed, without exact engine routing).
 - **Solution**:
-  - Upgrade to **Flutter 3.50.0 or higher** (strongly recommended) if calls reach another engine's instance on earlier Flutter versions, and regenerate with Pigeon `30.0.0` or later, which keeps each engine's registration separate so detaching one engine only removes its own registration.
+  - Upgrade to **Flutter 3.50.0 or higher** (strongly recommended) if calls reach another engine's instance on earlier Flutter versions, and regenerate with Golubets `30.0.0` or later, which keeps each engine's registration separate so detaching one engine only removes its own registration.
   - Register and unregister with the engine: `MyApiRegistrar().register(this, binding)` / `MyApiRegistrar().unregister(this, binding)` in Kotlin (or `register(api, flutterEngine)` / `unregister(api, flutterEngine)` in an app), and `MyApiSetup.register(api: instance, registrar: registrar)` / `MyApiSetup.unregister(api: self, registrar: registrar)` in Swift. On iOS, call `registrar.publish(instance)` so `detachFromEngine(for:)` runs.
   - Resolve the first Dart handle early in startup (for example at the start of `main()`; on Android not in `registerWith`, where JNI isn't initialized yet) so each engine's isolate binds to its own engine when exact engine identifiers aren't available.
   - In native code, look up `@FlutterApi` instances with `MyFlutterApiRegistrar().getInstance(binding)` / `getInstance(flutterEngine)` (Kotlin) or `getInstance(registrar:)` (Swift).
-  - **Per-Engine State Caveat**: Routing to the calling engine is exact on an engine's root isolate when native code knows the engine identifier (always for Kotlin `register(api, flutterEngine)`, and for plugin bindings/registrars on **Flutter 3.50.0 or higher**). Otherwise (on Flutter < 3.50.0, and in background isolates via `Isolate.spawn` / `Isolate.run`, which have no `PlatformDispatcher.engineId`), routing is best-effort and can misroute engines created back-to-back before their Dart starts, a Pigeon file whose first lookup happens lazily while another engine is attached, or calls from background isolates. macOS plugins get no detach callback, so macOS registrations outlive their engine. Plugins holding engine-specific state (such as `ActivityAware` activities, `TextureRegistry`, or view controllers) in these cases should register under a unique `messageChannelSuffix` per engine or keep engine-scoped operations on platform channels / `@ProxyApi` (and on macOS, stay on platform channels for now). See [Step 5 of the Native Interop Guide](../../native_interop_guide.md#step-5-plugin-registration-deregistration-and-multi-engine-support).
+  - **Per-Engine State Caveat**: Routing to the calling engine is exact on an engine's root isolate when native code knows the engine identifier (always for Kotlin `register(api, flutterEngine)`, and for plugin bindings/registrars on **Flutter 3.50.0 or higher**). Otherwise (on Flutter < 3.50.0, and in background isolates via `Isolate.spawn` / `Isolate.run`, which have no `PlatformDispatcher.engineId`), routing is best-effort and can misroute engines created back-to-back before their Dart starts, a Golubets file whose first lookup happens lazily while another engine is attached, or calls from background isolates. macOS plugins get no detach callback, so macOS registrations outlive their engine. Plugins holding engine-specific state (such as `ActivityAware` activities, `TextureRegistry`, or view controllers) in these cases should register under a unique `messageChannelSuffix` per engine or keep engine-scoped operations on platform channels / `@ProxyApi` (and on macOS, stay on platform channels for now). See [Step 5 of the Native Interop Guide](../../native_interop_guide.md#step-5-plugin-registration-deregistration-and-multi-engine-support).
 

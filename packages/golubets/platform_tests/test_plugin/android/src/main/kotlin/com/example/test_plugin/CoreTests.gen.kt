@@ -212,8 +212,10 @@ enum class AnEnum(val raw: Int) {
   FOUR_HUNDRED_TWENTY_TWO(4);
 
   companion object {
+    private val golubetsValues = values()
+
     fun ofRaw(raw: Int): AnEnum? {
-      return values().firstOrNull { it.raw == raw }
+      return golubetsValues.getOrNull(raw)
     }
   }
 }
@@ -222,8 +224,10 @@ enum class AnotherEnum(val raw: Int) {
   JUST_IN_CASE(0);
 
   companion object {
+    private val golubetsValues = values()
+
     fun ofRaw(raw: Int): AnotherEnum? {
-      return values().firstOrNull { it.raw == raw }
+      return golubetsValues.getOrNull(raw)
     }
   }
 }
@@ -1845,39 +1849,37 @@ private open class CoreTestsGolubetsCodec : StandardMessageCodec() {
   override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {
     return when (type) {
       129.toByte() -> {
-        return (readValue(buffer) as Long?)?.let { AnEnum.ofRaw(it.toInt()) }
+        (readValue(buffer) as Long?)?.let { AnEnum.ofRaw(it.toInt()) }
       }
       130.toByte() -> {
-        return (readValue(buffer) as Long?)?.let { AnotherEnum.ofRaw(it.toInt()) }
+        (readValue(buffer) as Long?)?.let { AnotherEnum.ofRaw(it.toInt()) }
       }
       131.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let { UnusedClass.fromList(it) }
+        (readValue(buffer) as? List<Any?>)?.let { UnusedClass.fromList(it) }
       }
       132.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let { AllTypes.fromList(it) }
+        (readValue(buffer) as? List<Any?>)?.let { AllTypes.fromList(it) }
       }
       133.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let { AllNullableTypes.fromList(it) }
+        (readValue(buffer) as? List<Any?>)?.let { AllNullableTypes.fromList(it) }
       }
       134.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let {
-          AllNullableTypesWithoutRecursion.fromList(it)
-        }
+        (readValue(buffer) as? List<Any?>)?.let { AllNullableTypesWithoutRecursion.fromList(it) }
       }
       135.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let { AnEmptyClass.fromList(it) }
+        (readValue(buffer) as? List<Any?>)?.let { AnEmptyClass.fromList(it) }
       }
       136.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let { AllClassesWrapper.fromList(it) }
+        (readValue(buffer) as? List<Any?>)?.let { AllClassesWrapper.fromList(it) }
       }
       137.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let { ImmutableAllTypes.fromList(it) }
+        (readValue(buffer) as? List<Any?>)?.let { ImmutableAllTypes.fromList(it) }
       }
       138.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let { AllTypesWithDefaults.fromList(it) }
+        (readValue(buffer) as? List<Any?>)?.let { AllTypesWithDefaults.fromList(it) }
       }
       139.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let { TestMessage.fromList(it) }
+        (readValue(buffer) as? List<Any?>)?.let { TestMessage.fromList(it) }
       }
       else -> super.readValueOfType(type, buffer)
     }

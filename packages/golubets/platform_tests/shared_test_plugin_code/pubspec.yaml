@@ -30,16 +30,6 @@ dependencies:
   objective_c: ">=9.6.2 <9.6.3"
 
 dev_dependencies:
-<<<<<<< HEAD
-  ffigen: ^22.0.0
-  jnigen: ^1.0.0
-  leak_tracker: any
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-  ffigen: ^22.0.0
-  jnigen: ^1.0.0
-  leak_tracker: any
-=======
   ffigen: 22.0.0
   jnigen: 1.0.1
   leak_tracker: any
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd

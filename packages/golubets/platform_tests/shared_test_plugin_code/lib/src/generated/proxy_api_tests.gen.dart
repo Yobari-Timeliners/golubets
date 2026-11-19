@@ -567,7 +567,6 @@ class _GolubetsInternalInstanceManagerApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[identifier]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -584,7 +583,6 @@ class _GolubetsInternalInstanceManagerApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 }
@@ -999,7 +997,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     ]);
     () async {
       final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
       _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
     }();
   }
@@ -1268,7 +1265,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     ]);
     () async {
       final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
       _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
     }();
   }
@@ -2769,7 +2765,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
         golubetsVar_instanceIdentifier,
       ]);
       final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
       _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
     }();
     return golubetsVar_instance;
@@ -2795,7 +2790,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
         golubetsVar_instanceIdentifier,
       ]);
       final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
       _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
     }();
     return golubetsVar_instance;
@@ -2816,7 +2810,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -2834,7 +2827,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -2857,7 +2849,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -2875,7 +2866,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -2898,7 +2888,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, anInt]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -2924,7 +2913,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aDouble,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -2947,7 +2935,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aBool]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -2973,7 +2960,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aString,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -2999,7 +2985,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aUint8List,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3025,7 +3010,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       anObject,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3048,7 +3032,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3072,7 +3055,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3095,7 +3077,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3121,7 +3102,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3147,7 +3127,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       anEnum,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3173,7 +3152,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aProxyApi,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3199,7 +3177,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aNullableInt,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3225,7 +3202,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aNullableDouble,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3251,7 +3227,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aNullableBool,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3277,7 +3252,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aNullableString,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3303,7 +3277,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aNullableUint8List,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3329,7 +3302,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aNullableObject,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3355,7 +3327,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aNullableList,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3381,7 +3352,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aNullableMap,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3406,7 +3376,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aNullableEnum,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3432,7 +3401,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aNullableProxyApi,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3456,7 +3424,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -3474,7 +3441,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, anInt]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3500,7 +3466,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aDouble,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3523,7 +3488,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aBool]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3549,7 +3513,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aString,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3575,7 +3538,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aUint8List,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3601,7 +3563,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       anObject,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3624,7 +3585,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3647,7 +3607,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3673,7 +3632,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       anEnum,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3696,7 +3654,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3719,7 +3676,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -3737,7 +3693,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3760,7 +3715,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, anInt]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3786,7 +3740,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aDouble,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3809,7 +3762,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aBool]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3835,7 +3787,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aString,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3861,7 +3812,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aUint8List,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3887,7 +3837,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       anObject,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3910,7 +3859,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3933,7 +3881,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3959,7 +3906,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       anEnum,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -3989,7 +3935,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -4015,7 +3960,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[aString]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4045,7 +3989,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -4062,7 +4005,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -4079,7 +4021,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4101,7 +4042,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -4118,7 +4058,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aBool]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4140,7 +4079,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, anInt]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4165,7 +4103,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aDouble,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4190,7 +4127,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aString,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4215,7 +4151,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aUint8List,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4237,7 +4172,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4261,7 +4195,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4283,7 +4216,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4307,7 +4239,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4332,7 +4263,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       anEnum,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4357,7 +4287,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aProxyApi,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4379,7 +4308,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aBool]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4401,7 +4329,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, anInt]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4426,7 +4353,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aDouble,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4451,7 +4377,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aString,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4476,7 +4401,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aUint8List,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4498,7 +4422,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aList]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4520,7 +4443,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this, aMap]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4545,7 +4467,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       anEnum,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4570,7 +4491,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aProxyApi,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4592,7 +4512,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -4612,7 +4531,6 @@ class ProxyApiTestClass extends ProxyApiSuperClass implements ProxyApiInterface 
       aString,
     ]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -4712,7 +4630,6 @@ class ProxyApiSuperClass extends GolubetsInternalProxyApiBaseClass {
     ]);
     () async {
       final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
       _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
     }();
   }
@@ -4788,7 +4705,6 @@ class ProxyApiSuperClass extends GolubetsInternalProxyApiBaseClass {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 
@@ -4956,7 +4872,6 @@ class ClassWithApiRequirement extends GolubetsInternalProxyApiBaseClass {
     ]);
     () async {
       final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
       _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
     }();
   }
@@ -5032,7 +4947,6 @@ class ClassWithApiRequirement extends GolubetsInternalProxyApiBaseClass {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[this]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     _extractReplyValueOrThrow(golubetsVar_replyList, golubetsVar_channelName, isNullValid: true);
   }
 

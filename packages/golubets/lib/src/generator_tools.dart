@@ -7,12 +7,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-<<<<<<< HEAD
 import 'package:collection/collection.dart';
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-=======
 import 'package:meta/meta.dart';
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
 import 'package:path/path.dart' as path;
 import 'package:yaml/yaml.dart' as yaml;
 
@@ -22,13 +18,7 @@ import 'generator.dart';
 /// The current version of golubets.
 ///
 /// This must match the version in pubspec.yaml.
-<<<<<<< HEAD
 const String golubetsVersion = '2.1.0';
-||||||| bc74248f73ad0f3af0de312406e107554753550b
-const String golubetsVersion = '29.0.4';
-=======
-const String golubetsVersion = '30.0.4';
->>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
 
 /// Default plugin package name.
 const String defaultPluginPackageName = 'dev.bayori.golubets';

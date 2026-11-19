@@ -3526,7 +3526,10 @@ void main() {
             code,
             contains('return getInstanceWithKey(GolubetsEngineKeys.keyOf(binding), name)'),
           );
-          expect(code, contains('return getInstanceWithKey(GolubetsEngineKeys.keyOf(engine), name)'));
+          expect(
+            code,
+            contains('return getInstanceWithKey(GolubetsEngineKeys.keyOf(engine), name)'),
+          );
           expectInOrder(code, <String>[
             'if (engineKey != GolubetsEngineKeys.NO_KEY) {',
             'val match = list.lastOrNull { it.engineId == engineKey } ?: list.lastOrNull { it.affinityKey == engineKey }',
@@ -3657,7 +3660,7 @@ void main() {
       Method(
         name: 'echoAsyncData',
         location: location,
-        isAsynchronous: true,
+        asynchronousType: AsynchronousType.callback,
         parameters: <Parameter>[Parameter(name: 'data', type: dataType)],
         returnType: dataType,
       ),
@@ -3703,7 +3706,10 @@ void main() {
         code,
         contains('class HostApiRegistrar private constructor(private val engineKey: Long) {'),
       );
-      expect(code, contains('fun echoData(count: Long, golubetsVar_args: ByteArray): ByteArray? {'));
+      expect(
+        code,
+        contains('fun echoData(count: Long, golubetsVar_args: ByteArray): ByteArray? {'),
+      );
       expect(code, contains('val golubetsVar_arg_data = golubetsVar_decodedArgs[0] as Data?'));
       expect(
         code,
@@ -3714,9 +3720,14 @@ void main() {
       expect(code, contains('fun echoColor(color: Long): Long {'));
       expect(
         code,
-        contains('golubetsVar_api.echoColor(if (color == -1L) null else Color.ofRaw(color.toInt()))'),
+        contains(
+          'golubetsVar_api.echoColor(if (color == -1L) null else Color.ofRaw(color.toInt()))',
+        ),
       );
-      expect(code, contains('suspend fun echoAsyncData(golubetsVar_args: ByteArray): ByteArray? {'));
+      expect(
+        code,
+        contains('suspend fun echoAsyncData(golubetsVar_args: ByteArray): ByteArray? {'),
+      );
     });
 
     test('host api entry points encode error details', () {
@@ -3852,7 +3863,10 @@ void main() {
       );
       final code = sink.toString();
       expect(code, contains('fun send(itemsArg: String, golubetsVar_args: ByteArray) {'));
-      expect(code, contains('val golubetsVar_arg_items = golubetsVar_decodedArgs[0] as List<String>'));
+      expect(
+        code,
+        contains('val golubetsVar_arg_items = golubetsVar_decodedArgs[0] as List<String>'),
+      );
       expect(code, contains('golubetsVar_api.send(itemsArg, golubetsVar_arg_items)'));
       expect(code, isNot(contains('val itemsArg =')));
     });

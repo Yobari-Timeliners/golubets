@@ -270,13 +270,13 @@ extension type NativeInteropExampleApiRegistrar$Companion._(jni$_.JObject _$this
 
 extension NativeInteropExampleApiRegistrar$Companion$$Methods
     on NativeInteropExampleApiRegistrar$Companion {
-  static final _id_pigeonResolveInstance = NativeInteropExampleApiRegistrar$Companion._class
+  static final _id_golubetsResolveInstance = NativeInteropExampleApiRegistrar$Companion._class
       .instanceMethodId(
-        r'pigeonResolveInstance',
+        r'golubetsResolveInstance',
         r'(JJLjava/lang/String;)Ldev/flutter/pigeonnativeinteropapp/NativeInteropExampleApiRegistrar;',
       );
 
-  static final _pigeonResolveInstance =
+  static final _golubetsResolveInstance =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
               jni$_.JniResult Function(
@@ -296,31 +296,31 @@ extension NativeInteropExampleApiRegistrar$Companion$$Methods
             )
           >();
 
-  /// from: `public fun pigeonResolveInstance(engineId: kotlin.Long, affinityKey: kotlin.Long, name: kotlin.String): dev.flutter.pigeonnativeinteropapp.NativeInteropExampleApiRegistrar?`
+  /// from: `public fun golubetsResolveInstance(engineId: kotlin.Long, affinityKey: kotlin.Long, name: kotlin.String): dev.flutter.pigeonnativeinteropapp.NativeInteropExampleApiRegistrar?`
   /// The returned object must be released after use, by calling the [release] method.
-  NativeInteropExampleApiRegistrar? pigeonResolveInstance(
+  NativeInteropExampleApiRegistrar? golubetsResolveInstance(
     core$_.int j,
     core$_.int j1,
     jni$_.JString string,
   ) {
     final _$$selfRef = reference;
     final _$string = string.reference;
-    return _pigeonResolveInstance(
+    return _golubetsResolveInstance(
       _$$selfRef.pointer,
-      _id_pigeonResolveInstance.pointer,
+      _id_golubetsResolveInstance.pointer,
       j,
       j1,
       _$string.pointer,
     ).object<NativeInteropExampleApiRegistrar?>();
   }
 
-  static final _id_pigeonEngineKeyOf = NativeInteropExampleApiRegistrar$Companion._class
+  static final _id_golubetsEngineKeyOf = NativeInteropExampleApiRegistrar$Companion._class
       .instanceMethodId(
-        r'pigeonEngineKeyOf',
+        r'golubetsEngineKeyOf',
         r'(Ldev/flutter/pigeonnativeinteropapp/NativeInteropExampleApiRegistrar;)J',
       );
 
-  static final _pigeonEngineKeyOf =
+  static final _golubetsEngineKeyOf =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
               jni$_.JniResult Function(
@@ -338,13 +338,15 @@ extension NativeInteropExampleApiRegistrar$Companion$$Methods
             )
           >();
 
-  /// from: `public fun pigeonEngineKeyOf(instance: dev.flutter.pigeonnativeinteropapp.NativeInteropExampleApiRegistrar): kotlin.Long`
-  core$_.int pigeonEngineKeyOf(NativeInteropExampleApiRegistrar nativeInteropExampleApiRegistrar) {
+  /// from: `public fun golubetsEngineKeyOf(instance: dev.flutter.pigeonnativeinteropapp.NativeInteropExampleApiRegistrar): kotlin.Long`
+  core$_.int golubetsEngineKeyOf(
+    NativeInteropExampleApiRegistrar nativeInteropExampleApiRegistrar,
+  ) {
     final _$$selfRef = reference;
     final _$nativeInteropExampleApiRegistrar = nativeInteropExampleApiRegistrar.reference;
-    return _pigeonEngineKeyOf(
+    return _golubetsEngineKeyOf(
       _$$selfRef.pointer,
-      _id_pigeonEngineKeyOf.pointer,
+      _id_golubetsEngineKeyOf.pointer,
       _$nativeInteropExampleApiRegistrar.pointer,
     ).long;
   }
@@ -398,12 +400,12 @@ extension type NativeInteropExampleApiRegistrar._(jni$_.JObject _$this) implemen
     return _new$(_$$classRef.pointer, _id_new$.pointer).object<NativeInteropExampleApiRegistrar>();
   }
 
-  static final _id_pigeonResolveInstance = _class.staticMethodId(
-    r'pigeonResolveInstance',
+  static final _id_golubetsResolveInstance = _class.staticMethodId(
+    r'golubetsResolveInstance',
     r'(JJLjava/lang/String;)Ldev/flutter/pigeonnativeinteropapp/NativeInteropExampleApiRegistrar;',
   );
 
-  static final _pigeonResolveInstance =
+  static final _golubetsResolveInstance =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
               jni$_.JniResult Function(
@@ -423,30 +425,30 @@ extension type NativeInteropExampleApiRegistrar._(jni$_.JObject _$this) implemen
             )
           >();
 
-  /// from: `static public final dev.flutter.pigeonnativeinteropapp.NativeInteropExampleApiRegistrar pigeonResolveInstance(long j, long j1, java.lang.String string)`
+  /// from: `static public final dev.flutter.pigeonnativeinteropapp.NativeInteropExampleApiRegistrar golubetsResolveInstance(long j, long j1, java.lang.String string)`
   /// The returned object must be released after use, by calling the [release] method.
-  static NativeInteropExampleApiRegistrar? pigeonResolveInstance(
+  static NativeInteropExampleApiRegistrar? golubetsResolveInstance(
     core$_.int j,
     core$_.int j1,
     jni$_.JString string,
   ) {
     final _$$classRef = _class.reference;
     final _$string = string.reference;
-    return _pigeonResolveInstance(
+    return _golubetsResolveInstance(
       _$$classRef.pointer,
-      _id_pigeonResolveInstance.pointer,
+      _id_golubetsResolveInstance.pointer,
       j,
       j1,
       _$string.pointer,
     ).object<NativeInteropExampleApiRegistrar?>();
   }
 
-  static final _id_pigeonEngineKeyOf = _class.staticMethodId(
-    r'pigeonEngineKeyOf',
+  static final _id_golubetsEngineKeyOf = _class.staticMethodId(
+    r'golubetsEngineKeyOf',
     r'(Ldev/flutter/pigeonnativeinteropapp/NativeInteropExampleApiRegistrar;)J',
   );
 
-  static final _pigeonEngineKeyOf =
+  static final _golubetsEngineKeyOf =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
               jni$_.JniResult Function(
@@ -464,15 +466,15 @@ extension type NativeInteropExampleApiRegistrar._(jni$_.JObject _$this) implemen
             )
           >();
 
-  /// from: `static public final long pigeonEngineKeyOf(dev.flutter.pigeonnativeinteropapp.NativeInteropExampleApiRegistrar nativeInteropExampleApiRegistrar)`
-  static core$_.int pigeonEngineKeyOf(
+  /// from: `static public final long golubetsEngineKeyOf(dev.flutter.pigeonnativeinteropapp.NativeInteropExampleApiRegistrar nativeInteropExampleApiRegistrar)`
+  static core$_.int golubetsEngineKeyOf(
     NativeInteropExampleApiRegistrar nativeInteropExampleApiRegistrar,
   ) {
     final _$$classRef = _class.reference;
     final _$nativeInteropExampleApiRegistrar = nativeInteropExampleApiRegistrar.reference;
-    return _pigeonEngineKeyOf(
+    return _golubetsEngineKeyOf(
       _$$classRef.pointer,
-      _id_pigeonEngineKeyOf.pointer,
+      _id_golubetsEngineKeyOf.pointer,
       _$nativeInteropExampleApiRegistrar.pointer,
     ).long;
   }
