@@ -115,8 +115,8 @@ class SwiftOptions {
   ///
   /// If not provided, the triple is automatically derived based on the
   /// `appleSdkPath` using `macOSX64TargetTripleLatest` or `iOSArm64TargetTripleLatest`,
-  /// falling back to `arm64-apple-ios` (or `x86_64-apple-macosx` if `appleSdkPath`
-  /// contains "macosx").
+  /// falling back to `arm64-apple-ios13.0` (or `x86_64-apple-macosx10.14` if
+  /// `appleSdkPath` contains "macosx").
   final String? appleSdkTriple;
 
   /// Creates a [SwiftOptions] from a Map representation where:
@@ -262,8 +262,8 @@ class InternalSwiftOptions extends InternalOptions {
   /// The Apple target triple to use for FFI generation.
   ///
   /// If not provided, the triple is automatically derived based on the
-  /// `appleSdkPath`, defaulting to `arm64-apple-ios` (or `x86_64-apple-macosx14.0`
-  /// if `appleSdkPath` contains "macosx").
+  /// `appleSdkPath`, defaulting to `arm64-apple-ios13.0` (or
+  /// `x86_64-apple-macosx10.14` if `appleSdkPath` contains "macosx").
   final String? appleSdkTriple;
 
   /// How native interop moves values between Dart and Swift.

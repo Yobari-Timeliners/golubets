@@ -183,9 +183,11 @@ import 'package:swiftgen/swiftgen.dart';
           ? await macOSX64TargetTripleLatest
           : await iOSArm64TargetTripleLatest;
     } catch (_) {
+      // Unversioned triples make swiftc assume an OS older than Foundation's
+      // `Data`, so fall back to the minimum versions in `externalVersions`.
       targetTriple = sdk.path.toLowerCase().contains('macosx')
-          ? 'x86_64-apple-macosx'
-          : 'arm64-apple-ios';
+          ? 'x86_64-apple-macosx10.14'
+          : 'arm64-apple-ios13.0';
     }
   }
 
