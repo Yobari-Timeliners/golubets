@@ -10,6 +10,11 @@ package com.example.test_plugin
 
 import android.util.Log
 import androidx.annotation.Keep
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.plugin.common.StandardMessageCodec
+import java.io.ByteArrayOutputStream
+import java.nio.ByteBuffer
 
 private object NativeInteropTestsGolubetsUtils {
 
@@ -185,6 +190,7 @@ private object NativeInteropTestsGolubetsUtils {
  * @property message The error message.
  * @property details The error details. Must be a datatype supported by the api codec.
  */
+@Keep
 class NativeInteropTestsError(
     val code: String,
     override val message: String? = null,
@@ -193,6 +199,76 @@ class NativeInteropTestsError(
 
 private const val defaultInstanceName = "GolubetsDefaultClassName32uh4ui3lh445uh4h3l2l455g4y34u"
 
+/** Computes keys that identify the Flutter engine a registration belongs to. */
+private object NativeInteropTestsGolubetsEngineKeys {
+  /** Sentinel meaning that no engine key is known. */
+  const val NO_KEY: Long = Long.MIN_VALUE
+
+  /** `FlutterPluginBinding.getEngineId`, which is missing on older Flutter versions. */
+  private val getEngineIdMethod: java.lang.reflect.Method? by lazy {
+    try {
+      FlutterPlugin.FlutterPluginBinding::class.java.getMethod("getEngineId")
+    } catch (e: Exception) {
+      null
+    }
+  }
+
+  /** Keys for engine messengers, used when an exact engine id is unavailable. */
+  private val messengerKeys = java.util.WeakHashMap<Any, Long>()
+
+  /**
+   * Keys already computed for each binding, so `register` and `unregister` with the same binding
+   * always agree even if [keyOf] for its engine later records an exact key for the messenger.
+   */
+  private val bindingKeys = java.util.WeakHashMap<FlutterPlugin.FlutterPluginBinding, Long>()
+
+  private var nextSyntheticKey: Long = -1L
+
+  /** Returns the key for the engine that [binding] belongs to. */
+  @Synchronized
+  fun keyOf(binding: FlutterPlugin.FlutterPluginBinding): Long {
+    return bindingKeys.getOrPut(binding) { computeKey(binding) }
+  }
+
+  private fun computeKey(binding: FlutterPlugin.FlutterPluginBinding): Long {
+    val method = getEngineIdMethod
+    if (method != null) {
+      try {
+        // Real engine ids are never 0, but an engine without one, or a test
+        // double, reports 0, which must not be shared between engines.
+        val engineId = method.invoke(binding) as Long
+        if (engineId != 0L) {
+          return engineId
+        }
+      } catch (e: Exception) {
+        // Fall back to a messenger-based key.
+      }
+    }
+    return keyOfMessenger(binding.binaryMessenger)
+  }
+
+  /** Returns the key for [engine]. */
+  @Synchronized
+  fun keyOf(engine: FlutterEngine): Long {
+    val key = engine.engineId
+    if (key == 0L) {
+      // Real engine ids are never 0, but an engine without one, or a test
+      // double, reports 0, which must not be shared between engines.
+      return keyOfMessenger(engine.dartExecutor)
+    }
+    // Record the exact key so later lookups through a binding for this engine
+    // agree with it even when the binding cannot report the engine id.
+    messengerKeys[engine.dartExecutor] = key
+    return key
+  }
+
+  @Synchronized
+  private fun keyOfMessenger(messenger: Any): Long {
+    return messengerKeys.getOrPut(messenger) { nextSyntheticKey-- }
+  }
+}
+
+@Keep
 enum class NativeInteropAnEnum(val raw: Int) {
   ONE(0),
   TWO(1),
@@ -200,24 +276,32 @@ enum class NativeInteropAnEnum(val raw: Int) {
   FORTY_TWO(3),
   FOUR_HUNDRED_TWENTY_TWO(4);
 
+  @Keep
   companion object {
+    private val golubetsValues = values()
+
     fun ofRaw(raw: Int): NativeInteropAnEnum? {
-      return values().firstOrNull { it.raw == raw }
+      return golubetsValues.getOrNull(raw)
     }
   }
 }
 
+@Keep
 enum class NativeInteropAnotherEnum(val raw: Int) {
   JUST_IN_CASE(0);
 
+  @Keep
   companion object {
+    private val golubetsValues = values()
+
     fun ofRaw(raw: Int): NativeInteropAnotherEnum? {
-      return values().firstOrNull { it.raw == raw }
+      return golubetsValues.getOrNull(raw)
     }
   }
 }
 
 /** Generated class from Golubets that represents data sent in messages. */
+@Keep
 data class NativeInteropUnusedClass(val aField: Any? = null) {
   companion object {
     fun fromList(golubetsVar_list: List<Any?>): NativeInteropUnusedClass {
@@ -258,6 +342,7 @@ data class NativeInteropUnusedClass(val aField: Any? = null) {
  *
  * Generated class from Golubets that represents data sent in messages.
  */
+@Keep
 data class NativeInteropAllTypes(
     val aBool: Boolean = false,
     val anInt: Long = 0L,
@@ -463,6 +548,7 @@ data class NativeInteropAllTypes(
  *
  * Generated class from Golubets that represents data sent in messages.
  */
+@Keep
 data class NativeInteropAllNullableTypes(
     val aNullableBool: Boolean? = null,
     val aNullableInt: Long? = null,
@@ -693,6 +779,7 @@ data class NativeInteropAllNullableTypes(
  *
  * Generated class from Golubets that represents data sent in messages.
  */
+@Keep
 data class NativeInteropAllNullableTypesWithoutRecursion(
     val aNullableBool: Boolean? = null,
     val aNullableInt: Long? = null,
@@ -913,6 +1000,7 @@ data class NativeInteropAllNullableTypesWithoutRecursion(
  *
  * Generated class from Golubets that represents data sent in messages.
  */
+@Keep
 data class NativeInteropAllClassesWrapper(
     val allNullableTypes: NativeInteropAllNullableTypes,
     val allNullableTypesWithoutRecursion: NativeInteropAllNullableTypesWithoutRecursion? = null,
@@ -995,8 +1083,510 @@ data class NativeInteropAllClassesWrapper(
   }
 }
 
+/**
+ * A sealed class, to test sealed class handling.
+ *
+ * Generated class from Golubets that represents data sent in messages. This class should not be
+ * extended by any user class outside of the generated file.
+ */
+@Keep sealed class NativeInteropSealedClass
+/**
+ * A subclass of `NativeInteropSealedClass` with fields.
+ *
+ * Generated class from Golubets that represents data sent in messages.
+ */
+@Keep
+data class NativeInteropSealedClassWithFields(
+    val aString: String,
+    val aNullableInt: Long? = null,
+    val anEnum: NativeInteropAnEnum,
+    val aClass: NativeInteropAllNullableTypesWithoutRecursion? = null
+) : NativeInteropSealedClass() {
+  companion object {
+    fun fromList(golubetsVar_list: List<Any?>): NativeInteropSealedClassWithFields {
+      val aString = golubetsVar_list[0] as String
+      val aNullableInt = golubetsVar_list[1] as Long?
+      val anEnum = golubetsVar_list[2] as NativeInteropAnEnum
+      val aClass = golubetsVar_list[3] as NativeInteropAllNullableTypesWithoutRecursion?
+      return NativeInteropSealedClassWithFields(aString, aNullableInt, anEnum, aClass)
+    }
+  }
+
+  fun toList(): List<Any?> {
+    return listOf(
+        aString,
+        aNullableInt,
+        anEnum,
+        aClass,
+    )
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    val other = other as NativeInteropSealedClassWithFields
+    return NativeInteropTestsGolubetsUtils.deepEquals(this.aString, other.aString) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.aNullableInt, other.aNullableInt) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.anEnum, other.anEnum) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.aClass, other.aClass)
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.aString)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.aNullableInt)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.anEnum)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.aClass)
+    return result
+  }
+
+  override fun toString(): String {
+    return "NativeInteropSealedClassWithFields(aString=$aString, aNullableInt=$aNullableInt, anEnum=$anEnum, aClass=$aClass)"
+  }
+}
+
+/**
+ * A subclass of `NativeInteropSealedClass` without fields.
+ *
+ * Generated class from Golubets that represents data sent in messages.
+ */
+@Keep
+class NativeInteropEmptySealedClass : NativeInteropSealedClass() {
+  companion object {
+    fun fromList(golubetsVar_list: List<Any?>): NativeInteropEmptySealedClass {
+      return NativeInteropEmptySealedClass()
+    }
+  }
+
+  fun toList(): List<Any?> {
+    return listOf()
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    return result
+  }
+
+  override fun toString(): String {
+    return "NativeInteropEmptySealedClass()"
+  }
+}
+
+/**
+ * A class with sealed class fields, to test sealed classes nested in classes and lists.
+ *
+ * Generated class from Golubets that represents data sent in messages.
+ */
+@Keep
+data class NativeInteropSealedClassWrapper(
+    val sealedClass: NativeInteropSealedClass,
+    val nullableSealedClass: NativeInteropSealedClass? = null,
+    val sealedClassList: List<NativeInteropSealedClass>
+) {
+  companion object {
+    fun fromList(golubetsVar_list: List<Any?>): NativeInteropSealedClassWrapper {
+      val sealedClass = golubetsVar_list[0] as NativeInteropSealedClass
+      val nullableSealedClass = golubetsVar_list[1] as NativeInteropSealedClass?
+      val sealedClassList = golubetsVar_list[2] as List<NativeInteropSealedClass>
+      return NativeInteropSealedClassWrapper(sealedClass, nullableSealedClass, sealedClassList)
+    }
+  }
+
+  fun toList(): List<Any?> {
+    return listOf(
+        sealedClass,
+        nullableSealedClass,
+        sealedClassList,
+    )
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    val other = other as NativeInteropSealedClassWrapper
+    return NativeInteropTestsGolubetsUtils.deepEquals(this.sealedClass, other.sealedClass) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(
+            this.nullableSealedClass, other.nullableSealedClass) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.sealedClassList, other.sealedClassList)
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.sealedClass)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.nullableSealedClass)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.sealedClassList)
+    return result
+  }
+
+  override fun toString(): String {
+    return "NativeInteropSealedClassWrapper(sealedClass=$sealedClass, nullableSealedClass=$nullableSealedClass, sealedClassList=$sealedClassList)"
+  }
+}
+
+/**
+ * A class whose field names collide with members of the bindings that JNIgen generates, so JNIgen
+ * renames their accessors.
+ *
+ * The Dart generator has to predict those names, since it is generated before JNIgen runs.
+ *
+ * Generated class from Golubets that represents data sent in messages.
+ */
+@Keep
+data class NativeInteropReservedNames(
+    val type: String? = null,
+    val use: String? = null,
+    val reference: String? = null,
+    val releasedBy: String? = null,
+    val fromReference: String? = null,
+    val jClass: String? = null,
+    val isInstanceOf: String? = null,
+    val isNull: String? = null,
+    val isReleased: Boolean,
+    val equals: String? = null,
+    val isEnabled: Boolean,
+    val isMaybe: Boolean? = null,
+    val isCount: Long? = null,
+    val getValue: String? = null
+) {
+  companion object {
+    fun fromList(golubetsVar_list: List<Any?>): NativeInteropReservedNames {
+      val type = golubetsVar_list[0] as String?
+      val use = golubetsVar_list[1] as String?
+      val reference = golubetsVar_list[2] as String?
+      val releasedBy = golubetsVar_list[3] as String?
+      val fromReference = golubetsVar_list[4] as String?
+      val jClass = golubetsVar_list[5] as String?
+      val isInstanceOf = golubetsVar_list[6] as String?
+      val isNull = golubetsVar_list[7] as String?
+      val isReleased = golubetsVar_list[8] as Boolean
+      val equals = golubetsVar_list[9] as String?
+      val isEnabled = golubetsVar_list[10] as Boolean
+      val isMaybe = golubetsVar_list[11] as Boolean?
+      val isCount = golubetsVar_list[12] as Long?
+      val getValue = golubetsVar_list[13] as String?
+      return NativeInteropReservedNames(
+          type,
+          use,
+          reference,
+          releasedBy,
+          fromReference,
+          jClass,
+          isInstanceOf,
+          isNull,
+          isReleased,
+          equals,
+          isEnabled,
+          isMaybe,
+          isCount,
+          getValue)
+    }
+  }
+
+  fun toList(): List<Any?> {
+    return listOf(
+        type,
+        use,
+        reference,
+        releasedBy,
+        fromReference,
+        jClass,
+        isInstanceOf,
+        isNull,
+        isReleased,
+        equals,
+        isEnabled,
+        isMaybe,
+        isCount,
+        getValue,
+    )
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    val other = other as NativeInteropReservedNames
+    return NativeInteropTestsGolubetsUtils.deepEquals(this.type, other.type) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.use, other.use) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.reference, other.reference) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.releasedBy, other.releasedBy) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.fromReference, other.fromReference) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.jClass, other.jClass) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.isInstanceOf, other.isInstanceOf) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.isNull, other.isNull) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.isReleased, other.isReleased) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.equals, other.equals) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.isEnabled, other.isEnabled) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.isMaybe, other.isMaybe) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.isCount, other.isCount) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.getValue, other.getValue)
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.type)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.use)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.reference)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.releasedBy)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.fromReference)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.jClass)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.isInstanceOf)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.isNull)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.isReleased)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.equals)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.isEnabled)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.isMaybe)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.isCount)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.getValue)
+    return result
+  }
+
+  override fun toString(): String {
+    return "NativeInteropReservedNames(type=$type, use=$use, reference=$reference, releasedBy=$releasedBy, fromReference=$fromReference, jClass=$jClass, isInstanceOf=$isInstanceOf, isNull=$isNull, isReleased=$isReleased, equals=$equals, isEnabled=$isEnabled, isMaybe=$isMaybe, isCount=$isCount, getValue=$getValue)"
+  }
+}
+
+/**
+ * A sealed class passed in the call's buffer with the hybrid transport.
+ *
+ * Generated class from Golubets that represents data sent in messages. This class should not be
+ * extended by any user class outside of the generated file.
+ */
+@Keep sealed class NativeInteropShape
+/** Generated class from Golubets that represents data sent in messages. */
+@Keep
+data class NativeInteropCircle(val radius: Double) : NativeInteropShape() {
+  companion object {
+    fun fromList(golubetsVar_list: List<Any?>): NativeInteropCircle {
+      val radius = golubetsVar_list[0] as Double
+      return NativeInteropCircle(radius)
+    }
+  }
+
+  fun toList(): List<Any?> {
+    return listOf(
+        radius,
+    )
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    val other = other as NativeInteropCircle
+    return NativeInteropTestsGolubetsUtils.deepEquals(this.radius, other.radius)
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.radius)
+    return result
+  }
+
+  override fun toString(): String {
+    return "NativeInteropCircle(radius=$radius)"
+  }
+}
+
+/** Generated class from Golubets that represents data sent in messages. */
+@Keep
+data class NativeInteropSquare(val side: Double, val label: String? = null) : NativeInteropShape() {
+  companion object {
+    fun fromList(golubetsVar_list: List<Any?>): NativeInteropSquare {
+      val side = golubetsVar_list[0] as Double
+      val label = golubetsVar_list[1] as String?
+      return NativeInteropSquare(side, label)
+    }
+  }
+
+  fun toList(): List<Any?> {
+    return listOf(
+        side,
+        label,
+    )
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    val other = other as NativeInteropSquare
+    return NativeInteropTestsGolubetsUtils.deepEquals(this.side, other.side) &&
+        NativeInteropTestsGolubetsUtils.deepEquals(this.label, other.label)
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.side)
+    result = 31 * result + NativeInteropTestsGolubetsUtils.deepHash(this.label)
+    return result
+  }
+
+  override fun toString(): String {
+    return "NativeInteropSquare(side=$side, label=$label)"
+  }
+}
+
+private open class NativeInteropTestsGolubetsCodec : StandardMessageCodec() {
+  override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {
+    return when (type) {
+      129.toByte() -> {
+        (readValue(buffer) as Long?)?.let { NativeInteropAnEnum.ofRaw(it.toInt()) }
+      }
+      130.toByte() -> {
+        (readValue(buffer) as Long?)?.let { NativeInteropAnotherEnum.ofRaw(it.toInt()) }
+      }
+      131.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let { NativeInteropUnusedClass.fromList(it) }
+      }
+      132.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let { NativeInteropAllTypes.fromList(it) }
+      }
+      133.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let { NativeInteropAllNullableTypes.fromList(it) }
+      }
+      134.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let {
+          NativeInteropAllNullableTypesWithoutRecursion.fromList(it)
+        }
+      }
+      135.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let { NativeInteropAllClassesWrapper.fromList(it) }
+      }
+      136.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let { NativeInteropSealedClassWithFields.fromList(it) }
+      }
+      137.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let { NativeInteropEmptySealedClass.fromList(it) }
+      }
+      138.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let { NativeInteropSealedClassWrapper.fromList(it) }
+      }
+      139.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let { NativeInteropReservedNames.fromList(it) }
+      }
+      140.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let { NativeInteropCircle.fromList(it) }
+      }
+      141.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let { NativeInteropSquare.fromList(it) }
+      }
+      else -> super.readValueOfType(type, buffer)
+    }
+  }
+
+  override fun writeValue(stream: ByteArrayOutputStream, value: Any?) {
+    when (value) {
+      is NativeInteropAnEnum -> {
+        stream.write(129)
+        writeValue(stream, value.raw.toLong())
+      }
+      is NativeInteropAnotherEnum -> {
+        stream.write(130)
+        writeValue(stream, value.raw.toLong())
+      }
+      is NativeInteropUnusedClass -> {
+        stream.write(131)
+        writeValue(stream, value.toList())
+      }
+      is NativeInteropAllTypes -> {
+        stream.write(132)
+        writeValue(stream, value.toList())
+      }
+      is NativeInteropAllNullableTypes -> {
+        stream.write(133)
+        writeValue(stream, value.toList())
+      }
+      is NativeInteropAllNullableTypesWithoutRecursion -> {
+        stream.write(134)
+        writeValue(stream, value.toList())
+      }
+      is NativeInteropAllClassesWrapper -> {
+        stream.write(135)
+        writeValue(stream, value.toList())
+      }
+      is NativeInteropSealedClassWithFields -> {
+        stream.write(136)
+        writeValue(stream, value.toList())
+      }
+      is NativeInteropEmptySealedClass -> {
+        stream.write(137)
+        writeValue(stream, value.toList())
+      }
+      is NativeInteropSealedClassWrapper -> {
+        stream.write(138)
+        writeValue(stream, value.toList())
+      }
+      is NativeInteropReservedNames -> {
+        stream.write(139)
+        writeValue(stream, value.toList())
+      }
+      is NativeInteropCircle -> {
+        stream.write(140)
+        writeValue(stream, value.toList())
+      }
+      is NativeInteropSquare -> {
+        stream.write(141)
+        writeValue(stream, value.toList())
+      }
+      else -> super.writeValue(stream, value)
+    }
+  }
+}
+
+/**
+ * Encodes and decodes the buffers that native interop calls pass to and from Dart, in the same
+ * format as the message codec.
+ */
+private object NativeInteropTestsGolubetsInteropCodec : NativeInteropTestsGolubetsCodec() {
+  fun encode(value: Any?): ByteArray {
+    val stream = ByteArrayOutputStream()
+    writeValue(stream, value)
+    return stream.toByteArray()
+  }
+
+  fun encodeOrNull(value: Any?): ByteArray? {
+    return if (value == null) null else encode(value)
+  }
+
+  fun decode(bytes: ByteArray): Any? {
+    return decodeMessage(ByteBuffer.wrap(bytes))
+  }
+
+  fun decodeArguments(bytes: ByteArray): List<Any?> {
+    return decode(bytes) as List<Any?>
+  }
+}
+
 val NativeInteropHostIntegrationCoreApiInstances:
-    MutableMap<String, NativeInteropHostIntegrationCoreApiRegistrar> =
+    MutableMap<String, MutableList<NativeInteropHostIntegrationCoreApiRegistrar>> =
     mutableMapOf()
 
 @Keep
@@ -1079,6 +1669,18 @@ interface NativeInteropHostIntegrationCoreApi {
   ): Map<Long, NativeInteropAllNullableTypes>
   /** Returns the passed class to test nested class serialization and deserialization. */
   fun echoClassWrapper(wrapper: NativeInteropAllClassesWrapper): NativeInteropAllClassesWrapper
+  /** Returns the passed sealed class, to test sealed class handling. */
+  fun echoSealedClass(sealedClass: NativeInteropSealedClass): NativeInteropSealedClass
+  /** Returns the passed sealed class, to test nullable sealed class handling. */
+  fun echoNullableSealedClass(sealedClass: NativeInteropSealedClass?): NativeInteropSealedClass?
+  /** Returns the passed list, to test sealed classes in lists. */
+  fun echoSealedClassList(
+      sealedClassList: List<NativeInteropSealedClass>
+  ): List<NativeInteropSealedClass>
+  /** Returns the passed wrapper, to test sealed classes in class fields. */
+  fun echoSealedClassWrapper(
+      wrapper: NativeInteropSealedClassWrapper
+  ): NativeInteropSealedClassWrapper
   /** Returns the passed enum to test serialization and deserialization. */
   fun echoEnum(anEnum: NativeInteropAnEnum): NativeInteropAnEnum
   /** Returns the passed enum to test serialization and deserialization. */
@@ -1242,6 +1844,8 @@ interface NativeInteropHostIntegrationCoreApi {
   suspend fun echoAsyncNativeInteropAllTypes(
       everything: NativeInteropAllTypes
   ): NativeInteropAllTypes
+  /** Returns the passed sealed class asynchronously. */
+  suspend fun echoAsyncSealedClass(sealedClass: NativeInteropSealedClass): NativeInteropSealedClass
   /** Returns the passed object, to test serialization and deserialization. */
   suspend fun echoAsyncNullableNativeInteropAllNullableTypes(
       everything: NativeInteropAllNullableTypes?
@@ -1310,6 +1914,8 @@ interface NativeInteropHostIntegrationCoreApi {
   fun callFlutterEchoNativeInteropAllNullableTypes(
       everything: NativeInteropAllNullableTypes?
   ): NativeInteropAllNullableTypes?
+
+  fun callFlutterEchoSealedClass(sealedClass: NativeInteropSealedClass): NativeInteropSealedClass
 
   fun callFlutterSendMultipleNullableTypes(
       aNullableBool: Boolean?,
@@ -1615,2742 +2221,4481 @@ interface NativeInteropHostIntegrationCoreApi {
   fun testDeregisterFlutterApi(): Boolean
   /** Registers and immediately deregisters a Host API under [name]. */
   fun registerAndImmediatelyDeregisterHostApi(name: String)
+  /** Registers a separate Host API instance under [name] for detached-handle testing. */
+  fun registerNamedHostApi(name: String)
+  /**
+   * Deregisters the Host API instance previously registered by [registerNamedHostApi] under [name].
+   */
+  fun deregisterNamedHostApi(name: String)
   /** Tests that calling a deregistered Flutter API under [name] fails / returns null. */
   fun testCallDeregisteredFlutterApi(name: String): Boolean
+  /**
+   * Spawns secondary engines, destroys one out-of-order, executes a live Dart entrypoint on another
+   * (where supported by the embedder), and tears it down while keeping the primary engine
+   * registration intact.
+   */
+  suspend fun testSecondaryEngineDartExecution(): Boolean
+  /**
+   * Returns whether the secondary engine's Host API registration is ready for the secondary Dart
+   * isolate to invoke.
+   */
+  fun isSecondaryEngineRegistrationReady(): Boolean
+  /**
+   * Reports whether Native Interop Host API calls from a secondary engine's Dart isolate succeeded.
+   */
+  fun reportSecondaryEngineCheck(success: Boolean)
+  /**
+   * Signals that the concurrent background isolate resolved a fresh handle while the secondary
+   * engine was registered.
+   */
+  fun notifyConcurrentIsolateResolved()
+  /**
+   * Returns the engine key that native code stored for this plugin's default Host API registration.
+   */
+  fun registeredEngineKey(): Long
+  /**
+   * Returns a label unique to the Host API instance that handled the call, so tests can check which
+   * engine's registration a handle resolved to.
+   */
+  fun engineLabel(): String
+  /**
+   * Returns whether this platform's plugin binding / registrar exposes an engine identifier, so
+   * registrations should use exact engine keys.
+   */
+  fun pluginEngineIdentifierIsAvailable(): Boolean
 }
 
 @Keep
-class NativeInteropHostIntegrationCoreApiRegistrar : NativeInteropHostIntegrationCoreApi {
-  private var api: NativeInteropHostIntegrationCoreApi? = null
+class NativeInteropHostIntegrationCoreApiRegistrar
+private constructor(private val engineKey: Long) {
+  @Volatile private var api: NativeInteropHostIntegrationCoreApi? = null
 
-  fun register(
-      api: NativeInteropHostIntegrationCoreApi?,
-      name: String = defaultInstanceName
-  ): NativeInteropHostIntegrationCoreApiRegistrar {
-    if (api != null) {
-      this.api = api
-      NativeInteropHostIntegrationCoreApiInstances[name] = this
-    } else {
-      NativeInteropHostIntegrationCoreApiInstances.remove(name)
-    }
-    return this
-  }
+  constructor() : this(NativeInteropTestsGolubetsEngineKeys.NO_KEY)
 
-  @Keep
-  fun getInstance(name: String): NativeInteropHostIntegrationCoreApiRegistrar? {
-    return NativeInteropHostIntegrationCoreApiInstances[name]
-  }
-  /** A no-op function taking no arguments and returning no value, to sanity test basic calling. */
-  override fun noop() {
-    api?.let {
-      try {
-        return it.noop()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed object, to test serialization and deserialization. */
-  override fun echoAllTypes(everything: NativeInteropAllTypes): NativeInteropAllTypes {
-    api?.let {
-      try {
-        return it.echoAllTypes(everything)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns an error, to test error handling. */
-  override fun throwError(): Any? {
-    api?.let {
-      try {
-        return it.throwError()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns an error from a void function, to test error handling. */
-  override fun throwErrorFromVoid() {
-    api?.let {
-      try {
-        return it.throwErrorFromVoid()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns a Flutter error, to test error handling. */
-  override fun throwFlutterError(): Any? {
-    api?.let {
-      try {
-        return it.throwFlutterError()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns passed in int. */
-  override fun echoInt(anInt: Long): Long {
-    api?.let {
-      try {
-        return it.echoInt(anInt)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns passed in double. */
-  override fun echoDouble(aDouble: Double): Double {
-    api?.let {
-      try {
-        return it.echoDouble(aDouble)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in boolean. */
-  override fun echoBool(aBool: Boolean): Boolean {
-    api?.let {
-      try {
-        return it.echoBool(aBool)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in string. */
-  override fun echoString(aString: String): String {
-    api?.let {
-      try {
-        return it.echoString(aString)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in Uint8List. */
-  override fun echoUint8List(aUint8List: ByteArray): ByteArray {
-    api?.let {
-      try {
-        return it.echoUint8List(aUint8List)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in Int32List. */
-  override fun echoInt32List(aInt32List: IntArray): IntArray {
-    api?.let {
-      try {
-        return it.echoInt32List(aInt32List)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in Int64List. */
-  override fun echoInt64List(aInt64List: LongArray): LongArray {
-    api?.let {
-      try {
-        return it.echoInt64List(aInt64List)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in Float64List. */
-  override fun echoFloat64List(aFloat64List: DoubleArray): DoubleArray {
-    api?.let {
-      try {
-        return it.echoFloat64List(aFloat64List)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in generic Object. */
-  override fun echoObject(anObject: Any): Any {
-    api?.let {
-      try {
-        return it.echoObject(anObject)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test serialization and deserialization. */
-  override fun echoList(list: List<Any?>): List<Any?> {
-    api?.let {
-      try {
-        return it.echoList(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test serialization and deserialization. */
-  override fun echoStringList(stringList: List<String?>): List<String?> {
-    api?.let {
-      try {
-        return it.echoStringList(stringList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test serialization and deserialization. */
-  override fun echoIntList(intList: List<Long?>): List<Long?> {
-    api?.let {
-      try {
-        return it.echoIntList(intList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test serialization and deserialization. */
-  override fun echoDoubleList(doubleList: List<Double?>): List<Double?> {
-    api?.let {
-      try {
-        return it.echoDoubleList(doubleList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test serialization and deserialization. */
-  override fun echoBoolList(boolList: List<Boolean?>): List<Boolean?> {
-    api?.let {
-      try {
-        return it.echoBoolList(boolList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test serialization and deserialization. */
-  override fun echoEnumList(enumList: List<NativeInteropAnEnum?>): List<NativeInteropAnEnum?> {
-    api?.let {
-      try {
-        return it.echoEnumList(enumList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test serialization and deserialization. */
-  override fun echoClassList(
-      classList: List<NativeInteropAllNullableTypes?>
-  ): List<NativeInteropAllNullableTypes?> {
-    api?.let {
-      try {
-        return it.echoClassList(classList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test serialization and deserialization. */
-  override fun echoNonNullEnumList(enumList: List<NativeInteropAnEnum>): List<NativeInteropAnEnum> {
-    api?.let {
-      try {
-        return it.echoNonNullEnumList(enumList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test serialization and deserialization. */
-  override fun echoNonNullClassList(
-      classList: List<NativeInteropAllNullableTypes>
-  ): List<NativeInteropAllNullableTypes> {
-    api?.let {
-      try {
-        return it.echoNonNullClassList(classList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoMap(map: Map<Any?, Any?>): Map<Any?, Any?> {
-    api?.let {
-      try {
-        return it.echoMap(map)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoStringMap(stringMap: Map<String?, String?>): Map<String?, String?> {
-    api?.let {
-      try {
-        return it.echoStringMap(stringMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoIntMap(intMap: Map<Long?, Long?>): Map<Long?, Long?> {
-    api?.let {
-      try {
-        return it.echoIntMap(intMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoEnumMap(
-      enumMap: Map<NativeInteropAnEnum?, NativeInteropAnEnum?>
-  ): Map<NativeInteropAnEnum?, NativeInteropAnEnum?> {
-    api?.let {
-      try {
-        return it.echoEnumMap(enumMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoClassMap(
-      classMap: Map<Long?, NativeInteropAllNullableTypes?>
-  ): Map<Long?, NativeInteropAllNullableTypes?> {
-    api?.let {
-      try {
-        return it.echoClassMap(classMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoNonNullStringMap(stringMap: Map<String, String>): Map<String, String> {
-    api?.let {
-      try {
-        return it.echoNonNullStringMap(stringMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoNonNullIntMap(intMap: Map<Long, Long>): Map<Long, Long> {
-    api?.let {
-      try {
-        return it.echoNonNullIntMap(intMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoNonNullEnumMap(
-      enumMap: Map<NativeInteropAnEnum, NativeInteropAnEnum>
-  ): Map<NativeInteropAnEnum, NativeInteropAnEnum> {
-    api?.let {
-      try {
-        return it.echoNonNullEnumMap(enumMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoNonNullClassMap(
-      classMap: Map<Long, NativeInteropAllNullableTypes>
-  ): Map<Long, NativeInteropAllNullableTypes> {
-    api?.let {
-      try {
-        return it.echoNonNullClassMap(classMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed class to test nested class serialization and deserialization. */
-  override fun echoClassWrapper(
-      wrapper: NativeInteropAllClassesWrapper
-  ): NativeInteropAllClassesWrapper {
-    api?.let {
-      try {
-        return it.echoClassWrapper(wrapper)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed enum to test serialization and deserialization. */
-  override fun echoEnum(anEnum: NativeInteropAnEnum): NativeInteropAnEnum {
-    api?.let {
-      try {
-        return it.echoEnum(anEnum)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed enum to test serialization and deserialization. */
-  override fun echoAnotherEnum(anotherEnum: NativeInteropAnotherEnum): NativeInteropAnotherEnum {
-    api?.let {
-      try {
-        return it.echoAnotherEnum(anotherEnum)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the default string. */
-  override fun echoNamedDefaultString(aString: String): String {
-    api?.let {
-      try {
-        return it.echoNamedDefaultString(aString)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns passed in double. */
-  override fun echoOptionalDefaultDouble(aDouble: Double): Double {
-    api?.let {
-      try {
-        return it.echoOptionalDefaultDouble(aDouble)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns passed in int. */
-  override fun echoRequiredInt(anInt: Long): Long {
-    api?.let {
-      try {
-        return it.echoRequiredInt(anInt)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed object, to test serialization and deserialization. */
-  override fun echoAllNullableTypes(
-      everything: NativeInteropAllNullableTypes?
-  ): NativeInteropAllNullableTypes? {
-    api?.let {
-      try {
-        return it.echoAllNullableTypes(everything)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed object, to test serialization and deserialization. */
-  override fun echoAllNullableTypesWithoutRecursion(
-      everything: NativeInteropAllNullableTypesWithoutRecursion?
-  ): NativeInteropAllNullableTypesWithoutRecursion? {
-    api?.let {
-      try {
-        return it.echoAllNullableTypesWithoutRecursion(everything)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
   /**
-   * Returns the inner `aString` value from the wrapped object, to test sending of nested objects.
-   */
-  override fun extractNestedNullableString(wrapper: NativeInteropAllClassesWrapper): String? {
-    api?.let {
-      try {
-        return it.extractNestedNullableString(wrapper)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /**
-   * Returns the inner `aString` value from the wrapped object, to test sending of nested objects.
-   */
-  override fun createNestedNullableString(nullableString: String?): NativeInteropAllClassesWrapper {
-    api?.let {
-      try {
-        return it.createNestedNullableString(nullableString)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun sendMultipleNullableTypes(
-      aNullableBool: Boolean?,
-      aNullableInt: Long?,
-      aNullableString: String?
-  ): NativeInteropAllNullableTypes {
-    api?.let {
-      try {
-        return it.sendMultipleNullableTypes(aNullableBool, aNullableInt, aNullableString)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns passed in arguments of multiple types. */
-  override fun sendMultipleNullableTypesWithoutRecursion(
-      aNullableBool: Boolean?,
-      aNullableInt: Long?,
-      aNullableString: String?
-  ): NativeInteropAllNullableTypesWithoutRecursion {
-    api?.let {
-      try {
-        return it.sendMultipleNullableTypesWithoutRecursion(
-            aNullableBool, aNullableInt, aNullableString)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns passed in int. */
-  override fun echoNullableInt(aNullableInt: Long?): Long? {
-    api?.let {
-      try {
-        return it.echoNullableInt(aNullableInt)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns passed in double. */
-  override fun echoNullableDouble(aNullableDouble: Double?): Double? {
-    api?.let {
-      try {
-        return it.echoNullableDouble(aNullableDouble)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in boolean. */
-  override fun echoNullableBool(aNullableBool: Boolean?): Boolean? {
-    api?.let {
-      try {
-        return it.echoNullableBool(aNullableBool)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in string. */
-  override fun echoNullableString(aNullableString: String?): String? {
-    api?.let {
-      try {
-        return it.echoNullableString(aNullableString)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in Uint8List. */
-  override fun echoNullableUint8List(aNullableUint8List: ByteArray?): ByteArray? {
-    api?.let {
-      try {
-        return it.echoNullableUint8List(aNullableUint8List)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in Int32List. */
-  override fun echoNullableInt32List(aNullableInt32List: IntArray?): IntArray? {
-    api?.let {
-      try {
-        return it.echoNullableInt32List(aNullableInt32List)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in Int64List. */
-  override fun echoNullableInt64List(aNullableInt64List: LongArray?): LongArray? {
-    api?.let {
-      try {
-        return it.echoNullableInt64List(aNullableInt64List)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in Float64List. */
-  override fun echoNullableFloat64List(aNullableFloat64List: DoubleArray?): DoubleArray? {
-    api?.let {
-      try {
-        return it.echoNullableFloat64List(aNullableFloat64List)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in generic Object. */
-  override fun echoNullableObject(aNullableObject: Any?): Any? {
-    api?.let {
-      try {
-        return it.echoNullableObject(aNullableObject)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test serialization and deserialization. */
-  override fun echoNullableList(aNullableList: List<Any?>?): List<Any?>? {
-    api?.let {
-      try {
-        return it.echoNullableList(aNullableList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test serialization and deserialization. */
-  override fun echoNullableEnumList(
-      enumList: List<NativeInteropAnEnum?>?
-  ): List<NativeInteropAnEnum?>? {
-    api?.let {
-      try {
-        return it.echoNullableEnumList(enumList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test serialization and deserialization. */
-  override fun echoNullableClassList(
-      classList: List<NativeInteropAllNullableTypes?>?
-  ): List<NativeInteropAllNullableTypes?>? {
-    api?.let {
-      try {
-        return it.echoNullableClassList(classList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test serialization and deserialization. */
-  override fun echoNullableNonNullEnumList(
-      enumList: List<NativeInteropAnEnum>?
-  ): List<NativeInteropAnEnum>? {
-    api?.let {
-      try {
-        return it.echoNullableNonNullEnumList(enumList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test serialization and deserialization. */
-  override fun echoNullableNonNullClassList(
-      classList: List<NativeInteropAllNullableTypes>?
-  ): List<NativeInteropAllNullableTypes>? {
-    api?.let {
-      try {
-        return it.echoNullableNonNullClassList(classList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoNullableMap(map: Map<Any?, Any?>?): Map<Any?, Any?>? {
-    api?.let {
-      try {
-        return it.echoNullableMap(map)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoNullableStringMap(stringMap: Map<String?, String?>?): Map<String?, String?>? {
-    api?.let {
-      try {
-        return it.echoNullableStringMap(stringMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoNullableIntMap(intMap: Map<Long?, Long?>?): Map<Long?, Long?>? {
-    api?.let {
-      try {
-        return it.echoNullableIntMap(intMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoNullableEnumMap(
-      enumMap: Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?
-  ): Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? {
-    api?.let {
-      try {
-        return it.echoNullableEnumMap(enumMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoNullableClassMap(
-      classMap: Map<Long?, NativeInteropAllNullableTypes?>?
-  ): Map<Long?, NativeInteropAllNullableTypes?>? {
-    api?.let {
-      try {
-        return it.echoNullableClassMap(classMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoNullableNonNullStringMap(stringMap: Map<String, String>?): Map<String, String>? {
-    api?.let {
-      try {
-        return it.echoNullableNonNullStringMap(stringMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoNullableNonNullIntMap(intMap: Map<Long, Long>?): Map<Long, Long>? {
-    api?.let {
-      try {
-        return it.echoNullableNonNullIntMap(intMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoNullableNonNullEnumMap(
-      enumMap: Map<NativeInteropAnEnum, NativeInteropAnEnum>?
-  ): Map<NativeInteropAnEnum, NativeInteropAnEnum>? {
-    api?.let {
-      try {
-        return it.echoNullableNonNullEnumMap(enumMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test serialization and deserialization. */
-  override fun echoNullableNonNullClassMap(
-      classMap: Map<Long, NativeInteropAllNullableTypes>?
-  ): Map<Long, NativeInteropAllNullableTypes>? {
-    api?.let {
-      try {
-        return it.echoNullableNonNullClassMap(classMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun echoNullableEnum(anEnum: NativeInteropAnEnum?): NativeInteropAnEnum? {
-    api?.let {
-      try {
-        return it.echoNullableEnum(anEnum)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun echoAnotherNullableEnum(
-      anotherEnum: NativeInteropAnotherEnum?
-  ): NativeInteropAnotherEnum? {
-    api?.let {
-      try {
-        return it.echoAnotherNullableEnum(anotherEnum)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns passed in int. */
-  override fun echoOptionalNullableInt(aNullableInt: Long?): Long? {
-    api?.let {
-      try {
-        return it.echoOptionalNullableInt(aNullableInt)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in string. */
-  override fun echoNamedNullableString(aNullableString: String?): String? {
-    api?.let {
-      try {
-        return it.echoNamedNullableString(aNullableString)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /**
-   * A no-op function taking no arguments and returning no value, to sanity test basic asynchronous
-   * calling.
-   */
-  override suspend fun noopAsync() {
-    api?.let {
-      try {
-        return it.noopAsync()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns passed in int asynchronously. */
-  override suspend fun echoAsyncInt(anInt: Long): Long {
-    api?.let {
-      try {
-        return it.echoAsyncInt(anInt)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns passed in double asynchronously. */
-  override suspend fun echoAsyncDouble(aDouble: Double): Double {
-    api?.let {
-      try {
-        return it.echoAsyncDouble(aDouble)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in boolean asynchronously. */
-  override suspend fun echoAsyncBool(aBool: Boolean): Boolean {
-    api?.let {
-      try {
-        return it.echoAsyncBool(aBool)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed string asynchronously. */
-  override suspend fun echoAsyncString(aString: String): String {
-    api?.let {
-      try {
-        return it.echoAsyncString(aString)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in Uint8List asynchronously. */
-  override suspend fun echoAsyncUint8List(aUint8List: ByteArray): ByteArray {
-    api?.let {
-      try {
-        return it.echoAsyncUint8List(aUint8List)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in Int32List asynchronously. */
-  override suspend fun echoAsyncInt32List(aInt32List: IntArray): IntArray {
-    api?.let {
-      try {
-        return it.echoAsyncInt32List(aInt32List)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in Int64List asynchronously. */
-  override suspend fun echoAsyncInt64List(aInt64List: LongArray): LongArray {
-    api?.let {
-      try {
-        return it.echoAsyncInt64List(aInt64List)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in Float64List asynchronously. */
-  override suspend fun echoAsyncFloat64List(aFloat64List: DoubleArray): DoubleArray {
-    api?.let {
-      try {
-        return it.echoAsyncFloat64List(aFloat64List)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in generic Object asynchronously. */
-  override suspend fun echoAsyncObject(anObject: Any): Any {
-    api?.let {
-      try {
-        return it.echoAsyncObject(anObject)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncList(list: List<Any?>): List<Any?> {
-    api?.let {
-      try {
-        return it.echoAsyncList(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncEnumList(
-      enumList: List<NativeInteropAnEnum?>
-  ): List<NativeInteropAnEnum?> {
-    api?.let {
-      try {
-        return it.echoAsyncEnumList(enumList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncClassList(
-      classList: List<NativeInteropAllNullableTypes?>
-  ): List<NativeInteropAllNullableTypes?> {
-    api?.let {
-      try {
-        return it.echoAsyncClassList(classList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncMap(map: Map<Any?, Any?>): Map<Any?, Any?> {
-    api?.let {
-      try {
-        return it.echoAsyncMap(map)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncStringMap(stringMap: Map<String?, String?>): Map<String?, String?> {
-    api?.let {
-      try {
-        return it.echoAsyncStringMap(stringMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncIntMap(intMap: Map<Long?, Long?>): Map<Long?, Long?> {
-    api?.let {
-      try {
-        return it.echoAsyncIntMap(intMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncEnumMap(
-      enumMap: Map<NativeInteropAnEnum?, NativeInteropAnEnum?>
-  ): Map<NativeInteropAnEnum?, NativeInteropAnEnum?> {
-    api?.let {
-      try {
-        return it.echoAsyncEnumMap(enumMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncClassMap(
-      classMap: Map<Long?, NativeInteropAllNullableTypes?>
-  ): Map<Long?, NativeInteropAllNullableTypes?> {
-    api?.let {
-      try {
-        return it.echoAsyncClassMap(classMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed enum, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncEnum(anEnum: NativeInteropAnEnum): NativeInteropAnEnum {
-    api?.let {
-      try {
-        return it.echoAsyncEnum(anEnum)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed enum, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAnotherAsyncEnum(
-      anotherEnum: NativeInteropAnotherEnum
-  ): NativeInteropAnotherEnum {
-    api?.let {
-      try {
-        return it.echoAnotherAsyncEnum(anotherEnum)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Responds with an error from an async function returning a value. */
-  override suspend fun throwAsyncError(): Any? {
-    api?.let {
-      try {
-        return it.throwAsyncError()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Responds with an error from an async void function. */
-  override suspend fun throwAsyncErrorFromVoid() {
-    api?.let {
-      try {
-        return it.throwAsyncErrorFromVoid()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Responds with a Flutter error from an async function returning a value. */
-  override suspend fun throwAsyncFlutterError(): Any? {
-    api?.let {
-      try {
-        return it.throwAsyncFlutterError()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed object, to test async serialization and deserialization. */
-  override suspend fun echoAsyncNativeInteropAllTypes(
-      everything: NativeInteropAllTypes
-  ): NativeInteropAllTypes {
-    api?.let {
-      try {
-        return it.echoAsyncNativeInteropAllTypes(everything)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed object, to test serialization and deserialization. */
-  override suspend fun echoAsyncNullableNativeInteropAllNullableTypes(
-      everything: NativeInteropAllNullableTypes?
-  ): NativeInteropAllNullableTypes? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableNativeInteropAllNullableTypes(everything)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed object, to test serialization and deserialization. */
-  override suspend fun echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
-      everything: NativeInteropAllNullableTypesWithoutRecursion?
-  ): NativeInteropAllNullableTypesWithoutRecursion? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(everything)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns passed in int asynchronously. */
-  override suspend fun echoAsyncNullableInt(anInt: Long?): Long? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableInt(anInt)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns passed in double asynchronously. */
-  override suspend fun echoAsyncNullableDouble(aDouble: Double?): Double? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableDouble(aDouble)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in boolean asynchronously. */
-  override suspend fun echoAsyncNullableBool(aBool: Boolean?): Boolean? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableBool(aBool)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed string asynchronously. */
-  override suspend fun echoAsyncNullableString(aString: String?): String? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableString(aString)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in Uint8List asynchronously. */
-  override suspend fun echoAsyncNullableUint8List(aUint8List: ByteArray?): ByteArray? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableUint8List(aUint8List)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in Int32List asynchronously. */
-  override suspend fun echoAsyncNullableInt32List(aInt32List: IntArray?): IntArray? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableInt32List(aInt32List)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in Int64List asynchronously. */
-  override suspend fun echoAsyncNullableInt64List(aInt64List: LongArray?): LongArray? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableInt64List(aInt64List)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in Float64List asynchronously. */
-  override suspend fun echoAsyncNullableFloat64List(aFloat64List: DoubleArray?): DoubleArray? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableFloat64List(aFloat64List)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed in generic Object asynchronously. */
-  override suspend fun echoAsyncNullableObject(anObject: Any?): Any? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableObject(anObject)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncNullableList(list: List<Any?>?): List<Any?>? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableList(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncNullableEnumList(
-      enumList: List<NativeInteropAnEnum?>?
-  ): List<NativeInteropAnEnum?>? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableEnumList(enumList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed list, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncNullableClassList(
-      classList: List<NativeInteropAllNullableTypes?>?
-  ): List<NativeInteropAllNullableTypes?>? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableClassList(classList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncNullableMap(map: Map<Any?, Any?>?): Map<Any?, Any?>? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableMap(map)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncNullableStringMap(
-      stringMap: Map<String?, String?>?
-  ): Map<String?, String?>? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableStringMap(stringMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncNullableIntMap(intMap: Map<Long?, Long?>?): Map<Long?, Long?>? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableIntMap(intMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncNullableEnumMap(
-      enumMap: Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?
-  ): Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableEnumMap(enumMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed map, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncNullableClassMap(
-      classMap: Map<Long?, NativeInteropAllNullableTypes?>?
-  ): Map<Long?, NativeInteropAllNullableTypes?>? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableClassMap(classMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed enum, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAsyncNullableEnum(anEnum: NativeInteropAnEnum?): NativeInteropAnEnum? {
-    api?.let {
-      try {
-        return it.echoAsyncNullableEnum(anEnum)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns the passed enum, to test asynchronous serialization and deserialization. */
-  override suspend fun echoAnotherAsyncNullableEnum(
-      anotherEnum: NativeInteropAnotherEnum?
-  ): NativeInteropAnotherEnum? {
-    api?.let {
-      try {
-        return it.echoAnotherAsyncNullableEnum(anotherEnum)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterNoop() {
-    api?.let {
-      try {
-        return it.callFlutterNoop()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterThrowError(): Any? {
-    api?.let {
-      try {
-        return it.callFlutterThrowError()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterThrowErrorFromVoid() {
-    api?.let {
-      try {
-        return it.callFlutterThrowErrorFromVoid()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNativeInteropAllTypes(
-      everything: NativeInteropAllTypes
-  ): NativeInteropAllTypes {
-    api?.let {
-      try {
-        return it.callFlutterEchoNativeInteropAllTypes(everything)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNativeInteropAllNullableTypes(
-      everything: NativeInteropAllNullableTypes?
-  ): NativeInteropAllNullableTypes? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNativeInteropAllNullableTypes(everything)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterSendMultipleNullableTypes(
-      aNullableBool: Boolean?,
-      aNullableInt: Long?,
-      aNullableString: String?
-  ): NativeInteropAllNullableTypes {
-    api?.let {
-      try {
-        return it.callFlutterSendMultipleNullableTypes(aNullableBool, aNullableInt, aNullableString)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNativeInteropAllNullableTypesWithoutRecursion(
-      everything: NativeInteropAllNullableTypesWithoutRecursion?
-  ): NativeInteropAllNullableTypesWithoutRecursion? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNativeInteropAllNullableTypesWithoutRecursion(everything)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterSendMultipleNullableTypesWithoutRecursion(
-      aNullableBool: Boolean?,
-      aNullableInt: Long?,
-      aNullableString: String?
-  ): NativeInteropAllNullableTypesWithoutRecursion {
-    api?.let {
-      try {
-        return it.callFlutterSendMultipleNullableTypesWithoutRecursion(
-            aNullableBool, aNullableInt, aNullableString)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoBool(aBool: Boolean): Boolean {
-    api?.let {
-      try {
-        return it.callFlutterEchoBool(aBool)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoInt(anInt: Long): Long {
-    api?.let {
-      try {
-        return it.callFlutterEchoInt(anInt)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoDouble(aDouble: Double): Double {
-    api?.let {
-      try {
-        return it.callFlutterEchoDouble(aDouble)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoString(aString: String): String {
-    api?.let {
-      try {
-        return it.callFlutterEchoString(aString)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoUint8List(list: ByteArray): ByteArray {
-    api?.let {
-      try {
-        return it.callFlutterEchoUint8List(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoInt32List(list: IntArray): IntArray {
-    api?.let {
-      try {
-        return it.callFlutterEchoInt32List(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoInt64List(list: LongArray): LongArray {
-    api?.let {
-      try {
-        return it.callFlutterEchoInt64List(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoFloat64List(list: DoubleArray): DoubleArray {
-    api?.let {
-      try {
-        return it.callFlutterEchoFloat64List(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoList(list: List<Any?>): List<Any?> {
-    api?.let {
-      try {
-        return it.callFlutterEchoList(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoEnumList(
-      enumList: List<NativeInteropAnEnum?>
-  ): List<NativeInteropAnEnum?> {
-    api?.let {
-      try {
-        return it.callFlutterEchoEnumList(enumList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoClassList(
-      classList: List<NativeInteropAllNullableTypes?>
-  ): List<NativeInteropAllNullableTypes?> {
-    api?.let {
-      try {
-        return it.callFlutterEchoClassList(classList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNonNullEnumList(
-      enumList: List<NativeInteropAnEnum>
-  ): List<NativeInteropAnEnum> {
-    api?.let {
-      try {
-        return it.callFlutterEchoNonNullEnumList(enumList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNonNullClassList(
-      classList: List<NativeInteropAllNullableTypes>
-  ): List<NativeInteropAllNullableTypes> {
-    api?.let {
-      try {
-        return it.callFlutterEchoNonNullClassList(classList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoMap(map: Map<Any?, Any?>): Map<Any?, Any?> {
-    api?.let {
-      try {
-        return it.callFlutterEchoMap(map)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoStringMap(stringMap: Map<String?, String?>): Map<String?, String?> {
-    api?.let {
-      try {
-        return it.callFlutterEchoStringMap(stringMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoIntMap(intMap: Map<Long?, Long?>): Map<Long?, Long?> {
-    api?.let {
-      try {
-        return it.callFlutterEchoIntMap(intMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoEnumMap(
-      enumMap: Map<NativeInteropAnEnum?, NativeInteropAnEnum?>
-  ): Map<NativeInteropAnEnum?, NativeInteropAnEnum?> {
-    api?.let {
-      try {
-        return it.callFlutterEchoEnumMap(enumMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoClassMap(
-      classMap: Map<Long?, NativeInteropAllNullableTypes?>
-  ): Map<Long?, NativeInteropAllNullableTypes?> {
-    api?.let {
-      try {
-        return it.callFlutterEchoClassMap(classMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNonNullStringMap(
-      stringMap: Map<String, String>
-  ): Map<String, String> {
-    api?.let {
-      try {
-        return it.callFlutterEchoNonNullStringMap(stringMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNonNullIntMap(intMap: Map<Long, Long>): Map<Long, Long> {
-    api?.let {
-      try {
-        return it.callFlutterEchoNonNullIntMap(intMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNonNullEnumMap(
-      enumMap: Map<NativeInteropAnEnum, NativeInteropAnEnum>
-  ): Map<NativeInteropAnEnum, NativeInteropAnEnum> {
-    api?.let {
-      try {
-        return it.callFlutterEchoNonNullEnumMap(enumMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNonNullClassMap(
-      classMap: Map<Long, NativeInteropAllNullableTypes>
-  ): Map<Long, NativeInteropAllNullableTypes> {
-    api?.let {
-      try {
-        return it.callFlutterEchoNonNullClassMap(classMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoEnum(anEnum: NativeInteropAnEnum): NativeInteropAnEnum {
-    api?.let {
-      try {
-        return it.callFlutterEchoEnum(anEnum)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNativeInteropAnotherEnum(
-      anotherEnum: NativeInteropAnotherEnum
-  ): NativeInteropAnotherEnum {
-    api?.let {
-      try {
-        return it.callFlutterEchoNativeInteropAnotherEnum(anotherEnum)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableBool(aBool: Boolean?): Boolean? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableBool(aBool)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableInt(anInt: Long?): Long? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableInt(anInt)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableDouble(aDouble: Double?): Double? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableDouble(aDouble)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableString(aString: String?): String? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableString(aString)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableUint8List(list: ByteArray?): ByteArray? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableUint8List(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableInt32List(list: IntArray?): IntArray? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableInt32List(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableInt64List(list: LongArray?): LongArray? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableInt64List(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableFloat64List(list: DoubleArray?): DoubleArray? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableFloat64List(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableList(list: List<Any?>?): List<Any?>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableList(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableEnumList(
-      enumList: List<NativeInteropAnEnum?>?
-  ): List<NativeInteropAnEnum?>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableEnumList(enumList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableClassList(
-      classList: List<NativeInteropAllNullableTypes?>?
-  ): List<NativeInteropAllNullableTypes?>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableClassList(classList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableNonNullEnumList(
-      enumList: List<NativeInteropAnEnum>?
-  ): List<NativeInteropAnEnum>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableNonNullEnumList(enumList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableNonNullClassList(
-      classList: List<NativeInteropAllNullableTypes>?
-  ): List<NativeInteropAllNullableTypes>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableNonNullClassList(classList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableMap(map: Map<Any?, Any?>?): Map<Any?, Any?>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableMap(map)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableStringMap(
-      stringMap: Map<String?, String?>?
-  ): Map<String?, String?>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableStringMap(stringMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableIntMap(intMap: Map<Long?, Long?>?): Map<Long?, Long?>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableIntMap(intMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableEnumMap(
-      enumMap: Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?
-  ): Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableEnumMap(enumMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableClassMap(
-      classMap: Map<Long?, NativeInteropAllNullableTypes?>?
-  ): Map<Long?, NativeInteropAllNullableTypes?>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableClassMap(classMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableNonNullStringMap(
-      stringMap: Map<String, String>?
-  ): Map<String, String>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableNonNullStringMap(stringMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableNonNullIntMap(intMap: Map<Long, Long>?): Map<Long, Long>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableNonNullIntMap(intMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableNonNullEnumMap(
-      enumMap: Map<NativeInteropAnEnum, NativeInteropAnEnum>?
-  ): Map<NativeInteropAnEnum, NativeInteropAnEnum>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableNonNullEnumMap(enumMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableNonNullClassMap(
-      classMap: Map<Long, NativeInteropAllNullableTypes>?
-  ): Map<Long, NativeInteropAllNullableTypes>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableNonNullClassMap(classMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoNullableEnum(anEnum: NativeInteropAnEnum?): NativeInteropAnEnum? {
-    api?.let {
-      try {
-        return it.callFlutterEchoNullableEnum(anEnum)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override fun callFlutterEchoAnotherNullableEnum(
-      anotherEnum: NativeInteropAnotherEnum?
-  ): NativeInteropAnotherEnum? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAnotherNullableEnum(anotherEnum)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterNoopAsync() {
-    api?.let {
-      try {
-        return it.callFlutterNoopAsync()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNativeInteropAllTypes(
-      everything: NativeInteropAllTypes
-  ): NativeInteropAllTypes {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNativeInteropAllTypes(everything)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableNativeInteropAllNullableTypes(
-      everything: NativeInteropAllNullableTypes?
-  ): NativeInteropAllNullableTypes? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableNativeInteropAllNullableTypes(everything)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
-      everything: NativeInteropAllNullableTypesWithoutRecursion?
-  ): NativeInteropAllNullableTypesWithoutRecursion? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
-            everything)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncBool(aBool: Boolean): Boolean {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncBool(aBool)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncInt(anInt: Long): Long {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncInt(anInt)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncDouble(aDouble: Double): Double {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncDouble(aDouble)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncString(aString: String): String {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncString(aString)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncUint8List(list: ByteArray): ByteArray {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncUint8List(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncInt32List(list: IntArray): IntArray {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncInt32List(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncInt64List(list: LongArray): LongArray {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncInt64List(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncFloat64List(list: DoubleArray): DoubleArray {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncFloat64List(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncObject(anObject: Any): Any {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncObject(anObject)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncList(list: List<Any?>): List<Any?> {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncList(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncEnumList(
-      enumList: List<NativeInteropAnEnum?>
-  ): List<NativeInteropAnEnum?> {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncEnumList(enumList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncClassList(
-      classList: List<NativeInteropAllNullableTypes?>
-  ): List<NativeInteropAllNullableTypes?> {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncClassList(classList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNonNullEnumList(
-      enumList: List<NativeInteropAnEnum>
-  ): List<NativeInteropAnEnum> {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNonNullEnumList(enumList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNonNullClassList(
-      classList: List<NativeInteropAllNullableTypes>
-  ): List<NativeInteropAllNullableTypes> {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNonNullClassList(classList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncMap(map: Map<Any?, Any?>): Map<Any?, Any?> {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncMap(map)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncStringMap(
-      stringMap: Map<String?, String?>
-  ): Map<String?, String?> {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncStringMap(stringMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncIntMap(intMap: Map<Long?, Long?>): Map<Long?, Long?> {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncIntMap(intMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncEnumMap(
-      enumMap: Map<NativeInteropAnEnum?, NativeInteropAnEnum?>
-  ): Map<NativeInteropAnEnum?, NativeInteropAnEnum?> {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncEnumMap(enumMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncClassMap(
-      classMap: Map<Long?, NativeInteropAllNullableTypes?>
-  ): Map<Long?, NativeInteropAllNullableTypes?> {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncClassMap(classMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncEnum(anEnum: NativeInteropAnEnum): NativeInteropAnEnum {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncEnum(anEnum)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAnotherAsyncEnum(
-      anotherEnum: NativeInteropAnotherEnum
-  ): NativeInteropAnotherEnum {
-    api?.let {
-      try {
-        return it.callFlutterEchoAnotherAsyncEnum(anotherEnum)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableBool(aBool: Boolean?): Boolean? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableBool(aBool)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableInt(anInt: Long?): Long? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableInt(anInt)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableDouble(aDouble: Double?): Double? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableDouble(aDouble)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableString(aString: String?): String? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableString(aString)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableUint8List(list: ByteArray?): ByteArray? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableUint8List(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableInt32List(list: IntArray?): IntArray? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableInt32List(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableInt64List(list: LongArray?): LongArray? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableInt64List(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableFloat64List(list: DoubleArray?): DoubleArray? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableFloat64List(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterThrowFlutterErrorAsync(): Any? {
-    api?.let {
-      try {
-        return it.callFlutterThrowFlutterErrorAsync()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableObject(anObject: Any?): Any? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableObject(anObject)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableList(list: List<Any?>?): List<Any?>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableList(list)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableEnumList(
-      enumList: List<NativeInteropAnEnum?>?
-  ): List<NativeInteropAnEnum?>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableEnumList(enumList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableClassList(
-      classList: List<NativeInteropAllNullableTypes?>?
-  ): List<NativeInteropAllNullableTypes?>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableClassList(classList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableNonNullEnumList(
-      enumList: List<NativeInteropAnEnum>?
-  ): List<NativeInteropAnEnum>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableNonNullEnumList(enumList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableNonNullClassList(
-      classList: List<NativeInteropAllNullableTypes>?
-  ): List<NativeInteropAllNullableTypes>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableNonNullClassList(classList)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableMap(map: Map<Any?, Any?>?): Map<Any?, Any?>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableMap(map)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableStringMap(
-      stringMap: Map<String?, String?>?
-  ): Map<String?, String?>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableStringMap(stringMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableIntMap(
-      intMap: Map<Long?, Long?>?
-  ): Map<Long?, Long?>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableIntMap(intMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableEnumMap(
-      enumMap: Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?
-  ): Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableEnumMap(enumMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableClassMap(
-      classMap: Map<Long?, NativeInteropAllNullableTypes?>?
-  ): Map<Long?, NativeInteropAllNullableTypes?>? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableClassMap(classMap)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAsyncNullableEnum(
-      anEnum: NativeInteropAnEnum?
-  ): NativeInteropAnEnum? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAsyncNullableEnum(anEnum)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-
-  override suspend fun callFlutterEchoAnotherAsyncNullableEnum(
-      anotherEnum: NativeInteropAnotherEnum?
-  ): NativeInteropAnotherEnum? {
-    api?.let {
-      try {
-        return it.callFlutterEchoAnotherAsyncNullableEnum(anotherEnum)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns true if the handler is run on a main thread. */
-  override fun isMainThread(): Boolean {
-    api?.let {
-      try {
-        return it.isMainThread()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /** Returns true if the async handler runs on a background thread. */
-  override suspend fun asyncIsBackgroundThread(): Boolean {
-    api?.let {
-      try {
-        return it.asyncIsBackgroundThread()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /**
-   * Tests that zero-argument boolean methods starting with 'is' are correctly invoked as JNI
-   * property getters (e.g., `_jniApi.isGetter`).
-   */
-  override fun isGetter(): Boolean {
-    api?.let {
-      try {
-        return it.isGetter()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /**
-   * Tests that zero-argument methods starting with 'get' are correctly invoked as JNI property
-   * getters with decapitalized names (e.g., `_jniApi.getter`).
-   */
-  override fun getGetter(): Long {
-    api?.let {
-      try {
-        return it.getGetter()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /**
-   * Tests that single-argument void methods starting with 'set' are correctly invoked as JNI
-   * property setters with decapitalized names (e.g., `_jniApi.setter = value`).
-   */
-  override fun setSetter(value: Long) {
-    api?.let {
-      try {
-        return it.setSetter(value)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
-  }
-  /**
-   * Spawns a background thread and calls `noop` on the [NativeInteropFlutterIntegrationCoreApi].
+   * Registers [api] under [name] (or the default instance when [name] is omitted) for the engine of
+   * the plugin binding [binding].
    *
-   * Returns the result of whether the flutter call was successful.
+   * The registration is tied to that engine: unregistering it for this engine leaves other engines'
+   * registrations in place, and Dart code running on an engine uses the instance registered for
+   * that engine when it is known.
    */
-  override suspend fun callFlutterNoopOnBackgroundThread(): Boolean {
-    api?.let {
-      try {
-        return it.callFlutterNoopOnBackgroundThread()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
+  @Keep
+  fun register(
+      api: NativeInteropHostIntegrationCoreApi,
+      binding: FlutterPlugin.FlutterPluginBinding,
+      name: String = defaultInstanceName
+  ) {
+    registerWithKey(api, NativeInteropTestsGolubetsEngineKeys.keyOf(binding), name)
   }
-  /** Tests deregistering a Host API natively. */
-  override fun testDeregisterHostApi(): Boolean {
-    api?.let {
-      try {
-        return it.testDeregisterHostApi()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
+
+  /**
+   * Registers [api] under [name] (or the default instance when [name] is omitted) for the engine of
+   * [engine].
+   *
+   * The registration is tied to that engine: unregistering it for this engine leaves other engines'
+   * registrations in place, and Dart code running on an engine uses the instance registered for
+   * that engine when it is known.
+   */
+  @Keep
+  fun register(
+      api: NativeInteropHostIntegrationCoreApi,
+      engine: FlutterEngine,
+      name: String = defaultInstanceName
+  ) {
+    registerWithKey(api, NativeInteropTestsGolubetsEngineKeys.keyOf(engine), name)
   }
-  /** Tests deregistering a Flutter API natively. */
-  override fun testDeregisterFlutterApi(): Boolean {
-    api?.let {
-      try {
-        return it.testDeregisterFlutterApi()
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
+
+  /**
+   * Removes [api] from the registrations under [name] (or the default instance when [name] is
+   * omitted) for the engine of the plugin binding [binding], leaving other registrations in place.
+   *
+   * Instances are matched by identity. If [api] is not registered for that engine but is registered
+   * for exactly one other engine, that registration is removed. Does nothing if [api] is not
+   * registered, or is only registered for several other engines.
+   */
+  @Keep
+  fun unregister(
+      api: NativeInteropHostIntegrationCoreApi,
+      binding: FlutterPlugin.FlutterPluginBinding,
+      name: String = defaultInstanceName
+  ) {
+    unregisterWithKey(api, NativeInteropTestsGolubetsEngineKeys.keyOf(binding), name)
   }
-  /** Registers and immediately deregisters a Host API under [name]. */
-  override fun registerAndImmediatelyDeregisterHostApi(name: String) {
-    api?.let {
-      try {
-        return it.registerAndImmediatelyDeregisterHostApi(name)
-      } catch (e: Exception) {
-        throw e
-      }
-    }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
+
+  /**
+   * Removes [api] from the registrations under [name] (or the default instance when [name] is
+   * omitted) for the engine of [engine], leaving other registrations in place.
+   *
+   * Instances are matched by identity. If [api] is not registered for that engine but is registered
+   * for exactly one other engine, that registration is removed. Does nothing if [api] is not
+   * registered, or is only registered for several other engines.
+   */
+  @Keep
+  fun unregister(
+      api: NativeInteropHostIntegrationCoreApi,
+      engine: FlutterEngine,
+      name: String = defaultInstanceName
+  ) {
+    unregisterWithKey(api, NativeInteropTestsGolubetsEngineKeys.keyOf(engine), name)
   }
-  /** Tests that calling a deregistered Flutter API under [name] fails / returns null. */
-  override fun testCallDeregisteredFlutterApi(name: String): Boolean {
-    api?.let {
-      try {
-        return it.testCallDeregisteredFlutterApi(name)
-      } catch (e: Exception) {
-        throw e
+
+  private fun registerWithKey(
+      api: NativeInteropHostIntegrationCoreApi,
+      engineKey: Long,
+      name: String
+  ) {
+    kotlin.synchronized(NativeInteropHostIntegrationCoreApiInstances) {
+      val list = NativeInteropHostIntegrationCoreApiInstances.getOrPut(name) { mutableListOf() }
+      val index = list.indexOfFirst { it.api === api && it.engineKey == engineKey }
+      if (index >= 0) {
+        list.add(list.removeAt(index))
+      } else {
+        val wrapper = NativeInteropHostIntegrationCoreApiRegistrar(engineKey)
+        wrapper.api = api
+        list.add(wrapper)
       }
     }
-    error("NativeInteropHostIntegrationCoreApi has not been registered")
+  }
+
+  private fun unregisterWithKey(
+      api: NativeInteropHostIntegrationCoreApi,
+      engineKey: Long,
+      name: String
+  ) {
+    kotlin.synchronized(NativeInteropHostIntegrationCoreApiInstances) {
+      val list = NativeInteropHostIntegrationCoreApiInstances[name] ?: return
+      val removeKey =
+          if (list.any { it.api === api && it.engineKey == engineKey }) {
+            engineKey
+          } else {
+            list.filter { it.api === api }.map { it.engineKey }.distinct().singleOrNull() ?: return
+          }
+      val iterator = list.iterator()
+      while (iterator.hasNext()) {
+        val entry = iterator.next()
+        if (entry.api === api && entry.engineKey == removeKey) {
+          entry.api = null
+          iterator.remove()
+        }
+      }
+      if (list.isEmpty()) {
+        NativeInteropHostIntegrationCoreApiInstances.remove(name)
+      }
+    }
+  }
+
+  companion object {
+    /**
+     * Returns the instance registered under [name] for the engine identified by [engineId].
+     *
+     * Falls back to the most recent instance registered for [affinityKey], then to the most recent
+     * instance overall. Either key may be `Long.MIN_VALUE` when it is unknown.
+     *
+     * This is called by the generated Dart code and is not intended for direct use.
+     */
+    @JvmStatic
+    @Keep
+    fun golubetsResolveInstance(
+        engineId: Long,
+        affinityKey: Long,
+        name: String = defaultInstanceName
+    ): NativeInteropHostIntegrationCoreApiRegistrar? {
+      return kotlin.synchronized(NativeInteropHostIntegrationCoreApiInstances) {
+        val list = NativeInteropHostIntegrationCoreApiInstances[name] ?: return null
+        val exact =
+            if (engineId != NativeInteropTestsGolubetsEngineKeys.NO_KEY)
+                list.lastOrNull { it.engineKey == engineId }
+            else null
+        val affine =
+            if (affinityKey != NativeInteropTestsGolubetsEngineKeys.NO_KEY)
+                list.lastOrNull { it.engineKey == affinityKey }
+            else null
+        exact ?: affine ?: list.lastOrNull()
+      }
+    }
+
+    /**
+     * Returns the engine key that [instance] was registered with, or `Long.MIN_VALUE` if it is
+     * unknown.
+     *
+     * This is called by the generated Dart code and is not intended for direct use.
+     */
+    @JvmStatic
+    @Keep
+    fun golubetsEngineKeyOf(instance: NativeInteropHostIntegrationCoreApiRegistrar): Long {
+      return instance.engineKey
+    }
+  }
+
+  fun noop() {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      golubetsVar_api.noop()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoAllTypes(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_everything = golubetsVar_decodedArgs[0] as NativeInteropAllTypes
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAllTypes(golubetsVar_arg_everything))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun throwError(): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(golubetsVar_api.throwError())
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun throwErrorFromVoid() {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      golubetsVar_api.throwErrorFromVoid()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun throwFlutterError(): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(golubetsVar_api.throwFlutterError())
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoInt(anInt: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoInt(anInt)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoDouble(aDouble: Double): Double {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoDouble(aDouble)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoBool(aBool: Boolean): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoBool(aBool)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoString(aString: String): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoString(aString)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoUint8List(aUint8List: ByteArray): ByteArray {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoUint8List(aUint8List)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoInt32List(aInt32List: IntArray): IntArray {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoInt32List(aInt32List)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoInt64List(aInt64List: LongArray): LongArray {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoInt64List(aInt64List)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoFloat64List(aFloat64List: DoubleArray): DoubleArray {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoFloat64List(aFloat64List)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoObject(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_anObject = golubetsVar_decodedArgs[0] as Any
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoObject(golubetsVar_arg_anObject))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_list = golubetsVar_decodedArgs[0] as List<Any?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoList(golubetsVar_arg_list))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoStringList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_stringList = golubetsVar_decodedArgs[0] as List<String?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoStringList(golubetsVar_arg_stringList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoIntList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_intList = golubetsVar_decodedArgs[0] as List<Long?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoIntList(golubetsVar_arg_intList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoDoubleList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_doubleList = golubetsVar_decodedArgs[0] as List<Double?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoDoubleList(golubetsVar_arg_doubleList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoBoolList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_boolList = golubetsVar_decodedArgs[0] as List<Boolean?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoBoolList(golubetsVar_arg_boolList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoEnumList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumList = golubetsVar_decodedArgs[0] as List<NativeInteropAnEnum?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoEnumList(golubetsVar_arg_enumList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoClassList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoClassList(golubetsVar_arg_classList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNonNullEnumList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumList = golubetsVar_decodedArgs[0] as List<NativeInteropAnEnum>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNonNullEnumList(golubetsVar_arg_enumList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNonNullClassList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNonNullClassList(golubetsVar_arg_classList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_map = golubetsVar_decodedArgs[0] as Map<Any?, Any?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoMap(golubetsVar_arg_map))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoStringMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_stringMap = golubetsVar_decodedArgs[0] as Map<String?, String?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoStringMap(golubetsVar_arg_stringMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoIntMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_intMap = golubetsVar_decodedArgs[0] as Map<Long?, Long?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoIntMap(golubetsVar_arg_intMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoEnumMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumMap =
+          golubetsVar_decodedArgs[0] as Map<NativeInteropAnEnum?, NativeInteropAnEnum?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoEnumMap(golubetsVar_arg_enumMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoClassMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classMap =
+          golubetsVar_decodedArgs[0] as Map<Long?, NativeInteropAllNullableTypes?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoClassMap(golubetsVar_arg_classMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNonNullStringMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_stringMap = golubetsVar_decodedArgs[0] as Map<String, String>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNonNullStringMap(golubetsVar_arg_stringMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNonNullIntMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_intMap = golubetsVar_decodedArgs[0] as Map<Long, Long>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNonNullIntMap(golubetsVar_arg_intMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNonNullEnumMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumMap =
+          golubetsVar_decodedArgs[0] as Map<NativeInteropAnEnum, NativeInteropAnEnum>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNonNullEnumMap(golubetsVar_arg_enumMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNonNullClassMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classMap =
+          golubetsVar_decodedArgs[0] as Map<Long, NativeInteropAllNullableTypes>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNonNullClassMap(golubetsVar_arg_classMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoClassWrapper(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_wrapper = golubetsVar_decodedArgs[0] as NativeInteropAllClassesWrapper
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoClassWrapper(golubetsVar_arg_wrapper))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoSealedClass(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_sealedClass = golubetsVar_decodedArgs[0] as NativeInteropSealedClass
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoSealedClass(golubetsVar_arg_sealedClass))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableSealedClass(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_sealedClass = golubetsVar_decodedArgs[0] as NativeInteropSealedClass?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableSealedClass(golubetsVar_arg_sealedClass))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoSealedClassList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_sealedClassList = golubetsVar_decodedArgs[0] as List<NativeInteropSealedClass>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoSealedClassList(golubetsVar_arg_sealedClassList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoSealedClassWrapper(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_wrapper = golubetsVar_decodedArgs[0] as NativeInteropSealedClassWrapper
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoSealedClassWrapper(golubetsVar_arg_wrapper))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoEnum(anEnum: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoEnum(NativeInteropAnEnum.ofRaw(anEnum.toInt())!!).raw.toLong()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoAnotherEnum(anotherEnum: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api
+          .echoAnotherEnum(NativeInteropAnotherEnum.ofRaw(anotherEnum.toInt())!!)
+          .raw
+          .toLong()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNamedDefaultString(aString: String): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoNamedDefaultString(aString)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoOptionalDefaultDouble(aDouble: Double): Double {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoOptionalDefaultDouble(aDouble)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoRequiredInt(anInt: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoRequiredInt(anInt)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoAllNullableTypes(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_everything = golubetsVar_decodedArgs[0] as NativeInteropAllNullableTypes?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAllNullableTypes(golubetsVar_arg_everything))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoAllNullableTypesWithoutRecursion(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_everything =
+          golubetsVar_decodedArgs[0] as NativeInteropAllNullableTypesWithoutRecursion?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAllNullableTypesWithoutRecursion(golubetsVar_arg_everything))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun extractNestedNullableString(golubetsVar_args: ByteArray): String? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_wrapper = golubetsVar_decodedArgs[0] as NativeInteropAllClassesWrapper
+      return golubetsVar_api.extractNestedNullableString(golubetsVar_arg_wrapper)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun createNestedNullableString(nullableString: String?): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.createNestedNullableString(nullableString))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun sendMultipleNullableTypes(
+      aNullableBool: Boolean?,
+      aNullableInt: Long?,
+      aNullableString: String?
+  ): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.sendMultipleNullableTypes(aNullableBool, aNullableInt, aNullableString))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun sendMultipleNullableTypesWithoutRecursion(
+      aNullableBool: Boolean?,
+      aNullableInt: Long?,
+      aNullableString: String?
+  ): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.sendMultipleNullableTypesWithoutRecursion(
+              aNullableBool, aNullableInt, aNullableString))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableInt(aNullableInt: Long?): Long? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoNullableInt(aNullableInt)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableDouble(aNullableDouble: Double?): Double? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoNullableDouble(aNullableDouble)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableBool(aNullableBool: Boolean?): Boolean? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoNullableBool(aNullableBool)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableString(aNullableString: String?): String? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoNullableString(aNullableString)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableUint8List(aNullableUint8List: ByteArray?): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoNullableUint8List(aNullableUint8List)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableInt32List(aNullableInt32List: IntArray?): IntArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoNullableInt32List(aNullableInt32List)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableInt64List(aNullableInt64List: LongArray?): LongArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoNullableInt64List(aNullableInt64List)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableFloat64List(aNullableFloat64List: DoubleArray?): DoubleArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoNullableFloat64List(aNullableFloat64List)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableObject(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_aNullableObject = golubetsVar_decodedArgs[0]
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableObject(golubetsVar_arg_aNullableObject))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_aNullableList = golubetsVar_decodedArgs[0] as List<Any?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableList(golubetsVar_arg_aNullableList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableEnumList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumList = golubetsVar_decodedArgs[0] as List<NativeInteropAnEnum?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableEnumList(golubetsVar_arg_enumList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableClassList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classList =
+          golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableClassList(golubetsVar_arg_classList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableNonNullEnumList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumList = golubetsVar_decodedArgs[0] as List<NativeInteropAnEnum>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableNonNullEnumList(golubetsVar_arg_enumList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableNonNullClassList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableNonNullClassList(golubetsVar_arg_classList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_map = golubetsVar_decodedArgs[0] as Map<Any?, Any?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableMap(golubetsVar_arg_map))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableStringMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_stringMap = golubetsVar_decodedArgs[0] as Map<String?, String?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableStringMap(golubetsVar_arg_stringMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableIntMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_intMap = golubetsVar_decodedArgs[0] as Map<Long?, Long?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableIntMap(golubetsVar_arg_intMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableEnumMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumMap =
+          golubetsVar_decodedArgs[0] as Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableEnumMap(golubetsVar_arg_enumMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableClassMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classMap =
+          golubetsVar_decodedArgs[0] as Map<Long?, NativeInteropAllNullableTypes?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableClassMap(golubetsVar_arg_classMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableNonNullStringMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_stringMap = golubetsVar_decodedArgs[0] as Map<String, String>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableNonNullStringMap(golubetsVar_arg_stringMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableNonNullIntMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_intMap = golubetsVar_decodedArgs[0] as Map<Long, Long>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableNonNullIntMap(golubetsVar_arg_intMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableNonNullEnumMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumMap =
+          golubetsVar_decodedArgs[0] as Map<NativeInteropAnEnum, NativeInteropAnEnum>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableNonNullEnumMap(golubetsVar_arg_enumMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableNonNullClassMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classMap =
+          golubetsVar_decodedArgs[0] as Map<Long, NativeInteropAllNullableTypes>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableNonNullClassMap(golubetsVar_arg_classMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableEnum(anEnum: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return (golubetsVar_api
+          .echoNullableEnum(if (anEnum == -1L) null else NativeInteropAnEnum.ofRaw(anEnum.toInt()))
+          ?.raw
+          ?.toLong() ?: -1L)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoAnotherNullableEnum(anotherEnum: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return (golubetsVar_api
+          .echoAnotherNullableEnum(
+              if (anotherEnum == -1L) null else NativeInteropAnotherEnum.ofRaw(anotherEnum.toInt()))
+          ?.raw
+          ?.toLong() ?: -1L)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoOptionalNullableInt(aNullableInt: Long?): Long? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoOptionalNullableInt(aNullableInt)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNamedNullableString(aNullableString: String?): String? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoNamedNullableString(aNullableString)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun noopAsync() {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      golubetsVar_api.noopAsync()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncInt(anInt: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncInt(anInt)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncDouble(aDouble: Double): Double {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncDouble(aDouble)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncBool(aBool: Boolean): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncBool(aBool)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncString(aString: String): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncString(aString)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncUint8List(aUint8List: ByteArray): ByteArray {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncUint8List(aUint8List)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncInt32List(aInt32List: IntArray): IntArray {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncInt32List(aInt32List)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncInt64List(aInt64List: LongArray): LongArray {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncInt64List(aInt64List)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncFloat64List(aFloat64List: DoubleArray): DoubleArray {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncFloat64List(aFloat64List)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncObject(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_anObject = golubetsVar_decodedArgs[0] as Any
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncObject(golubetsVar_arg_anObject))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_list = golubetsVar_decodedArgs[0] as List<Any?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncList(golubetsVar_arg_list))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncEnumList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumList = golubetsVar_decodedArgs[0] as List<NativeInteropAnEnum?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncEnumList(golubetsVar_arg_enumList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncClassList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncClassList(golubetsVar_arg_classList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_map = golubetsVar_decodedArgs[0] as Map<Any?, Any?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncMap(golubetsVar_arg_map))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncStringMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_stringMap = golubetsVar_decodedArgs[0] as Map<String?, String?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncStringMap(golubetsVar_arg_stringMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncIntMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_intMap = golubetsVar_decodedArgs[0] as Map<Long?, Long?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncIntMap(golubetsVar_arg_intMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncEnumMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumMap =
+          golubetsVar_decodedArgs[0] as Map<NativeInteropAnEnum?, NativeInteropAnEnum?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncEnumMap(golubetsVar_arg_enumMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncClassMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classMap =
+          golubetsVar_decodedArgs[0] as Map<Long?, NativeInteropAllNullableTypes?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncClassMap(golubetsVar_arg_classMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncEnum(anEnum: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncEnum(NativeInteropAnEnum.ofRaw(anEnum.toInt())!!).raw.toLong()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAnotherAsyncEnum(anotherEnum: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api
+          .echoAnotherAsyncEnum(NativeInteropAnotherEnum.ofRaw(anotherEnum.toInt())!!)
+          .raw
+          .toLong()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun throwAsyncError(): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(golubetsVar_api.throwAsyncError())
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun throwAsyncErrorFromVoid() {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      golubetsVar_api.throwAsyncErrorFromVoid()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun throwAsyncFlutterError(): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.throwAsyncFlutterError())
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNativeInteropAllTypes(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_everything = golubetsVar_decodedArgs[0] as NativeInteropAllTypes
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncNativeInteropAllTypes(golubetsVar_arg_everything))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncSealedClass(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_sealedClass = golubetsVar_decodedArgs[0] as NativeInteropSealedClass
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncSealedClass(golubetsVar_arg_sealedClass))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableNativeInteropAllNullableTypes(
+      golubetsVar_args: ByteArray
+  ): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_everything = golubetsVar_decodedArgs[0] as NativeInteropAllNullableTypes?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncNullableNativeInteropAllNullableTypes(golubetsVar_arg_everything))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
+      golubetsVar_args: ByteArray
+  ): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_everything =
+          golubetsVar_decodedArgs[0] as NativeInteropAllNullableTypesWithoutRecursion?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
+              golubetsVar_arg_everything))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableInt(anInt: Long?): Long? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncNullableInt(anInt)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableDouble(aDouble: Double?): Double? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncNullableDouble(aDouble)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableBool(aBool: Boolean?): Boolean? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncNullableBool(aBool)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableString(aString: String?): String? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncNullableString(aString)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableUint8List(aUint8List: ByteArray?): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncNullableUint8List(aUint8List)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableInt32List(aInt32List: IntArray?): IntArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncNullableInt32List(aInt32List)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableInt64List(aInt64List: LongArray?): LongArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncNullableInt64List(aInt64List)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableFloat64List(aFloat64List: DoubleArray?): DoubleArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.echoAsyncNullableFloat64List(aFloat64List)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableObject(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_anObject = golubetsVar_decodedArgs[0]
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncNullableObject(golubetsVar_arg_anObject))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_list = golubetsVar_decodedArgs[0] as List<Any?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncNullableList(golubetsVar_arg_list))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableEnumList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumList = golubetsVar_decodedArgs[0] as List<NativeInteropAnEnum?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncNullableEnumList(golubetsVar_arg_enumList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableClassList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classList =
+          golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncNullableClassList(golubetsVar_arg_classList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_map = golubetsVar_decodedArgs[0] as Map<Any?, Any?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncNullableMap(golubetsVar_arg_map))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableStringMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_stringMap = golubetsVar_decodedArgs[0] as Map<String?, String?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncNullableStringMap(golubetsVar_arg_stringMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableIntMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_intMap = golubetsVar_decodedArgs[0] as Map<Long?, Long?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncNullableIntMap(golubetsVar_arg_intMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableEnumMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumMap =
+          golubetsVar_decodedArgs[0] as Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncNullableEnumMap(golubetsVar_arg_enumMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableClassMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classMap =
+          golubetsVar_decodedArgs[0] as Map<Long?, NativeInteropAllNullableTypes?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncNullableClassMap(golubetsVar_arg_classMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncNullableEnum(anEnum: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return (golubetsVar_api
+          .echoAsyncNullableEnum(
+              if (anEnum == -1L) null else NativeInteropAnEnum.ofRaw(anEnum.toInt()))
+          ?.raw
+          ?.toLong() ?: -1L)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAnotherAsyncNullableEnum(anotherEnum: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return (golubetsVar_api
+          .echoAnotherAsyncNullableEnum(
+              if (anotherEnum == -1L) null else NativeInteropAnotherEnum.ofRaw(anotherEnum.toInt()))
+          ?.raw
+          ?.toLong() ?: -1L)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterNoop() {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      golubetsVar_api.callFlutterNoop()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterThrowError(): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterThrowError())
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterThrowErrorFromVoid() {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      golubetsVar_api.callFlutterThrowErrorFromVoid()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNativeInteropAllTypes(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_everything = golubetsVar_decodedArgs[0] as NativeInteropAllTypes
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNativeInteropAllTypes(golubetsVar_arg_everything))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNativeInteropAllNullableTypes(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_everything = golubetsVar_decodedArgs[0] as NativeInteropAllNullableTypes?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNativeInteropAllNullableTypes(golubetsVar_arg_everything))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoSealedClass(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_sealedClass = golubetsVar_decodedArgs[0] as NativeInteropSealedClass
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoSealedClass(golubetsVar_arg_sealedClass))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterSendMultipleNullableTypes(
+      aNullableBool: Boolean?,
+      aNullableInt: Long?,
+      aNullableString: String?
+  ): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterSendMultipleNullableTypes(
+              aNullableBool, aNullableInt, aNullableString))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNativeInteropAllNullableTypesWithoutRecursion(
+      golubetsVar_args: ByteArray
+  ): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_everything =
+          golubetsVar_decodedArgs[0] as NativeInteropAllNullableTypesWithoutRecursion?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNativeInteropAllNullableTypesWithoutRecursion(
+              golubetsVar_arg_everything))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterSendMultipleNullableTypesWithoutRecursion(
+      aNullableBool: Boolean?,
+      aNullableInt: Long?,
+      aNullableString: String?
+  ): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterSendMultipleNullableTypesWithoutRecursion(
+              aNullableBool, aNullableInt, aNullableString))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoBool(aBool: Boolean): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoBool(aBool)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoInt(anInt: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoInt(anInt)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoDouble(aDouble: Double): Double {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoDouble(aDouble)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoString(aString: String): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoString(aString)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoUint8List(list: ByteArray): ByteArray {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoUint8List(list)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoInt32List(list: IntArray): IntArray {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoInt32List(list)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoInt64List(list: LongArray): LongArray {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoInt64List(list)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoFloat64List(list: DoubleArray): DoubleArray {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoFloat64List(list)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_list = golubetsVar_decodedArgs[0] as List<Any?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoList(golubetsVar_arg_list))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoEnumList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumList = golubetsVar_decodedArgs[0] as List<NativeInteropAnEnum?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoEnumList(golubetsVar_arg_enumList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoClassList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoClassList(golubetsVar_arg_classList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNonNullEnumList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumList = golubetsVar_decodedArgs[0] as List<NativeInteropAnEnum>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNonNullEnumList(golubetsVar_arg_enumList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNonNullClassList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNonNullClassList(golubetsVar_arg_classList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_map = golubetsVar_decodedArgs[0] as Map<Any?, Any?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoMap(golubetsVar_arg_map))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoStringMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_stringMap = golubetsVar_decodedArgs[0] as Map<String?, String?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoStringMap(golubetsVar_arg_stringMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoIntMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_intMap = golubetsVar_decodedArgs[0] as Map<Long?, Long?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoIntMap(golubetsVar_arg_intMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoEnumMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumMap =
+          golubetsVar_decodedArgs[0] as Map<NativeInteropAnEnum?, NativeInteropAnEnum?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoEnumMap(golubetsVar_arg_enumMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoClassMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classMap =
+          golubetsVar_decodedArgs[0] as Map<Long?, NativeInteropAllNullableTypes?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoClassMap(golubetsVar_arg_classMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNonNullStringMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_stringMap = golubetsVar_decodedArgs[0] as Map<String, String>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNonNullStringMap(golubetsVar_arg_stringMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNonNullIntMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_intMap = golubetsVar_decodedArgs[0] as Map<Long, Long>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNonNullIntMap(golubetsVar_arg_intMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNonNullEnumMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumMap =
+          golubetsVar_decodedArgs[0] as Map<NativeInteropAnEnum, NativeInteropAnEnum>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNonNullEnumMap(golubetsVar_arg_enumMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNonNullClassMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classMap =
+          golubetsVar_decodedArgs[0] as Map<Long, NativeInteropAllNullableTypes>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNonNullClassMap(golubetsVar_arg_classMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoEnum(anEnum: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api
+          .callFlutterEchoEnum(NativeInteropAnEnum.ofRaw(anEnum.toInt())!!)
+          .raw
+          .toLong()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNativeInteropAnotherEnum(anotherEnum: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api
+          .callFlutterEchoNativeInteropAnotherEnum(
+              NativeInteropAnotherEnum.ofRaw(anotherEnum.toInt())!!)
+          .raw
+          .toLong()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableBool(aBool: Boolean?): Boolean? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoNullableBool(aBool)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableInt(anInt: Long?): Long? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoNullableInt(anInt)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableDouble(aDouble: Double?): Double? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoNullableDouble(aDouble)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableString(aString: String?): String? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoNullableString(aString)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableUint8List(list: ByteArray?): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoNullableUint8List(list)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableInt32List(list: IntArray?): IntArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoNullableInt32List(list)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableInt64List(list: LongArray?): LongArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoNullableInt64List(list)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableFloat64List(list: DoubleArray?): DoubleArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoNullableFloat64List(list)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_list = golubetsVar_decodedArgs[0] as List<Any?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNullableList(golubetsVar_arg_list))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableEnumList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumList = golubetsVar_decodedArgs[0] as List<NativeInteropAnEnum?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNullableEnumList(golubetsVar_arg_enumList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableClassList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classList =
+          golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNullableClassList(golubetsVar_arg_classList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableNonNullEnumList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumList = golubetsVar_decodedArgs[0] as List<NativeInteropAnEnum>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNullableNonNullEnumList(golubetsVar_arg_enumList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableNonNullClassList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNullableNonNullClassList(golubetsVar_arg_classList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_map = golubetsVar_decodedArgs[0] as Map<Any?, Any?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNullableMap(golubetsVar_arg_map))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableStringMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_stringMap = golubetsVar_decodedArgs[0] as Map<String?, String?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNullableStringMap(golubetsVar_arg_stringMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableIntMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_intMap = golubetsVar_decodedArgs[0] as Map<Long?, Long?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNullableIntMap(golubetsVar_arg_intMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableEnumMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumMap =
+          golubetsVar_decodedArgs[0] as Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNullableEnumMap(golubetsVar_arg_enumMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableClassMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classMap =
+          golubetsVar_decodedArgs[0] as Map<Long?, NativeInteropAllNullableTypes?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNullableClassMap(golubetsVar_arg_classMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableNonNullStringMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_stringMap = golubetsVar_decodedArgs[0] as Map<String, String>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNullableNonNullStringMap(golubetsVar_arg_stringMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableNonNullIntMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_intMap = golubetsVar_decodedArgs[0] as Map<Long, Long>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNullableNonNullIntMap(golubetsVar_arg_intMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableNonNullEnumMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumMap =
+          golubetsVar_decodedArgs[0] as Map<NativeInteropAnEnum, NativeInteropAnEnum>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNullableNonNullEnumMap(golubetsVar_arg_enumMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableNonNullClassMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classMap =
+          golubetsVar_decodedArgs[0] as Map<Long, NativeInteropAllNullableTypes>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoNullableNonNullClassMap(golubetsVar_arg_classMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoNullableEnum(anEnum: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return (golubetsVar_api
+          .callFlutterEchoNullableEnum(
+              if (anEnum == -1L) null else NativeInteropAnEnum.ofRaw(anEnum.toInt()))
+          ?.raw
+          ?.toLong() ?: -1L)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoAnotherNullableEnum(anotherEnum: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return (golubetsVar_api
+          .callFlutterEchoAnotherNullableEnum(
+              if (anotherEnum == -1L) null else NativeInteropAnotherEnum.ofRaw(anotherEnum.toInt()))
+          ?.raw
+          ?.toLong() ?: -1L)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterNoopAsync() {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      golubetsVar_api.callFlutterNoopAsync()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNativeInteropAllTypes(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_everything = golubetsVar_decodedArgs[0] as NativeInteropAllTypes
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncNativeInteropAllTypes(golubetsVar_arg_everything))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableNativeInteropAllNullableTypes(
+      golubetsVar_args: ByteArray
+  ): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_everything = golubetsVar_decodedArgs[0] as NativeInteropAllNullableTypes?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncNullableNativeInteropAllNullableTypes(
+              golubetsVar_arg_everything))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
+      golubetsVar_args: ByteArray
+  ): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_everything =
+          golubetsVar_decodedArgs[0] as NativeInteropAllNullableTypesWithoutRecursion?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
+              golubetsVar_arg_everything))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncBool(aBool: Boolean): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoAsyncBool(aBool)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncInt(anInt: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoAsyncInt(anInt)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncDouble(aDouble: Double): Double {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoAsyncDouble(aDouble)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncString(aString: String): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoAsyncString(aString)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncUint8List(list: ByteArray): ByteArray {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoAsyncUint8List(list)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncInt32List(list: IntArray): IntArray {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoAsyncInt32List(list)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncInt64List(list: LongArray): LongArray {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoAsyncInt64List(list)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncFloat64List(list: DoubleArray): DoubleArray {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoAsyncFloat64List(list)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncObject(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_anObject = golubetsVar_decodedArgs[0] as Any
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncObject(golubetsVar_arg_anObject))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_list = golubetsVar_decodedArgs[0] as List<Any?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncList(golubetsVar_arg_list))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncEnumList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumList = golubetsVar_decodedArgs[0] as List<NativeInteropAnEnum?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncEnumList(golubetsVar_arg_enumList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncClassList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncClassList(golubetsVar_arg_classList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNonNullEnumList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumList = golubetsVar_decodedArgs[0] as List<NativeInteropAnEnum>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncNonNullEnumList(golubetsVar_arg_enumList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNonNullClassList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncNonNullClassList(golubetsVar_arg_classList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_map = golubetsVar_decodedArgs[0] as Map<Any?, Any?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncMap(golubetsVar_arg_map))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncStringMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_stringMap = golubetsVar_decodedArgs[0] as Map<String?, String?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncStringMap(golubetsVar_arg_stringMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncIntMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_intMap = golubetsVar_decodedArgs[0] as Map<Long?, Long?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncIntMap(golubetsVar_arg_intMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncEnumMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumMap =
+          golubetsVar_decodedArgs[0] as Map<NativeInteropAnEnum?, NativeInteropAnEnum?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncEnumMap(golubetsVar_arg_enumMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncClassMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classMap =
+          golubetsVar_decodedArgs[0] as Map<Long?, NativeInteropAllNullableTypes?>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncClassMap(golubetsVar_arg_classMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncEnum(anEnum: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api
+          .callFlutterEchoAsyncEnum(NativeInteropAnEnum.ofRaw(anEnum.toInt())!!)
+          .raw
+          .toLong()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAnotherAsyncEnum(anotherEnum: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api
+          .callFlutterEchoAnotherAsyncEnum(NativeInteropAnotherEnum.ofRaw(anotherEnum.toInt())!!)
+          .raw
+          .toLong()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableBool(aBool: Boolean?): Boolean? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoAsyncNullableBool(aBool)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableInt(anInt: Long?): Long? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoAsyncNullableInt(anInt)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableDouble(aDouble: Double?): Double? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoAsyncNullableDouble(aDouble)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableString(aString: String?): String? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoAsyncNullableString(aString)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableUint8List(list: ByteArray?): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoAsyncNullableUint8List(list)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableInt32List(list: IntArray?): IntArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoAsyncNullableInt32List(list)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableInt64List(list: LongArray?): LongArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoAsyncNullableInt64List(list)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableFloat64List(list: DoubleArray?): DoubleArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterEchoAsyncNullableFloat64List(list)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterThrowFlutterErrorAsync(): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterThrowFlutterErrorAsync())
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableObject(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_anObject = golubetsVar_decodedArgs[0]
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncNullableObject(golubetsVar_arg_anObject))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_list = golubetsVar_decodedArgs[0] as List<Any?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncNullableList(golubetsVar_arg_list))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableEnumList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumList = golubetsVar_decodedArgs[0] as List<NativeInteropAnEnum?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncNullableEnumList(golubetsVar_arg_enumList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableClassList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classList =
+          golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncNullableClassList(golubetsVar_arg_classList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableNonNullEnumList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumList = golubetsVar_decodedArgs[0] as List<NativeInteropAnEnum>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncNullableNonNullEnumList(golubetsVar_arg_enumList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableNonNullClassList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classList = golubetsVar_decodedArgs[0] as List<NativeInteropAllNullableTypes>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncNullableNonNullClassList(golubetsVar_arg_classList))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_map = golubetsVar_decodedArgs[0] as Map<Any?, Any?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncNullableMap(golubetsVar_arg_map))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableStringMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_stringMap = golubetsVar_decodedArgs[0] as Map<String?, String?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncNullableStringMap(golubetsVar_arg_stringMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableIntMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_intMap = golubetsVar_decodedArgs[0] as Map<Long?, Long?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncNullableIntMap(golubetsVar_arg_intMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableEnumMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_enumMap =
+          golubetsVar_decodedArgs[0] as Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncNullableEnumMap(golubetsVar_arg_enumMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableClassMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_classMap =
+          golubetsVar_decodedArgs[0] as Map<Long?, NativeInteropAllNullableTypes?>?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoAsyncNullableClassMap(golubetsVar_arg_classMap))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAsyncNullableEnum(anEnum: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return (golubetsVar_api
+          .callFlutterEchoAsyncNullableEnum(
+              if (anEnum == -1L) null else NativeInteropAnEnum.ofRaw(anEnum.toInt()))
+          ?.raw
+          ?.toLong() ?: -1L)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterEchoAnotherAsyncNullableEnum(anotherEnum: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return (golubetsVar_api
+          .callFlutterEchoAnotherAsyncNullableEnum(
+              if (anotherEnum == -1L) null else NativeInteropAnotherEnum.ofRaw(anotherEnum.toInt()))
+          ?.raw
+          ?.toLong() ?: -1L)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun isMainThread(): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.isMainThread()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun asyncIsBackgroundThread(): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.asyncIsBackgroundThread()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun isGetter(): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.isGetter()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun getGetter(): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.getGetter()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun setSetter(value: Long) {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      golubetsVar_api.setSetter(value)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun callFlutterNoopOnBackgroundThread(): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterNoopOnBackgroundThread()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun testDeregisterHostApi(): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.testDeregisterHostApi()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun testDeregisterFlutterApi(): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.testDeregisterFlutterApi()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun registerAndImmediatelyDeregisterHostApi(name: String) {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      golubetsVar_api.registerAndImmediatelyDeregisterHostApi(name)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun registerNamedHostApi(name: String) {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      golubetsVar_api.registerNamedHostApi(name)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun deregisterNamedHostApi(name: String) {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      golubetsVar_api.deregisterNamedHostApi(name)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun testCallDeregisteredFlutterApi(name: String): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.testCallDeregisteredFlutterApi(name)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun testSecondaryEngineDartExecution(): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.testSecondaryEngineDartExecution()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun isSecondaryEngineRegistrationReady(): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.isSecondaryEngineRegistrationReady()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun reportSecondaryEngineCheck(success: Boolean) {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      golubetsVar_api.reportSecondaryEngineCheck(success)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun notifyConcurrentIsolateResolved() {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      golubetsVar_api.notifyConcurrentIsolateResolved()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun registeredEngineKey(): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.registeredEngineKey()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun engineLabel(): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.engineLabel()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun pluginEngineIdentifierIsAvailable(): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropHostIntegrationCoreApi has not been registered.")
+    try {
+      return golubetsVar_api.pluginEngineIdentifierIsAvailable()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
   }
 }
 /**
@@ -4359,29 +6704,128 @@ class NativeInteropHostIntegrationCoreApiRegistrar : NativeInteropHostIntegratio
  *
  * Generated class from Golubets that represents Flutter messages that can be called from Kotlin.
  */
+/**
+ * A registered [NativeInteropFlutterIntegrationCoreApi] and the keys of the engine it belongs to.
+ */
+class NativeInteropFlutterIntegrationCoreApiRegistration(
+    val api: NativeInteropFlutterIntegrationCoreApi,
+    val engineId: Long,
+    val affinityKey: Long
+)
+
 /// Map that stores instances
 val registeredNativeInteropFlutterIntegrationCoreApi:
-    MutableMap<String, NativeInteropFlutterIntegrationCoreApi> =
+    MutableMap<String, MutableList<NativeInteropFlutterIntegrationCoreApiRegistration>> =
     mutableMapOf()
 
 /// Class that stores instances
+@Keep
 class NativeInteropFlutterIntegrationCoreApiRegistrar() {
-
-  /// Registers an instance with the given name.
+  /**
+   * Registers [api] under [name] (or the default instance when [name] is omitted) for the engine
+   * identified by [engineId] and [affinityKey].
+   *
+   * Either key may be `Long.MIN_VALUE` when it is unknown. Registering an instance that is already
+   * registered under [name] updates its keys and keeps its position.
+   *
+   * This is called by the generated Dart code and is not intended for direct use.
+   */
+  @Keep
   fun registerInstance(
-      api: NativeInteropFlutterIntegrationCoreApi?,
+      api: NativeInteropFlutterIntegrationCoreApiBridge,
+      engineId: Long,
+      affinityKey: Long,
       name: String = defaultInstanceName
   ) {
-    if (api != null) {
-      registeredNativeInteropFlutterIntegrationCoreApi[name] = api
-    } else {
-      registeredNativeInteropFlutterIntegrationCoreApi.remove(name)
+    kotlin.synchronized(registeredNativeInteropFlutterIntegrationCoreApi) {
+      val list = registeredNativeInteropFlutterIntegrationCoreApi.getOrPut(name) { mutableListOf() }
+      val registration =
+          NativeInteropFlutterIntegrationCoreApiRegistration(
+              NativeInteropFlutterIntegrationCoreApiBridgeAdapter(api), engineId, affinityKey)
+      val index =
+          list.indexOfFirst {
+            (it.api as? NativeInteropFlutterIntegrationCoreApiBridgeAdapter)?.bridge === api
+          }
+      if (index >= 0) {
+        list[index] = registration
+      } else {
+        list.add(registration)
+      }
     }
   }
 
-  /// Gets an instance with the given name.
-  fun getInstance(name: String = defaultInstanceName): NativeInteropFlutterIntegrationCoreApi? {
-    return registeredNativeInteropFlutterIntegrationCoreApi[name]
+  /**
+   * Removes [api] from the registrations under [name] (or the default instance when [name] is
+   * omitted), leaving other registrations in place.
+   *
+   * Instances are matched by identity. Does nothing if [api] is not registered.
+   *
+   * This is called by the generated Dart code and is not intended for direct use.
+   */
+  @Keep
+  fun unregisterInstance(
+      api: NativeInteropFlutterIntegrationCoreApiBridge,
+      name: String = defaultInstanceName
+  ) {
+    kotlin.synchronized(registeredNativeInteropFlutterIntegrationCoreApi) {
+      val list = registeredNativeInteropFlutterIntegrationCoreApi[name] ?: return
+      list.removeAll {
+        (it.api as? NativeInteropFlutterIntegrationCoreApiBridgeAdapter)?.bridge === api
+      }
+      if (list.isEmpty()) {
+        registeredNativeInteropFlutterIntegrationCoreApi.remove(name)
+      }
+    }
+  }
+
+  /**
+   * Returns the instance registered under [name] (or the default instance when [name] is omitted)
+   * by the Dart code running on the engine of the plugin binding [binding].
+   *
+   * When no instance is known to belong to that engine, falls back to the most recent registration
+   * for [name]. Returns null if none is registered.
+   */
+  @Keep
+  fun getInstance(
+      binding: FlutterPlugin.FlutterPluginBinding,
+      name: String = defaultInstanceName
+  ): NativeInteropFlutterIntegrationCoreApi? {
+    return getInstanceWithKey(NativeInteropTestsGolubetsEngineKeys.keyOf(binding), name)
+  }
+
+  /**
+   * Returns the instance registered under [name] (or the default instance when [name] is omitted)
+   * by the Dart code running on the engine of [engine].
+   *
+   * When no instance is known to belong to that engine, falls back to the most recent registration
+   * for [name]. Returns null if none is registered.
+   */
+  @Keep
+  fun getInstance(
+      engine: FlutterEngine,
+      name: String = defaultInstanceName
+  ): NativeInteropFlutterIntegrationCoreApi? {
+    return getInstanceWithKey(NativeInteropTestsGolubetsEngineKeys.keyOf(engine), name)
+  }
+
+  private fun getInstanceWithKey(
+      engineKey: Long,
+      name: String
+  ): NativeInteropFlutterIntegrationCoreApi? {
+    kotlin.synchronized(registeredNativeInteropFlutterIntegrationCoreApi) {
+      val list = registeredNativeInteropFlutterIntegrationCoreApi[name] ?: return null
+      if (engineKey != NativeInteropTestsGolubetsEngineKeys.NO_KEY) {
+        // Prefer the isolate running on the engine over isolates that only
+        // learned an affinity for it.
+        val match =
+            list.lastOrNull { it.engineId == engineKey }
+                ?: list.lastOrNull { it.affinityKey == engineKey }
+        if (match != null) {
+          return match.api
+        }
+      }
+      return list.lastOrNull()?.api
+    }
   }
 }
 
@@ -4400,6 +6844,8 @@ interface NativeInteropFlutterIntegrationCoreApi {
   fun echoNativeInteropAllNullableTypes(
       everything: NativeInteropAllNullableTypes?
   ): NativeInteropAllNullableTypes?
+  /** Returns the passed sealed class, to test sealed class handling. */
+  fun echoNativeInteropSealedClass(sealedClass: NativeInteropSealedClass): NativeInteropSealedClass
   /**
    * Returns passed in arguments of multiple types.
    *
@@ -4671,4 +7117,2332 @@ interface NativeInteropFlutterIntegrationCoreApi {
   suspend fun echoAnotherAsyncNullableEnum(
       anotherEnum: NativeInteropAnotherEnum?
   ): NativeInteropAnotherEnum?
+}
+
+/**
+ * The interface that Dart implements for [NativeInteropFlutterIntegrationCoreApi].
+ *
+ * Values that the native interop transport passes directly are their own arguments and return
+ * values. All other arguments are encoded into one buffer, and other return values are returned in
+ * one.
+ */
+@Keep
+interface NativeInteropFlutterIntegrationCoreApiBridge {
+  fun noop()
+
+  fun throwFlutterError(): ByteArray?
+
+  fun throwError(): ByteArray?
+
+  fun throwErrorFromVoid()
+
+  fun echoNativeInteropAllTypes(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNativeInteropAllNullableTypes(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNativeInteropSealedClass(golubetsVar_args: ByteArray): ByteArray?
+
+  fun sendMultipleNullableTypes(
+      aNullableBool: Boolean?,
+      aNullableInt: Long?,
+      aNullableString: String?
+  ): ByteArray?
+
+  fun echoNativeInteropAllNullableTypesWithoutRecursion(golubetsVar_args: ByteArray): ByteArray?
+
+  fun sendMultipleNullableTypesWithoutRecursion(
+      aNullableBool: Boolean?,
+      aNullableInt: Long?,
+      aNullableString: String?
+  ): ByteArray?
+
+  fun echoBool(aBool: Boolean): Boolean
+
+  fun echoInt(anInt: Long): Long
+
+  fun echoDouble(aDouble: Double): Double
+
+  fun echoString(aString: String): String
+
+  fun echoUint8List(list: ByteArray): ByteArray
+
+  fun echoInt32List(list: IntArray): IntArray
+
+  fun echoInt64List(list: LongArray): LongArray
+
+  fun echoFloat64List(list: DoubleArray): DoubleArray
+
+  fun echoList(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoEnumList(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoClassList(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNonNullEnumList(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNonNullClassList(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoStringMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoIntMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoEnumMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoClassMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNonNullStringMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNonNullIntMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNonNullEnumMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNonNullClassMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoEnum(anEnum: Long): Long
+
+  fun echoNativeInteropAnotherEnum(anotherEnum: Long): Long
+
+  fun echoNullableBool(aBool: Boolean?): Boolean?
+
+  fun echoNullableInt(anInt: Long?): Long?
+
+  fun echoNullableDouble(aDouble: Double?): Double?
+
+  fun echoNullableString(aString: String?): String?
+
+  fun echoNullableUint8List(list: ByteArray?): ByteArray?
+
+  fun echoNullableInt32List(list: IntArray?): IntArray?
+
+  fun echoNullableInt64List(list: LongArray?): LongArray?
+
+  fun echoNullableFloat64List(list: DoubleArray?): DoubleArray?
+
+  fun echoNullableList(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNullableEnumList(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNullableClassList(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNullableNonNullEnumList(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNullableNonNullClassList(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNullableMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNullableStringMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNullableIntMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNullableEnumMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNullableClassMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNullableNonNullStringMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNullableNonNullIntMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNullableNonNullEnumMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNullableNonNullClassMap(golubetsVar_args: ByteArray): ByteArray?
+
+  fun echoNullableEnum(anEnum: Long): Long
+
+  fun echoAnotherNullableEnum(anotherEnum: Long): Long
+
+  suspend fun noopAsync()
+
+  suspend fun throwFlutterErrorAsync(): ByteArray?
+
+  suspend fun echoAsyncNativeInteropAllTypes(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncNullableNativeInteropAllNullableTypes(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
+      golubetsVar_args: ByteArray
+  ): ByteArray?
+
+  suspend fun echoAsyncBool(aBool: Boolean): Boolean
+
+  suspend fun echoAsyncInt(anInt: Long): Long
+
+  suspend fun echoAsyncDouble(aDouble: Double): Double
+
+  suspend fun echoAsyncString(aString: String): String
+
+  suspend fun echoAsyncUint8List(list: ByteArray): ByteArray
+
+  suspend fun echoAsyncInt32List(list: IntArray): IntArray
+
+  suspend fun echoAsyncInt64List(list: LongArray): LongArray
+
+  suspend fun echoAsyncFloat64List(list: DoubleArray): DoubleArray
+
+  suspend fun echoAsyncObject(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncList(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncEnumList(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncClassList(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncNonNullEnumList(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncNonNullClassList(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncMap(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncStringMap(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncIntMap(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncEnumMap(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncClassMap(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncEnum(anEnum: Long): Long
+
+  suspend fun echoAnotherAsyncEnum(anotherEnum: Long): Long
+
+  suspend fun echoAsyncNullableBool(aBool: Boolean?): Boolean?
+
+  suspend fun echoAsyncNullableInt(anInt: Long?): Long?
+
+  suspend fun echoAsyncNullableDouble(aDouble: Double?): Double?
+
+  suspend fun echoAsyncNullableString(aString: String?): String?
+
+  suspend fun echoAsyncNullableUint8List(list: ByteArray?): ByteArray?
+
+  suspend fun echoAsyncNullableInt32List(list: IntArray?): IntArray?
+
+  suspend fun echoAsyncNullableInt64List(list: LongArray?): LongArray?
+
+  suspend fun echoAsyncNullableFloat64List(list: DoubleArray?): DoubleArray?
+
+  suspend fun echoAsyncNullableObject(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncNullableList(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncNullableEnumList(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncNullableClassList(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncNullableNonNullEnumList(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncNullableNonNullClassList(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncNullableMap(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncNullableStringMap(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncNullableIntMap(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncNullableEnumMap(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncNullableClassMap(golubetsVar_args: ByteArray): ByteArray?
+
+  suspend fun echoAsyncNullableEnum(anEnum: Long): Long
+
+  suspend fun echoAnotherAsyncNullableEnum(anotherEnum: Long): Long
+}
+
+private class NativeInteropFlutterIntegrationCoreApiBridgeAdapter(
+    val bridge: NativeInteropFlutterIntegrationCoreApiBridge
+) : NativeInteropFlutterIntegrationCoreApi {
+  override fun noop() {
+    this.bridge.noop()
+  }
+
+  override fun throwFlutterError(): Any? {
+    val golubetsVar_result = this.bridge.throwFlutterError()
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded
+  }
+
+  override fun throwError(): Any? {
+    val golubetsVar_result = this.bridge.throwError()
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded
+  }
+
+  override fun throwErrorFromVoid() {
+    this.bridge.throwErrorFromVoid()
+  }
+
+  override fun echoNativeInteropAllTypes(everything: NativeInteropAllTypes): NativeInteropAllTypes {
+    val golubetsVar_result =
+        this.bridge.echoNativeInteropAllTypes(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(everything)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as NativeInteropAllTypes
+  }
+
+  override fun echoNativeInteropAllNullableTypes(
+      everything: NativeInteropAllNullableTypes?
+  ): NativeInteropAllNullableTypes? {
+    val golubetsVar_result =
+        this.bridge.echoNativeInteropAllNullableTypes(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(everything)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as NativeInteropAllNullableTypes?
+  }
+
+  override fun echoNativeInteropSealedClass(
+      sealedClass: NativeInteropSealedClass
+  ): NativeInteropSealedClass {
+    val golubetsVar_result =
+        this.bridge.echoNativeInteropSealedClass(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(sealedClass)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as NativeInteropSealedClass
+  }
+
+  override fun sendMultipleNullableTypes(
+      aNullableBool: Boolean?,
+      aNullableInt: Long?,
+      aNullableString: String?
+  ): NativeInteropAllNullableTypes {
+    val golubetsVar_result =
+        this.bridge.sendMultipleNullableTypes(aNullableBool, aNullableInt, aNullableString)
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as NativeInteropAllNullableTypes
+  }
+
+  override fun echoNativeInteropAllNullableTypesWithoutRecursion(
+      everything: NativeInteropAllNullableTypesWithoutRecursion?
+  ): NativeInteropAllNullableTypesWithoutRecursion? {
+    val golubetsVar_result =
+        this.bridge.echoNativeInteropAllNullableTypesWithoutRecursion(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(everything)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as NativeInteropAllNullableTypesWithoutRecursion?
+  }
+
+  override fun sendMultipleNullableTypesWithoutRecursion(
+      aNullableBool: Boolean?,
+      aNullableInt: Long?,
+      aNullableString: String?
+  ): NativeInteropAllNullableTypesWithoutRecursion {
+    val golubetsVar_result =
+        this.bridge.sendMultipleNullableTypesWithoutRecursion(
+            aNullableBool, aNullableInt, aNullableString)
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as NativeInteropAllNullableTypesWithoutRecursion
+  }
+
+  override fun echoBool(aBool: Boolean): Boolean {
+    val golubetsVar_result = this.bridge.echoBool(aBool)
+    return golubetsVar_result
+  }
+
+  override fun echoInt(anInt: Long): Long {
+    val golubetsVar_result = this.bridge.echoInt(anInt)
+    return golubetsVar_result
+  }
+
+  override fun echoDouble(aDouble: Double): Double {
+    val golubetsVar_result = this.bridge.echoDouble(aDouble)
+    return golubetsVar_result
+  }
+
+  override fun echoString(aString: String): String {
+    val golubetsVar_result = this.bridge.echoString(aString)
+    return golubetsVar_result
+  }
+
+  override fun echoUint8List(list: ByteArray): ByteArray {
+    val golubetsVar_result = this.bridge.echoUint8List(list)
+    return golubetsVar_result
+  }
+
+  override fun echoInt32List(list: IntArray): IntArray {
+    val golubetsVar_result = this.bridge.echoInt32List(list)
+    return golubetsVar_result
+  }
+
+  override fun echoInt64List(list: LongArray): LongArray {
+    val golubetsVar_result = this.bridge.echoInt64List(list)
+    return golubetsVar_result
+  }
+
+  override fun echoFloat64List(list: DoubleArray): DoubleArray {
+    val golubetsVar_result = this.bridge.echoFloat64List(list)
+    return golubetsVar_result
+  }
+
+  override fun echoList(list: List<Any?>): List<Any?> {
+    val golubetsVar_result =
+        this.bridge.echoList(NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(list)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<Any?>
+  }
+
+  override fun echoEnumList(enumList: List<NativeInteropAnEnum?>): List<NativeInteropAnEnum?> {
+    val golubetsVar_result =
+        this.bridge.echoEnumList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(enumList)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<NativeInteropAnEnum?>
+  }
+
+  override fun echoClassList(
+      classList: List<NativeInteropAllNullableTypes?>
+  ): List<NativeInteropAllNullableTypes?> {
+    val golubetsVar_result =
+        this.bridge.echoClassList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(classList)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<NativeInteropAllNullableTypes?>
+  }
+
+  override fun echoNonNullEnumList(enumList: List<NativeInteropAnEnum>): List<NativeInteropAnEnum> {
+    val golubetsVar_result =
+        this.bridge.echoNonNullEnumList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(enumList)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<NativeInteropAnEnum>
+  }
+
+  override fun echoNonNullClassList(
+      classList: List<NativeInteropAllNullableTypes>
+  ): List<NativeInteropAllNullableTypes> {
+    val golubetsVar_result =
+        this.bridge.echoNonNullClassList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(classList)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<NativeInteropAllNullableTypes>
+  }
+
+  override fun echoMap(map: Map<Any?, Any?>): Map<Any?, Any?> {
+    val golubetsVar_result =
+        this.bridge.echoMap(NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(map)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<Any?, Any?>
+  }
+
+  override fun echoStringMap(stringMap: Map<String?, String?>): Map<String?, String?> {
+    val golubetsVar_result =
+        this.bridge.echoStringMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(stringMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<String?, String?>
+  }
+
+  override fun echoIntMap(intMap: Map<Long?, Long?>): Map<Long?, Long?> {
+    val golubetsVar_result =
+        this.bridge.echoIntMap(NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(intMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<Long?, Long?>
+  }
+
+  override fun echoEnumMap(
+      enumMap: Map<NativeInteropAnEnum?, NativeInteropAnEnum?>
+  ): Map<NativeInteropAnEnum?, NativeInteropAnEnum?> {
+    val golubetsVar_result =
+        this.bridge.echoEnumMap(NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(enumMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<NativeInteropAnEnum?, NativeInteropAnEnum?>
+  }
+
+  override fun echoClassMap(
+      classMap: Map<Long?, NativeInteropAllNullableTypes?>
+  ): Map<Long?, NativeInteropAllNullableTypes?> {
+    val golubetsVar_result =
+        this.bridge.echoClassMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(classMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<Long?, NativeInteropAllNullableTypes?>
+  }
+
+  override fun echoNonNullStringMap(stringMap: Map<String, String>): Map<String, String> {
+    val golubetsVar_result =
+        this.bridge.echoNonNullStringMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(stringMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<String, String>
+  }
+
+  override fun echoNonNullIntMap(intMap: Map<Long, Long>): Map<Long, Long> {
+    val golubetsVar_result =
+        this.bridge.echoNonNullIntMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(intMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<Long, Long>
+  }
+
+  override fun echoNonNullEnumMap(
+      enumMap: Map<NativeInteropAnEnum, NativeInteropAnEnum>
+  ): Map<NativeInteropAnEnum, NativeInteropAnEnum> {
+    val golubetsVar_result =
+        this.bridge.echoNonNullEnumMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(enumMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<NativeInteropAnEnum, NativeInteropAnEnum>
+  }
+
+  override fun echoNonNullClassMap(
+      classMap: Map<Long, NativeInteropAllNullableTypes>
+  ): Map<Long, NativeInteropAllNullableTypes> {
+    val golubetsVar_result =
+        this.bridge.echoNonNullClassMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(classMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<Long, NativeInteropAllNullableTypes>
+  }
+
+  override fun echoEnum(anEnum: NativeInteropAnEnum): NativeInteropAnEnum {
+    val golubetsVar_result = this.bridge.echoEnum(anEnum.raw.toLong())
+    return NativeInteropAnEnum.ofRaw(golubetsVar_result.toInt())!!
+  }
+
+  override fun echoNativeInteropAnotherEnum(
+      anotherEnum: NativeInteropAnotherEnum
+  ): NativeInteropAnotherEnum {
+    val golubetsVar_result = this.bridge.echoNativeInteropAnotherEnum(anotherEnum.raw.toLong())
+    return NativeInteropAnotherEnum.ofRaw(golubetsVar_result.toInt())!!
+  }
+
+  override fun echoNullableBool(aBool: Boolean?): Boolean? {
+    val golubetsVar_result = this.bridge.echoNullableBool(aBool)
+    return golubetsVar_result
+  }
+
+  override fun echoNullableInt(anInt: Long?): Long? {
+    val golubetsVar_result = this.bridge.echoNullableInt(anInt)
+    return golubetsVar_result
+  }
+
+  override fun echoNullableDouble(aDouble: Double?): Double? {
+    val golubetsVar_result = this.bridge.echoNullableDouble(aDouble)
+    return golubetsVar_result
+  }
+
+  override fun echoNullableString(aString: String?): String? {
+    val golubetsVar_result = this.bridge.echoNullableString(aString)
+    return golubetsVar_result
+  }
+
+  override fun echoNullableUint8List(list: ByteArray?): ByteArray? {
+    val golubetsVar_result = this.bridge.echoNullableUint8List(list)
+    return golubetsVar_result
+  }
+
+  override fun echoNullableInt32List(list: IntArray?): IntArray? {
+    val golubetsVar_result = this.bridge.echoNullableInt32List(list)
+    return golubetsVar_result
+  }
+
+  override fun echoNullableInt64List(list: LongArray?): LongArray? {
+    val golubetsVar_result = this.bridge.echoNullableInt64List(list)
+    return golubetsVar_result
+  }
+
+  override fun echoNullableFloat64List(list: DoubleArray?): DoubleArray? {
+    val golubetsVar_result = this.bridge.echoNullableFloat64List(list)
+    return golubetsVar_result
+  }
+
+  override fun echoNullableList(list: List<Any?>?): List<Any?>? {
+    val golubetsVar_result =
+        this.bridge.echoNullableList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(list)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<Any?>?
+  }
+
+  override fun echoNullableEnumList(
+      enumList: List<NativeInteropAnEnum?>?
+  ): List<NativeInteropAnEnum?>? {
+    val golubetsVar_result =
+        this.bridge.echoNullableEnumList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(enumList)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<NativeInteropAnEnum?>?
+  }
+
+  override fun echoNullableClassList(
+      classList: List<NativeInteropAllNullableTypes?>?
+  ): List<NativeInteropAllNullableTypes?>? {
+    val golubetsVar_result =
+        this.bridge.echoNullableClassList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(classList)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<NativeInteropAllNullableTypes?>?
+  }
+
+  override fun echoNullableNonNullEnumList(
+      enumList: List<NativeInteropAnEnum>?
+  ): List<NativeInteropAnEnum>? {
+    val golubetsVar_result =
+        this.bridge.echoNullableNonNullEnumList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(enumList)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<NativeInteropAnEnum>?
+  }
+
+  override fun echoNullableNonNullClassList(
+      classList: List<NativeInteropAllNullableTypes>?
+  ): List<NativeInteropAllNullableTypes>? {
+    val golubetsVar_result =
+        this.bridge.echoNullableNonNullClassList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(classList)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<NativeInteropAllNullableTypes>?
+  }
+
+  override fun echoNullableMap(map: Map<Any?, Any?>?): Map<Any?, Any?>? {
+    val golubetsVar_result =
+        this.bridge.echoNullableMap(NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(map)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<Any?, Any?>?
+  }
+
+  override fun echoNullableStringMap(stringMap: Map<String?, String?>?): Map<String?, String?>? {
+    val golubetsVar_result =
+        this.bridge.echoNullableStringMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(stringMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<String?, String?>?
+  }
+
+  override fun echoNullableIntMap(intMap: Map<Long?, Long?>?): Map<Long?, Long?>? {
+    val golubetsVar_result =
+        this.bridge.echoNullableIntMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(intMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<Long?, Long?>?
+  }
+
+  override fun echoNullableEnumMap(
+      enumMap: Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?
+  ): Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? {
+    val golubetsVar_result =
+        this.bridge.echoNullableEnumMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(enumMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?
+  }
+
+  override fun echoNullableClassMap(
+      classMap: Map<Long?, NativeInteropAllNullableTypes?>?
+  ): Map<Long?, NativeInteropAllNullableTypes?>? {
+    val golubetsVar_result =
+        this.bridge.echoNullableClassMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(classMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<Long?, NativeInteropAllNullableTypes?>?
+  }
+
+  override fun echoNullableNonNullStringMap(stringMap: Map<String, String>?): Map<String, String>? {
+    val golubetsVar_result =
+        this.bridge.echoNullableNonNullStringMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(stringMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<String, String>?
+  }
+
+  override fun echoNullableNonNullIntMap(intMap: Map<Long, Long>?): Map<Long, Long>? {
+    val golubetsVar_result =
+        this.bridge.echoNullableNonNullIntMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(intMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<Long, Long>?
+  }
+
+  override fun echoNullableNonNullEnumMap(
+      enumMap: Map<NativeInteropAnEnum, NativeInteropAnEnum>?
+  ): Map<NativeInteropAnEnum, NativeInteropAnEnum>? {
+    val golubetsVar_result =
+        this.bridge.echoNullableNonNullEnumMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(enumMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<NativeInteropAnEnum, NativeInteropAnEnum>?
+  }
+
+  override fun echoNullableNonNullClassMap(
+      classMap: Map<Long, NativeInteropAllNullableTypes>?
+  ): Map<Long, NativeInteropAllNullableTypes>? {
+    val golubetsVar_result =
+        this.bridge.echoNullableNonNullClassMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(classMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<Long, NativeInteropAllNullableTypes>?
+  }
+
+  override fun echoNullableEnum(anEnum: NativeInteropAnEnum?): NativeInteropAnEnum? {
+    val golubetsVar_result = this.bridge.echoNullableEnum((anEnum?.raw?.toLong() ?: -1L))
+    return if (golubetsVar_result == -1L) null
+    else NativeInteropAnEnum.ofRaw(golubetsVar_result.toInt())
+  }
+
+  override fun echoAnotherNullableEnum(
+      anotherEnum: NativeInteropAnotherEnum?
+  ): NativeInteropAnotherEnum? {
+    val golubetsVar_result = this.bridge.echoAnotherNullableEnum((anotherEnum?.raw?.toLong() ?: -1L))
+    return if (golubetsVar_result == -1L) null
+    else NativeInteropAnotherEnum.ofRaw(golubetsVar_result.toInt())
+  }
+
+  override suspend fun noopAsync() {
+    this.bridge.noopAsync()
+  }
+
+  override suspend fun throwFlutterErrorAsync(): Any? {
+    val golubetsVar_result = this.bridge.throwFlutterErrorAsync()
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded
+  }
+
+  override suspend fun echoAsyncNativeInteropAllTypes(
+      everything: NativeInteropAllTypes
+  ): NativeInteropAllTypes {
+    val golubetsVar_result =
+        this.bridge.echoAsyncNativeInteropAllTypes(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(everything)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as NativeInteropAllTypes
+  }
+
+  override suspend fun echoAsyncNullableNativeInteropAllNullableTypes(
+      everything: NativeInteropAllNullableTypes?
+  ): NativeInteropAllNullableTypes? {
+    val golubetsVar_result =
+        this.bridge.echoAsyncNullableNativeInteropAllNullableTypes(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(everything)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as NativeInteropAllNullableTypes?
+  }
+
+  override suspend fun echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
+      everything: NativeInteropAllNullableTypesWithoutRecursion?
+  ): NativeInteropAllNullableTypesWithoutRecursion? {
+    val golubetsVar_result =
+        this.bridge.echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(everything)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as NativeInteropAllNullableTypesWithoutRecursion?
+  }
+
+  override suspend fun echoAsyncBool(aBool: Boolean): Boolean {
+    val golubetsVar_result = this.bridge.echoAsyncBool(aBool)
+    return golubetsVar_result
+  }
+
+  override suspend fun echoAsyncInt(anInt: Long): Long {
+    val golubetsVar_result = this.bridge.echoAsyncInt(anInt)
+    return golubetsVar_result
+  }
+
+  override suspend fun echoAsyncDouble(aDouble: Double): Double {
+    val golubetsVar_result = this.bridge.echoAsyncDouble(aDouble)
+    return golubetsVar_result
+  }
+
+  override suspend fun echoAsyncString(aString: String): String {
+    val golubetsVar_result = this.bridge.echoAsyncString(aString)
+    return golubetsVar_result
+  }
+
+  override suspend fun echoAsyncUint8List(list: ByteArray): ByteArray {
+    val golubetsVar_result = this.bridge.echoAsyncUint8List(list)
+    return golubetsVar_result
+  }
+
+  override suspend fun echoAsyncInt32List(list: IntArray): IntArray {
+    val golubetsVar_result = this.bridge.echoAsyncInt32List(list)
+    return golubetsVar_result
+  }
+
+  override suspend fun echoAsyncInt64List(list: LongArray): LongArray {
+    val golubetsVar_result = this.bridge.echoAsyncInt64List(list)
+    return golubetsVar_result
+  }
+
+  override suspend fun echoAsyncFloat64List(list: DoubleArray): DoubleArray {
+    val golubetsVar_result = this.bridge.echoAsyncFloat64List(list)
+    return golubetsVar_result
+  }
+
+  override suspend fun echoAsyncObject(anObject: Any): Any {
+    val golubetsVar_result =
+        this.bridge.echoAsyncObject(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(anObject)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Any
+  }
+
+  override suspend fun echoAsyncList(list: List<Any?>): List<Any?> {
+    val golubetsVar_result =
+        this.bridge.echoAsyncList(NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(list)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<Any?>
+  }
+
+  override suspend fun echoAsyncEnumList(
+      enumList: List<NativeInteropAnEnum?>
+  ): List<NativeInteropAnEnum?> {
+    val golubetsVar_result =
+        this.bridge.echoAsyncEnumList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(enumList)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<NativeInteropAnEnum?>
+  }
+
+  override suspend fun echoAsyncClassList(
+      classList: List<NativeInteropAllNullableTypes?>
+  ): List<NativeInteropAllNullableTypes?> {
+    val golubetsVar_result =
+        this.bridge.echoAsyncClassList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(classList)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<NativeInteropAllNullableTypes?>
+  }
+
+  override suspend fun echoAsyncNonNullEnumList(
+      enumList: List<NativeInteropAnEnum>
+  ): List<NativeInteropAnEnum> {
+    val golubetsVar_result =
+        this.bridge.echoAsyncNonNullEnumList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(enumList)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<NativeInteropAnEnum>
+  }
+
+  override suspend fun echoAsyncNonNullClassList(
+      classList: List<NativeInteropAllNullableTypes>
+  ): List<NativeInteropAllNullableTypes> {
+    val golubetsVar_result =
+        this.bridge.echoAsyncNonNullClassList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(classList)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<NativeInteropAllNullableTypes>
+  }
+
+  override suspend fun echoAsyncMap(map: Map<Any?, Any?>): Map<Any?, Any?> {
+    val golubetsVar_result =
+        this.bridge.echoAsyncMap(NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(map)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<Any?, Any?>
+  }
+
+  override suspend fun echoAsyncStringMap(stringMap: Map<String?, String?>): Map<String?, String?> {
+    val golubetsVar_result =
+        this.bridge.echoAsyncStringMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(stringMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<String?, String?>
+  }
+
+  override suspend fun echoAsyncIntMap(intMap: Map<Long?, Long?>): Map<Long?, Long?> {
+    val golubetsVar_result =
+        this.bridge.echoAsyncIntMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(intMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<Long?, Long?>
+  }
+
+  override suspend fun echoAsyncEnumMap(
+      enumMap: Map<NativeInteropAnEnum?, NativeInteropAnEnum?>
+  ): Map<NativeInteropAnEnum?, NativeInteropAnEnum?> {
+    val golubetsVar_result =
+        this.bridge.echoAsyncEnumMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(enumMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<NativeInteropAnEnum?, NativeInteropAnEnum?>
+  }
+
+  override suspend fun echoAsyncClassMap(
+      classMap: Map<Long?, NativeInteropAllNullableTypes?>
+  ): Map<Long?, NativeInteropAllNullableTypes?> {
+    val golubetsVar_result =
+        this.bridge.echoAsyncClassMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(classMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<Long?, NativeInteropAllNullableTypes?>
+  }
+
+  override suspend fun echoAsyncEnum(anEnum: NativeInteropAnEnum): NativeInteropAnEnum {
+    val golubetsVar_result = this.bridge.echoAsyncEnum(anEnum.raw.toLong())
+    return NativeInteropAnEnum.ofRaw(golubetsVar_result.toInt())!!
+  }
+
+  override suspend fun echoAnotherAsyncEnum(
+      anotherEnum: NativeInteropAnotherEnum
+  ): NativeInteropAnotherEnum {
+    val golubetsVar_result = this.bridge.echoAnotherAsyncEnum(anotherEnum.raw.toLong())
+    return NativeInteropAnotherEnum.ofRaw(golubetsVar_result.toInt())!!
+  }
+
+  override suspend fun echoAsyncNullableBool(aBool: Boolean?): Boolean? {
+    val golubetsVar_result = this.bridge.echoAsyncNullableBool(aBool)
+    return golubetsVar_result
+  }
+
+  override suspend fun echoAsyncNullableInt(anInt: Long?): Long? {
+    val golubetsVar_result = this.bridge.echoAsyncNullableInt(anInt)
+    return golubetsVar_result
+  }
+
+  override suspend fun echoAsyncNullableDouble(aDouble: Double?): Double? {
+    val golubetsVar_result = this.bridge.echoAsyncNullableDouble(aDouble)
+    return golubetsVar_result
+  }
+
+  override suspend fun echoAsyncNullableString(aString: String?): String? {
+    val golubetsVar_result = this.bridge.echoAsyncNullableString(aString)
+    return golubetsVar_result
+  }
+
+  override suspend fun echoAsyncNullableUint8List(list: ByteArray?): ByteArray? {
+    val golubetsVar_result = this.bridge.echoAsyncNullableUint8List(list)
+    return golubetsVar_result
+  }
+
+  override suspend fun echoAsyncNullableInt32List(list: IntArray?): IntArray? {
+    val golubetsVar_result = this.bridge.echoAsyncNullableInt32List(list)
+    return golubetsVar_result
+  }
+
+  override suspend fun echoAsyncNullableInt64List(list: LongArray?): LongArray? {
+    val golubetsVar_result = this.bridge.echoAsyncNullableInt64List(list)
+    return golubetsVar_result
+  }
+
+  override suspend fun echoAsyncNullableFloat64List(list: DoubleArray?): DoubleArray? {
+    val golubetsVar_result = this.bridge.echoAsyncNullableFloat64List(list)
+    return golubetsVar_result
+  }
+
+  override suspend fun echoAsyncNullableObject(anObject: Any?): Any? {
+    val golubetsVar_result =
+        this.bridge.echoAsyncNullableObject(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(anObject)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded
+  }
+
+  override suspend fun echoAsyncNullableList(list: List<Any?>?): List<Any?>? {
+    val golubetsVar_result =
+        this.bridge.echoAsyncNullableList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(list)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<Any?>?
+  }
+
+  override suspend fun echoAsyncNullableEnumList(
+      enumList: List<NativeInteropAnEnum?>?
+  ): List<NativeInteropAnEnum?>? {
+    val golubetsVar_result =
+        this.bridge.echoAsyncNullableEnumList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(enumList)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<NativeInteropAnEnum?>?
+  }
+
+  override suspend fun echoAsyncNullableClassList(
+      classList: List<NativeInteropAllNullableTypes?>?
+  ): List<NativeInteropAllNullableTypes?>? {
+    val golubetsVar_result =
+        this.bridge.echoAsyncNullableClassList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(classList)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<NativeInteropAllNullableTypes?>?
+  }
+
+  override suspend fun echoAsyncNullableNonNullEnumList(
+      enumList: List<NativeInteropAnEnum>?
+  ): List<NativeInteropAnEnum>? {
+    val golubetsVar_result =
+        this.bridge.echoAsyncNullableNonNullEnumList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(enumList)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<NativeInteropAnEnum>?
+  }
+
+  override suspend fun echoAsyncNullableNonNullClassList(
+      classList: List<NativeInteropAllNullableTypes>?
+  ): List<NativeInteropAllNullableTypes>? {
+    val golubetsVar_result =
+        this.bridge.echoAsyncNullableNonNullClassList(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(classList)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as List<NativeInteropAllNullableTypes>?
+  }
+
+  override suspend fun echoAsyncNullableMap(map: Map<Any?, Any?>?): Map<Any?, Any?>? {
+    val golubetsVar_result =
+        this.bridge.echoAsyncNullableMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(map)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<Any?, Any?>?
+  }
+
+  override suspend fun echoAsyncNullableStringMap(
+      stringMap: Map<String?, String?>?
+  ): Map<String?, String?>? {
+    val golubetsVar_result =
+        this.bridge.echoAsyncNullableStringMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(stringMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<String?, String?>?
+  }
+
+  override suspend fun echoAsyncNullableIntMap(intMap: Map<Long?, Long?>?): Map<Long?, Long?>? {
+    val golubetsVar_result =
+        this.bridge.echoAsyncNullableIntMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(intMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<Long?, Long?>?
+  }
+
+  override suspend fun echoAsyncNullableEnumMap(
+      enumMap: Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?
+  ): Map<NativeInteropAnEnum?, NativeInteropAnEnum?>? {
+    val golubetsVar_result =
+        this.bridge.echoAsyncNullableEnumMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(enumMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<NativeInteropAnEnum?, NativeInteropAnEnum?>?
+  }
+
+  override suspend fun echoAsyncNullableClassMap(
+      classMap: Map<Long?, NativeInteropAllNullableTypes?>?
+  ): Map<Long?, NativeInteropAllNullableTypes?>? {
+    val golubetsVar_result =
+        this.bridge.echoAsyncNullableClassMap(
+            NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(classMap)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as Map<Long?, NativeInteropAllNullableTypes?>?
+  }
+
+  override suspend fun echoAsyncNullableEnum(anEnum: NativeInteropAnEnum?): NativeInteropAnEnum? {
+    val golubetsVar_result = this.bridge.echoAsyncNullableEnum((anEnum?.raw?.toLong() ?: -1L))
+    return if (golubetsVar_result == -1L) null
+    else NativeInteropAnEnum.ofRaw(golubetsVar_result.toInt())
+  }
+
+  override suspend fun echoAnotherAsyncNullableEnum(
+      anotherEnum: NativeInteropAnotherEnum?
+  ): NativeInteropAnotherEnum? {
+    val golubetsVar_result =
+        this.bridge.echoAnotherAsyncNullableEnum((anotherEnum?.raw?.toLong() ?: -1L))
+    return if (golubetsVar_result == -1L) null
+    else NativeInteropAnotherEnum.ofRaw(golubetsVar_result.toInt())
+  }
+}
+
+val NativeInteropReservedNamesHostApiInstances:
+    MutableMap<String, MutableList<NativeInteropReservedNamesHostApiRegistrar>> =
+    mutableMapOf()
+
+@Keep
+interface NativeInteropReservedNamesHostApi {
+  /** Collides with `JObject.release`. */
+  fun release(value: String): String
+  /** Collides with `JObject.use`. */
+  fun use(value: Long): Long
+  /** Collides with the static `type` field that JNIgen adds to every class. */
+  fun type(): String
+  /** JNIgen makes this a getter, which collides with `JObject.isNull`. */
+  fun isNull(): Boolean
+  /** JNIgen keeps this a method, since nullable booleans are boxed on the JVM. */
+  fun isNullable(): Boolean?
+  /** JNIgen makes this a getter. */
+  fun isOpen(): Boolean
+  /**
+   * JNIgen combines this and [setReference] into a property, which collides with
+   * `JObject.reference`.
+   */
+  fun getReference(): String
+  /** See [getReference]. */
+  fun setReference(value: String)
+  /** JNIgen makes this a getter named after a Dart keyword, `default`. */
+  fun getDefault(): String
+  /** JNIgen keeps suspend functions as methods. */
+  suspend fun getValueAsync(): String
+  /** Collides with `<Api>Registrar.register` in Kotlin bytecode. */
+  fun register(value: String): String
+  /** Collides with `<Api>Registrar.unregister` in Kotlin bytecode. */
+  fun unregister(value: String): String
+  /**
+   * JNIgen turns this into an instance getter `getInstance`, colliding with
+   * `<Api>Registrar.getInstance`.
+   */
+  fun getGetInstance(): String
+  /** Returns the passed object, to test serialization and deserialization. */
+  fun echoReservedNames(names: NativeInteropReservedNames): NativeInteropReservedNames
+  /** Returns the result of calling [NativeInteropReservedNamesFlutterApi.release]. */
+  fun callFlutterRelease(value: String): String
+  /** Returns the result of calling [NativeInteropReservedNamesFlutterApi.type]. */
+  fun callFlutterType(): String
+  /** Returns the result of calling [NativeInteropReservedNamesFlutterApi.implementIn]. */
+  fun callFlutterImplementIn(value: String): String
+  /** Returns the result of calling [NativeInteropReservedNamesFlutterApi.isNull]. */
+  fun callFlutterIsNull(): Boolean
+  /** Returns the result of calling [NativeInteropReservedNamesFlutterApi.getReference]. */
+  fun callFlutterGetReference(): String
+  /** Returns the result of calling [NativeInteropReservedNamesFlutterApi.register]. */
+  fun callFlutterRegister(value: String): String
+  /** Returns the result of calling [NativeInteropReservedNamesFlutterApi.dartApi]. */
+  fun callFlutterDartApi(): String
+}
+
+@Keep
+class NativeInteropReservedNamesHostApiRegistrar private constructor(private val engineKey: Long) {
+  @Volatile private var api: NativeInteropReservedNamesHostApi? = null
+
+  constructor() : this(NativeInteropTestsGolubetsEngineKeys.NO_KEY)
+
+  /**
+   * Registers [api] under [name] (or the default instance when [name] is omitted) for the engine of
+   * the plugin binding [binding].
+   *
+   * The registration is tied to that engine: unregistering it for this engine leaves other engines'
+   * registrations in place, and Dart code running on an engine uses the instance registered for
+   * that engine when it is known.
+   */
+  @Keep
+  fun register(
+      api: NativeInteropReservedNamesHostApi,
+      binding: FlutterPlugin.FlutterPluginBinding,
+      name: String = defaultInstanceName
+  ) {
+    registerWithKey(api, NativeInteropTestsGolubetsEngineKeys.keyOf(binding), name)
+  }
+
+  /**
+   * Registers [api] under [name] (or the default instance when [name] is omitted) for the engine of
+   * [engine].
+   *
+   * The registration is tied to that engine: unregistering it for this engine leaves other engines'
+   * registrations in place, and Dart code running on an engine uses the instance registered for
+   * that engine when it is known.
+   */
+  @Keep
+  fun register(
+      api: NativeInteropReservedNamesHostApi,
+      engine: FlutterEngine,
+      name: String = defaultInstanceName
+  ) {
+    registerWithKey(api, NativeInteropTestsGolubetsEngineKeys.keyOf(engine), name)
+  }
+
+  /**
+   * Removes [api] from the registrations under [name] (or the default instance when [name] is
+   * omitted) for the engine of the plugin binding [binding], leaving other registrations in place.
+   *
+   * Instances are matched by identity. If [api] is not registered for that engine but is registered
+   * for exactly one other engine, that registration is removed. Does nothing if [api] is not
+   * registered, or is only registered for several other engines.
+   */
+  @Keep
+  fun unregister(
+      api: NativeInteropReservedNamesHostApi,
+      binding: FlutterPlugin.FlutterPluginBinding,
+      name: String = defaultInstanceName
+  ) {
+    unregisterWithKey(api, NativeInteropTestsGolubetsEngineKeys.keyOf(binding), name)
+  }
+
+  /**
+   * Removes [api] from the registrations under [name] (or the default instance when [name] is
+   * omitted) for the engine of [engine], leaving other registrations in place.
+   *
+   * Instances are matched by identity. If [api] is not registered for that engine but is registered
+   * for exactly one other engine, that registration is removed. Does nothing if [api] is not
+   * registered, or is only registered for several other engines.
+   */
+  @Keep
+  fun unregister(
+      api: NativeInteropReservedNamesHostApi,
+      engine: FlutterEngine,
+      name: String = defaultInstanceName
+  ) {
+    unregisterWithKey(api, NativeInteropTestsGolubetsEngineKeys.keyOf(engine), name)
+  }
+
+  private fun registerWithKey(
+      api: NativeInteropReservedNamesHostApi,
+      engineKey: Long,
+      name: String
+  ) {
+    kotlin.synchronized(NativeInteropReservedNamesHostApiInstances) {
+      val list = NativeInteropReservedNamesHostApiInstances.getOrPut(name) { mutableListOf() }
+      val index = list.indexOfFirst { it.api === api && it.engineKey == engineKey }
+      if (index >= 0) {
+        list.add(list.removeAt(index))
+      } else {
+        val wrapper = NativeInteropReservedNamesHostApiRegistrar(engineKey)
+        wrapper.api = api
+        list.add(wrapper)
+      }
+    }
+  }
+
+  private fun unregisterWithKey(
+      api: NativeInteropReservedNamesHostApi,
+      engineKey: Long,
+      name: String
+  ) {
+    kotlin.synchronized(NativeInteropReservedNamesHostApiInstances) {
+      val list = NativeInteropReservedNamesHostApiInstances[name] ?: return
+      val removeKey =
+          if (list.any { it.api === api && it.engineKey == engineKey }) {
+            engineKey
+          } else {
+            list.filter { it.api === api }.map { it.engineKey }.distinct().singleOrNull() ?: return
+          }
+      val iterator = list.iterator()
+      while (iterator.hasNext()) {
+        val entry = iterator.next()
+        if (entry.api === api && entry.engineKey == removeKey) {
+          entry.api = null
+          iterator.remove()
+        }
+      }
+      if (list.isEmpty()) {
+        NativeInteropReservedNamesHostApiInstances.remove(name)
+      }
+    }
+  }
+
+  companion object {
+    /**
+     * Returns the instance registered under [name] for the engine identified by [engineId].
+     *
+     * Falls back to the most recent instance registered for [affinityKey], then to the most recent
+     * instance overall. Either key may be `Long.MIN_VALUE` when it is unknown.
+     *
+     * This is called by the generated Dart code and is not intended for direct use.
+     */
+    @JvmStatic
+    @Keep
+    fun golubetsResolveInstance(
+        engineId: Long,
+        affinityKey: Long,
+        name: String = defaultInstanceName
+    ): NativeInteropReservedNamesHostApiRegistrar? {
+      return kotlin.synchronized(NativeInteropReservedNamesHostApiInstances) {
+        val list = NativeInteropReservedNamesHostApiInstances[name] ?: return null
+        val exact =
+            if (engineId != NativeInteropTestsGolubetsEngineKeys.NO_KEY)
+                list.lastOrNull { it.engineKey == engineId }
+            else null
+        val affine =
+            if (affinityKey != NativeInteropTestsGolubetsEngineKeys.NO_KEY)
+                list.lastOrNull { it.engineKey == affinityKey }
+            else null
+        exact ?: affine ?: list.lastOrNull()
+      }
+    }
+
+    /**
+     * Returns the engine key that [instance] was registered with, or `Long.MIN_VALUE` if it is
+     * unknown.
+     *
+     * This is called by the generated Dart code and is not intended for direct use.
+     */
+    @JvmStatic
+    @Keep
+    fun golubetsEngineKeyOf(instance: NativeInteropReservedNamesHostApiRegistrar): Long {
+      return instance.engineKey
+    }
+  }
+
+  fun release(value: String): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.release(value)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun use(value: Long): Long {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.use(value)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun type(): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.type()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun isNull(): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.isNull()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun isNullable(): Boolean? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.isNullable()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun isOpen(): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.isOpen()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun getReference(): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.getReference()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun setReference(value: String) {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      golubetsVar_api.setReference(value)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun getDefault(): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.getDefault()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun getValueAsync(): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.getValueAsync()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun register(value: String): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.register(value)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun unregister(value: String): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.unregister(value)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun getGetInstance(): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.getGetInstance()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoReservedNames(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_names = golubetsVar_decodedArgs[0] as NativeInteropReservedNames
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoReservedNames(golubetsVar_arg_names))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterRelease(value: String): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterRelease(value)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterType(): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterType()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterImplementIn(value: String): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterImplementIn(value)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterIsNull(): Boolean {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterIsNull()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterGetReference(): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterGetReference()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterRegister(value: String): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterRegister(value)
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterDartApi(): String {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance",
+                "NativeInteropReservedNamesHostApi has not been registered.")
+    try {
+      return golubetsVar_api.callFlutterDartApi()
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+}
+/**
+ * The Flutter API counterpart of [NativeInteropReservedNamesHostApi].
+ *
+ * JNIgen generates interfaces for Flutter APIs, which it renames differently than classes.
+ *
+ * Generated class from Golubets that represents Flutter messages that can be called from Kotlin.
+ */
+/** A registered [NativeInteropReservedNamesFlutterApi] and the keys of the engine it belongs to. */
+class NativeInteropReservedNamesFlutterApiRegistration(
+    val api: NativeInteropReservedNamesFlutterApi,
+    val engineId: Long,
+    val affinityKey: Long
+)
+
+/// Map that stores instances
+val registeredNativeInteropReservedNamesFlutterApi:
+    MutableMap<String, MutableList<NativeInteropReservedNamesFlutterApiRegistration>> =
+    mutableMapOf()
+
+/// Class that stores instances
+@Keep
+class NativeInteropReservedNamesFlutterApiRegistrar() {
+  /**
+   * Registers [api] under [name] (or the default instance when [name] is omitted) for the engine
+   * identified by [engineId] and [affinityKey].
+   *
+   * Either key may be `Long.MIN_VALUE` when it is unknown. Registering an instance that is already
+   * registered under [name] updates its keys and keeps its position.
+   *
+   * This is called by the generated Dart code and is not intended for direct use.
+   */
+  @Keep
+  fun registerInstance(
+      api: NativeInteropReservedNamesFlutterApiBridge,
+      engineId: Long,
+      affinityKey: Long,
+      name: String = defaultInstanceName
+  ) {
+    kotlin.synchronized(registeredNativeInteropReservedNamesFlutterApi) {
+      val list = registeredNativeInteropReservedNamesFlutterApi.getOrPut(name) { mutableListOf() }
+      val registration =
+          NativeInteropReservedNamesFlutterApiRegistration(
+              NativeInteropReservedNamesFlutterApiBridgeAdapter(api), engineId, affinityKey)
+      val index =
+          list.indexOfFirst {
+            (it.api as? NativeInteropReservedNamesFlutterApiBridgeAdapter)?.bridge === api
+          }
+      if (index >= 0) {
+        list[index] = registration
+      } else {
+        list.add(registration)
+      }
+    }
+  }
+
+  /**
+   * Removes [api] from the registrations under [name] (or the default instance when [name] is
+   * omitted), leaving other registrations in place.
+   *
+   * Instances are matched by identity. Does nothing if [api] is not registered.
+   *
+   * This is called by the generated Dart code and is not intended for direct use.
+   */
+  @Keep
+  fun unregisterInstance(
+      api: NativeInteropReservedNamesFlutterApiBridge,
+      name: String = defaultInstanceName
+  ) {
+    kotlin.synchronized(registeredNativeInteropReservedNamesFlutterApi) {
+      val list = registeredNativeInteropReservedNamesFlutterApi[name] ?: return
+      list.removeAll {
+        (it.api as? NativeInteropReservedNamesFlutterApiBridgeAdapter)?.bridge === api
+      }
+      if (list.isEmpty()) {
+        registeredNativeInteropReservedNamesFlutterApi.remove(name)
+      }
+    }
+  }
+
+  /**
+   * Returns the instance registered under [name] (or the default instance when [name] is omitted)
+   * by the Dart code running on the engine of the plugin binding [binding].
+   *
+   * When no instance is known to belong to that engine, falls back to the most recent registration
+   * for [name]. Returns null if none is registered.
+   */
+  @Keep
+  fun getInstance(
+      binding: FlutterPlugin.FlutterPluginBinding,
+      name: String = defaultInstanceName
+  ): NativeInteropReservedNamesFlutterApi? {
+    return getInstanceWithKey(NativeInteropTestsGolubetsEngineKeys.keyOf(binding), name)
+  }
+
+  /**
+   * Returns the instance registered under [name] (or the default instance when [name] is omitted)
+   * by the Dart code running on the engine of [engine].
+   *
+   * When no instance is known to belong to that engine, falls back to the most recent registration
+   * for [name]. Returns null if none is registered.
+   */
+  @Keep
+  fun getInstance(
+      engine: FlutterEngine,
+      name: String = defaultInstanceName
+  ): NativeInteropReservedNamesFlutterApi? {
+    return getInstanceWithKey(NativeInteropTestsGolubetsEngineKeys.keyOf(engine), name)
+  }
+
+  private fun getInstanceWithKey(
+      engineKey: Long,
+      name: String
+  ): NativeInteropReservedNamesFlutterApi? {
+    kotlin.synchronized(registeredNativeInteropReservedNamesFlutterApi) {
+      val list = registeredNativeInteropReservedNamesFlutterApi[name] ?: return null
+      if (engineKey != NativeInteropTestsGolubetsEngineKeys.NO_KEY) {
+        // Prefer the isolate running on the engine over isolates that only
+        // learned an affinity for it.
+        val match =
+            list.lastOrNull { it.engineId == engineKey }
+                ?: list.lastOrNull { it.affinityKey == engineKey }
+        if (match != null) {
+          return match.api
+        }
+      }
+      return list.lastOrNull()?.api
+    }
+  }
+}
+
+interface NativeInteropReservedNamesFlutterApi {
+  /** Collides with `JObject.release`. */
+  fun release(value: String): String
+  /** Collides with the static `type` field that JNIgen adds to every class. */
+  fun type(): String
+  /** Collides with the `implementIn` method that JNIgen adds to interfaces. */
+  fun implementIn(value: String): String
+  /** Collides with `JObject.isNull`. */
+  fun isNull(): Boolean
+  /** JNIgen doesn't turn interface methods into properties. */
+  fun getReference(): String
+  /** Previously collided with internal Dart JNI registrar `register` member. */
+  fun register(value: String): String
+  /** Previously collided with internal Dart JNI registrar `dartApi` field. */
+  fun dartApi(): String
+}
+
+/**
+ * The interface that Dart implements for [NativeInteropReservedNamesFlutterApi].
+ *
+ * Values that the native interop transport passes directly are their own arguments and return
+ * values. All other arguments are encoded into one buffer, and other return values are returned in
+ * one.
+ */
+@Keep
+interface NativeInteropReservedNamesFlutterApiBridge {
+  fun release(value: String): String
+
+  fun type(): String
+
+  fun implementIn(value: String): String
+
+  fun isNull(): Boolean
+
+  fun getReference(): String
+
+  fun register(value: String): String
+
+  fun dartApi(): String
+}
+
+private class NativeInteropReservedNamesFlutterApiBridgeAdapter(
+    val bridge: NativeInteropReservedNamesFlutterApiBridge
+) : NativeInteropReservedNamesFlutterApi {
+  override fun release(value: String): String {
+    val golubetsVar_result = this.bridge.release(value)
+    return golubetsVar_result
+  }
+
+  override fun type(): String {
+    val golubetsVar_result = this.bridge.type()
+    return golubetsVar_result
+  }
+
+  override fun implementIn(value: String): String {
+    val golubetsVar_result = this.bridge.implementIn(value)
+    return golubetsVar_result
+  }
+
+  override fun isNull(): Boolean {
+    val golubetsVar_result = this.bridge.isNull()
+    return golubetsVar_result
+  }
+
+  override fun getReference(): String {
+    val golubetsVar_result = this.bridge.getReference()
+    return golubetsVar_result
+  }
+
+  override fun register(value: String): String {
+    val golubetsVar_result = this.bridge.register(value)
+    return golubetsVar_result
+  }
+
+  override fun dartApi(): String {
+    val golubetsVar_result = this.bridge.dartApi()
+    return golubetsVar_result
+  }
+}
+
+val NativeInteropSealedClassHostApiInstances:
+    MutableMap<String, MutableList<NativeInteropSealedClassHostApiRegistrar>> =
+    mutableMapOf()
+
+@Keep
+interface NativeInteropSealedClassHostApi {
+  fun echoShape(shape: NativeInteropShape): NativeInteropShape
+
+  fun echoNullableShape(shape: NativeInteropShape?): NativeInteropShape?
+
+  fun echoShapeList(shapes: List<NativeInteropShape>): List<NativeInteropShape>
+
+  fun echoShapeMap(shapes: Map<String, NativeInteropShape>): Map<String, NativeInteropShape>
+
+  suspend fun echoAsyncShape(shape: NativeInteropShape): NativeInteropShape
+
+  fun callFlutterEchoShape(shape: NativeInteropShape): NativeInteropShape
+}
+
+@Keep
+class NativeInteropSealedClassHostApiRegistrar private constructor(private val engineKey: Long) {
+  @Volatile private var api: NativeInteropSealedClassHostApi? = null
+
+  constructor() : this(NativeInteropTestsGolubetsEngineKeys.NO_KEY)
+
+  /**
+   * Registers [api] under [name] (or the default instance when [name] is omitted) for the engine of
+   * the plugin binding [binding].
+   *
+   * The registration is tied to that engine: unregistering it for this engine leaves other engines'
+   * registrations in place, and Dart code running on an engine uses the instance registered for
+   * that engine when it is known.
+   */
+  @Keep
+  fun register(
+      api: NativeInteropSealedClassHostApi,
+      binding: FlutterPlugin.FlutterPluginBinding,
+      name: String = defaultInstanceName
+  ) {
+    registerWithKey(api, NativeInteropTestsGolubetsEngineKeys.keyOf(binding), name)
+  }
+
+  /**
+   * Registers [api] under [name] (or the default instance when [name] is omitted) for the engine of
+   * [engine].
+   *
+   * The registration is tied to that engine: unregistering it for this engine leaves other engines'
+   * registrations in place, and Dart code running on an engine uses the instance registered for
+   * that engine when it is known.
+   */
+  @Keep
+  fun register(
+      api: NativeInteropSealedClassHostApi,
+      engine: FlutterEngine,
+      name: String = defaultInstanceName
+  ) {
+    registerWithKey(api, NativeInteropTestsGolubetsEngineKeys.keyOf(engine), name)
+  }
+
+  /**
+   * Removes [api] from the registrations under [name] (or the default instance when [name] is
+   * omitted) for the engine of the plugin binding [binding], leaving other registrations in place.
+   *
+   * Instances are matched by identity. If [api] is not registered for that engine but is registered
+   * for exactly one other engine, that registration is removed. Does nothing if [api] is not
+   * registered, or is only registered for several other engines.
+   */
+  @Keep
+  fun unregister(
+      api: NativeInteropSealedClassHostApi,
+      binding: FlutterPlugin.FlutterPluginBinding,
+      name: String = defaultInstanceName
+  ) {
+    unregisterWithKey(api, NativeInteropTestsGolubetsEngineKeys.keyOf(binding), name)
+  }
+
+  /**
+   * Removes [api] from the registrations under [name] (or the default instance when [name] is
+   * omitted) for the engine of [engine], leaving other registrations in place.
+   *
+   * Instances are matched by identity. If [api] is not registered for that engine but is registered
+   * for exactly one other engine, that registration is removed. Does nothing if [api] is not
+   * registered, or is only registered for several other engines.
+   */
+  @Keep
+  fun unregister(
+      api: NativeInteropSealedClassHostApi,
+      engine: FlutterEngine,
+      name: String = defaultInstanceName
+  ) {
+    unregisterWithKey(api, NativeInteropTestsGolubetsEngineKeys.keyOf(engine), name)
+  }
+
+  private fun registerWithKey(api: NativeInteropSealedClassHostApi, engineKey: Long, name: String) {
+    kotlin.synchronized(NativeInteropSealedClassHostApiInstances) {
+      val list = NativeInteropSealedClassHostApiInstances.getOrPut(name) { mutableListOf() }
+      val index = list.indexOfFirst { it.api === api && it.engineKey == engineKey }
+      if (index >= 0) {
+        list.add(list.removeAt(index))
+      } else {
+        val wrapper = NativeInteropSealedClassHostApiRegistrar(engineKey)
+        wrapper.api = api
+        list.add(wrapper)
+      }
+    }
+  }
+
+  private fun unregisterWithKey(
+      api: NativeInteropSealedClassHostApi,
+      engineKey: Long,
+      name: String
+  ) {
+    kotlin.synchronized(NativeInteropSealedClassHostApiInstances) {
+      val list = NativeInteropSealedClassHostApiInstances[name] ?: return
+      val removeKey =
+          if (list.any { it.api === api && it.engineKey == engineKey }) {
+            engineKey
+          } else {
+            list.filter { it.api === api }.map { it.engineKey }.distinct().singleOrNull() ?: return
+          }
+      val iterator = list.iterator()
+      while (iterator.hasNext()) {
+        val entry = iterator.next()
+        if (entry.api === api && entry.engineKey == removeKey) {
+          entry.api = null
+          iterator.remove()
+        }
+      }
+      if (list.isEmpty()) {
+        NativeInteropSealedClassHostApiInstances.remove(name)
+      }
+    }
+  }
+
+  companion object {
+    /**
+     * Returns the instance registered under [name] for the engine identified by [engineId].
+     *
+     * Falls back to the most recent instance registered for [affinityKey], then to the most recent
+     * instance overall. Either key may be `Long.MIN_VALUE` when it is unknown.
+     *
+     * This is called by the generated Dart code and is not intended for direct use.
+     */
+    @JvmStatic
+    @Keep
+    fun golubetsResolveInstance(
+        engineId: Long,
+        affinityKey: Long,
+        name: String = defaultInstanceName
+    ): NativeInteropSealedClassHostApiRegistrar? {
+      return kotlin.synchronized(NativeInteropSealedClassHostApiInstances) {
+        val list = NativeInteropSealedClassHostApiInstances[name] ?: return null
+        val exact =
+            if (engineId != NativeInteropTestsGolubetsEngineKeys.NO_KEY)
+                list.lastOrNull { it.engineKey == engineId }
+            else null
+        val affine =
+            if (affinityKey != NativeInteropTestsGolubetsEngineKeys.NO_KEY)
+                list.lastOrNull { it.engineKey == affinityKey }
+            else null
+        exact ?: affine ?: list.lastOrNull()
+      }
+    }
+
+    /**
+     * Returns the engine key that [instance] was registered with, or `Long.MIN_VALUE` if it is
+     * unknown.
+     *
+     * This is called by the generated Dart code and is not intended for direct use.
+     */
+    @JvmStatic
+    @Keep
+    fun golubetsEngineKeyOf(instance: NativeInteropSealedClassHostApiRegistrar): Long {
+      return instance.engineKey
+    }
+  }
+
+  fun echoShape(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance", "NativeInteropSealedClassHostApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_shape = golubetsVar_decodedArgs[0] as NativeInteropShape
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoShape(golubetsVar_arg_shape))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoNullableShape(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance", "NativeInteropSealedClassHostApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_shape = golubetsVar_decodedArgs[0] as NativeInteropShape?
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoNullableShape(golubetsVar_arg_shape))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoShapeList(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance", "NativeInteropSealedClassHostApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_shapes = golubetsVar_decodedArgs[0] as List<NativeInteropShape>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoShapeList(golubetsVar_arg_shapes))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun echoShapeMap(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance", "NativeInteropSealedClassHostApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_shapes = golubetsVar_decodedArgs[0] as Map<String, NativeInteropShape>
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoShapeMap(golubetsVar_arg_shapes))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  suspend fun echoAsyncShape(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance", "NativeInteropSealedClassHostApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_shape = golubetsVar_decodedArgs[0] as NativeInteropShape
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.echoAsyncShape(golubetsVar_arg_shape))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+
+  fun callFlutterEchoShape(golubetsVar_args: ByteArray): ByteArray? {
+    val golubetsVar_api =
+        this.api
+            ?: throw NativeInteropTestsError(
+                "unregistered-instance", "NativeInteropSealedClassHostApi has not been registered.")
+    try {
+      val golubetsVar_decodedArgs =
+          NativeInteropTestsGolubetsInteropCodec.decodeArguments(golubetsVar_args)
+      val golubetsVar_arg_shape = golubetsVar_decodedArgs[0] as NativeInteropShape
+      return NativeInteropTestsGolubetsInteropCodec.encodeOrNull(
+          golubetsVar_api.callFlutterEchoShape(golubetsVar_arg_shape))
+    } catch (e: NativeInteropTestsError) {
+      throw NativeInteropTestsError(
+              e.code, e.message, NativeInteropTestsGolubetsInteropCodec.encodeOrNull(e.details))
+          .apply { stackTrace = e.stackTrace }
+    }
+  }
+}
+/**
+ * The Flutter API counterpart of [NativeInteropSealedClassHostApi].
+ *
+ * Generated class from Golubets that represents Flutter messages that can be called from Kotlin.
+ */
+/** A registered [NativeInteropSealedClassFlutterApi] and the keys of the engine it belongs to. */
+class NativeInteropSealedClassFlutterApiRegistration(
+    val api: NativeInteropSealedClassFlutterApi,
+    val engineId: Long,
+    val affinityKey: Long
+)
+
+/// Map that stores instances
+val registeredNativeInteropSealedClassFlutterApi:
+    MutableMap<String, MutableList<NativeInteropSealedClassFlutterApiRegistration>> =
+    mutableMapOf()
+
+/// Class that stores instances
+@Keep
+class NativeInteropSealedClassFlutterApiRegistrar() {
+  /**
+   * Registers [api] under [name] (or the default instance when [name] is omitted) for the engine
+   * identified by [engineId] and [affinityKey].
+   *
+   * Either key may be `Long.MIN_VALUE` when it is unknown. Registering an instance that is already
+   * registered under [name] updates its keys and keeps its position.
+   *
+   * This is called by the generated Dart code and is not intended for direct use.
+   */
+  @Keep
+  fun registerInstance(
+      api: NativeInteropSealedClassFlutterApiBridge,
+      engineId: Long,
+      affinityKey: Long,
+      name: String = defaultInstanceName
+  ) {
+    kotlin.synchronized(registeredNativeInteropSealedClassFlutterApi) {
+      val list = registeredNativeInteropSealedClassFlutterApi.getOrPut(name) { mutableListOf() }
+      val registration =
+          NativeInteropSealedClassFlutterApiRegistration(
+              NativeInteropSealedClassFlutterApiBridgeAdapter(api), engineId, affinityKey)
+      val index =
+          list.indexOfFirst {
+            (it.api as? NativeInteropSealedClassFlutterApiBridgeAdapter)?.bridge === api
+          }
+      if (index >= 0) {
+        list[index] = registration
+      } else {
+        list.add(registration)
+      }
+    }
+  }
+
+  /**
+   * Removes [api] from the registrations under [name] (or the default instance when [name] is
+   * omitted), leaving other registrations in place.
+   *
+   * Instances are matched by identity. Does nothing if [api] is not registered.
+   *
+   * This is called by the generated Dart code and is not intended for direct use.
+   */
+  @Keep
+  fun unregisterInstance(
+      api: NativeInteropSealedClassFlutterApiBridge,
+      name: String = defaultInstanceName
+  ) {
+    kotlin.synchronized(registeredNativeInteropSealedClassFlutterApi) {
+      val list = registeredNativeInteropSealedClassFlutterApi[name] ?: return
+      list.removeAll {
+        (it.api as? NativeInteropSealedClassFlutterApiBridgeAdapter)?.bridge === api
+      }
+      if (list.isEmpty()) {
+        registeredNativeInteropSealedClassFlutterApi.remove(name)
+      }
+    }
+  }
+
+  /**
+   * Returns the instance registered under [name] (or the default instance when [name] is omitted)
+   * by the Dart code running on the engine of the plugin binding [binding].
+   *
+   * When no instance is known to belong to that engine, falls back to the most recent registration
+   * for [name]. Returns null if none is registered.
+   */
+  @Keep
+  fun getInstance(
+      binding: FlutterPlugin.FlutterPluginBinding,
+      name: String = defaultInstanceName
+  ): NativeInteropSealedClassFlutterApi? {
+    return getInstanceWithKey(NativeInteropTestsGolubetsEngineKeys.keyOf(binding), name)
+  }
+
+  /**
+   * Returns the instance registered under [name] (or the default instance when [name] is omitted)
+   * by the Dart code running on the engine of [engine].
+   *
+   * When no instance is known to belong to that engine, falls back to the most recent registration
+   * for [name]. Returns null if none is registered.
+   */
+  @Keep
+  fun getInstance(
+      engine: FlutterEngine,
+      name: String = defaultInstanceName
+  ): NativeInteropSealedClassFlutterApi? {
+    return getInstanceWithKey(NativeInteropTestsGolubetsEngineKeys.keyOf(engine), name)
+  }
+
+  private fun getInstanceWithKey(
+      engineKey: Long,
+      name: String
+  ): NativeInteropSealedClassFlutterApi? {
+    kotlin.synchronized(registeredNativeInteropSealedClassFlutterApi) {
+      val list = registeredNativeInteropSealedClassFlutterApi[name] ?: return null
+      if (engineKey != NativeInteropTestsGolubetsEngineKeys.NO_KEY) {
+        // Prefer the isolate running on the engine over isolates that only
+        // learned an affinity for it.
+        val match =
+            list.lastOrNull { it.engineId == engineKey }
+                ?: list.lastOrNull { it.affinityKey == engineKey }
+        if (match != null) {
+          return match.api
+        }
+      }
+      return list.lastOrNull()?.api
+    }
+  }
+}
+
+interface NativeInteropSealedClassFlutterApi {
+  fun echoShape(shape: NativeInteropShape): NativeInteropShape
+}
+
+/**
+ * The interface that Dart implements for [NativeInteropSealedClassFlutterApi].
+ *
+ * Values that the native interop transport passes directly are their own arguments and return
+ * values. All other arguments are encoded into one buffer, and other return values are returned in
+ * one.
+ */
+@Keep
+interface NativeInteropSealedClassFlutterApiBridge {
+  fun echoShape(golubetsVar_args: ByteArray): ByteArray?
+}
+
+private class NativeInteropSealedClassFlutterApiBridgeAdapter(
+    val bridge: NativeInteropSealedClassFlutterApiBridge
+) : NativeInteropSealedClassFlutterApi {
+  override fun echoShape(shape: NativeInteropShape): NativeInteropShape {
+    val golubetsVar_result =
+        this.bridge.echoShape(NativeInteropTestsGolubetsInteropCodec.encode(listOf<Any?>(shape)))
+    val golubetsVar_decoded =
+        if (golubetsVar_result == null) null
+        else NativeInteropTestsGolubetsInteropCodec.decode(golubetsVar_result)
+    return golubetsVar_decoded as NativeInteropShape
+  }
 }

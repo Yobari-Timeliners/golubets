@@ -6,9 +6,13 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-import 'dart:mirrors';
 
+<<<<<<< HEAD
 import 'package:collection/collection.dart';
+||||||| bc74248f73ad0f3af0de312406e107554753550b
+=======
+import 'package:meta/meta.dart';
+>>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
 import 'package:path/path.dart' as path;
 import 'package:yaml/yaml.dart' as yaml;
 
@@ -18,7 +22,13 @@ import 'generator.dart';
 /// The current version of golubets.
 ///
 /// This must match the version in pubspec.yaml.
+<<<<<<< HEAD
 const String golubetsVersion = '2.1.0';
+||||||| bc74248f73ad0f3af0de312406e107554753550b
+const String golubetsVersion = '29.0.4';
+=======
+const String golubetsVersion = '30.0.4';
+>>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
 
 /// Default plugin package name.
 const String defaultPluginPackageName = 'dev.bayori.golubets';
@@ -26,6 +36,44 @@ const String defaultPluginPackageName = 'dev.bayori.golubets';
 /// The default instance name string for native interop generated APIs.
 const String defaultNativeInteropInstanceName =
     'GolubetsDefaultClassName32uh4ui3lh445uh4h3l2l455g4y34u';
+
+/// How native interop (`KotlinOptions.useJni` and `SwiftOptions.useFfi`) moves
+/// values between Dart and the host platform.
+///
+/// This option is temporary. It exists so that the [hybrid] transport can be
+/// adopted and benchmarked before it becomes the only transport.
+@internal
+enum NativeInteropTransport {
+  /// Converts every value to a graph of native objects.
+  ///
+  /// Each non-scalar field and each collection element costs at least one
+  /// call across the language boundary, so large data classes and collections
+  /// are slow.
+  objects,
+
+  /// Passes scalars, strings, enums and typed data directly, and encodes all
+  /// data class, `List`, `Map` and `Object` arguments of a call into one
+  /// buffer.
+  ///
+  /// Each API call makes exactly one call across the language boundary,
+  /// however large its arguments are.
+  hybrid;
+
+  /// Returns the transport named [name], or `null` if [name] is `null`.
+  static NativeInteropTransport? fromName(String? name) {
+    if (name == null) {
+      return null;
+    }
+    return NativeInteropTransport.values.firstWhere(
+      (NativeInteropTransport transport) => transport.name == name,
+      orElse: () => throw ArgumentError.value(
+        name,
+        'nativeInteropTransport',
+        'Must be one of ${NativeInteropTransport.values.map((NativeInteropTransport t) => t.name).join(', ')}',
+      ),
+    );
+  }
+}
 
 /// Converts any path containing Windows backslashes into a POSIX-style path.
 String posixPath(String inputPath) => inputPath.replaceAll(r'\', '/');
@@ -84,6 +132,14 @@ String makeRelative(String targetPath, String fromPath) {
       ? posixPath(path.normalize(fromPath))
       : posixPath(path.normalize(path.absolute(fromPath)));
   return path.posix.relative(absTarget, from: absFrom);
+}
+
+/// Returns true if [child] is the same path as or inside [parent].
+bool isWithinOrEquals(String parent, String child) {
+  final String normalizedParent = posixPath(parent);
+  final String normalizedChild = posixPath(child);
+  return path.posix.equals(normalizedParent, normalizedChild) ||
+      path.posix.isWithin(normalizedParent, normalizedChild);
 }
 
 /// Read all the content from [stdin] to a String.
@@ -435,6 +491,47 @@ const List<String> disallowedPrefixes = <String>[
   'golubetsChannelCodec',
 ];
 
+/// Whether a value of [type] crosses the language boundary directly, as its
+/// own argument or return value, under [NativeInteropTransport.hybrid].
+///
+/// Values of every other type (data classes, `List`, `Map` and `Object`) are
+/// encoded with the standard message codec, and all of them in one call share
+/// one buffer.
+bool isNativeInteropDirectType(TypeDeclaration type) {
+  if (type.isEnum) {
+    return true;
+  }
+  return const <String>{
+    'bool',
+    'int',
+    'double',
+    'String',
+    'Uint8List',
+    'Int32List',
+    'Int64List',
+    'Float64List',
+  }.contains(type.baseName);
+}
+
+/// The parameters of a method that the hybrid transport encodes into the
+/// method's argument buffer, in declaration order.
+List<Parameter> nativeInteropEncodedParameters(Iterable<Parameter> parameters) {
+  return parameters
+      .where((Parameter parameter) => !isNativeInteropDirectType(parameter.type))
+      .toList();
+}
+
+/// Whether the hybrid transport returns a value of [type] in a buffer.
+bool nativeInteropReturnsBuffer(TypeDeclaration type) {
+  return !type.isVoid && !isNativeInteropDirectType(type);
+}
+
+/// The name of the buffer parameter of hybrid transport entry points.
+const String nativeInteropArgsParameterName = '${varNamePrefix}args';
+
+/// The raw index that the hybrid transport passes for a null enum.
+const int nativeInteropNullEnumIndex = -1;
+
 /// Collection of keys used in dictionaries across generators.
 class Keys {
   /// The key in the result hash for the 'result' value.
@@ -451,11 +548,6 @@ class Keys {
 
   /// The key in an error hash for the 'details' value.
   static const String errorDetails = 'details';
-}
-
-/// Returns true if `type` represents 'void'.
-bool isVoid(TypeMirror type) {
-  return MirrorSystem.getName(type.simpleName) == 'void';
 }
 
 /// Adds the [lines] to [indent].

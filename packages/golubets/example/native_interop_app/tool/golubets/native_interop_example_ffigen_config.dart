@@ -38,7 +38,6 @@ Future<void> main(List<String> args) async {
     'NativeInteropExampleGolubetsInternalNull',
     'NativeInteropExampleGolubetsTypedData',
     'NativeInteropExampleNumberWrapper',
-    'NativeInteropExampleApi',
     'NativeInteropExampleApiSetup',
     'GolubetsError',
   };

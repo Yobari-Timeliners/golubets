@@ -134,8 +134,18 @@ bool _isTestChange(List<String> pathComponents) {
       pathComponents.contains('RunnerUITests') ||
       pathComponents.contains('Tests') ||
       pathComponents.last == 'dart_test.yaml' ||
+<<<<<<< HEAD
       // Golub's custom platform tests.
       pathComponents.first == 'platform_tests';
+||||||| bc74248f73ad0f3af0de312406e107554753550b
+      // Pigeon's custom platform tests.
+      pathComponents.first == 'platform_tests';
+=======
+      // Pigeon's custom platform tests.
+      pathComponents.first == 'platform_tests' ||
+      // Standalone test apps within a package (e.g., material_ui/test_apps/).
+      pathComponents.first == 'test_apps';
+>>>>>>> 3cb08b37a0e8d188474f527d1b94759b53e610fd
 }
 
 // True if the given file is an example file other than the one that will be
