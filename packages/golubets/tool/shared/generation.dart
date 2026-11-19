@@ -107,7 +107,10 @@ Future<({bool hasAndroidSdk, Map<String, String> environment})> _resolveAndroidS
   }
 
   return _cachedAndroidSdk = (
-    hasAndroidSdk: androidSdk != null,
+    // Only JNIgen needs the SDK here, and it can't parse Gradle classpaths on
+    // Windows ("Illegal character in path"). Windows CI only runs Windows host
+    // tests, so it uses the committed JNI bindings like other non-Android shards.
+    hasAndroidSdk: androidSdk != null && !Platform.isWindows,
     environment: <String, String>{
       if (androidSdk != null) 'ANDROID_HOME': androidSdk,
       if (androidSdk != null) 'ANDROID_SDK_ROOT': androidSdk,
