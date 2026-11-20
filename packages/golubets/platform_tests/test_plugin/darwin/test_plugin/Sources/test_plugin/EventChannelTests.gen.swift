@@ -791,57 +791,124 @@ class GolubetsEventSink<ReturnType> {
 
 }
 
-class StreamIntsStreamHandler: GolubetsEventChannelWrapper<Int64> {
-  static func register(
-    with messenger: FlutterBinaryMessenger,
-    instanceName: String = "",
-    streamHandler: StreamIntsStreamHandler
-  ) {
+/// A typed channel for communicating with the Flutter application using asynchronous event streams.
+class StreamIntsEventChannel {
+  private let channel: FlutterEventChannel
+
+  init(messenger: FlutterBinaryMessenger, instanceName: String = "") {
     var channelName =
       "dev.bayori.golubets.golubets_integration_tests.EventChannelMethods.streamInts"
     if !instanceName.isEmpty {
       channelName += ".\(instanceName)"
     }
-    let internalStreamHandler = GolubetsStreamHandler<Int64>(wrapper: streamHandler)
-    let channel = FlutterEventChannel(
+    channel = FlutterEventChannel(
       name: channelName, binaryMessenger: messenger, codec: eventChannelTestsGolubetsMethodCodec)
-    channel.setStreamHandler(internalStreamHandler)
+  }
+
+  /// Sets the stream handler for this channel, replacing any previous handler.
+  ///
+  /// Pass `nil` to remove the event channel registration.
+  func setStreamHandler(_ streamHandler: StreamIntsStreamHandler?) {
+    let internalHandler = streamHandler.map({ GolubetsStreamHandler<Int64>(wrapper: $0) })
+    channel.setStreamHandler(internalHandler)
   }
 }
 
-class StreamEventsStreamHandler: GolubetsEventChannelWrapper<PlatformEvent> {
-  static func register(
+class StreamIntsStreamHandler: GolubetsEventChannelWrapper<Int64> {
+  /// Creates and returns a new event channel that calls the provided stream handler.
+  ///
+  /// The returned channel can be stored to allow changing or removing the stream handler.
+  /// If the handler will not be changed for the lifetime of the engine associated with the messenger,
+  /// the return value can be ignored.
+  @discardableResult static func register(
     with messenger: FlutterBinaryMessenger,
     instanceName: String = "",
-    streamHandler: StreamEventsStreamHandler
-  ) {
+    streamHandler: StreamIntsStreamHandler
+  ) -> StreamIntsEventChannel {
+    let channel = StreamIntsEventChannel(messenger: messenger, instanceName: instanceName)
+    channel.setStreamHandler(streamHandler)
+    return channel
+  }
+}
+
+/// A typed channel for communicating with the Flutter application using asynchronous event streams.
+class StreamEventsEventChannel {
+  private let channel: FlutterEventChannel
+
+  init(messenger: FlutterBinaryMessenger, instanceName: String = "") {
     var channelName =
       "dev.bayori.golubets.golubets_integration_tests.EventChannelMethods.streamEvents"
     if !instanceName.isEmpty {
       channelName += ".\(instanceName)"
     }
-    let internalStreamHandler = GolubetsStreamHandler<PlatformEvent>(wrapper: streamHandler)
-    let channel = FlutterEventChannel(
+    channel = FlutterEventChannel(
       name: channelName, binaryMessenger: messenger, codec: eventChannelTestsGolubetsMethodCodec)
-    channel.setStreamHandler(internalStreamHandler)
+  }
+
+  /// Sets the stream handler for this channel, replacing any previous handler.
+  ///
+  /// Pass `nil` to remove the event channel registration.
+  func setStreamHandler(_ streamHandler: StreamEventsStreamHandler?) {
+    let internalHandler = streamHandler.map({ GolubetsStreamHandler<PlatformEvent>(wrapper: $0) })
+    channel.setStreamHandler(internalHandler)
   }
 }
 
-class StreamConsistentNumbersStreamHandler: GolubetsEventChannelWrapper<Int64> {
-  static func register(
+class StreamEventsStreamHandler: GolubetsEventChannelWrapper<PlatformEvent> {
+  /// Creates and returns a new event channel that calls the provided stream handler.
+  ///
+  /// The returned channel can be stored to allow changing or removing the stream handler.
+  /// If the handler will not be changed for the lifetime of the engine associated with the messenger,
+  /// the return value can be ignored.
+  @discardableResult static func register(
     with messenger: FlutterBinaryMessenger,
     instanceName: String = "",
-    streamHandler: StreamConsistentNumbersStreamHandler
-  ) {
+    streamHandler: StreamEventsStreamHandler
+  ) -> StreamEventsEventChannel {
+    let channel = StreamEventsEventChannel(messenger: messenger, instanceName: instanceName)
+    channel.setStreamHandler(streamHandler)
+    return channel
+  }
+}
+
+/// A typed channel for communicating with the Flutter application using asynchronous event streams.
+class StreamConsistentNumbersEventChannel {
+  private let channel: FlutterEventChannel
+
+  init(messenger: FlutterBinaryMessenger, instanceName: String = "") {
     var channelName =
       "dev.bayori.golubets.golubets_integration_tests.EventChannelMethods.streamConsistentNumbers"
     if !instanceName.isEmpty {
       channelName += ".\(instanceName)"
     }
-    let internalStreamHandler = GolubetsStreamHandler<Int64>(wrapper: streamHandler)
-    let channel = FlutterEventChannel(
+    channel = FlutterEventChannel(
       name: channelName, binaryMessenger: messenger, codec: eventChannelTestsGolubetsMethodCodec)
-    channel.setStreamHandler(internalStreamHandler)
+  }
+
+  /// Sets the stream handler for this channel, replacing any previous handler.
+  ///
+  /// Pass `nil` to remove the event channel registration.
+  func setStreamHandler(_ streamHandler: StreamConsistentNumbersStreamHandler?) {
+    let internalHandler = streamHandler.map({ GolubetsStreamHandler<Int64>(wrapper: $0) })
+    channel.setStreamHandler(internalHandler)
+  }
+}
+
+class StreamConsistentNumbersStreamHandler: GolubetsEventChannelWrapper<Int64> {
+  /// Creates and returns a new event channel that calls the provided stream handler.
+  ///
+  /// The returned channel can be stored to allow changing or removing the stream handler.
+  /// If the handler will not be changed for the lifetime of the engine associated with the messenger,
+  /// the return value can be ignored.
+  @discardableResult static func register(
+    with messenger: FlutterBinaryMessenger,
+    instanceName: String = "",
+    streamHandler: StreamConsistentNumbersStreamHandler
+  ) -> StreamConsistentNumbersEventChannel {
+    let channel = StreamConsistentNumbersEventChannel(
+      messenger: messenger, instanceName: instanceName)
+    channel.setStreamHandler(streamHandler)
+    return channel
   }
 }
 

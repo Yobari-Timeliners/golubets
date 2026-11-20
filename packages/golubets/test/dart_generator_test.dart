@@ -3021,22 +3021,30 @@ name: foobar
       classes: <Class>[],
       enums: <Enum>[],
     );
+    const options = InternalDartOptions(
+      ignoreLints: false,
+      useFfi: true,
+      useJni: true,
+      dartOut: 'lib/foo.dart',
+    );
     final sink = StringBuffer();
     const generator = DartGenerator();
-    generator.generate(
-      const InternalDartOptions(
-        ignoreLints: false,
-        useFfi: true,
-        useJni: true,
-        dartOut: 'lib/foo.dart',
-      ),
-      root,
-      sink,
-      dartPackageName: DEFAULT_PACKAGE_NAME,
-    );
+    generator.generate(options, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
     final code = sink.toString();
 
     expect(code, contains('Native Interop is not supported on this platform. Use Api instead.'));
+
+    final nativeInteropSink = StringBuffer();
+    generator.generateNativeInterop(
+      options,
+      root,
+      nativeInteropSink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    expect(
+      nativeInteropSink.toString(),
+      contains('Native Interop is not supported on this platform. Use Api instead.'),
+    );
   });
 
   test('native interop host api unsupported error - createWithNativeInteropApi', () {
@@ -3141,7 +3149,7 @@ name: foobar
     );
     final sink = StringBuffer();
     const generator = DartGenerator();
-    generator.generate(
+    generator.generateNativeInterop(
       const InternalDartOptions(ignoreLints: false, useJni: true, dartOut: 'lib/foo.dart'),
       root,
       sink,
@@ -3189,8 +3197,13 @@ name: foobar
     );
     final sink = StringBuffer();
     const generator = DartGenerator();
-    generator.generate(
-      const InternalDartOptions(ignoreLints: false, useJni: true, dartOut: 'lib/foo.dart'),
+    generator.generateNativeInterop(
+      const InternalDartOptions(
+        ignoreLints: false,
+        useJni: true,
+        dartOut: 'lib/foo.dart',
+        nativeInteropTransport: NativeInteropTransport.objects,
+      ),
       root,
       sink,
       dartPackageName: DEFAULT_PACKAGE_NAME,
@@ -3201,4 +3214,1553 @@ name: foobar
     expect(code, contains('return _jniApi.getter;'));
     expect(code, contains('_jniApi.setter = value;'));
   });
+
+  test('native interop converts sealed classes through their subclasses', () {
+    final sink = StringBuffer();
+    const generator = DartGenerator();
+    generator.generateNativeInterop(
+      const InternalDartOptions(
+        ignoreLints: false,
+        useJni: true,
+        useFfi: true,
+        dartOut: 'lib/foo.dart',
+        nativeInteropTransport: NativeInteropTransport.objects,
+      ),
+      buildSealedClassRoot(),
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+
+    expect(code, contains('jni_bridge.Shape toJni() {'));
+    expect(code, contains('final Circle child => child.toJni(),'));
+    expect(code, contains('static Shape? fromJni(jni_bridge.Shape? jniClass) {'));
+    expect(code, contains('if (jniClass.isA<jni_bridge.Circle>(jni_bridge.Circle.type)) {'));
+    expect(
+      code,
+      contains(
+        'return GolubetsInternalCircleNativeInterop.fromJni(jniClass.as(jni_bridge.Circle.type));',
+      ),
+    );
+    expect(code, contains('ffi_bridge.ShapeBridge toFfi() {'));
+    expect(code, contains('final Circle child => child.toFfi(),'));
+    expect(code, contains('static Shape? fromFfi(ffi_bridge.ShapeBridge? ffiClass) {'));
+    expect(code, contains('if (ffi_bridge.CircleBridge.isA(ffiClass)) {'));
+    expect(
+      code,
+      contains(
+        'return GolubetsInternalCircleNativeInterop.fromFfi(ffi_bridge.CircleBridge.as(ffiClass));',
+      ),
+    );
+    expect(code, contains('jni_bridge.Circle toJni() {'));
+    expect(code, contains('ffi_bridge.CircleBridge toFfi() {'));
+    expect(
+      code,
+      contains('final jni_bridge.Shape golubetsVar_res = _jniApi.echoShape(shape.toJni());'),
+    );
+    expect(
+      code,
+      contains(
+        'final Shape golubetsVar_dartTypeRes = GolubetsInternalShapeNativeInterop.fromJni(golubetsVar_res)!;',
+      ),
+    );
+  });
+
+  test('native interop codecs have no branch for sealed classes', () {
+    final sink = StringBuffer();
+    const generator = DartGenerator();
+    generator.generateNativeInterop(
+      const InternalDartOptions(
+        ignoreLints: false,
+        useJni: true,
+        useFfi: true,
+        dartOut: 'lib/foo.dart',
+      ),
+      buildSealedClassRoot(),
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+
+    expect(code, contains('value.isInstanceOf(_classCircle)'));
+    expect(code, isNot(contains('value.isInstanceOf(_classShape)')));
+    expect(code, contains('ffi_bridge.CircleBridge.isA(value)'));
+    expect(code, isNot(contains('ffi_bridge.ShapeBridge.isA(value)')));
+    expect(code, contains('value is Circle)'));
+    expect(code, isNot(contains('value is Shape)')));
+  });
+
+  test('ffi toFfi allocates the bridge for a class without fields', () {
+    final root = Root(
+      apis: <Api>[],
+      classes: <Class>[Class(name: 'Empty', fields: <NamedType>[])],
+      enums: <Enum>[],
+    );
+    final sink = StringBuffer();
+    const generator = DartGenerator();
+    generator.generateNativeInterop(
+      const InternalDartOptions(ignoreLints: false, useFfi: true, dartOut: 'lib/foo.dart'),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+
+    expect(code, contains('return ffi_bridge.EmptyBridge.alloc().init();'));
+  });
+
+  test('native interop code uses the member names that JNIgen generates', () {
+    const string = TypeDeclaration(baseName: 'String', isNullable: false);
+    const nullableString = TypeDeclaration(baseName: 'String', isNullable: true);
+    final root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'release',
+              location: ApiLocation.host,
+              parameters: <Parameter>[Parameter(name: 'value', type: string)],
+              returnType: string,
+            ),
+            Method(
+              name: 'register',
+              location: ApiLocation.host,
+              parameters: <Parameter>[Parameter(name: 'value', type: string)],
+              returnType: string,
+            ),
+            Method(
+              name: 'isNullable',
+              location: ApiLocation.host,
+              parameters: <Parameter>[],
+              returnType: const TypeDeclaration(baseName: 'bool', isNullable: true),
+            ),
+            Method(
+              name: 'getDefault',
+              location: ApiLocation.host,
+              parameters: <Parameter>[],
+              returnType: string,
+            ),
+          ],
+        ),
+        AstFlutterApi(
+          name: 'Callbacks',
+          methods: <Method>[
+            Method(
+              name: 'type',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[],
+              returnType: string,
+            ),
+            Method(
+              name: 'implementIn',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[Parameter(name: 'value', type: string)],
+              returnType: string,
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[
+        Class(
+          name: 'Data',
+          fields: <NamedType>[
+            NamedType(name: 'release', type: nullableString),
+            NamedType(name: 'isNull', type: nullableString),
+            NamedType(name: 'equals', type: nullableString),
+            NamedType(
+              name: 'isEnabled',
+              type: const TypeDeclaration(baseName: 'bool', isNullable: false),
+            ),
+            NamedType(
+              name: 'isMaybe',
+              type: const TypeDeclaration(baseName: 'bool', isNullable: true),
+            ),
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
+    final sink = StringBuffer();
+    const generator = DartGenerator();
+    generator.generateNativeInterop(
+      const InternalDartOptions(
+        ignoreLints: false,
+        useJni: true,
+        dartOut: 'lib/foo.dart',
+        nativeInteropTransport: NativeInteropTransport.objects,
+      ),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+
+    // Data class properties.
+    expect(code, contains(r'release: jniClass.release$1?.'));
+    expect(code, contains(r'isNull: jniClass.isNull$1()?.'));
+    expect(code, contains('equals: jniClass.equals?.'));
+    expect(code, contains('isEnabled: jniClass.isEnabled,'));
+    expect(code, contains('isMaybe: jniClass.isMaybe()?.'));
+    // Host API registrar members.
+    expect(code, contains(r'_jniApi.release$1('));
+    expect(code, contains(r'_jniApi.register$2('));
+    expect(code, contains('_jniApi.isNullable()'));
+    expect(code, contains(r'_jniApi.default$;'));
+    // Flutter API interface overrides.
+    expect(code, contains(r'JString type$1()'));
+    expect(code, contains(r'JString implementIn$1(JString arg_value)'));
+  });
+
+  test('native interop code does not shadow parameters', () {
+    const string = TypeDeclaration(baseName: 'String', isNullable: false);
+    final root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'echo',
+              location: ApiLocation.host,
+              parameters: <Parameter>[
+                Parameter(name: 'res', type: string),
+                Parameter(name: 'error', type: string),
+              ],
+              returnType: string,
+            ),
+            Method(
+              name: 'later',
+              location: ApiLocation.host,
+              asynchronousType: AsynchronousType.callback,
+              parameters: <Parameter>[Parameter(name: 'completer', type: string)],
+              returnType: string,
+            ),
+            Method(
+              name: 'convert',
+              location: ApiLocation.host,
+              parameters: <Parameter>[Parameter(name: 'dartTypeRes', type: string)],
+              returnType: string,
+            ),
+          ],
+        ),
+        AstFlutterApi(
+          name: 'Callbacks',
+          methods: <Method>[
+            Method(
+              name: 'send',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[
+                Parameter(name: 'response', type: string),
+                Parameter(name: 'errorOut', type: string),
+              ],
+              returnType: string,
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[],
+      enums: <Enum>[],
+    );
+    final sink = StringBuffer();
+    const generator = DartGenerator();
+    generator.generateNativeInterop(
+      const InternalDartOptions(
+        ignoreLints: false,
+        useFfi: true,
+        useJni: true,
+        ffiErrorClassName: 'GolubetsError',
+        dartOut: 'lib/foo.dart',
+        nativeInteropTransport: NativeInteropTransport.objects,
+      ),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+
+    expect(
+      code,
+      contains(
+        'final JString golubetsVar_res = _jniApi.echo(_GolubetsJniCodec.writeValue<JString>(res), _GolubetsJniCodec.writeValue<JString>(error));',
+      ),
+    );
+    expect(code, contains('final golubetsVar_error = ffi_bridge.GolubetsError();'));
+    expect(
+      code,
+      contains(
+        'error: _GolubetsFfiCodec.writeValue<NSString>(error), wrappedError: golubetsVar_error)',
+      ),
+    );
+    expect(code, contains('final Completer<String> golubetsVar_completer = Completer<String>();'));
+    expect(code, contains('_jniApi.convert(_GolubetsJniCodec.writeValue<JString>(dartTypeRes))'));
+    expect(
+      code,
+      contains(
+        '_GolubetsFfiCodec.writeValue<NSString>(dartTypeRes), wrappedError: golubetsVar_error)',
+      ),
+    );
+    expect(code, contains('return golubetsVar_dartTypeRes;'));
+    expect(code, isNot(contains(' dartTypeRes = ')));
+    expect(code, contains('JString send(JString arg_response,JString arg_errorOut,)'));
+    expect(
+      code,
+      contains(
+        '(NSString? arg_response, NSString? arg_errorOut, ffi_bridge.GolubetsError errorOut)',
+      ),
+    );
+  });
+
+  test('test file does not include native interop code', () {
+    final root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Api',
+          dartHostTestHandler: 'ApiMock',
+          methods: <Method>[
+            Method(
+              name: 'echo',
+              location: ApiLocation.host,
+              parameters: <Parameter>[
+                Parameter(
+                  name: 'value',
+                  type: const TypeDeclaration(baseName: 'String', isNullable: false),
+                ),
+              ],
+              returnType: const TypeDeclaration(baseName: 'String', isNullable: false),
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[],
+      enums: <Enum>[],
+    );
+    final sink = StringBuffer();
+    const generator = DartGenerator();
+    generator.generateTest(
+      const InternalDartOptions(
+        ignoreLints: false,
+        useFfi: true,
+        useJni: true,
+        dartOut: 'lib/foo.dart',
+        testOut: 'test/foo_test.dart',
+      ),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+      dartOutputPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+
+    expect(code, contains('abstract class ApiMock'));
+    expect(code, isNot(contains('jni_bridge')));
+    expect(code, isNot(contains('ffi_bridge')));
+    expect(code, isNot(contains('JString')));
+    expect(code, isNot(contains('NSString')));
+  });
+
+  test('native interop codecs skip collections of ProxyApis', () {
+    final proxyApi = AstProxyApi(
+      name: 'Proxy',
+      constructors: <Constructor>[],
+      fields: <ApiField>[],
+      methods: <Method>[],
+    );
+    final proxyType = TypeDeclaration(
+      baseName: 'Proxy',
+      isNullable: false,
+      associatedProxyApi: proxyApi,
+    );
+    final root = Root(
+      apis: <Api>[
+        proxyApi,
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'doSomething',
+              location: ApiLocation.host,
+              parameters: <Parameter>[],
+              returnType: const TypeDeclaration.voidDeclaration(),
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[],
+      enums: <Enum>[],
+      lists: <String, TypeDeclaration>{
+        'List<Proxy>': TypeDeclaration(
+          baseName: 'List',
+          isNullable: false,
+          typeArguments: <TypeDeclaration>[proxyType],
+        ),
+      },
+      maps: <String, TypeDeclaration>{
+        'Map<String, Proxy>': TypeDeclaration(
+          baseName: 'Map',
+          isNullable: false,
+          typeArguments: <TypeDeclaration>[
+            const TypeDeclaration(baseName: 'String', isNullable: false),
+            proxyType,
+          ],
+        ),
+      },
+    );
+    final sink = StringBuffer();
+    const generator = DartGenerator();
+    generator.generateNativeInterop(
+      const InternalDartOptions(
+        ignoreLints: false,
+        useFfi: true,
+        useJni: true,
+        dartOut: 'lib/foo.dart',
+      ),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+
+    expect(code, contains('class _GolubetsJniCodec'));
+    expect(code, contains('class _GolubetsFfiCodec'));
+    expect(code, isNot(contains('There is something wrong')));
+  });
+
+  test('ffi code uses the selectors that Swift infers', () {
+    const string = TypeDeclaration(baseName: 'String', isNullable: false);
+    final root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'signIn',
+              location: ApiLocation.host,
+              parameters: <Parameter>[Parameter(name: 'value', type: string)],
+              returnType: string,
+            ),
+            Method(
+              name: 'signOut',
+              location: ApiLocation.host,
+              parameters: <Parameter>[Parameter(name: 'value', type: string)],
+              returnType: string,
+            ),
+            Method(
+              name: 'lookUp',
+              location: ApiLocation.host,
+              parameters: <Parameter>[Parameter(name: 'inList', type: string)],
+              returnType: string,
+            ),
+            Method(
+              name: 'goTo',
+              location: ApiLocation.host,
+              parameters: <Parameter>[],
+              returnType: string,
+            ),
+          ],
+        ),
+        AstFlutterApi(
+          name: 'Callbacks',
+          methods: <Method>[
+            Method(
+              name: 'implementIn',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[Parameter(name: 'value', type: string)],
+              returnType: string,
+            ),
+            Method(
+              name: 'goTo',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[],
+              returnType: string,
+            ),
+            Method(
+              name: 'goToAsync',
+              location: ApiLocation.flutter,
+              asynchronousType: AsynchronousType.callback,
+              parameters: <Parameter>[],
+              returnType: string,
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[
+        Class(
+          name: 'Data',
+          fields: <NamedType>[
+            NamedType(
+              name: 'forKey',
+              type: const TypeDeclaration(baseName: 'String', isNullable: true),
+            ),
+          ],
+        ),
+      ],
+      enums: <Enum>[],
+    );
+    final sink = StringBuffer();
+    const generator = DartGenerator();
+    generator.generateNativeInterop(
+      const InternalDartOptions(
+        ignoreLints: false,
+        useFfi: true,
+        ffiErrorClassName: 'GolubetsError',
+        dartOut: 'lib/foo.dart',
+        nativeInteropTransport: NativeInteropTransport.objects,
+      ),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+
+    expect(code, contains('_ffiApi.signInValue('));
+    expect(code, contains('_ffiApi.signOutWithValue('));
+    expect(code, contains('_ffiApi.lookUpInList('));
+    expect(code, contains('_ffiApi.goToWrappedError('));
+    expect(code, contains('.implementInValue_error_'));
+    expect(code, contains('.goToError_'));
+    expect(code, contains('.goToAsyncWithError_completionHandler_'));
+    expect(code, contains('DataBridge.alloc().initForKey('));
+  });
+
+  group('hybrid native interop transport', () {
+    final dataClass = Class(
+      name: 'Data',
+      fields: <NamedType>[
+        NamedType(
+          name: 'value',
+          type: const TypeDeclaration(baseName: 'int', isNullable: false),
+        ),
+      ],
+    );
+    final anEnum = Enum(
+      name: 'Color',
+      members: <EnumMember>[
+        EnumMember(name: 'red'),
+        EnumMember(name: 'green'),
+      ],
+    );
+    TypeDeclaration dataType({bool isNullable = false}) =>
+        TypeDeclaration(baseName: 'Data', isNullable: isNullable, associatedClass: dataClass);
+    TypeDeclaration enumType({bool isNullable = false}) =>
+        TypeDeclaration(baseName: 'Color', isNullable: isNullable, associatedEnum: anEnum);
+    const intType = TypeDeclaration(baseName: 'int', isNullable: false);
+
+    List<Method> methods(ApiLocation location) => <Method>[
+      Method(
+        name: 'echoData',
+        location: location,
+        parameters: <Parameter>[
+          Parameter(name: 'count', type: intType),
+          Parameter(name: 'data', type: dataType()),
+          Parameter(
+            name: 'list',
+            type: TypeDeclaration(
+              baseName: 'List',
+              isNullable: false,
+              typeArguments: <TypeDeclaration>[dataType(isNullable: true)],
+            ),
+          ),
+        ],
+        returnType: dataType(isNullable: true),
+      ),
+      Method(
+        name: 'add',
+        location: location,
+        parameters: <Parameter>[
+          Parameter(name: 'a', type: intType),
+          Parameter(name: 'b', type: intType),
+        ],
+        returnType: intType,
+      ),
+      Method(
+        name: 'echoColor',
+        location: location,
+        parameters: <Parameter>[Parameter(name: 'color', type: enumType(isNullable: true))],
+        returnType: enumType(isNullable: true),
+      ),
+      Method(
+        name: 'echoAsyncData',
+        location: location,
+        asynchronousType: AsynchronousType.callback,
+        parameters: <Parameter>[Parameter(name: 'data', type: dataType())],
+        returnType: dataType(isNullable: true),
+      ),
+    ];
+
+    String generate({required bool useJni, required bool useFfi, bool hybrid = true}) {
+      final root = Root(
+        apis: <Api>[
+          AstHostApi(name: 'HostApi', methods: methods(ApiLocation.host)),
+          AstFlutterApi(name: 'FlutterApi', methods: methods(ApiLocation.flutter)),
+        ],
+        classes: <Class>[dataClass],
+        enums: <Enum>[anEnum],
+      );
+      final sink = StringBuffer();
+      const DartGenerator().generateNativeInterop(
+        InternalDartOptions(
+          ignoreLints: false,
+          useJni: useJni,
+          useFfi: useFfi,
+          ffiErrorClassName: 'GolubetsError',
+          jniErrorClassName: 'FlutterError',
+          dartOut: 'lib/foo.dart',
+          nativeInteropTransport: hybrid
+              ? NativeInteropTransport.hybrid
+              : NativeInteropTransport.objects,
+        ),
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      return sink.toString();
+    }
+
+    test('jni host methods encode structured arguments into one buffer', () {
+      final String code = generate(useJni: true, useFfi: false);
+      expect(
+        code,
+        contains(
+          'final JByteArray golubetsVar_args = _GolubetsJniBuffers.encode(<Object?>[data, list]);',
+        ),
+      );
+      expect(code, contains('_jniApi.echoData(count, golubetsVar_args)'));
+      expect(code, contains('await _jniApi.echoAsyncData(golubetsVar_args)'));
+      expect(code, contains('return _GolubetsJniBuffers.decode(golubetsVar_res) as Data?;'));
+      expect(code, contains('golubetsVar_args.release();'));
+    });
+
+    test('jni host methods pass scalars and enums directly', () {
+      final String code = generate(useJni: true, useFfi: false);
+      expect(code, contains('return _jniApi.add(a, b);'));
+      expect(code, contains('_jniApi.echoColor(color?.index ?? -1)'));
+      expect(
+        code,
+        contains('return golubetsVar_res == -1 ? null : Color.values[golubetsVar_res];'),
+      );
+    });
+
+    test('jni flutter api implements the buffer bridge', () {
+      final String code = generate(useJni: true, useFfi: false);
+      expect(code, contains(r'final class _FlutterApiRegistrar with jni_bridge.$FlutterApiBridge'));
+      expect(code, contains('jni_bridge.FlutterApiBridge.implement(this)'));
+      expect(code, contains('JByteArray? echoData(int arg_count, JByteArray golubetsVar_args)'));
+      expect(code, contains('return _GolubetsJniBuffers.encodeOrNull(response);'));
+      expect(code, contains('int add(int arg_a, int arg_b)'));
+    });
+
+    test('jni error details are decoded from the buffer', () {
+      final String code = generate(useJni: true, useFfi: false);
+      expect(
+        code,
+        contains('details: _GolubetsJniBuffers.decode(golubetsError.details as JByteArray?)'),
+      );
+    });
+
+    test('ffi host methods encode structured arguments into one buffer', () {
+      final String code = generate(useJni: false, useFfi: true);
+      expect(
+        code,
+        contains(
+          'final NSData golubetsVar_args = _GolubetsFfiBuffers.encode(<Object?>[data, list]);',
+        ),
+      );
+      expect(
+        code,
+        contains(
+          '_ffiApi.echoDataWithCount(count, golubetsVar_args: golubetsVar_args, wrappedError: golubetsVar_error)',
+        ),
+      );
+      expect(code, contains('return _GolubetsFfiBuffers.decode(golubetsVar_res) as Data?;'));
+      expect(code, contains('_ffiApi.addWithA(a, b: b, wrappedError: golubetsVar_error)'));
+    });
+
+    test('ffi flutter api implements the buffer protocol', () {
+      final String code = generate(useJni: false, useFfi: true);
+      expect(
+        code,
+        contains(r'FlutterApiBridge$Builder.echoDataWithCount_golubetsVar_args_error_.implement('),
+      );
+      expect(code, contains(r'FlutterApiBridge$Builder.addWithA_b_error_.implement('));
+      expect(code, contains('return _GolubetsFfiBuffers.encodeOrNull(response);'));
+    });
+
+    test('objects transport does not generate buffer helpers', () {
+      final String code = generate(useJni: true, useFfi: true, hybrid: false);
+      expect(code, isNot(contains('_GolubetsJniBuffers')));
+      expect(code, isNot(contains('_GolubetsFfiBuffers')));
+      expect(code, isNot(contains('golubetsVar_args')));
+    });
+
+    test('jni codec looks up each class once', () {
+      final String code = generate(useJni: true, useFfi: false, hybrid: false);
+      expect(code, contains('static final JClass _longClass = JLong.type.jClass;'));
+      expect(code, contains('static final JClass _classData = jni_bridge.Data.type.jClass;'));
+      expect(code, contains('if (value.isInstanceOf(_longClass)) {'));
+      expect(code, isNot(contains('value.isA<')));
+    });
+
+    test(
+      'jni hybrid binding namer resolves JavaBean property collisions across enums and buffers',
+      () {
+        final root = Root(
+          apis: <Api>[
+            AstHostApi(
+              name: 'BeanHostApi',
+              methods: <Method>[
+                Method(
+                  name: 'getMode',
+                  location: ApiLocation.host,
+                  parameters: <Parameter>[],
+                  returnType: enumType(),
+                ),
+                Method(
+                  name: 'setMode',
+                  location: ApiLocation.host,
+                  parameters: <Parameter>[
+                    Parameter(name: 'mode', type: enumType(isNullable: true)),
+                  ],
+                  returnType: const TypeDeclaration.voidDeclaration(),
+                ),
+                Method(
+                  name: 'getCount',
+                  location: ApiLocation.host,
+                  parameters: <Parameter>[],
+                  returnType: intType,
+                ),
+                Method(
+                  name: 'setCount',
+                  location: ApiLocation.host,
+                  parameters: <Parameter>[
+                    Parameter(name: 'count', type: enumType(isNullable: true)),
+                  ],
+                  returnType: const TypeDeclaration.voidDeclaration(),
+                ),
+                Method(
+                  name: 'getData',
+                  location: ApiLocation.host,
+                  parameters: <Parameter>[],
+                  returnType: dataType(),
+                ),
+                Method(
+                  name: 'setData',
+                  location: ApiLocation.host,
+                  parameters: <Parameter>[
+                    Parameter(
+                      name: 'items',
+                      type: const TypeDeclaration(
+                        baseName: 'List',
+                        isNullable: false,
+                        typeArguments: <TypeDeclaration>[intType],
+                      ),
+                    ),
+                  ],
+                  returnType: const TypeDeclaration.voidDeclaration(),
+                ),
+              ],
+            ),
+          ],
+          classes: <Class>[dataClass],
+          enums: <Enum>[anEnum],
+        );
+        final sink = StringBuffer();
+        const DartGenerator().generateNativeInterop(
+          const InternalDartOptions(
+            ignoreLints: false,
+            useJni: true,
+            jniErrorClassName: 'FlutterError',
+            dartOut: 'lib/foo.dart',
+          ),
+          root,
+          sink,
+          dartPackageName: DEFAULT_PACKAGE_NAME,
+        );
+        final code = sink.toString();
+        expect(code, contains('final int golubetsVar_res = _jniApi.mode;'));
+        expect(code, contains('_jniApi.mode = mode?.index ?? -1;'));
+        expect(code, contains('return _jniApi.count;'));
+        expect(code, contains('_jniApi.count = count?.index ?? -1;'));
+        expect(code, contains('final JByteArray? golubetsVar_res = _jniApi.data;'));
+        expect(code, contains('_jniApi.data = golubetsVar_args;'));
+      },
+    );
+
+    test(
+      'jni hybrid host and flutter methods avoid parameter name collisions and release JNI temporaries',
+      () {
+        const stringType = TypeDeclaration(baseName: 'String', isNullable: false);
+        final collisionMethods = <Method>[
+          Method(
+            name: 'sendWithArgsName',
+            location: ApiLocation.host,
+            parameters: <Parameter>[
+              Parameter(name: 'args', type: stringType),
+              Parameter(name: 'data', type: dataType()),
+            ],
+            returnType: dataType(isNullable: true),
+          ),
+        ];
+        final flutterCollisionMethods = <Method>[
+          Method(
+            name: 'onWithArgsName',
+            location: ApiLocation.flutter,
+            parameters: <Parameter>[
+              Parameter(name: 'args', type: stringType),
+              Parameter(name: 'data', type: dataType()),
+            ],
+            returnType: dataType(isNullable: true),
+          ),
+        ];
+        final root = Root(
+          apis: <Api>[
+            AstHostApi(name: 'HostApi', methods: collisionMethods),
+            AstFlutterApi(name: 'FlutterApi', methods: flutterCollisionMethods),
+          ],
+          classes: <Class>[dataClass],
+          enums: <Enum>[anEnum],
+        );
+        final sink = StringBuffer();
+        const DartGenerator().generateNativeInterop(
+          const InternalDartOptions(
+            ignoreLints: false,
+            useJni: true,
+            jniErrorClassName: 'FlutterError',
+            dartOut: 'lib/foo.dart',
+          ),
+          root,
+          sink,
+          dartPackageName: DEFAULT_PACKAGE_NAME,
+        );
+        final code = sink.toString();
+        // Verify `golubetsVar_args` is encoded before allocating `golubetsVar_arg_args`,
+        // and that `args` does not collide with `golubetsVar_args`.
+        final int encodeIndex = code.indexOf(
+          'final JByteArray golubetsVar_args = _GolubetsJniBuffers.encode(<Object?>[data]);',
+        );
+        final int allocDirectIndex = code.indexOf(
+          'final JString golubetsVar_arg_args = args.toJString();',
+        );
+        expect(encodeIndex, greaterThanOrEqualTo(0));
+        expect(allocDirectIndex, greaterThan(encodeIndex));
+        expect(code, contains('_jniApi.sendWithArgsName(golubetsVar_arg_args, golubetsVar_args)'));
+        expect(code, contains('golubetsVar_arg_args.release();'));
+
+        // Verify FlutterApi releases direct JNI parameters before decoding the buffer.
+        final int releaseDirectFlutterIndex = code.indexOf(
+          'final String golubetsVar_arg_args = arg_args.toDartString(releaseOriginal: true);',
+        );
+        final int decodeFlutterIndex = code.indexOf(
+          'final List<Object?> golubetsVar_decodedArgs = _GolubetsJniBuffers.decode(golubetsVar_args)!',
+        );
+        expect(releaseDirectFlutterIndex, greaterThanOrEqualTo(0));
+        expect(decodeFlutterIndex, greaterThan(releaseDirectFlutterIndex));
+      },
+    );
+  });
+
+  test(
+    'main dart output with native interop is web-safe and conditionally imports native interop file',
+    () {
+      expect(getNativeInteropDartPath('lib/src/foo.g.dart'), 'lib/src/foo.native_interop.g.dart');
+      expect(
+        getNativeInteropDartPath('lib/src/foo.gen.dart'),
+        'lib/src/foo.native_interop.gen.dart',
+      );
+      expect(getNativeInteropDartPath('lib/src/foo.dart'), 'lib/src/foo.native_interop.dart');
+
+      const string = TypeDeclaration(baseName: 'String', isNullable: false);
+      final root = Root(
+        apis: <Api>[
+          AstHostApi(
+            name: 'Api',
+            methods: <Method>[
+              Method(
+                name: 'echo',
+                location: ApiLocation.host,
+                parameters: <Parameter>[Parameter(name: 'value', type: string)],
+                returnType: string,
+              ),
+            ],
+          ),
+          AstFlutterApi(
+            name: 'Callbacks',
+            methods: <Method>[
+              Method(
+                name: 'onEvent',
+                location: ApiLocation.flutter,
+                parameters: <Parameter>[Parameter(name: 'value', type: string)],
+                returnType: const TypeDeclaration.voidDeclaration(),
+              ),
+            ],
+          ),
+        ],
+        classes: <Class>[
+          Class(
+            name: 'Data',
+            fields: <NamedType>[NamedType(name: 'value', type: string)],
+          ),
+        ],
+        enums: <Enum>[
+          Enum(
+            name: 'MyEnum',
+            members: <EnumMember>[EnumMember(name: 'one')],
+          ),
+        ],
+      );
+      const options = InternalDartOptions(
+        ignoreLints: false,
+        useFfi: true,
+        useJni: true,
+        ffiErrorClassName: 'GolubetsError',
+        jniErrorClassName: 'GolubetsError',
+        dartOut: 'lib/foo.g.dart',
+      );
+      final sink = StringBuffer();
+      const generator = DartGenerator();
+      generator.generate(options, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
+      final code = sink.toString();
+
+      expect(code, isNot(contains("import 'dart:ffi'")));
+      expect(code, isNot(contains("import 'dart:io'")));
+      expect(code, isNot(contains("import 'package:ffi/ffi.dart'")));
+      expect(code, isNot(contains("import 'package:jni/jni.dart'")));
+      expect(code, isNot(contains("import 'package:objective_c/objective_c.dart'")));
+      expect(code, isNot(contains('ffi_bridge')));
+      expect(code, isNot(contains('jni_bridge')));
+      expect(code, isNot(contains('toJni')));
+      expect(code, isNot(contains('toFfi')));
+      expect(
+        code,
+        contains(
+          "import './foo.g.dart'\n"
+          "    if (dart.library.ffi) './foo.native_interop.g.dart'\n"
+          '    as golubets_native;',
+        ),
+      );
+      expect(code, contains("import 'package:flutter/foundation.dart' show kIsWeb;"));
+      expect(code, contains('if (!kIsWeb) {'));
+      expect(code, isNot(contains('if (!kIsWeb && api != null) {')));
+      expect(code, contains('golubets_native.golubets_set_up_Callbacks('));
+      expect(
+        code,
+        contains(
+          "import 'package:meta/meta.dart' show immutable, internal, protected, visibleForTesting;",
+        ),
+      );
+      expect(
+        code,
+        contains("const String defaultInstanceName = '$defaultNativeInteropInstanceName';"),
+      );
+      expect(code, contains('@internal\nApiForNativeInterop? golubets_getInstance_Api({'));
+      expect(code, contains('golubets_native.golubets_getInstance_Api(channelName: channelName)'));
+      expect(
+        code,
+        contains(
+          'static ApiForNativeInterop? getInstance({String channelName = defaultInstanceName}) =>',
+        ),
+      );
+      expect(
+        code,
+        contains(
+          r"No Api instance with ${messageChannelSuffix.isEmpty ? 'no ' : ''}instance name ",
+        ),
+      );
+      expect(code, contains('@internal\nCallbacks golubets_register_Callbacks('));
+      expect(code, contains('@internal\nvoid golubets_unregister_Callbacks(\n  Callbacks api, {'));
+      expect(code, contains('@internal\nvoid golubets_set_up_Callbacks('));
+      expect(code, contains('final class CallbacksRegistrar'));
+      expect(code, isNot(contains('const CallbacksRegistrar._();')));
+      expect(code, contains('  Callbacks register(\n    Callbacks api, {'));
+      expect(code, contains('  void unregister(\n    Callbacks api, {'));
+      expect(code, contains('golubets_native.golubets_register_Callbacks('));
+      expect(code, contains('golubets_native.golubets_unregister_Callbacks('));
+      expect(code, contains('static Callbacks implement(Callbacks api, {'));
+      expect(code, contains('name: name.isEmpty ? defaultInstanceName : name,'));
+
+      final nativeInteropSink = StringBuffer();
+      generator.generateNativeInterop(
+        options,
+        root,
+        nativeInteropSink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final nativeInteropCode = nativeInteropSink.toString();
+      expect(nativeInteropCode, contains("import './foo.g.dart';"));
+      expect(nativeInteropCode, isNot(contains('_defaultInstanceName')));
+      expect(nativeInteropCode, contains('void _throwNoInstanceError(String channelName) {'));
+      expect(
+        nativeInteropCode,
+        contains(
+          'ApiForNativeInterop? golubets_getInstance_Api({\n'
+          '  String channelName = defaultInstanceName,\n'
+          '}) => _ApiForNativeInterop.getInstance(channelName: channelName);',
+        ),
+      );
+      expect(nativeInteropCode, contains('extension GolubetsInternalDataNativeInterop on Data'));
+      expect(
+        nativeInteropCode,
+        contains('extension GolubetsInternalMyEnumNativeInterop on MyEnum'),
+      );
+      expect(
+        nativeInteropCode,
+        contains('class _ApiForNativeInterop implements ApiForNativeInterop'),
+      );
+      expect(
+        nativeInteropCode,
+        contains(
+          'static ApiForNativeInterop? getInstance({String channelName = defaultInstanceName}) {',
+        ),
+      );
+      expect(nativeInteropCode, contains('_throwNoInstanceError(channelName);'));
+      expect(
+        nativeInteropCode,
+        contains('return _ApiForNativeInterop._withRegistrar(jniApi: link);'),
+      );
+      expect(
+        nativeInteropCode,
+        contains('return _ApiForNativeInterop._withRegistrar(ffiApi: link);'),
+      );
+      expect(nativeInteropCode, contains('final class _CallbacksRegistrar'));
+      expect(nativeInteropCode, contains('_CallbacksRegistrar(this.golubetsVar_dartApi);'));
+      expect(nativeInteropCode, contains('golubetsVar_registeredHandles'));
+      expect(nativeInteropCode, contains('golubetsVar_setUpInstances'));
+      expect(nativeInteropCode, contains('Callbacks golubets_register_Callbacks('));
+      expect(nativeInteropCode, contains('void golubets_unregister_Callbacks('));
+      expect(nativeInteropCode, contains('registrar.registerInstance('));
+      expect(nativeInteropCode, contains('registrar.unregisterInstance('));
+      expect(nativeInteropCode, contains('ffi_bridge.CallbacksRegistrar.registerInstanceWithApi('));
+      expect(
+        nativeInteropCode,
+        contains('ffi_bridge.CallbacksRegistrar.unregisterInstanceWithApi('),
+      );
+      expect(nativeInteropCode, contains('(removedHandle as JObject).release();'));
+      expect(nativeInteropCode, contains('(removedHandle as ObjCObject).ref.release();'));
+      expect(nativeInteropCode, contains('final Callbacks golubetsVar_dartApi;'));
+      expect(nativeInteropCode, isNot(contains('if (dartApi != null)')));
+
+      // Verify single-platform import isolation in generateNativeInterop.
+      final jniOnlySink = StringBuffer();
+      generator.generateNativeInterop(
+        const InternalDartOptions(
+          ignoreLints: false,
+          useJni: true,
+          jniErrorClassName: 'GolubetsError',
+          dartOut: 'lib/foo.g.dart',
+        ),
+        root,
+        jniOnlySink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final jniOnlyCode = jniOnlySink.toString();
+      expect(jniOnlyCode, contains("import 'package:jni/jni.dart';"));
+      expect(jniOnlyCode, contains("import './foo.g.jni.dart' as jni_bridge;"));
+      expect(jniOnlyCode, contains('registrar.unregisterInstance('));
+      expect(jniOnlyCode, isNot(contains('unregisterInstanceWithApi(')));
+      expect(jniOnlyCode, isNot(contains('ObjCObject')));
+      expect(jniOnlyCode, isNot(contains("import 'dart:ffi';")));
+      expect(jniOnlyCode, isNot(contains("import 'package:ffi/ffi.dart';")));
+      expect(jniOnlyCode, isNot(contains("import 'package:objective_c/objective_c.dart';")));
+      expect(jniOnlyCode, isNot(contains('ffi_bridge')));
+
+      final ffiOnlySink = StringBuffer();
+      generator.generateNativeInterop(
+        const InternalDartOptions(
+          ignoreLints: false,
+          useFfi: true,
+          ffiErrorClassName: 'GolubetsError',
+          dartOut: 'lib/foo.g.dart',
+        ),
+        root,
+        ffiOnlySink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      final ffiOnlyCode = ffiOnlySink.toString();
+      expect(ffiOnlyCode, contains("import 'dart:ffi';"));
+      expect(ffiOnlyCode, contains("import 'package:ffi/ffi.dart';"));
+      expect(ffiOnlyCode, contains("import 'package:objective_c/objective_c.dart';"));
+      expect(ffiOnlyCode, contains("import './foo.g.ffi.dart' as ffi_bridge;"));
+      expect(ffiOnlyCode, contains('ffi_bridge.CallbacksRegistrar.unregisterInstanceWithApi('));
+      expect(ffiOnlyCode, contains('(removedHandle as ObjCObject).ref.release();'));
+      expect(ffiOnlyCode, isNot(contains('registrar.unregisterInstance(')));
+      expect(ffiOnlyCode, isNot(contains("import 'package:jni/jni.dart';")));
+      expect(ffiOnlyCode, isNot(contains('jni_bridge')));
+    },
+  );
+
+  test('native interop JNI HostApi orders instance registrar methods before API methods', () {
+    final root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'register',
+              location: ApiLocation.host,
+              parameters: <Parameter>[],
+              returnType: const TypeDeclaration(baseName: 'void', isNullable: false),
+            ),
+            Method(
+              name: 'unregister',
+              location: ApiLocation.host,
+              parameters: <Parameter>[],
+              returnType: const TypeDeclaration(baseName: 'void', isNullable: false),
+            ),
+            Method(
+              name: 'getGetInstance',
+              location: ApiLocation.host,
+              parameters: <Parameter>[],
+              returnType: const TypeDeclaration(baseName: 'String', isNullable: false),
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[],
+      enums: <Enum>[],
+    );
+    const dartOptions = InternalDartOptions(
+      ignoreLints: false,
+      useJni: true,
+      dartOut: 'lib/foo.g.dart',
+    );
+    final mainSink = StringBuffer();
+    const generator = DartGenerator();
+    generator.generate(dartOptions, root, mainSink, dartPackageName: DEFAULT_PACKAGE_NAME);
+    final sink = StringBuffer();
+    generator.generateNativeInterop(dartOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
+    final code = sink.toString();
+    // `register` and `unregister` each have two instance overloads declared
+    // before the API methods. With no `getInstance(name)` on the registrar,
+    // JNIgen's getter for `getGetInstance` keeps the plain name.
+    expect(code, contains(r'_jniApi.register$2()'));
+    expect(code, contains(r'_jniApi.unregister$2()'));
+    expect(code, contains('_jniApi.getInstance;'));
+    expect(code, isNot(contains(r'_jniApi.getInstance$1')));
+    expect(code, contains('link = jni_bridge.ApiRegistrar.golubetsResolveInstance('));
+    expect(code, contains('jni_bridge.ApiRegistrar.golubetsEngineKeyOf(link)'));
+  });
+
+  group('native interop engine keys', () {
+    final root = Root(
+      apis: <Api>[
+        AstHostApi(
+          name: 'Api',
+          methods: <Method>[
+            Method(
+              name: 'doSomething',
+              location: ApiLocation.host,
+              parameters: <Parameter>[],
+              returnType: const TypeDeclaration(baseName: 'void', isNullable: false),
+            ),
+          ],
+        ),
+        AstFlutterApi(
+          name: 'Callbacks',
+          methods: <Method>[
+            Method(
+              name: 'onEvent',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[],
+              returnType: const TypeDeclaration(baseName: 'void', isNullable: false),
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[],
+      enums: <Enum>[],
+    );
+
+    String generateNativeInterop(InternalDartOptions options, Root root) {
+      final sink = StringBuffer();
+      const DartGenerator().generateNativeInterop(
+        options,
+        root,
+        sink,
+        dartPackageName: DEFAULT_PACKAGE_NAME,
+      );
+      return sink.toString();
+    }
+
+    const jniOptions = InternalDartOptions(
+      ignoreLints: false,
+      useJni: true,
+      jniErrorClassName: 'GolubetsError',
+      dartOut: 'lib/foo.g.dart',
+    );
+    const ffiOptions = InternalDartOptions(
+      ignoreLints: false,
+      useFfi: true,
+      ffiErrorClassName: 'GolubetsError',
+      dartOut: 'lib/foo.g.dart',
+    );
+
+    test('emits engine affinity state once per file', () {
+      final String code = generateNativeInterop(jniOptions, root);
+      expect(code, contains("import 'dart:ui' show PlatformDispatcher;"));
+      expect(
+        'const int _golubetsNoEngineKey = -9223372036854775808;'.allMatches(code),
+        hasLength(1),
+      );
+      expect('int? _golubetsEngineAffinity;'.allMatches(code), hasLength(1));
+    });
+
+    test('omits engine affinity state without APIs', () {
+      final String code = generateNativeInterop(
+        jniOptions,
+        Root(
+          apis: <Api>[],
+          classes: <Class>[
+            Class(
+              name: 'Data',
+              fields: <NamedType>[
+                NamedType(
+                  type: const TypeDeclaration(baseName: 'int', isNullable: true),
+                  name: 'value',
+                ),
+              ],
+            ),
+          ],
+          enums: <Enum>[],
+        ),
+      );
+      expect(code, isNot(contains('dart:ui')));
+      expect(code, isNot(contains('_golubetsNoEngineKey')));
+      expect(code, isNot(contains('_golubetsEngineAffinity')));
+    });
+
+    test('JNI HostApi resolves by engine id and records affinity', () {
+      final String code = generateNativeInterop(jniOptions, root);
+      expect(
+        code,
+        contains(
+          'final int? engineId = PlatformDispatcher.instance.engineId;\n'
+          '      final JString jName = channelName.toJString();\n'
+          '      final jni_bridge.ApiRegistrar? link;\n'
+          '      try {\n'
+          '        link = jni_bridge.ApiRegistrar.golubetsResolveInstance(\n'
+          '          engineId ?? _golubetsNoEngineKey,\n'
+          '          _golubetsEngineAffinity ?? _golubetsNoEngineKey,\n'
+          '          jName,\n'
+          '        );\n'
+          '      } finally {\n'
+          '        jName.release();\n'
+          '      }\n'
+          '      if (link == null) {\n'
+          '        _throwNoInstanceError(channelName);\n'
+          '      }\n'
+          '      if (link != null && _golubetsEngineAffinity == null) {\n'
+          '        final int linkEngineKey = jni_bridge.ApiRegistrar.golubetsEngineKeyOf(link);\n'
+          '        if (linkEngineKey != _golubetsNoEngineKey && (engineId == null || linkEngineKey < 0)) {\n'
+          '          _golubetsEngineAffinity = linkEngineKey;\n'
+          '          _golubetsUpdateFlutterApiEngineAffinity();\n'
+          '        }\n'
+          '      }\n',
+        ),
+      );
+      expect(code, isNot(contains('ApiRegistrar().getInstance(')));
+    });
+
+    test('FFI HostApi resolves by engine id and records affinity', () {
+      final String code = generateNativeInterop(ffiOptions, root);
+      expect(
+        code,
+        contains(
+          'final ffi_bridge.ApiSetup? link = ffi_bridge.ApiSetup.golubetsResolveInstanceWithEngineId(\n'
+          '        engineId ?? _golubetsNoEngineKey,\n'
+          '        affinityKey: _golubetsEngineAffinity ?? _golubetsNoEngineKey,\n'
+          '        name: NSString(channelName),\n'
+          '      );\n'
+          '      if (link == null) {\n'
+          '        _throwNoInstanceError(channelName);\n'
+          '      }\n',
+        ),
+      );
+      expect(
+        code,
+        contains(
+          '      if (link != null && _golubetsEngineAffinity == null) {\n'
+          '        final int linkEngineKey = ffi_bridge.ApiSetup.golubetsEngineKeyOf(link);\n'
+          '        if (linkEngineKey != _golubetsNoEngineKey && (engineId == null || linkEngineKey < 0)) {\n'
+          '          _golubetsEngineAffinity = linkEngineKey;\n'
+          '          _golubetsUpdateFlutterApiEngineAffinity();\n'
+          '        }\n'
+          '      }\n',
+        ),
+      );
+      expect(code, isNot(contains('getInstanceWithName')));
+    });
+
+    test('FlutterApi registration passes engine keys to native', () {
+      final String jniCode = generateNativeInterop(jniOptions, root);
+      expect(
+        jniCode,
+        contains(
+          'final int engineId = PlatformDispatcher.instance.engineId ?? _golubetsNoEngineKey;\n'
+          '    final int affinityKey = _golubetsEngineAffinity ?? _golubetsNoEngineKey;\n',
+        ),
+      );
+      expect(
+        jniCode,
+        contains(
+          'final jni_bridge.CallbacksRegistrar registrar = jni_bridge.CallbacksRegistrar();\n'
+          '      try {\n'
+          '        registrar.registerInstance(impl, engineId, affinityKey, jName);\n'
+          '      } catch (_) {\n'
+          '        impl.release();\n'
+          '        rethrow;\n'
+          '      } finally {\n'
+          '        registrar.release();\n'
+          '        jName.release();\n'
+          '      }\n',
+        ),
+      );
+
+      final String ffiCode = generateNativeInterop(ffiOptions, root);
+      expect(
+        ffiCode,
+        contains(
+          'ffi_bridge.CallbacksRegistrar.registerInstanceWithApi(\n'
+          '        impl,\n'
+          '        engineId: engineId,\n'
+          '        affinityKey: affinityKey,\n'
+          '        name: NSString(name),\n'
+          '      );',
+        ),
+      );
+    });
+
+    test('learning affinity re-sends FlutterApi registrations to native', () {
+      final String jniCode = generateNativeInterop(jniOptions, root);
+      expect(
+        jniCode,
+        contains(
+          'void _golubetsUpdateFlutterApiEngineAffinity() {\n'
+          '  _CallbacksRegistrar.golubetsVar_updateEngineAffinity();\n'
+          '}',
+        ),
+      );
+      expect(jniCode, contains('static void golubetsVar_updateEngineAffinity() {'));
+      expect(
+        jniCode,
+        contains(
+          'registrar.registerInstance(handle as jni_bridge.CallbacksBridge, engineId, affinityKey, jName);',
+        ),
+      );
+
+      final String ffiCode = generateNativeInterop(ffiOptions, root);
+      expect(ffiCode, contains('_golubetsUpdateFlutterApiEngineAffinity();'));
+      expect(
+        ffiCode,
+        contains(
+          'ffi_bridge.CallbacksRegistrar.registerInstanceWithApi(\n'
+          '            handle as ffi_bridge.CallbacksBridge,\n'
+          '            engineId: engineId,\n'
+          '            affinityKey: affinityKey,\n'
+          '            name: NSString(entry.key),\n'
+          '          );',
+        ),
+      );
+    });
+
+    test('omits the FlutterApi affinity update without FlutterApis', () {
+      final String code = generateNativeInterop(
+        jniOptions,
+        Root(
+          apis: root.apis.whereType<AstHostApi>().toList(),
+          classes: root.classes,
+          enums: root.enums,
+        ),
+      );
+      expect(code, contains('_golubetsEngineAffinity = linkEngineKey;'));
+      expect(code, isNot(contains('_golubetsUpdateFlutterApiEngineAffinity')));
+    });
+
+    test('omits FlutterApi affinity state without HostApis', () {
+      for (final options in <InternalDartOptions>[jniOptions, ffiOptions]) {
+        final String code = generateNativeInterop(
+          options,
+          Root(
+            apis: root.apis.whereType<AstFlutterApi>().toList(),
+            classes: root.classes,
+            enums: root.enums,
+          ),
+        );
+        expect(code, contains('const int _golubetsNoEngineKey'));
+        expect(code, contains('const int affinityKey = _golubetsNoEngineKey;'));
+        expect(code, isNot(contains('_golubetsEngineAffinity')));
+        expect(code, isNot(contains('golubetsVar_updateEngineAffinity')));
+      }
+    });
+
+    test('FlutterApi re-registration keeps the setUp instance tracked', () {
+      for (final options in <InternalDartOptions>[jniOptions, ffiOptions]) {
+        final String code = generateNativeInterop(options, root);
+        final int removeHandleStart = code.indexOf('static void golubetsVar_removeHandle(');
+        final int registerStart = code.indexOf(
+          'Callbacks golubetsVar_register({String name = defaultInstanceName}) {',
+        );
+        expect(removeHandleStart, isNonNegative);
+        expect(registerStart, greaterThan(removeHandleStart));
+
+        // Dedup in register only removes the native handle, so that
+        // setUp(a) -> Registrar.register(a) -> setUp(null) still unregisters a.
+        final String removeHandle = code.substring(removeHandleStart, registerStart);
+        expect(removeHandle, isNot(contains('setUpInstances')));
+        final String register = code.substring(registerStart);
+        expect(
+          register,
+          startsWith(
+            'Callbacks golubetsVar_register({String name = defaultInstanceName}) {\n'
+            '    golubetsVar_removeHandle(golubetsVar_dartApi, name: name);\n',
+          ),
+        );
+
+        // The public unregister path still clears the setUp slot.
+        expect(
+          code,
+          contains(
+            'static void golubetsVar_unregister(Callbacks api, {String name = defaultInstanceName}) {\n'
+            '    if (identical(golubetsVar_setUpInstances[name], api)) {\n'
+            '      golubetsVar_setUpInstances.remove(name);\n'
+            '    }\n'
+            '    golubetsVar_removeHandle(api, name: name);\n'
+            '  }',
+          ),
+        );
+      }
+    });
+  });
+
+  test('native interop JNI FlutterApi registrar methods are not renamed by API methods', () {
+    final root = Root(
+      apis: <Api>[
+        AstFlutterApi(
+          name: 'Callbacks',
+          methods: <Method>[
+            Method(
+              name: 'register',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[],
+              returnType: const TypeDeclaration(baseName: 'void', isNullable: false),
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[],
+      enums: <Enum>[],
+    );
+    final sink = StringBuffer();
+    const DartGenerator().generateNativeInterop(
+      const InternalDartOptions(ignoreLints: false, useJni: true, dartOut: 'lib/foo.g.dart'),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+    // The registrar is a separate Kotlin class from the bridge interface, so
+    // an API method named `register` does not rename its methods.
+    expect(code, contains('registrar.registerInstance(impl, engineId, affinityKey'));
+    expect(code, contains('registrar.unregisterInstance('));
+  });
+
+  test('native interop JNI FlutterApi prefixes internal registrar members to avoid collisions', () {
+    final root = Root(
+      apis: <Api>[
+        AstFlutterApi(
+          name: 'Callbacks',
+          methods: <Method>[
+            Method(
+              name: 'register',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[],
+              returnType: const TypeDeclaration(baseName: 'void', isNullable: false),
+            ),
+            Method(
+              name: 'unregister',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[],
+              returnType: const TypeDeclaration(baseName: 'void', isNullable: false),
+            ),
+            Method(
+              name: 'dartApi',
+              location: ApiLocation.flutter,
+              parameters: <Parameter>[],
+              returnType: const TypeDeclaration(baseName: 'void', isNullable: false),
+            ),
+          ],
+        ),
+      ],
+      classes: <Class>[],
+      enums: <Enum>[],
+    );
+    const dartOptions = InternalDartOptions(
+      ignoreLints: false,
+      useJni: true,
+      dartOut: 'lib/foo.g.dart',
+    );
+    final mainSink = StringBuffer();
+    const generator = DartGenerator();
+    generator.generate(dartOptions, root, mainSink, dartPackageName: DEFAULT_PACKAGE_NAME);
+    final sink = StringBuffer();
+    generator.generateNativeInterop(dartOptions, root, sink, dartPackageName: DEFAULT_PACKAGE_NAME);
+    final code = sink.toString();
+    expect(code, contains('Callbacks golubetsVar_register('));
+    expect(code, contains('static void golubetsVar_unregister('));
+    expect(code, contains('static void golubetsVar_setUp('));
+    expect(code, contains('@override\n  void register()'));
+    expect(code, contains('@override\n  void unregister()'));
+    expect(code, contains('@override\n  void dartApi()'));
+  });
+}
+
+/// Builds a root with a sealed class `Shape`, its subclasses `Circle` (one
+/// field) and `EmptyShape` (no fields), and a host API that echoes `Shape`.
+Root buildSealedClassRoot() {
+  final shape = Class(name: 'Shape', fields: <NamedType>[], isSealed: true);
+  final circle = Class(
+    name: 'Circle',
+    fields: <NamedType>[
+      NamedType(
+        name: 'radius',
+        type: const TypeDeclaration(baseName: 'double', isNullable: false),
+      ),
+    ],
+    superClassName: 'Shape',
+    superClass: shape,
+  );
+  final emptyShape = Class(
+    name: 'EmptyShape',
+    fields: <NamedType>[],
+    superClassName: 'Shape',
+    superClass: shape,
+  );
+  shape.children.addAll(<Class>[circle, emptyShape]);
+  final shapeType = TypeDeclaration(baseName: 'Shape', isNullable: false, associatedClass: shape);
+  final nullableShapeType = TypeDeclaration(
+    baseName: 'Shape',
+    isNullable: true,
+    associatedClass: shape,
+  );
+  return Root(
+    apis: <Api>[
+      AstHostApi(
+        name: 'Api',
+        methods: <Method>[
+          Method(
+            name: 'echoShape',
+            location: ApiLocation.host,
+            parameters: <Parameter>[Parameter(name: 'shape', type: shapeType)],
+            returnType: shapeType,
+          ),
+          Method(
+            name: 'echoNullableShape',
+            location: ApiLocation.host,
+            parameters: <Parameter>[Parameter(name: 'shape', type: nullableShapeType)],
+            returnType: nullableShapeType,
+          ),
+        ],
+      ),
+    ],
+    classes: <Class>[shape, circle, emptyShape],
+    enums: <Enum>[],
+  );
 }

@@ -231,7 +231,6 @@ class ExampleHostApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -250,7 +249,6 @@ class ExampleHostApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[a, b]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -269,7 +267,6 @@ class ExampleHostApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[message]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -288,7 +285,6 @@ class ExampleHostApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[message]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -307,7 +303,6 @@ class ExampleHostApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[message]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,

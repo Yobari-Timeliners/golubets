@@ -94,7 +94,6 @@ class NullableReturnHostApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -166,7 +165,6 @@ class NullableArgHostApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[x]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -242,7 +240,6 @@ class NullableCollectionReturnHostApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(null);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,
@@ -314,7 +311,6 @@ class NullableCollectionArgHostApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[x]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,

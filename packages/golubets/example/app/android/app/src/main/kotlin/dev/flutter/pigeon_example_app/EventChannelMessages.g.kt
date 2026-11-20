@@ -272,13 +272,13 @@ private open class EventChannelMessagesGolubetsCodec : StandardMessageCodec() {
   override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {
     return when (type) {
       129.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let { IntEvent.fromList(it) }
+        (readValue(buffer) as? List<Any?>)?.let { IntEvent.fromList(it) }
       }
       130.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let { StringEvent.fromList(it) }
+        (readValue(buffer) as? List<Any?>)?.let { StringEvent.fromList(it) }
       }
       131.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let { EmptyEvent.fromList(it) }
+        (readValue(buffer) as? List<Any?>)?.let { EmptyEvent.fromList(it) }
       }
       else -> super.readValueOfType(type, buffer)
     }
@@ -323,9 +323,9 @@ private class EventChannelMessagesGolubetsStreamHandler<T>(
 }
 
 interface EventChannelMessagesGolubetsEventChannelWrapper<T> {
-  open fun onListen(p0: Any?, sink: GolubetsEventSink<T>) {}
+  fun onListen(p0: Any?, sink: GolubetsEventSink<T>) {}
 
-  open fun onCancel(p0: Any?) {}
+  fun onCancel(p0: Any?) {}
 }
 
 class GolubetsEventSink<T>(private val sink: EventChannel.EventSink) {
@@ -342,25 +342,54 @@ class GolubetsEventSink<T>(private val sink: EventChannel.EventSink) {
   }
 }
 
+/**
+ * A typed channel for communicating with the Flutter application using asynchronous event streams.
+ */
+class StreamEventsEventChannel(messenger: BinaryMessenger, instanceName: String = "") {
+  private val channel: EventChannel
+
+  init {
+    var channelName =
+        "dev.bayori.golubets.golubets_example_package.EventChannelMethods.streamEvents"
+    if (instanceName.isNotEmpty()) {
+      channelName += ".$instanceName"
+    }
+    channel = EventChannel(messenger, channelName, EventChannelMessagesGolubetsMethodCodec)
+  }
+
+  /**
+   * Sets the stream handler for this channel, replacing any previous handler.
+   *
+   * Pass `null` to remove the event channel registration.
+   */
+  fun setStreamHandler(streamHandler: StreamEventsStreamHandler?) {
+    val internalHandler =
+        streamHandler?.let { EventChannelMessagesGolubetsStreamHandler<PlatformEvent>(it) }
+    channel.setStreamHandler(internalHandler)
+  }
+}
+
 abstract class StreamEventsStreamHandler :
     EventChannelMessagesGolubetsEventChannelWrapper<PlatformEvent> {
   companion object {
+    /**
+     * Creates and returns a new event channel that calls the provided stream handler.
+     *
+     * The returned channel can be stored to allow changing or removing the stream handler. If the
+     * handler will not be changed for the lifetime of the engine associated with the messenger, the
+     * return value can be ignored.
+     */
     fun register(
         messenger: BinaryMessenger,
         streamHandler: StreamEventsStreamHandler,
         instanceName: String = ""
-    ) {
-      var channelName: String =
-          "dev.bayori.golubets.golubets_example_package.EventChannelMethods.streamEvents"
-      if (instanceName.isNotEmpty()) {
-        channelName += ".$instanceName"
-      }
-      val internalStreamHandler =
-          EventChannelMessagesGolubetsStreamHandler<PlatformEvent>(streamHandler)
-      EventChannel(messenger, channelName, EventChannelMessagesGolubetsMethodCodec)
-          .setStreamHandler(internalStreamHandler)
+    ): StreamEventsEventChannel {
+      val channel = StreamEventsEventChannel(messenger, instanceName)
+      channel.setStreamHandler(streamHandler)
+      return channel
     }
   }
+
   // Implement methods from EventChannelMessagesGolubetsEventChannelWrapper
   override fun onListen(p0: Any?, sink: GolubetsEventSink<PlatformEvent>) {}
 

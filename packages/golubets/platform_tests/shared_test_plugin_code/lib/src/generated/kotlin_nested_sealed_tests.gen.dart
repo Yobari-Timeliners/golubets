@@ -282,7 +282,6 @@ class KotlinNestedSealedApi {
     );
     final Future<Object?> golubetsVar_sendFuture = golubetsVar_channel.send(<Object?>[state]);
     final golubetsVar_replyList = await golubetsVar_sendFuture as List<Object?>?;
-
     final Object? golubetsVar_replyValue = _extractReplyValueOrThrow(
       golubetsVar_replyList,
       golubetsVar_channelName,

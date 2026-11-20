@@ -347,8 +347,19 @@ SWIFT_CLASS("_TtC6Runner13GolubetsError")
 SWIFT_CLASS("_TtC6Runner28NativeInteropExampleApiSetup")
 @interface NativeInteropExampleApiSetup : NSObject
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-+ (NativeInteropExampleApiSetup* _Nullable)getInstanceWithName:
-    (NSString* _Nonnull)name SWIFT_WARN_UNUSED_RESULT;
+/// Returns the instance generated Dart code should use for <code>name</code>
+/// (or the default instance). Prefers the most recent registration whose engine
+/// key is <code>engineId</code>, then <code>affinityKey</code>, then the most
+/// recent registration. <code>Int64.min</code> means unknown.
++ (NativeInteropExampleApiSetup* _Nullable)
+    golubetsResolveInstanceWithEngineId:(int64_t)engineId
+                            affinityKey:(int64_t)affinityKey
+                                   name:(NSString* _Nonnull)name
+    SWIFT_WARN_UNUSED_RESULT;
+/// Returns the engine key <code>instance</code> was registered with, or
+/// <code>Int64.min</code> if unknown.
++ (int64_t)golubetsEngineKeyOf:(NativeInteropExampleApiSetup* _Nonnull)instance
+    SWIFT_WARN_UNUSED_RESULT;
 - (void)doSomethingWithWrappedError:(GolubetsError* _Nonnull)wrappedError;
 @end
 

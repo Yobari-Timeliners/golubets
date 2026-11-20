@@ -40,15 +40,28 @@ Future<void> main(List<String> args) async {
     'NativeInteropTestsGolubetsTypedData',
     'NativeInteropTestsNumberWrapper',
     'NSURLCredential',
-    'NativeInteropHostIntegrationCoreApi',
     'NativeInteropHostIntegrationCoreApiSetup',
     'NativeInteropFlutterIntegrationCoreApiBridge',
     'NativeInteropFlutterIntegrationCoreApiRegistrar',
+    'NativeInteropReservedNamesHostApiSetup',
+    'NativeInteropReservedNamesFlutterApiBridge',
+    'NativeInteropReservedNamesFlutterApiRegistrar',
+    'NativeInteropSealedClassHostApiSetup',
+    'NativeInteropSealedClassFlutterApiBridge',
+    'NativeInteropSealedClassFlutterApiRegistrar',
     'NativeInteropUnusedClassBridge',
     'NativeInteropAllTypesBridge',
     'NativeInteropAllNullableTypesBridge',
     'NativeInteropAllNullableTypesWithoutRecursionBridge',
     'NativeInteropAllClassesWrapperBridge',
+    'NativeInteropSealedClassBridge',
+    'NativeInteropSealedClassWithFieldsBridge',
+    'NativeInteropEmptySealedClassBridge',
+    'NativeInteropSealedClassWrapperBridge',
+    'NativeInteropReservedNamesBridge',
+    'NativeInteropShapeBridge',
+    'NativeInteropCircleBridge',
+    'NativeInteropSquareBridge',
     'NativeInteropTestsError',
   };
   final enums = <String>{
@@ -64,9 +77,11 @@ Future<void> main(List<String> args) async {
           ? await macOSX64TargetTripleLatest
           : await iOSArm64TargetTripleLatest;
     } catch (_) {
+      // Unversioned triples make swiftc assume an OS older than Foundation's
+      // `Data`, so fall back to the minimum versions in `externalVersions`.
       targetTriple = sdk.path.toLowerCase().contains('macosx')
-          ? 'x86_64-apple-macosx'
-          : 'arm64-apple-ios';
+          ? 'x86_64-apple-macosx10.14'
+          : 'arm64-apple-ios13.0';
     }
   }
 

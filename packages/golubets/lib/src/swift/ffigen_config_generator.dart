@@ -87,13 +87,12 @@ import 'package:swiftgen/swiftgen.dart';
     final String rawConfigDir =
         (basePath.isNotEmpty &&
             configDirSetting.isNotEmpty &&
-            !configDirSetting.startsWith(basePath))
+            !isWithinOrEquals(basePath, configDirSetting))
         ? path.posix.join(basePath, configDirSetting)
         : (configDirSetting.isNotEmpty ? configDirSetting : basePath);
 
     final String swiftOutPath = generatorOptions.swiftOptions.swiftOut;
-    final String rawSwiftOut =
-        (basePath.isNotEmpty && swiftOutPath.isNotEmpty && !swiftOutPath.startsWith(basePath))
+    final String rawSwiftOut = (basePath.isNotEmpty && swiftOutPath.isNotEmpty)
         ? path.posix.join(basePath, swiftOutPath)
         : swiftOutPath;
     final String fullSwiftOut = rawConfigDir.isNotEmpty
@@ -101,8 +100,7 @@ import 'package:swiftgen/swiftgen.dart';
         : rawSwiftOut;
 
     final String dartOutPath = generatorOptions.dartOut ?? '';
-    final String rawDartOut =
-        (basePath.isNotEmpty && dartOutPath.isNotEmpty && !dartOutPath.startsWith(basePath))
+    final String rawDartOut = (basePath.isNotEmpty && dartOutPath.isNotEmpty)
         ? path.posix.join(basePath, dartOutPath)
         : dartOutPath;
     final String fullDartOut = rawConfigDir.isNotEmpty
@@ -125,7 +123,7 @@ import 'package:swiftgen/swiftgen.dart';
     return;
   }
 ''');
-      indent.writeln("  Directory.current = Platform.script.resolve('../..').toFilePath();");
+      indent.writeln("Directory.current = Platform.script.resolve('../..').toFilePath();");
       indent.format('''
   Uri sdk;
   if (args.isNotEmpty) {
@@ -150,7 +148,6 @@ import 'package:swiftgen/swiftgen.dart';
         }
         for (final Api api in root.apis) {
           if (api is AstHostApi) {
-            indent.writeln("'${api.name}',");
             indent.writeln("'${api.name}Setup',");
           }
           if (api is AstFlutterApi) {
@@ -186,9 +183,11 @@ import 'package:swiftgen/swiftgen.dart';
           ? await macOSX64TargetTripleLatest
           : await iOSArm64TargetTripleLatest;
     } catch (_) {
+      // Unversioned triples make swiftc assume an OS older than Foundation's
+      // `Data`, so fall back to the minimum versions in `externalVersions`.
       targetTriple = sdk.path.toLowerCase().contains('macosx')
-          ? 'x86_64-apple-macosx'
-          : 'arm64-apple-ios';
+          ? 'x86_64-apple-macosx10.14'
+          : 'arm64-apple-ios13.0';
     }
   }
 

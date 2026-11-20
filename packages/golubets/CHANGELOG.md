@@ -1,3 +1,29 @@
+## 3.0.0
+* Merges upstream Pigeon changes up to 30.0.4.
+* **BREAKING CHANGE**: [kotlin] [swift] Native Interop registration now supports multiple engines:
+  * `register` and `unregister` take the engine the instance belongs to (a plugin binding or `FlutterEngine` in Kotlin, a registrar in Swift). Use `unregister` instead of `register(null)`.
+  * Native `@FlutterApi` lookups take the engine (`getInstance(binding)` / `getInstance(registrar:)`) instead of a name, and the native `@HostApi` `getInstance(name)` is removed.
+  * Swift FFI `@HostApi` implementations must be classes.
+  * See the [Native Interop migration guide](./native_interop_migration_guide.md) for details.
+* [dart] [kotlin] [swift] Fixes detaching one engine clearing Native Interop APIs for all other engines, and routes Native Interop calls to the calling engine's instance where possible.
+* [kotlin] [swift] Calling a Native Interop API whose instance was unregistered now throws a `PlatformException` instead of crashing.
+* [dart] [kotlin] [swift] Passes data class, `List`, `Map` and `Object` values of Kotlin JNI and Swift FFI calls in one buffer per call, making calls with large data classes and collections many times faster.
+* [swift] [kotlin] Allows sealed classes in Native Interop files. In Swift FFI, sealed classes keep their Golubets enum representation, and each subclass case crosses as its own bridge class.
+* [swift] Adds Native Interop FFI codec serialization of `Data`, `NSData`, `NSArray`, and `NSDictionary` values.
+* [kotlin] [swift] Adds support for removing event channel handler registration via a new event channel object returned from `register`.
+* [dart] Separates generated Dart Native Interop bindings into a conditionally imported companion file (`*.native_interop.g.dart`), so the main generated Dart file can be imported on Web.
+* [kotlin] Stops generating unused JNI bindings for host API interfaces, and adds `@Keep` to generated classes that JNI reaches by name, fixing minified Android release builds.
+* [kotlin] [swift] Warns after code generation if the `jni` or `objective_c` version constraint in `pubspec.yaml` doesn't match the generated code.
+* [kotlin] [swift] Adds validation errors for Native Interop features that aren't supported (event channels, ProxyApis, reserved names) instead of generating code that doesn't compile.
+* [dart] Fixes JNI and FFI typed data memory lifetime bugs.
+* [kotlin] Makes enum `ofRaw` constant time.
+* Stops silently skipping `jnigen` when `ANDROID_HOME` / `ANDROID_SDK_ROOT` or `JAVA_HOME` are unset, and surfaces `jnigen` errors and troubleshooting hints.
+* Fixes `basePath` resolution when an output or directory path shares a string prefix with `basePath`.
+* Removes remaining `dart:mirrors` usage, including the unused `configureGolubets` lookup.
+* Updates `jni` dependency to `^1.1.1` and pins code generation `dev_dependencies` (`ffigen`, `jnigen`, `swift2objc`, and `swiftgen`).
+* Updates minimum supported SDK version to Flutter 3.44/Dart 3.12.
+* Updates Native Interop guides and migration skill.
+
 ## 2.1.0
 * Merges upstream Pigeon changes up to 29.0.4.
 * [swift] [kotlin] Adds experimental support for FFI and JNI (native interop).
