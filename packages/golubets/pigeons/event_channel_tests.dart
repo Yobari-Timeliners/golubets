@@ -15,7 +15,7 @@ enum AnotherEventEnum { justInCase }
 /// A class containing all supported nullable types.
 @SwiftClass()
 class EventAllNullableTypes {
-  EventAllNullableTypes(
+  EventAllNullableTypes({
     this.aNullableBool,
     this.aNullableInt,
     this.aNullableInt64,
@@ -53,7 +53,7 @@ class EventAllNullableTypes {
     this.listMap,
     this.mapMap,
     this.recursiveClassMap,
-  );
+  });
 
   bool? aNullableBool;
   int? aNullableInt;
@@ -97,37 +97,37 @@ class EventAllNullableTypes {
 sealed class PlatformEvent {}
 
 class IntEvent extends PlatformEvent {
-  IntEvent(this.value);
+  IntEvent({required this.value});
   final int value;
 }
 
 class StringEvent extends PlatformEvent {
-  StringEvent(this.value);
+  StringEvent({required this.value});
   final String value;
 }
 
 class BoolEvent extends PlatformEvent {
-  BoolEvent(this.value);
+  BoolEvent({required this.value});
   final bool value;
 }
 
 class DoubleEvent extends PlatformEvent {
-  DoubleEvent(this.value);
+  DoubleEvent({required this.value});
   final double value;
 }
 
 class ObjectsEvent extends PlatformEvent {
-  ObjectsEvent(this.value);
+  ObjectsEvent({required this.value});
   final Object value;
 }
 
 class EnumEvent extends PlatformEvent {
-  EnumEvent(this.value);
+  EnumEvent({required this.value});
   final EventEnum value;
 }
 
 class ClassEvent extends PlatformEvent {
-  ClassEvent(this.value);
+  ClassEvent({required this.value});
   final EventAllNullableTypes value;
 }
 

@@ -2331,6 +2331,42 @@ name: foobar
     expect(code, isNot(contains('result as List<Object?>')));
   });
 
+  test('gen class with constructors from the input', () {
+    final classDefinition =
+        Class(
+            name: 'Foobar',
+            fields: <NamedType>[
+              NamedType(
+                name: 'x',
+                type: const TypeDeclaration(baseName: 'int', isNullable: false),
+              ),
+              NamedType(
+                name: 'y',
+                type: const TypeDeclaration(baseName: 'int', isNullable: true),
+              ),
+            ],
+          )
+          ..dartConstructors = <String>[
+            'Foobar(this.x, {this.y});',
+            '/// Doc.\nFoobar.fromX(this.x);',
+          ]
+          ..dartUnnamedConstructorPositionalFields = <String>['x'];
+    final root = Root(apis: <Api>[], classes: <Class>[classDefinition], enums: <Enum>[]);
+    final sink = StringBuffer();
+    const generator = DartGenerator();
+    generator.generate(
+      const InternalDartOptions(ignoreLints: false),
+      root,
+      sink,
+      dartPackageName: DEFAULT_PACKAGE_NAME,
+    );
+    final code = sink.toString();
+    expect(code, contains('  Foobar(this.x, {this.y});'));
+    expect(code, contains('  /// Doc.\n  Foobar.fromX(this.x);'));
+    expect(code, isNot(contains('required this.x')));
+    expect(code, contains('result[0]! as int,\n      y: result[1] as int?,'));
+  });
+
   group('default values', () {
     test('gen class with string default value', () {
       final classDefinition = Class(

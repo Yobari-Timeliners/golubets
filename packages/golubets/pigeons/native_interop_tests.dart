@@ -106,7 +106,7 @@ class NativeInteropAllTypes {
 /// A class containing all supported nullable types.
 @SwiftClass()
 class NativeInteropAllNullableTypes {
-  NativeInteropAllNullableTypes(
+  NativeInteropAllNullableTypes({
     this.aNullableBool,
     this.aNullableInt,
     this.aNullableInt64,
@@ -144,7 +144,7 @@ class NativeInteropAllNullableTypes {
     this.listMap,
     this.mapMap,
     this.recursiveClassMap,
-  );
+  });
 
   bool? aNullableBool;
   int? aNullableInt;
@@ -187,7 +187,7 @@ class NativeInteropAllNullableTypes {
 /// with nullable items, as the primary [NativeInteropAllNullableTypes] class is being used to
 /// test Swift classes.
 class NativeInteropAllNullableTypesWithoutRecursion {
-  NativeInteropAllNullableTypesWithoutRecursion(
+  NativeInteropAllNullableTypesWithoutRecursion({
     this.aNullableBool,
     this.aNullableInt,
     this.aNullableInt64,
@@ -223,7 +223,7 @@ class NativeInteropAllNullableTypesWithoutRecursion {
     this.objectMap,
     this.listMap,
     this.mapMap,
-  );
+  });
 
   bool? aNullableBool;
   int? aNullableInt;
@@ -266,15 +266,15 @@ class NativeInteropAllNullableTypesWithoutRecursion {
 /// `NativeInteropAllNullableTypes` is non-nullable here as it is easier to instantiate
 /// than `NativeInteropAllTypes` when testing doesn't require both (ie. testing null classes).
 class NativeInteropAllClassesWrapper {
-  NativeInteropAllClassesWrapper(
-    this.allNullableTypes,
+  NativeInteropAllClassesWrapper({
+    required this.allNullableTypes,
     this.allNullableTypesWithoutRecursion,
     this.allTypes,
-    this.classList,
+    required this.classList,
     this.nullableClassList,
-    this.classMap,
+    required this.classMap,
     this.nullableClassMap,
-  );
+  });
   NativeInteropAllNullableTypes allNullableTypes;
   NativeInteropAllNullableTypesWithoutRecursion? allNullableTypesWithoutRecursion;
   NativeInteropAllTypes? allTypes;
@@ -289,7 +289,12 @@ sealed class NativeInteropSealedClass {}
 
 /// A subclass of `NativeInteropSealedClass` with fields.
 class NativeInteropSealedClassWithFields extends NativeInteropSealedClass {
-  NativeInteropSealedClassWithFields(this.aString, this.aNullableInt, this.anEnum, this.aClass);
+  NativeInteropSealedClassWithFields({
+    required this.aString,
+    this.aNullableInt,
+    required this.anEnum,
+    this.aClass,
+  });
 
   String aString;
   int? aNullableInt;
@@ -303,7 +308,11 @@ class NativeInteropEmptySealedClass extends NativeInteropSealedClass {}
 /// A class with sealed class fields, to test sealed classes nested in classes
 /// and lists.
 class NativeInteropSealedClassWrapper {
-  NativeInteropSealedClassWrapper(this.sealedClass, this.nullableSealedClass, this.sealedClassList);
+  NativeInteropSealedClassWrapper({
+    required this.sealedClass,
+    this.nullableSealedClass,
+    required this.sealedClassList,
+  });
 
   NativeInteropSealedClass sealedClass;
   NativeInteropSealedClass? nullableSealedClass;

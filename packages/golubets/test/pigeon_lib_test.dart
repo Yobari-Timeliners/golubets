@@ -977,6 +977,45 @@ abstract class Api {
     expect(results.errors, isEmpty);
   });
 
+  test('data class constructors are kept for Dart', () {
+    const code = '''
+class Foo {
+  /// From positions.
+  const Foo.fromPositions(this.x, this.y);
+  const Foo(this.x, {this.y});
+  final int x;
+  final int? y;
+}
+
+class Bar {
+  Bar(this.x);
+  int? x;
+  int? y;
+}
+
+@HostApi()
+abstract class Api {
+  Foo doit(Foo foo, Bar bar);
+}
+''';
+    final ParseResults results = parseSource(code);
+    expect(results.errors, isEmpty);
+    final Class foo = results.root.classes.firstWhere((Class c) => c.name == 'Foo');
+    expect(foo.isImmutable, isTrue);
+    expect(
+      foo.dartConstructors,
+      equals(<String>[
+        'const Foo(this.x, {this.y});',
+        '/// From positions.\nconst Foo.fromPositions(this.x, this.y);',
+      ]),
+    );
+    expect(foo.dartUnnamedConstructorPositionalFields, equals(<String>['x']));
+    // Bar's unnamed constructor doesn't take every field, so it is generated.
+    final Class bar = results.root.classes.firstWhere((Class c) => c.name == 'Bar');
+    expect(bar.dartConstructors, isEmpty);
+    expect(bar.dartUnnamedConstructorPositionalFields, isNull);
+  });
+
   test('constructor body in data class', () {
     const code = '''
 class Foo {

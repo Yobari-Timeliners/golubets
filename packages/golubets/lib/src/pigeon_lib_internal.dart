@@ -1674,6 +1674,7 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
 
   Class? _currentClass;
   Map<String, DefaultValue?> _currentClassDefaultValues = <String, DefaultValue?>{};
+  dart_ast.ConstructorDeclaration? _currentClassUnnamedConstructor;
   Api? _currentApi;
   Map<String, Object>? _golubetsOptions;
 
@@ -1687,9 +1688,11 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
   void _storeCurrentClass() {
     if (_currentClass != null) {
       _ensureDefaultValuesStored();
+      _storeUnnamedConstructor();
       _classes.add(_currentClass!);
       _currentClass = null;
       _currentClassDefaultValues = <String, DefaultValue?>{};
+      _currentClassUnnamedConstructor = null;
     }
   }
 
@@ -2725,8 +2728,14 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
           ),
         );
       } else {
+        // A const constructor needs final fields.
+        if (node.constKeyword != null) {
+          _currentClass!.isImmutable = true;
+        }
         if (node.name == null) {
-          _currentClass!.isImmutable = node.constKeyword != null;
+          _currentClassUnnamedConstructor = node;
+        } else {
+          _currentClass!.dartConstructors.add(_constructorSource(node));
         }
 
         for (final dart_ast.FormalParameter param in node.parameters.parameters) {
@@ -2883,6 +2892,36 @@ class RootBuilder extends dart_ast_visitor.RecursiveAstVisitor<Object?> {
 
     return const CallbackAsynchronous();
   }
+
+  /// Copies the unnamed constructor of the current class into the Dart output
+  /// if generated code can call it, i.e. it takes every field as `this.field`.
+  ///
+  /// Otherwise the Dart generator writes its own unnamed constructor.
+  void _storeUnnamedConstructor() {
+    final dart_ast.ConstructorDeclaration? constructor = _currentClassUnnamedConstructor;
+    if (constructor == null) {
+      return;
+    }
+    final List<dart_ast.FormalParameter> parameters = constructor.parameters.parameters;
+    final Set<String> fieldNames = _currentClass!.fields.map((NamedType f) => f.name).toSet();
+    final bool takesEveryField =
+        parameters.every((p) => p is dart_ast.FieldFormalParameter) &&
+        parameters.length == fieldNames.length &&
+        parameters.every((p) => fieldNames.contains(p.name!.lexeme));
+    if (!takesEveryField) {
+      return;
+    }
+    _currentClass!.dartConstructors.insert(0, _constructorSource(constructor));
+    _currentClass!.dartUnnamedConstructorPositionalFields = <String>[
+      for (final p in parameters)
+        if (p.isPositional) p.name!.lexeme,
+    ];
+  }
+
+  static String _constructorSource(dart_ast.ConstructorDeclaration node) => <String>[
+    ...?node.documentationComment?.tokens.map((Token t) => t.lexeme),
+    node.toSource(),
+  ].join('\n');
 
   /// Ensures that default values are properly stored in class fields.
   ///

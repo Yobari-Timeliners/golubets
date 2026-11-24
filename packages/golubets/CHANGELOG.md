@@ -5,6 +5,9 @@
   * Native `@FlutterApi` lookups take the engine (`getInstance(binding)` / `getInstance(registrar:)`) instead of a name, and the native `@HostApi` `getInstance(name)` is removed.
   * Swift FFI `@HostApi` implementations must be classes.
   * See the [Native Interop migration guide](./native_interop_migration_guide.md) for details.
+* **BREAKING CHANGE**: [dart] Keeps data class constructors from the input file in the generated Dart code.
+  * Named constructors (such as `Color.fromARGB(this.a, this.r, this.g, this.b)`) are now generated.
+  * An unnamed constructor that takes every field as `this.field` is generated as written, including positional parameters, instead of being replaced with one that takes a named parameter for each field. To keep the old Dart API, declare the unnamed constructor with named parameters (`Foo({required this.a, this.b})`).
 * [dart] [kotlin] [swift] Fixes detaching one engine clearing Native Interop APIs for all other engines, and routes Native Interop calls to the calling engine's instance where possible.
 * [kotlin] [swift] Calling a Native Interop API whose instance was unregistered now throws a `PlatformException` instead of crashing.
 * [dart] [kotlin] [swift] Passes data class, `List`, `Map` and `Object` values of Kotlin JNI and Swift FFI calls in one buffer per call, making calls with large data classes and collections many times faster.

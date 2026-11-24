@@ -117,10 +117,10 @@ enum Code { one, two }
 
 class MessageData {
   MessageData({
-    this.name = 'Golub',
-    this.messageDescription = 'Example description',
     this.code = Code.one,
     this.data = const <String, String>{'hello': 'world', 'lorem': 'ipsum', 'golubets': 'rocks'},
+    this.name = 'Golub',
+    this.messageDescription = 'Example description',
   });
 
   String? name;

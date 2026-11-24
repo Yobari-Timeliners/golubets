@@ -115,7 +115,7 @@ enum GenericsAnotherEnum { justInCase }
 
 /// A simple generic container class.
 class GenericContainer<T> {
-  const GenericContainer({this.value, required this.values});
+  const GenericContainer({required this.value, required this.values});
 
   final T? value;
 
@@ -153,7 +153,7 @@ class GenericContainer<T> {
 
 /// A generic class with two type parameters.
 class GenericPair<T, K> {
-  const GenericPair({required this.first, this.second, required this.map});
+  const GenericPair({required this.first, required this.second, required this.map});
 
   final T first;
 
@@ -988,54 +988,44 @@ class Right<L, R> extends Either<L, R> {
 
 class GenericDefaults {
   GenericDefaults({
-    this.genericInt = const GenericContainer<int>(value: 42, values: const <int>[1, 2, 3]),
+    this.genericInt = const GenericContainer<int>(value: 42, values: <int>[1, 2, 3]),
     this.genericString = const GenericContainer<String>(
       value: 'default',
-      values: const <String>['a', 'b', 'c'],
+      values: <String>['a', 'b', 'c'],
     ),
     this.genericDouble = const GenericContainer<double>(
       value: 3.14,
-      values: const <double>[1.0, 2.0, 3.0],
+      values: <double>[1.0, 2.0, 3.0],
     ),
-    this.genericBool = const GenericContainer<bool>(
-      value: true,
-      values: const <bool>[true, false, true],
-    ),
+    this.genericBool = const GenericContainer<bool>(value: true, values: <bool>[true, false, true]),
     this.genericPairStringInt = const GenericPair<String, int>(
       first: 'default',
       second: 42,
-      map: const <String, int>{'key1': 1, 'key2': 2},
+      map: <String, int>{'key1': 1, 'key2': 2},
     ),
     this.genericPairIntString = const GenericPair<int, String>(
       first: 100,
       second: 'value',
-      map: const <int, String>{1: 'one', 2: 'two'},
+      map: <int, String>{1: 'one', 2: 'two'},
     ),
     this.nestedGenericDefault = const NestedGeneric<String, int, double>(
-      container: const GenericContainer<String>(
-        value: 'nested',
-        values: const <String>['x', 'y', 'z'],
-      ),
-      pairs: const <GenericPair<int, double>>[
-        const GenericPair<int, double>(
-          first: 1,
-          second: 1.1,
-          map: const <int, double>{1: 1.1, 2: 2.2},
-        ),
+      container: GenericContainer<String>(value: 'nested', values: <String>['x', 'y', 'z']),
+      pairs: <GenericPair<int, double>>[
+        GenericPair<int, double>(first: 1, second: 1.1, map: <int, double>{1: 1.1, 2: 2.2}),
       ],
-      nestedMap: const <String, GenericContainer<int>>{
-        'nested': const GenericContainer<int>(value: 99, values: const <int>[9, 8, 7]),
+      nestedMap: <String, GenericContainer<int>>{
+        'nested': GenericContainer<int>(value: 99, values: <int>[9, 8, 7]),
       },
-      listOfMaps: const <Map<int, double>>[
-        const <int, double>{10: 10.0, 20: 20.0},
+      listOfMaps: <Map<int, double>>[
+        <int, double>{10: 10.0, 20: 20.0},
       ],
     ),
     this.genericPairEither = const GenericPair<int, Either<String, int>>(
       first: 0,
-      second: const Right<String, int>(value: 2),
-      map: const <int, Either<String, int>>{
-        3: const Right<String, int>(value: 4),
-        5: const Left<String, int>(value: 'hello'),
+      second: Right<String, int>(value: 2),
+      map: <int, Either<String, int>>{
+        3: Right<String, int>(value: 4),
+        5: Left<String, int>(value: 'hello'),
       },
     ),
   });

@@ -260,6 +260,24 @@ data class UserPreferences (
 
 [📖 See working example](./example/README.md#Dart_input)
 
+### 🏗️ **Your Constructors in Dart**
+
+Data class constructors are copied into the generated Dart code as written, including named constructors:
+
+```dart
+class AndroidColor {
+  AndroidColor(this.a, this.r, this.g, this.b); // Stays positional in Dart
+  AndroidColor.fromARGB(this.a, this.r, this.g, this.b); // Generated too
+
+  final int a;
+  final int r;
+  final int g;
+  final int b;
+}
+```
+
+Constructors can only take fields as `this.field` parameters, without a body or initializers. If the unnamed constructor doesn't take every field, Golubets generates one with a named parameter for each field instead. Other languages keep their generated constructors.
+
 ### 🧩 **Generics (Swift & Kotlin)**
 
 **Type-safe collections that actually work across platforms.**

@@ -840,6 +840,16 @@ class Class extends Node {
   /// The type arguments to the entity (ex 'Bar' to `Foo<Bar>?`).
   List<TypeDeclaration> typeArguments;
 
+  /// Constructors from the Dart input, copied as-is into the Dart output.
+  List<String> dartConstructors = <String>[];
+
+  /// The fields the unnamed constructor in [dartConstructors] takes
+  /// positionally, in order.
+  ///
+  /// Null when [dartConstructors] has no unnamed constructor, in which case
+  /// the Dart generator writes one with a named parameter for each field.
+  List<String>? dartUnnamedConstructorPositionalFields;
+
   @override
   String toString() {
     return '(Class name:$name fields:$fields superClass:$superClassName children:$children isSealed:$isSealed isReferenced:$isReferenced documentationComments:$documentationComments)';
