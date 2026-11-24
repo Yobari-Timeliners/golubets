@@ -192,6 +192,8 @@ jobs:
           status() { echo "$1=$2" >> "$GITHUB_OUTPUT"; }
 
           chmod +x .ci/scripts/*.sh || true
+          # prepare_tool.sh runs `git branch main origin/main`; the checkout already created `main`.
+          git branch -D main 2>/dev/null || true
 
           if .ci/scripts/prepare_tool.sh && .ci/scripts/tool_runner.sh fetch-deps; then
             status deps ok
@@ -201,7 +203,7 @@ jobs:
 
           # Regenerate all generated pigeon/golubets output so it matches the
           # merged generators. Skip swift-format (not available on Linux).
-          if (cd packages/golubets && dart run tool/generate.dart --no-format); then
+          if (cd packages/golubets && flutter pub get && dart run tool/generate.dart --no-format); then
             status regen ok
           else
             status regen fail
@@ -292,7 +294,7 @@ jobs:
               echo ""
               echo '```'
               git diff "$BASE" filtered-upstream/main -- packages/pigeon/CHANGELOG.md \
-                | grep '^+' | grep -v '^+++' | sed 's/^+//'
+                | grep '^+' | grep -v '^+++' | sed 's/^+//' || true # grep exits 1 when upstream CHANGELOG is unchanged
               echo '```'
               echo ""
               echo "</details>"
