@@ -125,7 +125,7 @@ class GenericsAllTypes {
 /// A class containing all supported nullable types.
 @SwiftClass()
 class GenericsAllNullableTypes {
-  GenericsAllNullableTypes(
+  GenericsAllNullableTypes({
     this.aNullableBool,
     this.aNullableInt,
     this.aNullableInt64,
@@ -163,7 +163,7 @@ class GenericsAllNullableTypes {
     this.listMap,
     this.mapMap,
     this.recursiveClassMap,
-  );
+  });
 
   bool? aNullableBool;
   int? aNullableInt;
@@ -207,7 +207,7 @@ class GenericsAllNullableTypes {
 /// A class containing all supported nullable types.
 @SwiftClass()
 class GenericsAllNullableTypesTyped<T, K, V> {
-  GenericsAllNullableTypesTyped(
+  GenericsAllNullableTypesTyped({
     this.aNullableBool,
     this.aNullableInt,
     this.aNullableInt64,
@@ -245,7 +245,7 @@ class GenericsAllNullableTypesTyped<T, K, V> {
     this.listMap,
     this.mapMap,
     this.recursiveClassMap,
-  );
+  });
 
   bool? aNullableBool;
   int? aNullableInt;

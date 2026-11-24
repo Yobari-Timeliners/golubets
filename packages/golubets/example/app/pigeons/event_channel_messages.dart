@@ -22,12 +22,12 @@ import 'package:golubets/golubets.dart';
 sealed class PlatformEvent {}
 
 class IntEvent extends PlatformEvent {
-  IntEvent(this.data);
+  IntEvent({required this.data});
   int data;
 }
 
 class StringEvent extends PlatformEvent {
-  StringEvent(this.data);
+  StringEvent({required this.data});
   String data;
 }
 

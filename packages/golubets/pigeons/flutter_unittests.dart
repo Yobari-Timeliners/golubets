@@ -23,6 +23,19 @@ class FlutterSearchReplies {
   List? replies;
 }
 
+/// A color whose Dart constructors are kept as written.
+class FlutterColor {
+  const FlutterColor(this.red, this.green, this.blue, {this.alpha = 255});
+
+  /// Creates a color from alpha, red, green, and blue values.
+  const FlutterColor.fromARGB(this.alpha, this.red, this.green, this.blue);
+
+  final int alpha;
+  final int red;
+  final int green;
+  final int blue;
+}
+
 @HostApi()
 abstract class Api {
   FlutterSearchReply search(FlutterSearchRequest request);

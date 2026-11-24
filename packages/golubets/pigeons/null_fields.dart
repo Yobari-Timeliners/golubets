@@ -8,7 +8,7 @@
 import 'package:golubets/golubets.dart';
 
 class NullFieldsSearchRequest {
-  NullFieldsSearchRequest(this.query, this.identifier);
+  NullFieldsSearchRequest({this.query, required this.identifier});
   String? query;
   // The following non-null field was added to reproduce
   // https://github.com/flutter/flutter/issues/104871
@@ -18,7 +18,7 @@ class NullFieldsSearchRequest {
 enum NullFieldsSearchReplyType { success, failure }
 
 class NullFieldsSearchReply {
-  NullFieldsSearchReply(this.result, this.error, this.indices, this.request, this.type);
+  NullFieldsSearchReply({this.result, this.error, this.indices, this.request, this.type});
   String? result;
   String? error;
   List<int?>? indices;

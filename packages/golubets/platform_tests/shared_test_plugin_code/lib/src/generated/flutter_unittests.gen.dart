@@ -261,6 +261,64 @@ class FlutterSearchReplies {
   }
 }
 
+/// A color whose Dart constructors are kept as written.
+class FlutterColor {
+  const FlutterColor(this.red, this.green, this.blue, {this.alpha = 255});
+
+  /// Creates a color from alpha, red, green, and blue values.
+  const FlutterColor.fromARGB(this.alpha, this.red, this.green, this.blue);
+
+  final int alpha;
+
+  final int red;
+
+  final int green;
+
+  final int blue;
+
+  List<Object?> _toList() {
+    return <Object?>[alpha, red, green, blue];
+  }
+
+  Object encode() {
+    return _toList();
+  }
+
+  static FlutterColor decode(Object result) {
+    result as List<Object?>;
+    return FlutterColor(
+      result[1]! as int,
+      result[2]! as int,
+      result[3]! as int,
+      alpha: result[0]! as int,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! FlutterColor || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(alpha, other.alpha) &&
+        _deepEquals(red, other.red) &&
+        _deepEquals(green, other.green) &&
+        _deepEquals(blue, other.blue);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'FlutterColor(alpha: $alpha, red: $red, green: $green, blue: $blue)';
+  }
+}
+
 class _GolubetsCodec extends StandardMessageCodec {
   const _GolubetsCodec();
   @override
@@ -280,6 +338,9 @@ class _GolubetsCodec extends StandardMessageCodec {
     } else if (value is FlutterSearchReplies) {
       buffer.putUint8(132);
       writeValue(buffer, value.encode());
+    } else if (value is FlutterColor) {
+      buffer.putUint8(133);
+      writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
     }
@@ -296,6 +357,8 @@ class _GolubetsCodec extends StandardMessageCodec {
         return FlutterSearchRequests.decode(readValue(buffer)!);
       case 132:
         return FlutterSearchReplies.decode(readValue(buffer)!);
+      case 133:
+        return FlutterColor.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }

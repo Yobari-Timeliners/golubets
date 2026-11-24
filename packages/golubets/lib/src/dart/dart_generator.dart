@@ -1128,8 +1128,10 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     }
 
     indent.addScoped('{', '}', () {
-      if (classDefinition.fields.isNotEmpty || classDefinition.isImmutable) {
-        _writeConstructor(indent, classDefinition);
+      if (classDefinition.fields.isNotEmpty ||
+          classDefinition.isImmutable ||
+          classDefinition.dartConstructors.isNotEmpty) {
+        _writeConstructors(indent, classDefinition);
         indent.newln();
         for (final NamedType field in getFieldsInSerializationOrder(classDefinition)) {
           addDocumentationComments(indent, field.documentationComments, docCommentSpec);
@@ -1203,6 +1205,13 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
     );
   }
 
+  void _writeConstructors(Indent indent, Class classDefinition) {
+    if (classDefinition.dartUnnamedConstructorPositionalFields == null) {
+      _writeConstructor(indent, classDefinition);
+    }
+    classDefinition.dartConstructors.forEach(indent.format);
+  }
+
   void _writeConstructor(Indent indent, Class classDefinition) {
     final constKeyword = classDefinition.isImmutable ? 'const ' : '';
 
@@ -1225,6 +1234,27 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
           defaultValue.write(indent, prefix: '');
           indent.addln(',');
         }
+      }
+    });
+  }
+
+  /// Writes the arguments of a call to the unnamed constructor of
+  /// [classDefinition], where [value] gives the argument for each field.
+  void _writeConstructorArguments(
+    Indent indent,
+    Class classDefinition,
+    String Function(int index, NamedType field) value,
+  ) {
+    final List<NamedType> fields = getFieldsInSerializationOrder(classDefinition).toList();
+    final List<String> positional =
+        classDefinition.dartUnnamedConstructorPositionalFields ?? const <String>[];
+    for (final name in positional) {
+      final int index = fields.indexWhere((NamedType f) => f.name == name);
+      indent.writeln('${value(index, fields[index])},');
+    }
+    enumerate(fields, (int index, NamedType field) {
+      if (!positional.contains(field.name)) {
+        indent.writeln('${field.name}: ${value(index, field)},');
       }
     });
   }
@@ -1361,16 +1391,16 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       '}',
       () {
         final namer = _JniBindingNamer(isInterface: false);
+        // The namer depends on field order, so get every value up front.
+        final values = <String>[
+          for (final NamedType field in getFieldsInSerializationOrder(classDefinition))
+            _JniType.fromTypeDeclaration(field.type).getToDartCall(
+              field.type,
+              varName: namer.nextKotlinGetter(field.name, type: field.type).access('jniClass'),
+            ),
+        ];
         indent.writeScoped('return jniClass == null ? null : ${jniClass.type.baseName}(', ');', () {
-          for (final NamedType field in getFieldsInSerializationOrder(classDefinition)) {
-            final _JniType jniType = _JniType.fromTypeDeclaration(field.type);
-            final String jniField = namer
-                .nextKotlinGetter(field.name, type: field.type)
-                .access('jniClass');
-            indent.writeln(
-              '${field.name}: ${jniType.getToDartCall(field.type, varName: jniField)},',
-            );
-          }
+          _writeConstructorArguments(indent, classDefinition, (int index, _) => values[index]);
         });
       },
     );
@@ -1383,12 +1413,13 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       '}',
       () {
         indent.writeScoped('return ffiClass == null ? null : ${ffiClass.type.baseName}(', ');', () {
-          for (final NamedType field in getFieldsInSerializationOrder(classDefinition)) {
-            final _FfiType ffiType = _FfiType.fromTypeDeclaration(field.type);
-            indent.writeln(
-              '${field.name}: ${ffiType.getToDartCall(field.type, varName: 'ffiClass.${field.name}', classField: true)},',
-            );
-          }
+          _writeConstructorArguments(
+            indent,
+            classDefinition,
+            (_, NamedType field) => _FfiType.fromTypeDeclaration(
+              field.type,
+            ).getToDartCall(field.type, varName: 'ffiClass.${field.name}', classField: true),
+          );
         });
       },
     );
@@ -1416,11 +1447,11 @@ class DartGenerator extends StructuredGenerator<InternalDartOptions> {
       }
       indent.write('return ${classDefinition.name}');
       indent.addScoped('(', ');', () {
-        enumerate(getFieldsInSerializationOrder(classDefinition), (int index, NamedType field) {
-          indent.write('${field.name}: ');
-          indent.add(_castValue('result[$index]', field.type));
-          indent.addln(',');
-        });
+        _writeConstructorArguments(
+          indent,
+          classDefinition,
+          (int index, NamedType field) => _castValue('result[$index]', field.type),
+        );
       });
     });
   }
@@ -4590,11 +4621,11 @@ if (wrapped == null) {
     indent.writeln('final List<Object?> result = $rawValueExpression as List<Object?>;');
     indent.write('return ${customType.name}$typeArgs');
     indent.addScoped('(', ');', () {
-      enumerate(getFieldsInSerializationOrder(associatedClass!), (int index, NamedType field) {
-        indent.write('${field.name}: ');
-        indent.add(_castValue('result[$index]', substitutedFieldTypes[index]));
-        indent.addln(',');
-      });
+      _writeConstructorArguments(
+        indent,
+        associatedClass!,
+        (int index, _) => _castValue('result[$index]', substitutedFieldTypes[index]),
+      );
     });
   }
 

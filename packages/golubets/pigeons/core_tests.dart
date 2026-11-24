@@ -101,7 +101,7 @@ class AllTypes {
 /// A class containing all supported nullable types.
 @SwiftClass()
 class AllNullableTypes {
-  AllNullableTypes(
+  AllNullableTypes({
     this.aNullableBool,
     this.aNullableInt,
     this.aNullableInt64,
@@ -139,7 +139,7 @@ class AllNullableTypes {
     this.listMap,
     this.mapMap,
     this.recursiveClassMap,
-  );
+  });
 
   bool? aNullableBool;
   int? aNullableInt;
@@ -184,7 +184,7 @@ class AllNullableTypes {
 /// with nullable items, as the primary [AllNullableTypes] class is being used to
 /// test Swift classes.
 class AllNullableTypesWithoutRecursion {
-  AllNullableTypesWithoutRecursion(
+  AllNullableTypesWithoutRecursion({
     this.aNullableBool,
     this.aNullableInt,
     this.aNullableInt64,
@@ -219,7 +219,7 @@ class AllNullableTypesWithoutRecursion {
     this.objectMap,
     this.listMap,
     this.mapMap,
-  );
+  });
 
   bool? aNullableBool;
   int? aNullableInt;
@@ -266,16 +266,16 @@ class AnEmptyClass {}
 /// `AllNullableTypes` is non-nullable here as it is easier to instantiate
 /// than `AllTypes` when testing doesn't require both (ie. testing null classes).
 class AllClassesWrapper {
-  AllClassesWrapper(
-    this.allNullableTypes,
+  AllClassesWrapper({
+    required this.allNullableTypes,
     this.allNullableTypesWithoutRecursion,
     this.allTypes,
-    this.classList,
-    this.classMap,
+    required this.classList,
+    required this.classMap,
     this.nullableClassList,
     this.nullableClassMap,
     this.anEmptyClass,
-  );
+  });
   AllNullableTypes allNullableTypes;
   AllNullableTypesWithoutRecursion? allNullableTypesWithoutRecursion;
   AllTypes? allTypes;

@@ -23,7 +23,13 @@ class ExtraData {
 enum ReplyType { success, error }
 
 class NonNullFieldSearchReply {
-  NonNullFieldSearchReply(this.result, this.error, this.indices, this.extraData, this.type);
+  NonNullFieldSearchReply({
+    required this.result,
+    required this.error,
+    required this.indices,
+    required this.extraData,
+    required this.type,
+  });
   String result;
   String error;
   List<int?> indices;
