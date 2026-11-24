@@ -26,6 +26,9 @@ env:
 jobs:
   sync-upstream:
     runs-on: ubuntu-22.04
+    outputs:
+      committed: ${{ steps.commit.outputs.committed }}
+      branch: ${{ steps.commit.outputs.branch }}
     defaults:
       run:
         shell: bash
@@ -202,13 +205,15 @@ jobs:
           fi
 
           # Regenerate all generated pigeon/golubets output so it matches the
-          # merged generators. Skip swift-format (not available on Linux).
+          # merged generators. Swift is formatted by the format-swift job on macOS.
           if (cd packages/golubets && flutter pub get && dart run tool/generate.dart --no-format); then
             status regen ok
           else
             status regen fail
           fi
           dart ./script/tool/bin/flutter_plugin_tools.dart format --no-swift || true
+          # --fail-on-change compares worktree to index; stage so unformatted Swift isn't flagged here.
+          git add -A
 
           if dart ./script/tool/bin/flutter_plugin_tools.dart analyze; then
             status analyze ok
@@ -312,6 +317,8 @@ jobs:
             echo "| Format (\`--no-swift\`) | $(icon '${{ steps.verify.outputs.format }}') |"
             echo "| Dart unit tests | $(icon '${{ steps.verify.outputs.darttest }}') |"
             echo ""
+            echo "> Swift files are formatted by the \`format-swift\` job on macOS, which pushes a follow-up commit."
+            echo ""
             if [ "${{ steps.autoresolve.outputs.source_conflicts }}" = "true" ]; then
               echo "> Checks were skipped because source conflicts must be resolved first. Re-run after resolving."
               echo ""
@@ -355,6 +362,7 @@ jobs:
             fi
             git push --force origin HEAD
             echo "committed=true" >> "$GITHUB_OUTPUT"
+            echo "branch=$(git rev-parse --abbrev-ref HEAD)" >> "$GITHUB_OUTPUT"
           else
             echo "No changes to commit."
             echo "committed=false" >> "$GITHUB_OUTPUT"
@@ -388,3 +396,28 @@ jobs:
           git worktree remove --force /tmp/norm-base 2>/dev/null || true
           git worktree remove --force /tmp/norm-up 2>/dev/null || true
           rm -rf /tmp/upstream-temp
+
+  # swift-format only runs on macOS (via xcrun), so the regenerated Swift
+  # pushed by sync-upstream is formatted here as a follow-up commit.
+  format-swift:
+    needs: sync-upstream
+    if: needs.sync-upstream.outputs.committed == 'true'
+    runs-on: macos-26
+    steps:
+      - name: Checkout sync branch
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ needs.sync-upstream.outputs.branch }}
+          token: ${{ secrets.GPAT }}
+
+      - name: Format generated Swift and push
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git ls-files -z '*.g.swift' '*.gen.swift' | xargs -0 xcrun swift-format -i
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -qam "Format generated Swift files"
+            git push origin HEAD
+          else
+            echo "Swift files already formatted."
+          fi
