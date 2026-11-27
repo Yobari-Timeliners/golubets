@@ -37,7 +37,7 @@ import Foundation
   @objc required init(
     number: NSNumber,
     type: Int,
-  )  {
+  ) {
     self.number = number
     self.type = type
   }
@@ -46,10 +46,12 @@ import Foundation
   }
   @objc var number: NSNumber
   @objc var type: Int
-  static func == (lhs: NativeInteropExampleNumberWrapper, rhs: NativeInteropExampleNumberWrapper) -> Bool {
+  static func == (lhs: NativeInteropExampleNumberWrapper, rhs: NativeInteropExampleNumberWrapper)
+    -> Bool
+  {
     return lhs.number == rhs.number && lhs.type == rhs.type
   }
-    
+
   override func isEqual(_ object: Any?) -> Bool {
     guard let other = object as? NativeInteropExampleNumberWrapper else {
       return false
@@ -60,7 +62,7 @@ import Foundation
   override var hash: Int {
     return number.hashValue ^ type.hashValue
   }
-      
+
 }
 
 private func wrapNumber(number: Any) -> NativeInteropExampleNumberWrapper {
@@ -79,14 +81,14 @@ private func wrapNumber(number: Any) -> NativeInteropExampleNumberWrapper {
 
 private func unwrapNumber(wrappedNumber: NativeInteropExampleNumberWrapper) -> Any {
   switch wrappedNumber.type {
-    case 1:
-      return wrappedNumber.number.int64Value
-    case 2:
-      return wrappedNumber.number.doubleValue
-    case 3:
-      return wrappedNumber.number.boolValue
-    default:
-      return wrappedNumber.number.int64Value
+  case 1:
+    return wrappedNumber.number.int64Value
+  case 2:
+    return wrappedNumber.number.doubleValue
+  case 3:
+    return wrappedNumber.number.boolValue
+  default:
+    return wrappedNumber.number.int64Value
   }
 }
 // Enum to represent the Dart TypedData types
@@ -160,7 +162,9 @@ enum NativeInteropExampleGolubetsInternalNumberType: Int {
 
   /// Returns the data as a [Float32] array, if the type is .float32
   public func toFloat32Array() -> [Float32]? {
-    guard type == NativeInteropExampleGolubetsInternalNumberType.float32.rawValue else { return nil }
+    guard type == NativeInteropExampleGolubetsInternalNumberType.float32.rawValue else {
+      return nil
+    }
     guard data.length % MemoryLayout<Float32>.size == 0 else { return nil }
     let count = data.length / MemoryLayout<Float32>.size
     var array = [Float32](repeating: 0, count: count)
@@ -170,7 +174,9 @@ enum NativeInteropExampleGolubetsInternalNumberType: Int {
 
   /// Returns the data as a [Float64] array (Array<Double>), if the type is .float64
   public func toFloat64Array() -> [Double]? {
-    guard type == NativeInteropExampleGolubetsInternalNumberType.float64.rawValue else { return nil }
+    guard type == NativeInteropExampleGolubetsInternalNumberType.float64.rawValue else {
+      return nil
+    }
     guard data.length % MemoryLayout<Double>.size == 0 else { return nil }
     let count = data.length / MemoryLayout<Double>.size
     var array = [Double](repeating: 0, count: count)
@@ -178,7 +184,6 @@ enum NativeInteropExampleGolubetsInternalNumberType: Int {
     return array
   }
 }
-  
 
 enum NativeInteropExampleGolubetsInternal {
   static let defaultInstanceName = "GolubetsDefaultClassName32uh4ui3lh445uh4h3l2l455g4y34u"
@@ -200,12 +205,11 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
   return value as! T?
 }
 
-
 /// Computes the keys that associate Native Interop registrations with a Flutter engine.
 ///
 /// `Int64.min` means "no key". Exact keys match Dart's `PlatformDispatcher.instance.engineId`.
 /// When an exact key is unavailable, each engine messenger is assigned a negative synthetic key.
-fileprivate enum GolubetsEngineKeys {
+private enum GolubetsEngineKeys {
   /// The sentinel for an unknown engine.
   static let noKey: Int64 = Int64.min
   /// Guards the key caches. Recursive because `key(for:)` calls `key(messenger:)`.
@@ -265,7 +269,7 @@ fileprivate enum GolubetsEngineKeys {
 
 private class _GolubetsFfiCodec {
   static func readValue(value: NSObject?, type: String? = nil, type2: String? = nil) -> Any? {
-    if (NativeInteropExampleGolubetsInternal.isNullish(value)) {
+    if NativeInteropExampleGolubetsInternal.isNullish(value) {
       return nil
     }
     if let typedData = value as? NativeInteropExampleGolubetsTypedData {
@@ -293,36 +297,36 @@ private class _GolubetsFfiCodec {
       } else if type == "bool" {
         return number.boolValue
       }
-      
-      
+
       return number.int64Value
     }
-    if (value is NSMutableArray || value is NSArray) {
-      var res: Array<Any?> = []
+    if value is NSMutableArray || value is NSArray {
+      var res: [Any?] = []
       for item in (value as! NSArray) {
-          res.append(readValue(value: item as? NSObject, type: type))
+        res.append(readValue(value: item as? NSObject, type: type))
       }
       return res
     }
-    if (value is NSDictionary) {
-      var res: Dictionary<AnyHashable?, Any?> = Dictionary()
+    if value is NSDictionary {
+      var res: [AnyHashable?: Any?] = Dictionary()
       for (key, value) in (value as! NSDictionary) {
-          res[readValue(value: key as? NSObject, type: type) as? AnyHashable] = readValue(value: value as? NSObject, type: type2)
+        res[readValue(value: key as? NSObject, type: type) as? AnyHashable] = readValue(
+          value: value as? NSObject, type: type2)
       }
       return res
-    } 
-    if (value is NativeInteropExampleNumberWrapper) {
+    }
+    if value is NativeInteropExampleNumberWrapper {
       return unwrapNumber(wrappedNumber: value as! NativeInteropExampleNumberWrapper)
     }
-    if (value is NSString) {
+    if value is NSString {
       return value as! NSString
-    
+
     }
     return value
   }
 
   static func writeValue(value: Any?, isObject: Bool = false) -> Any? {
-    if (NativeInteropExampleGolubetsInternal.isNullish(value)) {
+    if NativeInteropExampleGolubetsInternal.isNullish(value) {
       return NativeInteropExampleGolubetsInternalNull()
     }
     if let uint8Array = value as? [UInt8] {
@@ -335,48 +339,56 @@ private class _GolubetsFfiCodec {
       return isObject ? NativeInteropExampleGolubetsTypedData(int64Array) : int64Array as NSArray
     }
     if let float32Array = value as? [Float32] {
-      return isObject ? NativeInteropExampleGolubetsTypedData(float32Array) : float32Array as NSArray
+      return isObject
+        ? NativeInteropExampleGolubetsTypedData(float32Array) : float32Array as NSArray
     }
     if let float64Array = value as? [Double] {
-      return isObject ? NativeInteropExampleGolubetsTypedData(float64Array) : float64Array as NSArray
+      return isObject
+        ? NativeInteropExampleGolubetsTypedData(float64Array) : float64Array as NSArray
     }
-    if (value is Bool || value is Double || value is Int || value is Int64) {
-      if (isObject) {
+    if value is Bool || value is Double || value is Int || value is Int64 {
+      if isObject {
         return wrapNumber(number: value!)
       }
-      if (value is Bool) {
+      if value is Bool {
         return value
-      } else if (value is Double) {
+      } else if value is Double {
         return value
-      } else if (value is Int || value is Int64) {
+      } else if value is Int || value is Int64 {
         return value
       }
-      
+
     }
-    if (value is [Any]) {
+    if value is [Any] {
       let list = value as! [Any]
       let res: NSMutableArray = NSMutableArray(capacity: list.count)
       for item in list {
-        res.add(NativeInteropExampleGolubetsInternal.isNullish(item) ? NativeInteropExampleGolubetsInternalNull() : writeValue(value: item, isObject: true) as! NSObject)
+        res.add(
+          NativeInteropExampleGolubetsInternal.isNullish(item)
+            ? NativeInteropExampleGolubetsInternalNull()
+            : writeValue(value: item, isObject: true) as! NSObject)
       }
       return res
     }
-    if (value is [AnyHashable: Any]) {
+    if value is [AnyHashable: Any] {
       let dict = value as! [AnyHashable: Any]
       let res: NSMutableDictionary = NSMutableDictionary(capacity: dict.count)
       for (key, value) in dict {
-         res.setObject(NativeInteropExampleGolubetsInternal.isNullish(value) ? NativeInteropExampleGolubetsInternalNull() : writeValue(value: value, isObject: true) as! NSObject, forKey: writeValue(value: key, isObject: true) as! NSCopying)
+        res.setObject(
+          NativeInteropExampleGolubetsInternal.isNullish(value)
+            ? NativeInteropExampleGolubetsInternalNull()
+            : writeValue(value: value, isObject: true) as! NSObject,
+          forKey: writeValue(value: key, isObject: true) as! NSCopying)
       }
       return res
     }
-    if (value is String) {
+    if value is String {
       return value as! NSString
-    
+
     }
     return value
   }
 }
-    
 
 /// Writes values in the format of Flutter's standard message codec.
 ///
@@ -460,7 +472,10 @@ private struct NativeInteropExampleGolubetsInteropWriter {
       return
     }
     if valueType == Bool.self {
-      writeByte((value as! Bool) ? NativeInteropExampleGolubetsInteropCodec.typeTrue : NativeInteropExampleGolubetsInteropCodec.typeFalse)
+      writeByte(
+        (value as! Bool)
+          ? NativeInteropExampleGolubetsInteropCodec.typeTrue
+          : NativeInteropExampleGolubetsInteropCodec.typeFalse)
       return
     }
     if valueType == Double.self {
@@ -479,23 +494,28 @@ private struct NativeInteropExampleGolubetsInteropWriter {
     // Typed data is matched by exact type, because casting an empty array of
     // any element type to an array of numbers succeeds.
     if valueType == [UInt8].self {
-      writeTypedData(NativeInteropExampleGolubetsInteropCodec.typeUint8List, value as! [UInt8], alignment: 1)
+      writeTypedData(
+        NativeInteropExampleGolubetsInteropCodec.typeUint8List, value as! [UInt8], alignment: 1)
       return
     }
     if valueType == [Int32].self {
-      writeTypedData(NativeInteropExampleGolubetsInteropCodec.typeInt32List, value as! [Int32], alignment: 4)
+      writeTypedData(
+        NativeInteropExampleGolubetsInteropCodec.typeInt32List, value as! [Int32], alignment: 4)
       return
     }
     if valueType == [Int64].self {
-      writeTypedData(NativeInteropExampleGolubetsInteropCodec.typeInt64List, value as! [Int64], alignment: 8)
+      writeTypedData(
+        NativeInteropExampleGolubetsInteropCodec.typeInt64List, value as! [Int64], alignment: 8)
       return
     }
     if valueType == [Float64].self {
-      writeTypedData(NativeInteropExampleGolubetsInteropCodec.typeFloat64List, value as! [Float64], alignment: 8)
+      writeTypedData(
+        NativeInteropExampleGolubetsInteropCodec.typeFloat64List, value as! [Float64], alignment: 8)
       return
     }
     if valueType == [Float32].self {
-      writeTypedData(NativeInteropExampleGolubetsInteropCodec.typeFloat32List, value as! [Float32], alignment: 4)
+      writeTypedData(
+        NativeInteropExampleGolubetsInteropCodec.typeFloat32List, value as! [Float32], alignment: 4)
       return
     }
     if valueType == AnyHashable.self {
@@ -527,7 +547,10 @@ private struct NativeInteropExampleGolubetsInteropWriter {
     }
     if let number = value as? NSNumber {
       if CFGetTypeID(number) == CFBooleanGetTypeID() {
-        writeByte(number.boolValue ? NativeInteropExampleGolubetsInteropCodec.typeTrue : NativeInteropExampleGolubetsInteropCodec.typeFalse)
+        writeByte(
+          number.boolValue
+            ? NativeInteropExampleGolubetsInteropCodec.typeTrue
+            : NativeInteropExampleGolubetsInteropCodec.typeFalse)
       } else if CFNumberIsFloatType(number) {
         writeByte(NativeInteropExampleGolubetsInteropCodec.typeFloat64)
         writeAlignment(8)
@@ -685,7 +708,6 @@ private struct NativeInteropExampleGolubetsInteropWriter {
     }
   }
 
-
   mutating func writeCustomValue(_ value: Any, type valueType: Any.Type) -> Bool {
     return false
   }
@@ -741,7 +763,6 @@ extension Dictionary: NativeInteropExampleGolubetsInteropMap {
     }
   }
 }
-
 
 /// Reads values in the format of Flutter's standard message codec.
 private struct NativeInteropExampleGolubetsInteropReader {
@@ -816,7 +837,8 @@ private struct NativeInteropExampleGolubetsInteropReader {
       return Int64(readRaw(Int32.self))
     case NativeInteropExampleGolubetsInteropCodec.typeInt64:
       return readRaw(Int64.self)
-    case NativeInteropExampleGolubetsInteropCodec.typeLargeInt, NativeInteropExampleGolubetsInteropCodec.typeString:
+    case NativeInteropExampleGolubetsInteropCodec.typeLargeInt,
+      NativeInteropExampleGolubetsInteropCodec.typeString:
       let count = readSize()
       let string = String(
         decoding: UnsafeRawBufferPointer(rebasing: bytes[position..<(position + count)]),
@@ -911,7 +933,6 @@ private struct NativeInteropExampleGolubetsInteropReader {
     }
     return read([K: V].self)
   }
-
 
   mutating func readCustomValue(ofType type: UInt8) -> Any? {
     switch type {
@@ -1025,7 +1046,10 @@ public protocol NativeInteropExampleApi: AnyObject {
     ///
     /// The registration is associated with the engine that owns `registrar`. The same
     /// `api` registered from different engines is tracked as separate registrations.
-    static func register(api: NativeInteropExampleApi, registrar: FlutterPluginRegistrar, name: String = NativeInteropExampleGolubetsInternal.defaultInstanceName) {
+    static func register(
+      api: NativeInteropExampleApi, registrar: FlutterPluginRegistrar,
+      name: String = NativeInteropExampleGolubetsInternal.defaultInstanceName
+    ) {
       register(api: api, engineKey: GolubetsEngineKeys.key(for: registrar), name: name)
     }
 
@@ -1037,7 +1061,10 @@ public protocol NativeInteropExampleApi: AnyObject {
     /// Prefers the registration made from the engine that owns `registrar`, and
     /// otherwise removes the registration of `api` under `name` if exactly one engine
     /// holds it.
-    static func unregister(api: NativeInteropExampleApi, registrar: FlutterPluginRegistrar, name: String = NativeInteropExampleGolubetsInternal.defaultInstanceName) {
+    static func unregister(
+      api: NativeInteropExampleApi, registrar: FlutterPluginRegistrar,
+      name: String = NativeInteropExampleGolubetsInternal.defaultInstanceName
+    ) {
       unregister(api: api, engineKey: GolubetsEngineKeys.key(for: registrar), name: name)
     }
   #endif
@@ -1064,7 +1091,9 @@ public protocol NativeInteropExampleApi: AnyObject {
     do {
       NativeInteropExampleApiInstanceTracker.lock.lock()
       defer { NativeInteropExampleApiInstanceTracker.lock.unlock() }
-      guard var list = NativeInteropExampleApiInstanceTracker.instancesOfNativeInteropExampleApi[name] else {
+      guard
+        var list = NativeInteropExampleApiInstanceTracker.instancesOfNativeInteropExampleApi[name]
+      else {
         return
       }
       let removeKey: Int64
@@ -1090,7 +1119,8 @@ public protocol NativeInteropExampleApi: AnyObject {
         return false
       }
       if list.isEmpty {
-        NativeInteropExampleApiInstanceTracker.instancesOfNativeInteropExampleApi.removeValue(forKey: name)
+        NativeInteropExampleApiInstanceTracker.instancesOfNativeInteropExampleApi.removeValue(
+          forKey: name)
       } else {
         NativeInteropExampleApiInstanceTracker.instancesOfNativeInteropExampleApi[name] = list
       }
@@ -1103,10 +1133,14 @@ public protocol NativeInteropExampleApi: AnyObject {
   ///
   /// Prefers the most recent registration whose engine key is `engineId`, then
   /// `affinityKey`, then the most recent registration. `Int64.min` means unknown.
-  @objc static func golubetsResolveInstance(engineId: Int64, affinityKey: Int64, name: String = NativeInteropExampleGolubetsInternal.defaultInstanceName) -> NativeInteropExampleApiSetup? {
+  @objc static func golubetsResolveInstance(
+    engineId: Int64, affinityKey: Int64,
+    name: String = NativeInteropExampleGolubetsInternal.defaultInstanceName
+  ) -> NativeInteropExampleApiSetup? {
     NativeInteropExampleApiInstanceTracker.lock.lock()
     defer { NativeInteropExampleApiInstanceTracker.lock.unlock() }
-    guard let list = NativeInteropExampleApiInstanceTracker.instancesOfNativeInteropExampleApi[name] else {
+    guard let list = NativeInteropExampleApiInstanceTracker.instancesOfNativeInteropExampleApi[name]
+    else {
       return nil
     }
     if engineId != Int64.min, let match = list.last(where: { $0.engineKey == engineId }) {
