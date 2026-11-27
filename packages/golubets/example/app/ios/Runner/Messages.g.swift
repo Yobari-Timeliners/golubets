@@ -64,9 +64,7 @@ private func wrapError(_ error: Any) -> [Any?] {
 }
 
 private func createConnectionError(withChannelName channelName: String) -> GolubetsError {
-  return GolubetsError(
-    code: "channel-error", message: "Unable to establish connection on channel: '\(channelName)'.",
-    details: "")
+  return GolubetsError(code: "channel-error", message: "Unable to establish connection on channel: '\(channelName)'.", details: "")
 }
 
 enum MessagesGolubetsInternal {
@@ -87,7 +85,7 @@ enum MessagesGolubetsInternal {
 
   static func doubleHash(_ value: Double, _ hasher: inout Hasher) {
     if value.isNaN {
-      hasher.combine(0x7FF8_0000_0000_0000)
+      hasher.combine(0x7FF8000000000000)
     } else {
       // Normalize -0.0 to 0.0
       hasher.combine(value == 0 ? 0 : value)
@@ -198,6 +196,7 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
   return value as! T?
 }
 
+
 public enum Code: Int, CaseIterable {
   case one = 0
   case two = 1
@@ -210,9 +209,9 @@ public struct MessageData: Hashable, CustomStringConvertible {
     messageDescription: String? = "Example description",
     code: Code = Code.one,
     data: [String: String] = [
-      "hello": "world",
-      "lorem": "ipsum",
-      "golubets": "rocks",
+      "hello": "world", 
+      "lorem": "ipsum", 
+      "golubets": "rocks", 
     ]
   ) {
     self.name = name
@@ -224,6 +223,7 @@ public struct MessageData: Hashable, CustomStringConvertible {
   public var messageDescription: String?
   public var code: Code
   public var data: [String: String]
+
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> MessageData? {
@@ -251,10 +251,7 @@ public struct MessageData: Hashable, CustomStringConvertible {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return MessagesGolubetsInternal.deepEquals(lhs.name, rhs.name)
-      && MessagesGolubetsInternal.deepEquals(lhs.messageDescription, rhs.messageDescription)
-      && MessagesGolubetsInternal.deepEquals(lhs.code, rhs.code)
-      && MessagesGolubetsInternal.deepEquals(lhs.data, rhs.data)
+    return MessagesGolubetsInternal.deepEquals(lhs.name, rhs.name) && MessagesGolubetsInternal.deepEquals(lhs.messageDescription, rhs.messageDescription) && MessagesGolubetsInternal.deepEquals(lhs.code, rhs.code) && MessagesGolubetsInternal.deepEquals(lhs.data, rhs.data)
   }
 
   public func hash(into hasher: inout Hasher) {
@@ -266,8 +263,7 @@ public struct MessageData: Hashable, CustomStringConvertible {
   }
 
   public var description: String {
-    return
-      "MessageData(name: \(String(describing: name)), messageDescription: \(String(describing: messageDescription)), code: \(String(describing: code)), data: \(String(describing: data)))"
+    return "MessageData(name: \(String(describing: name)), messageDescription: \(String(describing: messageDescription)), code: \(String(describing: code)), data: \(String(describing: data)))"
   }
 }
 
@@ -316,6 +312,7 @@ class MessagesGolubetsCodec: FlutterStandardMessageCodec, @unchecked Sendable {
   static let shared = MessagesGolubetsCodec(readerWriter: MessagesGolubetsCodecReaderWriter())
 }
 
+
 /// Generated protocol from Golubets that represents a handler of messages from Flutter.
 public protocol ExampleHostApi {
   func getHostLanguage() throws -> String
@@ -329,19 +326,14 @@ public protocol ExampleHostApi {
 public class ExampleHostApiSetup {
   static var codec: FlutterStandardMessageCodec { MessagesGolubetsCodec.shared }
   /// Sets up an instance of `ExampleHostApi` to handle messages through the `binaryMessenger`.
-  public static func setUp(
-    binaryMessenger: FlutterBinaryMessenger, api: ExampleHostApi?, messageChannelSuffix: String = ""
-  ) {
+  public static func setUp(binaryMessenger: FlutterBinaryMessenger, api: ExampleHostApi?, messageChannelSuffix: String = "") {
     let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
     #if os(iOS)
       let taskQueue = binaryMessenger.makeBackgroundTaskQueue?()
     #else
       let taskQueue: FlutterTaskQueue? = nil
     #endif
-    let getHostLanguageChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_example_package.ExampleHostApi.getHostLanguage\(channelSuffix)",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let getHostLanguageChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_example_package.ExampleHostApi.getHostLanguage\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       getHostLanguageChannel.setMessageHandler { _, reply in
         do {
@@ -354,9 +346,7 @@ public class ExampleHostApiSetup {
     } else {
       getHostLanguageChannel.setMessageHandler(nil)
     }
-    let addChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_example_package.ExampleHostApi.add\(channelSuffix)",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let addChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_example_package.ExampleHostApi.add\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       addChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
@@ -372,10 +362,7 @@ public class ExampleHostApiSetup {
     } else {
       addChannel.setMessageHandler(nil)
     }
-    let sendMessageChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_example_package.ExampleHostApi.sendMessage\(channelSuffix)",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let sendMessageChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_example_package.ExampleHostApi.sendMessage\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       sendMessageChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
@@ -392,16 +379,9 @@ public class ExampleHostApiSetup {
     } else {
       sendMessageChannel.setMessageHandler(nil)
     }
-    let sendMessageModernAsyncChannel =
-      taskQueue == nil
-      ? FlutterBasicMessageChannel(
-        name:
-          "dev.bayori.golubets.golubets_example_package.ExampleHostApi.sendMessageModernAsync\(channelSuffix)",
-        binaryMessenger: binaryMessenger, codec: codec)
-      : FlutterBasicMessageChannel(
-        name:
-          "dev.bayori.golubets.golubets_example_package.ExampleHostApi.sendMessageModernAsync\(channelSuffix)",
-        binaryMessenger: binaryMessenger, codec: codec, taskQueue: taskQueue)
+    let sendMessageModernAsyncChannel = taskQueue == nil
+      ? FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_example_package.ExampleHostApi.sendMessageModernAsync\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+      : FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_example_package.ExampleHostApi.sendMessageModernAsync\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec, taskQueue: taskQueue)
     if let api = api {
       sendMessageModernAsyncChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
@@ -414,16 +394,9 @@ public class ExampleHostApiSetup {
     } else {
       sendMessageModernAsyncChannel.setMessageHandler(nil)
     }
-    let sendMessageModernAsyncThrowsChannel =
-      taskQueue == nil
-      ? FlutterBasicMessageChannel(
-        name:
-          "dev.bayori.golubets.golubets_example_package.ExampleHostApi.sendMessageModernAsyncThrows\(channelSuffix)",
-        binaryMessenger: binaryMessenger, codec: codec)
-      : FlutterBasicMessageChannel(
-        name:
-          "dev.bayori.golubets.golubets_example_package.ExampleHostApi.sendMessageModernAsyncThrows\(channelSuffix)",
-        binaryMessenger: binaryMessenger, codec: codec, taskQueue: taskQueue)
+    let sendMessageModernAsyncThrowsChannel = taskQueue == nil
+      ? FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_example_package.ExampleHostApi.sendMessageModernAsyncThrows\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+      : FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_example_package.ExampleHostApi.sendMessageModernAsyncThrows\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec, taskQueue: taskQueue)
     if let api = api {
       sendMessageModernAsyncThrowsChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
@@ -445,8 +418,7 @@ public class ExampleHostApiSetup {
 
 /// Generated protocol from Golubets that represents Flutter messages that can be called from Swift.
 public protocol MessageFlutterApiProtocol {
-  func flutterMethod(
-    aString aStringArg: String?, completion: @escaping (Result<String, GolubetsError>) -> Void)
+  func flutterMethod(aString aStringArg: String?, completion: @escaping (Result<String, GolubetsError>) -> Void)
 }
 public class MessageFlutterApi: MessageFlutterApiProtocol {
   private let binaryMessenger: FlutterBinaryMessenger
@@ -458,13 +430,9 @@ public class MessageFlutterApi: MessageFlutterApiProtocol {
   var codec: MessagesGolubetsCodec {
     return MessagesGolubetsCodec.shared
   }
-  public func flutterMethod(
-    aString aStringArg: String?, completion: @escaping (Result<String, GolubetsError>) -> Void
-  ) {
-    let channelName: String =
-      "dev.bayori.golubets.golubets_example_package.MessageFlutterApi.flutterMethod\(messageChannelSuffix)"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+  public func flutterMethod(aString aStringArg: String?, completion: @escaping (Result<String, GolubetsError>) -> Void) {
+    let channelName: String = "dev.bayori.golubets.golubets_example_package.MessageFlutterApi.flutterMethod\(messageChannelSuffix)"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([aStringArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -476,11 +444,7 @@ public class MessageFlutterApi: MessageFlutterApiProtocol {
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(GolubetsError(code: code, message: message, details: details)))
       } else if MessagesGolubetsInternal.isNullish(listResponse[0]) {
-        completion(
-          .failure(
-            GolubetsError(
-              code: "null-error",
-              message: "Flutter api returned null value for non-null return value.", details: "")))
+        completion(.failure(GolubetsError(code: "null-error", message: "Flutter api returned null value for non-null return value.", details: "")))
       } else {
         let result = listResponse[0] as! String
         completion(.success(result))

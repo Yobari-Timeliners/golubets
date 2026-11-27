@@ -32,7 +32,7 @@ enum EventChannelMessagesGolubetsInternal {
 
   static func doubleHash(_ value: Double, _ hasher: inout Hasher) {
     if value.isNaN {
-      hasher.combine(0x7FF8_0000_0000_0000)
+      hasher.combine(0x7FF8000000000000)
     } else {
       // Normalize -0.0 to 0.0
       hasher.combine(value == 0 ? 0 : value)
@@ -143,6 +143,7 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
   return value as! T?
 }
 
+
 /// Generated class from Golubets that represents data sent in messages.
 public enum PlatformEvent: Hashable {
   case intEvent(
@@ -154,6 +155,7 @@ public enum PlatformEvent: Hashable {
   )
 
   case emptyEvent
+
 
   internal static func fromListIntEvent(_ list: [Any?]) -> PlatformEvent? {
     let data = list[0] as! Int64
@@ -177,20 +179,21 @@ public enum PlatformEvent: Hashable {
 
   public func toList() -> [Any?] {
     switch self {
-    case .intEvent(
-      let data
-    ):
+      case .intEvent(
+        let data
+      ):
       return [
         data
       ]
-    case .stringEvent(
-      let data
-    ):
+      case .stringEvent(
+        let data
+      ):
       return [
         data
       ]
-    case .emptyEvent:
-      return []
+      case .emptyEvent:
+      return [
+      ]
     }
   }
   public static func == (lhs: PlatformEvent, rhs: PlatformEvent) -> Bool {
@@ -249,12 +252,11 @@ private class EventChannelMessagesGolubetsCodecReaderWriter: FlutterStandardRead
 }
 
 class EventChannelMessagesGolubetsCodec: FlutterStandardMessageCodec, @unchecked Sendable {
-  static let shared = EventChannelMessagesGolubetsCodec(
-    readerWriter: EventChannelMessagesGolubetsCodecReaderWriter())
+  static let shared = EventChannelMessagesGolubetsCodec(readerWriter: EventChannelMessagesGolubetsCodecReaderWriter())
 }
 
-var eventChannelMessagesGolubetsMethodCodec = FlutterStandardMethodCodec(
-  readerWriter: EventChannelMessagesGolubetsCodecReaderWriter())
+var eventChannelMessagesGolubetsMethodCodec = FlutterStandardMethodCodec(readerWriter: EventChannelMessagesGolubetsCodecReaderWriter());
+
 
 private class GolubetsStreamHandler<ReturnType>: NSObject, FlutterStreamHandler {
   private let wrapper: GolubetsEventChannelWrapper<ReturnType>
@@ -310,17 +312,15 @@ class StreamEventsEventChannel {
   private let channel: FlutterEventChannel
 
   init(messenger: FlutterBinaryMessenger, instanceName: String = "") {
-    var channelName =
-      "dev.bayori.golubets.golubets_example_package.EventChannelMethods.streamEvents"
+    var channelName = "dev.bayori.golubets.golubets_example_package.EventChannelMethods.streamEvents"
     if !instanceName.isEmpty {
       channelName += ".\(instanceName)"
     }
-    channel = FlutterEventChannel(
-      name: channelName, binaryMessenger: messenger, codec: eventChannelMessagesGolubetsMethodCodec)
+    channel = FlutterEventChannel(name: channelName, binaryMessenger: messenger, codec: eventChannelMessagesGolubetsMethodCodec)
   }
 
   /// Sets the stream handler for this channel, replacing any previous handler.
-  ///
+  /// 
   /// Pass `nil` to remove the event channel registration.
   func setStreamHandler(_ streamHandler: StreamEventsStreamHandler?) {
     let internalHandler = streamHandler.map({ GolubetsStreamHandler<PlatformEvent>(wrapper: $0) })
@@ -330,7 +330,7 @@ class StreamEventsEventChannel {
 
 class StreamEventsStreamHandler: GolubetsEventChannelWrapper<PlatformEvent> {
   /// Creates and returns a new event channel that calls the provided stream handler.
-  ///
+  /// 
   /// The returned channel can be stored to allow changing or removing the stream handler.
   /// If the handler will not be changed for the lifetime of the engine associated with the messenger,
   /// the return value can be ignored.
@@ -344,3 +344,4 @@ class StreamEventsStreamHandler: GolubetsEventChannelWrapper<PlatformEvent> {
     return channel
   }
 }
+      

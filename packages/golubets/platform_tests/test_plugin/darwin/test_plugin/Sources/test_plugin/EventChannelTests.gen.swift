@@ -77,7 +77,7 @@ enum EventChannelTestsGolubetsInternal {
 
   static func doubleHash(_ value: Double, _ hasher: inout Hasher) {
     if value.isNaN {
-      hasher.combine(0x7FF8_0000_0000_0000)
+      hasher.combine(0x7FF8000000000000)
     } else {
       // Normalize -0.0 to 0.0
       hasher.combine(value == 0 ? 0 : value)
@@ -187,6 +187,7 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
   if value is NSNull { return nil }
   return value as! T?
 }
+
 
 public enum EventEnum: Int, CaseIterable {
   case one = 0
@@ -301,6 +302,7 @@ public class EventAllNullableTypes: Hashable, CustomStringConvertible {
   public var mapMap: [Int64?: [AnyHashable?: Any?]?]?
   public var recursiveClassMap: [Int64?: EventAllNullableTypes?]?
 
+
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> EventAllNullableTypes? {
     let aNullableBool: Bool? = nilOrValue(golubetsVar_list[0])
@@ -408,46 +410,10 @@ public class EventAllNullableTypes: Hashable, CustomStringConvertible {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    if lhs === rhs {
+    if (lhs === rhs) {
       return true
     }
-    return EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullableBool, rhs.aNullableBool)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullableInt, rhs.aNullableInt)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullableInt64, rhs.aNullableInt64)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullableDouble, rhs.aNullableDouble)
-      && EventChannelTestsGolubetsInternal.deepEquals(
-        lhs.aNullableByteArray, rhs.aNullableByteArray)
-      && EventChannelTestsGolubetsInternal.deepEquals(
-        lhs.aNullable4ByteArray, rhs.aNullable4ByteArray)
-      && EventChannelTestsGolubetsInternal.deepEquals(
-        lhs.aNullable8ByteArray, rhs.aNullable8ByteArray)
-      && EventChannelTestsGolubetsInternal.deepEquals(
-        lhs.aNullableFloatArray, rhs.aNullableFloatArray)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullableEnum, rhs.aNullableEnum)
-      && EventChannelTestsGolubetsInternal.deepEquals(
-        lhs.anotherNullableEnum, rhs.anotherNullableEnum)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullableString, rhs.aNullableString)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullableObject, rhs.aNullableObject)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.allNullableTypes, rhs.allNullableTypes)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.list, rhs.list)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.stringList, rhs.stringList)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.intList, rhs.intList)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.doubleList, rhs.doubleList)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.boolList, rhs.boolList)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.enumList, rhs.enumList)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.objectList, rhs.objectList)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.listList, rhs.listList)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.mapList, rhs.mapList)
-      && EventChannelTestsGolubetsInternal.deepEquals(
-        lhs.recursiveClassList, rhs.recursiveClassList)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.map, rhs.map)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.stringMap, rhs.stringMap)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.intMap, rhs.intMap)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.enumMap, rhs.enumMap)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.objectMap, rhs.objectMap)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.listMap, rhs.listMap)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.mapMap, rhs.mapMap)
-      && EventChannelTestsGolubetsInternal.deepEquals(lhs.recursiveClassMap, rhs.recursiveClassMap)
+    return EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullableBool, rhs.aNullableBool) && EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullableInt, rhs.aNullableInt) && EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullableInt64, rhs.aNullableInt64) && EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullableDouble, rhs.aNullableDouble) && EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullableByteArray, rhs.aNullableByteArray) && EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullable4ByteArray, rhs.aNullable4ByteArray) && EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullable8ByteArray, rhs.aNullable8ByteArray) && EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullableFloatArray, rhs.aNullableFloatArray) && EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullableEnum, rhs.aNullableEnum) && EventChannelTestsGolubetsInternal.deepEquals(lhs.anotherNullableEnum, rhs.anotherNullableEnum) && EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullableString, rhs.aNullableString) && EventChannelTestsGolubetsInternal.deepEquals(lhs.aNullableObject, rhs.aNullableObject) && EventChannelTestsGolubetsInternal.deepEquals(lhs.allNullableTypes, rhs.allNullableTypes) && EventChannelTestsGolubetsInternal.deepEquals(lhs.list, rhs.list) && EventChannelTestsGolubetsInternal.deepEquals(lhs.stringList, rhs.stringList) && EventChannelTestsGolubetsInternal.deepEquals(lhs.intList, rhs.intList) && EventChannelTestsGolubetsInternal.deepEquals(lhs.doubleList, rhs.doubleList) && EventChannelTestsGolubetsInternal.deepEquals(lhs.boolList, rhs.boolList) && EventChannelTestsGolubetsInternal.deepEquals(lhs.enumList, rhs.enumList) && EventChannelTestsGolubetsInternal.deepEquals(lhs.objectList, rhs.objectList) && EventChannelTestsGolubetsInternal.deepEquals(lhs.listList, rhs.listList) && EventChannelTestsGolubetsInternal.deepEquals(lhs.mapList, rhs.mapList) && EventChannelTestsGolubetsInternal.deepEquals(lhs.recursiveClassList, rhs.recursiveClassList) && EventChannelTestsGolubetsInternal.deepEquals(lhs.map, rhs.map) && EventChannelTestsGolubetsInternal.deepEquals(lhs.stringMap, rhs.stringMap) && EventChannelTestsGolubetsInternal.deepEquals(lhs.intMap, rhs.intMap) && EventChannelTestsGolubetsInternal.deepEquals(lhs.enumMap, rhs.enumMap) && EventChannelTestsGolubetsInternal.deepEquals(lhs.objectMap, rhs.objectMap) && EventChannelTestsGolubetsInternal.deepEquals(lhs.listMap, rhs.listMap) && EventChannelTestsGolubetsInternal.deepEquals(lhs.mapMap, rhs.mapMap) && EventChannelTestsGolubetsInternal.deepEquals(lhs.recursiveClassMap, rhs.recursiveClassMap)
   }
 
   public func hash(into hasher: inout Hasher) {
@@ -486,8 +452,7 @@ public class EventAllNullableTypes: Hashable, CustomStringConvertible {
   }
 
   public var description: String {
-    return
-      "EventAllNullableTypes(aNullableBool: \(String(describing: aNullableBool)), aNullableInt: \(String(describing: aNullableInt)), aNullableInt64: \(String(describing: aNullableInt64)), aNullableDouble: \(String(describing: aNullableDouble)), aNullableByteArray: \(String(describing: aNullableByteArray)), aNullable4ByteArray: \(String(describing: aNullable4ByteArray)), aNullable8ByteArray: \(String(describing: aNullable8ByteArray)), aNullableFloatArray: \(String(describing: aNullableFloatArray)), aNullableEnum: \(String(describing: aNullableEnum)), anotherNullableEnum: \(String(describing: anotherNullableEnum)), aNullableString: \(String(describing: aNullableString)), aNullableObject: \(String(describing: aNullableObject)), allNullableTypes: \(String(describing: allNullableTypes)), list: \(String(describing: list)), stringList: \(String(describing: stringList)), intList: \(String(describing: intList)), doubleList: \(String(describing: doubleList)), boolList: \(String(describing: boolList)), enumList: \(String(describing: enumList)), objectList: \(String(describing: objectList)), listList: \(String(describing: listList)), mapList: \(String(describing: mapList)), recursiveClassList: \(String(describing: recursiveClassList)), map: \(String(describing: map)), stringMap: \(String(describing: stringMap)), intMap: \(String(describing: intMap)), enumMap: \(String(describing: enumMap)), objectMap: \(String(describing: objectMap)), listMap: \(String(describing: listMap)), mapMap: \(String(describing: mapMap)), recursiveClassMap: \(String(describing: recursiveClassMap)))"
+    return "EventAllNullableTypes(aNullableBool: \(String(describing: aNullableBool)), aNullableInt: \(String(describing: aNullableInt)), aNullableInt64: \(String(describing: aNullableInt64)), aNullableDouble: \(String(describing: aNullableDouble)), aNullableByteArray: \(String(describing: aNullableByteArray)), aNullable4ByteArray: \(String(describing: aNullable4ByteArray)), aNullable8ByteArray: \(String(describing: aNullable8ByteArray)), aNullableFloatArray: \(String(describing: aNullableFloatArray)), aNullableEnum: \(String(describing: aNullableEnum)), anotherNullableEnum: \(String(describing: anotherNullableEnum)), aNullableString: \(String(describing: aNullableString)), aNullableObject: \(String(describing: aNullableObject)), allNullableTypes: \(String(describing: allNullableTypes)), list: \(String(describing: list)), stringList: \(String(describing: stringList)), intList: \(String(describing: intList)), doubleList: \(String(describing: doubleList)), boolList: \(String(describing: boolList)), enumList: \(String(describing: enumList)), objectList: \(String(describing: objectList)), listList: \(String(describing: listList)), mapList: \(String(describing: mapList)), recursiveClassList: \(String(describing: recursiveClassList)), map: \(String(describing: map)), stringMap: \(String(describing: stringMap)), intMap: \(String(describing: intMap)), enumMap: \(String(describing: enumMap)), objectMap: \(String(describing: objectMap)), listMap: \(String(describing: listMap)), mapMap: \(String(describing: mapMap)), recursiveClassMap: \(String(describing: recursiveClassMap)))"
   }
 }
 
@@ -522,6 +487,7 @@ public enum PlatformEvent: Hashable {
   )
 
   case emptyEvent
+
 
   internal static func fromListIntEvent(_ list: [Any?]) -> PlatformEvent? {
     let value = list[0] as! Int64
@@ -585,50 +551,51 @@ public enum PlatformEvent: Hashable {
 
   public func toList() -> [Any?] {
     switch self {
-    case .intEvent(
-      let value
-    ):
+      case .intEvent(
+        let value
+      ):
       return [
         value
       ]
-    case .stringEvent(
-      let value
-    ):
+      case .stringEvent(
+        let value
+      ):
       return [
         value
       ]
-    case .boolEvent(
-      let value
-    ):
+      case .boolEvent(
+        let value
+      ):
       return [
         value
       ]
-    case .doubleEvent(
-      let value
-    ):
+      case .doubleEvent(
+        let value
+      ):
       return [
         value
       ]
-    case .objectsEvent(
-      let value
-    ):
+      case .objectsEvent(
+        let value
+      ):
       return [
         value
       ]
-    case .enumEvent(
-      let value
-    ):
+      case .enumEvent(
+        let value
+      ):
       return [
         value
       ]
-    case .classEvent(
-      let value
-    ):
+      case .classEvent(
+        let value
+      ):
       return [
         value
       ]
-    case .emptyEvent:
-      return []
+      case .emptyEvent:
+      return [
+      ]
     }
   }
   public static func == (lhs: PlatformEvent, rhs: PlatformEvent) -> Bool {
@@ -735,12 +702,11 @@ private class EventChannelTestsGolubetsCodecReaderWriter: FlutterStandardReaderW
 }
 
 class EventChannelTestsGolubetsCodec: FlutterStandardMessageCodec, @unchecked Sendable {
-  static let shared = EventChannelTestsGolubetsCodec(
-    readerWriter: EventChannelTestsGolubetsCodecReaderWriter())
+  static let shared = EventChannelTestsGolubetsCodec(readerWriter: EventChannelTestsGolubetsCodecReaderWriter())
 }
 
-var eventChannelTestsGolubetsMethodCodec = FlutterStandardMethodCodec(
-  readerWriter: EventChannelTestsGolubetsCodecReaderWriter())
+var eventChannelTestsGolubetsMethodCodec = FlutterStandardMethodCodec(readerWriter: EventChannelTestsGolubetsCodecReaderWriter());
+
 
 private class GolubetsStreamHandler<ReturnType>: NSObject, FlutterStreamHandler {
   private let wrapper: GolubetsEventChannelWrapper<ReturnType>
@@ -796,17 +762,15 @@ class StreamIntsEventChannel {
   private let channel: FlutterEventChannel
 
   init(messenger: FlutterBinaryMessenger, instanceName: String = "") {
-    var channelName =
-      "dev.bayori.golubets.golubets_integration_tests.EventChannelMethods.streamInts"
+    var channelName = "dev.bayori.golubets.golubets_integration_tests.EventChannelMethods.streamInts"
     if !instanceName.isEmpty {
       channelName += ".\(instanceName)"
     }
-    channel = FlutterEventChannel(
-      name: channelName, binaryMessenger: messenger, codec: eventChannelTestsGolubetsMethodCodec)
+    channel = FlutterEventChannel(name: channelName, binaryMessenger: messenger, codec: eventChannelTestsGolubetsMethodCodec)
   }
 
   /// Sets the stream handler for this channel, replacing any previous handler.
-  ///
+  /// 
   /// Pass `nil` to remove the event channel registration.
   func setStreamHandler(_ streamHandler: StreamIntsStreamHandler?) {
     let internalHandler = streamHandler.map({ GolubetsStreamHandler<Int64>(wrapper: $0) })
@@ -816,7 +780,7 @@ class StreamIntsEventChannel {
 
 class StreamIntsStreamHandler: GolubetsEventChannelWrapper<Int64> {
   /// Creates and returns a new event channel that calls the provided stream handler.
-  ///
+  /// 
   /// The returned channel can be stored to allow changing or removing the stream handler.
   /// If the handler will not be changed for the lifetime of the engine associated with the messenger,
   /// the return value can be ignored.
@@ -830,23 +794,21 @@ class StreamIntsStreamHandler: GolubetsEventChannelWrapper<Int64> {
     return channel
   }
 }
-
+      
 /// A typed channel for communicating with the Flutter application using asynchronous event streams.
 class StreamEventsEventChannel {
   private let channel: FlutterEventChannel
 
   init(messenger: FlutterBinaryMessenger, instanceName: String = "") {
-    var channelName =
-      "dev.bayori.golubets.golubets_integration_tests.EventChannelMethods.streamEvents"
+    var channelName = "dev.bayori.golubets.golubets_integration_tests.EventChannelMethods.streamEvents"
     if !instanceName.isEmpty {
       channelName += ".\(instanceName)"
     }
-    channel = FlutterEventChannel(
-      name: channelName, binaryMessenger: messenger, codec: eventChannelTestsGolubetsMethodCodec)
+    channel = FlutterEventChannel(name: channelName, binaryMessenger: messenger, codec: eventChannelTestsGolubetsMethodCodec)
   }
 
   /// Sets the stream handler for this channel, replacing any previous handler.
-  ///
+  /// 
   /// Pass `nil` to remove the event channel registration.
   func setStreamHandler(_ streamHandler: StreamEventsStreamHandler?) {
     let internalHandler = streamHandler.map({ GolubetsStreamHandler<PlatformEvent>(wrapper: $0) })
@@ -856,7 +818,7 @@ class StreamEventsEventChannel {
 
 class StreamEventsStreamHandler: GolubetsEventChannelWrapper<PlatformEvent> {
   /// Creates and returns a new event channel that calls the provided stream handler.
-  ///
+  /// 
   /// The returned channel can be stored to allow changing or removing the stream handler.
   /// If the handler will not be changed for the lifetime of the engine associated with the messenger,
   /// the return value can be ignored.
@@ -870,23 +832,21 @@ class StreamEventsStreamHandler: GolubetsEventChannelWrapper<PlatformEvent> {
     return channel
   }
 }
-
+      
 /// A typed channel for communicating with the Flutter application using asynchronous event streams.
 class StreamConsistentNumbersEventChannel {
   private let channel: FlutterEventChannel
 
   init(messenger: FlutterBinaryMessenger, instanceName: String = "") {
-    var channelName =
-      "dev.bayori.golubets.golubets_integration_tests.EventChannelMethods.streamConsistentNumbers"
+    var channelName = "dev.bayori.golubets.golubets_integration_tests.EventChannelMethods.streamConsistentNumbers"
     if !instanceName.isEmpty {
       channelName += ".\(instanceName)"
     }
-    channel = FlutterEventChannel(
-      name: channelName, binaryMessenger: messenger, codec: eventChannelTestsGolubetsMethodCodec)
+    channel = FlutterEventChannel(name: channelName, binaryMessenger: messenger, codec: eventChannelTestsGolubetsMethodCodec)
   }
 
   /// Sets the stream handler for this channel, replacing any previous handler.
-  ///
+  /// 
   /// Pass `nil` to remove the event channel registration.
   func setStreamHandler(_ streamHandler: StreamConsistentNumbersStreamHandler?) {
     let internalHandler = streamHandler.map({ GolubetsStreamHandler<Int64>(wrapper: $0) })
@@ -896,7 +856,7 @@ class StreamConsistentNumbersEventChannel {
 
 class StreamConsistentNumbersStreamHandler: GolubetsEventChannelWrapper<Int64> {
   /// Creates and returns a new event channel that calls the provided stream handler.
-  ///
+  /// 
   /// The returned channel can be stored to allow changing or removing the stream handler.
   /// If the handler will not be changed for the lifetime of the engine associated with the messenger,
   /// the return value can be ignored.
@@ -905,13 +865,12 @@ class StreamConsistentNumbersStreamHandler: GolubetsEventChannelWrapper<Int64> {
     instanceName: String = "",
     streamHandler: StreamConsistentNumbersStreamHandler
   ) -> StreamConsistentNumbersEventChannel {
-    let channel = StreamConsistentNumbersEventChannel(
-      messenger: messenger, instanceName: instanceName)
+    let channel = StreamConsistentNumbersEventChannel(messenger: messenger, instanceName: instanceName)
     channel.setStreamHandler(streamHandler)
     return channel
   }
 }
-
+      
 /// Generated protocol from Golubets that represents a handler of messages from Flutter.
 public protocol SealedClassApi {
   func echo(event: PlatformEvent) throws -> PlatformEvent
@@ -921,13 +880,9 @@ public protocol SealedClassApi {
 public class SealedClassApiSetup {
   static var codec: FlutterStandardMessageCodec { EventChannelTestsGolubetsCodec.shared }
   /// Sets up an instance of `SealedClassApi` to handle messages through the `binaryMessenger`.
-  public static func setUp(
-    binaryMessenger: FlutterBinaryMessenger, api: SealedClassApi?, messageChannelSuffix: String = ""
-  ) {
+  public static func setUp(binaryMessenger: FlutterBinaryMessenger, api: SealedClassApi?, messageChannelSuffix: String = "") {
     let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
-    let echoChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.SealedClassApi.echo\(channelSuffix)",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.SealedClassApi.echo\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
