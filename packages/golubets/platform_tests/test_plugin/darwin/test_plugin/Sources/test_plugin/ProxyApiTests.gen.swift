@@ -60,9 +60,7 @@ private func wrapError(_ error: Any) -> [Any?] {
 }
 
 private func createConnectionError(withChannelName channelName: String) -> ProxyApiTestsError {
-  return ProxyApiTestsError(
-    code: "channel-error", message: "Unable to establish connection on channel: '\(channelName)'.",
-    details: "")
+  return ProxyApiTestsError(code: "channel-error", message: "Unable to establish connection on channel: '\(channelName)'.", details: "")
 }
 
 enum ProxyApiTestsGolubetsInternal {
@@ -90,6 +88,7 @@ protocol ProxyApiTestsGolubetsInternalFinalizerDelegate: AnyObject {
   func onDeinit(identifier: Int64)
 }
 
+
 // Attaches to an object to receive a callback when the object is deallocated.
 internal final class ProxyApiTestsGolubetsInternalFinalizer {
   internal static let associatedObjectKey = malloc(1)!
@@ -105,18 +104,14 @@ internal final class ProxyApiTestsGolubetsInternalFinalizer {
   }
 
   internal static func attach(
-    to instance: AnyObject, identifier: Int64,
-    delegate: ProxyApiTestsGolubetsInternalFinalizerDelegate
+    to instance: AnyObject, identifier: Int64, delegate: ProxyApiTestsGolubetsInternalFinalizerDelegate
   ) {
-    let finalizer = ProxyApiTestsGolubetsInternalFinalizer(
-      identifier: identifier, delegate: delegate)
+    let finalizer = ProxyApiTestsGolubetsInternalFinalizer(identifier: identifier, delegate: delegate)
     objc_setAssociatedObject(instance, associatedObjectKey, finalizer, .OBJC_ASSOCIATION_RETAIN)
   }
 
   static func detach(from instance: AnyObject) {
-    let finalizer =
-      objc_getAssociatedObject(instance, associatedObjectKey)
-      as? ProxyApiTestsGolubetsInternalFinalizer
+    let finalizer = objc_getAssociatedObject(instance, associatedObjectKey) as? ProxyApiTestsGolubetsInternalFinalizer
     if let finalizer = finalizer {
       finalizer.delegate = nil
       objc_setAssociatedObject(instance, associatedObjectKey, nil, .OBJC_ASSOCIATION_ASSIGN)
@@ -127,6 +122,7 @@ internal final class ProxyApiTestsGolubetsInternalFinalizer {
     delegate?.onDeinit(identifier: identifier)
   }
 }
+
 
 /// Maintains instances used to communicate with the corresponding objects in Dart.
 ///
@@ -231,8 +227,7 @@ final class ProxyApiTestsGolubetsInstanceManager {
     identifiers.setObject(NSNumber(value: identifier), forKey: instance)
     weakInstances.setObject(instance, forKey: NSNumber(value: identifier))
     strongInstances.setObject(instance, forKey: NSNumber(value: identifier))
-    ProxyApiTestsGolubetsInternalFinalizer.attach(
-      to: instance, identifier: identifier, delegate: finalizerDelegate)
+    ProxyApiTestsGolubetsInternalFinalizer.attach(to: instance, identifier: identifier, delegate: finalizerDelegate)
   }
 
   /// Retrieves the identifier paired with an instance.
@@ -313,6 +308,7 @@ final class ProxyApiTestsGolubetsInstanceManager {
   }
 }
 
+
 private class ProxyApiTestsGolubetsInstanceManagerApi {
   /// The codec used for serializing messages.
   var codec: FlutterStandardMessageCodec { ProxyApiTestsGolubetsCodec.shared }
@@ -325,14 +321,9 @@ private class ProxyApiTestsGolubetsInstanceManagerApi {
   }
 
   /// Sets up an instance of `ProxyApiTestsGolubetsInstanceManagerApi` to handle messages through the `binaryMessenger`.
-  static func setUpMessageHandlers(
-    binaryMessenger: FlutterBinaryMessenger, instanceManager: ProxyApiTestsGolubetsInstanceManager?
-  ) {
+  static func setUpMessageHandlers(binaryMessenger: FlutterBinaryMessenger, instanceManager: ProxyApiTestsGolubetsInstanceManager?) {
     let codec = ProxyApiTestsGolubetsCodec.shared
-    let removeStrongReferenceChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.GolubetsInternalInstanceManager.removeStrongReference",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let removeStrongReferenceChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.GolubetsInternalInstanceManager.removeStrongReference", binaryMessenger: binaryMessenger, codec: codec)
     if let instanceManager = instanceManager {
       removeStrongReferenceChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
@@ -347,9 +338,7 @@ private class ProxyApiTestsGolubetsInstanceManagerApi {
     } else {
       removeStrongReferenceChannel.setMessageHandler(nil)
     }
-    let clearChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.GolubetsInternalInstanceManager.clear",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let clearChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.GolubetsInternalInstanceManager.clear", binaryMessenger: binaryMessenger, codec: codec)
     if let instanceManager = instanceManager {
       clearChannel.setMessageHandler { _, reply in
         do {
@@ -365,14 +354,9 @@ private class ProxyApiTestsGolubetsInstanceManagerApi {
   }
 
   /// Sends a message to the Dart `InstanceManager` to remove the strong reference of the instance associated with `identifier`.
-  public func removeStrongReference(
-    identifier identifierArg: Int64,
-    completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
-  ) {
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.GolubetsInternalInstanceManager.removeStrongReference"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+  public func removeStrongReference(identifier identifierArg: Int64, completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void) {
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.GolubetsInternalInstanceManager.removeStrongReference"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([identifierArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -392,28 +376,21 @@ private class ProxyApiTestsGolubetsInstanceManagerApi {
 protocol ProxyApiTestsGolubetsProxyApiDelegate {
   /// An implementation of [GolubetsApiProxyApiTestClass] used to add a new Dart instance of
   /// `ProxyApiTestClass` to the Dart `InstanceManager` and make calls to Dart.
-  func golubetsApiProxyApiTestClass(_ registrar: ProxyApiTestsGolubetsProxyApiRegistrar)
-    -> GolubetsApiProxyApiTestClass
+  func golubetsApiProxyApiTestClass(_ registrar: ProxyApiTestsGolubetsProxyApiRegistrar) -> GolubetsApiProxyApiTestClass
   /// An implementation of [GolubetsApiProxyApiSuperClass] used to add a new Dart instance of
   /// `ProxyApiSuperClass` to the Dart `InstanceManager` and make calls to Dart.
-  func golubetsApiProxyApiSuperClass(_ registrar: ProxyApiTestsGolubetsProxyApiRegistrar)
-    -> GolubetsApiProxyApiSuperClass
+  func golubetsApiProxyApiSuperClass(_ registrar: ProxyApiTestsGolubetsProxyApiRegistrar) -> GolubetsApiProxyApiSuperClass
   /// An implementation of [GolubetsApiProxyApiInterface] used to add a new Dart instance of
   /// `ProxyApiInterface` to the Dart `InstanceManager` and make calls to Dart.
-  func golubetsApiProxyApiInterface(_ registrar: ProxyApiTestsGolubetsProxyApiRegistrar)
-    -> GolubetsApiProxyApiInterface
+  func golubetsApiProxyApiInterface(_ registrar: ProxyApiTestsGolubetsProxyApiRegistrar) -> GolubetsApiProxyApiInterface
   /// An implementation of [GolubetsApiClassWithApiRequirement] used to add a new Dart instance of
   /// `ClassWithApiRequirement` to the Dart `InstanceManager` and make calls to Dart.
-  func golubetsApiClassWithApiRequirement(_ registrar: ProxyApiTestsGolubetsProxyApiRegistrar)
-    -> GolubetsApiClassWithApiRequirement
+  func golubetsApiClassWithApiRequirement(_ registrar: ProxyApiTestsGolubetsProxyApiRegistrar) -> GolubetsApiClassWithApiRequirement
 }
 
 extension ProxyApiTestsGolubetsProxyApiDelegate {
-  func golubetsApiProxyApiInterface(_ registrar: ProxyApiTestsGolubetsProxyApiRegistrar)
-    -> GolubetsApiProxyApiInterface
-  {
-    return GolubetsApiProxyApiInterface(
-      golubetsRegistrar: registrar, delegate: GolubetsApiDelegateProxyApiInterface())
+  func golubetsApiProxyApiInterface(_ registrar: ProxyApiTestsGolubetsProxyApiRegistrar) -> GolubetsApiProxyApiInterface {
+    return GolubetsApiProxyApiInterface(golubetsRegistrar: registrar, delegate: GolubetsApiDelegateProxyApiInterface())
   }
 }
 
@@ -427,14 +404,12 @@ open class ProxyApiTestsGolubetsProxyApiRegistrar {
   var codec: FlutterStandardMessageCodec {
     if _codec == nil {
       _codec = FlutterStandardMessageCodec(
-        readerWriter: ProxyApiTestsGolubetsInternalProxyApiCodecReaderWriter(
-          golubetsRegistrar: self))
+        readerWriter: ProxyApiTestsGolubetsInternalProxyApiCodecReaderWriter(golubetsRegistrar: self))
     }
     return _codec!
   }
 
-  private class InstanceManagerApiFinalizerDelegate: ProxyApiTestsGolubetsInternalFinalizerDelegate
-  {
+  private class InstanceManagerApiFinalizerDelegate: ProxyApiTestsGolubetsInternalFinalizerDelegate {
     let api: ProxyApiTestsGolubetsInstanceManagerApi
 
     init(_ api: ProxyApiTestsGolubetsInstanceManagerApi) {
@@ -448,8 +423,7 @@ open class ProxyApiTestsGolubetsProxyApiRegistrar {
     }
   }
 
-  init(binaryMessenger: FlutterBinaryMessenger, apiDelegate: ProxyApiTestsGolubetsProxyApiDelegate)
-  {
+  init(binaryMessenger: FlutterBinaryMessenger, apiDelegate: ProxyApiTestsGolubetsProxyApiDelegate) {
     self.binaryMessenger = binaryMessenger
     self.apiDelegate = apiDelegate
     self.instanceManager = ProxyApiTestsGolubetsInstanceManager(
@@ -458,22 +432,16 @@ open class ProxyApiTestsGolubetsProxyApiRegistrar {
   }
 
   func setUp() {
-    ProxyApiTestsGolubetsInstanceManagerApi.setUpMessageHandlers(
-      binaryMessenger: binaryMessenger, instanceManager: instanceManager)
-    GolubetsApiProxyApiTestClass.setUpMessageHandlers(
-      binaryMessenger: binaryMessenger, api: apiDelegate.golubetsApiProxyApiTestClass(self))
-    GolubetsApiProxyApiSuperClass.setUpMessageHandlers(
-      binaryMessenger: binaryMessenger, api: apiDelegate.golubetsApiProxyApiSuperClass(self))
-    GolubetsApiClassWithApiRequirement.setUpMessageHandlers(
-      binaryMessenger: binaryMessenger, api: apiDelegate.golubetsApiClassWithApiRequirement(self))
+    ProxyApiTestsGolubetsInstanceManagerApi.setUpMessageHandlers(binaryMessenger: binaryMessenger, instanceManager: instanceManager)
+    GolubetsApiProxyApiTestClass.setUpMessageHandlers(binaryMessenger: binaryMessenger, api: apiDelegate.golubetsApiProxyApiTestClass(self))
+    GolubetsApiProxyApiSuperClass.setUpMessageHandlers(binaryMessenger: binaryMessenger, api: apiDelegate.golubetsApiProxyApiSuperClass(self))
+    GolubetsApiClassWithApiRequirement.setUpMessageHandlers(binaryMessenger: binaryMessenger, api: apiDelegate.golubetsApiClassWithApiRequirement(self))
   }
   func tearDown() {
-    ProxyApiTestsGolubetsInstanceManagerApi.setUpMessageHandlers(
-      binaryMessenger: binaryMessenger, instanceManager: nil)
+    ProxyApiTestsGolubetsInstanceManagerApi.setUpMessageHandlers(binaryMessenger: binaryMessenger, instanceManager: nil)
     GolubetsApiProxyApiTestClass.setUpMessageHandlers(binaryMessenger: binaryMessenger, api: nil)
     GolubetsApiProxyApiSuperClass.setUpMessageHandlers(binaryMessenger: binaryMessenger, api: nil)
-    GolubetsApiClassWithApiRequirement.setUpMessageHandlers(
-      binaryMessenger: binaryMessenger, api: nil)
+    GolubetsApiClassWithApiRequirement.setUpMessageHandlers(binaryMessenger: binaryMessenger, api: nil)
   }
 }
 private class ProxyApiTestsGolubetsInternalProxyApiCodecReaderWriter: FlutterStandardReaderWriter {
@@ -512,64 +480,57 @@ private class ProxyApiTestsGolubetsInternalProxyApiCodecReaderWriter: FlutterSta
     }
 
     override func writeValue(_ value: Any) {
-      if value is [Any] || value is Bool || value is Data || value is [AnyHashable: Any]
-        || value is Double || value is FlutterStandardTypedData || value is Int64 || value is String
-        || value is ProxyApiTestEnum
-      {
+      if value is [Any] || value is Bool || value is Data || value is [AnyHashable: Any] || value is Double || value is FlutterStandardTypedData || value is Int64 || value is String || value is ProxyApiTestEnum {
         super.writeValue(value)
         return
       }
 
+
       if let instance = value as? ProxyApiTestClass {
-        golubetsRegistrar.apiDelegate.golubetsApiProxyApiTestClass(golubetsRegistrar)
-          .golubetsNewInstance(
-            golubetsInstance: instance
-          ) { _ in }
+        golubetsRegistrar.apiDelegate.golubetsApiProxyApiTestClass(golubetsRegistrar).golubetsNewInstance(
+          golubetsInstance: instance
+        ) { _ in }
         super.writeByte(128)
         super.writeValue(
-          golubetsRegistrar.instanceManager.identifierWithStrongReference(
-            forInstance: instance as AnyObject)!)
+          golubetsRegistrar.instanceManager.identifierWithStrongReference(forInstance: instance as AnyObject)!)
         return
       }
+
 
       if let instance = value as? ProxyApiSuperClass {
-        golubetsRegistrar.apiDelegate.golubetsApiProxyApiSuperClass(golubetsRegistrar)
-          .golubetsNewInstance(
-            golubetsInstance: instance
-          ) { _ in }
+        golubetsRegistrar.apiDelegate.golubetsApiProxyApiSuperClass(golubetsRegistrar).golubetsNewInstance(
+          golubetsInstance: instance
+        ) { _ in }
         super.writeByte(128)
         super.writeValue(
-          golubetsRegistrar.instanceManager.identifierWithStrongReference(
-            forInstance: instance as AnyObject)!)
+          golubetsRegistrar.instanceManager.identifierWithStrongReference(forInstance: instance as AnyObject)!)
         return
       }
+
 
       if let instance = value as? ProxyApiInterface {
-        golubetsRegistrar.apiDelegate.golubetsApiProxyApiInterface(golubetsRegistrar)
-          .golubetsNewInstance(
-            golubetsInstance: instance
-          ) { _ in }
+        golubetsRegistrar.apiDelegate.golubetsApiProxyApiInterface(golubetsRegistrar).golubetsNewInstance(
+          golubetsInstance: instance
+        ) { _ in }
         super.writeByte(128)
         super.writeValue(
-          golubetsRegistrar.instanceManager.identifierWithStrongReference(
-            forInstance: instance as AnyObject)!)
+          golubetsRegistrar.instanceManager.identifierWithStrongReference(forInstance: instance as AnyObject)!)
         return
       }
+
 
       if #available(iOS 15.0.0, macOS 10.0.0, *), let instance = value as? ClassWithApiRequirement {
-        golubetsRegistrar.apiDelegate.golubetsApiClassWithApiRequirement(golubetsRegistrar)
-          .golubetsNewInstance(
-            golubetsInstance: instance
-          ) { _ in }
+        golubetsRegistrar.apiDelegate.golubetsApiClassWithApiRequirement(golubetsRegistrar).golubetsNewInstance(
+          golubetsInstance: instance
+        ) { _ in }
         super.writeByte(128)
         super.writeValue(
-          golubetsRegistrar.instanceManager.identifierWithStrongReference(
-            forInstance: instance as AnyObject)!)
+          golubetsRegistrar.instanceManager.identifierWithStrongReference(forInstance: instance as AnyObject)!)
         return
       }
 
-      if let instance = value as AnyObject?,
-        golubetsRegistrar.instanceManager.containsInstance(instance)
+
+      if let instance = value as AnyObject?, golubetsRegistrar.instanceManager.containsInstance(instance)
       {
         super.writeByte(128)
         super.writeValue(
@@ -587,13 +548,11 @@ private class ProxyApiTestsGolubetsInternalProxyApiCodecReaderWriter: FlutterSta
   }
 
   override func reader(with data: Data) -> FlutterStandardReader {
-    return ProxyApiTestsGolubetsInternalProxyApiCodecReader(
-      data: data, golubetsRegistrar: golubetsRegistrar)
+    return ProxyApiTestsGolubetsInternalProxyApiCodecReader(data: data, golubetsRegistrar: golubetsRegistrar)
   }
 
   override func writer(with data: NSMutableData) -> FlutterStandardWriter {
-    return ProxyApiTestsGolubetsInternalProxyApiCodecWriter(
-      data: data, golubetsRegistrar: golubetsRegistrar)
+    return ProxyApiTestsGolubetsInternalProxyApiCodecWriter(data: data, golubetsRegistrar: golubetsRegistrar)
   }
 }
 
@@ -640,447 +599,201 @@ private class ProxyApiTestsGolubetsCodecReaderWriter: FlutterStandardReaderWrite
 }
 
 class ProxyApiTestsGolubetsCodec: FlutterStandardMessageCodec, @unchecked Sendable {
-  static let shared = ProxyApiTestsGolubetsCodec(
-    readerWriter: ProxyApiTestsGolubetsCodecReaderWriter())
+  static let shared = ProxyApiTestsGolubetsCodec(readerWriter: ProxyApiTestsGolubetsCodecReaderWriter())
 }
 
 protocol GolubetsApiDelegateProxyApiTestClass {
-  func golubetsDefaultConstructor(
-    golubetsApi: GolubetsApiProxyApiTestClass, aBool: Bool, anInt: Int64, aDouble: Double,
-    aString: String, aUint8List: FlutterStandardTypedData, aList: [Any?], aMap: [String?: Any?],
-    anEnum: ProxyApiTestEnum, aProxyApi: ProxyApiSuperClass, aNullableBool: Bool?,
-    aNullableInt: Int64?, aNullableDouble: Double?, aNullableString: String?,
-    aNullableUint8List: FlutterStandardTypedData?, aNullableList: [Any?]?,
-    aNullableMap: [String?: Any?]?, aNullableEnum: ProxyApiTestEnum?,
-    aNullableProxyApi: ProxyApiSuperClass?, boolParam: Bool, intParam: Int64, doubleParam: Double,
-    stringParam: String, aUint8ListParam: FlutterStandardTypedData, listParam: [Any?],
-    mapParam: [String?: Any?], enumParam: ProxyApiTestEnum, proxyApiParam: ProxyApiSuperClass,
-    nullableBoolParam: Bool?, nullableIntParam: Int64?, nullableDoubleParam: Double?,
-    nullableStringParam: String?, nullableUint8ListParam: FlutterStandardTypedData?,
-    nullableListParam: [Any?]?, nullableMapParam: [String?: Any?]?,
-    nullableEnumParam: ProxyApiTestEnum?, nullableProxyApiParam: ProxyApiSuperClass?
-  ) throws -> ProxyApiTestClass
-  func namedConstructor(
-    golubetsApi: GolubetsApiProxyApiTestClass, aBool: Bool, anInt: Int64, aDouble: Double,
-    aString: String, aUint8List: FlutterStandardTypedData, aList: [Any?], aMap: [String?: Any?],
-    anEnum: ProxyApiTestEnum, aProxyApi: ProxyApiSuperClass, aNullableBool: Bool?,
-    aNullableInt: Int64?, aNullableDouble: Double?, aNullableString: String?,
-    aNullableUint8List: FlutterStandardTypedData?, aNullableList: [Any?]?,
-    aNullableMap: [String?: Any?]?, aNullableEnum: ProxyApiTestEnum?,
-    aNullableProxyApi: ProxyApiSuperClass?
-  ) throws -> ProxyApiTestClass
-  func attachedField(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass)
-    throws -> ProxyApiSuperClass
+  func golubetsDefaultConstructor(golubetsApi: GolubetsApiProxyApiTestClass, aBool: Bool, anInt: Int64, aDouble: Double, aString: String, aUint8List: FlutterStandardTypedData, aList: [Any?], aMap: [String?: Any?], anEnum: ProxyApiTestEnum, aProxyApi: ProxyApiSuperClass, aNullableBool: Bool?, aNullableInt: Int64?, aNullableDouble: Double?, aNullableString: String?, aNullableUint8List: FlutterStandardTypedData?, aNullableList: [Any?]?, aNullableMap: [String?: Any?]?, aNullableEnum: ProxyApiTestEnum?, aNullableProxyApi: ProxyApiSuperClass?, boolParam: Bool, intParam: Int64, doubleParam: Double, stringParam: String, aUint8ListParam: FlutterStandardTypedData, listParam: [Any?], mapParam: [String?: Any?], enumParam: ProxyApiTestEnum, proxyApiParam: ProxyApiSuperClass, nullableBoolParam: Bool?, nullableIntParam: Int64?, nullableDoubleParam: Double?, nullableStringParam: String?, nullableUint8ListParam: FlutterStandardTypedData?, nullableListParam: [Any?]?, nullableMapParam: [String?: Any?]?, nullableEnumParam: ProxyApiTestEnum?, nullableProxyApiParam: ProxyApiSuperClass?) throws -> ProxyApiTestClass
+  func namedConstructor(golubetsApi: GolubetsApiProxyApiTestClass, aBool: Bool, anInt: Int64, aDouble: Double, aString: String, aUint8List: FlutterStandardTypedData, aList: [Any?], aMap: [String?: Any?], anEnum: ProxyApiTestEnum, aProxyApi: ProxyApiSuperClass, aNullableBool: Bool?, aNullableInt: Int64?, aNullableDouble: Double?, aNullableString: String?, aNullableUint8List: FlutterStandardTypedData?, aNullableList: [Any?]?, aNullableMap: [String?: Any?]?, aNullableEnum: ProxyApiTestEnum?, aNullableProxyApi: ProxyApiSuperClass?) throws -> ProxyApiTestClass
+  func attachedField(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass) throws -> ProxyApiSuperClass
   func staticAttachedField(golubetsApi: GolubetsApiProxyApiTestClass) throws -> ProxyApiSuperClass
   /// A no-op function taking no arguments and returning no value, to sanity
   /// test basic calling.
   func noop(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass) throws
   /// Returns an error, to test error handling.
-  func throwError(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass)
-    throws -> Any?
+  func throwError(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass) throws -> Any?
   /// Returns an error from a void function, to test error handling.
-  func throwErrorFromVoid(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass) throws
+  func throwErrorFromVoid(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass) throws
   /// Returns a Flutter error, to test error handling.
-  func throwFlutterError(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass
-  ) throws -> Any?
+  func throwFlutterError(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass) throws -> Any?
   /// Returns passed in int.
-  func echoInt(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anInt: Int64
-  ) throws -> Int64
+  func echoInt(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anInt: Int64) throws -> Int64
   /// Returns passed in double.
-  func echoDouble(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aDouble: Double
-  ) throws -> Double
+  func echoDouble(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aDouble: Double) throws -> Double
   /// Returns the passed in boolean.
-  func echoBool(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aBool: Bool
-  ) throws -> Bool
+  func echoBool(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aBool: Bool) throws -> Bool
   /// Returns the passed in string.
-  func echoString(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aString: String
-  ) throws -> String
+  func echoString(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aString: String) throws -> String
   /// Returns the passed in Uint8List.
-  func echoUint8List(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aUint8List: FlutterStandardTypedData
-  ) throws -> FlutterStandardTypedData
+  func echoUint8List(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aUint8List: FlutterStandardTypedData) throws -> FlutterStandardTypedData
   /// Returns the passed in generic Object.
-  func echoObject(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anObject: Any
-  ) throws -> Any
+  func echoObject(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anObject: Any) throws -> Any
   /// Returns the passed list, to test serialization and deserialization.
-  func echoList(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aList: [Any?]
-  ) throws -> [Any?]
+  func echoList(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aList: [Any?]) throws -> [Any?]
   /// Returns the passed list with ProxyApis, to test serialization and
   /// deserialization.
-  func echoProxyApiList(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aList: [ProxyApiTestClass]
-  ) throws -> [ProxyApiTestClass]
+  func echoProxyApiList(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aList: [ProxyApiTestClass]) throws -> [ProxyApiTestClass]
   /// Returns the passed map, to test serialization and deserialization.
-  func echoMap(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aMap: [String?: Any?]
-  ) throws -> [String?: Any?]
+  func echoMap(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aMap: [String?: Any?]) throws -> [String?: Any?]
   /// Returns the passed map with ProxyApis, to test serialization and
   /// deserialization.
-  func echoProxyApiMap(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aMap: [String: ProxyApiTestClass]
-  ) throws -> [String: ProxyApiTestClass]
+  func echoProxyApiMap(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aMap: [String: ProxyApiTestClass]) throws -> [String: ProxyApiTestClass]
   /// Returns the passed enum to test serialization and deserialization.
-  func echoEnum(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    anEnum: ProxyApiTestEnum
-  ) throws -> ProxyApiTestEnum
+  func echoEnum(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anEnum: ProxyApiTestEnum) throws -> ProxyApiTestEnum
   /// Returns the passed ProxyApi to test serialization and deserialization.
-  func echoProxyApi(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aProxyApi: ProxyApiSuperClass
-  ) throws -> ProxyApiSuperClass
+  func echoProxyApi(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aProxyApi: ProxyApiSuperClass) throws -> ProxyApiSuperClass
   /// Returns passed in int.
-  func echoNullableInt(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aNullableInt: Int64?
-  ) throws -> Int64?
+  func echoNullableInt(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aNullableInt: Int64?) throws -> Int64?
   /// Returns passed in double.
-  func echoNullableDouble(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aNullableDouble: Double?
-  ) throws -> Double?
+  func echoNullableDouble(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aNullableDouble: Double?) throws -> Double?
   /// Returns the passed in boolean.
-  func echoNullableBool(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aNullableBool: Bool?
-  ) throws -> Bool?
+  func echoNullableBool(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aNullableBool: Bool?) throws -> Bool?
   /// Returns the passed in string.
-  func echoNullableString(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aNullableString: String?
-  ) throws -> String?
+  func echoNullableString(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aNullableString: String?) throws -> String?
   /// Returns the passed in Uint8List.
-  func echoNullableUint8List(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aNullableUint8List: FlutterStandardTypedData?
-  ) throws -> FlutterStandardTypedData?
+  func echoNullableUint8List(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aNullableUint8List: FlutterStandardTypedData?) throws -> FlutterStandardTypedData?
   /// Returns the passed in generic Object.
-  func echoNullableObject(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aNullableObject: Any?
-  ) throws -> Any?
+  func echoNullableObject(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aNullableObject: Any?) throws -> Any?
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNullableList(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aNullableList: [Any?]?
-  ) throws -> [Any?]?
+  func echoNullableList(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aNullableList: [Any?]?) throws -> [Any?]?
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullableMap(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aNullableMap: [String?: Any?]?
-  ) throws -> [String?: Any?]?
-  func echoNullableEnum(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aNullableEnum: ProxyApiTestEnum?
-  ) throws -> ProxyApiTestEnum?
+  func echoNullableMap(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aNullableMap: [String?: Any?]?) throws -> [String?: Any?]?
+  func echoNullableEnum(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aNullableEnum: ProxyApiTestEnum?) throws -> ProxyApiTestEnum?
   /// Returns the passed ProxyApi to test serialization and deserialization.
-  func echoNullableProxyApi(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aNullableProxyApi: ProxyApiSuperClass?
-  ) throws -> ProxyApiSuperClass?
+  func echoNullableProxyApi(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aNullableProxyApi: ProxyApiSuperClass?) throws -> ProxyApiSuperClass?
   /// A no-op function taking no arguments and returning no value, to sanity
   /// test basic asynchronous calling.
-  func noopAsync(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    completion: @escaping (Result<Void, Error>) -> Void)
+  func noopAsync(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, completion: @escaping (Result<Void, Error>) -> Void)
   /// Returns passed in int asynchronously.
-  func echoAsyncInt(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anInt: Int64,
-    completion: @escaping (Result<Int64, Error>) -> Void)
+  func echoAsyncInt(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anInt: Int64, completion: @escaping (Result<Int64, Error>) -> Void)
   /// Returns passed in double asynchronously.
-  func echoAsyncDouble(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aDouble: Double,
-    completion: @escaping (Result<Double, Error>) -> Void)
+  func echoAsyncDouble(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aDouble: Double, completion: @escaping (Result<Double, Error>) -> Void)
   /// Returns the passed in boolean asynchronously.
-  func echoAsyncBool(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aBool: Bool,
-    completion: @escaping (Result<Bool, Error>) -> Void)
+  func echoAsyncBool(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aBool: Bool, completion: @escaping (Result<Bool, Error>) -> Void)
   /// Returns the passed string asynchronously.
-  func echoAsyncString(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aString: String,
-    completion: @escaping (Result<String, Error>) -> Void)
+  func echoAsyncString(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aString: String, completion: @escaping (Result<String, Error>) -> Void)
   /// Returns the passed in Uint8List asynchronously.
-  func echoAsyncUint8List(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aUint8List: FlutterStandardTypedData,
-    completion: @escaping (Result<FlutterStandardTypedData, Error>) -> Void)
+  func echoAsyncUint8List(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aUint8List: FlutterStandardTypedData, completion: @escaping (Result<FlutterStandardTypedData, Error>) -> Void)
   /// Returns the passed in generic Object asynchronously.
-  func echoAsyncObject(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anObject: Any,
-    completion: @escaping (Result<Any, Error>) -> Void)
+  func echoAsyncObject(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anObject: Any, completion: @escaping (Result<Any, Error>) -> Void)
   /// Returns the passed list, to test asynchronous serialization and deserialization.
-  func echoAsyncList(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aList: [Any?],
-    completion: @escaping (Result<[Any?], Error>) -> Void)
+  func echoAsyncList(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aList: [Any?], completion: @escaping (Result<[Any?], Error>) -> Void)
   /// Returns the passed map, to test asynchronous serialization and deserialization.
-  func echoAsyncMap(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aMap: [String?: Any?], completion: @escaping (Result<[String?: Any?], Error>) -> Void)
+  func echoAsyncMap(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aMap: [String?: Any?], completion: @escaping (Result<[String?: Any?], Error>) -> Void)
   /// Returns the passed enum, to test asynchronous serialization and deserialization.
-  func echoAsyncEnum(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    anEnum: ProxyApiTestEnum, completion: @escaping (Result<ProxyApiTestEnum, Error>) -> Void)
+  func echoAsyncEnum(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anEnum: ProxyApiTestEnum, completion: @escaping (Result<ProxyApiTestEnum, Error>) -> Void)
   /// Responds with an error from an async function returning a value.
-  func throwAsyncError(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    completion: @escaping (Result<Any?, Error>) -> Void)
+  func throwAsyncError(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, completion: @escaping (Result<Any?, Error>) -> Void)
   /// Responds with an error from an async void function.
-  func throwAsyncErrorFromVoid(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    completion: @escaping (Result<Void, Error>) -> Void)
+  func throwAsyncErrorFromVoid(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, completion: @escaping (Result<Void, Error>) -> Void)
   /// Responds with a Flutter error from an async function returning a value.
-  func throwAsyncFlutterError(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    completion: @escaping (Result<Any?, Error>) -> Void)
+  func throwAsyncFlutterError(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, completion: @escaping (Result<Any?, Error>) -> Void)
   /// Returns passed in int asynchronously.
-  func echoAsyncNullableInt(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anInt: Int64?,
-    completion: @escaping (Result<Int64?, Error>) -> Void)
+  func echoAsyncNullableInt(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anInt: Int64?, completion: @escaping (Result<Int64?, Error>) -> Void)
   /// Returns passed in double asynchronously.
-  func echoAsyncNullableDouble(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aDouble: Double?, completion: @escaping (Result<Double?, Error>) -> Void)
+  func echoAsyncNullableDouble(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aDouble: Double?, completion: @escaping (Result<Double?, Error>) -> Void)
   /// Returns the passed in boolean asynchronously.
-  func echoAsyncNullableBool(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aBool: Bool?,
-    completion: @escaping (Result<Bool?, Error>) -> Void)
+  func echoAsyncNullableBool(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aBool: Bool?, completion: @escaping (Result<Bool?, Error>) -> Void)
   /// Returns the passed string asynchronously.
-  func echoAsyncNullableString(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aString: String?, completion: @escaping (Result<String?, Error>) -> Void)
+  func echoAsyncNullableString(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aString: String?, completion: @escaping (Result<String?, Error>) -> Void)
   /// Returns the passed in Uint8List asynchronously.
-  func echoAsyncNullableUint8List(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aUint8List: FlutterStandardTypedData?,
-    completion: @escaping (Result<FlutterStandardTypedData?, Error>) -> Void)
+  func echoAsyncNullableUint8List(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aUint8List: FlutterStandardTypedData?, completion: @escaping (Result<FlutterStandardTypedData?, Error>) -> Void)
   /// Returns the passed in generic Object asynchronously.
-  func echoAsyncNullableObject(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anObject: Any?,
-    completion: @escaping (Result<Any?, Error>) -> Void)
+  func echoAsyncNullableObject(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anObject: Any?, completion: @escaping (Result<Any?, Error>) -> Void)
   /// Returns the passed list, to test asynchronous serialization and deserialization.
-  func echoAsyncNullableList(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aList: [Any?]?,
-    completion: @escaping (Result<[Any?]?, Error>) -> Void)
+  func echoAsyncNullableList(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aList: [Any?]?, completion: @escaping (Result<[Any?]?, Error>) -> Void)
   /// Returns the passed map, to test asynchronous serialization and deserialization.
-  func echoAsyncNullableMap(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aMap: [String?: Any?]?, completion: @escaping (Result<[String?: Any?]?, Error>) -> Void)
+  func echoAsyncNullableMap(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aMap: [String?: Any?]?, completion: @escaping (Result<[String?: Any?]?, Error>) -> Void)
   /// Returns the passed enum, to test asynchronous serialization and deserialization.
-  func echoAsyncNullableEnum(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    anEnum: ProxyApiTestEnum?, completion: @escaping (Result<ProxyApiTestEnum?, Error>) -> Void)
+  func echoAsyncNullableEnum(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anEnum: ProxyApiTestEnum?, completion: @escaping (Result<ProxyApiTestEnum?, Error>) -> Void)
   func staticNoop(golubetsApi: GolubetsApiProxyApiTestClass) throws
   func echoStaticString(golubetsApi: GolubetsApiProxyApiTestClass, aString: String) throws -> String
-  func staticAsyncNoop(
-    golubetsApi: GolubetsApiProxyApiTestClass, completion: @escaping (Result<Void, Error>) -> Void)
-  func callFlutterNoop(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    completion: @escaping (Result<Void, Error>) -> Void)
-  func callFlutterThrowError(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    completion: @escaping (Result<Any?, Error>) -> Void)
-  func callFlutterThrowErrorFromVoid(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    completion: @escaping (Result<Void, Error>) -> Void)
-  func callFlutterEchoBool(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aBool: Bool,
-    completion: @escaping (Result<Bool, Error>) -> Void)
-  func callFlutterEchoInt(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anInt: Int64,
-    completion: @escaping (Result<Int64, Error>) -> Void)
-  func callFlutterEchoDouble(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aDouble: Double,
-    completion: @escaping (Result<Double, Error>) -> Void)
-  func callFlutterEchoString(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aString: String,
-    completion: @escaping (Result<String, Error>) -> Void)
-  func callFlutterEchoUint8List(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aUint8List: FlutterStandardTypedData,
-    completion: @escaping (Result<FlutterStandardTypedData, Error>) -> Void)
-  func callFlutterEchoList(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aList: [Any?],
-    completion: @escaping (Result<[Any?], Error>) -> Void)
-  func callFlutterEchoProxyApiList(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aList: [ProxyApiTestClass?], completion: @escaping (Result<[ProxyApiTestClass?], Error>) -> Void
-  )
-  func callFlutterEchoMap(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aMap: [String?: Any?], completion: @escaping (Result<[String?: Any?], Error>) -> Void)
-  func callFlutterEchoProxyApiMap(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aMap: [String?: ProxyApiTestClass?],
-    completion: @escaping (Result<[String?: ProxyApiTestClass?], Error>) -> Void)
-  func callFlutterEchoEnum(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    anEnum: ProxyApiTestEnum, completion: @escaping (Result<ProxyApiTestEnum, Error>) -> Void)
-  func callFlutterEchoProxyApi(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aProxyApi: ProxyApiSuperClass, completion: @escaping (Result<ProxyApiSuperClass, Error>) -> Void
-  )
-  func callFlutterEchoNullableBool(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aBool: Bool?,
-    completion: @escaping (Result<Bool?, Error>) -> Void)
-  func callFlutterEchoNullableInt(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anInt: Int64?,
-    completion: @escaping (Result<Int64?, Error>) -> Void)
-  func callFlutterEchoNullableDouble(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aDouble: Double?, completion: @escaping (Result<Double?, Error>) -> Void)
-  func callFlutterEchoNullableString(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aString: String?, completion: @escaping (Result<String?, Error>) -> Void)
-  func callFlutterEchoNullableUint8List(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aUint8List: FlutterStandardTypedData?,
-    completion: @escaping (Result<FlutterStandardTypedData?, Error>) -> Void)
-  func callFlutterEchoNullableList(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aList: [Any?]?,
-    completion: @escaping (Result<[Any?]?, Error>) -> Void)
-  func callFlutterEchoNullableMap(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aMap: [String?: Any?]?, completion: @escaping (Result<[String?: Any?]?, Error>) -> Void)
-  func callFlutterEchoNullableEnum(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    anEnum: ProxyApiTestEnum?, completion: @escaping (Result<ProxyApiTestEnum?, Error>) -> Void)
-  func callFlutterEchoNullableProxyApi(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    aProxyApi: ProxyApiSuperClass?,
-    completion: @escaping (Result<ProxyApiSuperClass?, Error>) -> Void)
-  func callFlutterNoopAsync(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass,
-    completion: @escaping (Result<Void, Error>) -> Void)
-  func callFlutterEchoAsyncString(
-    golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aString: String,
-    completion: @escaping (Result<String, Error>) -> Void)
+  func staticAsyncNoop(golubetsApi: GolubetsApiProxyApiTestClass, completion: @escaping (Result<Void, Error>) -> Void)
+  func callFlutterNoop(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, completion: @escaping (Result<Void, Error>) -> Void)
+  func callFlutterThrowError(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, completion: @escaping (Result<Any?, Error>) -> Void)
+  func callFlutterThrowErrorFromVoid(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, completion: @escaping (Result<Void, Error>) -> Void)
+  func callFlutterEchoBool(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aBool: Bool, completion: @escaping (Result<Bool, Error>) -> Void)
+  func callFlutterEchoInt(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anInt: Int64, completion: @escaping (Result<Int64, Error>) -> Void)
+  func callFlutterEchoDouble(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aDouble: Double, completion: @escaping (Result<Double, Error>) -> Void)
+  func callFlutterEchoString(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aString: String, completion: @escaping (Result<String, Error>) -> Void)
+  func callFlutterEchoUint8List(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aUint8List: FlutterStandardTypedData, completion: @escaping (Result<FlutterStandardTypedData, Error>) -> Void)
+  func callFlutterEchoList(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aList: [Any?], completion: @escaping (Result<[Any?], Error>) -> Void)
+  func callFlutterEchoProxyApiList(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aList: [ProxyApiTestClass?], completion: @escaping (Result<[ProxyApiTestClass?], Error>) -> Void)
+  func callFlutterEchoMap(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aMap: [String?: Any?], completion: @escaping (Result<[String?: Any?], Error>) -> Void)
+  func callFlutterEchoProxyApiMap(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aMap: [String?: ProxyApiTestClass?], completion: @escaping (Result<[String?: ProxyApiTestClass?], Error>) -> Void)
+  func callFlutterEchoEnum(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anEnum: ProxyApiTestEnum, completion: @escaping (Result<ProxyApiTestEnum, Error>) -> Void)
+  func callFlutterEchoProxyApi(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aProxyApi: ProxyApiSuperClass, completion: @escaping (Result<ProxyApiSuperClass, Error>) -> Void)
+  func callFlutterEchoNullableBool(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aBool: Bool?, completion: @escaping (Result<Bool?, Error>) -> Void)
+  func callFlutterEchoNullableInt(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anInt: Int64?, completion: @escaping (Result<Int64?, Error>) -> Void)
+  func callFlutterEchoNullableDouble(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aDouble: Double?, completion: @escaping (Result<Double?, Error>) -> Void)
+  func callFlutterEchoNullableString(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aString: String?, completion: @escaping (Result<String?, Error>) -> Void)
+  func callFlutterEchoNullableUint8List(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aUint8List: FlutterStandardTypedData?, completion: @escaping (Result<FlutterStandardTypedData?, Error>) -> Void)
+  func callFlutterEchoNullableList(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aList: [Any?]?, completion: @escaping (Result<[Any?]?, Error>) -> Void)
+  func callFlutterEchoNullableMap(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aMap: [String?: Any?]?, completion: @escaping (Result<[String?: Any?]?, Error>) -> Void)
+  func callFlutterEchoNullableEnum(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, anEnum: ProxyApiTestEnum?, completion: @escaping (Result<ProxyApiTestEnum?, Error>) -> Void)
+  func callFlutterEchoNullableProxyApi(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aProxyApi: ProxyApiSuperClass?, completion: @escaping (Result<ProxyApiSuperClass?, Error>) -> Void)
+  func callFlutterNoopAsync(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, completion: @escaping (Result<Void, Error>) -> Void)
+  func callFlutterEchoAsyncString(golubetsApi: GolubetsApiProxyApiTestClass, golubetsInstance: ProxyApiTestClass, aString: String, completion: @escaping (Result<String, Error>) -> Void)
 }
 
 protocol GolubetsApiProtocolProxyApiTestClass {
   /// A no-op function taking no arguments and returning no value, to sanity
   /// test basic calling.
-  func flutterNoop(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void)
+  func flutterNoop(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void)
   /// Responds with an error from an async function returning a value.
-  func flutterThrowError(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    completion: @escaping (Result<Any?, ProxyApiTestsError>) -> Void)
+  func flutterThrowError(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, completion: @escaping (Result<Any?, ProxyApiTestsError>) -> Void)
   /// Responds with an error from an async void function.
-  func flutterThrowErrorFromVoid(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void)
+  func flutterThrowErrorFromVoid(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void)
   /// Returns the passed boolean, to test serialization and deserialization.
-  func flutterEchoBool(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aBool aBoolArg: Bool,
-    completion: @escaping (Result<Bool, ProxyApiTestsError>) -> Void)
+  func flutterEchoBool(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aBool aBoolArg: Bool, completion: @escaping (Result<Bool, ProxyApiTestsError>) -> Void)
   /// Returns the passed int, to test serialization and deserialization.
-  func flutterEchoInt(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, anInt anIntArg: Int64,
-    completion: @escaping (Result<Int64, ProxyApiTestsError>) -> Void)
+  func flutterEchoInt(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, anInt anIntArg: Int64, completion: @escaping (Result<Int64, ProxyApiTestsError>) -> Void)
   /// Returns the passed double, to test serialization and deserialization.
-  func flutterEchoDouble(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aDouble aDoubleArg: Double,
-    completion: @escaping (Result<Double, ProxyApiTestsError>) -> Void)
+  func flutterEchoDouble(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aDouble aDoubleArg: Double, completion: @escaping (Result<Double, ProxyApiTestsError>) -> Void)
   /// Returns the passed string, to test serialization and deserialization.
-  func flutterEchoString(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aString aStringArg: String,
-    completion: @escaping (Result<String, ProxyApiTestsError>) -> Void)
+  func flutterEchoString(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aString aStringArg: String, completion: @escaping (Result<String, ProxyApiTestsError>) -> Void)
   /// Returns the passed byte list, to test serialization and deserialization.
-  func flutterEchoUint8List(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    aList aListArg: FlutterStandardTypedData,
-    completion: @escaping (Result<FlutterStandardTypedData, ProxyApiTestsError>) -> Void)
+  func flutterEchoUint8List(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aList aListArg: FlutterStandardTypedData, completion: @escaping (Result<FlutterStandardTypedData, ProxyApiTestsError>) -> Void)
   /// Returns the passed list, to test serialization and deserialization.
-  func flutterEchoList(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aList aListArg: [Any?],
-    completion: @escaping (Result<[Any?], ProxyApiTestsError>) -> Void)
+  func flutterEchoList(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aList aListArg: [Any?], completion: @escaping (Result<[Any?], ProxyApiTestsError>) -> Void)
   /// Returns the passed list with ProxyApis, to test serialization and
   /// deserialization.
-  func flutterEchoProxyApiList(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aList aListArg: [ProxyApiTestClass?],
-    completion: @escaping (Result<[ProxyApiTestClass?], ProxyApiTestsError>) -> Void)
+  func flutterEchoProxyApiList(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aList aListArg: [ProxyApiTestClass?], completion: @escaping (Result<[ProxyApiTestClass?], ProxyApiTestsError>) -> Void)
   /// Returns the passed map, to test serialization and deserialization.
-  func flutterEchoMap(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aMap aMapArg: [String?: Any?],
-    completion: @escaping (Result<[String?: Any?], ProxyApiTestsError>) -> Void)
+  func flutterEchoMap(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aMap aMapArg: [String?: Any?], completion: @escaping (Result<[String?: Any?], ProxyApiTestsError>) -> Void)
   /// Returns the passed map with ProxyApis, to test serialization and
   /// deserialization.
-  func flutterEchoProxyApiMap(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    aMap aMapArg: [String?: ProxyApiTestClass?],
-    completion: @escaping (Result<[String?: ProxyApiTestClass?], ProxyApiTestsError>) -> Void)
+  func flutterEchoProxyApiMap(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aMap aMapArg: [String?: ProxyApiTestClass?], completion: @escaping (Result<[String?: ProxyApiTestClass?], ProxyApiTestsError>) -> Void)
   /// Returns the passed enum to test serialization and deserialization.
-  func flutterEchoEnum(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, anEnum anEnumArg: ProxyApiTestEnum,
-    completion: @escaping (Result<ProxyApiTestEnum, ProxyApiTestsError>) -> Void)
+  func flutterEchoEnum(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, anEnum anEnumArg: ProxyApiTestEnum, completion: @escaping (Result<ProxyApiTestEnum, ProxyApiTestsError>) -> Void)
   /// Returns the passed ProxyApi to test serialization and deserialization.
-  func flutterEchoProxyApi(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    aProxyApi aProxyApiArg: ProxyApiSuperClass,
-    completion: @escaping (Result<ProxyApiSuperClass, ProxyApiTestsError>) -> Void)
+  func flutterEchoProxyApi(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aProxyApi aProxyApiArg: ProxyApiSuperClass, completion: @escaping (Result<ProxyApiSuperClass, ProxyApiTestsError>) -> Void)
   /// Returns the passed boolean, to test serialization and deserialization.
-  func flutterEchoNullableBool(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aBool aBoolArg: Bool?,
-    completion: @escaping (Result<Bool?, ProxyApiTestsError>) -> Void)
+  func flutterEchoNullableBool(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aBool aBoolArg: Bool?, completion: @escaping (Result<Bool?, ProxyApiTestsError>) -> Void)
   /// Returns the passed int, to test serialization and deserialization.
-  func flutterEchoNullableInt(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, anInt anIntArg: Int64?,
-    completion: @escaping (Result<Int64?, ProxyApiTestsError>) -> Void)
+  func flutterEchoNullableInt(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, anInt anIntArg: Int64?, completion: @escaping (Result<Int64?, ProxyApiTestsError>) -> Void)
   /// Returns the passed double, to test serialization and deserialization.
-  func flutterEchoNullableDouble(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aDouble aDoubleArg: Double?,
-    completion: @escaping (Result<Double?, ProxyApiTestsError>) -> Void)
+  func flutterEchoNullableDouble(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aDouble aDoubleArg: Double?, completion: @escaping (Result<Double?, ProxyApiTestsError>) -> Void)
   /// Returns the passed string, to test serialization and deserialization.
-  func flutterEchoNullableString(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aString aStringArg: String?,
-    completion: @escaping (Result<String?, ProxyApiTestsError>) -> Void)
+  func flutterEchoNullableString(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aString aStringArg: String?, completion: @escaping (Result<String?, ProxyApiTestsError>) -> Void)
   /// Returns the passed byte list, to test serialization and deserialization.
-  func flutterEchoNullableUint8List(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    aList aListArg: FlutterStandardTypedData?,
-    completion: @escaping (Result<FlutterStandardTypedData?, ProxyApiTestsError>) -> Void)
+  func flutterEchoNullableUint8List(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aList aListArg: FlutterStandardTypedData?, completion: @escaping (Result<FlutterStandardTypedData?, ProxyApiTestsError>) -> Void)
   /// Returns the passed list, to test serialization and deserialization.
-  func flutterEchoNullableList(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aList aListArg: [Any?]?,
-    completion: @escaping (Result<[Any?]?, ProxyApiTestsError>) -> Void)
+  func flutterEchoNullableList(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aList aListArg: [Any?]?, completion: @escaping (Result<[Any?]?, ProxyApiTestsError>) -> Void)
   /// Returns the passed map, to test serialization and deserialization.
-  func flutterEchoNullableMap(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aMap aMapArg: [String?: Any?]?,
-    completion: @escaping (Result<[String?: Any?]?, ProxyApiTestsError>) -> Void)
+  func flutterEchoNullableMap(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aMap aMapArg: [String?: Any?]?, completion: @escaping (Result<[String?: Any?]?, ProxyApiTestsError>) -> Void)
   /// Returns the passed enum to test serialization and deserialization.
-  func flutterEchoNullableEnum(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, anEnum anEnumArg: ProxyApiTestEnum?,
-    completion: @escaping (Result<ProxyApiTestEnum?, ProxyApiTestsError>) -> Void)
+  func flutterEchoNullableEnum(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, anEnum anEnumArg: ProxyApiTestEnum?, completion: @escaping (Result<ProxyApiTestEnum?, ProxyApiTestsError>) -> Void)
   /// Returns the passed ProxyApi to test serialization and deserialization.
-  func flutterEchoNullableProxyApi(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    aProxyApi aProxyApiArg: ProxyApiSuperClass?,
-    completion: @escaping (Result<ProxyApiSuperClass?, ProxyApiTestsError>) -> Void)
+  func flutterEchoNullableProxyApi(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aProxyApi aProxyApiArg: ProxyApiSuperClass?, completion: @escaping (Result<ProxyApiSuperClass?, ProxyApiTestsError>) -> Void)
   /// A no-op function taking no arguments and returning no value, to sanity
   /// test basic asynchronous calling.
-  func flutterNoopAsync(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void)
+  func flutterNoopAsync(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void)
   /// Returns the passed in generic Object asynchronously.
-  func flutterEchoAsyncString(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aString aStringArg: String,
-    completion: @escaping (Result<String, ProxyApiTestsError>) -> Void)
+  func flutterEchoAsyncString(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aString aStringArg: String, completion: @escaping (Result<String, ProxyApiTestsError>) -> Void)
 }
 
-final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
+final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass  {
   unowned let golubetsRegistrar: ProxyApiTestsGolubetsProxyApiRegistrar
   let golubetsDelegate: GolubetsApiDelegateProxyApiTestClass
   ///An implementation of [ProxyApiSuperClass] used to access callback methods
@@ -1093,26 +806,17 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     return golubetsRegistrar.apiDelegate.golubetsApiProxyApiInterface(golubetsRegistrar)
   }
 
-  init(
-    golubetsRegistrar: ProxyApiTestsGolubetsProxyApiRegistrar,
-    delegate: GolubetsApiDelegateProxyApiTestClass
-  ) {
+  init(golubetsRegistrar: ProxyApiTestsGolubetsProxyApiRegistrar, delegate: GolubetsApiDelegateProxyApiTestClass) {
     self.golubetsRegistrar = golubetsRegistrar
     self.golubetsDelegate = delegate
   }
-  static func setUpMessageHandlers(
-    binaryMessenger: FlutterBinaryMessenger, api: GolubetsApiProxyApiTestClass?
-  ) {
+  static func setUpMessageHandlers(binaryMessenger: FlutterBinaryMessenger, api: GolubetsApiProxyApiTestClass?) {
     let codec: FlutterStandardMessageCodec =
       api != nil
       ? FlutterStandardMessageCodec(
-        readerWriter: ProxyApiTestsGolubetsInternalProxyApiCodecReaderWriter(
-          golubetsRegistrar: api!.golubetsRegistrar))
+        readerWriter: ProxyApiTestsGolubetsInternalProxyApiCodecReaderWriter(golubetsRegistrar: api!.golubetsRegistrar))
       : FlutterStandardMessageCodec.sharedInstance()
-    let golubetsDefaultConstructorChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.golubets_defaultConstructor",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let golubetsDefaultConstructorChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.golubets_defaultConstructor", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       golubetsDefaultConstructorChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
@@ -1155,25 +859,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let nullableProxyApiParamArg: ProxyApiSuperClass? = nilOrValue(args[36])
         do {
           api.golubetsRegistrar.instanceManager.addDartCreatedInstance(
-            try api.golubetsDelegate.golubetsDefaultConstructor(
-              golubetsApi: api, aBool: aBoolArg, anInt: anIntArg, aDouble: aDoubleArg,
-              aString: aStringArg, aUint8List: aUint8ListArg, aList: aListArg, aMap: aMapArg,
-              anEnum: anEnumArg, aProxyApi: aProxyApiArg, aNullableBool: aNullableBoolArg,
-              aNullableInt: aNullableIntArg, aNullableDouble: aNullableDoubleArg,
-              aNullableString: aNullableStringArg, aNullableUint8List: aNullableUint8ListArg,
-              aNullableList: aNullableListArg, aNullableMap: aNullableMapArg,
-              aNullableEnum: aNullableEnumArg, aNullableProxyApi: aNullableProxyApiArg,
-              boolParam: boolParamArg, intParam: intParamArg, doubleParam: doubleParamArg,
-              stringParam: stringParamArg, aUint8ListParam: aUint8ListParamArg,
-              listParam: listParamArg, mapParam: mapParamArg, enumParam: enumParamArg,
-              proxyApiParam: proxyApiParamArg, nullableBoolParam: nullableBoolParamArg,
-              nullableIntParam: nullableIntParamArg, nullableDoubleParam: nullableDoubleParamArg,
-              nullableStringParam: nullableStringParamArg,
-              nullableUint8ListParam: nullableUint8ListParamArg,
-              nullableListParam: nullableListParamArg, nullableMapParam: nullableMapParamArg,
-              nullableEnumParam: nullableEnumParamArg,
-              nullableProxyApiParam: nullableProxyApiParamArg),
-            withIdentifier: golubetsIdentifierArg)
+try api.golubetsDelegate.golubetsDefaultConstructor(golubetsApi: api, aBool: aBoolArg, anInt: anIntArg, aDouble: aDoubleArg, aString: aStringArg, aUint8List: aUint8ListArg, aList: aListArg, aMap: aMapArg, anEnum: anEnumArg, aProxyApi: aProxyApiArg, aNullableBool: aNullableBoolArg, aNullableInt: aNullableIntArg, aNullableDouble: aNullableDoubleArg, aNullableString: aNullableStringArg, aNullableUint8List: aNullableUint8ListArg, aNullableList: aNullableListArg, aNullableMap: aNullableMapArg, aNullableEnum: aNullableEnumArg, aNullableProxyApi: aNullableProxyApiArg, boolParam: boolParamArg, intParam: intParamArg, doubleParam: doubleParamArg, stringParam: stringParamArg, aUint8ListParam: aUint8ListParamArg, listParam: listParamArg, mapParam: mapParamArg, enumParam: enumParamArg, proxyApiParam: proxyApiParamArg, nullableBoolParam: nullableBoolParamArg, nullableIntParam: nullableIntParamArg, nullableDoubleParam: nullableDoubleParamArg, nullableStringParam: nullableStringParamArg, nullableUint8ListParam: nullableUint8ListParamArg, nullableListParam: nullableListParamArg, nullableMapParam: nullableMapParamArg, nullableEnumParam: nullableEnumParamArg, nullableProxyApiParam: nullableProxyApiParamArg),
+withIdentifier: golubetsIdentifierArg)
           reply(wrapResult(nil))
         } catch {
           reply(wrapError(error))
@@ -1182,9 +869,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       golubetsDefaultConstructorChannel.setMessageHandler(nil)
     }
-    let namedConstructorChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.namedConstructor",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let namedConstructorChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.namedConstructor", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       namedConstructorChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
@@ -1209,15 +894,8 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let aNullableProxyApiArg: ProxyApiSuperClass? = nilOrValue(args[18])
         do {
           api.golubetsRegistrar.instanceManager.addDartCreatedInstance(
-            try api.golubetsDelegate.namedConstructor(
-              golubetsApi: api, aBool: aBoolArg, anInt: anIntArg, aDouble: aDoubleArg,
-              aString: aStringArg, aUint8List: aUint8ListArg, aList: aListArg, aMap: aMapArg,
-              anEnum: anEnumArg, aProxyApi: aProxyApiArg, aNullableBool: aNullableBoolArg,
-              aNullableInt: aNullableIntArg, aNullableDouble: aNullableDoubleArg,
-              aNullableString: aNullableStringArg, aNullableUint8List: aNullableUint8ListArg,
-              aNullableList: aNullableListArg, aNullableMap: aNullableMapArg,
-              aNullableEnum: aNullableEnumArg, aNullableProxyApi: aNullableProxyApiArg),
-            withIdentifier: golubetsIdentifierArg)
+try api.golubetsDelegate.namedConstructor(golubetsApi: api, aBool: aBoolArg, anInt: anIntArg, aDouble: aDoubleArg, aString: aStringArg, aUint8List: aUint8ListArg, aList: aListArg, aMap: aMapArg, anEnum: anEnumArg, aProxyApi: aProxyApiArg, aNullableBool: aNullableBoolArg, aNullableInt: aNullableIntArg, aNullableDouble: aNullableDoubleArg, aNullableString: aNullableStringArg, aNullableUint8List: aNullableUint8ListArg, aNullableList: aNullableListArg, aNullableMap: aNullableMapArg, aNullableEnum: aNullableEnumArg, aNullableProxyApi: aNullableProxyApiArg),
+withIdentifier: golubetsIdentifierArg)
           reply(wrapResult(nil))
         } catch {
           reply(wrapError(error))
@@ -1226,19 +904,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       namedConstructorChannel.setMessageHandler(nil)
     }
-    let attachedFieldChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.attachedField",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let attachedFieldChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.attachedField", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       attachedFieldChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let golubetsIdentifierArg = args[1] as! Int64
         do {
-          api.golubetsRegistrar.instanceManager.addDartCreatedInstance(
-            try api.golubetsDelegate.attachedField(
-              golubetsApi: api, golubetsInstance: golubetsInstanceArg),
-            withIdentifier: golubetsIdentifierArg)
+          api.golubetsRegistrar.instanceManager.addDartCreatedInstance(try api.golubetsDelegate.attachedField(golubetsApi: api, golubetsInstance: golubetsInstanceArg), withIdentifier: golubetsIdentifierArg)
           reply(wrapResult(nil))
         } catch {
           reply(wrapError(error))
@@ -1247,17 +920,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       attachedFieldChannel.setMessageHandler(nil)
     }
-    let staticAttachedFieldChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.staticAttachedField",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let staticAttachedFieldChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.staticAttachedField", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       staticAttachedFieldChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsIdentifierArg = args[0] as! Int64
         do {
-          api.golubetsRegistrar.instanceManager.addDartCreatedInstance(
-            try api.golubetsDelegate.staticAttachedField(golubetsApi: api),
-            withIdentifier: golubetsIdentifierArg)
+          api.golubetsRegistrar.instanceManager.addDartCreatedInstance(try api.golubetsDelegate.staticAttachedField(golubetsApi: api), withIdentifier: golubetsIdentifierArg)
           reply(wrapResult(nil))
         } catch {
           reply(wrapError(error))
@@ -1266,9 +935,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       staticAttachedFieldChannel.setMessageHandler(nil)
     }
-    let noopChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.noop",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let noopChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.noop", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       noopChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
@@ -1283,16 +950,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       noopChannel.setMessageHandler(nil)
     }
-    let throwErrorChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.throwError",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let throwErrorChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.throwError", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       throwErrorChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         do {
-          let result = try api.golubetsDelegate.throwError(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg)
+          let result = try api.golubetsDelegate.throwError(golubetsApi: api, golubetsInstance: golubetsInstanceArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1301,16 +965,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       throwErrorChannel.setMessageHandler(nil)
     }
-    let throwErrorFromVoidChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.throwErrorFromVoid",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let throwErrorFromVoidChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.throwErrorFromVoid", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       throwErrorFromVoidChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         do {
-          try api.golubetsDelegate.throwErrorFromVoid(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg)
+          try api.golubetsDelegate.throwErrorFromVoid(golubetsApi: api, golubetsInstance: golubetsInstanceArg)
           reply(wrapResult(nil))
         } catch {
           reply(wrapError(error))
@@ -1319,16 +980,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       throwErrorFromVoidChannel.setMessageHandler(nil)
     }
-    let throwFlutterErrorChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.throwFlutterError",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let throwFlutterErrorChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.throwFlutterError", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       throwFlutterErrorChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         do {
-          let result = try api.golubetsDelegate.throwFlutterError(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg)
+          let result = try api.golubetsDelegate.throwFlutterError(golubetsApi: api, golubetsInstance: golubetsInstanceArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1337,17 +995,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       throwFlutterErrorChannel.setMessageHandler(nil)
     }
-    let echoIntChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoInt",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoIntChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoInt", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoIntChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let anIntArg = args[1] as! Int64
         do {
-          let result = try api.golubetsDelegate.echoInt(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, anInt: anIntArg)
+          let result = try api.golubetsDelegate.echoInt(golubetsApi: api, golubetsInstance: golubetsInstanceArg, anInt: anIntArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1356,17 +1011,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoIntChannel.setMessageHandler(nil)
     }
-    let echoDoubleChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoDouble",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoDoubleChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoDouble", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoDoubleChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aDoubleArg = args[1] as! Double
         do {
-          let result = try api.golubetsDelegate.echoDouble(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, aDouble: aDoubleArg)
+          let result = try api.golubetsDelegate.echoDouble(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aDouble: aDoubleArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1375,17 +1027,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoDoubleChannel.setMessageHandler(nil)
     }
-    let echoBoolChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoBool",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoBoolChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoBool", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoBoolChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aBoolArg = args[1] as! Bool
         do {
-          let result = try api.golubetsDelegate.echoBool(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, aBool: aBoolArg)
+          let result = try api.golubetsDelegate.echoBool(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aBool: aBoolArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1394,17 +1043,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoBoolChannel.setMessageHandler(nil)
     }
-    let echoStringChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoString",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoStringChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoString", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoStringChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aStringArg = args[1] as! String
         do {
-          let result = try api.golubetsDelegate.echoString(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, aString: aStringArg)
+          let result = try api.golubetsDelegate.echoString(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aString: aStringArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1413,17 +1059,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoStringChannel.setMessageHandler(nil)
     }
-    let echoUint8ListChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoUint8List",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoUint8ListChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoUint8List", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoUint8ListChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aUint8ListArg = args[1] as! FlutterStandardTypedData
         do {
-          let result = try api.golubetsDelegate.echoUint8List(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, aUint8List: aUint8ListArg)
+          let result = try api.golubetsDelegate.echoUint8List(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aUint8List: aUint8ListArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1432,17 +1075,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoUint8ListChannel.setMessageHandler(nil)
     }
-    let echoObjectChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoObject",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoObjectChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoObject", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoObjectChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let anObjectArg = args[1]!
         do {
-          let result = try api.golubetsDelegate.echoObject(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, anObject: anObjectArg)
+          let result = try api.golubetsDelegate.echoObject(golubetsApi: api, golubetsInstance: golubetsInstanceArg, anObject: anObjectArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1451,17 +1091,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoObjectChannel.setMessageHandler(nil)
     }
-    let echoListChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoList",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoListChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoList", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoListChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aListArg = args[1] as! [Any?]
         do {
-          let result = try api.golubetsDelegate.echoList(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, aList: aListArg)
+          let result = try api.golubetsDelegate.echoList(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aList: aListArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1470,17 +1107,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoListChannel.setMessageHandler(nil)
     }
-    let echoProxyApiListChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoProxyApiList",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoProxyApiListChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoProxyApiList", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoProxyApiListChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aListArg = args[1] as! [ProxyApiTestClass]
         do {
-          let result = try api.golubetsDelegate.echoProxyApiList(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, aList: aListArg)
+          let result = try api.golubetsDelegate.echoProxyApiList(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aList: aListArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1489,17 +1123,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoProxyApiListChannel.setMessageHandler(nil)
     }
-    let echoMapChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoMap",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoMapChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoMap", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoMapChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aMapArg = args[1] as! [String?: Any?]
         do {
-          let result = try api.golubetsDelegate.echoMap(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, aMap: aMapArg)
+          let result = try api.golubetsDelegate.echoMap(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aMap: aMapArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1508,17 +1139,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoMapChannel.setMessageHandler(nil)
     }
-    let echoProxyApiMapChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoProxyApiMap",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoProxyApiMapChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoProxyApiMap", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoProxyApiMapChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aMapArg = args[1] as! [String: ProxyApiTestClass]
         do {
-          let result = try api.golubetsDelegate.echoProxyApiMap(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, aMap: aMapArg)
+          let result = try api.golubetsDelegate.echoProxyApiMap(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aMap: aMapArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1527,17 +1155,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoProxyApiMapChannel.setMessageHandler(nil)
     }
-    let echoEnumChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoEnum",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoEnumChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoEnum", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoEnumChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let anEnumArg = args[1] as! ProxyApiTestEnum
         do {
-          let result = try api.golubetsDelegate.echoEnum(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, anEnum: anEnumArg)
+          let result = try api.golubetsDelegate.echoEnum(golubetsApi: api, golubetsInstance: golubetsInstanceArg, anEnum: anEnumArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1546,17 +1171,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoEnumChannel.setMessageHandler(nil)
     }
-    let echoProxyApiChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoProxyApi",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoProxyApiChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoProxyApi", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoProxyApiChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aProxyApiArg = args[1] as! ProxyApiSuperClass
         do {
-          let result = try api.golubetsDelegate.echoProxyApi(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, aProxyApi: aProxyApiArg)
+          let result = try api.golubetsDelegate.echoProxyApi(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aProxyApi: aProxyApiArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1565,17 +1187,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoProxyApiChannel.setMessageHandler(nil)
     }
-    let echoNullableIntChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableInt",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoNullableIntChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableInt", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoNullableIntChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aNullableIntArg: Int64? = nilOrValue(args[1])
         do {
-          let result = try api.golubetsDelegate.echoNullableInt(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, aNullableInt: aNullableIntArg)
+          let result = try api.golubetsDelegate.echoNullableInt(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aNullableInt: aNullableIntArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1584,18 +1203,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoNullableIntChannel.setMessageHandler(nil)
     }
-    let echoNullableDoubleChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableDouble",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoNullableDoubleChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableDouble", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoNullableDoubleChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aNullableDoubleArg: Double? = nilOrValue(args[1])
         do {
-          let result = try api.golubetsDelegate.echoNullableDouble(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg,
-            aNullableDouble: aNullableDoubleArg)
+          let result = try api.golubetsDelegate.echoNullableDouble(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aNullableDouble: aNullableDoubleArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1604,18 +1219,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoNullableDoubleChannel.setMessageHandler(nil)
     }
-    let echoNullableBoolChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableBool",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoNullableBoolChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableBool", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoNullableBoolChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aNullableBoolArg: Bool? = nilOrValue(args[1])
         do {
-          let result = try api.golubetsDelegate.echoNullableBool(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, aNullableBool: aNullableBoolArg
-          )
+          let result = try api.golubetsDelegate.echoNullableBool(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aNullableBool: aNullableBoolArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1624,18 +1235,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoNullableBoolChannel.setMessageHandler(nil)
     }
-    let echoNullableStringChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableString",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoNullableStringChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableString", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoNullableStringChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aNullableStringArg: String? = nilOrValue(args[1])
         do {
-          let result = try api.golubetsDelegate.echoNullableString(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg,
-            aNullableString: aNullableStringArg)
+          let result = try api.golubetsDelegate.echoNullableString(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aNullableString: aNullableStringArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1644,19 +1251,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoNullableStringChannel.setMessageHandler(nil)
     }
-    let echoNullableUint8ListChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableUint8List",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoNullableUint8ListChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableUint8List", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoNullableUint8ListChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aNullableUint8ListArg: FlutterStandardTypedData? = nilOrValue(args[1])
         do {
-          let result = try api.golubetsDelegate.echoNullableUint8List(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg,
-            aNullableUint8List: aNullableUint8ListArg)
+          let result = try api.golubetsDelegate.echoNullableUint8List(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aNullableUint8List: aNullableUint8ListArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1665,18 +1267,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoNullableUint8ListChannel.setMessageHandler(nil)
     }
-    let echoNullableObjectChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableObject",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoNullableObjectChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableObject", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoNullableObjectChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aNullableObjectArg: Any? = args[1]
         do {
-          let result = try api.golubetsDelegate.echoNullableObject(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg,
-            aNullableObject: aNullableObjectArg)
+          let result = try api.golubetsDelegate.echoNullableObject(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aNullableObject: aNullableObjectArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1685,18 +1283,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoNullableObjectChannel.setMessageHandler(nil)
     }
-    let echoNullableListChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableList",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoNullableListChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableList", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoNullableListChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aNullableListArg: [Any?]? = nilOrValue(args[1])
         do {
-          let result = try api.golubetsDelegate.echoNullableList(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, aNullableList: aNullableListArg
-          )
+          let result = try api.golubetsDelegate.echoNullableList(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aNullableList: aNullableListArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1705,17 +1299,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoNullableListChannel.setMessageHandler(nil)
     }
-    let echoNullableMapChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableMap",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoNullableMapChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableMap", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoNullableMapChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aNullableMapArg: [String?: Any?]? = nilOrValue(args[1])
         do {
-          let result = try api.golubetsDelegate.echoNullableMap(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, aNullableMap: aNullableMapArg)
+          let result = try api.golubetsDelegate.echoNullableMap(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aNullableMap: aNullableMapArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1724,18 +1315,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoNullableMapChannel.setMessageHandler(nil)
     }
-    let echoNullableEnumChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableEnum",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoNullableEnumChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableEnum", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoNullableEnumChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aNullableEnumArg: ProxyApiTestEnum? = nilOrValue(args[1])
         do {
-          let result = try api.golubetsDelegate.echoNullableEnum(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg, aNullableEnum: aNullableEnumArg
-          )
+          let result = try api.golubetsDelegate.echoNullableEnum(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aNullableEnum: aNullableEnumArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1744,18 +1331,14 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoNullableEnumChannel.setMessageHandler(nil)
     }
-    let echoNullableProxyApiChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableProxyApi",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoNullableProxyApiChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoNullableProxyApi", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoNullableProxyApiChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aNullableProxyApiArg: ProxyApiSuperClass? = nilOrValue(args[1])
         do {
-          let result = try api.golubetsDelegate.echoNullableProxyApi(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg,
-            aNullableProxyApi: aNullableProxyApiArg)
+          let result = try api.golubetsDelegate.echoNullableProxyApi(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aNullableProxyApi: aNullableProxyApiArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -1764,15 +1347,12 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoNullableProxyApiChannel.setMessageHandler(nil)
     }
-    let noopAsyncChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.noopAsync",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let noopAsyncChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.noopAsync", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       noopAsyncChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
-        api.golubetsDelegate.noopAsync(golubetsApi: api, golubetsInstance: golubetsInstanceArg) {
-          result in
+        api.golubetsDelegate.noopAsync(golubetsApi: api, golubetsInstance: golubetsInstanceArg) { result in
           switch result {
           case .success:
             reply(wrapResult(nil))
@@ -1784,17 +1364,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       noopAsyncChannel.setMessageHandler(nil)
     }
-    let echoAsyncIntChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncInt",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncIntChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncInt", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncIntChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let anIntArg = args[1] as! Int64
-        api.golubetsDelegate.echoAsyncInt(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, anInt: anIntArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncInt(golubetsApi: api, golubetsInstance: golubetsInstanceArg, anInt: anIntArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -1806,17 +1382,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncIntChannel.setMessageHandler(nil)
     }
-    let echoAsyncDoubleChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncDouble",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncDoubleChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncDouble", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncDoubleChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aDoubleArg = args[1] as! Double
-        api.golubetsDelegate.echoAsyncDouble(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aDouble: aDoubleArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncDouble(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aDouble: aDoubleArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -1828,17 +1400,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncDoubleChannel.setMessageHandler(nil)
     }
-    let echoAsyncBoolChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncBool",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncBoolChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncBool", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncBoolChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aBoolArg = args[1] as! Bool
-        api.golubetsDelegate.echoAsyncBool(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aBool: aBoolArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncBool(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aBool: aBoolArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -1850,17 +1418,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncBoolChannel.setMessageHandler(nil)
     }
-    let echoAsyncStringChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncString",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncStringChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncString", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncStringChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aStringArg = args[1] as! String
-        api.golubetsDelegate.echoAsyncString(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aString: aStringArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncString(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aString: aStringArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -1872,17 +1436,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncStringChannel.setMessageHandler(nil)
     }
-    let echoAsyncUint8ListChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncUint8List",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncUint8ListChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncUint8List", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncUint8ListChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aUint8ListArg = args[1] as! FlutterStandardTypedData
-        api.golubetsDelegate.echoAsyncUint8List(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aUint8List: aUint8ListArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncUint8List(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aUint8List: aUint8ListArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -1894,17 +1454,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncUint8ListChannel.setMessageHandler(nil)
     }
-    let echoAsyncObjectChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncObject",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncObjectChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncObject", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncObjectChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let anObjectArg = args[1]!
-        api.golubetsDelegate.echoAsyncObject(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, anObject: anObjectArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncObject(golubetsApi: api, golubetsInstance: golubetsInstanceArg, anObject: anObjectArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -1916,17 +1472,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncObjectChannel.setMessageHandler(nil)
     }
-    let echoAsyncListChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncList",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncListChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncList", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncListChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aListArg = args[1] as! [Any?]
-        api.golubetsDelegate.echoAsyncList(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aList: aListArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncList(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aList: aListArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -1938,17 +1490,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncListChannel.setMessageHandler(nil)
     }
-    let echoAsyncMapChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncMap",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncMapChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncMap", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncMapChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aMapArg = args[1] as! [String?: Any?]
-        api.golubetsDelegate.echoAsyncMap(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aMap: aMapArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncMap(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aMap: aMapArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -1960,17 +1508,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncMapChannel.setMessageHandler(nil)
     }
-    let echoAsyncEnumChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncEnum",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncEnumChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncEnum", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncEnumChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let anEnumArg = args[1] as! ProxyApiTestEnum
-        api.golubetsDelegate.echoAsyncEnum(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, anEnum: anEnumArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncEnum(golubetsApi: api, golubetsInstance: golubetsInstanceArg, anEnum: anEnumArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -1982,16 +1526,12 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncEnumChannel.setMessageHandler(nil)
     }
-    let throwAsyncErrorChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.throwAsyncError",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let throwAsyncErrorChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.throwAsyncError", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       throwAsyncErrorChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
-        api.golubetsDelegate.throwAsyncError(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg
-        ) { result in
+        api.golubetsDelegate.throwAsyncError(golubetsApi: api, golubetsInstance: golubetsInstanceArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2003,17 +1543,12 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       throwAsyncErrorChannel.setMessageHandler(nil)
     }
-    let throwAsyncErrorFromVoidChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.throwAsyncErrorFromVoid",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let throwAsyncErrorFromVoidChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.throwAsyncErrorFromVoid", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       throwAsyncErrorFromVoidChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
-        api.golubetsDelegate.throwAsyncErrorFromVoid(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg
-        ) { result in
+        api.golubetsDelegate.throwAsyncErrorFromVoid(golubetsApi: api, golubetsInstance: golubetsInstanceArg) { result in
           switch result {
           case .success:
             reply(wrapResult(nil))
@@ -2025,17 +1560,12 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       throwAsyncErrorFromVoidChannel.setMessageHandler(nil)
     }
-    let throwAsyncFlutterErrorChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.throwAsyncFlutterError",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let throwAsyncFlutterErrorChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.throwAsyncFlutterError", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       throwAsyncFlutterErrorChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
-        api.golubetsDelegate.throwAsyncFlutterError(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg
-        ) { result in
+        api.golubetsDelegate.throwAsyncFlutterError(golubetsApi: api, golubetsInstance: golubetsInstanceArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2047,17 +1577,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       throwAsyncFlutterErrorChannel.setMessageHandler(nil)
     }
-    let echoAsyncNullableIntChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableInt",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncNullableIntChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableInt", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncNullableIntChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let anIntArg: Int64? = nilOrValue(args[1])
-        api.golubetsDelegate.echoAsyncNullableInt(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, anInt: anIntArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncNullableInt(golubetsApi: api, golubetsInstance: golubetsInstanceArg, anInt: anIntArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2069,18 +1595,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncNullableIntChannel.setMessageHandler(nil)
     }
-    let echoAsyncNullableDoubleChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableDouble",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncNullableDoubleChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableDouble", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncNullableDoubleChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aDoubleArg: Double? = nilOrValue(args[1])
-        api.golubetsDelegate.echoAsyncNullableDouble(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aDouble: aDoubleArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncNullableDouble(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aDouble: aDoubleArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2092,18 +1613,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncNullableDoubleChannel.setMessageHandler(nil)
     }
-    let echoAsyncNullableBoolChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableBool",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncNullableBoolChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableBool", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncNullableBoolChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aBoolArg: Bool? = nilOrValue(args[1])
-        api.golubetsDelegate.echoAsyncNullableBool(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aBool: aBoolArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncNullableBool(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aBool: aBoolArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2115,18 +1631,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncNullableBoolChannel.setMessageHandler(nil)
     }
-    let echoAsyncNullableStringChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableString",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncNullableStringChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableString", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncNullableStringChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aStringArg: String? = nilOrValue(args[1])
-        api.golubetsDelegate.echoAsyncNullableString(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aString: aStringArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncNullableString(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aString: aStringArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2138,18 +1649,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncNullableStringChannel.setMessageHandler(nil)
     }
-    let echoAsyncNullableUint8ListChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableUint8List",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncNullableUint8ListChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableUint8List", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncNullableUint8ListChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aUint8ListArg: FlutterStandardTypedData? = nilOrValue(args[1])
-        api.golubetsDelegate.echoAsyncNullableUint8List(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aUint8List: aUint8ListArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncNullableUint8List(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aUint8List: aUint8ListArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2161,18 +1667,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncNullableUint8ListChannel.setMessageHandler(nil)
     }
-    let echoAsyncNullableObjectChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableObject",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncNullableObjectChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableObject", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncNullableObjectChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let anObjectArg: Any? = args[1]
-        api.golubetsDelegate.echoAsyncNullableObject(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, anObject: anObjectArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncNullableObject(golubetsApi: api, golubetsInstance: golubetsInstanceArg, anObject: anObjectArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2184,18 +1685,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncNullableObjectChannel.setMessageHandler(nil)
     }
-    let echoAsyncNullableListChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableList",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncNullableListChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableList", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncNullableListChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aListArg: [Any?]? = nilOrValue(args[1])
-        api.golubetsDelegate.echoAsyncNullableList(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aList: aListArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncNullableList(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aList: aListArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2207,17 +1703,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncNullableListChannel.setMessageHandler(nil)
     }
-    let echoAsyncNullableMapChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableMap",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncNullableMapChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableMap", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncNullableMapChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aMapArg: [String?: Any?]? = nilOrValue(args[1])
-        api.golubetsDelegate.echoAsyncNullableMap(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aMap: aMapArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncNullableMap(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aMap: aMapArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2229,18 +1721,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncNullableMapChannel.setMessageHandler(nil)
     }
-    let echoAsyncNullableEnumChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableEnum",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoAsyncNullableEnumChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoAsyncNullableEnum", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoAsyncNullableEnumChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let anEnumArg: ProxyApiTestEnum? = nilOrValue(args[1])
-        api.golubetsDelegate.echoAsyncNullableEnum(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, anEnum: anEnumArg
-        ) { result in
+        api.golubetsDelegate.echoAsyncNullableEnum(golubetsApi: api, golubetsInstance: golubetsInstanceArg, anEnum: anEnumArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2252,9 +1739,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoAsyncNullableEnumChannel.setMessageHandler(nil)
     }
-    let staticNoopChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.staticNoop",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let staticNoopChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.staticNoop", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       staticNoopChannel.setMessageHandler { _, reply in
         do {
@@ -2267,16 +1752,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       staticNoopChannel.setMessageHandler(nil)
     }
-    let echoStaticStringChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoStaticString",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let echoStaticStringChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.echoStaticString", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       echoStaticStringChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let aStringArg = args[0] as! String
         do {
-          let result = try api.golubetsDelegate.echoStaticString(
-            golubetsApi: api, aString: aStringArg)
+          let result = try api.golubetsDelegate.echoStaticString(golubetsApi: api, aString: aStringArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -2285,9 +1767,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       echoStaticStringChannel.setMessageHandler(nil)
     }
-    let staticAsyncNoopChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.staticAsyncNoop",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let staticAsyncNoopChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.staticAsyncNoop", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       staticAsyncNoopChannel.setMessageHandler { _, reply in
         api.golubetsDelegate.staticAsyncNoop(golubetsApi: api) { result in
@@ -2302,16 +1782,12 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       staticAsyncNoopChannel.setMessageHandler(nil)
     }
-    let callFlutterNoopChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterNoop",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterNoopChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterNoop", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterNoopChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
-        api.golubetsDelegate.callFlutterNoop(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg
-        ) { result in
+        api.golubetsDelegate.callFlutterNoop(golubetsApi: api, golubetsInstance: golubetsInstanceArg) { result in
           switch result {
           case .success:
             reply(wrapResult(nil))
@@ -2323,17 +1799,12 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterNoopChannel.setMessageHandler(nil)
     }
-    let callFlutterThrowErrorChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterThrowError",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterThrowErrorChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterThrowError", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterThrowErrorChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
-        api.golubetsDelegate.callFlutterThrowError(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg
-        ) { result in
+        api.golubetsDelegate.callFlutterThrowError(golubetsApi: api, golubetsInstance: golubetsInstanceArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2345,17 +1816,12 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterThrowErrorChannel.setMessageHandler(nil)
     }
-    let callFlutterThrowErrorFromVoidChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterThrowErrorFromVoid",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterThrowErrorFromVoidChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterThrowErrorFromVoid", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterThrowErrorFromVoidChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
-        api.golubetsDelegate.callFlutterThrowErrorFromVoid(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg
-        ) { result in
+        api.golubetsDelegate.callFlutterThrowErrorFromVoid(golubetsApi: api, golubetsInstance: golubetsInstanceArg) { result in
           switch result {
           case .success:
             reply(wrapResult(nil))
@@ -2367,17 +1833,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterThrowErrorFromVoidChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoBoolChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoBool",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoBoolChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoBool", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoBoolChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aBoolArg = args[1] as! Bool
-        api.golubetsDelegate.callFlutterEchoBool(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aBool: aBoolArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoBool(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aBool: aBoolArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2389,17 +1851,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoBoolChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoIntChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoInt",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoIntChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoInt", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoIntChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let anIntArg = args[1] as! Int64
-        api.golubetsDelegate.callFlutterEchoInt(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, anInt: anIntArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoInt(golubetsApi: api, golubetsInstance: golubetsInstanceArg, anInt: anIntArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2411,18 +1869,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoIntChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoDoubleChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoDouble",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoDoubleChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoDouble", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoDoubleChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aDoubleArg = args[1] as! Double
-        api.golubetsDelegate.callFlutterEchoDouble(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aDouble: aDoubleArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoDouble(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aDouble: aDoubleArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2434,18 +1887,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoDoubleChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoStringChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoString",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoStringChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoString", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoStringChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aStringArg = args[1] as! String
-        api.golubetsDelegate.callFlutterEchoString(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aString: aStringArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoString(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aString: aStringArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2457,18 +1905,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoStringChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoUint8ListChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoUint8List",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoUint8ListChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoUint8List", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoUint8ListChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aUint8ListArg = args[1] as! FlutterStandardTypedData
-        api.golubetsDelegate.callFlutterEchoUint8List(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aUint8List: aUint8ListArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoUint8List(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aUint8List: aUint8ListArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2480,17 +1923,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoUint8ListChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoListChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoList",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoListChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoList", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoListChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aListArg = args[1] as! [Any?]
-        api.golubetsDelegate.callFlutterEchoList(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aList: aListArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoList(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aList: aListArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2502,18 +1941,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoListChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoProxyApiListChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoProxyApiList",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoProxyApiListChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoProxyApiList", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoProxyApiListChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aListArg = args[1] as! [ProxyApiTestClass?]
-        api.golubetsDelegate.callFlutterEchoProxyApiList(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aList: aListArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoProxyApiList(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aList: aListArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2525,17 +1959,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoProxyApiListChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoMapChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoMap",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoMapChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoMap", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoMapChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aMapArg = args[1] as! [String?: Any?]
-        api.golubetsDelegate.callFlutterEchoMap(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aMap: aMapArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoMap(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aMap: aMapArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2547,18 +1977,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoMapChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoProxyApiMapChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoProxyApiMap",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoProxyApiMapChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoProxyApiMap", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoProxyApiMapChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aMapArg = args[1] as! [String?: ProxyApiTestClass?]
-        api.golubetsDelegate.callFlutterEchoProxyApiMap(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aMap: aMapArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoProxyApiMap(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aMap: aMapArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2570,17 +1995,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoProxyApiMapChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoEnumChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoEnum",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoEnumChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoEnum", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoEnumChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let anEnumArg = args[1] as! ProxyApiTestEnum
-        api.golubetsDelegate.callFlutterEchoEnum(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, anEnum: anEnumArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoEnum(golubetsApi: api, golubetsInstance: golubetsInstanceArg, anEnum: anEnumArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2592,18 +2013,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoEnumChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoProxyApiChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoProxyApi",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoProxyApiChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoProxyApi", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoProxyApiChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aProxyApiArg = args[1] as! ProxyApiSuperClass
-        api.golubetsDelegate.callFlutterEchoProxyApi(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aProxyApi: aProxyApiArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoProxyApi(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aProxyApi: aProxyApiArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2615,18 +2031,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoProxyApiChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoNullableBoolChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableBool",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoNullableBoolChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableBool", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoNullableBoolChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aBoolArg: Bool? = nilOrValue(args[1])
-        api.golubetsDelegate.callFlutterEchoNullableBool(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aBool: aBoolArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoNullableBool(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aBool: aBoolArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2638,18 +2049,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoNullableBoolChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoNullableIntChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableInt",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoNullableIntChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableInt", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoNullableIntChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let anIntArg: Int64? = nilOrValue(args[1])
-        api.golubetsDelegate.callFlutterEchoNullableInt(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, anInt: anIntArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoNullableInt(golubetsApi: api, golubetsInstance: golubetsInstanceArg, anInt: anIntArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2661,18 +2067,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoNullableIntChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoNullableDoubleChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableDouble",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoNullableDoubleChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableDouble", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoNullableDoubleChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aDoubleArg: Double? = nilOrValue(args[1])
-        api.golubetsDelegate.callFlutterEchoNullableDouble(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aDouble: aDoubleArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoNullableDouble(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aDouble: aDoubleArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2684,18 +2085,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoNullableDoubleChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoNullableStringChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableString",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoNullableStringChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableString", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoNullableStringChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aStringArg: String? = nilOrValue(args[1])
-        api.golubetsDelegate.callFlutterEchoNullableString(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aString: aStringArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoNullableString(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aString: aStringArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2707,18 +2103,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoNullableStringChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoNullableUint8ListChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableUint8List",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoNullableUint8ListChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableUint8List", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoNullableUint8ListChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aUint8ListArg: FlutterStandardTypedData? = nilOrValue(args[1])
-        api.golubetsDelegate.callFlutterEchoNullableUint8List(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aUint8List: aUint8ListArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoNullableUint8List(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aUint8List: aUint8ListArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2730,18 +2121,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoNullableUint8ListChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoNullableListChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableList",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoNullableListChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableList", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoNullableListChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aListArg: [Any?]? = nilOrValue(args[1])
-        api.golubetsDelegate.callFlutterEchoNullableList(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aList: aListArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoNullableList(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aList: aListArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2753,18 +2139,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoNullableListChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoNullableMapChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableMap",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoNullableMapChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableMap", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoNullableMapChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aMapArg: [String?: Any?]? = nilOrValue(args[1])
-        api.golubetsDelegate.callFlutterEchoNullableMap(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aMap: aMapArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoNullableMap(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aMap: aMapArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2776,18 +2157,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoNullableMapChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoNullableEnumChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableEnum",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoNullableEnumChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableEnum", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoNullableEnumChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let anEnumArg: ProxyApiTestEnum? = nilOrValue(args[1])
-        api.golubetsDelegate.callFlutterEchoNullableEnum(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, anEnum: anEnumArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoNullableEnum(golubetsApi: api, golubetsInstance: golubetsInstanceArg, anEnum: anEnumArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2799,18 +2175,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoNullableEnumChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoNullableProxyApiChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableProxyApi",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoNullableProxyApiChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoNullableProxyApi", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoNullableProxyApiChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aProxyApiArg: ProxyApiSuperClass? = nilOrValue(args[1])
-        api.golubetsDelegate.callFlutterEchoNullableProxyApi(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aProxyApi: aProxyApiArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoNullableProxyApi(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aProxyApi: aProxyApiArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2822,16 +2193,12 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterEchoNullableProxyApiChannel.setMessageHandler(nil)
     }
-    let callFlutterNoopAsyncChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterNoopAsync",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterNoopAsyncChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterNoopAsync", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterNoopAsyncChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
-        api.golubetsDelegate.callFlutterNoopAsync(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg
-        ) { result in
+        api.golubetsDelegate.callFlutterNoopAsync(golubetsApi: api, golubetsInstance: golubetsInstanceArg) { result in
           switch result {
           case .success:
             reply(wrapResult(nil))
@@ -2843,18 +2210,13 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
     } else {
       callFlutterNoopAsyncChannel.setMessageHandler(nil)
     }
-    let callFlutterEchoAsyncStringChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoAsyncString",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let callFlutterEchoAsyncStringChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.callFlutterEchoAsyncString", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       callFlutterEchoAsyncStringChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiTestClass
         let aStringArg = args[1] as! String
-        api.golubetsDelegate.callFlutterEchoAsyncString(
-          golubetsApi: api, golubetsInstance: golubetsInstanceArg, aString: aStringArg
-        ) { result in
+        api.golubetsDelegate.callFlutterEchoAsyncString(golubetsApi: api, golubetsInstance: golubetsInstanceArg, aString: aStringArg) { result in
           switch result {
           case .success(let res):
             reply(wrapResult(res))
@@ -2869,34 +2231,26 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   ///Creates a Dart instance of ProxyApiTestClass and attaches it to [golubetsInstance].
-  public func golubetsNewInstance(
-    golubetsInstance: ProxyApiTestClass,
-    completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
-  ) {
+  public func golubetsNewInstance(golubetsInstance: ProxyApiTestClass, completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void) {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
-    } else if golubetsRegistrar.instanceManager.containsInstance(golubetsInstance as AnyObject) {
+    }     else if golubetsRegistrar.instanceManager.containsInstance(golubetsInstance as AnyObject) {
       completion(.success(()))
-    } else {
+    }     else {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "new-instance-error",
-            message:
-              "Error: Attempting to create a new Dart instance of ProxyApiTestClass, but the class has a nonnull callback method.",
-            details: "")))
+            message: "Error: Attempting to create a new Dart instance of ProxyApiTestClass, but the class has a nonnull callback method.", details: "")))
     }
   }
   /// A no-op function taking no arguments and returning no value, to sanity
   /// test basic calling.
-  func flutterNoop(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterNoop(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -2904,23 +2258,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterNoop` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterNoop` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterNoop"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterNoop"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -2938,10 +2287,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Responds with an error from an async function returning a value.
-  func flutterThrowError(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    completion: @escaping (Result<Any?, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterThrowError(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, completion: @escaping (Result<Any?, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -2949,23 +2295,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterThrowError` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterThrowError` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterThrowError"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterThrowError"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -2984,10 +2325,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Responds with an error from an async void function.
-  func flutterThrowErrorFromVoid(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterThrowErrorFromVoid(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -2995,23 +2333,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterThrowErrorFromVoid` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterThrowErrorFromVoid` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterThrowErrorFromVoid"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterThrowErrorFromVoid"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3029,10 +2362,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed boolean, to test serialization and deserialization.
-  func flutterEchoBool(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aBool aBoolArg: Bool,
-    completion: @escaping (Result<Bool, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoBool(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aBool aBoolArg: Bool, completion: @escaping (Result<Bool, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3040,23 +2370,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoBool` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoBool` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoBool"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoBool"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aBoolArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3068,11 +2393,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
       } else if ProxyApiTestsGolubetsInternal.isNullish(listResponse[0]) {
-        completion(
-          .failure(
-            ProxyApiTestsError(
-              code: "null-error",
-              message: "Flutter api returned null value for non-null return value.", details: "")))
+        completion(.failure(ProxyApiTestsError(code: "null-error", message: "Flutter api returned null value for non-null return value.", details: "")))
       } else {
         let result = listResponse[0] as! Bool
         completion(.success(result))
@@ -3081,10 +2402,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed int, to test serialization and deserialization.
-  func flutterEchoInt(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, anInt anIntArg: Int64,
-    completion: @escaping (Result<Int64, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoInt(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, anInt anIntArg: Int64, completion: @escaping (Result<Int64, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3092,23 +2410,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoInt` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoInt` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoInt"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoInt"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, anIntArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3120,11 +2433,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
       } else if ProxyApiTestsGolubetsInternal.isNullish(listResponse[0]) {
-        completion(
-          .failure(
-            ProxyApiTestsError(
-              code: "null-error",
-              message: "Flutter api returned null value for non-null return value.", details: "")))
+        completion(.failure(ProxyApiTestsError(code: "null-error", message: "Flutter api returned null value for non-null return value.", details: "")))
       } else {
         let result = listResponse[0] as! Int64
         completion(.success(result))
@@ -3133,10 +2442,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed double, to test serialization and deserialization.
-  func flutterEchoDouble(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aDouble aDoubleArg: Double,
-    completion: @escaping (Result<Double, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoDouble(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aDouble aDoubleArg: Double, completion: @escaping (Result<Double, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3144,23 +2450,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoDouble` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoDouble` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoDouble"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoDouble"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aDoubleArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3172,11 +2473,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
       } else if ProxyApiTestsGolubetsInternal.isNullish(listResponse[0]) {
-        completion(
-          .failure(
-            ProxyApiTestsError(
-              code: "null-error",
-              message: "Flutter api returned null value for non-null return value.", details: "")))
+        completion(.failure(ProxyApiTestsError(code: "null-error", message: "Flutter api returned null value for non-null return value.", details: "")))
       } else {
         let result = listResponse[0] as! Double
         completion(.success(result))
@@ -3185,10 +2482,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed string, to test serialization and deserialization.
-  func flutterEchoString(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aString aStringArg: String,
-    completion: @escaping (Result<String, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoString(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aString aStringArg: String, completion: @escaping (Result<String, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3196,23 +2490,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoString` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoString` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoString"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoString"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aStringArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3224,11 +2513,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
       } else if ProxyApiTestsGolubetsInternal.isNullish(listResponse[0]) {
-        completion(
-          .failure(
-            ProxyApiTestsError(
-              code: "null-error",
-              message: "Flutter api returned null value for non-null return value.", details: "")))
+        completion(.failure(ProxyApiTestsError(code: "null-error", message: "Flutter api returned null value for non-null return value.", details: "")))
       } else {
         let result = listResponse[0] as! String
         completion(.success(result))
@@ -3237,11 +2522,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed byte list, to test serialization and deserialization.
-  func flutterEchoUint8List(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    aList aListArg: FlutterStandardTypedData,
-    completion: @escaping (Result<FlutterStandardTypedData, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoUint8List(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aList aListArg: FlutterStandardTypedData, completion: @escaping (Result<FlutterStandardTypedData, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3249,23 +2530,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoUint8List` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoUint8List` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoUint8List"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoUint8List"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aListArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3277,11 +2553,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
       } else if ProxyApiTestsGolubetsInternal.isNullish(listResponse[0]) {
-        completion(
-          .failure(
-            ProxyApiTestsError(
-              code: "null-error",
-              message: "Flutter api returned null value for non-null return value.", details: "")))
+        completion(.failure(ProxyApiTestsError(code: "null-error", message: "Flutter api returned null value for non-null return value.", details: "")))
       } else {
         let result = listResponse[0] as! FlutterStandardTypedData
         completion(.success(result))
@@ -3290,10 +2562,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed list, to test serialization and deserialization.
-  func flutterEchoList(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aList aListArg: [Any?],
-    completion: @escaping (Result<[Any?], ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoList(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aList aListArg: [Any?], completion: @escaping (Result<[Any?], ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3301,23 +2570,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoList` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoList` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoList"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoList"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aListArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3329,11 +2593,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
       } else if ProxyApiTestsGolubetsInternal.isNullish(listResponse[0]) {
-        completion(
-          .failure(
-            ProxyApiTestsError(
-              code: "null-error",
-              message: "Flutter api returned null value for non-null return value.", details: "")))
+        completion(.failure(ProxyApiTestsError(code: "null-error", message: "Flutter api returned null value for non-null return value.", details: "")))
       } else {
         let result = listResponse[0] as! [Any?]
         completion(.success(result))
@@ -3343,10 +2603,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
 
   /// Returns the passed list with ProxyApis, to test serialization and
   /// deserialization.
-  func flutterEchoProxyApiList(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aList aListArg: [ProxyApiTestClass?],
-    completion: @escaping (Result<[ProxyApiTestClass?], ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoProxyApiList(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aList aListArg: [ProxyApiTestClass?], completion: @escaping (Result<[ProxyApiTestClass?], ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3354,23 +2611,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoProxyApiList` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoProxyApiList` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoProxyApiList"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoProxyApiList"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aListArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3382,11 +2634,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
       } else if ProxyApiTestsGolubetsInternal.isNullish(listResponse[0]) {
-        completion(
-          .failure(
-            ProxyApiTestsError(
-              code: "null-error",
-              message: "Flutter api returned null value for non-null return value.", details: "")))
+        completion(.failure(ProxyApiTestsError(code: "null-error", message: "Flutter api returned null value for non-null return value.", details: "")))
       } else {
         let result = listResponse[0] as! [ProxyApiTestClass?]
         completion(.success(result))
@@ -3395,10 +2643,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed map, to test serialization and deserialization.
-  func flutterEchoMap(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aMap aMapArg: [String?: Any?],
-    completion: @escaping (Result<[String?: Any?], ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoMap(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aMap aMapArg: [String?: Any?], completion: @escaping (Result<[String?: Any?], ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3406,23 +2651,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoMap` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoMap` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoMap"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoMap"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aMapArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3434,11 +2674,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
       } else if ProxyApiTestsGolubetsInternal.isNullish(listResponse[0]) {
-        completion(
-          .failure(
-            ProxyApiTestsError(
-              code: "null-error",
-              message: "Flutter api returned null value for non-null return value.", details: "")))
+        completion(.failure(ProxyApiTestsError(code: "null-error", message: "Flutter api returned null value for non-null return value.", details: "")))
       } else {
         let result = listResponse[0] as! [String?: Any?]
         completion(.success(result))
@@ -3448,11 +2684,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
 
   /// Returns the passed map with ProxyApis, to test serialization and
   /// deserialization.
-  func flutterEchoProxyApiMap(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    aMap aMapArg: [String?: ProxyApiTestClass?],
-    completion: @escaping (Result<[String?: ProxyApiTestClass?], ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoProxyApiMap(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aMap aMapArg: [String?: ProxyApiTestClass?], completion: @escaping (Result<[String?: ProxyApiTestClass?], ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3460,23 +2692,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoProxyApiMap` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoProxyApiMap` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoProxyApiMap"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoProxyApiMap"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aMapArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3488,11 +2715,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
       } else if ProxyApiTestsGolubetsInternal.isNullish(listResponse[0]) {
-        completion(
-          .failure(
-            ProxyApiTestsError(
-              code: "null-error",
-              message: "Flutter api returned null value for non-null return value.", details: "")))
+        completion(.failure(ProxyApiTestsError(code: "null-error", message: "Flutter api returned null value for non-null return value.", details: "")))
       } else {
         let result = listResponse[0] as! [String?: ProxyApiTestClass?]
         completion(.success(result))
@@ -3501,10 +2724,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed enum to test serialization and deserialization.
-  func flutterEchoEnum(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, anEnum anEnumArg: ProxyApiTestEnum,
-    completion: @escaping (Result<ProxyApiTestEnum, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoEnum(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, anEnum anEnumArg: ProxyApiTestEnum, completion: @escaping (Result<ProxyApiTestEnum, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3512,23 +2732,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoEnum` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoEnum` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoEnum"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoEnum"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, anEnumArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3540,11 +2755,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
       } else if ProxyApiTestsGolubetsInternal.isNullish(listResponse[0]) {
-        completion(
-          .failure(
-            ProxyApiTestsError(
-              code: "null-error",
-              message: "Flutter api returned null value for non-null return value.", details: "")))
+        completion(.failure(ProxyApiTestsError(code: "null-error", message: "Flutter api returned null value for non-null return value.", details: "")))
       } else {
         let result = listResponse[0] as! ProxyApiTestEnum
         completion(.success(result))
@@ -3553,11 +2764,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed ProxyApi to test serialization and deserialization.
-  func flutterEchoProxyApi(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    aProxyApi aProxyApiArg: ProxyApiSuperClass,
-    completion: @escaping (Result<ProxyApiSuperClass, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoProxyApi(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aProxyApi aProxyApiArg: ProxyApiSuperClass, completion: @escaping (Result<ProxyApiSuperClass, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3565,23 +2772,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoProxyApi` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoProxyApi` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoProxyApi"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoProxyApi"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aProxyApiArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3593,11 +2795,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
       } else if ProxyApiTestsGolubetsInternal.isNullish(listResponse[0]) {
-        completion(
-          .failure(
-            ProxyApiTestsError(
-              code: "null-error",
-              message: "Flutter api returned null value for non-null return value.", details: "")))
+        completion(.failure(ProxyApiTestsError(code: "null-error", message: "Flutter api returned null value for non-null return value.", details: "")))
       } else {
         let result = listResponse[0] as! ProxyApiSuperClass
         completion(.success(result))
@@ -3606,10 +2804,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed boolean, to test serialization and deserialization.
-  func flutterEchoNullableBool(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aBool aBoolArg: Bool?,
-    completion: @escaping (Result<Bool?, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoNullableBool(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aBool aBoolArg: Bool?, completion: @escaping (Result<Bool?, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3617,23 +2812,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoNullableBool` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoNullableBool` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableBool"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableBool"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aBoolArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3652,10 +2842,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed int, to test serialization and deserialization.
-  func flutterEchoNullableInt(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, anInt anIntArg: Int64?,
-    completion: @escaping (Result<Int64?, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoNullableInt(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, anInt anIntArg: Int64?, completion: @escaping (Result<Int64?, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3663,23 +2850,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoNullableInt` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoNullableInt` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableInt"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableInt"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, anIntArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3698,10 +2880,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed double, to test serialization and deserialization.
-  func flutterEchoNullableDouble(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aDouble aDoubleArg: Double?,
-    completion: @escaping (Result<Double?, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoNullableDouble(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aDouble aDoubleArg: Double?, completion: @escaping (Result<Double?, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3709,23 +2888,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoNullableDouble` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoNullableDouble` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableDouble"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableDouble"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aDoubleArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3744,10 +2918,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed string, to test serialization and deserialization.
-  func flutterEchoNullableString(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aString aStringArg: String?,
-    completion: @escaping (Result<String?, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoNullableString(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aString aStringArg: String?, completion: @escaping (Result<String?, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3755,23 +2926,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoNullableString` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoNullableString` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableString"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableString"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aStringArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3790,11 +2956,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed byte list, to test serialization and deserialization.
-  func flutterEchoNullableUint8List(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    aList aListArg: FlutterStandardTypedData?,
-    completion: @escaping (Result<FlutterStandardTypedData?, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoNullableUint8List(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aList aListArg: FlutterStandardTypedData?, completion: @escaping (Result<FlutterStandardTypedData?, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3802,23 +2964,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoNullableUint8List` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoNullableUint8List` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableUint8List"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableUint8List"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aListArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3837,10 +2994,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed list, to test serialization and deserialization.
-  func flutterEchoNullableList(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aList aListArg: [Any?]?,
-    completion: @escaping (Result<[Any?]?, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoNullableList(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aList aListArg: [Any?]?, completion: @escaping (Result<[Any?]?, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3848,23 +3002,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoNullableList` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoNullableList` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableList"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableList"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aListArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3883,10 +3032,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed map, to test serialization and deserialization.
-  func flutterEchoNullableMap(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aMap aMapArg: [String?: Any?]?,
-    completion: @escaping (Result<[String?: Any?]?, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoNullableMap(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aMap aMapArg: [String?: Any?]?, completion: @escaping (Result<[String?: Any?]?, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3894,23 +3040,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoNullableMap` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoNullableMap` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableMap"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableMap"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aMapArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3929,10 +3070,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed enum to test serialization and deserialization.
-  func flutterEchoNullableEnum(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, anEnum anEnumArg: ProxyApiTestEnum?,
-    completion: @escaping (Result<ProxyApiTestEnum?, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoNullableEnum(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, anEnum anEnumArg: ProxyApiTestEnum?, completion: @escaping (Result<ProxyApiTestEnum?, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3940,23 +3078,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoNullableEnum` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoNullableEnum` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableEnum"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableEnum"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, anEnumArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -3975,11 +3108,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed ProxyApi to test serialization and deserialization.
-  func flutterEchoNullableProxyApi(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    aProxyApi aProxyApiArg: ProxyApiSuperClass?,
-    completion: @escaping (Result<ProxyApiSuperClass?, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoNullableProxyApi(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aProxyApi aProxyApiArg: ProxyApiSuperClass?, completion: @escaping (Result<ProxyApiSuperClass?, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -3987,23 +3116,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoNullableProxyApi` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoNullableProxyApi` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableProxyApi"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoNullableProxyApi"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aProxyApiArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -4023,10 +3147,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
 
   /// A no-op function taking no arguments and returning no value, to sanity
   /// test basic asynchronous calling.
-  func flutterNoopAsync(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass,
-    completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterNoopAsync(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -4034,23 +3155,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterNoopAsync` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterNoopAsync` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterNoopAsync"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterNoopAsync"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -4068,10 +3184,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
   }
 
   /// Returns the passed in generic Object asynchronously.
-  func flutterEchoAsyncString(
-    golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aString aStringArg: String,
-    completion: @escaping (Result<String, ProxyApiTestsError>) -> Void
-  ) {
+  func flutterEchoAsyncString(golubetsInstance golubetsInstanceArg: ProxyApiTestClass, aString aStringArg: String, completion: @escaping (Result<String, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -4079,23 +3192,18 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiTestClass.flutterEchoAsyncString` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiTestClass.flutterEchoAsyncString` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoAsyncString"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiTestClass.flutterEchoAsyncString"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg, aStringArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -4107,11 +3215,7 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
         let details: String? = nilOrValue(listResponse[2])
         completion(.failure(ProxyApiTestsError(code: code, message: message, details: details)))
       } else if ProxyApiTestsGolubetsInternal.isNullish(listResponse[0]) {
-        completion(
-          .failure(
-            ProxyApiTestsError(
-              code: "null-error",
-              message: "Flutter api returned null value for non-null return value.", details: "")))
+        completion(.failure(ProxyApiTestsError(code: "null-error", message: "Flutter api returned null value for non-null return value.", details: "")))
       } else {
         let result = listResponse[0] as! String
         completion(.success(result))
@@ -4121,46 +3225,35 @@ final class GolubetsApiProxyApiTestClass: GolubetsApiProtocolProxyApiTestClass {
 
 }
 protocol GolubetsApiDelegateProxyApiSuperClass {
-  func golubetsDefaultConstructor(golubetsApi: GolubetsApiProxyApiSuperClass) throws
-    -> ProxyApiSuperClass
-  func aSuperMethod(
-    golubetsApi: GolubetsApiProxyApiSuperClass, golubetsInstance: ProxyApiSuperClass) throws
+  func golubetsDefaultConstructor(golubetsApi: GolubetsApiProxyApiSuperClass) throws -> ProxyApiSuperClass
+  func aSuperMethod(golubetsApi: GolubetsApiProxyApiSuperClass, golubetsInstance: ProxyApiSuperClass) throws
 }
 
 protocol GolubetsApiProtocolProxyApiSuperClass {
 }
 
-final class GolubetsApiProxyApiSuperClass: GolubetsApiProtocolProxyApiSuperClass {
+final class GolubetsApiProxyApiSuperClass: GolubetsApiProtocolProxyApiSuperClass  {
   unowned let golubetsRegistrar: ProxyApiTestsGolubetsProxyApiRegistrar
   let golubetsDelegate: GolubetsApiDelegateProxyApiSuperClass
-  init(
-    golubetsRegistrar: ProxyApiTestsGolubetsProxyApiRegistrar,
-    delegate: GolubetsApiDelegateProxyApiSuperClass
-  ) {
+  init(golubetsRegistrar: ProxyApiTestsGolubetsProxyApiRegistrar, delegate: GolubetsApiDelegateProxyApiSuperClass) {
     self.golubetsRegistrar = golubetsRegistrar
     self.golubetsDelegate = delegate
   }
-  static func setUpMessageHandlers(
-    binaryMessenger: FlutterBinaryMessenger, api: GolubetsApiProxyApiSuperClass?
-  ) {
+  static func setUpMessageHandlers(binaryMessenger: FlutterBinaryMessenger, api: GolubetsApiProxyApiSuperClass?) {
     let codec: FlutterStandardMessageCodec =
       api != nil
       ? FlutterStandardMessageCodec(
-        readerWriter: ProxyApiTestsGolubetsInternalProxyApiCodecReaderWriter(
-          golubetsRegistrar: api!.golubetsRegistrar))
+        readerWriter: ProxyApiTestsGolubetsInternalProxyApiCodecReaderWriter(golubetsRegistrar: api!.golubetsRegistrar))
       : FlutterStandardMessageCodec.sharedInstance()
-    let golubetsDefaultConstructorChannel = FlutterBasicMessageChannel(
-      name:
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiSuperClass.golubets_defaultConstructor",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let golubetsDefaultConstructorChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiSuperClass.golubets_defaultConstructor", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       golubetsDefaultConstructorChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsIdentifierArg = args[0] as! Int64
         do {
           api.golubetsRegistrar.instanceManager.addDartCreatedInstance(
-            try api.golubetsDelegate.golubetsDefaultConstructor(golubetsApi: api),
-            withIdentifier: golubetsIdentifierArg)
+try api.golubetsDelegate.golubetsDefaultConstructor(golubetsApi: api),
+withIdentifier: golubetsIdentifierArg)
           reply(wrapResult(nil))
         } catch {
           reply(wrapError(error))
@@ -4169,16 +3262,13 @@ final class GolubetsApiProxyApiSuperClass: GolubetsApiProtocolProxyApiSuperClass
     } else {
       golubetsDefaultConstructorChannel.setMessageHandler(nil)
     }
-    let aSuperMethodChannel = FlutterBasicMessageChannel(
-      name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiSuperClass.aSuperMethod",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let aSuperMethodChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ProxyApiSuperClass.aSuperMethod", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       aSuperMethodChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let golubetsInstanceArg = args[0] as! ProxyApiSuperClass
         do {
-          try api.golubetsDelegate.aSuperMethod(
-            golubetsApi: api, golubetsInstance: golubetsInstanceArg)
+          try api.golubetsDelegate.aSuperMethod(golubetsApi: api, golubetsInstance: golubetsInstanceArg)
           reply(wrapResult(nil))
         } catch {
           reply(wrapError(error))
@@ -4190,27 +3280,21 @@ final class GolubetsApiProxyApiSuperClass: GolubetsApiProtocolProxyApiSuperClass
   }
 
   ///Creates a Dart instance of ProxyApiSuperClass and attaches it to [golubetsInstance].
-  public func golubetsNewInstance(
-    golubetsInstance: ProxyApiSuperClass,
-    completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
-  ) {
+  public func golubetsNewInstance(golubetsInstance: ProxyApiSuperClass, completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void) {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
-    } else if golubetsRegistrar.instanceManager.containsInstance(golubetsInstance as AnyObject) {
+    }     else if golubetsRegistrar.instanceManager.containsInstance(golubetsInstance as AnyObject) {
       completion(.success(()))
-    } else {
-      let golubetsIdentifierArg = golubetsRegistrar.instanceManager.addHostCreatedInstance(
-        golubetsInstance as AnyObject)
+    }     else {
+      let golubetsIdentifierArg = golubetsRegistrar.instanceManager.addHostCreatedInstance(golubetsInstance as AnyObject)
       let binaryMessenger = golubetsRegistrar.binaryMessenger
       let codec = golubetsRegistrar.codec
-      let channelName: String =
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiSuperClass.golubets_newInstance"
-      let channel = FlutterBasicMessageChannel(
-        name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiSuperClass.golubets_newInstance"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
       channel.sendMessage([golubetsIdentifierArg] as [Any?]) { response in
         guard let listResponse = response as? [Any?] else {
           completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -4232,43 +3316,32 @@ open class GolubetsApiDelegateProxyApiInterface {
 }
 
 protocol GolubetsApiProtocolProxyApiInterface {
-  func anInterfaceMethod(
-    golubetsInstance golubetsInstanceArg: ProxyApiInterface,
-    completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void)
+  func anInterfaceMethod(golubetsInstance golubetsInstanceArg: ProxyApiInterface, completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void)
 }
 
-final class GolubetsApiProxyApiInterface: GolubetsApiProtocolProxyApiInterface {
+final class GolubetsApiProxyApiInterface: GolubetsApiProtocolProxyApiInterface  {
   unowned let golubetsRegistrar: ProxyApiTestsGolubetsProxyApiRegistrar
   let golubetsDelegate: GolubetsApiDelegateProxyApiInterface
-  init(
-    golubetsRegistrar: ProxyApiTestsGolubetsProxyApiRegistrar,
-    delegate: GolubetsApiDelegateProxyApiInterface
-  ) {
+  init(golubetsRegistrar: ProxyApiTestsGolubetsProxyApiRegistrar, delegate: GolubetsApiDelegateProxyApiInterface) {
     self.golubetsRegistrar = golubetsRegistrar
     self.golubetsDelegate = delegate
   }
   ///Creates a Dart instance of ProxyApiInterface and attaches it to [golubetsInstance].
-  public func golubetsNewInstance(
-    golubetsInstance: ProxyApiInterface,
-    completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
-  ) {
+  public func golubetsNewInstance(golubetsInstance: ProxyApiInterface, completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void) {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
-    } else if golubetsRegistrar.instanceManager.containsInstance(golubetsInstance as AnyObject) {
+    }     else if golubetsRegistrar.instanceManager.containsInstance(golubetsInstance as AnyObject) {
       completion(.success(()))
-    } else {
-      let golubetsIdentifierArg = golubetsRegistrar.instanceManager.addHostCreatedInstance(
-        golubetsInstance as AnyObject)
+    }     else {
+      let golubetsIdentifierArg = golubetsRegistrar.instanceManager.addHostCreatedInstance(golubetsInstance as AnyObject)
       let binaryMessenger = golubetsRegistrar.binaryMessenger
       let codec = golubetsRegistrar.codec
-      let channelName: String =
-        "dev.bayori.golubets.golubets_integration_tests.ProxyApiInterface.golubets_newInstance"
-      let channel = FlutterBasicMessageChannel(
-        name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiInterface.golubets_newInstance"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
       channel.sendMessage([golubetsIdentifierArg] as [Any?]) { response in
         guard let listResponse = response as? [Any?] else {
           completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -4285,10 +3358,7 @@ final class GolubetsApiProxyApiInterface: GolubetsApiProtocolProxyApiInterface {
       }
     }
   }
-  func anInterfaceMethod(
-    golubetsInstance golubetsInstanceArg: ProxyApiInterface,
-    completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
-  ) {
+  func anInterfaceMethod(golubetsInstance golubetsInstanceArg: ProxyApiInterface, completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void)   {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
@@ -4296,23 +3366,18 @@ final class GolubetsApiProxyApiInterface: GolubetsApiProtocolProxyApiInterface {
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
       return
-    } else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject)
-    {
+    }     else if !golubetsRegistrar.instanceManager.containsInstance(golubetsInstanceArg as AnyObject) {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "missing-instance-error",
-            message:
-              "Callback to `ProxyApiInterface.anInterfaceMethod` failed because native instance was not in the instance manager.",
-            details: "")))
+            message: "Callback to `ProxyApiInterface.anInterfaceMethod` failed because native instance was not in the instance manager.", details: "")))
       return
     }
     let binaryMessenger = golubetsRegistrar.binaryMessenger
     let codec = golubetsRegistrar.codec
-    let channelName: String =
-      "dev.bayori.golubets.golubets_integration_tests.ProxyApiInterface.anInterfaceMethod"
-    let channel = FlutterBasicMessageChannel(
-      name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+    let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ProxyApiInterface.anInterfaceMethod"
+    let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([golubetsInstanceArg] as [Any?]) { response in
       guard let listResponse = response as? [Any?] else {
         completion(.failure(createConnectionError(withChannelName: channelName)))
@@ -4332,49 +3397,37 @@ final class GolubetsApiProxyApiInterface: GolubetsApiProtocolProxyApiInterface {
 }
 protocol GolubetsApiDelegateClassWithApiRequirement {
   @available(iOS 15.0.0, macOS 10.0.0, *)
-  func golubetsDefaultConstructor(golubetsApi: GolubetsApiClassWithApiRequirement) throws
-    -> ClassWithApiRequirement
+  func golubetsDefaultConstructor(golubetsApi: GolubetsApiClassWithApiRequirement) throws -> ClassWithApiRequirement
   @available(iOS 15.0.0, macOS 10.0.0, *)
-  func aMethod(
-    golubetsApi: GolubetsApiClassWithApiRequirement, golubetsInstance: ClassWithApiRequirement)
-    throws
+  func aMethod(golubetsApi: GolubetsApiClassWithApiRequirement, golubetsInstance: ClassWithApiRequirement) throws
 }
 
 protocol GolubetsApiProtocolClassWithApiRequirement {
 }
 
-final class GolubetsApiClassWithApiRequirement: GolubetsApiProtocolClassWithApiRequirement {
+final class GolubetsApiClassWithApiRequirement: GolubetsApiProtocolClassWithApiRequirement  {
   unowned let golubetsRegistrar: ProxyApiTestsGolubetsProxyApiRegistrar
   let golubetsDelegate: GolubetsApiDelegateClassWithApiRequirement
-  init(
-    golubetsRegistrar: ProxyApiTestsGolubetsProxyApiRegistrar,
-    delegate: GolubetsApiDelegateClassWithApiRequirement
-  ) {
+  init(golubetsRegistrar: ProxyApiTestsGolubetsProxyApiRegistrar, delegate: GolubetsApiDelegateClassWithApiRequirement) {
     self.golubetsRegistrar = golubetsRegistrar
     self.golubetsDelegate = delegate
   }
-  static func setUpMessageHandlers(
-    binaryMessenger: FlutterBinaryMessenger, api: GolubetsApiClassWithApiRequirement?
-  ) {
+  static func setUpMessageHandlers(binaryMessenger: FlutterBinaryMessenger, api: GolubetsApiClassWithApiRequirement?) {
     let codec: FlutterStandardMessageCodec =
       api != nil
       ? FlutterStandardMessageCodec(
-        readerWriter: ProxyApiTestsGolubetsInternalProxyApiCodecReaderWriter(
-          golubetsRegistrar: api!.golubetsRegistrar))
+        readerWriter: ProxyApiTestsGolubetsInternalProxyApiCodecReaderWriter(golubetsRegistrar: api!.golubetsRegistrar))
       : FlutterStandardMessageCodec.sharedInstance()
     if #available(iOS 15.0.0, macOS 10.0.0, *) {
-      let golubetsDefaultConstructorChannel = FlutterBasicMessageChannel(
-        name:
-          "dev.bayori.golubets.golubets_integration_tests.ClassWithApiRequirement.golubets_defaultConstructor",
-        binaryMessenger: binaryMessenger, codec: codec)
+      let golubetsDefaultConstructorChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ClassWithApiRequirement.golubets_defaultConstructor", binaryMessenger: binaryMessenger, codec: codec)
       if let api = api {
         golubetsDefaultConstructorChannel.setMessageHandler { message, reply in
           let args = message as! [Any?]
           let golubetsIdentifierArg = args[0] as! Int64
           do {
             api.golubetsRegistrar.instanceManager.addDartCreatedInstance(
-              try api.golubetsDelegate.golubetsDefaultConstructor(golubetsApi: api),
-              withIdentifier: golubetsIdentifierArg)
+try api.golubetsDelegate.golubetsDefaultConstructor(golubetsApi: api),
+withIdentifier: golubetsIdentifierArg)
             reply(wrapResult(nil))
           } catch {
             reply(wrapError(error))
@@ -4383,37 +3436,29 @@ final class GolubetsApiClassWithApiRequirement: GolubetsApiProtocolClassWithApiR
       } else {
         golubetsDefaultConstructorChannel.setMessageHandler(nil)
       }
-    } else {
+    }     else {
       let golubetsDefaultConstructorChannel = FlutterBasicMessageChannel(
-        name:
-          "dev.bayori.golubets.golubets_integration_tests.ClassWithApiRequirement.golubets_defaultConstructor",
+        name: "dev.bayori.golubets.golubets_integration_tests.ClassWithApiRequirement.golubets_defaultConstructor",
         binaryMessenger: binaryMessenger, codec: codec)
       if api != nil {
         golubetsDefaultConstructorChannel.setMessageHandler { message, reply in
-          reply(
-            wrapError(
-              FlutterError(
-                code: "GolubetsUnsupportedOperationError",
-                message:
-                  "Call to golubetsDefaultConstructor requires @available(iOS 15.0.0, macOS 10.0.0, *).",
-                details: nil
-              )))
+          reply(wrapError(FlutterError(code: "GolubetsUnsupportedOperationError",
+                                       message: "Call to golubetsDefaultConstructor requires @available(iOS 15.0.0, macOS 10.0.0, *).",
+                                       details: nil
+                                      )))
         }
       } else {
         golubetsDefaultConstructorChannel.setMessageHandler(nil)
       }
     }
     if #available(iOS 15.0.0, macOS 10.0.0, *) {
-      let aMethodChannel = FlutterBasicMessageChannel(
-        name: "dev.bayori.golubets.golubets_integration_tests.ClassWithApiRequirement.aMethod",
-        binaryMessenger: binaryMessenger, codec: codec)
+      let aMethodChannel = FlutterBasicMessageChannel(name: "dev.bayori.golubets.golubets_integration_tests.ClassWithApiRequirement.aMethod", binaryMessenger: binaryMessenger, codec: codec)
       if let api = api {
         aMethodChannel.setMessageHandler { message, reply in
           let args = message as! [Any?]
           let golubetsInstanceArg = args[0] as! ClassWithApiRequirement
           do {
-            try api.golubetsDelegate.aMethod(
-              golubetsApi: api, golubetsInstance: golubetsInstanceArg)
+            try api.golubetsDelegate.aMethod(golubetsApi: api, golubetsInstance: golubetsInstanceArg)
             reply(wrapResult(nil))
           } catch {
             reply(wrapError(error))
@@ -4422,19 +3467,16 @@ final class GolubetsApiClassWithApiRequirement: GolubetsApiProtocolClassWithApiR
       } else {
         aMethodChannel.setMessageHandler(nil)
       }
-    } else {
+    }     else {
       let aMethodChannel = FlutterBasicMessageChannel(
         name: "dev.bayori.golubets.golubets_integration_tests.ClassWithApiRequirement.aMethod",
         binaryMessenger: binaryMessenger, codec: codec)
       if api != nil {
         aMethodChannel.setMessageHandler { message, reply in
-          reply(
-            wrapError(
-              FlutterError(
-                code: "GolubetsUnsupportedOperationError",
-                message: "Call to aMethod requires @available(iOS 15.0.0, macOS 10.0.0, *).",
-                details: nil
-              )))
+          reply(wrapError(FlutterError(code: "GolubetsUnsupportedOperationError",
+                                       message: "Call to aMethod requires @available(iOS 15.0.0, macOS 10.0.0, *).",
+                                       details: nil
+                                      )))
         }
       } else {
         aMethodChannel.setMessageHandler(nil)
@@ -4444,27 +3486,21 @@ final class GolubetsApiClassWithApiRequirement: GolubetsApiProtocolClassWithApiR
 
   ///Creates a Dart instance of ClassWithApiRequirement and attaches it to [golubetsInstance].
   @available(iOS 15.0.0, macOS 10.0.0, *)
-  public func golubetsNewInstance(
-    golubetsInstance: ClassWithApiRequirement,
-    completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void
-  ) {
+  public func golubetsNewInstance(golubetsInstance: ClassWithApiRequirement, completion: @escaping (Result<Void, ProxyApiTestsError>) -> Void) {
     if golubetsRegistrar.ignoreCallsToDart {
       completion(
         .failure(
           ProxyApiTestsError(
             code: "ignore-calls-error",
             message: "Calls to Dart are being ignored.", details: "")))
-    } else if golubetsRegistrar.instanceManager.containsInstance(golubetsInstance as AnyObject) {
+    }     else if golubetsRegistrar.instanceManager.containsInstance(golubetsInstance as AnyObject) {
       completion(.success(()))
-    } else {
-      let golubetsIdentifierArg = golubetsRegistrar.instanceManager.addHostCreatedInstance(
-        golubetsInstance as AnyObject)
+    }     else {
+      let golubetsIdentifierArg = golubetsRegistrar.instanceManager.addHostCreatedInstance(golubetsInstance as AnyObject)
       let binaryMessenger = golubetsRegistrar.binaryMessenger
       let codec = golubetsRegistrar.codec
-      let channelName: String =
-        "dev.bayori.golubets.golubets_integration_tests.ClassWithApiRequirement.golubets_newInstance"
-      let channel = FlutterBasicMessageChannel(
-        name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      let channelName: String = "dev.bayori.golubets.golubets_integration_tests.ClassWithApiRequirement.golubets_newInstance"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
       channel.sendMessage([golubetsIdentifierArg] as [Any?]) { response in
         guard let listResponse = response as? [Any?] else {
           completion(.failure(createConnectionError(withChannelName: channelName)))

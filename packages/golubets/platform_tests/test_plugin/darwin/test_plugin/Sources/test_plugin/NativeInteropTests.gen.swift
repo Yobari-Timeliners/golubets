@@ -34,9 +34,7 @@ import Foundation
 }
 
 private func createConnectionError(withChannelName channelName: String) -> NativeInteropTestsError {
-  return NativeInteropTestsError(
-    code: "channel-error", message: "Unable to establish connection on channel: '\(channelName)'.",
-    details: "")
+  return NativeInteropTestsError(code: "channel-error", message: "Unable to establish connection on channel: '\(channelName)'.", details: "")
 }
 
 // A wrapper around NSNumber that preserves the original primitive/enum type across FFI.
@@ -44,7 +42,7 @@ private func createConnectionError(withChannelName channelName: String) -> Nativ
   @objc required init(
     number: NSNumber,
     type: Int,
-  ) {
+  )  {
     self.number = number
     self.type = type
   }
@@ -53,12 +51,10 @@ private func createConnectionError(withChannelName channelName: String) -> Nativ
   }
   @objc var number: NSNumber
   @objc var type: Int
-  static func == (lhs: NativeInteropTestsNumberWrapper, rhs: NativeInteropTestsNumberWrapper)
-    -> Bool
-  {
+  static func == (lhs: NativeInteropTestsNumberWrapper, rhs: NativeInteropTestsNumberWrapper) -> Bool {
     return lhs.number == rhs.number && lhs.type == rhs.type
   }
-
+    
   override func isEqual(_ object: Any?) -> Bool {
     guard let other = object as? NativeInteropTestsNumberWrapper else {
       return false
@@ -69,7 +65,7 @@ private func createConnectionError(withChannelName channelName: String) -> Nativ
   override var hash: Int {
     return number.hashValue ^ type.hashValue
   }
-
+      
 }
 
 private func wrapNumber(number: Any) -> NativeInteropTestsNumberWrapper {
@@ -84,29 +80,29 @@ private func wrapNumber(number: Any) -> NativeInteropTestsNumberWrapper {
   }
 
   switch number {
-  case let value as NativeInteropAnEnum:
-    return NativeInteropTestsNumberWrapper(number: NSNumber(value: value.rawValue), type: 4)
-  case let value as NativeInteropAnotherEnum:
-    return NativeInteropTestsNumberWrapper(number: NSNumber(value: value.rawValue), type: 5)
-  default:
-    return NativeInteropTestsNumberWrapper(number: NSNumber(value: 0), type: 0)
+    case let value as NativeInteropAnEnum:
+      return NativeInteropTestsNumberWrapper(number: NSNumber(value: value.rawValue), type: 4)
+    case let value as NativeInteropAnotherEnum:
+      return NativeInteropTestsNumberWrapper(number: NSNumber(value: value.rawValue), type: 5)
+    default:
+      return NativeInteropTestsNumberWrapper(number: NSNumber(value: 0), type: 0)
   }
 }
 
 private func unwrapNumber(wrappedNumber: NativeInteropTestsNumberWrapper) -> Any {
   switch wrappedNumber.type {
-  case 1:
-    return wrappedNumber.number.int64Value
-  case 2:
-    return wrappedNumber.number.doubleValue
-  case 3:
-    return wrappedNumber.number.boolValue
-  case 4:
-    return NativeInteropAnEnum(rawValue: wrappedNumber.number.intValue)!
-  case 5:
-    return NativeInteropAnotherEnum(rawValue: wrappedNumber.number.intValue)!
-  default:
-    return wrappedNumber.number.int64Value
+    case 1:
+      return wrappedNumber.number.int64Value
+    case 2:
+      return wrappedNumber.number.doubleValue
+    case 3:
+      return wrappedNumber.number.boolValue
+    case 4:
+      return NativeInteropAnEnum(rawValue: wrappedNumber.number.intValue)!
+    case 5:
+      return NativeInteropAnotherEnum(rawValue: wrappedNumber.number.intValue)!
+    default:
+      return wrappedNumber.number.int64Value
   }
 }
 // Enum to represent the Dart TypedData types
@@ -198,6 +194,7 @@ enum NativeInteropTestsGolubetsInternalNumberType: Int {
     return array
   }
 }
+  
 
 enum NativeInteropTestsGolubetsInternal {
   static let defaultInstanceName = "GolubetsDefaultClassName32uh4ui3lh445uh4h3l2l455g4y34u"
@@ -218,7 +215,7 @@ enum NativeInteropTestsGolubetsInternal {
 
   static func doubleHash(_ value: Double, _ hasher: inout Hasher) {
     if value.isNaN {
-      hasher.combine(0x7FF8_0000_0000_0000)
+      hasher.combine(0x7FF8000000000000)
     } else {
       // Normalize -0.0 to 0.0
       hasher.combine(value == 0 ? 0 : value)
@@ -329,11 +326,12 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
   return value as! T?
 }
 
+
 /// Computes the keys that associate Native Interop registrations with a Flutter engine.
 ///
 /// `Int64.min` means "no key". Exact keys match Dart's `PlatformDispatcher.instance.engineId`.
 /// When an exact key is unavailable, each engine messenger is assigned a negative synthetic key.
-private enum GolubetsEngineKeys {
+fileprivate enum GolubetsEngineKeys {
   /// The sentinel for an unknown engine.
   static let noKey: Int64 = Int64.min
   /// Guards the key caches. Recursive because `key(for:)` calls `key(messenger:)`.
@@ -410,6 +408,7 @@ public struct NativeInteropUnusedClass: Hashable, CustomStringConvertible {
   }
   public var aField: Any? = nil
 
+
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> NativeInteropUnusedClass? {
     let aField: Any? = golubetsVar_list[0]
@@ -450,19 +449,16 @@ public struct NativeInteropUnusedClass: Hashable, CustomStringConvertible {
   @objc public var aField: NSObject? = nil
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromSwift(_ golubetsVar_Class: NativeInteropUnusedClass?)
-    -> NativeInteropUnusedClassBridge?
-  {
-    if NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class) {
+  static func fromSwift(_ golubetsVar_Class: NativeInteropUnusedClass?) -> NativeInteropUnusedClassBridge? {
+    if (NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class)) {
       return nil
     }
     return NativeInteropUnusedClassBridge(
-      aField: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.aField, isObject: true)
-        as? NSObject,
+      aField: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.aField, isObject: true) as? NSObject,
     )
   }
   func toSwift() -> NativeInteropUnusedClass {
-    return NativeInteropUnusedClass(
+    return NativeInteropUnusedClass (
       aField: _GolubetsFfiCodec.readValue(value: aField),
     )
   }
@@ -559,6 +555,7 @@ public struct NativeInteropAllTypes: Hashable, CustomStringConvertible {
   public var objectMap: [AnyHashable: Any]
   public var listMap: [Int64: [Any?]]
   public var mapMap: [Int64: [AnyHashable?: Any?]]
+
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> NativeInteropAllTypes? {
@@ -658,34 +655,7 @@ public struct NativeInteropAllTypes: Hashable, CustomStringConvertible {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return NativeInteropTestsGolubetsInternal.deepEquals(lhs.aBool, rhs.aBool)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.anInt, rhs.anInt)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.anInt64, rhs.anInt64)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aDouble, rhs.aDouble)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aByteArray, rhs.aByteArray)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.a4ByteArray, rhs.a4ByteArray)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.a8ByteArray, rhs.a8ByteArray)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aFloatArray, rhs.aFloatArray)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.anEnum, rhs.anEnum)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.anotherEnum, rhs.anotherEnum)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aString, rhs.aString)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.anObject, rhs.anObject)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.list, rhs.list)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.stringList, rhs.stringList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.intList, rhs.intList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.doubleList, rhs.doubleList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.boolList, rhs.boolList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.enumList, rhs.enumList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.objectList, rhs.objectList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.listList, rhs.listList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.mapList, rhs.mapList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.map, rhs.map)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.stringMap, rhs.stringMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.intMap, rhs.intMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.enumMap, rhs.enumMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.objectMap, rhs.objectMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.listMap, rhs.listMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.mapMap, rhs.mapMap)
+    return NativeInteropTestsGolubetsInternal.deepEquals(lhs.aBool, rhs.aBool) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.anInt, rhs.anInt) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.anInt64, rhs.anInt64) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aDouble, rhs.aDouble) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aByteArray, rhs.aByteArray) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.a4ByteArray, rhs.a4ByteArray) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.a8ByteArray, rhs.a8ByteArray) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aFloatArray, rhs.aFloatArray) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.anEnum, rhs.anEnum) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.anotherEnum, rhs.anotherEnum) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aString, rhs.aString) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.anObject, rhs.anObject) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.list, rhs.list) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.stringList, rhs.stringList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.intList, rhs.intList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.doubleList, rhs.doubleList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.boolList, rhs.boolList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.enumList, rhs.enumList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.objectList, rhs.objectList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.listList, rhs.listList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.mapList, rhs.mapList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.map, rhs.map) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.stringMap, rhs.stringMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.intMap, rhs.intMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.enumMap, rhs.enumMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.objectMap, rhs.objectMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.listMap, rhs.listMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.mapMap, rhs.mapMap)
   }
 
   public func hash(into hasher: inout Hasher) {
@@ -721,8 +691,7 @@ public struct NativeInteropAllTypes: Hashable, CustomStringConvertible {
   }
 
   public var description: String {
-    return
-      "NativeInteropAllTypes(aBool: \(String(describing: aBool)), anInt: \(String(describing: anInt)), anInt64: \(String(describing: anInt64)), aDouble: \(String(describing: aDouble)), aByteArray: \(String(describing: aByteArray)), a4ByteArray: \(String(describing: a4ByteArray)), a8ByteArray: \(String(describing: a8ByteArray)), aFloatArray: \(String(describing: aFloatArray)), anEnum: \(String(describing: anEnum)), anotherEnum: \(String(describing: anotherEnum)), aString: \(String(describing: aString)), anObject: \(String(describing: anObject)), list: \(String(describing: list)), stringList: \(String(describing: stringList)), intList: \(String(describing: intList)), doubleList: \(String(describing: doubleList)), boolList: \(String(describing: boolList)), enumList: \(String(describing: enumList)), objectList: \(String(describing: objectList)), listList: \(String(describing: listList)), mapList: \(String(describing: mapList)), map: \(String(describing: map)), stringMap: \(String(describing: stringMap)), intMap: \(String(describing: intMap)), enumMap: \(String(describing: enumMap)), objectMap: \(String(describing: objectMap)), listMap: \(String(describing: listMap)), mapMap: \(String(describing: mapMap)))"
+    return "NativeInteropAllTypes(aBool: \(String(describing: aBool)), anInt: \(String(describing: anInt)), anInt64: \(String(describing: anInt64)), aDouble: \(String(describing: aDouble)), aByteArray: \(String(describing: aByteArray)), a4ByteArray: \(String(describing: a4ByteArray)), a8ByteArray: \(String(describing: a8ByteArray)), aFloatArray: \(String(describing: aFloatArray)), anEnum: \(String(describing: anEnum)), anotherEnum: \(String(describing: anotherEnum)), aString: \(String(describing: aString)), anObject: \(String(describing: anObject)), list: \(String(describing: list)), stringList: \(String(describing: stringList)), intList: \(String(describing: intList)), doubleList: \(String(describing: doubleList)), boolList: \(String(describing: boolList)), enumList: \(String(describing: enumList)), objectList: \(String(describing: objectList)), listList: \(String(describing: listList)), mapList: \(String(describing: mapList)), map: \(String(describing: map)), stringMap: \(String(describing: stringMap)), intMap: \(String(describing: intMap)), enumMap: \(String(describing: enumMap)), objectMap: \(String(describing: objectMap)), listMap: \(String(describing: listMap)), mapMap: \(String(describing: mapMap)))"
   }
 }
 
@@ -819,9 +788,8 @@ public struct NativeInteropAllTypes: Hashable, CustomStringConvertible {
   @objc public var mapMap: [NSObject: NSObject]
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromSwift(_ golubetsVar_Class: NativeInteropAllTypes?) -> NativeInteropAllTypesBridge?
-  {
-    if NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class) {
+  static func fromSwift(_ golubetsVar_Class: NativeInteropAllTypes?) -> NativeInteropAllTypesBridge? {
+    if (NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class)) {
       return nil
     }
     return NativeInteropAllTypesBridge(
@@ -836,8 +804,7 @@ public struct NativeInteropAllTypes: Hashable, CustomStringConvertible {
       anEnum: golubetsVar_Class!.anEnum,
       anotherEnum: golubetsVar_Class!.anotherEnum,
       aString: golubetsVar_Class!.aString as NSString,
-      anObject: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.anObject, isObject: true)
-        as! NSObject,
+      anObject: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.anObject, isObject: true) as! NSObject,
       list: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.list) as! [NSObject],
       stringList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.stringList) as! [NSObject],
       intList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.intList) as! [NSObject],
@@ -848,22 +815,16 @@ public struct NativeInteropAllTypes: Hashable, CustomStringConvertible {
       listList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.listList) as! [NSObject],
       mapList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.mapList) as! [NSObject],
       map: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.map) as! [NSObject: NSObject],
-      stringMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.stringMap)
-        as! [NSObject: NSObject],
-      intMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.intMap)
-        as! [NSObject: NSObject],
-      enumMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.enumMap)
-        as! [NSObject: NSObject],
-      objectMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.objectMap)
-        as! [NSObject: NSObject],
-      listMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.listMap)
-        as! [NSObject: NSObject],
-      mapMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.mapMap)
-        as! [NSObject: NSObject],
+      stringMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.stringMap) as! [NSObject: NSObject],
+      intMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.intMap) as! [NSObject: NSObject],
+      enumMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.enumMap) as! [NSObject: NSObject],
+      objectMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.objectMap) as! [NSObject: NSObject],
+      listMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.listMap) as! [NSObject: NSObject],
+      mapMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.mapMap) as! [NSObject: NSObject],
     )
   }
   func toSwift() -> NativeInteropAllTypes {
-    return NativeInteropAllTypes(
+    return NativeInteropAllTypes (
       aBool: aBool,
       anInt: anInt,
       anInt64: anInt64,
@@ -877,32 +838,21 @@ public struct NativeInteropAllTypes: Hashable, CustomStringConvertible {
       aString: aString as String,
       anObject: _GolubetsFfiCodec.readValue(value: anObject)!,
       list: _GolubetsFfiCodec.readValue(value: list as NSObject) as! [Any?],
-      stringList: _GolubetsFfiCodec.readValue(value: stringList as NSObject, type: "String")
-        as! [String],
+      stringList: _GolubetsFfiCodec.readValue(value: stringList as NSObject, type: "String") as! [String],
       intList: _GolubetsFfiCodec.readValue(value: intList as NSObject, type: "int") as! [Int64],
-      doubleList: _GolubetsFfiCodec.readValue(value: doubleList as NSObject, type: "double")
-        as! [Double],
+      doubleList: _GolubetsFfiCodec.readValue(value: doubleList as NSObject, type: "double") as! [Double],
       boolList: _GolubetsFfiCodec.readValue(value: boolList as NSObject, type: "bool") as! [Bool],
-      enumList: _GolubetsFfiCodec.readValue(
-        value: enumList as NSObject, type: "NativeInteropAnEnum") as! [NativeInteropAnEnum],
-      objectList: _GolubetsFfiCodec.readValue(value: objectList as NSObject, type: "Object")
-        as! [Any],
+      enumList: _GolubetsFfiCodec.readValue(value: enumList as NSObject, type: "NativeInteropAnEnum") as! [NativeInteropAnEnum],
+      objectList: _GolubetsFfiCodec.readValue(value: objectList as NSObject, type: "Object") as! [Any],
       listList: _GolubetsFfiCodec.readValue(value: listList as NSObject) as! [[Any?]],
       mapList: _GolubetsFfiCodec.readValue(value: mapList as NSObject) as! [[AnyHashable?: Any?]],
       map: _GolubetsFfiCodec.readValue(value: map as NSObject) as! [AnyHashable?: Any?],
-      stringMap: _GolubetsFfiCodec.readValue(
-        value: stringMap as NSObject, type: "String", type2: "String") as! [String: String],
-      intMap: _GolubetsFfiCodec.readValue(value: intMap as NSObject, type: "int", type2: "int")
-        as! [Int64: Int64],
-      enumMap: _GolubetsFfiCodec.readValue(
-        value: enumMap as NSObject, type: "NativeInteropAnEnum", type2: "NativeInteropAnEnum")
-        as! [NativeInteropAnEnum: NativeInteropAnEnum],
-      objectMap: _GolubetsFfiCodec.readValue(
-        value: objectMap as NSObject, type: "Object", type2: "Object") as! [AnyHashable: Any],
-      listMap: _GolubetsFfiCodec.readValue(value: listMap as NSObject, type: "int")
-        as! [Int64: [Any?]],
-      mapMap: _GolubetsFfiCodec.readValue(value: mapMap as NSObject, type: "int")
-        as! [Int64: [AnyHashable?: Any?]],
+      stringMap: _GolubetsFfiCodec.readValue(value: stringMap as NSObject, type: "String", type2: "String") as! [String: String],
+      intMap: _GolubetsFfiCodec.readValue(value: intMap as NSObject, type: "int", type2: "int") as! [Int64: Int64],
+      enumMap: _GolubetsFfiCodec.readValue(value: enumMap as NSObject, type: "NativeInteropAnEnum", type2: "NativeInteropAnEnum") as! [NativeInteropAnEnum: NativeInteropAnEnum],
+      objectMap: _GolubetsFfiCodec.readValue(value: objectMap as NSObject, type: "Object", type2: "Object") as! [AnyHashable: Any],
+      listMap: _GolubetsFfiCodec.readValue(value: listMap as NSObject, type: "int") as! [Int64: [Any?]],
+      mapMap: _GolubetsFfiCodec.readValue(value: mapMap as NSObject, type: "int") as! [Int64: [AnyHashable?: Any?]],
     )
   }
 }
@@ -1008,6 +958,7 @@ public class NativeInteropAllNullableTypes: Hashable, CustomStringConvertible {
   public var mapMap: [Int64?: [AnyHashable?: Any?]?]?
   public var recursiveClassMap: [Int64?: NativeInteropAllNullableTypes?]?
 
+
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> NativeInteropAllNullableTypes? {
     let aNullableBool: Bool? = nilOrValue(golubetsVar_list[0])
@@ -1036,13 +987,11 @@ public class NativeInteropAllNullableTypes: Hashable, CustomStringConvertible {
     let map: [AnyHashable?: Any?]? = nilOrValue(golubetsVar_list[23])
     let stringMap: [String?: String?]? = nilOrValue(golubetsVar_list[24])
     let intMap: [Int64?: Int64?]? = nilOrValue(golubetsVar_list[25])
-    let enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]? =
-      golubetsVar_list[26] as? [NativeInteropAnEnum?: NativeInteropAnEnum?]
+    let enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]? = golubetsVar_list[26] as? [NativeInteropAnEnum?: NativeInteropAnEnum?]
     let objectMap: [AnyHashable?: Any?]? = nilOrValue(golubetsVar_list[27])
     let listMap: [Int64?: [Any?]?]? = nilOrValue(golubetsVar_list[28])
     let mapMap: [Int64?: [AnyHashable?: Any?]?]? = nilOrValue(golubetsVar_list[29])
-    let recursiveClassMap: [Int64?: NativeInteropAllNullableTypes?]? = nilOrValue(
-      golubetsVar_list[30])
+    let recursiveClassMap: [Int64?: NativeInteropAllNullableTypes?]? = nilOrValue(golubetsVar_list[30])
 
     return NativeInteropAllNullableTypes(
       aNullableBool: aNullableBool,
@@ -1113,52 +1062,14 @@ public class NativeInteropAllNullableTypes: Hashable, CustomStringConvertible {
       recursiveClassMap,
     ]
   }
-  public static func == (lhs: NativeInteropAllNullableTypes, rhs: NativeInteropAllNullableTypes)
-    -> Bool
-  {
+  public static func == (lhs: NativeInteropAllNullableTypes, rhs: NativeInteropAllNullableTypes) -> Bool {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    if lhs === rhs {
+    if (lhs === rhs) {
       return true
     }
-    return NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableBool, rhs.aNullableBool)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableInt, rhs.aNullableInt)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableInt64, rhs.aNullableInt64)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableDouble, rhs.aNullableDouble)
-      && NativeInteropTestsGolubetsInternal.deepEquals(
-        lhs.aNullableByteArray, rhs.aNullableByteArray)
-      && NativeInteropTestsGolubetsInternal.deepEquals(
-        lhs.aNullable4ByteArray, rhs.aNullable4ByteArray)
-      && NativeInteropTestsGolubetsInternal.deepEquals(
-        lhs.aNullable8ByteArray, rhs.aNullable8ByteArray)
-      && NativeInteropTestsGolubetsInternal.deepEquals(
-        lhs.aNullableFloatArray, rhs.aNullableFloatArray)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableEnum, rhs.aNullableEnum)
-      && NativeInteropTestsGolubetsInternal.deepEquals(
-        lhs.anotherNullableEnum, rhs.anotherNullableEnum)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableString, rhs.aNullableString)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableObject, rhs.aNullableObject)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.allNullableTypes, rhs.allNullableTypes)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.list, rhs.list)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.stringList, rhs.stringList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.intList, rhs.intList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.doubleList, rhs.doubleList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.boolList, rhs.boolList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.enumList, rhs.enumList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.objectList, rhs.objectList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.listList, rhs.listList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.mapList, rhs.mapList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(
-        lhs.recursiveClassList, rhs.recursiveClassList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.map, rhs.map)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.stringMap, rhs.stringMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.intMap, rhs.intMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.enumMap, rhs.enumMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.objectMap, rhs.objectMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.listMap, rhs.listMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.mapMap, rhs.mapMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.recursiveClassMap, rhs.recursiveClassMap)
+    return NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableBool, rhs.aNullableBool) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableInt, rhs.aNullableInt) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableInt64, rhs.aNullableInt64) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableDouble, rhs.aNullableDouble) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableByteArray, rhs.aNullableByteArray) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullable4ByteArray, rhs.aNullable4ByteArray) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullable8ByteArray, rhs.aNullable8ByteArray) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableFloatArray, rhs.aNullableFloatArray) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableEnum, rhs.aNullableEnum) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.anotherNullableEnum, rhs.anotherNullableEnum) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableString, rhs.aNullableString) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableObject, rhs.aNullableObject) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.allNullableTypes, rhs.allNullableTypes) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.list, rhs.list) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.stringList, rhs.stringList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.intList, rhs.intList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.doubleList, rhs.doubleList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.boolList, rhs.boolList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.enumList, rhs.enumList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.objectList, rhs.objectList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.listList, rhs.listList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.mapList, rhs.mapList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.recursiveClassList, rhs.recursiveClassList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.map, rhs.map) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.stringMap, rhs.stringMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.intMap, rhs.intMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.enumMap, rhs.enumMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.objectMap, rhs.objectMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.listMap, rhs.listMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.mapMap, rhs.mapMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.recursiveClassMap, rhs.recursiveClassMap)
   }
 
   public func hash(into hasher: inout Hasher) {
@@ -1197,8 +1108,7 @@ public class NativeInteropAllNullableTypes: Hashable, CustomStringConvertible {
   }
 
   public var description: String {
-    return
-      "NativeInteropAllNullableTypes(aNullableBool: \(String(describing: aNullableBool)), aNullableInt: \(String(describing: aNullableInt)), aNullableInt64: \(String(describing: aNullableInt64)), aNullableDouble: \(String(describing: aNullableDouble)), aNullableByteArray: \(String(describing: aNullableByteArray)), aNullable4ByteArray: \(String(describing: aNullable4ByteArray)), aNullable8ByteArray: \(String(describing: aNullable8ByteArray)), aNullableFloatArray: \(String(describing: aNullableFloatArray)), aNullableEnum: \(String(describing: aNullableEnum)), anotherNullableEnum: \(String(describing: anotherNullableEnum)), aNullableString: \(String(describing: aNullableString)), aNullableObject: \(String(describing: aNullableObject)), allNullableTypes: \(String(describing: allNullableTypes)), list: \(String(describing: list)), stringList: \(String(describing: stringList)), intList: \(String(describing: intList)), doubleList: \(String(describing: doubleList)), boolList: \(String(describing: boolList)), enumList: \(String(describing: enumList)), objectList: \(String(describing: objectList)), listList: \(String(describing: listList)), mapList: \(String(describing: mapList)), recursiveClassList: \(String(describing: recursiveClassList)), map: \(String(describing: map)), stringMap: \(String(describing: stringMap)), intMap: \(String(describing: intMap)), enumMap: \(String(describing: enumMap)), objectMap: \(String(describing: objectMap)), listMap: \(String(describing: listMap)), mapMap: \(String(describing: mapMap)), recursiveClassMap: \(String(describing: recursiveClassMap)))"
+    return "NativeInteropAllNullableTypes(aNullableBool: \(String(describing: aNullableBool)), aNullableInt: \(String(describing: aNullableInt)), aNullableInt64: \(String(describing: aNullableInt64)), aNullableDouble: \(String(describing: aNullableDouble)), aNullableByteArray: \(String(describing: aNullableByteArray)), aNullable4ByteArray: \(String(describing: aNullable4ByteArray)), aNullable8ByteArray: \(String(describing: aNullable8ByteArray)), aNullableFloatArray: \(String(describing: aNullableFloatArray)), aNullableEnum: \(String(describing: aNullableEnum)), anotherNullableEnum: \(String(describing: anotherNullableEnum)), aNullableString: \(String(describing: aNullableString)), aNullableObject: \(String(describing: aNullableObject)), allNullableTypes: \(String(describing: allNullableTypes)), list: \(String(describing: list)), stringList: \(String(describing: stringList)), intList: \(String(describing: intList)), doubleList: \(String(describing: doubleList)), boolList: \(String(describing: boolList)), enumList: \(String(describing: enumList)), objectList: \(String(describing: objectList)), listList: \(String(describing: listList)), mapList: \(String(describing: mapList)), recursiveClassList: \(String(describing: recursiveClassList)), map: \(String(describing: map)), stringMap: \(String(describing: stringMap)), intMap: \(String(describing: intMap)), enumMap: \(String(describing: enumMap)), objectMap: \(String(describing: objectMap)), listMap: \(String(describing: listMap)), mapMap: \(String(describing: mapMap)), recursiveClassMap: \(String(describing: recursiveClassMap)))"
   }
 }
 
@@ -1304,45 +1214,24 @@ public class NativeInteropAllNullableTypes: Hashable, CustomStringConvertible {
   @objc public var recursiveClassMap: [NSObject: NSObject]?
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromSwift(_ golubetsVar_Class: NativeInteropAllNullableTypes?)
-    -> NativeInteropAllNullableTypesBridge?
-  {
-    if NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class) {
+  static func fromSwift(_ golubetsVar_Class: NativeInteropAllNullableTypes?) -> NativeInteropAllNullableTypesBridge? {
+    if (NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class)) {
       return nil
     }
     return NativeInteropAllNullableTypesBridge(
-      aNullableBool: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableBool)
-        ? nil : NSNumber(value: golubetsVar_Class!.aNullableBool!),
-      aNullableInt: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableInt)
-        ? nil : NSNumber(value: golubetsVar_Class!.aNullableInt!),
-      aNullableInt64: NativeInteropTestsGolubetsInternal.isNullish(
-        golubetsVar_Class!.aNullableInt64)
-        ? nil : NSNumber(value: golubetsVar_Class!.aNullableInt64!),
-      aNullableDouble: NativeInteropTestsGolubetsInternal.isNullish(
-        golubetsVar_Class!.aNullableDouble)
-        ? nil : NSNumber(value: golubetsVar_Class!.aNullableDouble!),
-      aNullableByteArray: NativeInteropTestsGolubetsInternal.isNullish(
-        golubetsVar_Class!.aNullableByteArray)
-        ? nil : NativeInteropTestsGolubetsTypedData(golubetsVar_Class!.aNullableByteArray!),
-      aNullable4ByteArray: NativeInteropTestsGolubetsInternal.isNullish(
-        golubetsVar_Class!.aNullable4ByteArray)
-        ? nil : NativeInteropTestsGolubetsTypedData(golubetsVar_Class!.aNullable4ByteArray!),
-      aNullable8ByteArray: NativeInteropTestsGolubetsInternal.isNullish(
-        golubetsVar_Class!.aNullable8ByteArray)
-        ? nil : NativeInteropTestsGolubetsTypedData(golubetsVar_Class!.aNullable8ByteArray!),
-      aNullableFloatArray: NativeInteropTestsGolubetsInternal.isNullish(
-        golubetsVar_Class!.aNullableFloatArray)
-        ? nil : NativeInteropTestsGolubetsTypedData(golubetsVar_Class!.aNullableFloatArray!),
-      aNullableEnum: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableEnum)
-        ? nil : NSNumber(value: golubetsVar_Class!.aNullableEnum!.rawValue),
-      anotherNullableEnum: NativeInteropTestsGolubetsInternal.isNullish(
-        golubetsVar_Class!.anotherNullableEnum)
-        ? nil : NSNumber(value: golubetsVar_Class!.anotherNullableEnum!.rawValue),
+      aNullableBool: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableBool) ? nil : NSNumber(value: golubetsVar_Class!.aNullableBool!),
+      aNullableInt: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableInt) ? nil : NSNumber(value: golubetsVar_Class!.aNullableInt!),
+      aNullableInt64: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableInt64) ? nil : NSNumber(value: golubetsVar_Class!.aNullableInt64!),
+      aNullableDouble: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableDouble) ? nil : NSNumber(value: golubetsVar_Class!.aNullableDouble!),
+      aNullableByteArray: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableByteArray) ? nil : NativeInteropTestsGolubetsTypedData(golubetsVar_Class!.aNullableByteArray!),
+      aNullable4ByteArray: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullable4ByteArray) ? nil : NativeInteropTestsGolubetsTypedData(golubetsVar_Class!.aNullable4ByteArray!),
+      aNullable8ByteArray: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullable8ByteArray) ? nil : NativeInteropTestsGolubetsTypedData(golubetsVar_Class!.aNullable8ByteArray!),
+      aNullableFloatArray: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableFloatArray) ? nil : NativeInteropTestsGolubetsTypedData(golubetsVar_Class!.aNullableFloatArray!),
+      aNullableEnum: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableEnum) ? nil : NSNumber(value: golubetsVar_Class!.aNullableEnum!.rawValue),
+      anotherNullableEnum: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.anotherNullableEnum) ? nil : NSNumber(value: golubetsVar_Class!.anotherNullableEnum!.rawValue),
       aNullableString: golubetsVar_Class!.aNullableString as NSString?,
-      aNullableObject: _GolubetsFfiCodec.writeValue(
-        value: golubetsVar_Class!.aNullableObject, isObject: true) as? NSObject,
-      allNullableTypes: NativeInteropAllNullableTypesBridge.fromSwift(
-        golubetsVar_Class!.allNullableTypes),
+      aNullableObject: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.aNullableObject, isObject: true) as? NSObject,
+      allNullableTypes: NativeInteropAllNullableTypesBridge.fromSwift(golubetsVar_Class!.allNullableTypes),
       list: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.list) as? [NSObject],
       stringList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.stringList) as? [NSObject],
       intList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.intList) as? [NSObject],
@@ -1352,84 +1241,50 @@ public class NativeInteropAllNullableTypes: Hashable, CustomStringConvertible {
       objectList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.objectList) as? [NSObject],
       listList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.listList) as? [NSObject],
       mapList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.mapList) as? [NSObject],
-      recursiveClassList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.recursiveClassList)
-        as? [NSObject],
+      recursiveClassList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.recursiveClassList) as? [NSObject],
       map: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.map) as? [NSObject: NSObject],
-      stringMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.stringMap)
-        as? [NSObject: NSObject],
-      intMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.intMap)
-        as? [NSObject: NSObject],
-      enumMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.enumMap)
-        as? [NSObject: NSObject],
-      objectMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.objectMap)
-        as? [NSObject: NSObject],
-      listMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.listMap)
-        as? [NSObject: NSObject],
-      mapMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.mapMap)
-        as? [NSObject: NSObject],
-      recursiveClassMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.recursiveClassMap)
-        as? [NSObject: NSObject],
+      stringMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.stringMap) as? [NSObject: NSObject],
+      intMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.intMap) as? [NSObject: NSObject],
+      enumMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.enumMap) as? [NSObject: NSObject],
+      objectMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.objectMap) as? [NSObject: NSObject],
+      listMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.listMap) as? [NSObject: NSObject],
+      mapMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.mapMap) as? [NSObject: NSObject],
+      recursiveClassMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.recursiveClassMap) as? [NSObject: NSObject],
     )
   }
   func toSwift() -> NativeInteropAllNullableTypes {
-    return NativeInteropAllNullableTypes(
-      aNullableBool: NativeInteropTestsGolubetsInternal.isNullish(aNullableBool)
-        ? nil : aNullableBool!.boolValue,
-      aNullableInt: NativeInteropTestsGolubetsInternal.isNullish(aNullableInt)
-        ? nil : aNullableInt!.int64Value,
-      aNullableInt64: NativeInteropTestsGolubetsInternal.isNullish(aNullableInt64)
-        ? nil : aNullableInt64!.int64Value,
-      aNullableDouble: NativeInteropTestsGolubetsInternal.isNullish(aNullableDouble)
-        ? nil : aNullableDouble!.doubleValue,
-      aNullableByteArray: NativeInteropTestsGolubetsInternal.isNullish(aNullableByteArray)
-        ? nil : aNullableByteArray!.toUint8Array(),
-      aNullable4ByteArray: NativeInteropTestsGolubetsInternal.isNullish(aNullable4ByteArray)
-        ? nil : aNullable4ByteArray!.toInt32Array(),
-      aNullable8ByteArray: NativeInteropTestsGolubetsInternal.isNullish(aNullable8ByteArray)
-        ? nil : aNullable8ByteArray!.toInt64Array(),
-      aNullableFloatArray: NativeInteropTestsGolubetsInternal.isNullish(aNullableFloatArray)
-        ? nil : aNullableFloatArray!.toFloat64Array(),
-      aNullableEnum: NativeInteropTestsGolubetsInternal.isNullish(aNullableEnum)
-        ? nil : NativeInteropAnEnum.init(rawValue: aNullableEnum!.intValue),
-      anotherNullableEnum: NativeInteropTestsGolubetsInternal.isNullish(anotherNullableEnum)
-        ? nil : NativeInteropAnotherEnum.init(rawValue: anotherNullableEnum!.intValue),
+    return NativeInteropAllNullableTypes (
+      aNullableBool: NativeInteropTestsGolubetsInternal.isNullish(aNullableBool) ? nil : aNullableBool!.boolValue,
+      aNullableInt: NativeInteropTestsGolubetsInternal.isNullish(aNullableInt) ? nil : aNullableInt!.int64Value,
+      aNullableInt64: NativeInteropTestsGolubetsInternal.isNullish(aNullableInt64) ? nil : aNullableInt64!.int64Value,
+      aNullableDouble: NativeInteropTestsGolubetsInternal.isNullish(aNullableDouble) ? nil : aNullableDouble!.doubleValue,
+      aNullableByteArray: NativeInteropTestsGolubetsInternal.isNullish(aNullableByteArray) ? nil : aNullableByteArray!.toUint8Array(),
+      aNullable4ByteArray: NativeInteropTestsGolubetsInternal.isNullish(aNullable4ByteArray) ? nil : aNullable4ByteArray!.toInt32Array(),
+      aNullable8ByteArray: NativeInteropTestsGolubetsInternal.isNullish(aNullable8ByteArray) ? nil : aNullable8ByteArray!.toInt64Array(),
+      aNullableFloatArray: NativeInteropTestsGolubetsInternal.isNullish(aNullableFloatArray) ? nil : aNullableFloatArray!.toFloat64Array(),
+      aNullableEnum: NativeInteropTestsGolubetsInternal.isNullish(aNullableEnum) ? nil : NativeInteropAnEnum.init(rawValue: aNullableEnum!.intValue),
+      anotherNullableEnum: NativeInteropTestsGolubetsInternal.isNullish(anotherNullableEnum) ? nil : NativeInteropAnotherEnum.init(rawValue: anotherNullableEnum!.intValue),
       aNullableString: aNullableString as String?,
       aNullableObject: _GolubetsFfiCodec.readValue(value: aNullableObject),
-      allNullableTypes: NativeInteropTestsGolubetsInternal.isNullish(allNullableTypes)
-        ? nil : allNullableTypes!.toSwift(),
+      allNullableTypes: NativeInteropTestsGolubetsInternal.isNullish(allNullableTypes) ? nil : allNullableTypes!.toSwift(),
       list: _GolubetsFfiCodec.readValue(value: list as NSObject?) as? [Any?],
-      stringList: _GolubetsFfiCodec.readValue(value: stringList as NSObject?, type: "String")
-        as? [String?],
+      stringList: _GolubetsFfiCodec.readValue(value: stringList as NSObject?, type: "String") as? [String?],
       intList: _GolubetsFfiCodec.readValue(value: intList as NSObject?, type: "int") as? [Int64?],
-      doubleList: _GolubetsFfiCodec.readValue(value: doubleList as NSObject?, type: "double")
-        as? [Double?],
+      doubleList: _GolubetsFfiCodec.readValue(value: doubleList as NSObject?, type: "double") as? [Double?],
       boolList: _GolubetsFfiCodec.readValue(value: boolList as NSObject?, type: "bool") as? [Bool?],
-      enumList: _GolubetsFfiCodec.readValue(
-        value: enumList as NSObject?, type: "NativeInteropAnEnum") as? [NativeInteropAnEnum?],
-      objectList: _GolubetsFfiCodec.readValue(value: objectList as NSObject?, type: "Object")
-        as? [Any?],
+      enumList: _GolubetsFfiCodec.readValue(value: enumList as NSObject?, type: "NativeInteropAnEnum") as? [NativeInteropAnEnum?],
+      objectList: _GolubetsFfiCodec.readValue(value: objectList as NSObject?, type: "Object") as? [Any?],
       listList: _GolubetsFfiCodec.readValue(value: listList as NSObject?) as? [[Any?]?],
       mapList: _GolubetsFfiCodec.readValue(value: mapList as NSObject?) as? [[AnyHashable?: Any?]?],
-      recursiveClassList: _GolubetsFfiCodec.readValue(
-        value: recursiveClassList as NSObject?, type: "NativeInteropAllNullableTypes")
-        as? [NativeInteropAllNullableTypes?],
+      recursiveClassList: _GolubetsFfiCodec.readValue(value: recursiveClassList as NSObject?, type: "NativeInteropAllNullableTypes") as? [NativeInteropAllNullableTypes?],
       map: _GolubetsFfiCodec.readValue(value: map as NSObject?) as? [AnyHashable?: Any?],
-      stringMap: _GolubetsFfiCodec.readValue(
-        value: stringMap as NSObject?, type: "String", type2: "String") as? [String?: String?],
-      intMap: _GolubetsFfiCodec.readValue(value: intMap as NSObject?, type: "int", type2: "int")
-        as? [Int64?: Int64?],
-      enumMap: _GolubetsFfiCodec.readValue(
-        value: enumMap as NSObject?, type: "NativeInteropAnEnum", type2: "NativeInteropAnEnum")
-        as? [NativeInteropAnEnum?: NativeInteropAnEnum?],
-      objectMap: _GolubetsFfiCodec.readValue(
-        value: objectMap as NSObject?, type: "Object", type2: "Object") as? [AnyHashable?: Any?],
-      listMap: _GolubetsFfiCodec.readValue(value: listMap as NSObject?, type: "int")
-        as? [Int64?: [Any?]?],
-      mapMap: _GolubetsFfiCodec.readValue(value: mapMap as NSObject?, type: "int")
-        as? [Int64?: [AnyHashable?: Any?]?],
-      recursiveClassMap: _GolubetsFfiCodec.readValue(
-        value: recursiveClassMap as NSObject?, type: "int", type2: "NativeInteropAllNullableTypes")
-        as? [Int64?: NativeInteropAllNullableTypes?],
+      stringMap: _GolubetsFfiCodec.readValue(value: stringMap as NSObject?, type: "String", type2: "String") as? [String?: String?],
+      intMap: _GolubetsFfiCodec.readValue(value: intMap as NSObject?, type: "int", type2: "int") as? [Int64?: Int64?],
+      enumMap: _GolubetsFfiCodec.readValue(value: enumMap as NSObject?, type: "NativeInteropAnEnum", type2: "NativeInteropAnEnum") as? [NativeInteropAnEnum?: NativeInteropAnEnum?],
+      objectMap: _GolubetsFfiCodec.readValue(value: objectMap as NSObject?, type: "Object", type2: "Object") as? [AnyHashable?: Any?],
+      listMap: _GolubetsFfiCodec.readValue(value: listMap as NSObject?, type: "int") as? [Int64?: [Any?]?],
+      mapMap: _GolubetsFfiCodec.readValue(value: mapMap as NSObject?, type: "int") as? [Int64?: [AnyHashable?: Any?]?],
+      recursiveClassMap: _GolubetsFfiCodec.readValue(value: recursiveClassMap as NSObject?, type: "int", type2: "NativeInteropAllNullableTypes") as? [Int64?: NativeInteropAllNullableTypes?],
     )
   }
 }
@@ -1531,9 +1386,9 @@ public struct NativeInteropAllNullableTypesWithoutRecursion: Hashable, CustomStr
   public var listMap: [Int64?: [Any?]?]? = nil
   public var mapMap: [Int64?: [AnyHashable?: Any?]?]? = nil
 
+
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ golubetsVar_list: [Any?]) -> NativeInteropAllNullableTypesWithoutRecursion?
-  {
+  static func fromList(_ golubetsVar_list: [Any?]) -> NativeInteropAllNullableTypesWithoutRecursion? {
     let aNullableBool: Bool? = nilOrValue(golubetsVar_list[0])
     let aNullableInt: Int64? = nilOrValue(golubetsVar_list[1])
     let aNullableInt64: Int64? = nilOrValue(golubetsVar_list[2])
@@ -1559,8 +1414,7 @@ public struct NativeInteropAllNullableTypesWithoutRecursion: Hashable, CustomStr
     let map: [AnyHashable?: Any?]? = nilOrValue(golubetsVar_list[22])
     let stringMap: [String?: String?]? = nilOrValue(golubetsVar_list[23])
     let intMap: [Int64?: Int64?]? = nilOrValue(golubetsVar_list[24])
-    let enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]? =
-      golubetsVar_list[25] as? [NativeInteropAnEnum?: NativeInteropAnEnum?]
+    let enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]? = golubetsVar_list[25] as? [NativeInteropAnEnum?: NativeInteropAnEnum?]
     let objectMap: [AnyHashable?: Any?]? = nilOrValue(golubetsVar_list[26])
     let listMap: [Int64?: [Any?]?]? = nilOrValue(golubetsVar_list[27])
     let mapMap: [Int64?: [AnyHashable?: Any?]?]? = nilOrValue(golubetsVar_list[28])
@@ -1630,47 +1484,11 @@ public struct NativeInteropAllNullableTypesWithoutRecursion: Hashable, CustomStr
       mapMap,
     ]
   }
-  public static func == (
-    lhs: NativeInteropAllNullableTypesWithoutRecursion,
-    rhs: NativeInteropAllNullableTypesWithoutRecursion
-  ) -> Bool {
+  public static func == (lhs: NativeInteropAllNullableTypesWithoutRecursion, rhs: NativeInteropAllNullableTypesWithoutRecursion) -> Bool {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableBool, rhs.aNullableBool)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableInt, rhs.aNullableInt)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableInt64, rhs.aNullableInt64)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableDouble, rhs.aNullableDouble)
-      && NativeInteropTestsGolubetsInternal.deepEquals(
-        lhs.aNullableByteArray, rhs.aNullableByteArray)
-      && NativeInteropTestsGolubetsInternal.deepEquals(
-        lhs.aNullable4ByteArray, rhs.aNullable4ByteArray)
-      && NativeInteropTestsGolubetsInternal.deepEquals(
-        lhs.aNullable8ByteArray, rhs.aNullable8ByteArray)
-      && NativeInteropTestsGolubetsInternal.deepEquals(
-        lhs.aNullableFloatArray, rhs.aNullableFloatArray)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableEnum, rhs.aNullableEnum)
-      && NativeInteropTestsGolubetsInternal.deepEquals(
-        lhs.anotherNullableEnum, rhs.anotherNullableEnum)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableString, rhs.aNullableString)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableObject, rhs.aNullableObject)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.type, rhs.type)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.list, rhs.list)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.stringList, rhs.stringList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.intList, rhs.intList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.doubleList, rhs.doubleList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.boolList, rhs.boolList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.enumList, rhs.enumList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.objectList, rhs.objectList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.listList, rhs.listList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.mapList, rhs.mapList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.map, rhs.map)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.stringMap, rhs.stringMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.intMap, rhs.intMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.enumMap, rhs.enumMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.objectMap, rhs.objectMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.listMap, rhs.listMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.mapMap, rhs.mapMap)
+    return NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableBool, rhs.aNullableBool) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableInt, rhs.aNullableInt) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableInt64, rhs.aNullableInt64) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableDouble, rhs.aNullableDouble) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableByteArray, rhs.aNullableByteArray) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullable4ByteArray, rhs.aNullable4ByteArray) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullable8ByteArray, rhs.aNullable8ByteArray) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableFloatArray, rhs.aNullableFloatArray) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableEnum, rhs.aNullableEnum) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.anotherNullableEnum, rhs.anotherNullableEnum) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableString, rhs.aNullableString) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.aNullableObject, rhs.aNullableObject) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.type, rhs.type) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.list, rhs.list) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.stringList, rhs.stringList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.intList, rhs.intList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.doubleList, rhs.doubleList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.boolList, rhs.boolList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.enumList, rhs.enumList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.objectList, rhs.objectList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.listList, rhs.listList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.mapList, rhs.mapList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.map, rhs.map) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.stringMap, rhs.stringMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.intMap, rhs.intMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.enumMap, rhs.enumMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.objectMap, rhs.objectMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.listMap, rhs.listMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.mapMap, rhs.mapMap)
   }
 
   public func hash(into hasher: inout Hasher) {
@@ -1707,8 +1525,7 @@ public struct NativeInteropAllNullableTypesWithoutRecursion: Hashable, CustomStr
   }
 
   public var description: String {
-    return
-      "NativeInteropAllNullableTypesWithoutRecursion(aNullableBool: \(String(describing: aNullableBool)), aNullableInt: \(String(describing: aNullableInt)), aNullableInt64: \(String(describing: aNullableInt64)), aNullableDouble: \(String(describing: aNullableDouble)), aNullableByteArray: \(String(describing: aNullableByteArray)), aNullable4ByteArray: \(String(describing: aNullable4ByteArray)), aNullable8ByteArray: \(String(describing: aNullable8ByteArray)), aNullableFloatArray: \(String(describing: aNullableFloatArray)), aNullableEnum: \(String(describing: aNullableEnum)), anotherNullableEnum: \(String(describing: anotherNullableEnum)), aNullableString: \(String(describing: aNullableString)), aNullableObject: \(String(describing: aNullableObject)), type: \(String(describing: type)), list: \(String(describing: list)), stringList: \(String(describing: stringList)), intList: \(String(describing: intList)), doubleList: \(String(describing: doubleList)), boolList: \(String(describing: boolList)), enumList: \(String(describing: enumList)), objectList: \(String(describing: objectList)), listList: \(String(describing: listList)), mapList: \(String(describing: mapList)), map: \(String(describing: map)), stringMap: \(String(describing: stringMap)), intMap: \(String(describing: intMap)), enumMap: \(String(describing: enumMap)), objectMap: \(String(describing: objectMap)), listMap: \(String(describing: listMap)), mapMap: \(String(describing: mapMap)))"
+    return "NativeInteropAllNullableTypesWithoutRecursion(aNullableBool: \(String(describing: aNullableBool)), aNullableInt: \(String(describing: aNullableInt)), aNullableInt64: \(String(describing: aNullableInt64)), aNullableDouble: \(String(describing: aNullableDouble)), aNullableByteArray: \(String(describing: aNullableByteArray)), aNullable4ByteArray: \(String(describing: aNullable4ByteArray)), aNullable8ByteArray: \(String(describing: aNullable8ByteArray)), aNullableFloatArray: \(String(describing: aNullableFloatArray)), aNullableEnum: \(String(describing: aNullableEnum)), anotherNullableEnum: \(String(describing: anotherNullableEnum)), aNullableString: \(String(describing: aNullableString)), aNullableObject: \(String(describing: aNullableObject)), type: \(String(describing: type)), list: \(String(describing: list)), stringList: \(String(describing: stringList)), intList: \(String(describing: intList)), doubleList: \(String(describing: doubleList)), boolList: \(String(describing: boolList)), enumList: \(String(describing: enumList)), objectList: \(String(describing: objectList)), listList: \(String(describing: listList)), mapList: \(String(describing: mapList)), map: \(String(describing: map)), stringMap: \(String(describing: stringMap)), intMap: \(String(describing: intMap)), enumMap: \(String(describing: enumMap)), objectMap: \(String(describing: objectMap)), listMap: \(String(describing: listMap)), mapMap: \(String(describing: mapMap)))"
   }
 }
 
@@ -1810,45 +1627,24 @@ public struct NativeInteropAllNullableTypesWithoutRecursion: Hashable, CustomStr
   @objc public var mapMap: [NSObject: NSObject]? = nil
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromSwift(_ golubetsVar_Class: NativeInteropAllNullableTypesWithoutRecursion?)
-    -> NativeInteropAllNullableTypesWithoutRecursionBridge?
-  {
-    if NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class) {
+  static func fromSwift(_ golubetsVar_Class: NativeInteropAllNullableTypesWithoutRecursion?) -> NativeInteropAllNullableTypesWithoutRecursionBridge? {
+    if (NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class)) {
       return nil
     }
     return NativeInteropAllNullableTypesWithoutRecursionBridge(
-      aNullableBool: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableBool)
-        ? nil : NSNumber(value: golubetsVar_Class!.aNullableBool!),
-      aNullableInt: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableInt)
-        ? nil : NSNumber(value: golubetsVar_Class!.aNullableInt!),
-      aNullableInt64: NativeInteropTestsGolubetsInternal.isNullish(
-        golubetsVar_Class!.aNullableInt64)
-        ? nil : NSNumber(value: golubetsVar_Class!.aNullableInt64!),
-      aNullableDouble: NativeInteropTestsGolubetsInternal.isNullish(
-        golubetsVar_Class!.aNullableDouble)
-        ? nil : NSNumber(value: golubetsVar_Class!.aNullableDouble!),
-      aNullableByteArray: NativeInteropTestsGolubetsInternal.isNullish(
-        golubetsVar_Class!.aNullableByteArray)
-        ? nil : NativeInteropTestsGolubetsTypedData(golubetsVar_Class!.aNullableByteArray!),
-      aNullable4ByteArray: NativeInteropTestsGolubetsInternal.isNullish(
-        golubetsVar_Class!.aNullable4ByteArray)
-        ? nil : NativeInteropTestsGolubetsTypedData(golubetsVar_Class!.aNullable4ByteArray!),
-      aNullable8ByteArray: NativeInteropTestsGolubetsInternal.isNullish(
-        golubetsVar_Class!.aNullable8ByteArray)
-        ? nil : NativeInteropTestsGolubetsTypedData(golubetsVar_Class!.aNullable8ByteArray!),
-      aNullableFloatArray: NativeInteropTestsGolubetsInternal.isNullish(
-        golubetsVar_Class!.aNullableFloatArray)
-        ? nil : NativeInteropTestsGolubetsTypedData(golubetsVar_Class!.aNullableFloatArray!),
-      aNullableEnum: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableEnum)
-        ? nil : NSNumber(value: golubetsVar_Class!.aNullableEnum!.rawValue),
-      anotherNullableEnum: NativeInteropTestsGolubetsInternal.isNullish(
-        golubetsVar_Class!.anotherNullableEnum)
-        ? nil : NSNumber(value: golubetsVar_Class!.anotherNullableEnum!.rawValue),
+      aNullableBool: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableBool) ? nil : NSNumber(value: golubetsVar_Class!.aNullableBool!),
+      aNullableInt: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableInt) ? nil : NSNumber(value: golubetsVar_Class!.aNullableInt!),
+      aNullableInt64: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableInt64) ? nil : NSNumber(value: golubetsVar_Class!.aNullableInt64!),
+      aNullableDouble: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableDouble) ? nil : NSNumber(value: golubetsVar_Class!.aNullableDouble!),
+      aNullableByteArray: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableByteArray) ? nil : NativeInteropTestsGolubetsTypedData(golubetsVar_Class!.aNullableByteArray!),
+      aNullable4ByteArray: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullable4ByteArray) ? nil : NativeInteropTestsGolubetsTypedData(golubetsVar_Class!.aNullable4ByteArray!),
+      aNullable8ByteArray: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullable8ByteArray) ? nil : NativeInteropTestsGolubetsTypedData(golubetsVar_Class!.aNullable8ByteArray!),
+      aNullableFloatArray: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableFloatArray) ? nil : NativeInteropTestsGolubetsTypedData(golubetsVar_Class!.aNullableFloatArray!),
+      aNullableEnum: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.aNullableEnum) ? nil : NSNumber(value: golubetsVar_Class!.aNullableEnum!.rawValue),
+      anotherNullableEnum: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.anotherNullableEnum) ? nil : NSNumber(value: golubetsVar_Class!.anotherNullableEnum!.rawValue),
       aNullableString: golubetsVar_Class!.aNullableString as NSString?,
-      aNullableObject: _GolubetsFfiCodec.writeValue(
-        value: golubetsVar_Class!.aNullableObject, isObject: true) as? NSObject,
-      type: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.type)
-        ? nil : NSNumber(value: golubetsVar_Class!.type!),
+      aNullableObject: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.aNullableObject, isObject: true) as? NSObject,
+      type: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.type) ? nil : NSNumber(value: golubetsVar_Class!.type!),
       list: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.list) as? [NSObject],
       stringList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.stringList) as? [NSObject],
       intList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.intList) as? [NSObject],
@@ -1859,72 +1655,45 @@ public struct NativeInteropAllNullableTypesWithoutRecursion: Hashable, CustomStr
       listList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.listList) as? [NSObject],
       mapList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.mapList) as? [NSObject],
       map: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.map) as? [NSObject: NSObject],
-      stringMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.stringMap)
-        as? [NSObject: NSObject],
-      intMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.intMap)
-        as? [NSObject: NSObject],
-      enumMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.enumMap)
-        as? [NSObject: NSObject],
-      objectMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.objectMap)
-        as? [NSObject: NSObject],
-      listMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.listMap)
-        as? [NSObject: NSObject],
-      mapMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.mapMap)
-        as? [NSObject: NSObject],
+      stringMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.stringMap) as? [NSObject: NSObject],
+      intMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.intMap) as? [NSObject: NSObject],
+      enumMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.enumMap) as? [NSObject: NSObject],
+      objectMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.objectMap) as? [NSObject: NSObject],
+      listMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.listMap) as? [NSObject: NSObject],
+      mapMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.mapMap) as? [NSObject: NSObject],
     )
   }
   func toSwift() -> NativeInteropAllNullableTypesWithoutRecursion {
-    return NativeInteropAllNullableTypesWithoutRecursion(
-      aNullableBool: NativeInteropTestsGolubetsInternal.isNullish(aNullableBool)
-        ? nil : aNullableBool!.boolValue,
-      aNullableInt: NativeInteropTestsGolubetsInternal.isNullish(aNullableInt)
-        ? nil : aNullableInt!.int64Value,
-      aNullableInt64: NativeInteropTestsGolubetsInternal.isNullish(aNullableInt64)
-        ? nil : aNullableInt64!.int64Value,
-      aNullableDouble: NativeInteropTestsGolubetsInternal.isNullish(aNullableDouble)
-        ? nil : aNullableDouble!.doubleValue,
-      aNullableByteArray: NativeInteropTestsGolubetsInternal.isNullish(aNullableByteArray)
-        ? nil : aNullableByteArray!.toUint8Array(),
-      aNullable4ByteArray: NativeInteropTestsGolubetsInternal.isNullish(aNullable4ByteArray)
-        ? nil : aNullable4ByteArray!.toInt32Array(),
-      aNullable8ByteArray: NativeInteropTestsGolubetsInternal.isNullish(aNullable8ByteArray)
-        ? nil : aNullable8ByteArray!.toInt64Array(),
-      aNullableFloatArray: NativeInteropTestsGolubetsInternal.isNullish(aNullableFloatArray)
-        ? nil : aNullableFloatArray!.toFloat64Array(),
-      aNullableEnum: NativeInteropTestsGolubetsInternal.isNullish(aNullableEnum)
-        ? nil : NativeInteropAnEnum.init(rawValue: aNullableEnum!.intValue),
-      anotherNullableEnum: NativeInteropTestsGolubetsInternal.isNullish(anotherNullableEnum)
-        ? nil : NativeInteropAnotherEnum.init(rawValue: anotherNullableEnum!.intValue),
+    return NativeInteropAllNullableTypesWithoutRecursion (
+      aNullableBool: NativeInteropTestsGolubetsInternal.isNullish(aNullableBool) ? nil : aNullableBool!.boolValue,
+      aNullableInt: NativeInteropTestsGolubetsInternal.isNullish(aNullableInt) ? nil : aNullableInt!.int64Value,
+      aNullableInt64: NativeInteropTestsGolubetsInternal.isNullish(aNullableInt64) ? nil : aNullableInt64!.int64Value,
+      aNullableDouble: NativeInteropTestsGolubetsInternal.isNullish(aNullableDouble) ? nil : aNullableDouble!.doubleValue,
+      aNullableByteArray: NativeInteropTestsGolubetsInternal.isNullish(aNullableByteArray) ? nil : aNullableByteArray!.toUint8Array(),
+      aNullable4ByteArray: NativeInteropTestsGolubetsInternal.isNullish(aNullable4ByteArray) ? nil : aNullable4ByteArray!.toInt32Array(),
+      aNullable8ByteArray: NativeInteropTestsGolubetsInternal.isNullish(aNullable8ByteArray) ? nil : aNullable8ByteArray!.toInt64Array(),
+      aNullableFloatArray: NativeInteropTestsGolubetsInternal.isNullish(aNullableFloatArray) ? nil : aNullableFloatArray!.toFloat64Array(),
+      aNullableEnum: NativeInteropTestsGolubetsInternal.isNullish(aNullableEnum) ? nil : NativeInteropAnEnum.init(rawValue: aNullableEnum!.intValue),
+      anotherNullableEnum: NativeInteropTestsGolubetsInternal.isNullish(anotherNullableEnum) ? nil : NativeInteropAnotherEnum.init(rawValue: anotherNullableEnum!.intValue),
       aNullableString: aNullableString as String?,
       aNullableObject: _GolubetsFfiCodec.readValue(value: aNullableObject),
       type: NativeInteropTestsGolubetsInternal.isNullish(type) ? nil : type!.int64Value,
       list: _GolubetsFfiCodec.readValue(value: list as NSObject?) as? [Any?],
-      stringList: _GolubetsFfiCodec.readValue(value: stringList as NSObject?, type: "String")
-        as? [String?],
+      stringList: _GolubetsFfiCodec.readValue(value: stringList as NSObject?, type: "String") as? [String?],
       intList: _GolubetsFfiCodec.readValue(value: intList as NSObject?, type: "int") as? [Int64?],
-      doubleList: _GolubetsFfiCodec.readValue(value: doubleList as NSObject?, type: "double")
-        as? [Double?],
+      doubleList: _GolubetsFfiCodec.readValue(value: doubleList as NSObject?, type: "double") as? [Double?],
       boolList: _GolubetsFfiCodec.readValue(value: boolList as NSObject?, type: "bool") as? [Bool?],
-      enumList: _GolubetsFfiCodec.readValue(
-        value: enumList as NSObject?, type: "NativeInteropAnEnum") as? [NativeInteropAnEnum?],
-      objectList: _GolubetsFfiCodec.readValue(value: objectList as NSObject?, type: "Object")
-        as? [Any?],
+      enumList: _GolubetsFfiCodec.readValue(value: enumList as NSObject?, type: "NativeInteropAnEnum") as? [NativeInteropAnEnum?],
+      objectList: _GolubetsFfiCodec.readValue(value: objectList as NSObject?, type: "Object") as? [Any?],
       listList: _GolubetsFfiCodec.readValue(value: listList as NSObject?) as? [[Any?]?],
       mapList: _GolubetsFfiCodec.readValue(value: mapList as NSObject?) as? [[AnyHashable?: Any?]?],
       map: _GolubetsFfiCodec.readValue(value: map as NSObject?) as? [AnyHashable?: Any?],
-      stringMap: _GolubetsFfiCodec.readValue(
-        value: stringMap as NSObject?, type: "String", type2: "String") as? [String?: String?],
-      intMap: _GolubetsFfiCodec.readValue(value: intMap as NSObject?, type: "int", type2: "int")
-        as? [Int64?: Int64?],
-      enumMap: _GolubetsFfiCodec.readValue(
-        value: enumMap as NSObject?, type: "NativeInteropAnEnum", type2: "NativeInteropAnEnum")
-        as? [NativeInteropAnEnum?: NativeInteropAnEnum?],
-      objectMap: _GolubetsFfiCodec.readValue(
-        value: objectMap as NSObject?, type: "Object", type2: "Object") as? [AnyHashable?: Any?],
-      listMap: _GolubetsFfiCodec.readValue(value: listMap as NSObject?, type: "int")
-        as? [Int64?: [Any?]?],
-      mapMap: _GolubetsFfiCodec.readValue(value: mapMap as NSObject?, type: "int")
-        as? [Int64?: [AnyHashable?: Any?]?],
+      stringMap: _GolubetsFfiCodec.readValue(value: stringMap as NSObject?, type: "String", type2: "String") as? [String?: String?],
+      intMap: _GolubetsFfiCodec.readValue(value: intMap as NSObject?, type: "int", type2: "int") as? [Int64?: Int64?],
+      enumMap: _GolubetsFfiCodec.readValue(value: enumMap as NSObject?, type: "NativeInteropAnEnum", type2: "NativeInteropAnEnum") as? [NativeInteropAnEnum?: NativeInteropAnEnum?],
+      objectMap: _GolubetsFfiCodec.readValue(value: objectMap as NSObject?, type: "Object", type2: "Object") as? [AnyHashable?: Any?],
+      listMap: _GolubetsFfiCodec.readValue(value: listMap as NSObject?, type: "int") as? [Int64?: [Any?]?],
+      mapMap: _GolubetsFfiCodec.readValue(value: mapMap as NSObject?, type: "int") as? [Int64?: [AnyHashable?: Any?]?],
     )
   }
 }
@@ -1962,18 +1731,16 @@ public struct NativeInteropAllClassesWrapper: Hashable, CustomStringConvertible 
   public var classMap: [Int64?: NativeInteropAllTypes?]
   public var nullableClassMap: [Int64?: NativeInteropAllNullableTypesWithoutRecursion?]? = nil
 
+
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> NativeInteropAllClassesWrapper? {
     let allNullableTypes = golubetsVar_list[0] as! NativeInteropAllNullableTypes
-    let allNullableTypesWithoutRecursion: NativeInteropAllNullableTypesWithoutRecursion? =
-      nilOrValue(golubetsVar_list[1])
+    let allNullableTypesWithoutRecursion: NativeInteropAllNullableTypesWithoutRecursion? = nilOrValue(golubetsVar_list[1])
     let allTypes: NativeInteropAllTypes? = nilOrValue(golubetsVar_list[2])
     let classList = golubetsVar_list[3] as! [NativeInteropAllTypes?]
-    let nullableClassList: [NativeInteropAllNullableTypesWithoutRecursion?]? = nilOrValue(
-      golubetsVar_list[4])
+    let nullableClassList: [NativeInteropAllNullableTypesWithoutRecursion?]? = nilOrValue(golubetsVar_list[4])
     let classMap = golubetsVar_list[5] as! [Int64?: NativeInteropAllTypes?]
-    let nullableClassMap: [Int64?: NativeInteropAllNullableTypesWithoutRecursion?]? = nilOrValue(
-      golubetsVar_list[6])
+    let nullableClassMap: [Int64?: NativeInteropAllNullableTypesWithoutRecursion?]? = nilOrValue(golubetsVar_list[6])
 
     return NativeInteropAllClassesWrapper(
       allNullableTypes: allNullableTypes,
@@ -1996,27 +1763,17 @@ public struct NativeInteropAllClassesWrapper: Hashable, CustomStringConvertible 
       nullableClassMap,
     ]
   }
-  public static func == (lhs: NativeInteropAllClassesWrapper, rhs: NativeInteropAllClassesWrapper)
-    -> Bool
-  {
+  public static func == (lhs: NativeInteropAllClassesWrapper, rhs: NativeInteropAllClassesWrapper) -> Bool {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return NativeInteropTestsGolubetsInternal.deepEquals(lhs.allNullableTypes, rhs.allNullableTypes)
-      && NativeInteropTestsGolubetsInternal.deepEquals(
-        lhs.allNullableTypesWithoutRecursion, rhs.allNullableTypesWithoutRecursion)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.allTypes, rhs.allTypes)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.classList, rhs.classList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.nullableClassList, rhs.nullableClassList)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.classMap, rhs.classMap)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.nullableClassMap, rhs.nullableClassMap)
+    return NativeInteropTestsGolubetsInternal.deepEquals(lhs.allNullableTypes, rhs.allNullableTypes) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.allNullableTypesWithoutRecursion, rhs.allNullableTypesWithoutRecursion) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.allTypes, rhs.allTypes) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.classList, rhs.classList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.nullableClassList, rhs.nullableClassList) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.classMap, rhs.classMap) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.nullableClassMap, rhs.nullableClassMap)
   }
 
   public func hash(into hasher: inout Hasher) {
     hasher.combine("NativeInteropAllClassesWrapper")
     NativeInteropTestsGolubetsInternal.deepHash(value: allNullableTypes, hasher: &hasher)
-    NativeInteropTestsGolubetsInternal.deepHash(
-      value: allNullableTypesWithoutRecursion, hasher: &hasher)
+    NativeInteropTestsGolubetsInternal.deepHash(value: allNullableTypesWithoutRecursion, hasher: &hasher)
     NativeInteropTestsGolubetsInternal.deepHash(value: allTypes, hasher: &hasher)
     NativeInteropTestsGolubetsInternal.deepHash(value: classList, hasher: &hasher)
     NativeInteropTestsGolubetsInternal.deepHash(value: nullableClassList, hasher: &hasher)
@@ -2025,8 +1782,7 @@ public struct NativeInteropAllClassesWrapper: Hashable, CustomStringConvertible 
   }
 
   public var description: String {
-    return
-      "NativeInteropAllClassesWrapper(allNullableTypes: \(String(describing: allNullableTypes)), allNullableTypesWithoutRecursion: \(String(describing: allNullableTypesWithoutRecursion)), allTypes: \(String(describing: allTypes)), classList: \(String(describing: classList)), nullableClassList: \(String(describing: nullableClassList)), classMap: \(String(describing: classMap)), nullableClassMap: \(String(describing: nullableClassMap)))"
+    return "NativeInteropAllClassesWrapper(allNullableTypes: \(String(describing: allNullableTypes)), allNullableTypesWithoutRecursion: \(String(describing: allNullableTypesWithoutRecursion)), allTypes: \(String(describing: allTypes)), classList: \(String(describing: classList)), nullableClassList: \(String(describing: nullableClassList)), classMap: \(String(describing: classMap)), nullableClassMap: \(String(describing: nullableClassMap)))"
   }
 }
 
@@ -2056,8 +1812,7 @@ public struct NativeInteropAllClassesWrapper: Hashable, CustomStringConvertible 
     self.nullableClassMap = nullableClassMap
   }
   @objc public var allNullableTypes: NativeInteropAllNullableTypesBridge
-  @objc public var allNullableTypesWithoutRecursion:
-    NativeInteropAllNullableTypesWithoutRecursionBridge? = nil
+  @objc public var allNullableTypesWithoutRecursion: NativeInteropAllNullableTypesWithoutRecursionBridge? = nil
   @objc public var allTypes: NativeInteropAllTypesBridge? = nil
   @objc public var classList: [NSObject]
   @objc public var nullableClassList: [NSObject]? = nil
@@ -2065,46 +1820,29 @@ public struct NativeInteropAllClassesWrapper: Hashable, CustomStringConvertible 
   @objc public var nullableClassMap: [NSObject: NSObject]? = nil
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromSwift(_ golubetsVar_Class: NativeInteropAllClassesWrapper?)
-    -> NativeInteropAllClassesWrapperBridge?
-  {
-    if NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class) {
+  static func fromSwift(_ golubetsVar_Class: NativeInteropAllClassesWrapper?) -> NativeInteropAllClassesWrapperBridge? {
+    if (NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class)) {
       return nil
     }
     return NativeInteropAllClassesWrapperBridge(
-      allNullableTypes: NativeInteropAllNullableTypesBridge.fromSwift(
-        golubetsVar_Class!.allNullableTypes)!,
-      allNullableTypesWithoutRecursion:
-        NativeInteropAllNullableTypesWithoutRecursionBridge.fromSwift(
-          golubetsVar_Class!.allNullableTypesWithoutRecursion),
+      allNullableTypes: NativeInteropAllNullableTypesBridge.fromSwift(golubetsVar_Class!.allNullableTypes)!,
+      allNullableTypesWithoutRecursion: NativeInteropAllNullableTypesWithoutRecursionBridge.fromSwift(golubetsVar_Class!.allNullableTypesWithoutRecursion),
       allTypes: NativeInteropAllTypesBridge.fromSwift(golubetsVar_Class!.allTypes),
       classList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.classList) as! [NSObject],
-      nullableClassList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.nullableClassList)
-        as? [NSObject],
-      classMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.classMap)
-        as! [NSObject: NSObject],
-      nullableClassMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.nullableClassMap)
-        as? [NSObject: NSObject],
+      nullableClassList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.nullableClassList) as? [NSObject],
+      classMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.classMap) as! [NSObject: NSObject],
+      nullableClassMap: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.nullableClassMap) as? [NSObject: NSObject],
     )
   }
   func toSwift() -> NativeInteropAllClassesWrapper {
-    return NativeInteropAllClassesWrapper(
+    return NativeInteropAllClassesWrapper (
       allNullableTypes: allNullableTypes.toSwift(),
-      allNullableTypesWithoutRecursion: NativeInteropTestsGolubetsInternal.isNullish(
-        allNullableTypesWithoutRecursion) ? nil : allNullableTypesWithoutRecursion!.toSwift(),
+      allNullableTypesWithoutRecursion: NativeInteropTestsGolubetsInternal.isNullish(allNullableTypesWithoutRecursion) ? nil : allNullableTypesWithoutRecursion!.toSwift(),
       allTypes: NativeInteropTestsGolubetsInternal.isNullish(allTypes) ? nil : allTypes!.toSwift(),
-      classList: _GolubetsFfiCodec.readValue(
-        value: classList as NSObject, type: "NativeInteropAllTypes") as! [NativeInteropAllTypes?],
-      nullableClassList: _GolubetsFfiCodec.readValue(
-        value: nullableClassList as NSObject?, type: "NativeInteropAllNullableTypesWithoutRecursion"
-      ) as? [NativeInteropAllNullableTypesWithoutRecursion?],
-      classMap: _GolubetsFfiCodec.readValue(
-        value: classMap as NSObject, type: "int", type2: "NativeInteropAllTypes")
-        as! [Int64?: NativeInteropAllTypes?],
-      nullableClassMap: _GolubetsFfiCodec.readValue(
-        value: nullableClassMap as NSObject?, type: "int",
-        type2: "NativeInteropAllNullableTypesWithoutRecursion")
-        as? [Int64?: NativeInteropAllNullableTypesWithoutRecursion?],
+      classList: _GolubetsFfiCodec.readValue(value: classList as NSObject, type: "NativeInteropAllTypes") as! [NativeInteropAllTypes?],
+      nullableClassList: _GolubetsFfiCodec.readValue(value: nullableClassList as NSObject?, type: "NativeInteropAllNullableTypesWithoutRecursion") as? [NativeInteropAllNullableTypesWithoutRecursion?],
+      classMap: _GolubetsFfiCodec.readValue(value: classMap as NSObject, type: "int", type2: "NativeInteropAllTypes") as! [Int64?: NativeInteropAllTypes?],
+      nullableClassMap: _GolubetsFfiCodec.readValue(value: nullableClassMap as NSObject?, type: "int", type2: "NativeInteropAllNullableTypesWithoutRecursion") as? [Int64?: NativeInteropAllNullableTypesWithoutRecursion?],
     )
   }
 }
@@ -2124,44 +1862,42 @@ public enum NativeInteropSealedClass: Hashable {
   /// A subclass of `NativeInteropSealedClass` without fields.
   case nativeInteropEmptySealedClass
 
-  internal static func fromListNativeInteropSealedClassWithFields(_ list: [Any?])
-    -> NativeInteropSealedClass?
-  {
+
+  internal static func fromListNativeInteropSealedClassWithFields(_ list: [Any?]) -> NativeInteropSealedClass? {
     let aString = list[0] as! String
     let aNullableInt: Int64? = nilOrValue(list[1])
     let anEnum = list[2] as! NativeInteropAnEnum
     let aClass: NativeInteropAllNullableTypesWithoutRecursion? = nilOrValue(list[3])
 
     return .nativeInteropSealedClassWithFields(
-      aString: aString,
-      aNullableInt: aNullableInt,
-      anEnum: anEnum,
+      aString: aString, 
+      aNullableInt: aNullableInt, 
+      anEnum: anEnum, 
       aClass: aClass
     )
   }
 
-  internal static func fromListNativeInteropEmptySealedClass(_ list: [Any?])
-    -> NativeInteropSealedClass?
-  {
+  internal static func fromListNativeInteropEmptySealedClass(_ list: [Any?]) -> NativeInteropSealedClass? {
     return .nativeInteropEmptySealedClass
   }
 
   public func toList() -> [Any?] {
     switch self {
-    case .nativeInteropSealedClassWithFields(
-      let aString,
-      let aNullableInt,
-      let anEnum,
-      let aClass
-    ):
+      case .nativeInteropSealedClassWithFields(
+        let aString,
+        let aNullableInt,
+        let anEnum,
+        let aClass
+      ):
       return [
         aString,
         aNullableInt,
         anEnum,
         aClass,
       ]
-    case .nativeInteropEmptySealedClass:
-      return []
+      case .nativeInteropEmptySealedClass:
+      return [
+      ]
     }
   }
   public static func == (lhs: NativeInteropSealedClass, rhs: NativeInteropSealedClass) -> Bool {
@@ -2181,33 +1917,30 @@ public enum NativeInteropSealedClass: Hashable {
 ///
 /// Generated bridge class from Golubets that moves data from Swift to Objective-C.
 @objc public class NativeInteropSealedClassBridge: NSObject {
-  @objc override public init() {
+  @objc override public init(
+  ) {
   }
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromSwift(_ golubetsVar_Class: NativeInteropSealedClass?)
-    -> NativeInteropSealedClassBridge?
-  {
+  static func fromSwift(_ golubetsVar_Class: NativeInteropSealedClass?) -> NativeInteropSealedClassBridge? {
     switch golubetsVar_Class {
-    case .nativeInteropSealedClassWithFields?:
-      return NativeInteropSealedClassWithFieldsBridge.fromSwiftCase(golubetsVar_Class)
-    case .nativeInteropEmptySealedClass?:
-      return NativeInteropEmptySealedClassBridge.fromSwiftCase(golubetsVar_Class)
-    case nil:
-      return nil
+      case .nativeInteropSealedClassWithFields?:
+        return NativeInteropSealedClassWithFieldsBridge.fromSwiftCase(golubetsVar_Class)
+      case .nativeInteropEmptySealedClass?:
+        return NativeInteropEmptySealedClassBridge.fromSwiftCase(golubetsVar_Class)
+      case nil:
+        return nil
     }
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func toSwift(_ golubetsVar_bridge: NativeInteropSealedClassBridge?)
-    -> NativeInteropSealedClass?
-  {
+  static func toSwift(_ golubetsVar_bridge: NativeInteropSealedClassBridge?) -> NativeInteropSealedClass? {
     switch golubetsVar_bridge {
-    case let golubetsVar_value as NativeInteropSealedClassWithFieldsBridge:
-      return golubetsVar_value.toSwift()
-    case let golubetsVar_value as NativeInteropEmptySealedClassBridge:
-      return golubetsVar_value.toSwift()
-    default:
-      return nil
+      case let golubetsVar_value as NativeInteropSealedClassWithFieldsBridge:
+        return golubetsVar_value.toSwift()
+      case let golubetsVar_value as NativeInteropEmptySealedClassBridge:
+        return golubetsVar_value.toSwift()
+      default:
+        return nil
     }
   }
 }
@@ -2233,18 +1966,11 @@ public enum NativeInteropSealedClass: Hashable {
   @objc public var aClass: NativeInteropAllNullableTypesWithoutRecursionBridge? = nil
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromSwiftCase(_ golubetsVar_Class: NativeInteropSealedClass?)
-    -> NativeInteropSealedClassWithFieldsBridge?
-  {
-    guard
-      case .nativeInteropSealedClassWithFields(
-        let golubetsVar_aString, let golubetsVar_aNullableInt, let golubetsVar_anEnum,
-        let golubetsVar_aClass)? = golubetsVar_Class
-    else { return nil }
+  static func fromSwiftCase(_ golubetsVar_Class: NativeInteropSealedClass?) -> NativeInteropSealedClassWithFieldsBridge? {
+    guard case let .nativeInteropSealedClassWithFields(golubetsVar_aString, golubetsVar_aNullableInt, golubetsVar_anEnum, golubetsVar_aClass)? = golubetsVar_Class else { return nil }
     return NativeInteropSealedClassWithFieldsBridge(
       aString: golubetsVar_aString as NSString,
-      aNullableInt: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_aNullableInt)
-        ? nil : NSNumber(value: golubetsVar_aNullableInt!),
+      aNullableInt: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_aNullableInt) ? nil : NSNumber(value: golubetsVar_aNullableInt!),
       anEnum: golubetsVar_anEnum,
       aClass: NativeInteropAllNullableTypesWithoutRecursionBridge.fromSwift(golubetsVar_aClass),
     )
@@ -2252,8 +1978,7 @@ public enum NativeInteropSealedClass: Hashable {
   func toSwift() -> NativeInteropSealedClass {
     return .nativeInteropSealedClassWithFields(
       aString: aString as String,
-      aNullableInt: NativeInteropTestsGolubetsInternal.isNullish(aNullableInt)
-        ? nil : aNullableInt!.int64Value,
+      aNullableInt: NativeInteropTestsGolubetsInternal.isNullish(aNullableInt) ? nil : aNullableInt!.int64Value,
       anEnum: anEnum,
       aClass: NativeInteropTestsGolubetsInternal.isNullish(aClass) ? nil : aClass!.toSwift()
     )
@@ -2264,13 +1989,12 @@ public enum NativeInteropSealedClass: Hashable {
 ///
 /// Generated bridge class from Golubets that moves data from Swift to Objective-C.
 @objc public class NativeInteropEmptySealedClassBridge: NativeInteropSealedClassBridge {
-  @objc override public init() {
+  @objc override public init(
+  ) {
   }
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromSwiftCase(_ golubetsVar_Class: NativeInteropSealedClass?)
-    -> NativeInteropEmptySealedClassBridge?
-  {
+  static func fromSwiftCase(_ golubetsVar_Class: NativeInteropSealedClass?) -> NativeInteropEmptySealedClassBridge? {
     guard case .nativeInteropEmptySealedClass? = golubetsVar_Class else { return nil }
     return NativeInteropEmptySealedClassBridge()
   }
@@ -2297,6 +2021,7 @@ public struct NativeInteropSealedClassWrapper: Hashable, CustomStringConvertible
   public var nullableSealedClass: NativeInteropSealedClass? = nil
   public var sealedClassList: [NativeInteropSealedClass]
 
+
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> NativeInteropSealedClassWrapper? {
     let sealedClass = golubetsVar_list[0] as! NativeInteropSealedClass
@@ -2316,16 +2041,11 @@ public struct NativeInteropSealedClassWrapper: Hashable, CustomStringConvertible
       sealedClassList,
     ]
   }
-  public static func == (lhs: NativeInteropSealedClassWrapper, rhs: NativeInteropSealedClassWrapper)
-    -> Bool
-  {
+  public static func == (lhs: NativeInteropSealedClassWrapper, rhs: NativeInteropSealedClassWrapper) -> Bool {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return NativeInteropTestsGolubetsInternal.deepEquals(lhs.sealedClass, rhs.sealedClass)
-      && NativeInteropTestsGolubetsInternal.deepEquals(
-        lhs.nullableSealedClass, rhs.nullableSealedClass)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.sealedClassList, rhs.sealedClassList)
+    return NativeInteropTestsGolubetsInternal.deepEquals(lhs.sealedClass, rhs.sealedClass) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.nullableSealedClass, rhs.nullableSealedClass) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.sealedClassList, rhs.sealedClassList)
   }
 
   public func hash(into hasher: inout Hasher) {
@@ -2336,8 +2056,7 @@ public struct NativeInteropSealedClassWrapper: Hashable, CustomStringConvertible
   }
 
   public var description: String {
-    return
-      "NativeInteropSealedClassWrapper(sealedClass: \(String(describing: sealedClass)), nullableSealedClass: \(String(describing: nullableSealedClass)), sealedClassList: \(String(describing: sealedClassList)))"
+    return "NativeInteropSealedClassWrapper(sealedClass: \(String(describing: sealedClass)), nullableSealedClass: \(String(describing: nullableSealedClass)), sealedClassList: \(String(describing: sealedClassList)))"
   }
 }
 
@@ -2360,27 +2079,21 @@ public struct NativeInteropSealedClassWrapper: Hashable, CustomStringConvertible
   @objc public var sealedClassList: [NSObject]
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromSwift(_ golubetsVar_Class: NativeInteropSealedClassWrapper?)
-    -> NativeInteropSealedClassWrapperBridge?
-  {
-    if NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class) {
+  static func fromSwift(_ golubetsVar_Class: NativeInteropSealedClassWrapper?) -> NativeInteropSealedClassWrapperBridge? {
+    if (NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class)) {
       return nil
     }
     return NativeInteropSealedClassWrapperBridge(
       sealedClass: NativeInteropSealedClassBridge.fromSwift(golubetsVar_Class!.sealedClass)!,
-      nullableSealedClass: NativeInteropSealedClassBridge.fromSwift(
-        golubetsVar_Class!.nullableSealedClass),
-      sealedClassList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.sealedClassList)
-        as! [NSObject],
+      nullableSealedClass: NativeInteropSealedClassBridge.fromSwift(golubetsVar_Class!.nullableSealedClass),
+      sealedClassList: _GolubetsFfiCodec.writeValue(value: golubetsVar_Class!.sealedClassList) as! [NSObject],
     )
   }
   func toSwift() -> NativeInteropSealedClassWrapper {
-    return NativeInteropSealedClassWrapper(
+    return NativeInteropSealedClassWrapper (
       sealedClass: NativeInteropSealedClassBridge.toSwift(sealedClass)!,
       nullableSealedClass: NativeInteropSealedClassBridge.toSwift(nullableSealedClass),
-      sealedClassList: _GolubetsFfiCodec.readValue(
-        value: sealedClassList as NSObject, type: "NativeInteropSealedClass")
-        as! [NativeInteropSealedClass],
+      sealedClassList: _GolubetsFfiCodec.readValue(value: sealedClassList as NSObject, type: "NativeInteropSealedClass") as! [NativeInteropSealedClass],
     )
   }
 }
@@ -2439,6 +2152,7 @@ public struct NativeInteropReservedNames: Hashable, CustomStringConvertible {
   public var isCount: Int64? = nil
   public var getValue: String? = nil
 
+
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ golubetsVar_list: [Any?]) -> NativeInteropReservedNames? {
     let type: String? = nilOrValue(golubetsVar_list[0])
@@ -2495,20 +2209,7 @@ public struct NativeInteropReservedNames: Hashable, CustomStringConvertible {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return NativeInteropTestsGolubetsInternal.deepEquals(lhs.type, rhs.type)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.use, rhs.use)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.reference, rhs.reference)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.releasedBy, rhs.releasedBy)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.fromReference, rhs.fromReference)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.jClass, rhs.jClass)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.isInstanceOf, rhs.isInstanceOf)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.isNull, rhs.isNull)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.isReleased, rhs.isReleased)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.equals, rhs.equals)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.isEnabled, rhs.isEnabled)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.isMaybe, rhs.isMaybe)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.isCount, rhs.isCount)
-      && NativeInteropTestsGolubetsInternal.deepEquals(lhs.getValue, rhs.getValue)
+    return NativeInteropTestsGolubetsInternal.deepEquals(lhs.type, rhs.type) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.use, rhs.use) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.reference, rhs.reference) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.releasedBy, rhs.releasedBy) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.fromReference, rhs.fromReference) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.jClass, rhs.jClass) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.isInstanceOf, rhs.isInstanceOf) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.isNull, rhs.isNull) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.isReleased, rhs.isReleased) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.equals, rhs.equals) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.isEnabled, rhs.isEnabled) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.isMaybe, rhs.isMaybe) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.isCount, rhs.isCount) && NativeInteropTestsGolubetsInternal.deepEquals(lhs.getValue, rhs.getValue)
   }
 
   public func hash(into hasher: inout Hasher) {
@@ -2530,8 +2231,7 @@ public struct NativeInteropReservedNames: Hashable, CustomStringConvertible {
   }
 
   public var description: String {
-    return
-      "NativeInteropReservedNames(type: \(String(describing: type)), use: \(String(describing: use)), reference: \(String(describing: reference)), releasedBy: \(String(describing: releasedBy)), fromReference: \(String(describing: fromReference)), jClass: \(String(describing: jClass)), isInstanceOf: \(String(describing: isInstanceOf)), isNull: \(String(describing: isNull)), isReleased: \(String(describing: isReleased)), equals: \(String(describing: equals)), isEnabled: \(String(describing: isEnabled)), isMaybe: \(String(describing: isMaybe)), isCount: \(String(describing: isCount)), getValue: \(String(describing: getValue)))"
+    return "NativeInteropReservedNames(type: \(String(describing: type)), use: \(String(describing: use)), reference: \(String(describing: reference)), releasedBy: \(String(describing: releasedBy)), fromReference: \(String(describing: fromReference)), jClass: \(String(describing: jClass)), isInstanceOf: \(String(describing: isInstanceOf)), isNull: \(String(describing: isNull)), isReleased: \(String(describing: isReleased)), equals: \(String(describing: equals)), isEnabled: \(String(describing: isEnabled)), isMaybe: \(String(describing: isMaybe)), isCount: \(String(describing: isCount)), getValue: \(String(describing: getValue)))"
   }
 }
 
@@ -2590,10 +2290,8 @@ public struct NativeInteropReservedNames: Hashable, CustomStringConvertible {
   @objc public var getValue: NSString? = nil
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromSwift(_ golubetsVar_Class: NativeInteropReservedNames?)
-    -> NativeInteropReservedNamesBridge?
-  {
-    if NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class) {
+  static func fromSwift(_ golubetsVar_Class: NativeInteropReservedNames?) -> NativeInteropReservedNamesBridge? {
+    if (NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class)) {
       return nil
     }
     return NativeInteropReservedNamesBridge(
@@ -2608,15 +2306,13 @@ public struct NativeInteropReservedNames: Hashable, CustomStringConvertible {
       isReleased: golubetsVar_Class!.isReleased,
       equals: golubetsVar_Class!.equals as NSString?,
       isEnabled: golubetsVar_Class!.isEnabled,
-      isMaybe: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.isMaybe)
-        ? nil : NSNumber(value: golubetsVar_Class!.isMaybe!),
-      isCount: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.isCount)
-        ? nil : NSNumber(value: golubetsVar_Class!.isCount!),
+      isMaybe: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.isMaybe) ? nil : NSNumber(value: golubetsVar_Class!.isMaybe!),
+      isCount: NativeInteropTestsGolubetsInternal.isNullish(golubetsVar_Class!.isCount) ? nil : NSNumber(value: golubetsVar_Class!.isCount!),
       getValue: golubetsVar_Class!.getValue as NSString?,
     )
   }
   func toSwift() -> NativeInteropReservedNames {
-    return NativeInteropReservedNames(
+    return NativeInteropReservedNames (
       type: type as String?,
       use: use as String?,
       reference: reference as String?,
@@ -2648,6 +2344,8 @@ public enum NativeInteropShape: Hashable {
     label: String?
   )
 
+
+
   internal static func fromListNativeInteropCircle(_ list: [Any?]) -> NativeInteropShape? {
     let radius = list[0] as! Double
 
@@ -2661,23 +2359,23 @@ public enum NativeInteropShape: Hashable {
     let label: String? = nilOrValue(list[1])
 
     return .nativeInteropSquare(
-      side: side,
+      side: side, 
       label: label
     )
   }
 
   public func toList() -> [Any?] {
     switch self {
-    case .nativeInteropCircle(
-      let radius
-    ):
+      case .nativeInteropCircle(
+        let radius
+      ):
       return [
         radius
       ]
-    case .nativeInteropSquare(
-      let side,
-      let label
-    ):
+      case .nativeInteropSquare(
+        let side,
+        let label
+      ):
       return [
         side,
         label,
@@ -2701,29 +2399,30 @@ public enum NativeInteropShape: Hashable {
 ///
 /// Generated bridge class from Golubets that moves data from Swift to Objective-C.
 @objc public class NativeInteropShapeBridge: NSObject {
-  @objc override public init() {
+  @objc override public init(
+  ) {
   }
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromSwift(_ golubetsVar_Class: NativeInteropShape?) -> NativeInteropShapeBridge? {
     switch golubetsVar_Class {
-    case .nativeInteropCircle?:
-      return NativeInteropCircleBridge.fromSwiftCase(golubetsVar_Class)
-    case .nativeInteropSquare?:
-      return NativeInteropSquareBridge.fromSwiftCase(golubetsVar_Class)
-    case nil:
-      return nil
+      case .nativeInteropCircle?:
+        return NativeInteropCircleBridge.fromSwiftCase(golubetsVar_Class)
+      case .nativeInteropSquare?:
+        return NativeInteropSquareBridge.fromSwiftCase(golubetsVar_Class)
+      case nil:
+        return nil
     }
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func toSwift(_ golubetsVar_bridge: NativeInteropShapeBridge?) -> NativeInteropShape? {
     switch golubetsVar_bridge {
-    case let golubetsVar_value as NativeInteropCircleBridge:
-      return golubetsVar_value.toSwift()
-    case let golubetsVar_value as NativeInteropSquareBridge:
-      return golubetsVar_value.toSwift()
-    default:
-      return nil
+      case let golubetsVar_value as NativeInteropCircleBridge:
+        return golubetsVar_value.toSwift()
+      case let golubetsVar_value as NativeInteropSquareBridge:
+        return golubetsVar_value.toSwift()
+      default:
+        return nil
     }
   }
 }
@@ -2738,9 +2437,8 @@ public enum NativeInteropShape: Hashable {
   @objc public var radius: Double
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromSwiftCase(_ golubetsVar_Class: NativeInteropShape?) -> NativeInteropCircleBridge?
-  {
-    guard case .nativeInteropCircle(let golubetsVar_radius)? = golubetsVar_Class else { return nil }
+  static func fromSwiftCase(_ golubetsVar_Class: NativeInteropShape?) -> NativeInteropCircleBridge? {
+    guard case let .nativeInteropCircle(golubetsVar_radius)? = golubetsVar_Class else { return nil }
     return NativeInteropCircleBridge(
       radius: golubetsVar_radius,
     )
@@ -2765,11 +2463,8 @@ public enum NativeInteropShape: Hashable {
   @objc public var label: NSString? = nil
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromSwiftCase(_ golubetsVar_Class: NativeInteropShape?) -> NativeInteropSquareBridge?
-  {
-    guard
-      case .nativeInteropSquare(let golubetsVar_side, let golubetsVar_label)? = golubetsVar_Class
-    else { return nil }
+  static func fromSwiftCase(_ golubetsVar_Class: NativeInteropShape?) -> NativeInteropSquareBridge? {
+    guard case let .nativeInteropSquare(golubetsVar_side, golubetsVar_label)? = golubetsVar_Class else { return nil }
     return NativeInteropSquareBridge(
       side: golubetsVar_side,
       label: golubetsVar_label as NSString?,
@@ -2787,7 +2482,7 @@ public enum NativeInteropShape: Hashable {
 
 private class _GolubetsFfiCodec {
   static func readValue(value: NSObject?, type: String? = nil, type2: String? = nil) -> Any? {
-    if NativeInteropTestsGolubetsInternal.isNullish(value) {
+    if (NativeInteropTestsGolubetsInternal.isNullish(value)) {
       return nil
     }
     if let typedData = value as? NativeInteropTestsGolubetsTypedData {
@@ -2814,63 +2509,63 @@ private class _GolubetsFfiCodec {
         return number.doubleValue
       } else if type == "bool" {
         return number.boolValue
-      } else if type == "NativeInteropAnEnum" {
+      }
+             else if (type == "NativeInteropAnEnum") {
         return NativeInteropAnEnum.init(rawValue: number.intValue)
-      } else if type == "NativeInteropAnotherEnum" {
+      }       else if (type == "NativeInteropAnotherEnum") {
         return NativeInteropAnotherEnum.init(rawValue: number.intValue)
       }
-
+      
       return number.int64Value
     }
-    if value is NSMutableArray || value is NSArray {
-      var res: [Any?] = []
+    if (value is NSMutableArray || value is NSArray) {
+      var res: Array<Any?> = []
       for item in (value as! NSArray) {
-        res.append(readValue(value: item as? NSObject, type: type))
+          res.append(readValue(value: item as? NSObject, type: type))
       }
       return res
     }
-    if value is NSDictionary {
-      var res: [AnyHashable?: Any?] = Dictionary()
+    if (value is NSDictionary) {
+      var res: Dictionary<AnyHashable?, Any?> = Dictionary()
       for (key, value) in (value as! NSDictionary) {
-        res[readValue(value: key as? NSObject, type: type) as? AnyHashable] = readValue(
-          value: value as? NSObject, type: type2)
+          res[readValue(value: key as? NSObject, type: type) as? AnyHashable] = readValue(value: value as? NSObject, type: type2)
       }
       return res
-    }
-    if value is NativeInteropTestsNumberWrapper {
+    } 
+    if (value is NativeInteropTestsNumberWrapper) {
       return unwrapNumber(wrappedNumber: value as! NativeInteropTestsNumberWrapper)
     }
-    if value is NSString {
+    if (value is NSString) {
       return value as! NSString
-    } else if value is NativeInteropUnusedClassBridge {
-      return (value! as! NativeInteropUnusedClassBridge).toSwift()
-    } else if value is NativeInteropAllTypesBridge {
-      return (value! as! NativeInteropAllTypesBridge).toSwift()
-    } else if value is NativeInteropAllNullableTypesBridge {
-      return (value! as! NativeInteropAllNullableTypesBridge).toSwift()
-    } else if value is NativeInteropAllNullableTypesWithoutRecursionBridge {
-      return (value! as! NativeInteropAllNullableTypesWithoutRecursionBridge).toSwift()
-    } else if value is NativeInteropAllClassesWrapperBridge {
-      return (value! as! NativeInteropAllClassesWrapperBridge).toSwift()
-    } else if value is NativeInteropSealedClassWithFieldsBridge {
-      return (value! as! NativeInteropSealedClassWithFieldsBridge).toSwift()
-    } else if value is NativeInteropEmptySealedClassBridge {
-      return (value! as! NativeInteropEmptySealedClassBridge).toSwift()
-    } else if value is NativeInteropSealedClassWrapperBridge {
-      return (value! as! NativeInteropSealedClassWrapperBridge).toSwift()
-    } else if value is NativeInteropReservedNamesBridge {
-      return (value! as! NativeInteropReservedNamesBridge).toSwift()
-    } else if value is NativeInteropCircleBridge {
-      return (value! as! NativeInteropCircleBridge).toSwift()
-    } else if value is NativeInteropSquareBridge {
-      return (value! as! NativeInteropSquareBridge).toSwift()
-
+          } else if (value is NativeInteropUnusedClassBridge) {
+        return (value! as! NativeInteropUnusedClassBridge).toSwift();
+              } else if (value is NativeInteropAllTypesBridge) {
+        return (value! as! NativeInteropAllTypesBridge).toSwift();
+              } else if (value is NativeInteropAllNullableTypesBridge) {
+        return (value! as! NativeInteropAllNullableTypesBridge).toSwift();
+              } else if (value is NativeInteropAllNullableTypesWithoutRecursionBridge) {
+        return (value! as! NativeInteropAllNullableTypesWithoutRecursionBridge).toSwift();
+              } else if (value is NativeInteropAllClassesWrapperBridge) {
+        return (value! as! NativeInteropAllClassesWrapperBridge).toSwift();
+              } else if (value is NativeInteropSealedClassWithFieldsBridge) {
+        return (value! as! NativeInteropSealedClassWithFieldsBridge).toSwift();
+              } else if (value is NativeInteropEmptySealedClassBridge) {
+        return (value! as! NativeInteropEmptySealedClassBridge).toSwift();
+              } else if (value is NativeInteropSealedClassWrapperBridge) {
+        return (value! as! NativeInteropSealedClassWrapperBridge).toSwift();
+              } else if (value is NativeInteropReservedNamesBridge) {
+        return (value! as! NativeInteropReservedNamesBridge).toSwift();
+              } else if (value is NativeInteropCircleBridge) {
+        return (value! as! NativeInteropCircleBridge).toSwift();
+              } else if (value is NativeInteropSquareBridge) {
+        return (value! as! NativeInteropSquareBridge).toSwift();
+        
     }
     return value
   }
 
   static func writeValue(value: Any?, isObject: Bool = false) -> Any? {
-    if NativeInteropTestsGolubetsInternal.isNullish(value) {
+    if (NativeInteropTestsGolubetsInternal.isNullish(value)) {
       return NativeInteropTestsGolubetsInternalNull()
     }
     if let uint8Array = value as? [UInt8] {
@@ -2888,75 +2583,65 @@ private class _GolubetsFfiCodec {
     if let float64Array = value as? [Double] {
       return isObject ? NativeInteropTestsGolubetsTypedData(float64Array) : float64Array as NSArray
     }
-    if value is Bool || value is Double || value is Int || value is Int64
-      || value is NativeInteropAnEnum || value is NativeInteropAnotherEnum
-    {
-      if isObject {
+    if (value is Bool || value is Double || value is Int || value is Int64 || value is NativeInteropAnEnum || value is NativeInteropAnotherEnum) {
+      if (isObject) {
         return wrapNumber(number: value!)
       }
-      if value is Bool {
+      if (value is Bool) {
         return value
-      } else if value is Double {
+      } else if (value is Double) {
         return value
-      } else if value is Int || value is Int64 {
+      } else if (value is Int || value is Int64) {
         return value
-      } else if value is NativeInteropAnEnum {
+      }
+            else if (value is NativeInteropAnEnum) {
         return (value as! NativeInteropAnEnum).rawValue
-      } else if value is NativeInteropAnotherEnum {
+      }      else if (value is NativeInteropAnotherEnum) {
         return (value as! NativeInteropAnotherEnum).rawValue
       }
     }
-    if value is [Any] {
+    if (value is [Any]) {
       let list = value as! [Any]
       let res: NSMutableArray = NSMutableArray(capacity: list.count)
       for item in list {
-        res.add(
-          NativeInteropTestsGolubetsInternal.isNullish(item)
-            ? NativeInteropTestsGolubetsInternalNull()
-            : writeValue(value: item, isObject: true) as! NSObject)
+        res.add(NativeInteropTestsGolubetsInternal.isNullish(item) ? NativeInteropTestsGolubetsInternalNull() : writeValue(value: item, isObject: true) as! NSObject)
       }
       return res
     }
-    if value is [AnyHashable: Any] {
+    if (value is [AnyHashable: Any]) {
       let dict = value as! [AnyHashable: Any]
       let res: NSMutableDictionary = NSMutableDictionary(capacity: dict.count)
       for (key, value) in dict {
-        res.setObject(
-          NativeInteropTestsGolubetsInternal.isNullish(value)
-            ? NativeInteropTestsGolubetsInternalNull()
-            : writeValue(value: value, isObject: true) as! NSObject,
-          forKey: writeValue(value: key, isObject: true) as! NSCopying)
+         res.setObject(NativeInteropTestsGolubetsInternal.isNullish(value) ? NativeInteropTestsGolubetsInternalNull() : writeValue(value: value, isObject: true) as! NSObject, forKey: writeValue(value: key, isObject: true) as! NSCopying)
       }
       return res
     }
-    if value is String {
+    if (value is String) {
       return value as! NSString
-    } else if value is NativeInteropUnusedClass {
-      return NativeInteropUnusedClassBridge.fromSwift(value as? NativeInteropUnusedClass)
-    } else if value is NativeInteropAllTypes {
-      return NativeInteropAllTypesBridge.fromSwift(value as? NativeInteropAllTypes)
-    } else if value is NativeInteropAllNullableTypes {
-      return NativeInteropAllNullableTypesBridge.fromSwift(value as? NativeInteropAllNullableTypes)
-    } else if value is NativeInteropAllNullableTypesWithoutRecursion {
-      return NativeInteropAllNullableTypesWithoutRecursionBridge.fromSwift(
-        value as? NativeInteropAllNullableTypesWithoutRecursion)
-    } else if value is NativeInteropAllClassesWrapper {
-      return NativeInteropAllClassesWrapperBridge.fromSwift(
-        value as? NativeInteropAllClassesWrapper)
-    } else if value is NativeInteropSealedClass {
-      return NativeInteropSealedClassBridge.fromSwift(value as? NativeInteropSealedClass)
-    } else if value is NativeInteropSealedClassWrapper {
-      return NativeInteropSealedClassWrapperBridge.fromSwift(
-        value as? NativeInteropSealedClassWrapper)
-    } else if value is NativeInteropReservedNames {
-      return NativeInteropReservedNamesBridge.fromSwift(value as? NativeInteropReservedNames)
-    } else if value is NativeInteropShape {
-      return NativeInteropShapeBridge.fromSwift(value as? NativeInteropShape)
-
+          } else if (value is NativeInteropUnusedClass) {
+        return NativeInteropUnusedClassBridge.fromSwift(value as? NativeInteropUnusedClass);
+              } else if (value is NativeInteropAllTypes) {
+        return NativeInteropAllTypesBridge.fromSwift(value as? NativeInteropAllTypes);
+              } else if (value is NativeInteropAllNullableTypes) {
+        return NativeInteropAllNullableTypesBridge.fromSwift(value as? NativeInteropAllNullableTypes);
+              } else if (value is NativeInteropAllNullableTypesWithoutRecursion) {
+        return NativeInteropAllNullableTypesWithoutRecursionBridge.fromSwift(value as? NativeInteropAllNullableTypesWithoutRecursion);
+              } else if (value is NativeInteropAllClassesWrapper) {
+        return NativeInteropAllClassesWrapperBridge.fromSwift(value as? NativeInteropAllClassesWrapper);
+              } else if (value is NativeInteropSealedClass) {
+        return NativeInteropSealedClassBridge.fromSwift(value as? NativeInteropSealedClass);
+              } else if (value is NativeInteropSealedClassWrapper) {
+        return NativeInteropSealedClassWrapperBridge.fromSwift(value as? NativeInteropSealedClassWrapper);
+              } else if (value is NativeInteropReservedNames) {
+        return NativeInteropReservedNamesBridge.fromSwift(value as? NativeInteropReservedNames);
+              } else if (value is NativeInteropShape) {
+        return NativeInteropShapeBridge.fromSwift(value as? NativeInteropShape);
+        
     }
     return value
   }
 }
+    
 
 /// Writes values in the format of Flutter's standard message codec.
 ///
@@ -3040,10 +2725,7 @@ private struct NativeInteropTestsGolubetsInteropWriter {
       return
     }
     if valueType == Bool.self {
-      writeByte(
-        (value as! Bool)
-          ? NativeInteropTestsGolubetsInteropCodec.typeTrue
-          : NativeInteropTestsGolubetsInteropCodec.typeFalse)
+      writeByte((value as! Bool) ? NativeInteropTestsGolubetsInteropCodec.typeTrue : NativeInteropTestsGolubetsInteropCodec.typeFalse)
       return
     }
     if valueType == Double.self {
@@ -3062,28 +2744,23 @@ private struct NativeInteropTestsGolubetsInteropWriter {
     // Typed data is matched by exact type, because casting an empty array of
     // any element type to an array of numbers succeeds.
     if valueType == [UInt8].self {
-      writeTypedData(
-        NativeInteropTestsGolubetsInteropCodec.typeUint8List, value as! [UInt8], alignment: 1)
+      writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeUint8List, value as! [UInt8], alignment: 1)
       return
     }
     if valueType == [Int32].self {
-      writeTypedData(
-        NativeInteropTestsGolubetsInteropCodec.typeInt32List, value as! [Int32], alignment: 4)
+      writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeInt32List, value as! [Int32], alignment: 4)
       return
     }
     if valueType == [Int64].self {
-      writeTypedData(
-        NativeInteropTestsGolubetsInteropCodec.typeInt64List, value as! [Int64], alignment: 8)
+      writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeInt64List, value as! [Int64], alignment: 8)
       return
     }
     if valueType == [Float64].self {
-      writeTypedData(
-        NativeInteropTestsGolubetsInteropCodec.typeFloat64List, value as! [Float64], alignment: 8)
+      writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeFloat64List, value as! [Float64], alignment: 8)
       return
     }
     if valueType == [Float32].self {
-      writeTypedData(
-        NativeInteropTestsGolubetsInteropCodec.typeFloat32List, value as! [Float32], alignment: 4)
+      writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeFloat32List, value as! [Float32], alignment: 4)
       return
     }
     if valueType == AnyHashable.self {
@@ -3115,10 +2792,7 @@ private struct NativeInteropTestsGolubetsInteropWriter {
     }
     if let number = value as? NSNumber {
       if CFGetTypeID(number) == CFBooleanGetTypeID() {
-        writeByte(
-          number.boolValue
-            ? NativeInteropTestsGolubetsInteropCodec.typeTrue
-            : NativeInteropTestsGolubetsInteropCodec.typeFalse)
+        writeByte(number.boolValue ? NativeInteropTestsGolubetsInteropCodec.typeTrue : NativeInteropTestsGolubetsInteropCodec.typeFalse)
       } else if CFNumberIsFloatType(number) {
         writeByte(NativeInteropTestsGolubetsInteropCodec.typeFloat64)
         writeAlignment(8)
@@ -3276,6 +2950,7 @@ private struct NativeInteropTestsGolubetsInteropWriter {
     }
   }
 
+
   mutating func writeNativeInteropUnusedClass(_ value: NativeInteropUnusedClass) {
     writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
     writeSize(1)
@@ -3289,14 +2964,10 @@ private struct NativeInteropTestsGolubetsInteropWriter {
     writeValue(value.anInt)
     writeValue(value.anInt64)
     writeValue(value.aDouble)
-    writeTypedData(
-      NativeInteropTestsGolubetsInteropCodec.typeUint8List, value.aByteArray, alignment: 1)
-    writeTypedData(
-      NativeInteropTestsGolubetsInteropCodec.typeInt32List, value.a4ByteArray, alignment: 4)
-    writeTypedData(
-      NativeInteropTestsGolubetsInteropCodec.typeInt64List, value.a8ByteArray, alignment: 8)
-    writeTypedData(
-      NativeInteropTestsGolubetsInteropCodec.typeFloat64List, value.aFloatArray, alignment: 8)
+    writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeUint8List, value.aByteArray, alignment: 1)
+    writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeInt32List, value.a4ByteArray, alignment: 4)
+    writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeInt64List, value.a8ByteArray, alignment: 8)
+    writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeFloat64List, value.aFloatArray, alignment: 8)
     writeValue(value.anEnum)
     writeValue(value.anotherEnum)
     writeValue(value.aString)
@@ -3326,15 +2997,10 @@ private struct NativeInteropTestsGolubetsInteropWriter {
     writeValue(value.aNullableInt)
     writeValue(value.aNullableInt64)
     writeValue(value.aNullableDouble)
-    writeTypedData(
-      NativeInteropTestsGolubetsInteropCodec.typeUint8List, value.aNullableByteArray, alignment: 1)
-    writeTypedData(
-      NativeInteropTestsGolubetsInteropCodec.typeInt32List, value.aNullable4ByteArray, alignment: 4)
-    writeTypedData(
-      NativeInteropTestsGolubetsInteropCodec.typeInt64List, value.aNullable8ByteArray, alignment: 8)
-    writeTypedData(
-      NativeInteropTestsGolubetsInteropCodec.typeFloat64List, value.aNullableFloatArray,
-      alignment: 8)
+    writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeUint8List, value.aNullableByteArray, alignment: 1)
+    writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeInt32List, value.aNullable4ByteArray, alignment: 4)
+    writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeInt64List, value.aNullable8ByteArray, alignment: 8)
+    writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeFloat64List, value.aNullableFloatArray, alignment: 8)
     writeValue(value.aNullableEnum)
     writeValue(value.anotherNullableEnum)
     writeValue(value.aNullableString)
@@ -3360,24 +3026,17 @@ private struct NativeInteropTestsGolubetsInteropWriter {
     writeMap(value.recursiveClassMap)
   }
 
-  mutating func writeNativeInteropAllNullableTypesWithoutRecursion(
-    _ value: NativeInteropAllNullableTypesWithoutRecursion
-  ) {
+  mutating func writeNativeInteropAllNullableTypesWithoutRecursion(_ value: NativeInteropAllNullableTypesWithoutRecursion) {
     writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
     writeSize(29)
     writeValue(value.aNullableBool)
     writeValue(value.aNullableInt)
     writeValue(value.aNullableInt64)
     writeValue(value.aNullableDouble)
-    writeTypedData(
-      NativeInteropTestsGolubetsInteropCodec.typeUint8List, value.aNullableByteArray, alignment: 1)
-    writeTypedData(
-      NativeInteropTestsGolubetsInteropCodec.typeInt32List, value.aNullable4ByteArray, alignment: 4)
-    writeTypedData(
-      NativeInteropTestsGolubetsInteropCodec.typeInt64List, value.aNullable8ByteArray, alignment: 8)
-    writeTypedData(
-      NativeInteropTestsGolubetsInteropCodec.typeFloat64List, value.aNullableFloatArray,
-      alignment: 8)
+    writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeUint8List, value.aNullableByteArray, alignment: 1)
+    writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeInt32List, value.aNullable4ByteArray, alignment: 4)
+    writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeInt64List, value.aNullable8ByteArray, alignment: 8)
+    writeTypedData(NativeInteropTestsGolubetsInteropCodec.typeFloat64List, value.aNullableFloatArray, alignment: 8)
     writeValue(value.aNullableEnum)
     writeValue(value.anotherNullableEnum)
     writeValue(value.aNullableString)
@@ -3414,11 +3073,7 @@ private struct NativeInteropTestsGolubetsInteropWriter {
   }
 
   mutating func writeNativeInteropSealedClassWithFields(_ value: NativeInteropSealedClass) {
-    guard
-      case .nativeInteropSealedClassWithFields(
-        let golubetsVar_aString, let golubetsVar_aNullableInt, let golubetsVar_anEnum,
-        let golubetsVar_aClass) = value
-    else { return }
+    guard case let .nativeInteropSealedClassWithFields(golubetsVar_aString, golubetsVar_aNullableInt, golubetsVar_anEnum, golubetsVar_aClass) = value else { return }
     writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
     writeSize(4)
     writeValue(golubetsVar_aString)
@@ -3460,16 +3115,14 @@ private struct NativeInteropTestsGolubetsInteropWriter {
   }
 
   mutating func writeNativeInteropCircle(_ value: NativeInteropShape) {
-    guard case .nativeInteropCircle(let golubetsVar_radius) = value else { return }
+    guard case let .nativeInteropCircle(golubetsVar_radius) = value else { return }
     writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
     writeSize(1)
     writeValue(golubetsVar_radius)
   }
 
   mutating func writeNativeInteropSquare(_ value: NativeInteropShape) {
-    guard case .nativeInteropSquare(let golubetsVar_side, let golubetsVar_label) = value else {
-      return
-    }
+    guard case let .nativeInteropSquare(golubetsVar_side, golubetsVar_label) = value else { return }
     writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
     writeSize(2)
     writeValue(golubetsVar_side)
@@ -3504,8 +3157,7 @@ private struct NativeInteropTestsGolubetsInteropWriter {
     }
     if valueType == NativeInteropAllNullableTypesWithoutRecursion.self {
       writeByte(134)
-      writeNativeInteropAllNullableTypesWithoutRecursion(
-        (value as! NativeInteropAllNullableTypesWithoutRecursion))
+      writeNativeInteropAllNullableTypesWithoutRecursion((value as! NativeInteropAllNullableTypesWithoutRecursion))
       return true
     }
     if valueType == NativeInteropAllClassesWrapper.self {
@@ -3513,16 +3165,12 @@ private struct NativeInteropTestsGolubetsInteropWriter {
       writeNativeInteropAllClassesWrapper((value as! NativeInteropAllClassesWrapper))
       return true
     }
-    if valueType == NativeInteropSealedClass.self,
-      case .nativeInteropSealedClassWithFields = (value as! NativeInteropSealedClass)
-    {
+    if valueType == NativeInteropSealedClass.self, case .nativeInteropSealedClassWithFields = (value as! NativeInteropSealedClass) {
       writeByte(136)
       writeNativeInteropSealedClassWithFields((value as! NativeInteropSealedClass))
       return true
     }
-    if valueType == NativeInteropSealedClass.self,
-      case .nativeInteropEmptySealedClass = (value as! NativeInteropSealedClass)
-    {
+    if valueType == NativeInteropSealedClass.self, case .nativeInteropEmptySealedClass = (value as! NativeInteropSealedClass) {
       writeByte(137)
       writeNativeInteropEmptySealedClass((value as! NativeInteropSealedClass))
       return true
@@ -3537,16 +3185,12 @@ private struct NativeInteropTestsGolubetsInteropWriter {
       writeNativeInteropReservedNames((value as! NativeInteropReservedNames))
       return true
     }
-    if valueType == NativeInteropShape.self,
-      case .nativeInteropCircle = (value as! NativeInteropShape)
-    {
+    if valueType == NativeInteropShape.self, case .nativeInteropCircle = (value as! NativeInteropShape) {
       writeByte(140)
       writeNativeInteropCircle((value as! NativeInteropShape))
       return true
     }
-    if valueType == NativeInteropShape.self,
-      case .nativeInteropSquare = (value as! NativeInteropShape)
-    {
+    if valueType == NativeInteropShape.self, case .nativeInteropSquare = (value as! NativeInteropShape) {
       writeByte(141)
       writeNativeInteropSquare((value as! NativeInteropShape))
       return true
@@ -3590,9 +3234,7 @@ private struct NativeInteropTestsGolubetsInteropWriter {
       writeNativeInteropAllClassesWrapper(value)
       return true
     }
-    if let value = value as? NativeInteropSealedClass,
-      case .nativeInteropSealedClassWithFields = value
-    {
+    if let value = value as? NativeInteropSealedClass, case .nativeInteropSealedClassWithFields = value {
       writeByte(136)
       writeNativeInteropSealedClassWithFields(value)
       return true
@@ -3673,6 +3315,7 @@ extension Dictionary: NativeInteropTestsGolubetsInteropMap {
   }
 }
 
+
 /// Reads values in the format of Flutter's standard message codec.
 private struct NativeInteropTestsGolubetsInteropReader {
   private let data: NSData
@@ -3746,8 +3389,7 @@ private struct NativeInteropTestsGolubetsInteropReader {
       return Int64(readRaw(Int32.self))
     case NativeInteropTestsGolubetsInteropCodec.typeInt64:
       return readRaw(Int64.self)
-    case NativeInteropTestsGolubetsInteropCodec.typeLargeInt,
-      NativeInteropTestsGolubetsInteropCodec.typeString:
+    case NativeInteropTestsGolubetsInteropCodec.typeLargeInt, NativeInteropTestsGolubetsInteropCodec.typeString:
       let count = readSize()
       let string = String(
         decoding: UnsafeRawBufferPointer(rebasing: bytes[position..<(position + count)]),
@@ -3843,6 +3485,7 @@ private struct NativeInteropTestsGolubetsInteropReader {
     return read([K: V].self)
   }
 
+
   mutating func readNativeInteropUnusedClass() -> NativeInteropUnusedClass {
     readListHeader()
     return NativeInteropUnusedClass(
@@ -3921,9 +3564,7 @@ private struct NativeInteropTestsGolubetsInteropReader {
     )
   }
 
-  mutating func readNativeInteropAllNullableTypesWithoutRecursion()
-    -> NativeInteropAllNullableTypesWithoutRecursion
-  {
+  mutating func readNativeInteropAllNullableTypesWithoutRecursion() -> NativeInteropAllNullableTypesWithoutRecursion {
     readListHeader()
     return NativeInteropAllNullableTypesWithoutRecursion(
       aNullableBool: read(Bool?.self),
@@ -4131,10 +3772,9 @@ private enum NativeInteropTestsGolubetsInteropCodec {
   }
 }
 
+
 class NativeInteropHostIntegrationCoreApiInstanceTracker {
-  static var instancesOfNativeInteropHostIntegrationCoreApi = [
-    String: [NativeInteropHostIntegrationCoreApiSetup]
-  ]()
+  static var instancesOfNativeInteropHostIntegrationCoreApi = [String: [NativeInteropHostIntegrationCoreApiSetup]]()
   /// Guards the registrations, which Native Interop calls can read from any thread.
   static let lock = NSLock()
 }
@@ -4189,8 +3829,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   /// Returns the passed list, to test serialization and deserialization.
   func echoNonNull(enumList: [NativeInteropAnEnum]) throws -> [NativeInteropAnEnum]
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNonNull(classList: [NativeInteropAllNullableTypes]) throws
-    -> [NativeInteropAllNullableTypes]
+  func echoNonNull(classList: [NativeInteropAllNullableTypes]) throws -> [NativeInteropAllNullableTypes]
   /// Returns the passed map, to test serialization and deserialization.
   func echo(_ map: [AnyHashable?: Any?]) throws -> [AnyHashable?: Any?]
   /// Returns the passed map, to test serialization and deserialization.
@@ -4198,21 +3837,17 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   /// Returns the passed map, to test serialization and deserialization.
   func echo(intMap: [Int64?: Int64?]) throws -> [Int64?: Int64?]
   /// Returns the passed map, to test serialization and deserialization.
-  func echo(enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]) throws -> [NativeInteropAnEnum?:
-    NativeInteropAnEnum?]
+  func echo(enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]) throws -> [NativeInteropAnEnum?: NativeInteropAnEnum?]
   /// Returns the passed map, to test serialization and deserialization.
-  func echo(classMap: [Int64?: NativeInteropAllNullableTypes?]) throws -> [Int64?:
-    NativeInteropAllNullableTypes?]
+  func echo(classMap: [Int64?: NativeInteropAllNullableTypes?]) throws -> [Int64?: NativeInteropAllNullableTypes?]
   /// Returns the passed map, to test serialization and deserialization.
   func echoNonNull(stringMap: [String: String]) throws -> [String: String]
   /// Returns the passed map, to test serialization and deserialization.
   func echoNonNull(intMap: [Int64: Int64]) throws -> [Int64: Int64]
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNonNull(enumMap: [NativeInteropAnEnum: NativeInteropAnEnum]) throws
-    -> [NativeInteropAnEnum: NativeInteropAnEnum]
+  func echoNonNull(enumMap: [NativeInteropAnEnum: NativeInteropAnEnum]) throws -> [NativeInteropAnEnum: NativeInteropAnEnum]
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNonNull(classMap: [Int64: NativeInteropAllNullableTypes]) throws -> [Int64:
-    NativeInteropAllNullableTypes]
+  func echoNonNull(classMap: [Int64: NativeInteropAllNullableTypes]) throws -> [Int64: NativeInteropAllNullableTypes]
   /// Returns the passed class to test nested class serialization and deserialization.
   func echo(_ wrapper: NativeInteropAllClassesWrapper) throws -> NativeInteropAllClassesWrapper
   /// Returns the passed sealed class, to test sealed class handling.
@@ -4222,8 +3857,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   /// Returns the passed list, to test sealed classes in lists.
   func echo(sealedClassList: [NativeInteropSealedClass]) throws -> [NativeInteropSealedClass]
   /// Returns the passed wrapper, to test sealed classes in class fields.
-  func echo(sealedClassWrapper wrapper: NativeInteropSealedClassWrapper) throws
-    -> NativeInteropSealedClassWrapper
+  func echo(sealedClassWrapper wrapper: NativeInteropSealedClassWrapper) throws -> NativeInteropSealedClassWrapper
   /// Returns the passed enum to test serialization and deserialization.
   func echo(_ anEnum: NativeInteropAnEnum) throws -> NativeInteropAnEnum
   /// Returns the passed enum to test serialization and deserialization.
@@ -4235,24 +3869,18 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   /// Returns passed in int.
   func echoRequired(_ anInt: Int64) throws -> Int64
   /// Returns the passed object, to test serialization and deserialization.
-  func echoNullable(_ everything: NativeInteropAllNullableTypes?) throws
-    -> NativeInteropAllNullableTypes?
+  func echoNullable(_ everything: NativeInteropAllNullableTypes?) throws -> NativeInteropAllNullableTypes?
   /// Returns the passed object, to test serialization and deserialization.
-  func echoNullable(_ everything: NativeInteropAllNullableTypesWithoutRecursion?) throws
-    -> NativeInteropAllNullableTypesWithoutRecursion?
+  func echoNullable(_ everything: NativeInteropAllNullableTypesWithoutRecursion?) throws -> NativeInteropAllNullableTypesWithoutRecursion?
   /// Returns the inner `aString` value from the wrapped object, to test
   /// sending of nested objects.
   func extractNestedNullableString(from wrapper: NativeInteropAllClassesWrapper) throws -> String?
   /// Returns the inner `aString` value from the wrapped object, to test
   /// sending of nested objects.
   func createNestedObject(with nullableString: String?) throws -> NativeInteropAllClassesWrapper
-  func sendMultipleNullableTypes(
-    aBool aNullableBool: Bool?, anInt aNullableInt: Int64?, aString aNullableString: String?
-  ) throws -> NativeInteropAllNullableTypes
+  func sendMultipleNullableTypes(aBool aNullableBool: Bool?, anInt aNullableInt: Int64?, aString aNullableString: String?) throws -> NativeInteropAllNullableTypes
   /// Returns passed in arguments of multiple types.
-  func sendMultipleNullableTypesWithoutRecursion(
-    aBool aNullableBool: Bool?, anInt aNullableInt: Int64?, aString aNullableString: String?
-  ) throws -> NativeInteropAllNullableTypesWithoutRecursion
+  func sendMultipleNullableTypesWithoutRecursion(aBool aNullableBool: Bool?, anInt aNullableInt: Int64?, aString aNullableString: String?) throws -> NativeInteropAllNullableTypesWithoutRecursion
   /// Returns passed in int.
   func echoNullable(_ aNullableInt: Int64?) throws -> Int64?
   /// Returns passed in double.
@@ -4276,13 +3904,11 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   /// Returns the passed list, to test serialization and deserialization.
   func echoNullable(enumList: [NativeInteropAnEnum?]?) throws -> [NativeInteropAnEnum?]?
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNullable(classList: [NativeInteropAllNullableTypes?]?) throws
-    -> [NativeInteropAllNullableTypes?]?
+  func echoNullable(classList: [NativeInteropAllNullableTypes?]?) throws -> [NativeInteropAllNullableTypes?]?
   /// Returns the passed list, to test serialization and deserialization.
   func echoNullableNonNull(enumList: [NativeInteropAnEnum]?) throws -> [NativeInteropAnEnum]?
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNullableNonNull(classList: [NativeInteropAllNullableTypes]?) throws
-    -> [NativeInteropAllNullableTypes]?
+  func echoNullableNonNull(classList: [NativeInteropAllNullableTypes]?) throws -> [NativeInteropAllNullableTypes]?
   /// Returns the passed map, to test serialization and deserialization.
   func echoNullable(_ map: [AnyHashable?: Any?]?) throws -> [AnyHashable?: Any?]?
   /// Returns the passed map, to test serialization and deserialization.
@@ -4290,21 +3916,17 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   /// Returns the passed map, to test serialization and deserialization.
   func echoNullable(intMap: [Int64?: Int64?]?) throws -> [Int64?: Int64?]?
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullable(enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]?) throws
-    -> [NativeInteropAnEnum?: NativeInteropAnEnum?]?
+  func echoNullable(enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]?) throws -> [NativeInteropAnEnum?: NativeInteropAnEnum?]?
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullable(classMap: [Int64?: NativeInteropAllNullableTypes?]?) throws -> [Int64?:
-    NativeInteropAllNullableTypes?]?
+  func echoNullable(classMap: [Int64?: NativeInteropAllNullableTypes?]?) throws -> [Int64?: NativeInteropAllNullableTypes?]?
   /// Returns the passed map, to test serialization and deserialization.
   func echoNullableNonNull(stringMap: [String: String]?) throws -> [String: String]?
   /// Returns the passed map, to test serialization and deserialization.
   func echoNullableNonNull(intMap: [Int64: Int64]?) throws -> [Int64: Int64]?
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullableNonNull(enumMap: [NativeInteropAnEnum: NativeInteropAnEnum]?) throws
-    -> [NativeInteropAnEnum: NativeInteropAnEnum]?
+  func echoNullableNonNull(enumMap: [NativeInteropAnEnum: NativeInteropAnEnum]?) throws -> [NativeInteropAnEnum: NativeInteropAnEnum]?
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullableNonNull(classMap: [Int64: NativeInteropAllNullableTypes]?) throws -> [Int64:
-    NativeInteropAllNullableTypes]?
+  func echoNullableNonNull(classMap: [Int64: NativeInteropAllNullableTypes]?) throws -> [Int64: NativeInteropAllNullableTypes]?
   func echoNullable(_ anEnum: NativeInteropAnEnum?) throws -> NativeInteropAnEnum?
   func echoNullable(_ anotherEnum: NativeInteropAnotherEnum?) throws -> NativeInteropAnotherEnum?
   /// Returns passed in int.
@@ -4337,8 +3959,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   /// Returns the passed list, to test asynchronous serialization and deserialization.
   func echoAsync(enumList: [NativeInteropAnEnum?]) async throws -> [NativeInteropAnEnum?]
   /// Returns the passed list, to test asynchronous serialization and deserialization.
-  func echoAsync(classList: [NativeInteropAllNullableTypes?]) async throws
-    -> [NativeInteropAllNullableTypes?]
+  func echoAsync(classList: [NativeInteropAllNullableTypes?]) async throws -> [NativeInteropAllNullableTypes?]
   /// Returns the passed map, to test asynchronous serialization and deserialization.
   func echoAsync(_ map: [AnyHashable?: Any?]) async throws -> [AnyHashable?: Any?]
   /// Returns the passed map, to test asynchronous serialization and deserialization.
@@ -4346,11 +3967,9 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   /// Returns the passed map, to test asynchronous serialization and deserialization.
   func echoAsync(intMap: [Int64?: Int64?]) async throws -> [Int64?: Int64?]
   /// Returns the passed map, to test asynchronous serialization and deserialization.
-  func echoAsync(enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]) async throws
-    -> [NativeInteropAnEnum?: NativeInteropAnEnum?]
+  func echoAsync(enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]) async throws -> [NativeInteropAnEnum?: NativeInteropAnEnum?]
   /// Returns the passed map, to test asynchronous serialization and deserialization.
-  func echoAsync(classMap: [Int64?: NativeInteropAllNullableTypes?]) async throws -> [Int64?:
-    NativeInteropAllNullableTypes?]
+  func echoAsync(classMap: [Int64?: NativeInteropAllNullableTypes?]) async throws -> [Int64?: NativeInteropAllNullableTypes?]
   /// Returns the passed enum, to test asynchronous serialization and deserialization.
   func echoAsync(_ anEnum: NativeInteropAnEnum) async throws -> NativeInteropAnEnum
   /// Returns the passed enum, to test asynchronous serialization and deserialization.
@@ -4366,11 +3985,9 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   /// Returns the passed sealed class asynchronously.
   func echoAsync(sealedClass: NativeInteropSealedClass) async throws -> NativeInteropSealedClass
   /// Returns the passed object, to test serialization and deserialization.
-  func echoAsync(_ everything: NativeInteropAllNullableTypes?) async throws
-    -> NativeInteropAllNullableTypes?
+  func echoAsync(_ everything: NativeInteropAllNullableTypes?) async throws -> NativeInteropAllNullableTypes?
   /// Returns the passed object, to test serialization and deserialization.
-  func echoAsync(_ everything: NativeInteropAllNullableTypesWithoutRecursion?) async throws
-    -> NativeInteropAllNullableTypesWithoutRecursion?
+  func echoAsync(_ everything: NativeInteropAllNullableTypesWithoutRecursion?) async throws -> NativeInteropAllNullableTypesWithoutRecursion?
   /// Returns passed in int asynchronously.
   func echoAsyncNullable(_ anInt: Int64?) async throws -> Int64?
   /// Returns passed in double asynchronously.
@@ -4394,8 +4011,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   /// Returns the passed list, to test asynchronous serialization and deserialization.
   func echoAsyncNullable(enumList: [NativeInteropAnEnum?]?) async throws -> [NativeInteropAnEnum?]?
   /// Returns the passed list, to test asynchronous serialization and deserialization.
-  func echoAsyncNullable(classList: [NativeInteropAllNullableTypes?]?) async throws
-    -> [NativeInteropAllNullableTypes?]?
+  func echoAsyncNullable(classList: [NativeInteropAllNullableTypes?]?) async throws -> [NativeInteropAllNullableTypes?]?
   /// Returns the passed map, to test asynchronous serialization and deserialization.
   func echoAsyncNullable(_ map: [AnyHashable?: Any?]?) async throws -> [AnyHashable?: Any?]?
   /// Returns the passed map, to test asynchronous serialization and deserialization.
@@ -4403,31 +4019,22 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   /// Returns the passed map, to test asynchronous serialization and deserialization.
   func echoAsyncNullable(intMap: [Int64?: Int64?]?) async throws -> [Int64?: Int64?]?
   /// Returns the passed map, to test asynchronous serialization and deserialization.
-  func echoAsyncNullable(enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]?) async throws
-    -> [NativeInteropAnEnum?: NativeInteropAnEnum?]?
+  func echoAsyncNullable(enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]?) async throws -> [NativeInteropAnEnum?: NativeInteropAnEnum?]?
   /// Returns the passed map, to test asynchronous serialization and deserialization.
-  func echoAsyncNullable(classMap: [Int64?: NativeInteropAllNullableTypes?]?) async throws
-    -> [Int64?: NativeInteropAllNullableTypes?]?
+  func echoAsyncNullable(classMap: [Int64?: NativeInteropAllNullableTypes?]?) async throws -> [Int64?: NativeInteropAllNullableTypes?]?
   /// Returns the passed enum, to test asynchronous serialization and deserialization.
   func echoAsyncNullable(_ anEnum: NativeInteropAnEnum?) async throws -> NativeInteropAnEnum?
   /// Returns the passed enum, to test asynchronous serialization and deserialization.
-  func echoAsyncNullable(_ anotherEnum: NativeInteropAnotherEnum?) async throws
-    -> NativeInteropAnotherEnum?
+  func echoAsyncNullable(_ anotherEnum: NativeInteropAnotherEnum?) async throws -> NativeInteropAnotherEnum?
   func callFlutterNoop() throws
   func callFlutterThrowError() throws -> Any?
   func callFlutterThrowErrorFromVoid() throws
   func callFlutterEcho(_ everything: NativeInteropAllTypes) throws -> NativeInteropAllTypes
-  func callFlutterEcho(_ everything: NativeInteropAllNullableTypes?) throws
-    -> NativeInteropAllNullableTypes?
+  func callFlutterEcho(_ everything: NativeInteropAllNullableTypes?) throws -> NativeInteropAllNullableTypes?
   func callFlutterEcho(sealedClass: NativeInteropSealedClass) throws -> NativeInteropSealedClass
-  func callFlutterSendMultipleNullableTypes(
-    aBool aNullableBool: Bool?, anInt aNullableInt: Int64?, aString aNullableString: String?
-  ) throws -> NativeInteropAllNullableTypes
-  func callFlutterEcho(_ everything: NativeInteropAllNullableTypesWithoutRecursion?) throws
-    -> NativeInteropAllNullableTypesWithoutRecursion?
-  func callFlutterSendMultipleNullableTypesWithoutRecursion(
-    aBool aNullableBool: Bool?, anInt aNullableInt: Int64?, aString aNullableString: String?
-  ) throws -> NativeInteropAllNullableTypesWithoutRecursion
+  func callFlutterSendMultipleNullableTypes(aBool aNullableBool: Bool?, anInt aNullableInt: Int64?, aString aNullableString: String?) throws -> NativeInteropAllNullableTypes
+  func callFlutterEcho(_ everything: NativeInteropAllNullableTypesWithoutRecursion?) throws -> NativeInteropAllNullableTypesWithoutRecursion?
+  func callFlutterSendMultipleNullableTypesWithoutRecursion(aBool aNullableBool: Bool?, anInt aNullableInt: Int64?, aString aNullableString: String?) throws -> NativeInteropAllNullableTypesWithoutRecursion
   func callFlutterEcho(_ aBool: Bool) throws -> Bool
   func callFlutterEcho(_ anInt: Int64) throws -> Int64
   func callFlutterEcho(_ aDouble: Double) throws -> Double
@@ -4438,24 +4045,18 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   func callFlutterEcho(_ list: [Float64]) throws -> [Float64]
   func callFlutterEcho(_ list: [Any?]) throws -> [Any?]
   func callFlutterEcho(enumList: [NativeInteropAnEnum?]) throws -> [NativeInteropAnEnum?]
-  func callFlutterEcho(classList: [NativeInteropAllNullableTypes?]) throws
-    -> [NativeInteropAllNullableTypes?]
+  func callFlutterEcho(classList: [NativeInteropAllNullableTypes?]) throws -> [NativeInteropAllNullableTypes?]
   func callFlutterEchoNonNull(enumList: [NativeInteropAnEnum]) throws -> [NativeInteropAnEnum]
-  func callFlutterEchoNonNull(classList: [NativeInteropAllNullableTypes]) throws
-    -> [NativeInteropAllNullableTypes]
+  func callFlutterEchoNonNull(classList: [NativeInteropAllNullableTypes]) throws -> [NativeInteropAllNullableTypes]
   func callFlutterEcho(_ map: [AnyHashable?: Any?]) throws -> [AnyHashable?: Any?]
   func callFlutterEcho(stringMap: [String?: String?]) throws -> [String?: String?]
   func callFlutterEcho(intMap: [Int64?: Int64?]) throws -> [Int64?: Int64?]
-  func callFlutterEcho(enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]) throws
-    -> [NativeInteropAnEnum?: NativeInteropAnEnum?]
-  func callFlutterEcho(classMap: [Int64?: NativeInteropAllNullableTypes?]) throws -> [Int64?:
-    NativeInteropAllNullableTypes?]
+  func callFlutterEcho(enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]) throws -> [NativeInteropAnEnum?: NativeInteropAnEnum?]
+  func callFlutterEcho(classMap: [Int64?: NativeInteropAllNullableTypes?]) throws -> [Int64?: NativeInteropAllNullableTypes?]
   func callFlutterEchoNonNull(stringMap: [String: String]) throws -> [String: String]
   func callFlutterEchoNonNull(intMap: [Int64: Int64]) throws -> [Int64: Int64]
-  func callFlutterEchoNonNull(enumMap: [NativeInteropAnEnum: NativeInteropAnEnum]) throws
-    -> [NativeInteropAnEnum: NativeInteropAnEnum]
-  func callFlutterEchoNonNull(classMap: [Int64: NativeInteropAllNullableTypes]) throws -> [Int64:
-    NativeInteropAllNullableTypes]
+  func callFlutterEchoNonNull(enumMap: [NativeInteropAnEnum: NativeInteropAnEnum]) throws -> [NativeInteropAnEnum: NativeInteropAnEnum]
+  func callFlutterEchoNonNull(classMap: [Int64: NativeInteropAllNullableTypes]) throws -> [Int64: NativeInteropAllNullableTypes]
   func callFlutterEcho(_ anEnum: NativeInteropAnEnum) throws -> NativeInteropAnEnum
   func callFlutterEcho(_ anotherEnum: NativeInteropAnotherEnum) throws -> NativeInteropAnotherEnum
   func callFlutterEchoNullable(_ aBool: Bool?) throws -> Bool?
@@ -4468,37 +4069,24 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   func callFlutterEchoNullable(_ list: [Float64]?) throws -> [Float64]?
   func callFlutterEchoNullable(_ list: [Any?]?) throws -> [Any?]?
   func callFlutterEchoNullable(enumList: [NativeInteropAnEnum?]?) throws -> [NativeInteropAnEnum?]?
-  func callFlutterEchoNullable(classList: [NativeInteropAllNullableTypes?]?) throws
-    -> [NativeInteropAllNullableTypes?]?
-  func callFlutterEchoNullableNonNull(enumList: [NativeInteropAnEnum]?) throws
-    -> [NativeInteropAnEnum]?
-  func callFlutterEchoNullableNonNull(classList: [NativeInteropAllNullableTypes]?) throws
-    -> [NativeInteropAllNullableTypes]?
+  func callFlutterEchoNullable(classList: [NativeInteropAllNullableTypes?]?) throws -> [NativeInteropAllNullableTypes?]?
+  func callFlutterEchoNullableNonNull(enumList: [NativeInteropAnEnum]?) throws -> [NativeInteropAnEnum]?
+  func callFlutterEchoNullableNonNull(classList: [NativeInteropAllNullableTypes]?) throws -> [NativeInteropAllNullableTypes]?
   func callFlutterEchoNullable(_ map: [AnyHashable?: Any?]?) throws -> [AnyHashable?: Any?]?
   func callFlutterEchoNullable(stringMap: [String?: String?]?) throws -> [String?: String?]?
   func callFlutterEchoNullable(intMap: [Int64?: Int64?]?) throws -> [Int64?: Int64?]?
-  func callFlutterEchoNullable(enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]?) throws
-    -> [NativeInteropAnEnum?: NativeInteropAnEnum?]?
-  func callFlutterEchoNullable(classMap: [Int64?: NativeInteropAllNullableTypes?]?) throws
-    -> [Int64?: NativeInteropAllNullableTypes?]?
+  func callFlutterEchoNullable(enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]?) throws -> [NativeInteropAnEnum?: NativeInteropAnEnum?]?
+  func callFlutterEchoNullable(classMap: [Int64?: NativeInteropAllNullableTypes?]?) throws -> [Int64?: NativeInteropAllNullableTypes?]?
   func callFlutterEchoNullableNonNull(stringMap: [String: String]?) throws -> [String: String]?
   func callFlutterEchoNullableNonNull(intMap: [Int64: Int64]?) throws -> [Int64: Int64]?
-  func callFlutterEchoNullableNonNull(enumMap: [NativeInteropAnEnum: NativeInteropAnEnum]?) throws
-    -> [NativeInteropAnEnum: NativeInteropAnEnum]?
-  func callFlutterEchoNullableNonNull(classMap: [Int64: NativeInteropAllNullableTypes]?) throws
-    -> [Int64: NativeInteropAllNullableTypes]?
+  func callFlutterEchoNullableNonNull(enumMap: [NativeInteropAnEnum: NativeInteropAnEnum]?) throws -> [NativeInteropAnEnum: NativeInteropAnEnum]?
+  func callFlutterEchoNullableNonNull(classMap: [Int64: NativeInteropAllNullableTypes]?) throws -> [Int64: NativeInteropAllNullableTypes]?
   func callFlutterEchoNullable(_ anEnum: NativeInteropAnEnum?) throws -> NativeInteropAnEnum?
-  func callFlutterEchoNullable(_ anotherEnum: NativeInteropAnotherEnum?) throws
-    -> NativeInteropAnotherEnum?
+  func callFlutterEchoNullable(_ anotherEnum: NativeInteropAnotherEnum?) throws -> NativeInteropAnotherEnum?
   func callFlutterNoopAsync() async throws
-  func callFlutterEchoAsyncNativeInteropAllTypes(everything: NativeInteropAllTypes) async throws
-    -> NativeInteropAllTypes
-  func callFlutterEchoAsyncNullableNativeInteropAllNullableTypes(
-    everything: NativeInteropAllNullableTypes?
-  ) async throws -> NativeInteropAllNullableTypes?
-  func callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
-    everything: NativeInteropAllNullableTypesWithoutRecursion?
-  ) async throws -> NativeInteropAllNullableTypesWithoutRecursion?
+  func callFlutterEchoAsyncNativeInteropAllTypes(everything: NativeInteropAllTypes) async throws -> NativeInteropAllTypes
+  func callFlutterEchoAsyncNullableNativeInteropAllNullableTypes(everything: NativeInteropAllNullableTypes?) async throws -> NativeInteropAllNullableTypes?
+  func callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(everything: NativeInteropAllNullableTypesWithoutRecursion?) async throws -> NativeInteropAllNullableTypesWithoutRecursion?
   func callFlutterEchoAsyncBool(aBool: Bool) async throws -> Bool
   func callFlutterEchoAsyncInt(anInt: Int64) async throws -> Int64
   func callFlutterEchoAsyncDouble(aDouble: Double) async throws -> Double
@@ -4509,25 +4097,17 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   func callFlutterEchoAsyncFloat64List(list: [Float64]) async throws -> [Float64]
   func callFlutterEchoAsyncObject(anObject: Any) async throws -> Any
   func callFlutterEchoAsyncList(list: [Any?]) async throws -> [Any?]
-  func callFlutterEchoAsyncEnumList(enumList: [NativeInteropAnEnum?]) async throws
-    -> [NativeInteropAnEnum?]
-  func callFlutterEchoAsyncClassList(classList: [NativeInteropAllNullableTypes?]) async throws
-    -> [NativeInteropAllNullableTypes?]
-  func callFlutterEchoAsyncNonNullEnumList(enumList: [NativeInteropAnEnum]) async throws
-    -> [NativeInteropAnEnum]
-  func callFlutterEchoAsyncNonNullClassList(classList: [NativeInteropAllNullableTypes]) async throws
-    -> [NativeInteropAllNullableTypes]
+  func callFlutterEchoAsyncEnumList(enumList: [NativeInteropAnEnum?]) async throws -> [NativeInteropAnEnum?]
+  func callFlutterEchoAsyncClassList(classList: [NativeInteropAllNullableTypes?]) async throws -> [NativeInteropAllNullableTypes?]
+  func callFlutterEchoAsyncNonNullEnumList(enumList: [NativeInteropAnEnum]) async throws -> [NativeInteropAnEnum]
+  func callFlutterEchoAsyncNonNullClassList(classList: [NativeInteropAllNullableTypes]) async throws -> [NativeInteropAllNullableTypes]
   func callFlutterEchoAsyncMap(map: [AnyHashable?: Any?]) async throws -> [AnyHashable?: Any?]
-  func callFlutterEchoAsyncStringMap(stringMap: [String?: String?]) async throws -> [String?:
-    String?]
+  func callFlutterEchoAsyncStringMap(stringMap: [String?: String?]) async throws -> [String?: String?]
   func callFlutterEchoAsyncIntMap(intMap: [Int64?: Int64?]) async throws -> [Int64?: Int64?]
-  func callFlutterEchoAsyncEnumMap(enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?])
-    async throws -> [NativeInteropAnEnum?: NativeInteropAnEnum?]
-  func callFlutterEchoAsyncClassMap(classMap: [Int64?: NativeInteropAllNullableTypes?]) async throws
-    -> [Int64?: NativeInteropAllNullableTypes?]
+  func callFlutterEchoAsyncEnumMap(enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]) async throws -> [NativeInteropAnEnum?: NativeInteropAnEnum?]
+  func callFlutterEchoAsyncClassMap(classMap: [Int64?: NativeInteropAllNullableTypes?]) async throws -> [Int64?: NativeInteropAllNullableTypes?]
   func callFlutterEchoAsyncEnum(anEnum: NativeInteropAnEnum) async throws -> NativeInteropAnEnum
-  func callFlutterEchoAnotherAsyncEnum(anotherEnum: NativeInteropAnotherEnum) async throws
-    -> NativeInteropAnotherEnum
+  func callFlutterEchoAnotherAsyncEnum(anotherEnum: NativeInteropAnotherEnum) async throws -> NativeInteropAnotherEnum
   func callFlutterEchoAsyncNullableBool(aBool: Bool?) async throws -> Bool?
   func callFlutterEchoAsyncNullableInt(anInt: Int64?) async throws -> Int64?
   func callFlutterEchoAsyncNullableDouble(aDouble: Double?) async throws -> Double?
@@ -4539,28 +4119,17 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   func callFlutterThrowFlutterErrorAsync() async throws -> Any?
   func callFlutterEchoAsyncNullableObject(anObject: Any?) async throws -> Any?
   func callFlutterEchoAsyncNullableList(list: [Any?]?) async throws -> [Any?]?
-  func callFlutterEchoAsyncNullableEnumList(enumList: [NativeInteropAnEnum?]?) async throws
-    -> [NativeInteropAnEnum?]?
-  func callFlutterEchoAsyncNullableClassList(classList: [NativeInteropAllNullableTypes?]?)
-    async throws -> [NativeInteropAllNullableTypes?]?
-  func callFlutterEchoAsyncNullableNonNullEnumList(enumList: [NativeInteropAnEnum]?) async throws
-    -> [NativeInteropAnEnum]?
-  func callFlutterEchoAsyncNullableNonNullClassList(classList: [NativeInteropAllNullableTypes]?)
-    async throws -> [NativeInteropAllNullableTypes]?
-  func callFlutterEchoAsyncNullableMap(map: [AnyHashable?: Any?]?) async throws -> [AnyHashable?:
-    Any?]?
-  func callFlutterEchoAsyncNullableStringMap(stringMap: [String?: String?]?) async throws
-    -> [String?: String?]?
-  func callFlutterEchoAsyncNullableIntMap(intMap: [Int64?: Int64?]?) async throws -> [Int64?:
-    Int64?]?
-  func callFlutterEchoAsyncNullableEnumMap(enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]?)
-    async throws -> [NativeInteropAnEnum?: NativeInteropAnEnum?]?
-  func callFlutterEchoAsyncNullableClassMap(classMap: [Int64?: NativeInteropAllNullableTypes?]?)
-    async throws -> [Int64?: NativeInteropAllNullableTypes?]?
-  func callFlutterEchoAsyncNullableEnum(anEnum: NativeInteropAnEnum?) async throws
-    -> NativeInteropAnEnum?
-  func callFlutterEchoAnotherAsyncNullableEnum(anotherEnum: NativeInteropAnotherEnum?) async throws
-    -> NativeInteropAnotherEnum?
+  func callFlutterEchoAsyncNullableEnumList(enumList: [NativeInteropAnEnum?]?) async throws -> [NativeInteropAnEnum?]?
+  func callFlutterEchoAsyncNullableClassList(classList: [NativeInteropAllNullableTypes?]?) async throws -> [NativeInteropAllNullableTypes?]?
+  func callFlutterEchoAsyncNullableNonNullEnumList(enumList: [NativeInteropAnEnum]?) async throws -> [NativeInteropAnEnum]?
+  func callFlutterEchoAsyncNullableNonNullClassList(classList: [NativeInteropAllNullableTypes]?) async throws -> [NativeInteropAllNullableTypes]?
+  func callFlutterEchoAsyncNullableMap(map: [AnyHashable?: Any?]?) async throws -> [AnyHashable?: Any?]?
+  func callFlutterEchoAsyncNullableStringMap(stringMap: [String?: String?]?) async throws -> [String?: String?]?
+  func callFlutterEchoAsyncNullableIntMap(intMap: [Int64?: Int64?]?) async throws -> [Int64?: Int64?]?
+  func callFlutterEchoAsyncNullableEnumMap(enumMap: [NativeInteropAnEnum?: NativeInteropAnEnum?]?) async throws -> [NativeInteropAnEnum?: NativeInteropAnEnum?]?
+  func callFlutterEchoAsyncNullableClassMap(classMap: [Int64?: NativeInteropAllNullableTypes?]?) async throws -> [Int64?: NativeInteropAllNullableTypes?]?
+  func callFlutterEchoAsyncNullableEnum(anEnum: NativeInteropAnEnum?) async throws -> NativeInteropAnEnum?
+  func callFlutterEchoAnotherAsyncNullableEnum(anotherEnum: NativeInteropAnotherEnum?) async throws -> NativeInteropAnotherEnum?
   /// Returns true if the handler is run on a main thread.
   func isMainThread() throws -> Bool
   /// Returns true if the async handler runs on a background thread.
@@ -4643,10 +4212,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     ///
     /// The registration is associated with the engine that owns `registrar`. The same
     /// `api` registered from different engines is tracked as separate registrations.
-    static func register(
-      api: NativeInteropHostIntegrationCoreApi, registrar: FlutterPluginRegistrar,
-      name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-    ) {
+    static func register(api: NativeInteropHostIntegrationCoreApi, registrar: FlutterPluginRegistrar, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) {
       register(api: api, engineKey: GolubetsEngineKeys.key(for: registrar), name: name)
     }
 
@@ -4658,22 +4224,15 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     /// Prefers the registration made from the engine that owns `registrar`, and
     /// otherwise removes the registration of `api` under `name` if exactly one engine
     /// holds it.
-    static func unregister(
-      api: NativeInteropHostIntegrationCoreApi, registrar: FlutterPluginRegistrar,
-      name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-    ) {
+    static func unregister(api: NativeInteropHostIntegrationCoreApi, registrar: FlutterPluginRegistrar, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) {
       unregister(api: api, engineKey: GolubetsEngineKeys.key(for: registrar), name: name)
     }
   #endif
 
-  fileprivate static func register(
-    api: NativeInteropHostIntegrationCoreApi, engineKey: Int64, name: String
-  ) {
+  fileprivate static func register(api: NativeInteropHostIntegrationCoreApi, engineKey: Int64, name: String) {
     NativeInteropHostIntegrationCoreApiInstanceTracker.lock.lock()
     defer { NativeInteropHostIntegrationCoreApiInstanceTracker.lock.unlock() }
-    var list =
-      NativeInteropHostIntegrationCoreApiInstanceTracker
-      .instancesOfNativeInteropHostIntegrationCoreApi[name] ?? []
+    var list = NativeInteropHostIntegrationCoreApiInstanceTracker.instancesOfNativeInteropHostIntegrationCoreApi[name] ?? []
     if let index = list.firstIndex(where: { $0.api === api && $0.engineKey == engineKey }) {
       list.append(list.remove(at: index))
     } else {
@@ -4682,24 +4241,17 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
       wrapper.api = api
       list.append(wrapper)
     }
-    NativeInteropHostIntegrationCoreApiInstanceTracker
-      .instancesOfNativeInteropHostIntegrationCoreApi[name] = list
+    NativeInteropHostIntegrationCoreApiInstanceTracker.instancesOfNativeInteropHostIntegrationCoreApi[name] = list
   }
 
-  fileprivate static func unregister(
-    api: NativeInteropHostIntegrationCoreApi, engineKey: Int64, name: String
-  ) {
+  fileprivate static func unregister(api: NativeInteropHostIntegrationCoreApi, engineKey: Int64, name: String) {
     // Removed entries are kept alive until after unlocking so their deinit cannot run while the
     // non-recursive lock is held.
     var displaced: [Any] = []
     do {
       NativeInteropHostIntegrationCoreApiInstanceTracker.lock.lock()
       defer { NativeInteropHostIntegrationCoreApiInstanceTracker.lock.unlock() }
-      guard
-        var list =
-          NativeInteropHostIntegrationCoreApiInstanceTracker
-          .instancesOfNativeInteropHostIntegrationCoreApi[name]
-      else {
+      guard var list = NativeInteropHostIntegrationCoreApiInstanceTracker.instancesOfNativeInteropHostIntegrationCoreApi[name] else {
         return
       }
       let removeKey: Int64
@@ -4725,11 +4277,9 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
         return false
       }
       if list.isEmpty {
-        NativeInteropHostIntegrationCoreApiInstanceTracker
-          .instancesOfNativeInteropHostIntegrationCoreApi.removeValue(forKey: name)
+        NativeInteropHostIntegrationCoreApiInstanceTracker.instancesOfNativeInteropHostIntegrationCoreApi.removeValue(forKey: name)
       } else {
-        NativeInteropHostIntegrationCoreApiInstanceTracker
-          .instancesOfNativeInteropHostIntegrationCoreApi[name] = list
+        NativeInteropHostIntegrationCoreApiInstanceTracker.instancesOfNativeInteropHostIntegrationCoreApi[name] = list
       }
     }
     withExtendedLifetime(displaced) {}
@@ -4740,17 +4290,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   ///
   /// Prefers the most recent registration whose engine key is `engineId`, then
   /// `affinityKey`, then the most recent registration. `Int64.min` means unknown.
-  @objc static func golubetsResolveInstance(
-    engineId: Int64, affinityKey: Int64,
-    name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-  ) -> NativeInteropHostIntegrationCoreApiSetup? {
+  @objc static func golubetsResolveInstance(engineId: Int64, affinityKey: Int64, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) -> NativeInteropHostIntegrationCoreApiSetup? {
     NativeInteropHostIntegrationCoreApiInstanceTracker.lock.lock()
     defer { NativeInteropHostIntegrationCoreApiInstanceTracker.lock.unlock() }
-    guard
-      let list =
-        NativeInteropHostIntegrationCoreApiInstanceTracker
-        .instancesOfNativeInteropHostIntegrationCoreApi[name]
-    else {
+    guard let list = NativeInteropHostIntegrationCoreApiInstanceTracker.instancesOfNativeInteropHostIntegrationCoreApi[name] else {
       return nil
     }
     if engineId != Int64.min, let match = list.last(where: { $0.engineKey == engineId }) {
@@ -4763,9 +4306,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
 
   /// Returns the engine key `instance` was registered with, or `Int64.min` if unknown.
-  @objc static func golubetsEngineKey(of instance: NativeInteropHostIntegrationCoreApiSetup)
-    -> Int64
-  {
+  @objc static func golubetsEngineKey(of instance: NativeInteropHostIntegrationCoreApiSetup) -> Int64 {
     return instance.engineKey
   }
   /// A no-op function taking no arguments and returning no value, to sanity
@@ -4788,9 +4329,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed object, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAllTypes(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoAllTypes(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -4878,9 +4417,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns passed in double.
-  @objc func echoDouble(aDouble aDoubleArg: Double, wrappedError: NativeInteropTestsError)
-    -> NSNumber?
-  {
+  @objc func echoDouble(aDouble aDoubleArg: Double, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Double = try activeApi.echo(aDoubleArg)
@@ -4914,9 +4451,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in string.
-  @objc func echoString(aString aStringArg: NSString, wrappedError: NativeInteropTestsError)
-    -> NSString?
-  {
+  @objc func echoString(aString aStringArg: NSString, wrappedError: NativeInteropTestsError) -> NSString? {
     do {
       let activeApi = try resolveApi()
       let res: String = try activeApi.echo(aStringArg as String)
@@ -4933,13 +4468,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in Uint8List.
-  @objc func echoUint8List(aUint8List aUint8ListArg: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoUint8List(aUint8List aUint8ListArg: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [UInt8] = try activeApi.echo(
-        NativeInteropTestsGolubetsInteropCodec.typedData(aUint8ListArg, as: UInt8.self))
+      let res: [UInt8] = try activeApi.echo(NativeInteropTestsGolubetsInteropCodec.typedData(aUint8ListArg, as: UInt8.self))
       return NativeInteropTestsGolubetsInteropCodec.data(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -4953,13 +4485,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in Int32List.
-  @objc func echoInt32List(aInt32List aInt32ListArg: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoInt32List(aInt32List aInt32ListArg: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Int32] = try activeApi.echo(
-        NativeInteropTestsGolubetsInteropCodec.typedData(aInt32ListArg, as: Int32.self))
+      let res: [Int32] = try activeApi.echo(NativeInteropTestsGolubetsInteropCodec.typedData(aInt32ListArg, as: Int32.self))
       return NativeInteropTestsGolubetsInteropCodec.data(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -4973,13 +4502,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in Int64List.
-  @objc func echoInt64List(aInt64List aInt64ListArg: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoInt64List(aInt64List aInt64ListArg: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Int64] = try activeApi.echo(
-        NativeInteropTestsGolubetsInteropCodec.typedData(aInt64ListArg, as: Int64.self))
+      let res: [Int64] = try activeApi.echo(NativeInteropTestsGolubetsInteropCodec.typedData(aInt64ListArg, as: Int64.self))
       return NativeInteropTestsGolubetsInteropCodec.data(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -4993,13 +4519,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in Float64List.
-  @objc func echoFloat64List(
-    aFloat64List aFloat64ListArg: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func echoFloat64List(aFloat64List aFloat64ListArg: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Float64] = try activeApi.echo(
-        NativeInteropTestsGolubetsInteropCodec.typedData(aFloat64ListArg, as: Float64.self))
+      let res: [Float64] = try activeApi.echo(NativeInteropTestsGolubetsInteropCodec.typedData(aFloat64ListArg, as: Float64.self))
       return NativeInteropTestsGolubetsInteropCodec.data(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -5014,8 +4537,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed in generic Object.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoObject(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData?
-  {
+  @objc func echoObject(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5057,9 +4579,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoStringList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoStringList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5080,8 +4600,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoIntList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData?
-  {
+  @objc func echoIntList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5102,9 +4621,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoDoubleList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoDoubleList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5125,9 +4642,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoBoolList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoBoolList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5148,9 +4663,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5171,9 +4684,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5194,9 +4705,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNonNullEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoNonNullEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5217,9 +4726,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNonNullClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoNonNullClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5261,9 +4768,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoStringMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoStringMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5284,8 +4789,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData?
-  {
+  @objc func echoIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5306,15 +4810,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData?
-  {
+  @objc func echoEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumMapArg = reader.read([NativeInteropAnEnum?: NativeInteropAnEnum?].self)
-      let res: [NativeInteropAnEnum?: NativeInteropAnEnum?] = try activeApi.echo(
-        enumMap: enumMapArg)
+      let res: [NativeInteropAnEnum?: NativeInteropAnEnum?] = try activeApi.echo(enumMap: enumMapArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -5329,9 +4831,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoClassMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoClassMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5352,9 +4852,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNonNullStringMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoNonNullStringMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5375,9 +4873,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNonNullIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoNonNullIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5398,16 +4894,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNonNullEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoNonNullEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumMapArg = reader.read([NativeInteropAnEnum: NativeInteropAnEnum].self)
-      let res: [NativeInteropAnEnum: NativeInteropAnEnum] = try activeApi.echoNonNull(
-        enumMap: enumMapArg)
+      let res: [NativeInteropAnEnum: NativeInteropAnEnum] = try activeApi.echoNonNull(enumMap: enumMapArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -5422,16 +4915,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNonNullClassMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoNonNullClassMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classMapArg = reader.read([Int64: NativeInteropAllNullableTypes].self)
-      let res: [Int64: NativeInteropAllNullableTypes] = try activeApi.echoNonNull(
-        classMap: classMapArg)
+      let res: [Int64: NativeInteropAllNullableTypes] = try activeApi.echoNonNull(classMap: classMapArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -5446,9 +4936,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed class to test nested class serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoClassWrapper(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoClassWrapper(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5469,9 +4957,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed sealed class, to test sealed class handling.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoSealedClass(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoSealedClass(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5492,9 +4978,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed sealed class, to test nullable sealed class handling.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableSealedClass(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func echoNullableSealedClass(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5515,9 +4999,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test sealed classes in lists.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoSealedClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoSealedClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5538,9 +5020,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed wrapper, to test sealed classes in class fields.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoSealedClassWrapper(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoSealedClassWrapper(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5563,8 +5043,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   @objc func echoEnum(anEnum anEnumArg: Int64, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAnEnum = try activeApi.echo(
-        NativeInteropAnEnum(rawValue: Int(anEnumArg))!)
+      let res: NativeInteropAnEnum = try activeApi.echo(NativeInteropAnEnum(rawValue: Int(anEnumArg))!)
       return NSNumber(value: Int64(res.rawValue))
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -5578,13 +5057,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed enum to test serialization and deserialization.
-  @objc func echoAnotherEnum(
-    anotherEnum anotherEnumArg: Int64, wrappedError: NativeInteropTestsError
-  ) -> NSNumber? {
+  @objc func echoAnotherEnum(anotherEnum anotherEnumArg: Int64, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAnotherEnum = try activeApi.echo(
-        NativeInteropAnotherEnum(rawValue: Int(anotherEnumArg))!)
+      let res: NativeInteropAnotherEnum = try activeApi.echo(NativeInteropAnotherEnum(rawValue: Int(anotherEnumArg))!)
       return NSNumber(value: Int64(res.rawValue))
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -5598,9 +5074,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the default string.
-  @objc func echoNamedDefaultString(
-    aString aStringArg: NSString, wrappedError: NativeInteropTestsError
-  ) -> NSString? {
+  @objc func echoNamedDefaultString(aString aStringArg: NSString, wrappedError: NativeInteropTestsError) -> NSString? {
     do {
       let activeApi = try resolveApi()
       let res: String = try activeApi.echoNamedDefault(aStringArg as String)
@@ -5617,9 +5091,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns passed in double.
-  @objc func echoOptionalDefaultDouble(
-    aDouble aDoubleArg: Double, wrappedError: NativeInteropTestsError
-  ) -> NSNumber? {
+  @objc func echoOptionalDefaultDouble(aDouble aDoubleArg: Double, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Double = try activeApi.echoOptionalDefault(aDoubleArg)
@@ -5636,9 +5108,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns passed in int.
-  @objc func echoRequiredInt(anInt anIntArg: Int64, wrappedError: NativeInteropTestsError)
-    -> NSNumber?
-  {
+  @objc func echoRequiredInt(anInt anIntArg: Int64, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Int64 = try activeApi.echoRequired(anIntArg)
@@ -5656,9 +5126,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed object, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAllNullableTypes(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoAllNullableTypes(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5679,16 +5147,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed object, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAllNullableTypesWithoutRecursion(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func echoAllNullableTypesWithoutRecursion(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let everythingArg = reader.read(NativeInteropAllNullableTypesWithoutRecursion?.self)
-      let res: NativeInteropAllNullableTypesWithoutRecursion? = try activeApi.echoNullable(
-        everythingArg)
+      let res: NativeInteropAllNullableTypesWithoutRecursion? = try activeApi.echoNullable(everythingArg)
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNil(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -5704,9 +5169,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   /// Returns the inner `aString` value from the wrapped object, to test
   /// sending of nested objects.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func extractNestedNullableString(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSString? {
+  @objc func extractNestedNullableString(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSString? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5727,13 +5190,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the inner `aString` value from the wrapped object, to test
   /// sending of nested objects.
-  @objc func createNestedNullableString(
-    nullableString nullableStringArg: NSString?, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func createNestedNullableString(nullableString nullableStringArg: NSString?, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAllClassesWrapper = try activeApi.createNestedObject(
-        with: nullableStringArg as String?)
+      let res: NativeInteropAllClassesWrapper = try activeApi.createNestedObject(with: nullableStringArg as String?)
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNil(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -5746,15 +5206,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func sendMultipleNullableTypes(
-    aNullableBool aNullableBoolArg: NSNumber?, aNullableInt aNullableIntArg: NSNumber?,
-    aNullableString aNullableStringArg: NSString?, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func sendMultipleNullableTypes(aNullableBool aNullableBoolArg: NSNumber?, aNullableInt aNullableIntArg: NSNumber?, aNullableString aNullableStringArg: NSString?, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAllNullableTypes = try activeApi.sendMultipleNullableTypes(
-        aBool: aNullableBoolArg?.boolValue, anInt: aNullableIntArg?.int64Value,
-        aString: aNullableStringArg as String?)
+      let res: NativeInteropAllNullableTypes = try activeApi.sendMultipleNullableTypes(aBool: aNullableBoolArg?.boolValue, anInt: aNullableIntArg?.int64Value, aString: aNullableStringArg as String?)
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNil(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -5768,16 +5223,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns passed in arguments of multiple types.
-  @objc func sendMultipleNullableTypesWithoutRecursion(
-    aNullableBool aNullableBoolArg: NSNumber?, aNullableInt aNullableIntArg: NSNumber?,
-    aNullableString aNullableStringArg: NSString?, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func sendMultipleNullableTypesWithoutRecursion(aNullableBool aNullableBoolArg: NSNumber?, aNullableInt aNullableIntArg: NSNumber?, aNullableString aNullableStringArg: NSString?, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAllNullableTypesWithoutRecursion =
-        try activeApi.sendMultipleNullableTypesWithoutRecursion(
-          aBool: aNullableBoolArg?.boolValue, anInt: aNullableIntArg?.int64Value,
-          aString: aNullableStringArg as String?)
+      let res: NativeInteropAllNullableTypesWithoutRecursion = try activeApi.sendMultipleNullableTypesWithoutRecursion(aBool: aNullableBoolArg?.boolValue, anInt: aNullableIntArg?.int64Value, aString: aNullableStringArg as String?)
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNil(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -5791,9 +5240,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns passed in int.
-  @objc func echoNullableInt(
-    aNullableInt aNullableIntArg: NSNumber?, wrappedError: NativeInteropTestsError
-  ) -> NSNumber? {
+  @objc func echoNullableInt(aNullableInt aNullableIntArg: NSNumber?, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Int64? = try activeApi.echoNullable(aNullableIntArg?.int64Value)
@@ -5810,9 +5257,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns passed in double.
-  @objc func echoNullableDouble(
-    aNullableDouble aNullableDoubleArg: NSNumber?, wrappedError: NativeInteropTestsError
-  ) -> NSNumber? {
+  @objc func echoNullableDouble(aNullableDouble aNullableDoubleArg: NSNumber?, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Double? = try activeApi.echoNullable(aNullableDoubleArg?.doubleValue)
@@ -5829,9 +5274,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in boolean.
-  @objc func echoNullableBool(
-    aNullableBool aNullableBoolArg: NSNumber?, wrappedError: NativeInteropTestsError
-  ) -> NSNumber? {
+  @objc func echoNullableBool(aNullableBool aNullableBoolArg: NSNumber?, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Bool? = try activeApi.echoNullable(aNullableBoolArg?.boolValue)
@@ -5848,9 +5291,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in string.
-  @objc func echoNullableString(
-    aNullableString aNullableStringArg: NSString?, wrappedError: NativeInteropTestsError
-  ) -> NSString? {
+  @objc func echoNullableString(aNullableString aNullableStringArg: NSString?, wrappedError: NativeInteropTestsError) -> NSString? {
     do {
       let activeApi = try resolveApi()
       let res: String? = try activeApi.echoNullable(aNullableStringArg as String?)
@@ -5867,15 +5308,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in Uint8List.
-  @objc func echoNullableUint8List(
-    aNullableUint8List aNullableUint8ListArg: NSData?, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func echoNullableUint8List(aNullableUint8List aNullableUint8ListArg: NSData?, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [UInt8]? = try activeApi.echoNullable(
-        aNullableUint8ListArg.map {
-          NativeInteropTestsGolubetsInteropCodec.typedData($0, as: UInt8.self)
-        })
+      let res: [UInt8]? = try activeApi.echoNullable(aNullableUint8ListArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: UInt8.self) })
       return res.map { NativeInteropTestsGolubetsInteropCodec.data($0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -5889,15 +5325,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in Int32List.
-  @objc func echoNullableInt32List(
-    aNullableInt32List aNullableInt32ListArg: NSData?, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func echoNullableInt32List(aNullableInt32List aNullableInt32ListArg: NSData?, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Int32]? = try activeApi.echoNullable(
-        aNullableInt32ListArg.map {
-          NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int32.self)
-        })
+      let res: [Int32]? = try activeApi.echoNullable(aNullableInt32ListArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int32.self) })
       return res.map { NativeInteropTestsGolubetsInteropCodec.data($0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -5911,15 +5342,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in Int64List.
-  @objc func echoNullableInt64List(
-    aNullableInt64List aNullableInt64ListArg: NSData?, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func echoNullableInt64List(aNullableInt64List aNullableInt64ListArg: NSData?, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Int64]? = try activeApi.echoNullable(
-        aNullableInt64ListArg.map {
-          NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int64.self)
-        })
+      let res: [Int64]? = try activeApi.echoNullable(aNullableInt64ListArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int64.self) })
       return res.map { NativeInteropTestsGolubetsInteropCodec.data($0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -5933,15 +5359,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in Float64List.
-  @objc func echoNullableFloat64List(
-    aNullableFloat64List aNullableFloat64ListArg: NSData?, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func echoNullableFloat64List(aNullableFloat64List aNullableFloat64ListArg: NSData?, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Float64]? = try activeApi.echoNullable(
-        aNullableFloat64ListArg.map {
-          NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Float64.self)
-        })
+      let res: [Float64]? = try activeApi.echoNullable(aNullableFloat64ListArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Float64.self) })
       return res.map { NativeInteropTestsGolubetsInteropCodec.data($0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -5956,9 +5377,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed in generic Object.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableObject(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoNullableObject(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -5979,9 +5398,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoNullableList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6002,9 +5419,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoNullableEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6025,16 +5440,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoNullableClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classListArg = reader.read([NativeInteropAllNullableTypes?]?.self)
-      let res: [NativeInteropAllNullableTypes?]? = try activeApi.echoNullable(
-        classList: classListArg)
+      let res: [NativeInteropAllNullableTypes?]? = try activeApi.echoNullable(classList: classListArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6049,9 +5461,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableNonNullEnumList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func echoNullableNonNullEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6072,16 +5482,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableNonNullClassList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func echoNullableNonNullClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classListArg = reader.read([NativeInteropAllNullableTypes]?.self)
-      let res: [NativeInteropAllNullableTypes]? = try activeApi.echoNullableNonNull(
-        classList: classListArg)
+      let res: [NativeInteropAllNullableTypes]? = try activeApi.echoNullableNonNull(classList: classListArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6096,9 +5503,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoNullableMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6119,9 +5524,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableStringMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoNullableStringMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6142,9 +5545,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoNullableIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6165,16 +5566,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoNullableEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumMapArg = reader.read([NativeInteropAnEnum?: NativeInteropAnEnum?]?.self)
-      let res: [NativeInteropAnEnum?: NativeInteropAnEnum?]? = try activeApi.echoNullable(
-        enumMap: enumMapArg)
+      let res: [NativeInteropAnEnum?: NativeInteropAnEnum?]? = try activeApi.echoNullable(enumMap: enumMapArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6189,16 +5587,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableClassMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoNullableClassMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classMapArg = reader.read([Int64?: NativeInteropAllNullableTypes?]?.self)
-      let res: [Int64?: NativeInteropAllNullableTypes?]? = try activeApi.echoNullable(
-        classMap: classMapArg)
+      let res: [Int64?: NativeInteropAllNullableTypes?]? = try activeApi.echoNullable(classMap: classMapArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6213,9 +5608,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableNonNullStringMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func echoNullableNonNullStringMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6236,9 +5629,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableNonNullIntMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func echoNullableNonNullIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6259,16 +5650,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableNonNullEnumMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func echoNullableNonNullEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumMapArg = reader.read([NativeInteropAnEnum: NativeInteropAnEnum]?.self)
-      let res: [NativeInteropAnEnum: NativeInteropAnEnum]? = try activeApi.echoNullableNonNull(
-        enumMap: enumMapArg)
+      let res: [NativeInteropAnEnum: NativeInteropAnEnum]? = try activeApi.echoNullableNonNull(enumMap: enumMapArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6283,16 +5671,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableNonNullClassMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func echoNullableNonNullClassMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classMapArg = reader.read([Int64: NativeInteropAllNullableTypes]?.self)
-      let res: [Int64: NativeInteropAllNullableTypes]? = try activeApi.echoNullableNonNull(
-        classMap: classMapArg)
+      let res: [Int64: NativeInteropAllNullableTypes]? = try activeApi.echoNullableNonNull(classMap: classMapArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6305,13 +5690,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func echoNullableEnum(anEnum anEnumArg: Int64, wrappedError: NativeInteropTestsError)
-    -> NSNumber?
-  {
+  @objc func echoNullableEnum(anEnum anEnumArg: Int64, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAnEnum? = try activeApi.echoNullable(
-        anEnumArg == -1 ? nil : NativeInteropAnEnum(rawValue: Int(anEnumArg)))
+      let res: NativeInteropAnEnum? = try activeApi.echoNullable(anEnumArg == -1 ? nil : NativeInteropAnEnum(rawValue: Int(anEnumArg)))
       return res.map { NSNumber(value: Int64($0.rawValue)) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6324,13 +5706,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func echoAnotherNullableEnum(
-    anotherEnum anotherEnumArg: Int64, wrappedError: NativeInteropTestsError
-  ) -> NSNumber? {
+  @objc func echoAnotherNullableEnum(anotherEnum anotherEnumArg: Int64, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAnotherEnum? = try activeApi.echoNullable(
-        anotherEnumArg == -1 ? nil : NativeInteropAnotherEnum(rawValue: Int(anotherEnumArg)))
+      let res: NativeInteropAnotherEnum? = try activeApi.echoNullable(anotherEnumArg == -1 ? nil : NativeInteropAnotherEnum(rawValue: Int(anotherEnumArg)))
       return res.map { NSNumber(value: Int64($0.rawValue)) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6344,9 +5723,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns passed in int.
-  @objc func echoOptionalNullableInt(
-    aNullableInt aNullableIntArg: NSNumber?, wrappedError: NativeInteropTestsError
-  ) -> NSNumber? {
+  @objc func echoOptionalNullableInt(aNullableInt aNullableIntArg: NSNumber?, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Int64? = try activeApi.echoOptional(aNullableIntArg?.int64Value)
@@ -6363,9 +5740,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in string.
-  @objc func echoNamedNullableString(
-    aNullableString aNullableStringArg: NSString?, wrappedError: NativeInteropTestsError
-  ) -> NSString? {
+  @objc func echoNamedNullableString(aNullableString aNullableStringArg: NSString?, wrappedError: NativeInteropTestsError) -> NSString? {
     do {
       let activeApi = try resolveApi()
       let res: String? = try activeApi.echoNamed(aNullableStringArg as String?)
@@ -6400,9 +5775,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return
   }
   /// Returns passed in int asynchronously.
-  @objc func echoAsyncInt(anInt anIntArg: Int64, wrappedError: NativeInteropTestsError) async
-    -> NSNumber?
-  {
+  @objc func echoAsyncInt(anInt anIntArg: Int64, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Int64 = try await activeApi.echoAsync(anIntArg)
@@ -6419,9 +5792,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns passed in double asynchronously.
-  @objc func echoAsyncDouble(aDouble aDoubleArg: Double, wrappedError: NativeInteropTestsError)
-    async -> NSNumber?
-  {
+  @objc func echoAsyncDouble(aDouble aDoubleArg: Double, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Double = try await activeApi.echoAsync(aDoubleArg)
@@ -6438,9 +5809,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in boolean asynchronously.
-  @objc func echoAsyncBool(aBool aBoolArg: Bool, wrappedError: NativeInteropTestsError) async
-    -> NSNumber?
-  {
+  @objc func echoAsyncBool(aBool aBoolArg: Bool, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Bool = try await activeApi.echoAsync(aBoolArg)
@@ -6457,9 +5826,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed string asynchronously.
-  @objc func echoAsyncString(aString aStringArg: NSString, wrappedError: NativeInteropTestsError)
-    async -> NSString?
-  {
+  @objc func echoAsyncString(aString aStringArg: NSString, wrappedError: NativeInteropTestsError) async -> NSString? {
     do {
       let activeApi = try resolveApi()
       let res: String = try await activeApi.echoAsync(aStringArg as String)
@@ -6476,13 +5843,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in Uint8List asynchronously.
-  @objc func echoAsyncUint8List(
-    aUint8List aUint8ListArg: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncUint8List(aUint8List aUint8ListArg: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [UInt8] = try await activeApi.echoAsync(
-        NativeInteropTestsGolubetsInteropCodec.typedData(aUint8ListArg, as: UInt8.self))
+      let res: [UInt8] = try await activeApi.echoAsync(NativeInteropTestsGolubetsInteropCodec.typedData(aUint8ListArg, as: UInt8.self))
       return NativeInteropTestsGolubetsInteropCodec.data(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6496,13 +5860,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in Int32List asynchronously.
-  @objc func echoAsyncInt32List(
-    aInt32List aInt32ListArg: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncInt32List(aInt32List aInt32ListArg: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Int32] = try await activeApi.echoAsync(
-        NativeInteropTestsGolubetsInteropCodec.typedData(aInt32ListArg, as: Int32.self))
+      let res: [Int32] = try await activeApi.echoAsync(NativeInteropTestsGolubetsInteropCodec.typedData(aInt32ListArg, as: Int32.self))
       return NativeInteropTestsGolubetsInteropCodec.data(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6516,13 +5877,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in Int64List asynchronously.
-  @objc func echoAsyncInt64List(
-    aInt64List aInt64ListArg: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncInt64List(aInt64List aInt64ListArg: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Int64] = try await activeApi.echoAsync(
-        NativeInteropTestsGolubetsInteropCodec.typedData(aInt64ListArg, as: Int64.self))
+      let res: [Int64] = try await activeApi.echoAsync(NativeInteropTestsGolubetsInteropCodec.typedData(aInt64ListArg, as: Int64.self))
       return NativeInteropTestsGolubetsInteropCodec.data(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6536,13 +5894,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in Float64List asynchronously.
-  @objc func echoAsyncFloat64List(
-    aFloat64List aFloat64ListArg: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncFloat64List(aFloat64List aFloat64ListArg: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Float64] = try await activeApi.echoAsync(
-        NativeInteropTestsGolubetsInteropCodec.typedData(aFloat64ListArg, as: Float64.self))
+      let res: [Float64] = try await activeApi.echoAsync(NativeInteropTestsGolubetsInteropCodec.typedData(aFloat64ListArg, as: Float64.self))
       return NativeInteropTestsGolubetsInteropCodec.data(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6557,9 +5912,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed in generic Object asynchronously.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncObject(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async
-    -> NSData?
-  {
+  @objc func echoAsyncObject(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6580,9 +5933,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test asynchronous serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async
-    -> NSData?
-  {
+  @objc func echoAsyncList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6603,9 +5954,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test asynchronous serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    async -> NSData?
-  {
+  @objc func echoAsyncEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6626,16 +5975,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test asynchronous serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    async -> NSData?
-  {
+  @objc func echoAsyncClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classListArg = reader.read([NativeInteropAllNullableTypes?].self)
-      let res: [NativeInteropAllNullableTypes?] = try await activeApi.echoAsync(
-        classList: classListArg)
+      let res: [NativeInteropAllNullableTypes?] = try await activeApi.echoAsync(classList: classListArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6650,9 +5996,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test asynchronous serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async
-    -> NSData?
-  {
+  @objc func echoAsyncMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6673,9 +6017,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test asynchronous serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncStringMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    async -> NSData?
-  {
+  @objc func echoAsyncStringMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6696,9 +6038,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test asynchronous serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async
-    -> NSData?
-  {
+  @objc func echoAsyncIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6719,16 +6059,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test asynchronous serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async
-    -> NSData?
-  {
+  @objc func echoAsyncEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumMapArg = reader.read([NativeInteropAnEnum?: NativeInteropAnEnum?].self)
-      let res: [NativeInteropAnEnum?: NativeInteropAnEnum?] = try await activeApi.echoAsync(
-        enumMap: enumMapArg)
+      let res: [NativeInteropAnEnum?: NativeInteropAnEnum?] = try await activeApi.echoAsync(enumMap: enumMapArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6743,16 +6080,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test asynchronous serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncClassMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    async -> NSData?
-  {
+  @objc func echoAsyncClassMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classMapArg = reader.read([Int64?: NativeInteropAllNullableTypes?].self)
-      let res: [Int64?: NativeInteropAllNullableTypes?] = try await activeApi.echoAsync(
-        classMap: classMapArg)
+      let res: [Int64?: NativeInteropAllNullableTypes?] = try await activeApi.echoAsync(classMap: classMapArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6766,13 +6100,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed enum, to test asynchronous serialization and deserialization.
-  @objc func echoAsyncEnum(anEnum anEnumArg: Int64, wrappedError: NativeInteropTestsError) async
-    -> NSNumber?
-  {
+  @objc func echoAsyncEnum(anEnum anEnumArg: Int64, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAnEnum = try await activeApi.echoAsync(
-        NativeInteropAnEnum(rawValue: Int(anEnumArg))!)
+      let res: NativeInteropAnEnum = try await activeApi.echoAsync(NativeInteropAnEnum(rawValue: Int(anEnumArg))!)
       return NSNumber(value: Int64(res.rawValue))
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6786,13 +6117,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed enum, to test asynchronous serialization and deserialization.
-  @objc func echoAnotherAsyncEnum(
-    anotherEnum anotherEnumArg: Int64, wrappedError: NativeInteropTestsError
-  ) async -> NSNumber? {
+  @objc func echoAnotherAsyncEnum(anotherEnum anotherEnumArg: Int64, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAnotherEnum = try await activeApi.echoAsync(
-        NativeInteropAnotherEnum(rawValue: Int(anotherEnumArg))!)
+      let res: NativeInteropAnotherEnum = try await activeApi.echoAsync(NativeInteropAnotherEnum(rawValue: Int(anotherEnumArg))!)
       return NSNumber(value: Int64(res.rawValue))
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6858,9 +6186,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed object, to test async serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNativeInteropAllTypes(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncNativeInteropAllTypes(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6881,9 +6207,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed sealed class asynchronously.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncSealedClass(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    async -> NSData?
-  {
+  @objc func echoAsyncSealedClass(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6904,9 +6228,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed object, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableNativeInteropAllNullableTypes(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncNullableNativeInteropAllNullableTypes(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -6927,16 +6249,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed object, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let everythingArg = reader.read(NativeInteropAllNullableTypesWithoutRecursion?.self)
-      let res: NativeInteropAllNullableTypesWithoutRecursion? = try await activeApi.echoAsync(
-        everythingArg)
+      let res: NativeInteropAllNullableTypesWithoutRecursion? = try await activeApi.echoAsync(everythingArg)
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNil(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -6950,9 +6269,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns passed in int asynchronously.
-  @objc func echoAsyncNullableInt(anInt anIntArg: NSNumber?, wrappedError: NativeInteropTestsError)
-    async -> NSNumber?
-  {
+  @objc func echoAsyncNullableInt(anInt anIntArg: NSNumber?, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Int64? = try await activeApi.echoAsyncNullable(anIntArg?.int64Value)
@@ -6969,9 +6286,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns passed in double asynchronously.
-  @objc func echoAsyncNullableDouble(
-    aDouble aDoubleArg: NSNumber?, wrappedError: NativeInteropTestsError
-  ) async -> NSNumber? {
+  @objc func echoAsyncNullableDouble(aDouble aDoubleArg: NSNumber?, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Double? = try await activeApi.echoAsyncNullable(aDoubleArg?.doubleValue)
@@ -6988,9 +6303,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in boolean asynchronously.
-  @objc func echoAsyncNullableBool(aBool aBoolArg: NSNumber?, wrappedError: NativeInteropTestsError)
-    async -> NSNumber?
-  {
+  @objc func echoAsyncNullableBool(aBool aBoolArg: NSNumber?, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Bool? = try await activeApi.echoAsyncNullable(aBoolArg?.boolValue)
@@ -7007,9 +6320,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed string asynchronously.
-  @objc func echoAsyncNullableString(
-    aString aStringArg: NSString?, wrappedError: NativeInteropTestsError
-  ) async -> NSString? {
+  @objc func echoAsyncNullableString(aString aStringArg: NSString?, wrappedError: NativeInteropTestsError) async -> NSString? {
     do {
       let activeApi = try resolveApi()
       let res: String? = try await activeApi.echoAsyncNullable(aStringArg as String?)
@@ -7026,13 +6337,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in Uint8List asynchronously.
-  @objc func echoAsyncNullableUint8List(
-    aUint8List aUint8ListArg: NSData?, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncNullableUint8List(aUint8List aUint8ListArg: NSData?, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [UInt8]? = try await activeApi.echoAsyncNullable(
-        aUint8ListArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: UInt8.self) })
+      let res: [UInt8]? = try await activeApi.echoAsyncNullable(aUint8ListArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: UInt8.self) })
       return res.map { NativeInteropTestsGolubetsInteropCodec.data($0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7046,13 +6354,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in Int32List asynchronously.
-  @objc func echoAsyncNullableInt32List(
-    aInt32List aInt32ListArg: NSData?, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncNullableInt32List(aInt32List aInt32ListArg: NSData?, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Int32]? = try await activeApi.echoAsyncNullable(
-        aInt32ListArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int32.self) })
+      let res: [Int32]? = try await activeApi.echoAsyncNullable(aInt32ListArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int32.self) })
       return res.map { NativeInteropTestsGolubetsInteropCodec.data($0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7066,13 +6371,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in Int64List asynchronously.
-  @objc func echoAsyncNullableInt64List(
-    aInt64List aInt64ListArg: NSData?, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncNullableInt64List(aInt64List aInt64ListArg: NSData?, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Int64]? = try await activeApi.echoAsyncNullable(
-        aInt64ListArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int64.self) })
+      let res: [Int64]? = try await activeApi.echoAsyncNullable(aInt64ListArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int64.self) })
       return res.map { NativeInteropTestsGolubetsInteropCodec.data($0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7086,15 +6388,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed in Float64List asynchronously.
-  @objc func echoAsyncNullableFloat64List(
-    aFloat64List aFloat64ListArg: NSData?, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncNullableFloat64List(aFloat64List aFloat64ListArg: NSData?, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Float64]? = try await activeApi.echoAsyncNullable(
-        aFloat64ListArg.map {
-          NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Float64.self)
-        })
+      let res: [Float64]? = try await activeApi.echoAsyncNullable(aFloat64ListArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Float64.self) })
       return res.map { NativeInteropTestsGolubetsInteropCodec.data($0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7109,9 +6406,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed in generic Object asynchronously.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableObject(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncNullableObject(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -7132,9 +6427,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test asynchronous serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    async -> NSData?
-  {
+  @objc func echoAsyncNullableList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -7155,16 +6448,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test asynchronous serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableEnumList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncNullableEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumListArg = reader.read([NativeInteropAnEnum?]?.self)
-      let res: [NativeInteropAnEnum?]? = try await activeApi.echoAsyncNullable(
-        enumList: enumListArg)
+      let res: [NativeInteropAnEnum?]? = try await activeApi.echoAsyncNullable(enumList: enumListArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7179,16 +6469,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed list, to test asynchronous serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableClassList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncNullableClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classListArg = reader.read([NativeInteropAllNullableTypes?]?.self)
-      let res: [NativeInteropAllNullableTypes?]? = try await activeApi.echoAsyncNullable(
-        classList: classListArg)
+      let res: [NativeInteropAllNullableTypes?]? = try await activeApi.echoAsyncNullable(classList: classListArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7203,9 +6490,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test asynchronous serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    async -> NSData?
-  {
+  @objc func echoAsyncNullableMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -7226,9 +6511,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test asynchronous serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableStringMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncNullableStringMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -7249,9 +6532,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test asynchronous serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableIntMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncNullableIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -7272,16 +6553,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test asynchronous serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableEnumMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncNullableEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumMapArg = reader.read([NativeInteropAnEnum?: NativeInteropAnEnum?]?.self)
-      let res: [NativeInteropAnEnum?: NativeInteropAnEnum?]? =
-        try await activeApi.echoAsyncNullable(enumMap: enumMapArg)
+      let res: [NativeInteropAnEnum?: NativeInteropAnEnum?]? = try await activeApi.echoAsyncNullable(enumMap: enumMapArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7296,16 +6574,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns the passed map, to test asynchronous serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableClassMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func echoAsyncNullableClassMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classMapArg = reader.read([Int64?: NativeInteropAllNullableTypes?]?.self)
-      let res: [Int64?: NativeInteropAllNullableTypes?]? = try await activeApi.echoAsyncNullable(
-        classMap: classMapArg)
+      let res: [Int64?: NativeInteropAllNullableTypes?]? = try await activeApi.echoAsyncNullable(classMap: classMapArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7319,13 +6594,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed enum, to test asynchronous serialization and deserialization.
-  @objc func echoAsyncNullableEnum(anEnum anEnumArg: Int64, wrappedError: NativeInteropTestsError)
-    async -> NSNumber?
-  {
+  @objc func echoAsyncNullableEnum(anEnum anEnumArg: Int64, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAnEnum? = try await activeApi.echoAsyncNullable(
-        anEnumArg == -1 ? nil : NativeInteropAnEnum(rawValue: Int(anEnumArg)))
+      let res: NativeInteropAnEnum? = try await activeApi.echoAsyncNullable(anEnumArg == -1 ? nil : NativeInteropAnEnum(rawValue: Int(anEnumArg)))
       return res.map { NSNumber(value: Int64($0.rawValue)) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7339,13 +6611,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Returns the passed enum, to test asynchronous serialization and deserialization.
-  @objc func echoAnotherAsyncNullableEnum(
-    anotherEnum anotherEnumArg: Int64, wrappedError: NativeInteropTestsError
-  ) async -> NSNumber? {
+  @objc func echoAnotherAsyncNullableEnum(anotherEnum anotherEnumArg: Int64, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAnotherEnum? = try await activeApi.echoAsyncNullable(
-        anotherEnumArg == -1 ? nil : NativeInteropAnotherEnum(rawValue: Int(anotherEnumArg)))
+      let res: NativeInteropAnotherEnum? = try await activeApi.echoAsyncNullable(anotherEnumArg == -1 ? nil : NativeInteropAnotherEnum(rawValue: Int(anotherEnumArg)))
       return res.map { NSNumber(value: Int64($0.rawValue)) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7407,9 +6676,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNativeInteropAllTypes(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNativeInteropAllTypes(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -7429,9 +6696,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNativeInteropAllNullableTypes(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNativeInteropAllNullableTypes(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -7451,9 +6716,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoSealedClass(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoSealedClass(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -7472,15 +6735,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterSendMultipleNullableTypes(
-    aNullableBool aNullableBoolArg: NSNumber?, aNullableInt aNullableIntArg: NSNumber?,
-    aNullableString aNullableStringArg: NSString?, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterSendMultipleNullableTypes(aNullableBool aNullableBoolArg: NSNumber?, aNullableInt aNullableIntArg: NSNumber?, aNullableString aNullableStringArg: NSString?, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAllNullableTypes = try activeApi.callFlutterSendMultipleNullableTypes(
-        aBool: aNullableBoolArg?.boolValue, anInt: aNullableIntArg?.int64Value,
-        aString: aNullableStringArg as String?)
+      let res: NativeInteropAllNullableTypes = try activeApi.callFlutterSendMultipleNullableTypes(aBool: aNullableBoolArg?.boolValue, anInt: aNullableIntArg?.int64Value, aString: aNullableStringArg as String?)
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNil(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7494,16 +6752,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNativeInteropAllNullableTypesWithoutRecursion(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNativeInteropAllNullableTypesWithoutRecursion(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let everythingArg = reader.read(NativeInteropAllNullableTypesWithoutRecursion?.self)
-      let res: NativeInteropAllNullableTypesWithoutRecursion? = try activeApi.callFlutterEcho(
-        everythingArg)
+      let res: NativeInteropAllNullableTypesWithoutRecursion? = try activeApi.callFlutterEcho(everythingArg)
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNil(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7516,16 +6771,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterSendMultipleNullableTypesWithoutRecursion(
-    aNullableBool aNullableBoolArg: NSNumber?, aNullableInt aNullableIntArg: NSNumber?,
-    aNullableString aNullableStringArg: NSString?, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterSendMultipleNullableTypesWithoutRecursion(aNullableBool aNullableBoolArg: NSNumber?, aNullableInt aNullableIntArg: NSNumber?, aNullableString aNullableStringArg: NSString?, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAllNullableTypesWithoutRecursion =
-        try activeApi.callFlutterSendMultipleNullableTypesWithoutRecursion(
-          aBool: aNullableBoolArg?.boolValue, anInt: aNullableIntArg?.int64Value,
-          aString: aNullableStringArg as String?)
+      let res: NativeInteropAllNullableTypesWithoutRecursion = try activeApi.callFlutterSendMultipleNullableTypesWithoutRecursion(aBool: aNullableBoolArg?.boolValue, anInt: aNullableIntArg?.int64Value, aString: aNullableStringArg as String?)
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNil(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7538,9 +6787,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoBool(aBool aBoolArg: Bool, wrappedError: NativeInteropTestsError)
-    -> NSNumber?
-  {
+  @objc func callFlutterEchoBool(aBool aBoolArg: Bool, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Bool = try activeApi.callFlutterEcho(aBoolArg)
@@ -7556,9 +6803,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoInt(anInt anIntArg: Int64, wrappedError: NativeInteropTestsError)
-    -> NSNumber?
-  {
+  @objc func callFlutterEchoInt(anInt anIntArg: Int64, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Int64 = try activeApi.callFlutterEcho(anIntArg)
@@ -7574,9 +6819,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoDouble(
-    aDouble aDoubleArg: Double, wrappedError: NativeInteropTestsError
-  ) -> NSNumber? {
+  @objc func callFlutterEchoDouble(aDouble aDoubleArg: Double, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Double = try activeApi.callFlutterEcho(aDoubleArg)
@@ -7592,9 +6835,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoString(
-    aString aStringArg: NSString, wrappedError: NativeInteropTestsError
-  ) -> NSString? {
+  @objc func callFlutterEchoString(aString aStringArg: NSString, wrappedError: NativeInteropTestsError) -> NSString? {
     do {
       let activeApi = try resolveApi()
       let res: String = try activeApi.callFlutterEcho(aStringArg as String)
@@ -7610,13 +6851,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoUint8List(list listArg: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func callFlutterEchoUint8List(list listArg: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [UInt8] = try activeApi.callFlutterEcho(
-        NativeInteropTestsGolubetsInteropCodec.typedData(listArg, as: UInt8.self))
+      let res: [UInt8] = try activeApi.callFlutterEcho(NativeInteropTestsGolubetsInteropCodec.typedData(listArg, as: UInt8.self))
       return NativeInteropTestsGolubetsInteropCodec.data(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7629,13 +6867,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoInt32List(list listArg: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func callFlutterEchoInt32List(list listArg: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Int32] = try activeApi.callFlutterEcho(
-        NativeInteropTestsGolubetsInteropCodec.typedData(listArg, as: Int32.self))
+      let res: [Int32] = try activeApi.callFlutterEcho(NativeInteropTestsGolubetsInteropCodec.typedData(listArg, as: Int32.self))
       return NativeInteropTestsGolubetsInteropCodec.data(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7648,13 +6883,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoInt64List(list listArg: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func callFlutterEchoInt64List(list listArg: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Int64] = try activeApi.callFlutterEcho(
-        NativeInteropTestsGolubetsInteropCodec.typedData(listArg, as: Int64.self))
+      let res: [Int64] = try activeApi.callFlutterEcho(NativeInteropTestsGolubetsInteropCodec.typedData(listArg, as: Int64.self))
       return NativeInteropTestsGolubetsInteropCodec.data(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7667,13 +6899,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoFloat64List(list listArg: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func callFlutterEchoFloat64List(list listArg: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Float64] = try activeApi.callFlutterEcho(
-        NativeInteropTestsGolubetsInteropCodec.typedData(listArg, as: Float64.self))
+      let res: [Float64] = try activeApi.callFlutterEcho(NativeInteropTestsGolubetsInteropCodec.typedData(listArg, as: Float64.self))
       return NativeInteropTestsGolubetsInteropCodec.data(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7687,9 +6916,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func callFlutterEchoList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -7709,9 +6936,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoEnumList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -7731,16 +6956,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoClassList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classListArg = reader.read([NativeInteropAllNullableTypes?].self)
-      let res: [NativeInteropAllNullableTypes?] = try activeApi.callFlutterEcho(
-        classList: classListArg)
+      let res: [NativeInteropAllNullableTypes?] = try activeApi.callFlutterEcho(classList: classListArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7754,9 +6976,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNonNullEnumList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNonNullEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -7776,16 +6996,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNonNullClassList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNonNullClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classListArg = reader.read([NativeInteropAllNullableTypes].self)
-      let res: [NativeInteropAllNullableTypes] = try activeApi.callFlutterEchoNonNull(
-        classList: classListArg)
+      let res: [NativeInteropAllNullableTypes] = try activeApi.callFlutterEchoNonNull(classList: classListArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7799,9 +7016,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func callFlutterEchoMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -7821,9 +7036,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoStringMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoStringMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -7843,9 +7056,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func callFlutterEchoIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -7865,16 +7076,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func callFlutterEchoEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumMapArg = reader.read([NativeInteropAnEnum?: NativeInteropAnEnum?].self)
-      let res: [NativeInteropAnEnum?: NativeInteropAnEnum?] = try activeApi.callFlutterEcho(
-        enumMap: enumMapArg)
+      let res: [NativeInteropAnEnum?: NativeInteropAnEnum?] = try activeApi.callFlutterEcho(enumMap: enumMapArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7888,16 +7096,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoClassMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoClassMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classMapArg = reader.read([Int64?: NativeInteropAllNullableTypes?].self)
-      let res: [Int64?: NativeInteropAllNullableTypes?] = try activeApi.callFlutterEcho(
-        classMap: classMapArg)
+      let res: [Int64?: NativeInteropAllNullableTypes?] = try activeApi.callFlutterEcho(classMap: classMapArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7911,9 +7116,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNonNullStringMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNonNullStringMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -7933,9 +7136,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNonNullIntMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNonNullIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -7955,16 +7156,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNonNullEnumMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNonNullEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumMapArg = reader.read([NativeInteropAnEnum: NativeInteropAnEnum].self)
-      let res: [NativeInteropAnEnum: NativeInteropAnEnum] = try activeApi.callFlutterEchoNonNull(
-        enumMap: enumMapArg)
+      let res: [NativeInteropAnEnum: NativeInteropAnEnum] = try activeApi.callFlutterEchoNonNull(enumMap: enumMapArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -7978,16 +7176,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNonNullClassMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNonNullClassMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classMapArg = reader.read([Int64: NativeInteropAllNullableTypes].self)
-      let res: [Int64: NativeInteropAllNullableTypes] = try activeApi.callFlutterEchoNonNull(
-        classMap: classMapArg)
+      let res: [Int64: NativeInteropAllNullableTypes] = try activeApi.callFlutterEchoNonNull(classMap: classMapArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8000,13 +7195,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoEnum(anEnum anEnumArg: Int64, wrappedError: NativeInteropTestsError)
-    -> NSNumber?
-  {
+  @objc func callFlutterEchoEnum(anEnum anEnumArg: Int64, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAnEnum = try activeApi.callFlutterEcho(
-        NativeInteropAnEnum(rawValue: Int(anEnumArg))!)
+      let res: NativeInteropAnEnum = try activeApi.callFlutterEcho(NativeInteropAnEnum(rawValue: Int(anEnumArg))!)
       return NSNumber(value: Int64(res.rawValue))
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8019,13 +7211,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoNativeInteropAnotherEnum(
-    anotherEnum anotherEnumArg: Int64, wrappedError: NativeInteropTestsError
-  ) -> NSNumber? {
+  @objc func callFlutterEchoNativeInteropAnotherEnum(anotherEnum anotherEnumArg: Int64, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAnotherEnum = try activeApi.callFlutterEcho(
-        NativeInteropAnotherEnum(rawValue: Int(anotherEnumArg))!)
+      let res: NativeInteropAnotherEnum = try activeApi.callFlutterEcho(NativeInteropAnotherEnum(rawValue: Int(anotherEnumArg))!)
       return NSNumber(value: Int64(res.rawValue))
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8038,9 +7227,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoNullableBool(
-    aBool aBoolArg: NSNumber?, wrappedError: NativeInteropTestsError
-  ) -> NSNumber? {
+  @objc func callFlutterEchoNullableBool(aBool aBoolArg: NSNumber?, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Bool? = try activeApi.callFlutterEchoNullable(aBoolArg?.boolValue)
@@ -8056,9 +7243,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoNullableInt(
-    anInt anIntArg: NSNumber?, wrappedError: NativeInteropTestsError
-  ) -> NSNumber? {
+  @objc func callFlutterEchoNullableInt(anInt anIntArg: NSNumber?, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Int64? = try activeApi.callFlutterEchoNullable(anIntArg?.int64Value)
@@ -8074,9 +7259,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoNullableDouble(
-    aDouble aDoubleArg: NSNumber?, wrappedError: NativeInteropTestsError
-  ) -> NSNumber? {
+  @objc func callFlutterEchoNullableDouble(aDouble aDoubleArg: NSNumber?, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Double? = try activeApi.callFlutterEchoNullable(aDoubleArg?.doubleValue)
@@ -8092,9 +7275,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoNullableString(
-    aString aStringArg: NSString?, wrappedError: NativeInteropTestsError
-  ) -> NSString? {
+  @objc func callFlutterEchoNullableString(aString aStringArg: NSString?, wrappedError: NativeInteropTestsError) -> NSString? {
     do {
       let activeApi = try resolveApi()
       let res: String? = try activeApi.callFlutterEchoNullable(aStringArg as String?)
@@ -8110,13 +7291,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoNullableUint8List(
-    list listArg: NSData?, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableUint8List(list listArg: NSData?, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [UInt8]? = try activeApi.callFlutterEchoNullable(
-        listArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: UInt8.self) })
+      let res: [UInt8]? = try activeApi.callFlutterEchoNullable(listArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: UInt8.self) })
       return res.map { NativeInteropTestsGolubetsInteropCodec.data($0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8129,13 +7307,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoNullableInt32List(
-    list listArg: NSData?, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableInt32List(list listArg: NSData?, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Int32]? = try activeApi.callFlutterEchoNullable(
-        listArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int32.self) })
+      let res: [Int32]? = try activeApi.callFlutterEchoNullable(listArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int32.self) })
       return res.map { NativeInteropTestsGolubetsInteropCodec.data($0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8148,13 +7323,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoNullableInt64List(
-    list listArg: NSData?, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableInt64List(list listArg: NSData?, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Int64]? = try activeApi.callFlutterEchoNullable(
-        listArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int64.self) })
+      let res: [Int64]? = try activeApi.callFlutterEchoNullable(listArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int64.self) })
       return res.map { NativeInteropTestsGolubetsInteropCodec.data($0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8167,13 +7339,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoNullableFloat64List(
-    list listArg: NSData?, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableFloat64List(list listArg: NSData?, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Float64]? = try activeApi.callFlutterEchoNullable(
-        listArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Float64.self) })
+      let res: [Float64]? = try activeApi.callFlutterEchoNullable(listArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Float64.self) })
       return res.map { NativeInteropTestsGolubetsInteropCodec.data($0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8187,9 +7356,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNullableList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -8209,16 +7376,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNullableEnumList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumListArg = reader.read([NativeInteropAnEnum?]?.self)
-      let res: [NativeInteropAnEnum?]? = try activeApi.callFlutterEchoNullable(
-        enumList: enumListArg)
+      let res: [NativeInteropAnEnum?]? = try activeApi.callFlutterEchoNullable(enumList: enumListArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8232,16 +7396,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNullableClassList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classListArg = reader.read([NativeInteropAllNullableTypes?]?.self)
-      let res: [NativeInteropAllNullableTypes?]? = try activeApi.callFlutterEchoNullable(
-        classList: classListArg)
+      let res: [NativeInteropAllNullableTypes?]? = try activeApi.callFlutterEchoNullable(classList: classListArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8255,16 +7416,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNullableNonNullEnumList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableNonNullEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumListArg = reader.read([NativeInteropAnEnum]?.self)
-      let res: [NativeInteropAnEnum]? = try activeApi.callFlutterEchoNullableNonNull(
-        enumList: enumListArg)
+      let res: [NativeInteropAnEnum]? = try activeApi.callFlutterEchoNullableNonNull(enumList: enumListArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8278,16 +7436,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNullableNonNullClassList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableNonNullClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classListArg = reader.read([NativeInteropAllNullableTypes]?.self)
-      let res: [NativeInteropAllNullableTypes]? = try activeApi.callFlutterEchoNullableNonNull(
-        classList: classListArg)
+      let res: [NativeInteropAllNullableTypes]? = try activeApi.callFlutterEchoNullableNonNull(classList: classListArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8301,9 +7456,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNullableMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -8323,9 +7476,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNullableStringMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableStringMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -8345,9 +7496,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNullableIntMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -8367,16 +7516,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNullableEnumMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumMapArg = reader.read([NativeInteropAnEnum?: NativeInteropAnEnum?]?.self)
-      let res: [NativeInteropAnEnum?: NativeInteropAnEnum?]? =
-        try activeApi.callFlutterEchoNullable(enumMap: enumMapArg)
+      let res: [NativeInteropAnEnum?: NativeInteropAnEnum?]? = try activeApi.callFlutterEchoNullable(enumMap: enumMapArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8390,16 +7536,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNullableClassMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableClassMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classMapArg = reader.read([Int64?: NativeInteropAllNullableTypes?]?.self)
-      let res: [Int64?: NativeInteropAllNullableTypes?]? = try activeApi.callFlutterEchoNullable(
-        classMap: classMapArg)
+      let res: [Int64?: NativeInteropAllNullableTypes?]? = try activeApi.callFlutterEchoNullable(classMap: classMapArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8413,16 +7556,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNullableNonNullStringMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableNonNullStringMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let stringMapArg = reader.read([String: String]?.self)
-      let res: [String: String]? = try activeApi.callFlutterEchoNullableNonNull(
-        stringMap: stringMapArg)
+      let res: [String: String]? = try activeApi.callFlutterEchoNullableNonNull(stringMap: stringMapArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8436,9 +7576,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNullableNonNullIntMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableNonNullIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -8458,16 +7596,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNullableNonNullEnumMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableNonNullEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumMapArg = reader.read([NativeInteropAnEnum: NativeInteropAnEnum]?.self)
-      let res: [NativeInteropAnEnum: NativeInteropAnEnum]? =
-        try activeApi.callFlutterEchoNullableNonNull(enumMap: enumMapArg)
+      let res: [NativeInteropAnEnum: NativeInteropAnEnum]? = try activeApi.callFlutterEchoNullableNonNull(enumMap: enumMapArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8481,16 +7616,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoNullableNonNullClassMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) -> NSData? {
+  @objc func callFlutterEchoNullableNonNullClassMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classMapArg = reader.read([Int64: NativeInteropAllNullableTypes]?.self)
-      let res: [Int64: NativeInteropAllNullableTypes]? =
-        try activeApi.callFlutterEchoNullableNonNull(classMap: classMapArg)
+      let res: [Int64: NativeInteropAllNullableTypes]? = try activeApi.callFlutterEchoNullableNonNull(classMap: classMapArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8503,13 +7635,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoNullableEnum(
-    anEnum anEnumArg: Int64, wrappedError: NativeInteropTestsError
-  ) -> NSNumber? {
+  @objc func callFlutterEchoNullableEnum(anEnum anEnumArg: Int64, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAnEnum? = try activeApi.callFlutterEchoNullable(
-        anEnumArg == -1 ? nil : NativeInteropAnEnum(rawValue: Int(anEnumArg)))
+      let res: NativeInteropAnEnum? = try activeApi.callFlutterEchoNullable(anEnumArg == -1 ? nil : NativeInteropAnEnum(rawValue: Int(anEnumArg)))
       return res.map { NSNumber(value: Int64($0.rawValue)) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8522,13 +7651,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAnotherNullableEnum(
-    anotherEnum anotherEnumArg: Int64, wrappedError: NativeInteropTestsError
-  ) -> NSNumber? {
+  @objc func callFlutterEchoAnotherNullableEnum(anotherEnum anotherEnumArg: Int64, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAnotherEnum? = try activeApi.callFlutterEchoNullable(
-        anotherEnumArg == -1 ? nil : NativeInteropAnotherEnum(rawValue: Int(anotherEnumArg)))
+      let res: NativeInteropAnotherEnum? = try activeApi.callFlutterEchoNullable(anotherEnumArg == -1 ? nil : NativeInteropAnotherEnum(rawValue: Int(anotherEnumArg)))
       return res.map { NSNumber(value: Int64($0.rawValue)) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8558,16 +7684,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncNativeInteropAllTypes(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNativeInteropAllTypes(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let everythingArg = reader.read(NativeInteropAllTypes.self)
-      let res: NativeInteropAllTypes =
-        try await activeApi.callFlutterEchoAsyncNativeInteropAllTypes(everything: everythingArg)
+      let res: NativeInteropAllTypes = try await activeApi.callFlutterEchoAsyncNativeInteropAllTypes(everything: everythingArg)
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNil(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8581,17 +7704,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncNullableNativeInteropAllNullableTypes(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableNativeInteropAllNullableTypes(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let everythingArg = reader.read(NativeInteropAllNullableTypes?.self)
-      let res: NativeInteropAllNullableTypes? =
-        try await activeApi.callFlutterEchoAsyncNullableNativeInteropAllNullableTypes(
-          everything: everythingArg)
+      let res: NativeInteropAllNullableTypes? = try await activeApi.callFlutterEchoAsyncNullableNativeInteropAllNullableTypes(everything: everythingArg)
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNil(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8605,18 +7724,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let everythingArg = reader.read(NativeInteropAllNullableTypesWithoutRecursion?.self)
-      let res: NativeInteropAllNullableTypesWithoutRecursion? =
-        try await activeApi
-        .callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
-          everything: everythingArg)
+      let res: NativeInteropAllNullableTypesWithoutRecursion? = try await activeApi.callFlutterEchoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(everything: everythingArg)
       return NativeInteropTestsGolubetsInteropCodec.encodeOrNil(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8629,9 +7743,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncBool(aBool aBoolArg: Bool, wrappedError: NativeInteropTestsError)
-    async -> NSNumber?
-  {
+  @objc func callFlutterEchoAsyncBool(aBool aBoolArg: Bool, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Bool = try await activeApi.callFlutterEchoAsyncBool(aBool: aBoolArg)
@@ -8647,9 +7759,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncInt(anInt anIntArg: Int64, wrappedError: NativeInteropTestsError)
-    async -> NSNumber?
-  {
+  @objc func callFlutterEchoAsyncInt(anInt anIntArg: Int64, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Int64 = try await activeApi.callFlutterEchoAsyncInt(anInt: anIntArg)
@@ -8665,9 +7775,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncDouble(
-    aDouble aDoubleArg: Double, wrappedError: NativeInteropTestsError
-  ) async -> NSNumber? {
+  @objc func callFlutterEchoAsyncDouble(aDouble aDoubleArg: Double, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Double = try await activeApi.callFlutterEchoAsyncDouble(aDouble: aDoubleArg)
@@ -8683,13 +7791,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncString(
-    aString aStringArg: NSString, wrappedError: NativeInteropTestsError
-  ) async -> NSString? {
+  @objc func callFlutterEchoAsyncString(aString aStringArg: NSString, wrappedError: NativeInteropTestsError) async -> NSString? {
     do {
       let activeApi = try resolveApi()
-      let res: String = try await activeApi.callFlutterEchoAsyncString(
-        aString: aStringArg as String)
+      let res: String = try await activeApi.callFlutterEchoAsyncString(aString: aStringArg as String)
       return res as NSString
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8702,13 +7807,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncUint8List(
-    list listArg: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncUint8List(list listArg: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [UInt8] = try await activeApi.callFlutterEchoAsyncUint8List(
-        list: NativeInteropTestsGolubetsInteropCodec.typedData(listArg, as: UInt8.self))
+      let res: [UInt8] = try await activeApi.callFlutterEchoAsyncUint8List(list: NativeInteropTestsGolubetsInteropCodec.typedData(listArg, as: UInt8.self))
       return NativeInteropTestsGolubetsInteropCodec.data(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8721,13 +7823,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncInt32List(
-    list listArg: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncInt32List(list listArg: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Int32] = try await activeApi.callFlutterEchoAsyncInt32List(
-        list: NativeInteropTestsGolubetsInteropCodec.typedData(listArg, as: Int32.self))
+      let res: [Int32] = try await activeApi.callFlutterEchoAsyncInt32List(list: NativeInteropTestsGolubetsInteropCodec.typedData(listArg, as: Int32.self))
       return NativeInteropTestsGolubetsInteropCodec.data(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8740,13 +7839,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncInt64List(
-    list listArg: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncInt64List(list listArg: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Int64] = try await activeApi.callFlutterEchoAsyncInt64List(
-        list: NativeInteropTestsGolubetsInteropCodec.typedData(listArg, as: Int64.self))
+      let res: [Int64] = try await activeApi.callFlutterEchoAsyncInt64List(list: NativeInteropTestsGolubetsInteropCodec.typedData(listArg, as: Int64.self))
       return NativeInteropTestsGolubetsInteropCodec.data(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8759,13 +7855,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncFloat64List(
-    list listArg: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncFloat64List(list listArg: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Float64] = try await activeApi.callFlutterEchoAsyncFloat64List(
-        list: NativeInteropTestsGolubetsInteropCodec.typedData(listArg, as: Float64.self))
+      let res: [Float64] = try await activeApi.callFlutterEchoAsyncFloat64List(list: NativeInteropTestsGolubetsInteropCodec.typedData(listArg, as: Float64.self))
       return NativeInteropTestsGolubetsInteropCodec.data(res)
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8779,9 +7872,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncObject(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncObject(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -8801,9 +7892,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -8823,16 +7912,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncEnumList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumListArg = reader.read([NativeInteropAnEnum?].self)
-      let res: [NativeInteropAnEnum?] = try await activeApi.callFlutterEchoAsyncEnumList(
-        enumList: enumListArg)
+      let res: [NativeInteropAnEnum?] = try await activeApi.callFlutterEchoAsyncEnumList(enumList: enumListArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8846,16 +7932,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncClassList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classListArg = reader.read([NativeInteropAllNullableTypes?].self)
-      let res: [NativeInteropAllNullableTypes?] = try await activeApi.callFlutterEchoAsyncClassList(
-        classList: classListArg)
+      let res: [NativeInteropAllNullableTypes?] = try await activeApi.callFlutterEchoAsyncClassList(classList: classListArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8869,16 +7952,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncNonNullEnumList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNonNullEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumListArg = reader.read([NativeInteropAnEnum].self)
-      let res: [NativeInteropAnEnum] = try await activeApi.callFlutterEchoAsyncNonNullEnumList(
-        enumList: enumListArg)
+      let res: [NativeInteropAnEnum] = try await activeApi.callFlutterEchoAsyncNonNullEnumList(enumList: enumListArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8892,16 +7972,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncNonNullClassList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNonNullClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classListArg = reader.read([NativeInteropAllNullableTypes].self)
-      let res: [NativeInteropAllNullableTypes] =
-        try await activeApi.callFlutterEchoAsyncNonNullClassList(classList: classListArg)
+      let res: [NativeInteropAllNullableTypes] = try await activeApi.callFlutterEchoAsyncNonNullClassList(classList: classListArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8915,9 +7992,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -8937,16 +8012,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncStringMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncStringMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let stringMapArg = reader.read([String?: String?].self)
-      let res: [String?: String?] = try await activeApi.callFlutterEchoAsyncStringMap(
-        stringMap: stringMapArg)
+      let res: [String?: String?] = try await activeApi.callFlutterEchoAsyncStringMap(stringMap: stringMapArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -8960,9 +8032,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncIntMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -8982,16 +8052,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncEnumMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumMapArg = reader.read([NativeInteropAnEnum?: NativeInteropAnEnum?].self)
-      let res: [NativeInteropAnEnum?: NativeInteropAnEnum?] =
-        try await activeApi.callFlutterEchoAsyncEnumMap(enumMap: enumMapArg)
+      let res: [NativeInteropAnEnum?: NativeInteropAnEnum?] = try await activeApi.callFlutterEchoAsyncEnumMap(enumMap: enumMapArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9005,16 +8072,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncClassMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncClassMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classMapArg = reader.read([Int64?: NativeInteropAllNullableTypes?].self)
-      let res: [Int64?: NativeInteropAllNullableTypes?] =
-        try await activeApi.callFlutterEchoAsyncClassMap(classMap: classMapArg)
+      let res: [Int64?: NativeInteropAllNullableTypes?] = try await activeApi.callFlutterEchoAsyncClassMap(classMap: classMapArg)
       return NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9027,13 +8091,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncEnum(
-    anEnum anEnumArg: Int64, wrappedError: NativeInteropTestsError
-  ) async -> NSNumber? {
+  @objc func callFlutterEchoAsyncEnum(anEnum anEnumArg: Int64, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAnEnum = try await activeApi.callFlutterEchoAsyncEnum(
-        anEnum: NativeInteropAnEnum(rawValue: Int(anEnumArg))!)
+      let res: NativeInteropAnEnum = try await activeApi.callFlutterEchoAsyncEnum(anEnum: NativeInteropAnEnum(rawValue: Int(anEnumArg))!)
       return NSNumber(value: Int64(res.rawValue))
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9046,13 +8107,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAnotherAsyncEnum(
-    anotherEnum anotherEnumArg: Int64, wrappedError: NativeInteropTestsError
-  ) async -> NSNumber? {
+  @objc func callFlutterEchoAnotherAsyncEnum(anotherEnum anotherEnumArg: Int64, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAnotherEnum = try await activeApi.callFlutterEchoAnotherAsyncEnum(
-        anotherEnum: NativeInteropAnotherEnum(rawValue: Int(anotherEnumArg))!)
+      let res: NativeInteropAnotherEnum = try await activeApi.callFlutterEchoAnotherAsyncEnum(anotherEnum: NativeInteropAnotherEnum(rawValue: Int(anotherEnumArg))!)
       return NSNumber(value: Int64(res.rawValue))
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9065,13 +8123,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncNullableBool(
-    aBool aBoolArg: NSNumber?, wrappedError: NativeInteropTestsError
-  ) async -> NSNumber? {
+  @objc func callFlutterEchoAsyncNullableBool(aBool aBoolArg: NSNumber?, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: Bool? = try await activeApi.callFlutterEchoAsyncNullableBool(
-        aBool: aBoolArg?.boolValue)
+      let res: Bool? = try await activeApi.callFlutterEchoAsyncNullableBool(aBool: aBoolArg?.boolValue)
       return res.map { NSNumber(value: $0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9084,13 +8139,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncNullableInt(
-    anInt anIntArg: NSNumber?, wrappedError: NativeInteropTestsError
-  ) async -> NSNumber? {
+  @objc func callFlutterEchoAsyncNullableInt(anInt anIntArg: NSNumber?, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: Int64? = try await activeApi.callFlutterEchoAsyncNullableInt(
-        anInt: anIntArg?.int64Value)
+      let res: Int64? = try await activeApi.callFlutterEchoAsyncNullableInt(anInt: anIntArg?.int64Value)
       return res.map { NSNumber(value: $0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9103,13 +8155,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncNullableDouble(
-    aDouble aDoubleArg: NSNumber?, wrappedError: NativeInteropTestsError
-  ) async -> NSNumber? {
+  @objc func callFlutterEchoAsyncNullableDouble(aDouble aDoubleArg: NSNumber?, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: Double? = try await activeApi.callFlutterEchoAsyncNullableDouble(
-        aDouble: aDoubleArg?.doubleValue)
+      let res: Double? = try await activeApi.callFlutterEchoAsyncNullableDouble(aDouble: aDoubleArg?.doubleValue)
       return res.map { NSNumber(value: $0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9122,13 +8171,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncNullableString(
-    aString aStringArg: NSString?, wrappedError: NativeInteropTestsError
-  ) async -> NSString? {
+  @objc func callFlutterEchoAsyncNullableString(aString aStringArg: NSString?, wrappedError: NativeInteropTestsError) async -> NSString? {
     do {
       let activeApi = try resolveApi()
-      let res: String? = try await activeApi.callFlutterEchoAsyncNullableString(
-        aString: aStringArg as String?)
+      let res: String? = try await activeApi.callFlutterEchoAsyncNullableString(aString: aStringArg as String?)
       return res as NSString?
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9141,13 +8187,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncNullableUint8List(
-    list listArg: NSData?, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableUint8List(list listArg: NSData?, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [UInt8]? = try await activeApi.callFlutterEchoAsyncNullableUint8List(
-        list: listArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: UInt8.self) })
+      let res: [UInt8]? = try await activeApi.callFlutterEchoAsyncNullableUint8List(list: listArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: UInt8.self) })
       return res.map { NativeInteropTestsGolubetsInteropCodec.data($0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9160,13 +8203,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncNullableInt32List(
-    list listArg: NSData?, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableInt32List(list listArg: NSData?, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Int32]? = try await activeApi.callFlutterEchoAsyncNullableInt32List(
-        list: listArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int32.self) })
+      let res: [Int32]? = try await activeApi.callFlutterEchoAsyncNullableInt32List(list: listArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int32.self) })
       return res.map { NativeInteropTestsGolubetsInteropCodec.data($0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9179,13 +8219,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncNullableInt64List(
-    list listArg: NSData?, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableInt64List(list listArg: NSData?, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Int64]? = try await activeApi.callFlutterEchoAsyncNullableInt64List(
-        list: listArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int64.self) })
+      let res: [Int64]? = try await activeApi.callFlutterEchoAsyncNullableInt64List(list: listArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int64.self) })
       return res.map { NativeInteropTestsGolubetsInteropCodec.data($0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9198,14 +8235,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncNullableFloat64List(
-    list listArg: NSData?, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableFloat64List(list listArg: NSData?, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
-      let res: [Float64]? = try await activeApi.callFlutterEchoAsyncNullableFloat64List(
-        list: listArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Float64.self) }
-      )
+      let res: [Float64]? = try await activeApi.callFlutterEchoAsyncNullableFloat64List(list: listArg.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Float64.self) })
       return res.map { NativeInteropTestsGolubetsInteropCodec.data($0) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9218,9 +8251,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterThrowFlutterErrorAsync(wrappedError: NativeInteropTestsError) async
-    -> NSData?
-  {
+  @objc func callFlutterThrowFlutterErrorAsync(wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       let res: Any? = try await activeApi.callFlutterThrowFlutterErrorAsync()
@@ -9237,9 +8268,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncNullableObject(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableObject(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -9259,9 +8288,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncNullableList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -9281,16 +8308,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncNullableEnumList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumListArg = reader.read([NativeInteropAnEnum?]?.self)
-      let res: [NativeInteropAnEnum?]? = try await activeApi.callFlutterEchoAsyncNullableEnumList(
-        enumList: enumListArg)
+      let res: [NativeInteropAnEnum?]? = try await activeApi.callFlutterEchoAsyncNullableEnumList(enumList: enumListArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9304,16 +8328,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncNullableClassList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classListArg = reader.read([NativeInteropAllNullableTypes?]?.self)
-      let res: [NativeInteropAllNullableTypes?]? =
-        try await activeApi.callFlutterEchoAsyncNullableClassList(classList: classListArg)
+      let res: [NativeInteropAllNullableTypes?]? = try await activeApi.callFlutterEchoAsyncNullableClassList(classList: classListArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9327,16 +8348,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncNullableNonNullEnumList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableNonNullEnumList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumListArg = reader.read([NativeInteropAnEnum]?.self)
-      let res: [NativeInteropAnEnum]? =
-        try await activeApi.callFlutterEchoAsyncNullableNonNullEnumList(enumList: enumListArg)
+      let res: [NativeInteropAnEnum]? = try await activeApi.callFlutterEchoAsyncNullableNonNullEnumList(enumList: enumListArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9350,16 +8368,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncNullableNonNullClassList(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableNonNullClassList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classListArg = reader.read([NativeInteropAllNullableTypes]?.self)
-      let res: [NativeInteropAllNullableTypes]? =
-        try await activeApi.callFlutterEchoAsyncNullableNonNullClassList(classList: classListArg)
+      let res: [NativeInteropAllNullableTypes]? = try await activeApi.callFlutterEchoAsyncNullableNonNullClassList(classList: classListArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeList(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9373,16 +8388,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncNullableMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let mapArg = reader.read([AnyHashable?: Any?]?.self)
-      let res: [AnyHashable?: Any?]? = try await activeApi.callFlutterEchoAsyncNullableMap(
-        map: mapArg)
+      let res: [AnyHashable?: Any?]? = try await activeApi.callFlutterEchoAsyncNullableMap(map: mapArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9396,16 +8408,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncNullableStringMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableStringMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let stringMapArg = reader.read([String?: String?]?.self)
-      let res: [String?: String?]? = try await activeApi.callFlutterEchoAsyncNullableStringMap(
-        stringMap: stringMapArg)
+      let res: [String?: String?]? = try await activeApi.callFlutterEchoAsyncNullableStringMap(stringMap: stringMapArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9419,16 +8428,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncNullableIntMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableIntMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let intMapArg = reader.read([Int64?: Int64?]?.self)
-      let res: [Int64?: Int64?]? = try await activeApi.callFlutterEchoAsyncNullableIntMap(
-        intMap: intMapArg)
+      let res: [Int64?: Int64?]? = try await activeApi.callFlutterEchoAsyncNullableIntMap(intMap: intMapArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9442,16 +8448,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncNullableEnumMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableEnumMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let enumMapArg = reader.read([NativeInteropAnEnum?: NativeInteropAnEnum?]?.self)
-      let res: [NativeInteropAnEnum?: NativeInteropAnEnum?]? =
-        try await activeApi.callFlutterEchoAsyncNullableEnumMap(enumMap: enumMapArg)
+      let res: [NativeInteropAnEnum?: NativeInteropAnEnum?]? = try await activeApi.callFlutterEchoAsyncNullableEnumMap(enumMap: enumMapArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9465,16 +8468,13 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoAsyncNullableClassMap(
-    golubetsVar_args: NSData, wrappedError: NativeInteropTestsError
-  ) async -> NSData? {
+  @objc func callFlutterEchoAsyncNullableClassMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
       reader.readListHeader()
       let classMapArg = reader.read([Int64?: NativeInteropAllNullableTypes?]?.self)
-      let res: [Int64?: NativeInteropAllNullableTypes?]? =
-        try await activeApi.callFlutterEchoAsyncNullableClassMap(classMap: classMapArg)
+      let res: [Int64?: NativeInteropAllNullableTypes?]? = try await activeApi.callFlutterEchoAsyncNullableClassMap(classMap: classMapArg)
       return res == nil ? nil : NativeInteropTestsGolubetsInteropCodec.encode { $0.writeMap(res) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9487,13 +8487,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAsyncNullableEnum(
-    anEnum anEnumArg: Int64, wrappedError: NativeInteropTestsError
-  ) async -> NSNumber? {
+  @objc func callFlutterEchoAsyncNullableEnum(anEnum anEnumArg: Int64, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAnEnum? = try await activeApi.callFlutterEchoAsyncNullableEnum(
-        anEnum: anEnumArg == -1 ? nil : NativeInteropAnEnum(rawValue: Int(anEnumArg)))
+      let res: NativeInteropAnEnum? = try await activeApi.callFlutterEchoAsyncNullableEnum(anEnum: anEnumArg == -1 ? nil : NativeInteropAnEnum(rawValue: Int(anEnumArg)))
       return res.map { NSNumber(value: Int64($0.rawValue)) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9506,15 +8503,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     }
     return nil
   }
-  @objc func callFlutterEchoAnotherAsyncNullableEnum(
-    anotherEnum anotherEnumArg: Int64, wrappedError: NativeInteropTestsError
-  ) async -> NSNumber? {
+  @objc func callFlutterEchoAnotherAsyncNullableEnum(anotherEnum anotherEnumArg: Int64, wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
-      let res: NativeInteropAnotherEnum? =
-        try await activeApi.callFlutterEchoAnotherAsyncNullableEnum(
-          anotherEnum: anotherEnumArg == -1
-            ? nil : NativeInteropAnotherEnum(rawValue: Int(anotherEnumArg)))
+      let res: NativeInteropAnotherEnum? = try await activeApi.callFlutterEchoAnotherAsyncNullableEnum(anotherEnum: anotherEnumArg == -1 ? nil : NativeInteropAnotherEnum(rawValue: Int(anotherEnumArg)))
       return res.map { NSNumber(value: Int64($0.rawValue)) }
     } catch let error as NativeInteropTestsError {
       wrappedError.code = error.code
@@ -9618,9 +8610,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   /// Spawns a background thread and calls `noop` on the [NativeInteropFlutterIntegrationCoreApi].
   ///
   /// Returns the result of whether the flutter call was successful.
-  @objc func callFlutterNoopOnBackgroundThread(wrappedError: NativeInteropTestsError) async
-    -> NSNumber?
-  {
+  @objc func callFlutterNoopOnBackgroundThread(wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Bool = try await activeApi.callFlutterNoopOnBackgroundThread()
@@ -9671,9 +8661,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return nil
   }
   /// Registers and immediately deregisters a Host API under [name].
-  @objc func registerAndImmediatelyDeregisterHostApi(
-    name nameArg: NSString, wrappedError: NativeInteropTestsError
-  ) {
+  @objc func registerAndImmediatelyDeregisterHostApi(name nameArg: NSString, wrappedError: NativeInteropTestsError) {
     do {
       let activeApi = try resolveApi()
       try activeApi.registerAndImmediatelyDeregisterHostApi(name: nameArg as String)
@@ -9724,9 +8712,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     return
   }
   /// Tests that calling a deregistered Flutter API under [name] fails / returns null.
-  @objc func testCallDeregisteredFlutterApi(
-    name nameArg: NSString, wrappedError: NativeInteropTestsError
-  ) -> NSNumber? {
+  @objc func testCallDeregisteredFlutterApi(name nameArg: NSString, wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Bool = try activeApi.testCallDeregisteredFlutterApi(name: nameArg as String)
@@ -9745,9 +8731,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   /// Spawns secondary engines, destroys one out-of-order, executes a live Dart
   /// entrypoint on another (where supported by the embedder), and tears it down
   /// while keeping the primary engine registration intact.
-  @objc func testSecondaryEngineDartExecution(wrappedError: NativeInteropTestsError) async
-    -> NSNumber?
-  {
+  @objc func testSecondaryEngineDartExecution(wrappedError: NativeInteropTestsError) async -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Bool = try await activeApi.testSecondaryEngineDartExecution()
@@ -9765,8 +8749,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Returns whether the secondary engine's Host API registration is ready for
   /// the secondary Dart isolate to invoke.
-  @objc func isSecondaryEngineRegistrationReady(wrappedError: NativeInteropTestsError) -> NSNumber?
-  {
+  @objc func isSecondaryEngineRegistrationReady(wrappedError: NativeInteropTestsError) -> NSNumber? {
     do {
       let activeApi = try resolveApi()
       let res: Bool = try activeApi.isSecondaryEngineRegistrationReady()
@@ -9784,9 +8767,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   }
   /// Reports whether Native Interop Host API calls from a secondary engine's
   /// Dart isolate succeeded.
-  @objc func reportSecondaryEngineCheck(
-    success successArg: Bool, wrappedError: NativeInteropTestsError
-  ) {
+  @objc func reportSecondaryEngineCheck(success successArg: Bool, wrappedError: NativeInteropTestsError) {
     do {
       let activeApi = try resolveApi()
       try activeApi.reportSecondaryEngineCheck(success: successArg)
@@ -9892,36 +8873,24 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   @objc func throwErrorFromVoid(error: NativeInteropTestsError)
   /// Returns the passed object, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNativeInteropAllTypes(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNativeInteropAllTypes(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed object, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNativeInteropAllNullableTypes(
-    golubetsVar_args: NSData, error: NativeInteropTestsError
-  ) -> NSData?
+  @objc func echoNativeInteropAllNullableTypes(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed sealed class, to test sealed class handling.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNativeInteropSealedClass(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNativeInteropSealedClass(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns passed in arguments of multiple types.
   ///
   /// Tests multiple-arity FlutterApi handling.
-  @objc func sendMultipleNullableTypes(
-    aNullableBool aNullableBoolArg: NSNumber?, aNullableInt aNullableIntArg: NSNumber?,
-    aNullableString aNullableStringArg: NSString?, error: NativeInteropTestsError
-  ) -> NSData?
+  @objc func sendMultipleNullableTypes(aNullableBool aNullableBoolArg: NSNumber?, aNullableInt aNullableIntArg: NSNumber?, aNullableString aNullableStringArg: NSString?, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed object, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNativeInteropAllNullableTypesWithoutRecursion(
-    golubetsVar_args: NSData, error: NativeInteropTestsError
-  ) -> NSData?
+  @objc func echoNativeInteropAllNullableTypesWithoutRecursion(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns passed in arguments of multiple types.
   ///
   /// Tests multiple-arity FlutterApi handling.
-  @objc func sendMultipleNullableTypesWithoutRecursion(
-    aNullableBool aNullableBoolArg: NSNumber?, aNullableInt aNullableIntArg: NSNumber?,
-    aNullableString aNullableStringArg: NSString?, error: NativeInteropTestsError
-  ) -> NSData?
+  @objc func sendMultipleNullableTypesWithoutRecursion(aNullableBool aNullableBoolArg: NSNumber?, aNullableInt aNullableIntArg: NSNumber?, aNullableString aNullableStringArg: NSString?, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed boolean, to test serialization and deserialization.
   @objc func echoBool(aBool aBoolArg: Bool, error: NativeInteropTestsError) -> NSNumber?
   /// Returns the passed int, to test serialization and deserialization.
@@ -9949,12 +8918,10 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   @objc func echoClassList(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNonNullEnumList(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNonNullEnumList(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNonNullClassList(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNonNullClassList(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
   @objc func echoMap(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
@@ -9972,8 +8939,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   @objc func echoClassMap(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNonNullStringMap(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNonNullStringMap(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
   @objc func echoNonNullIntMap(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
@@ -9982,25 +8948,19 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   @objc func echoNonNullEnumMap(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNonNullClassMap(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNonNullClassMap(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed enum to test serialization and deserialization.
   @objc func echoEnum(anEnum anEnumArg: Int64, error: NativeInteropTestsError) -> NSNumber?
   /// Returns the passed enum to test serialization and deserialization.
-  @objc func echoNativeInteropAnotherEnum(
-    anotherEnum anotherEnumArg: Int64, error: NativeInteropTestsError
-  ) -> NSNumber?
+  @objc func echoNativeInteropAnotherEnum(anotherEnum anotherEnumArg: Int64, error: NativeInteropTestsError) -> NSNumber?
   /// Returns the passed boolean, to test serialization and deserialization.
-  @objc func echoNullableBool(aBool aBoolArg: NSNumber?, error: NativeInteropTestsError)
-    -> NSNumber?
+  @objc func echoNullableBool(aBool aBoolArg: NSNumber?, error: NativeInteropTestsError) -> NSNumber?
   /// Returns the passed int, to test serialization and deserialization.
   @objc func echoNullableInt(anInt anIntArg: NSNumber?, error: NativeInteropTestsError) -> NSNumber?
   /// Returns the passed double, to test serialization and deserialization.
-  @objc func echoNullableDouble(aDouble aDoubleArg: NSNumber?, error: NativeInteropTestsError)
-    -> NSNumber?
+  @objc func echoNullableDouble(aDouble aDoubleArg: NSNumber?, error: NativeInteropTestsError) -> NSNumber?
   /// Returns the passed string, to test serialization and deserialization.
-  @objc func echoNullableString(aString aStringArg: NSString?, error: NativeInteropTestsError)
-    -> NSString?
+  @objc func echoNullableString(aString aStringArg: NSString?, error: NativeInteropTestsError) -> NSString?
   /// Returns the passed byte list, to test serialization and deserialization.
   @objc func echoNullableUint8List(list listArg: NSData?, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed int32 list, to test serialization and deserialization.
@@ -10008,195 +8968,131 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   /// Returns the passed int64 list, to test serialization and deserialization.
   @objc func echoNullableInt64List(list listArg: NSData?, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed float64 list, to test serialization and deserialization.
-  @objc func echoNullableFloat64List(list listArg: NSData?, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNullableFloat64List(list listArg: NSData?, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
   @objc func echoNullableList(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableEnumList(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNullableEnumList(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableClassList(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNullableClassList(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableNonNullEnumList(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNullableNonNullEnumList(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed list, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableNonNullClassList(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNullableNonNullClassList(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
   @objc func echoNullableMap(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableStringMap(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNullableStringMap(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
   @objc func echoNullableIntMap(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableEnumMap(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNullableEnumMap(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableClassMap(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNullableClassMap(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableNonNullStringMap(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNullableNonNullStringMap(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableNonNullIntMap(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNullableNonNullIntMap(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableNonNullEnumMap(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNullableNonNullEnumMap(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed map, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableNonNullClassMap(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    -> NSData?
+  @objc func echoNullableNonNullClassMap(golubetsVar_args: NSData, error: NativeInteropTestsError) -> NSData?
   /// Returns the passed enum to test serialization and deserialization.
   @objc func echoNullableEnum(anEnum anEnumArg: Int64, error: NativeInteropTestsError) -> NSNumber?
   /// Returns the passed enum to test serialization and deserialization.
-  @objc func echoAnotherNullableEnum(
-    anotherEnum anotherEnumArg: Int64, error: NativeInteropTestsError
-  ) -> NSNumber?
+  @objc func echoAnotherNullableEnum(anotherEnum anotherEnumArg: Int64, error: NativeInteropTestsError) -> NSNumber?
   /// A no-op function taking no arguments and returning no value, to sanity
   /// test basic asynchronous calling.
   @objc func noopAsync(error: NativeInteropTestsError) async
   @objc func throwFlutterErrorAsync(error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNativeInteropAllTypes(
-    golubetsVar_args: NSData, error: NativeInteropTestsError
-  ) async -> NSData?
+  @objc func echoAsyncNativeInteropAllTypes(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableNativeInteropAllNullableTypes(
-    golubetsVar_args: NSData, error: NativeInteropTestsError
-  ) async -> NSData?
+  @objc func echoAsyncNullableNativeInteropAllNullableTypes(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
-    golubetsVar_args: NSData, error: NativeInteropTestsError
-  ) async -> NSData?
+  @objc func echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   @objc func echoAsyncBool(aBool aBoolArg: Bool, error: NativeInteropTestsError) async -> NSNumber?
   @objc func echoAsyncInt(anInt anIntArg: Int64, error: NativeInteropTestsError) async -> NSNumber?
-  @objc func echoAsyncDouble(aDouble aDoubleArg: Double, error: NativeInteropTestsError) async
-    -> NSNumber?
-  @objc func echoAsyncString(aString aStringArg: NSString, error: NativeInteropTestsError) async
-    -> NSString?
-  @objc func echoAsyncUint8List(list listArg: NSData, error: NativeInteropTestsError) async
-    -> NSData?
-  @objc func echoAsyncInt32List(list listArg: NSData, error: NativeInteropTestsError) async
-    -> NSData?
-  @objc func echoAsyncInt64List(list listArg: NSData, error: NativeInteropTestsError) async
-    -> NSData?
-  @objc func echoAsyncFloat64List(list listArg: NSData, error: NativeInteropTestsError) async
-    -> NSData?
+  @objc func echoAsyncDouble(aDouble aDoubleArg: Double, error: NativeInteropTestsError) async -> NSNumber?
+  @objc func echoAsyncString(aString aStringArg: NSString, error: NativeInteropTestsError) async -> NSString?
+  @objc func echoAsyncUint8List(list listArg: NSData, error: NativeInteropTestsError) async -> NSData?
+  @objc func echoAsyncInt32List(list listArg: NSData, error: NativeInteropTestsError) async -> NSData?
+  @objc func echoAsyncInt64List(list listArg: NSData, error: NativeInteropTestsError) async -> NSData?
+  @objc func echoAsyncFloat64List(list listArg: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncObject(golubetsVar_args: NSData, error: NativeInteropTestsError) async
-    -> NSData?
+  @objc func echoAsyncObject(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncList(golubetsVar_args: NSData, error: NativeInteropTestsError) async
-    -> NSData?
+  @objc func echoAsyncList(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncEnumList(golubetsVar_args: NSData, error: NativeInteropTestsError) async
-    -> NSData?
+  @objc func echoAsyncEnumList(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncClassList(golubetsVar_args: NSData, error: NativeInteropTestsError) async
-    -> NSData?
+  @objc func echoAsyncClassList(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNonNullEnumList(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    async -> NSData?
+  @objc func echoAsyncNonNullEnumList(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNonNullClassList(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    async -> NSData?
+  @objc func echoAsyncNonNullClassList(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
   @objc func echoAsyncMap(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncStringMap(golubetsVar_args: NSData, error: NativeInteropTestsError) async
-    -> NSData?
+  @objc func echoAsyncStringMap(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncIntMap(golubetsVar_args: NSData, error: NativeInteropTestsError) async
-    -> NSData?
+  @objc func echoAsyncIntMap(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncEnumMap(golubetsVar_args: NSData, error: NativeInteropTestsError) async
-    -> NSData?
+  @objc func echoAsyncEnumMap(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncClassMap(golubetsVar_args: NSData, error: NativeInteropTestsError) async
-    -> NSData?
-  @objc func echoAsyncEnum(anEnum anEnumArg: Int64, error: NativeInteropTestsError) async
-    -> NSNumber?
-  @objc func echoAnotherAsyncEnum(anotherEnum anotherEnumArg: Int64, error: NativeInteropTestsError)
-    async -> NSNumber?
-  @objc func echoAsyncNullableBool(aBool aBoolArg: NSNumber?, error: NativeInteropTestsError) async
-    -> NSNumber?
-  @objc func echoAsyncNullableInt(anInt anIntArg: NSNumber?, error: NativeInteropTestsError) async
-    -> NSNumber?
-  @objc func echoAsyncNullableDouble(aDouble aDoubleArg: NSNumber?, error: NativeInteropTestsError)
-    async -> NSNumber?
-  @objc func echoAsyncNullableString(aString aStringArg: NSString?, error: NativeInteropTestsError)
-    async -> NSString?
-  @objc func echoAsyncNullableUint8List(list listArg: NSData?, error: NativeInteropTestsError) async
-    -> NSData?
-  @objc func echoAsyncNullableInt32List(list listArg: NSData?, error: NativeInteropTestsError) async
-    -> NSData?
-  @objc func echoAsyncNullableInt64List(list listArg: NSData?, error: NativeInteropTestsError) async
-    -> NSData?
-  @objc func echoAsyncNullableFloat64List(list listArg: NSData?, error: NativeInteropTestsError)
-    async -> NSData?
+  @objc func echoAsyncClassMap(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
+  @objc func echoAsyncEnum(anEnum anEnumArg: Int64, error: NativeInteropTestsError) async -> NSNumber?
+  @objc func echoAnotherAsyncEnum(anotherEnum anotherEnumArg: Int64, error: NativeInteropTestsError) async -> NSNumber?
+  @objc func echoAsyncNullableBool(aBool aBoolArg: NSNumber?, error: NativeInteropTestsError) async -> NSNumber?
+  @objc func echoAsyncNullableInt(anInt anIntArg: NSNumber?, error: NativeInteropTestsError) async -> NSNumber?
+  @objc func echoAsyncNullableDouble(aDouble aDoubleArg: NSNumber?, error: NativeInteropTestsError) async -> NSNumber?
+  @objc func echoAsyncNullableString(aString aStringArg: NSString?, error: NativeInteropTestsError) async -> NSString?
+  @objc func echoAsyncNullableUint8List(list listArg: NSData?, error: NativeInteropTestsError) async -> NSData?
+  @objc func echoAsyncNullableInt32List(list listArg: NSData?, error: NativeInteropTestsError) async -> NSData?
+  @objc func echoAsyncNullableInt64List(list listArg: NSData?, error: NativeInteropTestsError) async -> NSData?
+  @objc func echoAsyncNullableFloat64List(list listArg: NSData?, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableObject(golubetsVar_args: NSData, error: NativeInteropTestsError) async
-    -> NSData?
+  @objc func echoAsyncNullableObject(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableList(golubetsVar_args: NSData, error: NativeInteropTestsError) async
-    -> NSData?
+  @objc func echoAsyncNullableList(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableEnumList(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    async -> NSData?
+  @objc func echoAsyncNullableEnumList(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableClassList(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    async -> NSData?
+  @objc func echoAsyncNullableClassList(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableNonNullEnumList(
-    golubetsVar_args: NSData, error: NativeInteropTestsError
-  ) async -> NSData?
+  @objc func echoAsyncNullableNonNullEnumList(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableNonNullClassList(
-    golubetsVar_args: NSData, error: NativeInteropTestsError
-  ) async -> NSData?
+  @objc func echoAsyncNullableNonNullClassList(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableMap(golubetsVar_args: NSData, error: NativeInteropTestsError) async
-    -> NSData?
+  @objc func echoAsyncNullableMap(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableStringMap(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    async -> NSData?
+  @objc func echoAsyncNullableStringMap(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableIntMap(golubetsVar_args: NSData, error: NativeInteropTestsError) async
-    -> NSData?
+  @objc func echoAsyncNullableIntMap(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableEnumMap(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    async -> NSData?
+  @objc func echoAsyncNullableEnumMap(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncNullableClassMap(golubetsVar_args: NSData, error: NativeInteropTestsError)
-    async -> NSData?
-  @objc func echoAsyncNullableEnum(anEnum anEnumArg: Int64, error: NativeInteropTestsError) async
-    -> NSNumber?
-  @objc func echoAnotherAsyncNullableEnum(
-    anotherEnum anotherEnumArg: Int64, error: NativeInteropTestsError
-  ) async -> NSNumber?
+  @objc func echoAsyncNullableClassMap(golubetsVar_args: NSData, error: NativeInteropTestsError) async -> NSData?
+  @objc func echoAsyncNullableEnum(anEnum anEnumArg: Int64, error: NativeInteropTestsError) async -> NSNumber?
+  @objc func echoAnotherAsyncNullableEnum(anotherEnum anotherEnumArg: Int64, error: NativeInteropTestsError) async -> NSNumber?
 }
 
 @objc class NativeInteropFlutterIntegrationCoreApiRegistrar: NSObject {
-  static var registeredNativeInteropFlutterIntegrationCoreApi = [
-    String: [NativeInteropFlutterIntegrationCoreApi]
-  ]()
+  static var registeredNativeInteropFlutterIntegrationCoreApi = [String: [NativeInteropFlutterIntegrationCoreApi]]()
   /// Guards the registrations, which Native Interop calls can read from any thread.
   static let lock = NSLock()
 
@@ -10207,35 +9103,25 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
   /// that registered `api`, or are `Int64.min` when unknown.
   /// Registering an instance that is already registered under `name` updates its
   /// keys and keeps its position.
-  @objc static func registerInstance(
-    api: NativeInteropFlutterIntegrationCoreApiBridge, engineId: Int64, affinityKey: Int64,
-    name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-  ) {
+  @objc static func registerInstance(api: NativeInteropFlutterIntegrationCoreApiBridge, engineId: Int64, affinityKey: Int64, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) {
     let apiObject = api as AnyObject
     NativeInteropFlutterIntegrationCoreApiRegistrar.lock.lock()
     defer { NativeInteropFlutterIntegrationCoreApiRegistrar.lock.unlock() }
-    var list =
-      NativeInteropFlutterIntegrationCoreApiRegistrar
-      .registeredNativeInteropFlutterIntegrationCoreApi[name] ?? []
-    let registration = NativeInteropFlutterIntegrationCoreApi(
-      api: api, engineId: engineId, affinityKey: affinityKey)
+    var list = NativeInteropFlutterIntegrationCoreApiRegistrar.registeredNativeInteropFlutterIntegrationCoreApi[name] ?? []
+    let registration = NativeInteropFlutterIntegrationCoreApi(api: api, engineId: engineId, affinityKey: affinityKey)
     if let index = list.firstIndex(where: { ($0.api as AnyObject) === apiObject }) {
       list[index] = registration
     } else {
       list.append(registration)
     }
-    NativeInteropFlutterIntegrationCoreApiRegistrar.registeredNativeInteropFlutterIntegrationCoreApi[
-      name] = list
+    NativeInteropFlutterIntegrationCoreApiRegistrar.registeredNativeInteropFlutterIntegrationCoreApi[name] = list
   }
 
   /// Removes `api` from the registrations under `name` (or the default instance
   /// when `name` is omitted), leaving other registrations in place.
   ///
   /// Instances are matched by identity. Does nothing if `api` is not registered.
-  @objc static func unregisterInstance(
-    api: NativeInteropFlutterIntegrationCoreApiBridge,
-    name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-  ) {
+  @objc static func unregisterInstance(api: NativeInteropFlutterIntegrationCoreApiBridge, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) {
     let apiObject = api as AnyObject
     // Removed entries are kept alive until after unlocking so their deinit cannot run while the
     // non-recursive lock is held.
@@ -10243,11 +9129,7 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     do {
       NativeInteropFlutterIntegrationCoreApiRegistrar.lock.lock()
       defer { NativeInteropFlutterIntegrationCoreApiRegistrar.lock.unlock() }
-      guard
-        var list =
-          NativeInteropFlutterIntegrationCoreApiRegistrar
-          .registeredNativeInteropFlutterIntegrationCoreApi[name]
-      else {
+      guard var list = NativeInteropFlutterIntegrationCoreApiRegistrar.registeredNativeInteropFlutterIntegrationCoreApi[name] else {
         return
       }
       list.removeAll { entry in
@@ -10258,11 +9140,9 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
         return false
       }
       if list.isEmpty {
-        NativeInteropFlutterIntegrationCoreApiRegistrar
-          .registeredNativeInteropFlutterIntegrationCoreApi.removeValue(forKey: name)
+        NativeInteropFlutterIntegrationCoreApiRegistrar.registeredNativeInteropFlutterIntegrationCoreApi.removeValue(forKey: name)
       } else {
-        NativeInteropFlutterIntegrationCoreApiRegistrar
-          .registeredNativeInteropFlutterIntegrationCoreApi[name] = list
+        NativeInteropFlutterIntegrationCoreApiRegistrar.registeredNativeInteropFlutterIntegrationCoreApi[name] = list
       }
     }
     withExtendedLifetime(displaced) {}
@@ -10274,30 +9154,18 @@ public protocol NativeInteropHostIntegrationCoreApi: AnyObject {
     ///
     /// When no instance is known to belong to that engine, falls back to the most
     /// recent registration for `name`. Returns nil if none is registered.
-    static func getInstance(
-      registrar: FlutterPluginRegistrar,
-      name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-    ) -> NativeInteropFlutterIntegrationCoreApi? {
+    static func getInstance(registrar: FlutterPluginRegistrar, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) -> NativeInteropFlutterIntegrationCoreApi? {
       return getInstance(engineKey: GolubetsEngineKeys.key(for: registrar), name: name)
     }
   #endif
 
-  fileprivate static func getInstance(engineKey: Int64, name: String)
-    -> NativeInteropFlutterIntegrationCoreApi?
-  {
+  fileprivate static func getInstance(engineKey: Int64, name: String) -> NativeInteropFlutterIntegrationCoreApi? {
     NativeInteropFlutterIntegrationCoreApiRegistrar.lock.lock()
     defer { NativeInteropFlutterIntegrationCoreApiRegistrar.lock.unlock() }
-    guard
-      let list =
-        NativeInteropFlutterIntegrationCoreApiRegistrar
-        .registeredNativeInteropFlutterIntegrationCoreApi[name]
-    else {
+    guard let list = NativeInteropFlutterIntegrationCoreApiRegistrar.registeredNativeInteropFlutterIntegrationCoreApi[name] else {
       return nil
     }
-    if engineKey != Int64.min,
-      let match = list.last(where: { $0.engineId == engineKey })
-        ?? list.last(where: { $0.affinityKey == engineKey })
-    {
+    if engineKey != Int64.min, let match = list.last(where: { $0.engineId == engineKey }) ?? list.last(where: { $0.affinityKey == engineKey }) {
       return match
     }
     return list.last
@@ -10309,9 +9177,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   fileprivate let engineId: Int64
   fileprivate let affinityKey: Int64
 
-  fileprivate init(
-    api: NativeInteropFlutterIntegrationCoreApiBridge, engineId: Int64, affinityKey: Int64
-  ) {
+  fileprivate init(api: NativeInteropFlutterIntegrationCoreApiBridge, engineId: Int64, affinityKey: Int64) {
     self.api = api
     self.engineId = engineId
     self.affinityKey = affinityKey
@@ -10322,7 +9188,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func noop() throws {
     let error = NativeInteropTestsError()
     api.noop(error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
   }
@@ -10331,7 +9197,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func throwFlutterError() throws -> Any? {
     let error = NativeInteropTestsError()
     let res = api.throwFlutterError(error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -10345,7 +9211,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func throwError() throws -> Any? {
     let error = NativeInteropTestsError()
     let res = api.throwError(error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -10359,23 +9225,16 @@ class NativeInteropFlutterIntegrationCoreApi {
   func throwErrorFromVoid() throws {
     let error = NativeInteropTestsError()
     api.throwErrorFromVoid(error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
   }
 
   /// Returns the passed object, to test serialization and deserialization.
-  func echoNativeInteropAllTypes(everything everythingArg: NativeInteropAllTypes) throws
-    -> NativeInteropAllTypes
-  {
+  func echoNativeInteropAllTypes(everything everythingArg: NativeInteropAllTypes) throws -> NativeInteropAllTypes {
     let error = NativeInteropTestsError()
-    let res = api.echoNativeInteropAllTypes(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeValue(everythingArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNativeInteropAllTypes(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeValue(everythingArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10383,17 +9242,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed object, to test serialization and deserialization.
-  func echoNativeInteropAllNullableTypes(everything everythingArg: NativeInteropAllNullableTypes?)
-    throws -> NativeInteropAllNullableTypes?
-  {
+  func echoNativeInteropAllNullableTypes(everything everythingArg: NativeInteropAllNullableTypes?) throws -> NativeInteropAllNullableTypes? {
     let error = NativeInteropTestsError()
-    let res = api.echoNativeInteropAllNullableTypes(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeValue(everythingArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNativeInteropAllNullableTypes(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeValue(everythingArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -10404,17 +9256,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed sealed class, to test sealed class handling.
-  func echoNativeInteropSealedClass(sealedClass sealedClassArg: NativeInteropSealedClass) throws
-    -> NativeInteropSealedClass
-  {
+  func echoNativeInteropSealedClass(sealedClass sealedClassArg: NativeInteropSealedClass) throws -> NativeInteropSealedClass {
     let error = NativeInteropTestsError()
-    let res = api.echoNativeInteropSealedClass(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeValue(sealedClassArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNativeInteropSealedClass(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeValue(sealedClassArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10424,16 +9269,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns passed in arguments of multiple types.
   ///
   /// Tests multiple-arity FlutterApi handling.
-  func sendMultipleNullableTypes(
-    aNullableBool aNullableBoolArg: Bool?, aNullableInt aNullableIntArg: Int64?,
-    aNullableString aNullableStringArg: String?
-  ) throws -> NativeInteropAllNullableTypes {
+  func sendMultipleNullableTypes(aNullableBool aNullableBoolArg: Bool?, aNullableInt aNullableIntArg: Int64?, aNullableString aNullableStringArg: String?) throws -> NativeInteropAllNullableTypes {
     let error = NativeInteropTestsError()
-    let res = api.sendMultipleNullableTypes(
-      aNullableBool: aNullableBoolArg.map { NSNumber(value: $0) },
-      aNullableInt: aNullableIntArg.map { NSNumber(value: $0) },
-      aNullableString: aNullableStringArg as NSString?, error: error)
-    if error.code != nil {
+    let res = api.sendMultipleNullableTypes(aNullableBool: aNullableBoolArg.map { NSNumber(value: $0) }, aNullableInt: aNullableIntArg.map { NSNumber(value: $0) }, aNullableString: aNullableStringArg as NSString?, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10441,17 +9280,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed object, to test serialization and deserialization.
-  func echoNativeInteropAllNullableTypesWithoutRecursion(
-    everything everythingArg: NativeInteropAllNullableTypesWithoutRecursion?
-  ) throws -> NativeInteropAllNullableTypesWithoutRecursion? {
+  func echoNativeInteropAllNullableTypesWithoutRecursion(everything everythingArg: NativeInteropAllNullableTypesWithoutRecursion?) throws -> NativeInteropAllNullableTypesWithoutRecursion? {
     let error = NativeInteropTestsError()
-    let res = api.echoNativeInteropAllNullableTypesWithoutRecursion(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeValue(everythingArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNativeInteropAllNullableTypesWithoutRecursion(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeValue(everythingArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -10464,16 +9296,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns passed in arguments of multiple types.
   ///
   /// Tests multiple-arity FlutterApi handling.
-  func sendMultipleNullableTypesWithoutRecursion(
-    aNullableBool aNullableBoolArg: Bool?, aNullableInt aNullableIntArg: Int64?,
-    aNullableString aNullableStringArg: String?
-  ) throws -> NativeInteropAllNullableTypesWithoutRecursion {
+  func sendMultipleNullableTypesWithoutRecursion(aNullableBool aNullableBoolArg: Bool?, aNullableInt aNullableIntArg: Int64?, aNullableString aNullableStringArg: String?) throws -> NativeInteropAllNullableTypesWithoutRecursion {
     let error = NativeInteropTestsError()
-    let res = api.sendMultipleNullableTypesWithoutRecursion(
-      aNullableBool: aNullableBoolArg.map { NSNumber(value: $0) },
-      aNullableInt: aNullableIntArg.map { NSNumber(value: $0) },
-      aNullableString: aNullableStringArg as NSString?, error: error)
-    if error.code != nil {
+    let res = api.sendMultipleNullableTypesWithoutRecursion(aNullableBool: aNullableBoolArg.map { NSNumber(value: $0) }, aNullableInt: aNullableIntArg.map { NSNumber(value: $0) }, aNullableString: aNullableStringArg as NSString?, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10484,7 +9310,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func echoBool(aBool aBoolArg: Bool) throws -> Bool {
     let error = NativeInteropTestsError()
     let res = api.echoBool(aBool: aBoolArg, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res!.boolValue
@@ -10494,7 +9320,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func echoInt(anInt anIntArg: Int64) throws -> Int64 {
     let error = NativeInteropTestsError()
     let res = api.echoInt(anInt: anIntArg, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res!.int64Value
@@ -10504,7 +9330,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func echoDouble(aDouble aDoubleArg: Double) throws -> Double {
     let error = NativeInteropTestsError()
     let res = api.echoDouble(aDouble: aDoubleArg, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res!.doubleValue
@@ -10514,7 +9340,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func echoString(aString aStringArg: String) throws -> String {
     let error = NativeInteropTestsError()
     let res = api.echoString(aString: aStringArg as NSString, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res! as String
@@ -10523,9 +9349,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed byte list, to test serialization and deserialization.
   func echoUint8List(list listArg: [UInt8]) throws -> [UInt8] {
     let error = NativeInteropTestsError()
-    let res = api.echoUint8List(
-      list: NativeInteropTestsGolubetsInteropCodec.data(listArg), error: error)
-    if error.code != nil {
+    let res = api.echoUint8List(list: NativeInteropTestsGolubetsInteropCodec.data(listArg), error: error)
+    if (error.code != nil) {
       throw error
     }
     return NativeInteropTestsGolubetsInteropCodec.typedData(res!, as: UInt8.self)
@@ -10534,9 +9359,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed int32 list, to test serialization and deserialization.
   func echoInt32List(list listArg: [Int32]) throws -> [Int32] {
     let error = NativeInteropTestsError()
-    let res = api.echoInt32List(
-      list: NativeInteropTestsGolubetsInteropCodec.data(listArg), error: error)
-    if error.code != nil {
+    let res = api.echoInt32List(list: NativeInteropTestsGolubetsInteropCodec.data(listArg), error: error)
+    if (error.code != nil) {
       throw error
     }
     return NativeInteropTestsGolubetsInteropCodec.typedData(res!, as: Int32.self)
@@ -10545,9 +9369,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed int64 list, to test serialization and deserialization.
   func echoInt64List(list listArg: [Int64]) throws -> [Int64] {
     let error = NativeInteropTestsError()
-    let res = api.echoInt64List(
-      list: NativeInteropTestsGolubetsInteropCodec.data(listArg), error: error)
-    if error.code != nil {
+    let res = api.echoInt64List(list: NativeInteropTestsGolubetsInteropCodec.data(listArg), error: error)
+    if (error.code != nil) {
       throw error
     }
     return NativeInteropTestsGolubetsInteropCodec.typedData(res!, as: Int64.self)
@@ -10556,9 +9379,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed float64 list, to test serialization and deserialization.
   func echoFloat64List(list listArg: [Float64]) throws -> [Float64] {
     let error = NativeInteropTestsError()
-    let res = api.echoFloat64List(
-      list: NativeInteropTestsGolubetsInteropCodec.data(listArg), error: error)
-    if error.code != nil {
+    let res = api.echoFloat64List(list: NativeInteropTestsGolubetsInteropCodec.data(listArg), error: error)
+    if (error.code != nil) {
       throw error
     }
     return NativeInteropTestsGolubetsInteropCodec.typedData(res!, as: Float64.self)
@@ -10567,13 +9389,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed list, to test serialization and deserialization.
   func echoList(list listArg: [Any?]) throws -> [Any?] {
     let error = NativeInteropTestsError()
-    let res = api.echoList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(listArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(listArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10583,13 +9400,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed list, to test serialization and deserialization.
   func echoEnumList(enumList enumListArg: [NativeInteropAnEnum?]) throws -> [NativeInteropAnEnum?] {
     let error = NativeInteropTestsError()
-    let res = api.echoEnumList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(enumListArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoEnumList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(enumListArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10597,17 +9409,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed list, to test serialization and deserialization.
-  func echoClassList(classList classListArg: [NativeInteropAllNullableTypes?]) throws
-    -> [NativeInteropAllNullableTypes?]
-  {
+  func echoClassList(classList classListArg: [NativeInteropAllNullableTypes?]) throws -> [NativeInteropAllNullableTypes?] {
     let error = NativeInteropTestsError()
-    let res = api.echoClassList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(classListArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoClassList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(classListArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10615,17 +9420,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNonNullEnumList(enumList enumListArg: [NativeInteropAnEnum]) throws
-    -> [NativeInteropAnEnum]
-  {
+  func echoNonNullEnumList(enumList enumListArg: [NativeInteropAnEnum]) throws -> [NativeInteropAnEnum] {
     let error = NativeInteropTestsError()
-    let res = api.echoNonNullEnumList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(enumListArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNonNullEnumList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(enumListArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10633,17 +9431,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNonNullClassList(classList classListArg: [NativeInteropAllNullableTypes]) throws
-    -> [NativeInteropAllNullableTypes]
-  {
+  func echoNonNullClassList(classList classListArg: [NativeInteropAllNullableTypes]) throws -> [NativeInteropAllNullableTypes] {
     let error = NativeInteropTestsError()
-    let res = api.echoNonNullClassList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(classListArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNonNullClassList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(classListArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10653,13 +9444,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed map, to test serialization and deserialization.
   func echoMap(map mapArg: [AnyHashable?: Any?]) throws -> [AnyHashable?: Any?] {
     let error = NativeInteropTestsError()
-    let res = api.echoMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(mapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(mapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10669,13 +9455,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed map, to test serialization and deserialization.
   func echoStringMap(stringMap stringMapArg: [String?: String?]) throws -> [String?: String?] {
     let error = NativeInteropTestsError()
-    let res = api.echoStringMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(stringMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoStringMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(stringMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10685,13 +9466,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed map, to test serialization and deserialization.
   func echoIntMap(intMap intMapArg: [Int64?: Int64?]) throws -> [Int64?: Int64?] {
     let error = NativeInteropTestsError()
-    let res = api.echoIntMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(intMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoIntMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(intMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10699,17 +9475,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed map, to test serialization and deserialization.
-  func echoEnumMap(enumMap enumMapArg: [NativeInteropAnEnum?: NativeInteropAnEnum?]) throws
-    -> [NativeInteropAnEnum?: NativeInteropAnEnum?]
-  {
+  func echoEnumMap(enumMap enumMapArg: [NativeInteropAnEnum?: NativeInteropAnEnum?]) throws -> [NativeInteropAnEnum?: NativeInteropAnEnum?] {
     let error = NativeInteropTestsError()
-    let res = api.echoEnumMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(enumMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoEnumMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(enumMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10717,17 +9486,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed map, to test serialization and deserialization.
-  func echoClassMap(classMap classMapArg: [Int64?: NativeInteropAllNullableTypes?]) throws
-    -> [Int64?: NativeInteropAllNullableTypes?]
-  {
+  func echoClassMap(classMap classMapArg: [Int64?: NativeInteropAllNullableTypes?]) throws -> [Int64?: NativeInteropAllNullableTypes?] {
     let error = NativeInteropTestsError()
-    let res = api.echoClassMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(classMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoClassMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(classMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10737,13 +9499,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed map, to test serialization and deserialization.
   func echoNonNullStringMap(stringMap stringMapArg: [String: String]) throws -> [String: String] {
     let error = NativeInteropTestsError()
-    let res = api.echoNonNullStringMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(stringMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNonNullStringMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(stringMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10753,13 +9510,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed map, to test serialization and deserialization.
   func echoNonNullIntMap(intMap intMapArg: [Int64: Int64]) throws -> [Int64: Int64] {
     let error = NativeInteropTestsError()
-    let res = api.echoNonNullIntMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(intMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNonNullIntMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(intMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10767,17 +9519,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNonNullEnumMap(enumMap enumMapArg: [NativeInteropAnEnum: NativeInteropAnEnum]) throws
-    -> [NativeInteropAnEnum: NativeInteropAnEnum]
-  {
+  func echoNonNullEnumMap(enumMap enumMapArg: [NativeInteropAnEnum: NativeInteropAnEnum]) throws -> [NativeInteropAnEnum: NativeInteropAnEnum] {
     let error = NativeInteropTestsError()
-    let res = api.echoNonNullEnumMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(enumMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNonNullEnumMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(enumMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10785,17 +9530,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNonNullClassMap(classMap classMapArg: [Int64: NativeInteropAllNullableTypes]) throws
-    -> [Int64: NativeInteropAllNullableTypes]
-  {
+  func echoNonNullClassMap(classMap classMapArg: [Int64: NativeInteropAllNullableTypes]) throws -> [Int64: NativeInteropAllNullableTypes] {
     let error = NativeInteropTestsError()
-    let res = api.echoNonNullClassMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(classMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNonNullClassMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(classMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -10806,20 +9544,17 @@ class NativeInteropFlutterIntegrationCoreApi {
   func echoEnum(anEnum anEnumArg: NativeInteropAnEnum) throws -> NativeInteropAnEnum {
     let error = NativeInteropTestsError()
     let res = api.echoEnum(anEnum: Int64(anEnumArg.rawValue), error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return NativeInteropAnEnum(rawValue: res!.intValue)!
   }
 
   /// Returns the passed enum to test serialization and deserialization.
-  func echoNativeInteropAnotherEnum(anotherEnum anotherEnumArg: NativeInteropAnotherEnum) throws
-    -> NativeInteropAnotherEnum
-  {
+  func echoNativeInteropAnotherEnum(anotherEnum anotherEnumArg: NativeInteropAnotherEnum) throws -> NativeInteropAnotherEnum {
     let error = NativeInteropTestsError()
-    let res = api.echoNativeInteropAnotherEnum(
-      anotherEnum: Int64(anotherEnumArg.rawValue), error: error)
-    if error.code != nil {
+    let res = api.echoNativeInteropAnotherEnum(anotherEnum: Int64(anotherEnumArg.rawValue), error: error)
+    if (error.code != nil) {
       throw error
     }
     return NativeInteropAnotherEnum(rawValue: res!.intValue)!
@@ -10829,7 +9564,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func echoNullableBool(aBool aBoolArg: Bool?) throws -> Bool? {
     let error = NativeInteropTestsError()
     let res = api.echoNullableBool(aBool: aBoolArg.map { NSNumber(value: $0) }, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res?.boolValue
@@ -10839,7 +9574,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func echoNullableInt(anInt anIntArg: Int64?) throws -> Int64? {
     let error = NativeInteropTestsError()
     let res = api.echoNullableInt(anInt: anIntArg.map { NSNumber(value: $0) }, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res?.int64Value
@@ -10849,7 +9584,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func echoNullableDouble(aDouble aDoubleArg: Double?) throws -> Double? {
     let error = NativeInteropTestsError()
     let res = api.echoNullableDouble(aDouble: aDoubleArg.map { NSNumber(value: $0) }, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res?.doubleValue
@@ -10859,7 +9594,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func echoNullableString(aString aStringArg: String?) throws -> String? {
     let error = NativeInteropTestsError()
     let res = api.echoNullableString(aString: aStringArg as NSString?, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res as String?
@@ -10868,9 +9603,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed byte list, to test serialization and deserialization.
   func echoNullableUint8List(list listArg: [UInt8]?) throws -> [UInt8]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableUint8List(
-      list: listArg.map { NativeInteropTestsGolubetsInteropCodec.data($0) }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableUint8List(list: listArg.map { NativeInteropTestsGolubetsInteropCodec.data($0) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     return res.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: UInt8.self) }
@@ -10879,9 +9613,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed int32 list, to test serialization and deserialization.
   func echoNullableInt32List(list listArg: [Int32]?) throws -> [Int32]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableInt32List(
-      list: listArg.map { NativeInteropTestsGolubetsInteropCodec.data($0) }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableInt32List(list: listArg.map { NativeInteropTestsGolubetsInteropCodec.data($0) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     return res.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int32.self) }
@@ -10890,9 +9623,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed int64 list, to test serialization and deserialization.
   func echoNullableInt64List(list listArg: [Int64]?) throws -> [Int64]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableInt64List(
-      list: listArg.map { NativeInteropTestsGolubetsInteropCodec.data($0) }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableInt64List(list: listArg.map { NativeInteropTestsGolubetsInteropCodec.data($0) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     return res.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int64.self) }
@@ -10901,9 +9633,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed float64 list, to test serialization and deserialization.
   func echoNullableFloat64List(list listArg: [Float64]?) throws -> [Float64]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableFloat64List(
-      list: listArg.map { NativeInteropTestsGolubetsInteropCodec.data($0) }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableFloat64List(list: listArg.map { NativeInteropTestsGolubetsInteropCodec.data($0) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     return res.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Float64.self) }
@@ -10912,13 +9643,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed list, to test serialization and deserialization.
   func echoNullableList(list listArg: [Any?]?) throws -> [Any?]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(listArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(listArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -10929,17 +9655,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNullableEnumList(enumList enumListArg: [NativeInteropAnEnum?]?) throws
-    -> [NativeInteropAnEnum?]?
-  {
+  func echoNullableEnumList(enumList enumListArg: [NativeInteropAnEnum?]?) throws -> [NativeInteropAnEnum?]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableEnumList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(enumListArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableEnumList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(enumListArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -10950,17 +9669,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNullableClassList(classList classListArg: [NativeInteropAllNullableTypes?]?) throws
-    -> [NativeInteropAllNullableTypes?]?
-  {
+  func echoNullableClassList(classList classListArg: [NativeInteropAllNullableTypes?]?) throws -> [NativeInteropAllNullableTypes?]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableClassList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(classListArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableClassList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(classListArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -10971,17 +9683,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNullableNonNullEnumList(enumList enumListArg: [NativeInteropAnEnum]?) throws
-    -> [NativeInteropAnEnum]?
-  {
+  func echoNullableNonNullEnumList(enumList enumListArg: [NativeInteropAnEnum]?) throws -> [NativeInteropAnEnum]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableNonNullEnumList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(enumListArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableNonNullEnumList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(enumListArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -10992,17 +9697,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed list, to test serialization and deserialization.
-  func echoNullableNonNullClassList(classList classListArg: [NativeInteropAllNullableTypes]?) throws
-    -> [NativeInteropAllNullableTypes]?
-  {
+  func echoNullableNonNullClassList(classList classListArg: [NativeInteropAllNullableTypes]?) throws -> [NativeInteropAllNullableTypes]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableNonNullClassList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(classListArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableNonNullClassList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(classListArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11015,13 +9713,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed map, to test serialization and deserialization.
   func echoNullableMap(map mapArg: [AnyHashable?: Any?]?) throws -> [AnyHashable?: Any?]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(mapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(mapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11032,17 +9725,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullableStringMap(stringMap stringMapArg: [String?: String?]?) throws -> [String?:
-    String?]?
-  {
+  func echoNullableStringMap(stringMap stringMapArg: [String?: String?]?) throws -> [String?: String?]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableStringMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(stringMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableStringMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(stringMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11055,13 +9741,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed map, to test serialization and deserialization.
   func echoNullableIntMap(intMap intMapArg: [Int64?: Int64?]?) throws -> [Int64?: Int64?]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableIntMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(intMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableIntMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(intMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11072,17 +9753,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullableEnumMap(enumMap enumMapArg: [NativeInteropAnEnum?: NativeInteropAnEnum?]?) throws
-    -> [NativeInteropAnEnum?: NativeInteropAnEnum?]?
-  {
+  func echoNullableEnumMap(enumMap enumMapArg: [NativeInteropAnEnum?: NativeInteropAnEnum?]?) throws -> [NativeInteropAnEnum?: NativeInteropAnEnum?]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableEnumMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(enumMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableEnumMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(enumMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11093,17 +9767,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullableClassMap(classMap classMapArg: [Int64?: NativeInteropAllNullableTypes?]?) throws
-    -> [Int64?: NativeInteropAllNullableTypes?]?
-  {
+  func echoNullableClassMap(classMap classMapArg: [Int64?: NativeInteropAllNullableTypes?]?) throws -> [Int64?: NativeInteropAllNullableTypes?]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableClassMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(classMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableClassMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(classMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11114,17 +9781,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullableNonNullStringMap(stringMap stringMapArg: [String: String]?) throws -> [String:
-    String]?
-  {
+  func echoNullableNonNullStringMap(stringMap stringMapArg: [String: String]?) throws -> [String: String]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableNonNullStringMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(stringMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableNonNullStringMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(stringMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11137,13 +9797,8 @@ class NativeInteropFlutterIntegrationCoreApi {
   /// Returns the passed map, to test serialization and deserialization.
   func echoNullableNonNullIntMap(intMap intMapArg: [Int64: Int64]?) throws -> [Int64: Int64]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableNonNullIntMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(intMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableNonNullIntMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(intMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11154,17 +9809,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullableNonNullEnumMap(enumMap enumMapArg: [NativeInteropAnEnum: NativeInteropAnEnum]?)
-    throws -> [NativeInteropAnEnum: NativeInteropAnEnum]?
-  {
+  func echoNullableNonNullEnumMap(enumMap enumMapArg: [NativeInteropAnEnum: NativeInteropAnEnum]?) throws -> [NativeInteropAnEnum: NativeInteropAnEnum]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableNonNullEnumMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(enumMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableNonNullEnumMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(enumMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11175,17 +9823,10 @@ class NativeInteropFlutterIntegrationCoreApi {
   }
 
   /// Returns the passed map, to test serialization and deserialization.
-  func echoNullableNonNullClassMap(classMap classMapArg: [Int64: NativeInteropAllNullableTypes]?)
-    throws -> [Int64: NativeInteropAllNullableTypes]?
-  {
+  func echoNullableNonNullClassMap(classMap classMapArg: [Int64: NativeInteropAllNullableTypes]?) throws -> [Int64: NativeInteropAllNullableTypes]? {
     let error = NativeInteropTestsError()
-    let res = api.echoNullableNonNullClassMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(classMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoNullableNonNullClassMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(classMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11199,20 +9840,17 @@ class NativeInteropFlutterIntegrationCoreApi {
   func echoNullableEnum(anEnum anEnumArg: NativeInteropAnEnum?) throws -> NativeInteropAnEnum? {
     let error = NativeInteropTestsError()
     let res = api.echoNullableEnum(anEnum: anEnumArg.map { Int64($0.rawValue) } ?? -1, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res.map { NativeInteropAnEnum(rawValue: $0.intValue)! }
   }
 
   /// Returns the passed enum to test serialization and deserialization.
-  func echoAnotherNullableEnum(anotherEnum anotherEnumArg: NativeInteropAnotherEnum?) throws
-    -> NativeInteropAnotherEnum?
-  {
+  func echoAnotherNullableEnum(anotherEnum anotherEnumArg: NativeInteropAnotherEnum?) throws -> NativeInteropAnotherEnum? {
     let error = NativeInteropTestsError()
-    let res = api.echoAnotherNullableEnum(
-      anotherEnum: anotherEnumArg.map { Int64($0.rawValue) } ?? -1, error: error)
-    if error.code != nil {
+    let res = api.echoAnotherNullableEnum(anotherEnum: anotherEnumArg.map { Int64($0.rawValue) } ?? -1, error: error)
+    if (error.code != nil) {
       throw error
     }
     return res.map { NativeInteropAnotherEnum(rawValue: $0.intValue)! }
@@ -11223,7 +9861,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func noopAsync() async throws {
     let error = NativeInteropTestsError()
     await api.noopAsync(error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
   }
@@ -11231,7 +9869,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func throwFlutterErrorAsync() async throws -> Any? {
     let error = NativeInteropTestsError()
     let res = await api.throwFlutterErrorAsync(error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11241,34 +9879,20 @@ class NativeInteropFlutterIntegrationCoreApi {
     return reader.readValue()
   }
 
-  func echoAsyncNativeInteropAllTypes(everything everythingArg: NativeInteropAllTypes) async throws
-    -> NativeInteropAllTypes
-  {
+  func echoAsyncNativeInteropAllTypes(everything everythingArg: NativeInteropAllTypes) async throws -> NativeInteropAllTypes {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNativeInteropAllTypes(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeValue(everythingArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNativeInteropAllTypes(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeValue(everythingArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
     return reader.read(NativeInteropAllTypes.self)
   }
 
-  func echoAsyncNullableNativeInteropAllNullableTypes(
-    everything everythingArg: NativeInteropAllNullableTypes?
-  ) async throws -> NativeInteropAllNullableTypes? {
+  func echoAsyncNullableNativeInteropAllNullableTypes(everything everythingArg: NativeInteropAllNullableTypes?) async throws -> NativeInteropAllNullableTypes? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableNativeInteropAllNullableTypes(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeValue(everythingArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableNativeInteropAllNullableTypes(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeValue(everythingArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11278,17 +9902,10 @@ class NativeInteropFlutterIntegrationCoreApi {
     return reader.read(NativeInteropAllNullableTypes?.self)
   }
 
-  func echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
-    everything everythingArg: NativeInteropAllNullableTypesWithoutRecursion?
-  ) async throws -> NativeInteropAllNullableTypesWithoutRecursion? {
+  func echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(everything everythingArg: NativeInteropAllNullableTypesWithoutRecursion?) async throws -> NativeInteropAllNullableTypesWithoutRecursion? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeValue(everythingArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableNativeInteropAllNullableTypesWithoutRecursion(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeValue(everythingArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11301,7 +9918,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func echoAsyncBool(aBool aBoolArg: Bool) async throws -> Bool {
     let error = NativeInteropTestsError()
     let res = await api.echoAsyncBool(aBool: aBoolArg, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res!.boolValue
@@ -11310,7 +9927,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func echoAsyncInt(anInt anIntArg: Int64) async throws -> Int64 {
     let error = NativeInteropTestsError()
     let res = await api.echoAsyncInt(anInt: anIntArg, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res!.int64Value
@@ -11319,7 +9936,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func echoAsyncDouble(aDouble aDoubleArg: Double) async throws -> Double {
     let error = NativeInteropTestsError()
     let res = await api.echoAsyncDouble(aDouble: aDoubleArg, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res!.doubleValue
@@ -11328,7 +9945,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func echoAsyncString(aString aStringArg: String) async throws -> String {
     let error = NativeInteropTestsError()
     let res = await api.echoAsyncString(aString: aStringArg as NSString, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res! as String
@@ -11336,9 +9953,8 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncUint8List(list listArg: [UInt8]) async throws -> [UInt8] {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncUint8List(
-      list: NativeInteropTestsGolubetsInteropCodec.data(listArg), error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncUint8List(list: NativeInteropTestsGolubetsInteropCodec.data(listArg), error: error)
+    if (error.code != nil) {
       throw error
     }
     return NativeInteropTestsGolubetsInteropCodec.typedData(res!, as: UInt8.self)
@@ -11346,9 +9962,8 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncInt32List(list listArg: [Int32]) async throws -> [Int32] {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncInt32List(
-      list: NativeInteropTestsGolubetsInteropCodec.data(listArg), error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncInt32List(list: NativeInteropTestsGolubetsInteropCodec.data(listArg), error: error)
+    if (error.code != nil) {
       throw error
     }
     return NativeInteropTestsGolubetsInteropCodec.typedData(res!, as: Int32.self)
@@ -11356,9 +9971,8 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncInt64List(list listArg: [Int64]) async throws -> [Int64] {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncInt64List(
-      list: NativeInteropTestsGolubetsInteropCodec.data(listArg), error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncInt64List(list: NativeInteropTestsGolubetsInteropCodec.data(listArg), error: error)
+    if (error.code != nil) {
       throw error
     }
     return NativeInteropTestsGolubetsInteropCodec.typedData(res!, as: Int64.self)
@@ -11366,9 +9980,8 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncFloat64List(list listArg: [Float64]) async throws -> [Float64] {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncFloat64List(
-      list: NativeInteropTestsGolubetsInteropCodec.data(listArg), error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncFloat64List(list: NativeInteropTestsGolubetsInteropCodec.data(listArg), error: error)
+    if (error.code != nil) {
       throw error
     }
     return NativeInteropTestsGolubetsInteropCodec.typedData(res!, as: Float64.self)
@@ -11376,13 +9989,8 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncObject(anObject anObjectArg: Any) async throws -> Any {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncObject(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeValue(anObjectArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncObject(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeValue(anObjectArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -11391,81 +9999,48 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncList(list listArg: [Any?]) async throws -> [Any?] {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(listArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(listArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
     return reader.read([Any?].self)
   }
 
-  func echoAsyncEnumList(enumList enumListArg: [NativeInteropAnEnum?]) async throws
-    -> [NativeInteropAnEnum?]
-  {
+  func echoAsyncEnumList(enumList enumListArg: [NativeInteropAnEnum?]) async throws -> [NativeInteropAnEnum?] {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncEnumList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(enumListArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncEnumList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(enumListArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
     return reader.read([NativeInteropAnEnum?].self)
   }
 
-  func echoAsyncClassList(classList classListArg: [NativeInteropAllNullableTypes?]) async throws
-    -> [NativeInteropAllNullableTypes?]
-  {
+  func echoAsyncClassList(classList classListArg: [NativeInteropAllNullableTypes?]) async throws -> [NativeInteropAllNullableTypes?] {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncClassList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(classListArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncClassList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(classListArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
     return reader.read([NativeInteropAllNullableTypes?].self)
   }
 
-  func echoAsyncNonNullEnumList(enumList enumListArg: [NativeInteropAnEnum]) async throws
-    -> [NativeInteropAnEnum]
-  {
+  func echoAsyncNonNullEnumList(enumList enumListArg: [NativeInteropAnEnum]) async throws -> [NativeInteropAnEnum] {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNonNullEnumList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(enumListArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNonNullEnumList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(enumListArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
     return reader.read([NativeInteropAnEnum].self)
   }
 
-  func echoAsyncNonNullClassList(classList classListArg: [NativeInteropAllNullableTypes])
-    async throws -> [NativeInteropAllNullableTypes]
-  {
+  func echoAsyncNonNullClassList(classList classListArg: [NativeInteropAllNullableTypes]) async throws -> [NativeInteropAllNullableTypes] {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNonNullClassList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(classListArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNonNullClassList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(classListArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -11474,30 +10049,18 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncMap(map mapArg: [AnyHashable?: Any?]) async throws -> [AnyHashable?: Any?] {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(mapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(mapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
     return reader.read([AnyHashable?: Any?].self)
   }
 
-  func echoAsyncStringMap(stringMap stringMapArg: [String?: String?]) async throws -> [String?:
-    String?]
-  {
+  func echoAsyncStringMap(stringMap stringMapArg: [String?: String?]) async throws -> [String?: String?] {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncStringMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(stringMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncStringMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(stringMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -11506,47 +10069,28 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncIntMap(intMap intMapArg: [Int64?: Int64?]) async throws -> [Int64?: Int64?] {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncIntMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(intMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncIntMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(intMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
     return reader.read([Int64?: Int64?].self)
   }
 
-  func echoAsyncEnumMap(enumMap enumMapArg: [NativeInteropAnEnum?: NativeInteropAnEnum?])
-    async throws -> [NativeInteropAnEnum?: NativeInteropAnEnum?]
-  {
+  func echoAsyncEnumMap(enumMap enumMapArg: [NativeInteropAnEnum?: NativeInteropAnEnum?]) async throws -> [NativeInteropAnEnum?: NativeInteropAnEnum?] {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncEnumMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(enumMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncEnumMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(enumMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
     return reader.read([NativeInteropAnEnum?: NativeInteropAnEnum?].self)
   }
 
-  func echoAsyncClassMap(classMap classMapArg: [Int64?: NativeInteropAllNullableTypes?])
-    async throws -> [Int64?: NativeInteropAllNullableTypes?]
-  {
+  func echoAsyncClassMap(classMap classMapArg: [Int64?: NativeInteropAllNullableTypes?]) async throws -> [Int64?: NativeInteropAllNullableTypes?] {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncClassMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(classMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncClassMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(classMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
@@ -11556,19 +10100,16 @@ class NativeInteropFlutterIntegrationCoreApi {
   func echoAsyncEnum(anEnum anEnumArg: NativeInteropAnEnum) async throws -> NativeInteropAnEnum {
     let error = NativeInteropTestsError()
     let res = await api.echoAsyncEnum(anEnum: Int64(anEnumArg.rawValue), error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return NativeInteropAnEnum(rawValue: res!.intValue)!
   }
 
-  func echoAnotherAsyncEnum(anotherEnum anotherEnumArg: NativeInteropAnotherEnum) async throws
-    -> NativeInteropAnotherEnum
-  {
+  func echoAnotherAsyncEnum(anotherEnum anotherEnumArg: NativeInteropAnotherEnum) async throws -> NativeInteropAnotherEnum {
     let error = NativeInteropTestsError()
-    let res = await api.echoAnotherAsyncEnum(
-      anotherEnum: Int64(anotherEnumArg.rawValue), error: error)
-    if error.code != nil {
+    let res = await api.echoAnotherAsyncEnum(anotherEnum: Int64(anotherEnumArg.rawValue), error: error)
+    if (error.code != nil) {
       throw error
     }
     return NativeInteropAnotherEnum(rawValue: res!.intValue)!
@@ -11576,9 +10117,8 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncNullableBool(aBool aBoolArg: Bool?) async throws -> Bool? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableBool(
-      aBool: aBoolArg.map { NSNumber(value: $0) }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableBool(aBool: aBoolArg.map { NSNumber(value: $0) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     return res?.boolValue
@@ -11586,9 +10126,8 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncNullableInt(anInt anIntArg: Int64?) async throws -> Int64? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableInt(
-      anInt: anIntArg.map { NSNumber(value: $0) }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableInt(anInt: anIntArg.map { NSNumber(value: $0) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     return res?.int64Value
@@ -11596,9 +10135,8 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncNullableDouble(aDouble aDoubleArg: Double?) async throws -> Double? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableDouble(
-      aDouble: aDoubleArg.map { NSNumber(value: $0) }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableDouble(aDouble: aDoubleArg.map { NSNumber(value: $0) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     return res?.doubleValue
@@ -11607,7 +10145,7 @@ class NativeInteropFlutterIntegrationCoreApi {
   func echoAsyncNullableString(aString aStringArg: String?) async throws -> String? {
     let error = NativeInteropTestsError()
     let res = await api.echoAsyncNullableString(aString: aStringArg as NSString?, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res as String?
@@ -11615,9 +10153,8 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncNullableUint8List(list listArg: [UInt8]?) async throws -> [UInt8]? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableUint8List(
-      list: listArg.map { NativeInteropTestsGolubetsInteropCodec.data($0) }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableUint8List(list: listArg.map { NativeInteropTestsGolubetsInteropCodec.data($0) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     return res.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: UInt8.self) }
@@ -11625,9 +10162,8 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncNullableInt32List(list listArg: [Int32]?) async throws -> [Int32]? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableInt32List(
-      list: listArg.map { NativeInteropTestsGolubetsInteropCodec.data($0) }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableInt32List(list: listArg.map { NativeInteropTestsGolubetsInteropCodec.data($0) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     return res.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int32.self) }
@@ -11635,9 +10171,8 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncNullableInt64List(list listArg: [Int64]?) async throws -> [Int64]? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableInt64List(
-      list: listArg.map { NativeInteropTestsGolubetsInteropCodec.data($0) }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableInt64List(list: listArg.map { NativeInteropTestsGolubetsInteropCodec.data($0) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     return res.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Int64.self) }
@@ -11645,9 +10180,8 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncNullableFloat64List(list listArg: [Float64]?) async throws -> [Float64]? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableFloat64List(
-      list: listArg.map { NativeInteropTestsGolubetsInteropCodec.data($0) }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableFloat64List(list: listArg.map { NativeInteropTestsGolubetsInteropCodec.data($0) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     return res.map { NativeInteropTestsGolubetsInteropCodec.typedData($0, as: Float64.self) }
@@ -11655,13 +10189,8 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncNullableObject(anObject anObjectArg: Any?) async throws -> Any? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableObject(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeValue(anObjectArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableObject(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeValue(anObjectArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11673,13 +10202,8 @@ class NativeInteropFlutterIntegrationCoreApi {
 
   func echoAsyncNullableList(list listArg: [Any?]?) async throws -> [Any?]? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(listArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(listArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11689,17 +10213,10 @@ class NativeInteropFlutterIntegrationCoreApi {
     return reader.read([Any?]?.self)
   }
 
-  func echoAsyncNullableEnumList(enumList enumListArg: [NativeInteropAnEnum?]?) async throws
-    -> [NativeInteropAnEnum?]?
-  {
+  func echoAsyncNullableEnumList(enumList enumListArg: [NativeInteropAnEnum?]?) async throws -> [NativeInteropAnEnum?]? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableEnumList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(enumListArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableEnumList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(enumListArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11709,17 +10226,10 @@ class NativeInteropFlutterIntegrationCoreApi {
     return reader.read([NativeInteropAnEnum?]?.self)
   }
 
-  func echoAsyncNullableClassList(classList classListArg: [NativeInteropAllNullableTypes?]?)
-    async throws -> [NativeInteropAllNullableTypes?]?
-  {
+  func echoAsyncNullableClassList(classList classListArg: [NativeInteropAllNullableTypes?]?) async throws -> [NativeInteropAllNullableTypes?]? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableClassList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(classListArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableClassList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(classListArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11729,17 +10239,10 @@ class NativeInteropFlutterIntegrationCoreApi {
     return reader.read([NativeInteropAllNullableTypes?]?.self)
   }
 
-  func echoAsyncNullableNonNullEnumList(enumList enumListArg: [NativeInteropAnEnum]?) async throws
-    -> [NativeInteropAnEnum]?
-  {
+  func echoAsyncNullableNonNullEnumList(enumList enumListArg: [NativeInteropAnEnum]?) async throws -> [NativeInteropAnEnum]? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableNonNullEnumList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(enumListArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableNonNullEnumList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(enumListArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11749,17 +10252,10 @@ class NativeInteropFlutterIntegrationCoreApi {
     return reader.read([NativeInteropAnEnum]?.self)
   }
 
-  func echoAsyncNullableNonNullClassList(classList classListArg: [NativeInteropAllNullableTypes]?)
-    async throws -> [NativeInteropAllNullableTypes]?
-  {
+  func echoAsyncNullableNonNullClassList(classList classListArg: [NativeInteropAllNullableTypes]?) async throws -> [NativeInteropAllNullableTypes]? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableNonNullClassList(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeList(classListArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableNonNullClassList(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeList(classListArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11769,16 +10265,10 @@ class NativeInteropFlutterIntegrationCoreApi {
     return reader.read([NativeInteropAllNullableTypes]?.self)
   }
 
-  func echoAsyncNullableMap(map mapArg: [AnyHashable?: Any?]?) async throws -> [AnyHashable?: Any?]?
-  {
+  func echoAsyncNullableMap(map mapArg: [AnyHashable?: Any?]?) async throws -> [AnyHashable?: Any?]? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(mapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(mapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11788,17 +10278,10 @@ class NativeInteropFlutterIntegrationCoreApi {
     return reader.read([AnyHashable?: Any?]?.self)
   }
 
-  func echoAsyncNullableStringMap(stringMap stringMapArg: [String?: String?]?) async throws
-    -> [String?: String?]?
-  {
+  func echoAsyncNullableStringMap(stringMap stringMapArg: [String?: String?]?) async throws -> [String?: String?]? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableStringMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(stringMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableStringMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(stringMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11808,17 +10291,10 @@ class NativeInteropFlutterIntegrationCoreApi {
     return reader.read([String?: String?]?.self)
   }
 
-  func echoAsyncNullableIntMap(intMap intMapArg: [Int64?: Int64?]?) async throws -> [Int64?:
-    Int64?]?
-  {
+  func echoAsyncNullableIntMap(intMap intMapArg: [Int64?: Int64?]?) async throws -> [Int64?: Int64?]? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableIntMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(intMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableIntMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(intMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11828,17 +10304,10 @@ class NativeInteropFlutterIntegrationCoreApi {
     return reader.read([Int64?: Int64?]?.self)
   }
 
-  func echoAsyncNullableEnumMap(enumMap enumMapArg: [NativeInteropAnEnum?: NativeInteropAnEnum?]?)
-    async throws -> [NativeInteropAnEnum?: NativeInteropAnEnum?]?
-  {
+  func echoAsyncNullableEnumMap(enumMap enumMapArg: [NativeInteropAnEnum?: NativeInteropAnEnum?]?) async throws -> [NativeInteropAnEnum?: NativeInteropAnEnum?]? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableEnumMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(enumMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableEnumMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(enumMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11848,17 +10317,10 @@ class NativeInteropFlutterIntegrationCoreApi {
     return reader.read([NativeInteropAnEnum?: NativeInteropAnEnum?]?.self)
   }
 
-  func echoAsyncNullableClassMap(classMap classMapArg: [Int64?: NativeInteropAllNullableTypes?]?)
-    async throws -> [Int64?: NativeInteropAllNullableTypes?]?
-  {
+  func echoAsyncNullableClassMap(classMap classMapArg: [Int64?: NativeInteropAllNullableTypes?]?) async throws -> [Int64?: NativeInteropAllNullableTypes?]? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableClassMap(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeMap(classMapArg)
-      }, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableClassMap(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeMap(classMapArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     guard let res = res else {
@@ -11868,34 +10330,26 @@ class NativeInteropFlutterIntegrationCoreApi {
     return reader.read([Int64?: NativeInteropAllNullableTypes?]?.self)
   }
 
-  func echoAsyncNullableEnum(anEnum anEnumArg: NativeInteropAnEnum?) async throws
-    -> NativeInteropAnEnum?
-  {
+  func echoAsyncNullableEnum(anEnum anEnumArg: NativeInteropAnEnum?) async throws -> NativeInteropAnEnum? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAsyncNullableEnum(
-      anEnum: anEnumArg.map { Int64($0.rawValue) } ?? -1, error: error)
-    if error.code != nil {
+    let res = await api.echoAsyncNullableEnum(anEnum: anEnumArg.map { Int64($0.rawValue) } ?? -1, error: error)
+    if (error.code != nil) {
       throw error
     }
     return res.map { NativeInteropAnEnum(rawValue: $0.intValue)! }
   }
 
-  func echoAnotherAsyncNullableEnum(anotherEnum anotherEnumArg: NativeInteropAnotherEnum?)
-    async throws -> NativeInteropAnotherEnum?
-  {
+  func echoAnotherAsyncNullableEnum(anotherEnum anotherEnumArg: NativeInteropAnotherEnum?) async throws -> NativeInteropAnotherEnum? {
     let error = NativeInteropTestsError()
-    let res = await api.echoAnotherAsyncNullableEnum(
-      anotherEnum: anotherEnumArg.map { Int64($0.rawValue) } ?? -1, error: error)
-    if error.code != nil {
+    let res = await api.echoAnotherAsyncNullableEnum(anotherEnum: anotherEnumArg.map { Int64($0.rawValue) } ?? -1, error: error)
+    if (error.code != nil) {
       throw error
     }
     return res.map { NativeInteropAnotherEnum(rawValue: $0.intValue)! }
   }
 }
 class NativeInteropReservedNamesHostApiInstanceTracker {
-  static var instancesOfNativeInteropReservedNamesHostApi = [
-    String: [NativeInteropReservedNamesHostApiSetup]
-  ]()
+  static var instancesOfNativeInteropReservedNamesHostApi = [String: [NativeInteropReservedNamesHostApiSetup]]()
   /// Guards the registrations, which Native Interop calls can read from any thread.
   static let lock = NSLock()
 }
@@ -11979,10 +10433,7 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
     ///
     /// The registration is associated with the engine that owns `registrar`. The same
     /// `api` registered from different engines is tracked as separate registrations.
-    static func register(
-      api: NativeInteropReservedNamesHostApi, registrar: FlutterPluginRegistrar,
-      name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-    ) {
+    static func register(api: NativeInteropReservedNamesHostApi, registrar: FlutterPluginRegistrar, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) {
       register(api: api, engineKey: GolubetsEngineKeys.key(for: registrar), name: name)
     }
 
@@ -11994,22 +10445,15 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
     /// Prefers the registration made from the engine that owns `registrar`, and
     /// otherwise removes the registration of `api` under `name` if exactly one engine
     /// holds it.
-    static func unregister(
-      api: NativeInteropReservedNamesHostApi, registrar: FlutterPluginRegistrar,
-      name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-    ) {
+    static func unregister(api: NativeInteropReservedNamesHostApi, registrar: FlutterPluginRegistrar, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) {
       unregister(api: api, engineKey: GolubetsEngineKeys.key(for: registrar), name: name)
     }
   #endif
 
-  fileprivate static func register(
-    api: NativeInteropReservedNamesHostApi, engineKey: Int64, name: String
-  ) {
+  fileprivate static func register(api: NativeInteropReservedNamesHostApi, engineKey: Int64, name: String) {
     NativeInteropReservedNamesHostApiInstanceTracker.lock.lock()
     defer { NativeInteropReservedNamesHostApiInstanceTracker.lock.unlock() }
-    var list =
-      NativeInteropReservedNamesHostApiInstanceTracker.instancesOfNativeInteropReservedNamesHostApi[
-        name] ?? []
+    var list = NativeInteropReservedNamesHostApiInstanceTracker.instancesOfNativeInteropReservedNamesHostApi[name] ?? []
     if let index = list.firstIndex(where: { $0.api === api && $0.engineKey == engineKey }) {
       list.append(list.remove(at: index))
     } else {
@@ -12018,24 +10462,17 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
       wrapper.api = api
       list.append(wrapper)
     }
-    NativeInteropReservedNamesHostApiInstanceTracker.instancesOfNativeInteropReservedNamesHostApi[
-      name] = list
+    NativeInteropReservedNamesHostApiInstanceTracker.instancesOfNativeInteropReservedNamesHostApi[name] = list
   }
 
-  fileprivate static func unregister(
-    api: NativeInteropReservedNamesHostApi, engineKey: Int64, name: String
-  ) {
+  fileprivate static func unregister(api: NativeInteropReservedNamesHostApi, engineKey: Int64, name: String) {
     // Removed entries are kept alive until after unlocking so their deinit cannot run while the
     // non-recursive lock is held.
     var displaced: [Any] = []
     do {
       NativeInteropReservedNamesHostApiInstanceTracker.lock.lock()
       defer { NativeInteropReservedNamesHostApiInstanceTracker.lock.unlock() }
-      guard
-        var list =
-          NativeInteropReservedNamesHostApiInstanceTracker
-          .instancesOfNativeInteropReservedNamesHostApi[name]
-      else {
+      guard var list = NativeInteropReservedNamesHostApiInstanceTracker.instancesOfNativeInteropReservedNamesHostApi[name] else {
         return
       }
       let removeKey: Int64
@@ -12061,11 +10498,9 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
         return false
       }
       if list.isEmpty {
-        NativeInteropReservedNamesHostApiInstanceTracker
-          .instancesOfNativeInteropReservedNamesHostApi.removeValue(forKey: name)
+        NativeInteropReservedNamesHostApiInstanceTracker.instancesOfNativeInteropReservedNamesHostApi.removeValue(forKey: name)
       } else {
-        NativeInteropReservedNamesHostApiInstanceTracker
-          .instancesOfNativeInteropReservedNamesHostApi[name] = list
+        NativeInteropReservedNamesHostApiInstanceTracker.instancesOfNativeInteropReservedNamesHostApi[name] = list
       }
     }
     withExtendedLifetime(displaced) {}
@@ -12076,17 +10511,10 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
   ///
   /// Prefers the most recent registration whose engine key is `engineId`, then
   /// `affinityKey`, then the most recent registration. `Int64.min` means unknown.
-  @objc static func golubetsResolveInstance(
-    engineId: Int64, affinityKey: Int64,
-    name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-  ) -> NativeInteropReservedNamesHostApiSetup? {
+  @objc static func golubetsResolveInstance(engineId: Int64, affinityKey: Int64, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) -> NativeInteropReservedNamesHostApiSetup? {
     NativeInteropReservedNamesHostApiInstanceTracker.lock.lock()
     defer { NativeInteropReservedNamesHostApiInstanceTracker.lock.unlock() }
-    guard
-      let list =
-        NativeInteropReservedNamesHostApiInstanceTracker
-        .instancesOfNativeInteropReservedNamesHostApi[name]
-    else {
+    guard let list = NativeInteropReservedNamesHostApiInstanceTracker.instancesOfNativeInteropReservedNamesHostApi[name] else {
       return nil
     }
     if engineId != Int64.min, let match = list.last(where: { $0.engineKey == engineId }) {
@@ -12099,8 +10527,7 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
   }
 
   /// Returns the engine key `instance` was registered with, or `Int64.min` if unknown.
-  @objc static func golubetsEngineKey(of instance: NativeInteropReservedNamesHostApiSetup) -> Int64
-  {
+  @objc static func golubetsEngineKey(of instance: NativeInteropReservedNamesHostApiSetup) -> Int64 {
     return instance.engineKey
   }
   /// Collides with `JObject.release`.
@@ -12275,8 +10702,7 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
     return nil
   }
   /// Collides with `<Api>Registrar.register` in Kotlin bytecode.
-  @objc func register(value valueArg: NSString, wrappedError: NativeInteropTestsError) -> NSString?
-  {
+  @objc func register(value valueArg: NSString, wrappedError: NativeInteropTestsError) -> NSString? {
     do {
       let activeApi = try resolveApi()
       let res: String = try activeApi.register(value: valueArg as String)
@@ -12293,9 +10719,7 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
     return nil
   }
   /// Collides with `<Api>Registrar.unregister` in Kotlin bytecode.
-  @objc func unregister(value valueArg: NSString, wrappedError: NativeInteropTestsError)
-    -> NSString?
-  {
+  @objc func unregister(value valueArg: NSString, wrappedError: NativeInteropTestsError) -> NSString? {
     do {
       let activeApi = try resolveApi()
       let res: String = try activeApi.unregister(value: valueArg as String)
@@ -12331,9 +10755,7 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
   }
   /// Returns the passed object, to test serialization and deserialization.
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoReservedNames(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoReservedNames(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -12353,9 +10775,7 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
     return nil
   }
   /// Returns the result of calling [NativeInteropReservedNamesFlutterApi.release].
-  @objc func callFlutterRelease(value valueArg: NSString, wrappedError: NativeInteropTestsError)
-    -> NSString?
-  {
+  @objc func callFlutterRelease(value valueArg: NSString, wrappedError: NativeInteropTestsError) -> NSString? {
     do {
       let activeApi = try resolveApi()
       let res: String = try activeApi.callFlutterRelease(value: valueArg as String)
@@ -12389,9 +10809,7 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
     return nil
   }
   /// Returns the result of calling [NativeInteropReservedNamesFlutterApi.implementIn].
-  @objc func callFlutterImplementIn(value valueArg: NSString, wrappedError: NativeInteropTestsError)
-    -> NSString?
-  {
+  @objc func callFlutterImplementIn(value valueArg: NSString, wrappedError: NativeInteropTestsError) -> NSString? {
     do {
       let activeApi = try resolveApi()
       let res: String = try activeApi.callFlutterImplementIn(value: valueArg as String)
@@ -12442,9 +10860,7 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
     return nil
   }
   /// Returns the result of calling [NativeInteropReservedNamesFlutterApi.register].
-  @objc func callFlutterRegister(value valueArg: NSString, wrappedError: NativeInteropTestsError)
-    -> NSString?
-  {
+  @objc func callFlutterRegister(value valueArg: NSString, wrappedError: NativeInteropTestsError) -> NSString? {
     do {
       let activeApi = try resolveApi()
       let res: String = try activeApi.callFlutterRegister(value: valueArg as String)
@@ -12503,9 +10919,7 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
 }
 
 @objc class NativeInteropReservedNamesFlutterApiRegistrar: NSObject {
-  static var registeredNativeInteropReservedNamesFlutterApi = [
-    String: [NativeInteropReservedNamesFlutterApi]
-  ]()
+  static var registeredNativeInteropReservedNamesFlutterApi = [String: [NativeInteropReservedNamesFlutterApi]]()
   /// Guards the registrations, which Native Interop calls can read from any thread.
   static let lock = NSLock()
 
@@ -12516,35 +10930,25 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
   /// that registered `api`, or are `Int64.min` when unknown.
   /// Registering an instance that is already registered under `name` updates its
   /// keys and keeps its position.
-  @objc static func registerInstance(
-    api: NativeInteropReservedNamesFlutterApiBridge, engineId: Int64, affinityKey: Int64,
-    name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-  ) {
+  @objc static func registerInstance(api: NativeInteropReservedNamesFlutterApiBridge, engineId: Int64, affinityKey: Int64, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) {
     let apiObject = api as AnyObject
     NativeInteropReservedNamesFlutterApiRegistrar.lock.lock()
     defer { NativeInteropReservedNamesFlutterApiRegistrar.lock.unlock() }
-    var list =
-      NativeInteropReservedNamesFlutterApiRegistrar.registeredNativeInteropReservedNamesFlutterApi[
-        name] ?? []
-    let registration = NativeInteropReservedNamesFlutterApi(
-      api: api, engineId: engineId, affinityKey: affinityKey)
+    var list = NativeInteropReservedNamesFlutterApiRegistrar.registeredNativeInteropReservedNamesFlutterApi[name] ?? []
+    let registration = NativeInteropReservedNamesFlutterApi(api: api, engineId: engineId, affinityKey: affinityKey)
     if let index = list.firstIndex(where: { ($0.api as AnyObject) === apiObject }) {
       list[index] = registration
     } else {
       list.append(registration)
     }
-    NativeInteropReservedNamesFlutterApiRegistrar.registeredNativeInteropReservedNamesFlutterApi[
-      name] = list
+    NativeInteropReservedNamesFlutterApiRegistrar.registeredNativeInteropReservedNamesFlutterApi[name] = list
   }
 
   /// Removes `api` from the registrations under `name` (or the default instance
   /// when `name` is omitted), leaving other registrations in place.
   ///
   /// Instances are matched by identity. Does nothing if `api` is not registered.
-  @objc static func unregisterInstance(
-    api: NativeInteropReservedNamesFlutterApiBridge,
-    name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-  ) {
+  @objc static func unregisterInstance(api: NativeInteropReservedNamesFlutterApiBridge, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) {
     let apiObject = api as AnyObject
     // Removed entries are kept alive until after unlocking so their deinit cannot run while the
     // non-recursive lock is held.
@@ -12552,11 +10956,7 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
     do {
       NativeInteropReservedNamesFlutterApiRegistrar.lock.lock()
       defer { NativeInteropReservedNamesFlutterApiRegistrar.lock.unlock() }
-      guard
-        var list =
-          NativeInteropReservedNamesFlutterApiRegistrar
-          .registeredNativeInteropReservedNamesFlutterApi[name]
-      else {
+      guard var list = NativeInteropReservedNamesFlutterApiRegistrar.registeredNativeInteropReservedNamesFlutterApi[name] else {
         return
       }
       list.removeAll { entry in
@@ -12567,11 +10967,9 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
         return false
       }
       if list.isEmpty {
-        NativeInteropReservedNamesFlutterApiRegistrar.registeredNativeInteropReservedNamesFlutterApi
-          .removeValue(forKey: name)
+        NativeInteropReservedNamesFlutterApiRegistrar.registeredNativeInteropReservedNamesFlutterApi.removeValue(forKey: name)
       } else {
-        NativeInteropReservedNamesFlutterApiRegistrar.registeredNativeInteropReservedNamesFlutterApi[
-          name] = list
+        NativeInteropReservedNamesFlutterApiRegistrar.registeredNativeInteropReservedNamesFlutterApi[name] = list
       }
     }
     withExtendedLifetime(displaced) {}
@@ -12583,30 +10981,18 @@ public protocol NativeInteropReservedNamesHostApi: AnyObject {
     ///
     /// When no instance is known to belong to that engine, falls back to the most
     /// recent registration for `name`. Returns nil if none is registered.
-    static func getInstance(
-      registrar: FlutterPluginRegistrar,
-      name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-    ) -> NativeInteropReservedNamesFlutterApi? {
+    static func getInstance(registrar: FlutterPluginRegistrar, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) -> NativeInteropReservedNamesFlutterApi? {
       return getInstance(engineKey: GolubetsEngineKeys.key(for: registrar), name: name)
     }
   #endif
 
-  fileprivate static func getInstance(engineKey: Int64, name: String)
-    -> NativeInteropReservedNamesFlutterApi?
-  {
+  fileprivate static func getInstance(engineKey: Int64, name: String) -> NativeInteropReservedNamesFlutterApi? {
     NativeInteropReservedNamesFlutterApiRegistrar.lock.lock()
     defer { NativeInteropReservedNamesFlutterApiRegistrar.lock.unlock() }
-    guard
-      let list =
-        NativeInteropReservedNamesFlutterApiRegistrar.registeredNativeInteropReservedNamesFlutterApi[
-          name]
-    else {
+    guard let list = NativeInteropReservedNamesFlutterApiRegistrar.registeredNativeInteropReservedNamesFlutterApi[name] else {
       return nil
     }
-    if engineKey != Int64.min,
-      let match = list.last(where: { $0.engineId == engineKey })
-        ?? list.last(where: { $0.affinityKey == engineKey })
-    {
+    if engineKey != Int64.min, let match = list.last(where: { $0.engineId == engineKey }) ?? list.last(where: { $0.affinityKey == engineKey }) {
       return match
     }
     return list.last
@@ -12618,9 +11004,7 @@ class NativeInteropReservedNamesFlutterApi {
   fileprivate let engineId: Int64
   fileprivate let affinityKey: Int64
 
-  fileprivate init(
-    api: NativeInteropReservedNamesFlutterApiBridge, engineId: Int64, affinityKey: Int64
-  ) {
+  fileprivate init(api: NativeInteropReservedNamesFlutterApiBridge, engineId: Int64, affinityKey: Int64) {
     self.api = api
     self.engineId = engineId
     self.affinityKey = affinityKey
@@ -12630,7 +11014,7 @@ class NativeInteropReservedNamesFlutterApi {
   func release(value valueArg: String) throws -> String {
     let error = NativeInteropTestsError()
     let res = api.release(value: valueArg as NSString, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res! as String
@@ -12640,7 +11024,7 @@ class NativeInteropReservedNamesFlutterApi {
   func type() throws -> String {
     let error = NativeInteropTestsError()
     let res = api.type(error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res! as String
@@ -12650,7 +11034,7 @@ class NativeInteropReservedNamesFlutterApi {
   func implementIn(value valueArg: String) throws -> String {
     let error = NativeInteropTestsError()
     let res = api.implementIn(value: valueArg as NSString, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res! as String
@@ -12660,7 +11044,7 @@ class NativeInteropReservedNamesFlutterApi {
   func isNull() throws -> Bool {
     let error = NativeInteropTestsError()
     let res = api.isNull(error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res!.boolValue
@@ -12670,7 +11054,7 @@ class NativeInteropReservedNamesFlutterApi {
   func getReference() throws -> String {
     let error = NativeInteropTestsError()
     let res = api.getReference(error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res! as String
@@ -12680,7 +11064,7 @@ class NativeInteropReservedNamesFlutterApi {
   func register(value valueArg: String) throws -> String {
     let error = NativeInteropTestsError()
     let res = api.register(value: valueArg as NSString, error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res! as String
@@ -12690,16 +11074,14 @@ class NativeInteropReservedNamesFlutterApi {
   func dartApi() throws -> String {
     let error = NativeInteropTestsError()
     let res = api.dartApi(error: error)
-    if error.code != nil {
+    if (error.code != nil) {
       throw error
     }
     return res! as String
   }
 }
 class NativeInteropSealedClassHostApiInstanceTracker {
-  static var instancesOfNativeInteropSealedClassHostApi = [
-    String: [NativeInteropSealedClassHostApiSetup]
-  ]()
+  static var instancesOfNativeInteropSealedClassHostApi = [String: [NativeInteropSealedClassHostApiSetup]]()
   /// Guards the registrations, which Native Interop calls can read from any thread.
   static let lock = NSLock()
 }
@@ -12744,10 +11126,7 @@ public protocol NativeInteropSealedClassHostApi: AnyObject {
     ///
     /// The registration is associated with the engine that owns `registrar`. The same
     /// `api` registered from different engines is tracked as separate registrations.
-    static func register(
-      api: NativeInteropSealedClassHostApi, registrar: FlutterPluginRegistrar,
-      name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-    ) {
+    static func register(api: NativeInteropSealedClassHostApi, registrar: FlutterPluginRegistrar, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) {
       register(api: api, engineKey: GolubetsEngineKeys.key(for: registrar), name: name)
     }
 
@@ -12759,22 +11138,15 @@ public protocol NativeInteropSealedClassHostApi: AnyObject {
     /// Prefers the registration made from the engine that owns `registrar`, and
     /// otherwise removes the registration of `api` under `name` if exactly one engine
     /// holds it.
-    static func unregister(
-      api: NativeInteropSealedClassHostApi, registrar: FlutterPluginRegistrar,
-      name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-    ) {
+    static func unregister(api: NativeInteropSealedClassHostApi, registrar: FlutterPluginRegistrar, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) {
       unregister(api: api, engineKey: GolubetsEngineKeys.key(for: registrar), name: name)
     }
   #endif
 
-  fileprivate static func register(
-    api: NativeInteropSealedClassHostApi, engineKey: Int64, name: String
-  ) {
+  fileprivate static func register(api: NativeInteropSealedClassHostApi, engineKey: Int64, name: String) {
     NativeInteropSealedClassHostApiInstanceTracker.lock.lock()
     defer { NativeInteropSealedClassHostApiInstanceTracker.lock.unlock() }
-    var list =
-      NativeInteropSealedClassHostApiInstanceTracker.instancesOfNativeInteropSealedClassHostApi[
-        name] ?? []
+    var list = NativeInteropSealedClassHostApiInstanceTracker.instancesOfNativeInteropSealedClassHostApi[name] ?? []
     if let index = list.firstIndex(where: { $0.api === api && $0.engineKey == engineKey }) {
       list.append(list.remove(at: index))
     } else {
@@ -12783,24 +11155,17 @@ public protocol NativeInteropSealedClassHostApi: AnyObject {
       wrapper.api = api
       list.append(wrapper)
     }
-    NativeInteropSealedClassHostApiInstanceTracker.instancesOfNativeInteropSealedClassHostApi[
-      name] = list
+    NativeInteropSealedClassHostApiInstanceTracker.instancesOfNativeInteropSealedClassHostApi[name] = list
   }
 
-  fileprivate static func unregister(
-    api: NativeInteropSealedClassHostApi, engineKey: Int64, name: String
-  ) {
+  fileprivate static func unregister(api: NativeInteropSealedClassHostApi, engineKey: Int64, name: String) {
     // Removed entries are kept alive until after unlocking so their deinit cannot run while the
     // non-recursive lock is held.
     var displaced: [Any] = []
     do {
       NativeInteropSealedClassHostApiInstanceTracker.lock.lock()
       defer { NativeInteropSealedClassHostApiInstanceTracker.lock.unlock() }
-      guard
-        var list =
-          NativeInteropSealedClassHostApiInstanceTracker.instancesOfNativeInteropSealedClassHostApi[
-            name]
-      else {
+      guard var list = NativeInteropSealedClassHostApiInstanceTracker.instancesOfNativeInteropSealedClassHostApi[name] else {
         return
       }
       let removeKey: Int64
@@ -12826,11 +11191,9 @@ public protocol NativeInteropSealedClassHostApi: AnyObject {
         return false
       }
       if list.isEmpty {
-        NativeInteropSealedClassHostApiInstanceTracker.instancesOfNativeInteropSealedClassHostApi
-          .removeValue(forKey: name)
+        NativeInteropSealedClassHostApiInstanceTracker.instancesOfNativeInteropSealedClassHostApi.removeValue(forKey: name)
       } else {
-        NativeInteropSealedClassHostApiInstanceTracker.instancesOfNativeInteropSealedClassHostApi[
-          name] = list
+        NativeInteropSealedClassHostApiInstanceTracker.instancesOfNativeInteropSealedClassHostApi[name] = list
       }
     }
     withExtendedLifetime(displaced) {}
@@ -12841,17 +11204,10 @@ public protocol NativeInteropSealedClassHostApi: AnyObject {
   ///
   /// Prefers the most recent registration whose engine key is `engineId`, then
   /// `affinityKey`, then the most recent registration. `Int64.min` means unknown.
-  @objc static func golubetsResolveInstance(
-    engineId: Int64, affinityKey: Int64,
-    name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-  ) -> NativeInteropSealedClassHostApiSetup? {
+  @objc static func golubetsResolveInstance(engineId: Int64, affinityKey: Int64, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) -> NativeInteropSealedClassHostApiSetup? {
     NativeInteropSealedClassHostApiInstanceTracker.lock.lock()
     defer { NativeInteropSealedClassHostApiInstanceTracker.lock.unlock() }
-    guard
-      let list =
-        NativeInteropSealedClassHostApiInstanceTracker.instancesOfNativeInteropSealedClassHostApi[
-          name]
-    else {
+    guard let list = NativeInteropSealedClassHostApiInstanceTracker.instancesOfNativeInteropSealedClassHostApi[name] else {
       return nil
     }
     if engineId != Int64.min, let match = list.last(where: { $0.engineKey == engineId }) {
@@ -12888,9 +11244,7 @@ public protocol NativeInteropSealedClassHostApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoNullableShape(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoNullableShape(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -12910,9 +11264,7 @@ public protocol NativeInteropSealedClassHostApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoShapeList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoShapeList(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -12932,9 +11284,7 @@ public protocol NativeInteropSealedClassHostApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoShapeMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func echoShapeMap(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -12954,9 +11304,7 @@ public protocol NativeInteropSealedClassHostApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func echoAsyncShape(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async
-    -> NSData?
-  {
+  @objc func echoAsyncShape(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) async -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -12976,9 +11324,7 @@ public protocol NativeInteropSealedClassHostApi: AnyObject {
     return nil
   }
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  @objc func callFlutterEchoShape(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError)
-    -> NSData?
-  {
+  @objc func callFlutterEchoShape(golubetsVar_args: NSData, wrappedError: NativeInteropTestsError) -> NSData? {
     do {
       let activeApi = try resolveApi()
       var reader = NativeInteropTestsGolubetsInteropReader(golubetsVar_args)
@@ -13008,9 +11354,7 @@ public protocol NativeInteropSealedClassHostApi: AnyObject {
 }
 
 @objc class NativeInteropSealedClassFlutterApiRegistrar: NSObject {
-  static var registeredNativeInteropSealedClassFlutterApi = [
-    String: [NativeInteropSealedClassFlutterApi]
-  ]()
+  static var registeredNativeInteropSealedClassFlutterApi = [String: [NativeInteropSealedClassFlutterApi]]()
   /// Guards the registrations, which Native Interop calls can read from any thread.
   static let lock = NSLock()
 
@@ -13021,35 +11365,25 @@ public protocol NativeInteropSealedClassHostApi: AnyObject {
   /// that registered `api`, or are `Int64.min` when unknown.
   /// Registering an instance that is already registered under `name` updates its
   /// keys and keeps its position.
-  @objc static func registerInstance(
-    api: NativeInteropSealedClassFlutterApiBridge, engineId: Int64, affinityKey: Int64,
-    name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-  ) {
+  @objc static func registerInstance(api: NativeInteropSealedClassFlutterApiBridge, engineId: Int64, affinityKey: Int64, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) {
     let apiObject = api as AnyObject
     NativeInteropSealedClassFlutterApiRegistrar.lock.lock()
     defer { NativeInteropSealedClassFlutterApiRegistrar.lock.unlock() }
-    var list =
-      NativeInteropSealedClassFlutterApiRegistrar.registeredNativeInteropSealedClassFlutterApi[name]
-      ?? []
-    let registration = NativeInteropSealedClassFlutterApi(
-      api: api, engineId: engineId, affinityKey: affinityKey)
+    var list = NativeInteropSealedClassFlutterApiRegistrar.registeredNativeInteropSealedClassFlutterApi[name] ?? []
+    let registration = NativeInteropSealedClassFlutterApi(api: api, engineId: engineId, affinityKey: affinityKey)
     if let index = list.firstIndex(where: { ($0.api as AnyObject) === apiObject }) {
       list[index] = registration
     } else {
       list.append(registration)
     }
-    NativeInteropSealedClassFlutterApiRegistrar.registeredNativeInteropSealedClassFlutterApi[name] =
-      list
+    NativeInteropSealedClassFlutterApiRegistrar.registeredNativeInteropSealedClassFlutterApi[name] = list
   }
 
   /// Removes `api` from the registrations under `name` (or the default instance
   /// when `name` is omitted), leaving other registrations in place.
   ///
   /// Instances are matched by identity. Does nothing if `api` is not registered.
-  @objc static func unregisterInstance(
-    api: NativeInteropSealedClassFlutterApiBridge,
-    name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-  ) {
+  @objc static func unregisterInstance(api: NativeInteropSealedClassFlutterApiBridge, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) {
     let apiObject = api as AnyObject
     // Removed entries are kept alive until after unlocking so their deinit cannot run while the
     // non-recursive lock is held.
@@ -13057,11 +11391,7 @@ public protocol NativeInteropSealedClassHostApi: AnyObject {
     do {
       NativeInteropSealedClassFlutterApiRegistrar.lock.lock()
       defer { NativeInteropSealedClassFlutterApiRegistrar.lock.unlock() }
-      guard
-        var list =
-          NativeInteropSealedClassFlutterApiRegistrar.registeredNativeInteropSealedClassFlutterApi[
-            name]
-      else {
+      guard var list = NativeInteropSealedClassFlutterApiRegistrar.registeredNativeInteropSealedClassFlutterApi[name] else {
         return
       }
       list.removeAll { entry in
@@ -13072,11 +11402,9 @@ public protocol NativeInteropSealedClassHostApi: AnyObject {
         return false
       }
       if list.isEmpty {
-        NativeInteropSealedClassFlutterApiRegistrar.registeredNativeInteropSealedClassFlutterApi
-          .removeValue(forKey: name)
+        NativeInteropSealedClassFlutterApiRegistrar.registeredNativeInteropSealedClassFlutterApi.removeValue(forKey: name)
       } else {
-        NativeInteropSealedClassFlutterApiRegistrar.registeredNativeInteropSealedClassFlutterApi[
-          name] = list
+        NativeInteropSealedClassFlutterApiRegistrar.registeredNativeInteropSealedClassFlutterApi[name] = list
       }
     }
     withExtendedLifetime(displaced) {}
@@ -13088,30 +11416,18 @@ public protocol NativeInteropSealedClassHostApi: AnyObject {
     ///
     /// When no instance is known to belong to that engine, falls back to the most
     /// recent registration for `name`. Returns nil if none is registered.
-    static func getInstance(
-      registrar: FlutterPluginRegistrar,
-      name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName
-    ) -> NativeInteropSealedClassFlutterApi? {
+    static func getInstance(registrar: FlutterPluginRegistrar, name: String = NativeInteropTestsGolubetsInternal.defaultInstanceName) -> NativeInteropSealedClassFlutterApi? {
       return getInstance(engineKey: GolubetsEngineKeys.key(for: registrar), name: name)
     }
   #endif
 
-  fileprivate static func getInstance(engineKey: Int64, name: String)
-    -> NativeInteropSealedClassFlutterApi?
-  {
+  fileprivate static func getInstance(engineKey: Int64, name: String) -> NativeInteropSealedClassFlutterApi? {
     NativeInteropSealedClassFlutterApiRegistrar.lock.lock()
     defer { NativeInteropSealedClassFlutterApiRegistrar.lock.unlock() }
-    guard
-      let list =
-        NativeInteropSealedClassFlutterApiRegistrar.registeredNativeInteropSealedClassFlutterApi[
-          name]
-    else {
+    guard let list = NativeInteropSealedClassFlutterApiRegistrar.registeredNativeInteropSealedClassFlutterApi[name] else {
       return nil
     }
-    if engineKey != Int64.min,
-      let match = list.last(where: { $0.engineId == engineKey })
-        ?? list.last(where: { $0.affinityKey == engineKey })
-    {
+    if engineKey != Int64.min, let match = list.last(where: { $0.engineId == engineKey }) ?? list.last(where: { $0.affinityKey == engineKey }) {
       return match
     }
     return list.last
@@ -13123,9 +11439,7 @@ class NativeInteropSealedClassFlutterApi {
   fileprivate let engineId: Int64
   fileprivate let affinityKey: Int64
 
-  fileprivate init(
-    api: NativeInteropSealedClassFlutterApiBridge, engineId: Int64, affinityKey: Int64
-  ) {
+  fileprivate init(api: NativeInteropSealedClassFlutterApiBridge, engineId: Int64, affinityKey: Int64) {
     self.api = api
     self.engineId = engineId
     self.affinityKey = affinityKey
@@ -13133,13 +11447,8 @@ class NativeInteropSealedClassFlutterApi {
 
   func echoShape(shape shapeArg: NativeInteropShape) throws -> NativeInteropShape {
     let error = NativeInteropTestsError()
-    let res = api.echoShape(
-      golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode {
-        $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList)
-        $0.writeSize(1)
-        $0.writeValue(shapeArg)
-      }, error: error)
-    if error.code != nil {
+    let res = api.echoShape(golubetsVar_args: NativeInteropTestsGolubetsInteropCodec.encode { $0.writeByte(NativeInteropTestsGolubetsInteropCodec.typeList); $0.writeSize(1); $0.writeValue(shapeArg) }, error: error)
+    if (error.code != nil) {
       throw error
     }
     var reader = NativeInteropTestsGolubetsInteropReader(res!)
